@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CPE Reading - Jack Task</title>
+    <style>
+        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --success: #10b981; --error: #f43f5e; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: var(--card); width: 100%; max-width: 750px; padding: 30px; border-radius: 24px; border: 1px solid #334155; text-align: center; }
+        
+        /* Блок задания СВЕРХУ */
+        .task-box { background: #0f172a; padding: 25px; border-radius: 15px; border: 2px solid var(--primary); margin-bottom: 25px; cursor: pointer; transition: 0.3s; position: relative; }
+        .task-box.active { border-color: var(--success); background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 15px var(--success); }
+        .task-label { position: absolute; top: -10px; left: 20px; background: var(--primary); color: #0f172a; font-size: 10px; font-weight: bold; padding: 2px 10px; border-radius: 5px; }
+        .synonym-hint { font-size: 14px; color: #94a3b8; display: block; margin-bottom: 5px; }
+        .statement-text { font-size: 19px; font-weight: bold; color: var(--text); font-style: italic; display: block; }
+
+        /* Текст ПОСЕРЕДИНЕ */
+        .reading-text { text-align: left; line-height: 2.5; font-size: 19px; background: rgba(15, 23, 42, 0.5); padding: 30px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 25px; }
+        .clickable { cursor: pointer; border-bottom: 1px dashed #475569; transition: 0.3s; padding: 0 3px; border-radius: 4px; }
+        .found { background: var(--success) !important; color: white !important; border: none !important; box-shadow: 0 0 15px var(--success); }
+
+        /* Кнопки СНИЗУ */
+        .controls { display: flex; gap: 15px; justify-content: center; }
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .btn-match { background: var(--success); color: white; }
+        .btn-no { background: #475569; color: white; }
+        .btn:hover { opacity: 0.8; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="task-box" id="task-ui" onclick="setReady()">
+        <div class="task-label">CURRENT TASK:</div>
+        <span id="synonym-text" class="synonym-hint"></span>
+        <span id="statement-text" class="statement-text"></span>
+    </div>
+
+    <div class="reading-text" id="main-content">
+        <b style="color:var(--error); font-size: 26px;">A Jack</b><br>
+        AI art <span class="clickable" data-id="1">doesn't concern me in the slightest</span>; however you can understand why it causes so many artists so much discomfort. 
+        I suspect it's related to the <span class="clickable" data-id="2">unpredictability of where it will all end up</span>. 
+        <span class="clickable" data-id="3">For my part</span>, having been <span class="clickable" data-id="4">involved in a collaborative project</span> recently, I can see how they <span class="clickable" data-id="5">go hand in hand</span>. 
+        I found it fascinating to <span class="clickable" data-id="6">observe firsthand</span> the <span class="clickable" data-id="7">interplay of both these creative forms</span>. 
+        Artists and AI actually <span class="clickable" data-id="8">complement each other</span> since 
+        <span class="clickable" data-id="9">one cannot generate output without the other's input</span>. 
+        <span class="clickable" data-id="10">Now that</span> I've had this experience, I'm more convinced. 
+        <span class="clickable" data-id="11">With all that I can bring to the table</span>, I 
+        <span class="clickable" data-id="12">won't be sidelined in the foreseeable future</span>.
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-match" onclick="setReady()">It matches</button>
+        <button class="btn btn-no" onclick="handleNoMatch()">It doesn't match</button>
+    </div>
+</div>
+
+<script>
+    // Массив: синоним из 1 задания + утверждение из 2 задания
+    const allTasks = [
+        { syn: "It is not a matter of worry for me at all", state: "the feeling of unease that AI induces...", id: "1", isA: true },
+        { syn: "Positive mindset paying dividends", state: "the dividends that maintaining a positive mindset pays...", isA: false },
+        { syn: "Uncertainty regarding the final result", state: "the unpredictability of where it will all end up", id: "2", isA: true },
+        { syn: "As for me / from my perspective", state: "the consequences of collaboration...", id: "3", isA: true },
+        { syn: "Participating in a joint shared task", state: "the naivety of artists...", isA: false },
+        { syn: "Are fundamentally and closely linked", state: "how they go hand in hand", id: "5", isA: true }
+    ];
+
+    let step = 0;
+    let isConfirmed = false;
+
+    function update() {
+        if(step < allTasks.length) {
+            document.getElementById('synonym-text').innerText = "Find synonym: " + allTasks[step].syn;
+            document.getElementById('statement-text').innerText = allTasks[step].state;
+            document.getElementById('task-ui').classList.remove('active');
+            isConfirmed = false;
+        } else {
+            document.getElementById('task-ui').innerHTML = "👑 SECTION A DONE!";
+        }
+    }
+
+    function setReady() {
+        if (!allTasks[step].isA) {
+            alert("This belongs to another person! Click 'Doesn't match'.");
+            return;
+        }
+        isConfirmed = true;
+        document.getElementById('task-ui').classList.add('active');
+    }
+
+    function handleNoMatch() {
+        if (allTasks[step].isA) {
+            alert("This IS in the text! Click Match and find it.");
+        } else {
+            step++;
+            update();
+        }
+    }
+
+    document.querySelectorAll('.clickable').forEach(el => {
+        el.addEventListener('click', function() {
+            if (!isConfirmed) {
+                alert("Click the statement or 'Matches' first!");
+                return;
+            }
+            if(this.dataset.id === allTasks[step].id) {
+                this.classList.add('found');
+                step++;
+                update();
+            }
+        });
+    });
+
+    update();
+</script>
+</body>
+</html>
