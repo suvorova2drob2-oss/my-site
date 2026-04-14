@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lexical Quiz Live</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #34d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .muted { color: var(--muted); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-top: 12px;
+    }
+    .hidden { display: none !important; }
+    .btn {
+      border: 1px solid #4c6ea2;
+      border-radius: 10px;
+      background: #1a2d4b;
+      color: #d7e8ff;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn.primary { border: none; background: var(--accent); color: #072a3b; }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+    input {
+      width: 100%;
+      border: 1px solid #4c6ea2;
+      border-radius: 10px;
+      background: #0f203d;
+      color: #fff;
+      padding: 9px 10px;
+      font-size: 1rem;
+    }
+    .code {
+      display: inline-block;
+      background: #0f203d;
+      border: 1px solid #4c6ea2;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+    }
+    .leader { display: grid; gap: 8px; margin-top: 10px; }
+    .leader-row {
+      border: 1px solid #3d5885;
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(12, 24, 46, 0.65);
+    }
+    .leader-head { display: flex; justify-content: space-between; gap: 8px; font-size: 0.92rem; margin-bottom: 7px; }
+    .bar-wrap { height: 10px; background: #142845; border-radius: 999px; overflow: hidden; border: 1px solid #2c4a73; }
+    .bar { height: 100%; background: linear-gradient(90deg, #38bdf8, #34d399); width: 0%; }
+    .msg { margin-top: 10px; min-height: 18px; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    .q-box { margin-top: 10px; border: 1px solid #3f5f8f; border-radius: 10px; padding: 12px; background: rgba(56,189,248,0.08); }
+    .q-title { font-size: 1.02rem; margin-bottom: 8px; line-height: 1.4; }
+    .opts { display: grid; gap: 8px; }
+    .opt {
+      border: 1px solid #4c6ea2;
+      border-radius: 10px;
+      background: #172a48;
+      color: #e5f0ff;
+      text-align: left;
+      padding: 9px 10px;
+      cursor: pointer;
+    }
+    .opt.good { border-color: #22c55e; background: rgba(34,197,94,0.15); }
+    .opt.bad { border-color: #ef4444; background: rgba(239,68,68,0.15); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Lexical Quiz Live</h1>
+      <a class="back" href="unit12-lexical-games.html">Back to lexical games</a>
+    </header>
+    <p class="muted">Mini multiplayer MVP: teacher shares link, students join, live progress + mistakes.</p>
+
+    <section id="rolePick" class="card">
+      <div class="row">
+        <button class="btn primary" id="pickTeacher" type="button">I am teacher</button>
+        <button class="btn" id="pickStudent" type="button">I am student</button>
+      </div>
+    </section>
+
+    <section id="teacherView" class="card hidden">
+      <h2>Teacher room</h2>
+      <p class="muted" style="margin-top:6px;">Create room, send link, then start race.</p>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn primary" id="createRoomBtn" type="button">Create room</button>
+        <button class="btn" id="startGameBtn" type="button" disabled>Start game</button>
+      </div>
+      <p style="margin-top:10px;">Room code: <span id="teacherCode" class="code">-</span></p>
+      <p class="muted" style="margin-top:6px;">Join link:</p>
+      <input id="joinLink" readonly />
+      <div class="row" style="margin-top:8px;">
+        <button class="btn" id="copyLinkBtn" type="button">Copy link</button>
+      </div>
+      <div class="leader" id="leaderBoard"></div>
+      <p id="teacherMsg" class="msg"></p>
+    </section>
+
+    <section id="studentView" class="card hidden">
+      <h2>Student join</h2>
+      <div class="row" style="margin-top:10px;">
+        <input id="studentName" placeholder="Your name" />
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <input id="studentRoom" placeholder="Room code (e.g. A1B2C3)" />
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn primary" id="joinBtn" type="button">Join room</button>
+      </div>
+      <p id="studentMsg" class="msg"></p>
+
+      <div id="studentGame" class="hidden">
+        <p>Room: <span id="studentRoomLabel" class="code">-</span></p>
+        <p class="muted" id="studentProgress" style="margin-top:6px;">Waiting for teacher...</p>
+        <div id="questionWrap" class="q-box hidden">
+          <p id="qTitle" class="q-title"></p>
+          <div id="qOptions" class="opts"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="live-config.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const QUIZ = [
+      {
+        q: "Choose phrase meaning: 'recommendations from people you know'.",
+        options: ["the power of word of mouth", "no excuse for poor hygiene", "weren't in any hurry"]
+      },
+      {
+        q: "Choose phrase meaning: 'service was very slow'.",
+        options: ["service was second to none", "the food was to die for", "weren't in any hurry"]
+      },
+      {
+        q: "Choose phrase meaning: 'very picky with food'.",
+        options: ["offered hardly any choice at all", "fussy eaters", "kick up a fuss"]
+      },
+      {
+        q: "Choose phrase meaning: 'appear unfriendly to others'.",
+        options: ["talking at the tops of their voices", "build up a good relationship", "come across as antisocial"]
+      },
+      {
+        q: "Choose phrase meaning: 'complain loudly'.",
+        options: ["kick up a fuss", "keep it light-hearted", "made the decision to resign"]
+      }
+    ];
+
+    const LIVE_API_URL = (window.LIVE_API_URL || "").trim();
+    const socket = window.io ? (LIVE_API_URL ? io(LIVE_API_URL) : io()) : null;
+    const qs = new URLSearchParams(location.search);
+    const presetRole = qs.get("role");
+    const presetRoom = (qs.get("room") || "").toUpperCase();
+
+    const state = {
+      role: null,
+      roomCode: "",
+      started: false,
+      myQuestionIndex: 0
+    };
+
+    function byId(id) { return document.getElementById(id); }
+    function setMsg(id, text, good) {
+      const el = byId(id);
+      if (!el) return;
+      el.textContent = text || "";
+      el.className = "msg " + (good ? "ok" : "bad");
+    }
+    function showRole(role) {
+      state.role = role;
+      byId("rolePick").classList.add("hidden");
+      byId("teacherView").classList.toggle("hidden", role !== "teacher");
+      byId("studentView").classList.toggle("hidden", role !== "student");
+      if (role === "student" && presetRoom) byId("studentRoom").value = presetRoom;
+    }
+
+    function renderLeaderboard(leaderboard) {
+      const host = byId("leaderBoard");
+      host.innerHTML = (leaderboard || []).map((p, i) => `
+        <div class="leader-row">
+          <div class="leader-head">
+            <span>#${i + 1} ${p.name}</span>
+            <span>${p.correct} correct · ${p.wrong} wrong</span>
+          </div>
+          <div class="bar-wrap"><div class="bar" style="width:${p.progress}%"></div></div>
+        </div>
+      `).join("") || "<p class='muted'>No students yet.</p>";
+    }
+
+    function renderStudentQuestion() {
+      const i = state.myQuestionIndex;
+      const wrap = byId("questionWrap");
+      if (!state.started) {
+        wrap.classList.add("hidden");
+        byId("studentProgress").textContent = "Waiting for teacher to start...";
+        return;
+      }
+      if (i >= QUIZ.length) {
+        wrap.classList.add("hidden");
+        byId("studentProgress").textContent = "Finished. Great job!";
+        return;
+      }
+      const cur = QUIZ[i];
+      byId("studentProgress").textContent = `Question ${i + 1} / ${QUIZ.length}`;
+      byId("qTitle").textContent = cur.q;
+      byId("qOptions").innerHTML = cur.options.map((op, idx) => `
+        <button class="opt" type="button" data-opt="${idx}">${op}</button>
+      `).join("");
+      wrap.classList.remove("hidden");
+    }
+
+    byId("pickTeacher").addEventListener("click", () => showRole("teacher"));
+    byId("pickStudent").addEventListener("click", () => showRole("student"));
+
+    byId("createRoomBtn").addEventListener("click", () => {
+      if (!socket) {
+        setMsg("teacherMsg", "Realtime server not connected. Open this page via http://localhost:3000 or deployed backend.", false);
+        return;
+      }
+      const originForLink = LIVE_API_URL || location.origin;
+      socket.emit("teacher:create", { origin: originForLink });
+    });
+    byId("startGameBtn").addEventListener("click", () => {
+      if (!socket) {
+        setMsg("teacherMsg", "Realtime server not connected.", false);
+        return;
+      }
+      if (!state.roomCode) return;
+      socket.emit("teacher:start", { roomCode: state.roomCode });
+    });
+    byId("copyLinkBtn").addEventListener("click", async () => {
+      const inp = byId("joinLink");
+      if (!inp.value) return;
+      try {
+        await navigator.clipboard.writeText(inp.value);
+        setMsg("teacherMsg", "Link copied.", true);
+      } catch (_) {
+        setMsg("teacherMsg", "Copy failed. Copy manually.", false);
+      }
+    });
+
+    byId("joinBtn").addEventListener("click", () => {
+      if (!socket) {
+        setMsg("studentMsg", "Realtime server not connected. Open via http://localhost:3000.", false);
+        return;
+      }
+      const name = byId("studentName").value.trim();
+      const roomCode = byId("studentRoom").value.trim().toUpperCase();
+      socket.emit("student:join", { name, roomCode });
+    });
+
+    byId("qOptions").addEventListener("click", (e) => {
+      const btn = e.target.closest(".opt");
+      if (!btn) return;
+      if (!socket) return;
+      const answerIndex = Number(btn.getAttribute("data-opt"));
+      socket.emit("student:answer", {
+        roomCode: state.roomCode,
+        questionIndex: state.myQuestionIndex,
+        answerIndex
+      });
+    });
+    if (socket) {
+      socket.on("room:created", ({ code, joinUrl }) => {
+        state.roomCode = code;
+        byId("teacherCode").textContent = code;
+        byId("joinLink").value = joinUrl;
+        byId("startGameBtn").disabled = false;
+        setMsg("teacherMsg", "Room created. Share the link with students.", true);
+      });
+
+      socket.on("room:state", ({ code, started, leaderboard }) => {
+        if (state.role === "teacher" && state.roomCode === code) {
+          renderLeaderboard(leaderboard);
+        }
+        if (state.role === "student" && state.roomCode === code) {
+          state.started = started;
+          renderStudentQuestion();
+        }
+      });
+
+      socket.on("game:started", () => {
+        state.started = true;
+        state.myQuestionIndex = 0;
+        if (state.role === "teacher") setMsg("teacherMsg", "Game started.", true);
+        if (state.role === "student") {
+          setMsg("studentMsg", "Game started. Good luck!", true);
+          renderStudentQuestion();
+        }
+      });
+
+      socket.on("join:ok", ({ code }) => {
+        state.roomCode = code;
+        byId("studentRoomLabel").textContent = code;
+        byId("studentGame").classList.remove("hidden");
+        setMsg("studentMsg", "Joined. Wait for teacher to start.", true);
+        renderStudentQuestion();
+      });
+
+      socket.on("join:error", ({ message }) => {
+        setMsg("studentMsg", message || "Join failed.", false);
+      });
+
+      socket.on("answer:result", ({ isCorrect, correctIndex, nextQuestionIndex }) => {
+        const buttons = Array.from(document.querySelectorAll("#qOptions .opt"));
+        buttons.forEach((b, i) => {
+          b.disabled = true;
+          if (i === correctIndex) b.classList.add("good");
+        });
+        if (!isCorrect) {
+          const bad = buttons.find((b) => Number(b.getAttribute("data-opt")) !== correctIndex && b === document.activeElement);
+          if (bad) bad.classList.add("bad");
+          setMsg("studentMsg", "Wrong. Moving on.", false);
+        } else {
+          setMsg("studentMsg", "Correct!", true);
+        }
+        state.myQuestionIndex = nextQuestionIndex;
+        setTimeout(renderStudentQuestion, 450);
+      });
+
+      socket.on("room:closed", () => {
+        setMsg("studentMsg", "Teacher left. Room closed.", false);
+        state.started = false;
+        byId("questionWrap").classList.add("hidden");
+      });
+    }
+
+    if (presetRole === "teacher" || presetRole === "student") {
+      showRole(presetRole);
+    }
+  </script>
+</body>
+</html>

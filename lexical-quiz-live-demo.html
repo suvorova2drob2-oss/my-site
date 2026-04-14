@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lexical Quiz Live Demo</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #34d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(180deg, #09122a 0%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 20px; }
+    .page { width: min(1000px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+    .top { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:10px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .card { border:1px solid var(--line); border-radius:12px; background:var(--panel-soft); padding:12px; }
+    .btn { border:1px solid #4c6ea2; border-radius:10px; background:#1a2d4b; color:#d7e8ff; padding:8px 10px; cursor:pointer; font-weight:700; }
+    .btn.primary { border:none; background:var(--accent); color:#072a3b; }
+    .btn:disabled { opacity:.6; cursor:default; }
+    input { width:100%; border:1px solid #4c6ea2; border-radius:10px; background:#0f203d; color:#fff; padding:8px 10px; margin-top:8px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .leader { display:grid; gap:8px; margin-top:10px; }
+    .leader-item { border:1px solid #3d5885; border-radius:10px; padding:8px; background: rgba(12,24,46,.6); }
+    .leader-head { display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:6px; }
+    .bar-wrap { height:10px; background:#142845; border-radius:999px; overflow:hidden; border:1px solid #2c4a73; }
+    .bar { height:100%; background: linear-gradient(90deg,#38bdf8,#34d399); }
+    .q { margin-top:10px; border:1px solid #3f5f8f; border-radius:10px; padding:10px; background: rgba(56,189,248,.08); }
+    .opts { display:grid; gap:8px; margin-top:8px; }
+    .opt { border:1px solid #4c6ea2; border-radius:10px; background:#172a48; color:#e5f0ff; text-align:left; padding:8px 10px; cursor:pointer; }
+    .msg { min-height:18px; margin-top:8px; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Lexical Quiz Live — Demo</h1>
+      <a class="back" href="unit12-lexical-games.html">Back to lexical games</a>
+    </header>
+    <p class="muted">No downloads. Demo on one page: teacher panel + students panel.</p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Teacher</h2>
+        <div class="row">
+          <button class="btn primary" id="startBtn" type="button">Start demo race</button>
+          <button class="btn" id="resetBtn" type="button">Reset</button>
+        </div>
+        <div class="leader" id="leader"></div>
+      </section>
+
+      <section class="card">
+        <h2>Student (you)</h2>
+        <input id="studentName" placeholder="Your name" value="Student 1" />
+        <p class="muted" id="progressText" style="margin-top:8px;">Press Start demo race.</p>
+        <div class="q" id="qWrap" style="display:none;">
+          <p id="qText"></p>
+          <div class="opts" id="opts"></div>
+        </div>
+        <p class="msg" id="msg"></p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const QUIZ = [
+      { q: "Recommendations from people you know:", options: ["the power of word of mouth", "kick up a fuss", "come across as antisocial"], correct: 0 },
+      { q: "Service was very slow:", options: ["service was second to none", "weren't in any hurry", "to die for"], correct: 1 },
+      { q: "Very picky with food:", options: ["fussy eaters", "offered hardly any choice at all", "keep it light-hearted"], correct: 0 },
+      { q: "Complain loudly:", options: ["carry out a needs analysis", "kick up a fuss", "build up a good relationship"], correct: 1 },
+      { q: "Seem unfriendly:", options: ["come across as antisocial", "second to none", "word of mouth"], correct: 0 }
+    ];
+
+    const bots = [
+      { name: "Mia", progress: 0, wrong: 0 },
+      { name: "Leo", progress: 0, wrong: 0 },
+      { name: "Sara", progress: 0, wrong: 0 }
+    ];
+    const me = { name: "Student 1", progress: 0, wrong: 0, correct: 0 };
+    let running = false;
+    let botTimer = 0;
+
+    function byId(id) { return document.getElementById(id); }
+    function renderLeader() {
+      const all = [{ name: me.name, progress: me.progress, wrong: me.wrong }, ...bots];
+      all.sort((a, b) => b.progress - a.progress || a.wrong - b.wrong || a.name.localeCompare(b.name));
+      byId("leader").innerHTML = all.map((p, i) => `
+        <div class="leader-item">
+          <div class="leader-head"><span>#${i + 1} ${p.name}</span><span>${p.progress}% · wrong ${p.wrong}</span></div>
+          <div class="bar-wrap"><div class="bar" style="width:${p.progress}%"></div></div>
+        </div>
+      `).join("");
+    }
+    function showQuestion() {
+      if (!running) return;
+      const idx = Math.floor((me.progress / 100) * QUIZ.length);
+      if (idx >= QUIZ.length) {
+        byId("qWrap").style.display = "none";
+        byId("progressText").textContent = "Finished!";
+        return;
+      }
+      const cur = QUIZ[idx];
+      byId("qWrap").style.display = "block";
+      byId("progressText").textContent = `Question ${idx + 1} / ${QUIZ.length}`;
+      byId("qText").textContent = cur.q;
+      byId("opts").innerHTML = cur.options.map((op, i) => `<button class="opt" type="button" data-i="${i}">${op}</button>`).join("");
+    }
+    function tickBots() {
+      bots.forEach((b) => {
+        if (b.progress >= 100) return;
+        if (Math.random() < 0.65) b.progress += 20;
+        else b.wrong += 1;
+        if (b.progress > 100) b.progress = 100;
+      });
+      renderLeader();
+      if ([me, ...bots].every((x) => x.progress >= 100)) {
+        clearInterval(botTimer);
+        botTimer = 0;
+      }
+    }
+    function startDemo() {
+      me.name = byId("studentName").value.trim() || "Student 1";
+      me.progress = 0; me.wrong = 0; me.correct = 0;
+      bots.forEach((b) => { b.progress = 0; b.wrong = 0; });
+      running = true;
+      byId("msg").textContent = "";
+      renderLeader();
+      showQuestion();
+      if (botTimer) clearInterval(botTimer);
+      botTimer = setInterval(tickBots, 1400);
+    }
+    function resetDemo() {
+      running = false;
+      if (botTimer) clearInterval(botTimer);
+      botTimer = 0;
+      me.progress = 0; me.wrong = 0; me.correct = 0;
+      bots.forEach((b) => { b.progress = 0; b.wrong = 0; });
+      byId("msg").textContent = "";
+      byId("qWrap").style.display = "none";
+      byId("progressText").textContent = "Press Start demo race.";
+      renderLeader();
+    }
+
+    byId("startBtn").addEventListener("click", startDemo);
+    byId("resetBtn").addEventListener("click", resetDemo);
+    byId("opts").addEventListener("click", (e) => {
+      const btn = e.target.closest(".opt");
+      if (!btn || !running) return;
+      const idx = Math.floor((me.progress / 100) * QUIZ.length);
+      const cur = QUIZ[idx];
+      if (!cur) return;
+      const chosen = Number(btn.getAttribute("data-i"));
+      if (chosen === cur.correct) {
+        me.correct += 1;
+        me.progress += 20;
+        if (me.progress > 100) me.progress = 100;
+        byId("msg").textContent = "Correct!";
+        byId("msg").className = "msg ok";
+      } else {
+        me.wrong += 1;
+        byId("msg").textContent = "Wrong.";
+        byId("msg").className = "msg bad";
+      }
+      renderLeader();
+      showQuestion();
+    });
+
+    resetDemo();
+  </script>
+</body>
+</html>

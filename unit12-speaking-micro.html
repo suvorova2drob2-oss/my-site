@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Micro Speaking</title>
+  <style>
+    :root {
+      --bg: #121826;
+      --panel: #1a2332;
+      --text: #ffffff;
+      --muted: #a0aec0;
+      --cyan: #38bdf8;
+      --cyan-bright: #40c4ff;
+      --ring-track: #2d3748;
+      --ok: #34d399;
+      --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 20px 36px;
+      line-height: 1.55;
+    }
+    .shell { max-width: 760px; margin: 0 auto; }
+    .top {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .top a { color: var(--cyan); text-decoration: none; font-weight: 600; }
+    .top a:hover { text-decoration: underline; }
+    .title { font-size: clamp(1.5rem, 4.5vw, 2rem); font-weight: 800; color: #ff4081; }
+    .panel {
+      border: 1px solid #334155;
+      border-radius: 14px;
+      background: var(--panel);
+      padding: 16px;
+    }
+    .lead { color: var(--muted); margin-bottom: 14px; }
+    .themes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .theme-btn {
+      border: 1px solid #4c6ea2;
+      border-radius: 10px;
+      background: #1a2d4b;
+      color: #d7e8ff;
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-btn.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px var(--cyan) inset;
+      color: #e0f2fe;
+    }
+    .prompt {
+      border: 1px solid #3e5f8f;
+      border-left: 3px solid var(--cyan);
+      border-radius: 10px;
+      padding: 12px;
+      background: rgba(56, 189, 248, 0.08);
+      margin-bottom: 10px;
+      color: #e6f4ff;
+    }
+    .target {
+      border: 1px solid #385178;
+      border-radius: 10px;
+      padding: 12px;
+      background: #102547;
+      margin-bottom: 14px;
+    }
+    .target .kicker {
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .target .phrase {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #eaf6ff;
+      line-height: 1.35;
+    }
+    .timer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 6px 0 14px;
+    }
+    .timer-ring-wrap { position: relative; width: 132px; height: 132px; }
+    .timer-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: var(--ring-track); stroke-width: 8; }
+    .ring-progress { fill: none; stroke: url(#ringGrad); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.12s linear; }
+    .timer-num {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+    .status { color: var(--muted); font-size: 0.85rem; margin-top: 6px; text-align: center; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid #4c6ea2;
+      border-radius: 10px;
+      background: #1a2d4b;
+      color: #d7e8ff;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      flex: 1 1 180px;
+    }
+    .btn-start { background: linear-gradient(180deg, var(--cyan-bright), #0ea5e9); color: #0f172a; border: none; }
+    .btn-used { background: linear-gradient(180deg, #34d399, #059669); color: #052e1f; border: none; }
+    .msg { min-height: 22px; margin-top: 12px; font-size: 0.92rem; }
+    .msg.ok { color: var(--ok); }
+    .score { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+    @media (max-width: 640px) {
+      body { padding: 14px 10px 26px; }
+      .panel { padding: 12px; }
+      .btn { flex: 1 1 100%; }
+      .timer-ring-wrap { width: 112px; height: 112px; }
+      .timer-num { font-size: 1.65rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1 class="title">Micro Speaking — Unit 12</h1>
+      <a href="unit12-speaking-hub.html">← Back to Speaking folder</a>
+    </div>
+
+    <section class="panel">
+      <p class="lead">Quick speaking burst: 15 seconds per card. Use the target phrase naturally in your own sentence. Unlimited repeats.</p>
+
+      <div class="themes">
+        <button class="theme-btn active" id="btnThemeNaomi" type="button">Naomi</button>
+        <button class="theme-btn" id="btnThemeRest" type="button">Restaurants</button>
+      </div>
+
+      <div class="prompt" id="promptText"></div>
+      <div class="target">
+        <span class="kicker">Target phrase</span>
+        <div class="phrase" id="targetPhrase"></div>
+      </div>
+
+      <div class="timer-block">
+        <div class="timer-ring-wrap" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#a78bfa" />
+                <stop offset="100%" style="stop-color:#38bdf8" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="50" cy="50" r="44" />
+            <circle id="ringProgress" class="ring-progress" cx="50" cy="50" r="44" />
+          </svg>
+          <span class="timer-num" id="timerNum">15</span>
+        </div>
+        <p class="status" id="timerStatus">Press Start when you are ready.</p>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-start" id="btnStart" type="button">Start 15s</button>
+        <button class="btn btn-used" id="btnUsed" type="button">I used it well (+1)</button>
+        <button class="btn" id="btnNext" type="button">Next prompt</button>
+      </div>
+
+      <p class="msg" id="msg"></p>
+      <p class="score" id="scoreLine">Session score: 0</p>
+    </section>
+  </div>
+
+  <script>
+    const scoreKey = "masteringB2Score";
+    const CARDS_MARKS_KEY = "masteringB2Unit12DefinitionCardsMarks";
+    const SRS_KEY = "masteringB2Unit12Srs";
+    const SRS_STEPS = [1, 2, 4, 7, 14, 30];
+    const TIMER_SEC = 15;
+    const R = 44;
+    const CIRC = 2 * Math.PI * R;
+    function getScore() {
+      const n = Number(localStorage.getItem(scoreKey));
+      return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+    }
+    function addScore(x) { localStorage.setItem(scoreKey, String(getScore() + x)); }
+
+    const NAOMI = [
+      { id: "N::A Opening::carry out a needs analysis", p: "Explain what a trainer does before creating a plan.", t: "carry out a needs analysis" },
+      { id: "N::A Opening::keep it light-hearted", p: "Describe your coaching atmosphere in class.", t: "keep it light-hearted" },
+      { id: "N::B Background::made the decision to resign", p: "Talk about leaving your old gym job.", t: "made the decision to resign" },
+      { id: "N::E Advice::the power of word of mouth", p: "How do new clients usually hear about you?", t: "the power of word of mouth" },
+      { id: "N::E Advice::build up a good relationship with your clients", p: "Describe your ideal relationship with clients.", t: "build up a good relationship with your clients" }
+    ];
+    const REST = [
+      { id: "R::S1::no excuse for poor hygiene", p: "Describe a place where hygiene was unacceptable.", t: "no excuse for poor hygiene" },
+      { id: "R::S4::the food was to die for", p: "Describe a meal that was absolutely fantastic.", t: "the food was to die for" },
+      { id: "R::S2::talking at the tops of their voices", p: "Describe a restaurant where people were too loud.", t: "talking at the tops of their voices" },
+      { id: "R::S4::weren't in any hurry", p: "Describe very slow restaurant service.", t: "weren't in any hurry" },
+      { id: "R::S5::offered hardly any choice at all", p: "Describe a place with too little menu variety.", t: "offered hardly any choice at all" }
+    ];
+
+    const ring = document.getElementById("ringProgress");
+    ring.style.strokeDasharray = String(CIRC);
+    ring.style.strokeDashoffset = "0";
+
+    let theme = "naomi";
+    let idx = 0;
+    let sec = TIMER_SEC;
+    let timer = null;
+    let session = 0;
+    function deck() { return theme === "naomi" ? NAOMI : REST; }
+    function cardsLoadMarks() {
+      try {
+        const raw = localStorage.getItem(CARDS_MARKS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (_) {
+        return {};
+      }
+    }
+    function cardsSaveMarks(marks) { localStorage.setItem(CARDS_MARKS_KEY, JSON.stringify(marks)); }
+    function srsLoad() {
+      try {
+        const raw = localStorage.getItem(SRS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (_) {
+        return {};
+      }
+    }
+    function srsSave(state) { localStorage.setItem(SRS_KEY, JSON.stringify(state)); }
+    function srsMarkKnow(id) {
+      const now = Date.now();
+      const state = srsLoad();
+      const old = state[id] || { streak: 0, intervalDays: 0, nextAt: 0 };
+      const nextStreak = Math.max(0, Number(old.streak || 0)) + 1;
+      const idxStep = Math.min(SRS_STEPS.length - 1, nextStreak - 1);
+      const intervalDays = SRS_STEPS[idxStep];
+      state[id] = {
+        streak: nextStreak,
+        intervalDays,
+        nextAt: now + intervalDays * 86400000
+      };
+      srsSave(state);
+    }
+    function syncKnowToWordBank(item) {
+      if (!item || !item.id) return;
+      const marks = cardsLoadMarks();
+      marks[item.id] = "know";
+      cardsSaveMarks(marks);
+      srsMarkKnow(item.id);
+    }
+
+    function setMsg(text, ok) {
+      const el = document.getElementById("msg");
+      el.textContent = text || "";
+      el.className = "msg" + (ok ? " ok" : "");
+    }
+
+    function render() {
+      const d = deck();
+      if (idx >= d.length) idx = 0;
+      document.getElementById("promptText").textContent = d[idx].p;
+      document.getElementById("targetPhrase").textContent = d[idx].t;
+      document.getElementById("timerNum").textContent = String(sec);
+      document.getElementById("scoreLine").textContent = "Session score: " + session;
+      const frac = 1 - (sec / TIMER_SEC);
+      ring.style.strokeDashoffset = String(frac * CIRC);
+    }
+
+    function stopTimer(reset) {
+      if (timer) { clearInterval(timer); timer = null; }
+      if (reset) {
+        sec = TIMER_SEC;
+        ring.style.strokeDashoffset = "0";
+        document.getElementById("timerNum").textContent = String(TIMER_SEC);
+      }
+    }
+
+    function setTheme(next) {
+      theme = next;
+      idx = 0;
+      stopTimer(true);
+      document.getElementById("btnThemeNaomi").classList.toggle("active", theme === "naomi");
+      document.getElementById("btnThemeRest").classList.toggle("active", theme === "rest");
+      document.getElementById("timerStatus").textContent = "Press Start when you are ready.";
+      setMsg("", false);
+      render();
+    }
+
+    function startTimer() {
+      if (timer) return;
+      stopTimer(true);
+      document.getElementById("timerStatus").textContent = "Speak now. Use the target phrase.";
+      setMsg("", false);
+      timer = setInterval(() => {
+        sec -= 1;
+        document.getElementById("timerNum").textContent = String(Math.max(0, sec));
+        const frac = 1 - (sec / TIMER_SEC);
+        ring.style.strokeDashoffset = String(frac * CIRC);
+        if (sec <= 0) {
+          clearInterval(timer);
+          timer = null;
+          document.getElementById("timerStatus").textContent = "Time. Mark yourself or go next.";
+        }
+      }, 1000);
+    }
+
+    document.getElementById("btnThemeNaomi").addEventListener("click", () => setTheme("naomi"));
+    document.getElementById("btnThemeRest").addEventListener("click", () => setTheme("rest"));
+    document.getElementById("btnStart").addEventListener("click", startTimer);
+    document.getElementById("btnUsed").addEventListener("click", () => {
+      const current = deck()[idx];
+      syncKnowToWordBank(current);
+      session += 1;
+      addScore(1);
+      setMsg("Great. +1 added to home score and saved to Word Bank (Know).", true);
+      render();
+    });
+    document.getElementById("btnNext").addEventListener("click", () => {
+      idx += 1;
+      stopTimer(true);
+      document.getElementById("timerStatus").textContent = "Press Start when you are ready.";
+      setMsg("", false);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

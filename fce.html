@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mastering B2</title>
+  <style>
+    :root {
+      --page-bg: #071432;
+      --panel-bg: #1a2a47;
+      --panel-border: #2e4365;
+      --card-bg: #223657;
+      --card-muted: #8497b7;
+      --text-main: #e6eefc;
+      --text-dim: #9daecb;
+      --accent-blue: #38bdf8;
+      --accent-green: #36d399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 28px;
+      color: var(--text-main);
+      background: radial-gradient(1000px 420px at 50% -15%, #132754 0%, var(--page-bg) 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app {
+      width: min(1080px, 100%);
+      border-radius: 22px;
+      border: 1px solid var(--panel-border);
+      background: var(--panel-bg);
+      padding: 24px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      color: var(--text-dim);
+    }
+
+    .player-name {
+      color: var(--accent-blue);
+      font-weight: 700;
+    }
+
+    .score {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    .section-title {
+      color: var(--text-dim);
+      margin-bottom: 14px;
+    }
+
+    .units {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .unit {
+      text-decoration: none;
+      color: var(--text-main);
+      min-height: 100px;
+      border-radius: 16px;
+      border: 1px solid #2f456a;
+      background: linear-gradient(180deg, #243a5f 0%, #223656 100%);
+      padding: 14px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .unit:hover {
+      transform: translateY(-2px);
+      border-color: #4a6898;
+    }
+
+    .unit-title {
+      font-size: 1.06rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .unit-desc {
+      color: var(--card-muted);
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .progress-box {
+      border-radius: 16px;
+      border: 1px solid #3a5279;
+      background: #334a6d;
+      padding: 14px 16px;
+    }
+
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.85rem;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .progress-title {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .progress-text {
+      text-align: center;
+      color: #d3def3;
+      font-size: 0.96rem;
+    }
+
+    .reset {
+      margin-top: 14px;
+      text-align: center;
+      color: #7287aa;
+      font-size: 0.82rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .auth-layer {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 9, 24, 0.84);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-box {
+      width: min(460px, 100%);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .auth-box h1 {
+      margin-bottom: 8px;
+    }
+
+    .auth-box p {
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .auth-box label {
+      display: block;
+      margin-bottom: 6px;
+      color: #c9d8f3;
+    }
+
+    .auth-box input {
+      width: 100%;
+      margin-bottom: 10px;
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      background: #132544;
+      color: var(--text-main);
+      padding: 11px 12px;
+      font-size: 1rem;
+    }
+
+    .auth-box button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-weight: 700;
+      color: #07241a;
+      background: var(--accent-green);
+      cursor: pointer;
+    }
+
+    .error {
+      min-height: 20px;
+      margin-bottom: 8px;
+      color: #ff97a4;
+      font-size: 0.92rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div>Player: <span id="playerName" class="player-name">Guest</span></div>
+      <div>🏆 <span id="scoreValue" class="score">0</span></div>
+    </header>
+
+    <p class="section-title">Choose a unit</p>
+    <section class="units">
+      <a class="unit" href="unit1.html"><div class="unit-title">🔒 Unit 1</div><div class="unit-desc">Coming soon</div></a>
+      <a class="unit" href="unit2.html"><div class="unit-title">🔒 Unit 2</div><div class="unit-desc">Coming soon</div></a>
+      <a class="unit" href="unit3.html"><div class="unit-title">🔒 Unit 3</div><div class="unit-desc">Coming soon</div></a>
+      <a class="unit" href="unit4.html"><div class="unit-title">🔒 Unit 4</div><div class="unit-desc">Coming soon</div></a>
+      <a class="unit" href="unit5.html"><div class="unit-title">🔒 Unit 5</div><div class="unit-desc">Coming soon</div></a>
+      <a class="unit" href="unit6.html"><div class="unit-title">Unit 6</div><div class="unit-desc">Word-formation trainer</div></a>
+      <a class="unit" href="unit7.html"><div class="unit-title">Unit 7</div><div class="unit-desc">Open trainers</div></a>
+      <a class="unit" href="unit8.html"><div class="unit-title">Unit 8</div><div class="unit-desc">Environment collocations</div></a>
+      <a class="unit" href="unit9.html"><div class="unit-title">Unit 9</div><div class="unit-desc">Vocabulary and Reading</div></a>
+      <a class="unit" href="unit10.html"><div class="unit-title">Unit 10</div><div class="unit-desc">Open trainers</div></a>
+      <a class="unit" href="unit11.html"><div class="unit-title">Unit 11</div><div class="unit-desc">Open trainers</div></a>
+      <a class="unit" href="unit12.html"><div class="unit-title">Unit 12</div><div class="unit-desc">Listening and more</div></a>
+    </section>
+
+    <section class="progress-box">
+      <div class="progress-header">📊 <span class="progress-title">My progress</span></div>
+      <p class="progress-text">You need <span id="pointsToNext">100</span> more points to reach the next level.</p>
+    </section>
+    <p id="resetData" class="reset">Reset all data</p>
+  </main>
+
+  <section id="authLayer" class="auth-layer hidden">
+    <form id="nameForm" class="auth-box" autocomplete="off">
+      <h1>Mastering B2</h1>
+      <p>Enter your name in English. We will remember it on this device.</p>
+      <label for="englishName">Your name</label>
+      <input id="englishName" name="englishName" type="text" placeholder="e.g. Svetlana" />
+      <div id="errorText" class="error"></div>
+      <button type="submit">Enter</button>
+    </form>
+  </section>
+
+  <script>
+    const nameKey = "masteringB2PlayerName";
+    const scoreKey = "masteringB2Score";
+    const nextLevelScore = 100;
+
+    const authLayer = document.getElementById("authLayer");
+    const playerNameEl = document.getElementById("playerName");
+    const scoreEl = document.getElementById("scoreValue");
+    const pointsToNextEl = document.getElementById("pointsToNext");
+    const nameForm = document.getElementById("nameForm");
+    const englishNameInput = document.getElementById("englishName");
+    const errorText = document.getElementById("errorText");
+    const resetData = document.getElementById("resetData");
+
+    function isEnglishName(value) {
+      return /^[A-Za-z][A-Za-z -]{1,30}$/.test(value.trim());
+    }
+
+    function getScore() {
+      const raw = localStorage.getItem(scoreKey);
+      const num = Number(raw);
+      return Number.isFinite(num) && num >= 0 ? Math.floor(num) : 0;
+    }
+
+    function renderProgress(score) {
+      scoreEl.textContent = String(score);
+      const left = Math.max(nextLevelScore - score, 0);
+      pointsToNextEl.textContent = String(left);
+    }
+
+    const savedName = localStorage.getItem(nameKey);
+    if (savedName) {
+      playerNameEl.textContent = savedName;
+    } else {
+      authLayer.classList.remove("hidden");
+    }
+
+    renderProgress(getScore());
+
+    nameForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const value = englishNameInput.value.trim();
+      if (!isEnglishName(value)) {
+        errorText.textContent = "Use English letters only (A-Z), spaces or hyphen.";
+        return;
+      }
+      localStorage.setItem(nameKey, value);
+      playerNameEl.textContent = value;
+      errorText.textContent = "";
+      authLayer.classList.add("hidden");
+      englishNameInput.value = "";
+    });
+
+    resetData.addEventListener("click", function () {
+      localStorage.removeItem(nameKey);
+      localStorage.removeItem(scoreKey);
+      localStorage.removeItem("masteringB2Unit12ListeningCount");
+      localStorage.removeItem("masteringB2Unit12Listening_healthMatters");
+      localStorage.removeItem("masteringB2Unit12Shadowing_naomiPriceHealthMatters");
+      location.reload();
+    });
+  </script>
+</body>
+</html>

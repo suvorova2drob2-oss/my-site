@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Treasure Hunt</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --ok: #10b981;
+      --err: #f43f5e;
+      --speaker: #f87171;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .back {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .score-line {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .score-line strong { color: var(--ok); }
+    .lead {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .chain {
+      font-size: 0.82rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: #334155;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--ok);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+    .paraphrase-wrap {
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .paraphrase-label {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .paraphrase-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text);
+    }
+    .passage-card {
+      border-left: 4px solid var(--primary);
+      padding: 16px 16px 16px 18px;
+      background: var(--panel);
+      border-radius: 0 12px 12px 0;
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+    }
+    .speaker-tag {
+      color: var(--speaker);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    .passage {
+      font-size: 1rem;
+      color: #e2e8f0;
+      line-height: 1.65;
+    }
+    .pick {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      color: #bae6fd;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .pick:hover:not(.done):not(.disabled) {
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .pick.done {
+      color: var(--ok);
+      text-decoration: none;
+      cursor: default;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.45);
+      border-radius: 4px;
+      padding: 0 2px;
+    }
+    .pick.wrong-flash {
+      animation: shake 0.4s ease;
+      color: var(--err);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    .round-nav {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    button.nav-btn {
+      background: var(--primary);
+      color: #0f172a;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button.nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    button.nav-btn.secondary {
+      background: #334155;
+      color: var(--text);
+    }
+    .complete-msg {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--ok);
+      color: #a7f3d0;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .complete-msg.show { display: block; }
+    .folder-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .folder-v {
+      position: relative;
+      border-radius: 14px;
+      background: linear-gradient(165deg, #1a2744 0%, #131d33 55%, #0f1729 100%);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 12px 32px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .folder-v:hover {
+      border-color: rgba(71, 85, 105, 0.95);
+    }
+    .folder-v.is-selected {
+      border-color: rgba(56, 189, 248, 0.55);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.05) inset,
+        0 0 0 1px rgba(56, 189, 248, 0.2),
+        0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+    .folder-v--soon.is-selected {
+      border-color: rgba(148, 163, 184, 0.45);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    .folder-v__tab {
+      position: absolute;
+      top: 0;
+      left: 18px;
+      transform: translateY(-6px);
+      padding: 6px 14px 8px;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, #334e6f 0%, #243652 100%);
+      border: 1px solid rgba(100, 116, 139, 0.5);
+      border-bottom: none;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .folder-v.is-selected .folder-v__tab {
+      background: linear-gradient(180deg, #0e7490 0%, #155e75 100%);
+      color: #ecfeff;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .folder-v--soon .folder-v__tab {
+      background: linear-gradient(180deg, #475569 0%, #334155 100%);
+      color: #e2e8f0;
+    }
+    .folder-v__head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 16px 16px;
+      margin-top: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      transition: background 0.2s ease;
+    }
+    .folder-v__head:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .folder-v__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      flex-shrink: 0;
+    }
+    .folder-v--soon .folder-v__icon {
+      background: rgba(148, 163, 184, 0.1);
+      border-color: rgba(148, 163, 184, 0.25);
+    }
+    .folder-v--naomi .folder-v__icon {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: rgba(248, 113, 113, 0.28);
+    }
+    .folder-v__titles {
+      flex: 1;
+      min-width: 0;
+    }
+    .folder-v__name {
+      display: block;
+      font-weight: 800;
+      font-size: 1.02rem;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .folder-v__sub {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .folder-v__chev {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      transition: transform 0.3s ease, background 0.2s;
+    }
+    .folder-v.is-open .folder-v__chev {
+      transform: rotate(90deg);
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .folder-v__panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.38s ease;
+    }
+    .folder-v.is-open .folder-v__panel {
+      grid-template-rows: 1fr;
+    }
+    .folder-v__panel-inner {
+      overflow: hidden;
+      min-height: 0;
+    }
+    .folder-v__blurb {
+      margin: 0 12px;
+      padding: 12px 16px 16px;
+      font-size: 0.88rem;
+      color: #b8c9e0;
+      line-height: 1.5;
+      border-top: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    .folder-v__blurb strong {
+      color: #e2e8f0;
+    }
+    .folder-card {
+      margin: 0 12px 12px;
+      padding: 14px 14px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(71, 85, 105, 0.8);
+      background: rgba(15, 23, 42, 0.55);
+    }
+    .folder-card__title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .folder-card__desc {
+      font-size: 0.92rem;
+      color: #b7c7df;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .folder-card__open {
+      border: none;
+      background: none;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.05rem;
+      cursor: pointer;
+      padding: 0;
+    }
+    .folder-card__open:hover {
+      text-decoration: underline;
+    }
+    .treasure-game {
+      margin: 0 12px 12px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(51, 65, 85, 0.5);
+      background: rgba(10, 18, 38, 0.22);
+      border-radius: 0 0 12px 12px;
+    }
+    .treasure-game[hidden] {
+      display: none !important;
+    }
+    .folder-hint {
+      text-align: center;
+      font-size: 0.92rem;
+      color: var(--muted);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      border: 1px dashed rgba(71, 85, 105, 0.75);
+      background: rgba(30, 41, 59, 0.45);
+      line-height: 1.45;
+    }
+    .folder-hint[hidden] {
+      display: none !important;
+    }
+    /* Windows-like folder list */
+    .folder-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .folder-stack.folder-stack--single .folder-v:not(.is-open) {
+      display: none;
+    }
+    .folder-v {
+      width: 100%;
+      min-width: 0;
+      border-radius: 10px;
+      border: 1px solid #3a4b67;
+      background: #1d2e4d;
+      box-shadow: none;
+    }
+    .folder-v__head {
+      margin-top: 0;
+      padding: 12px 14px;
+      gap: 10px;
+      align-items: center;
+    }
+    .folder-v__name {
+      font-size: 1rem;
+      color: #e6eefc;
+    }
+    .folder-v__sub {
+      margin-top: 3px;
+      font-size: 0.86rem;
+      color: #98add1;
+      overflow-wrap: anywhere;
+    }
+    .folder-v:not(.is-open) .folder-v__sub {
+      display: none;
+    }
+    .folder-v__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      font-size: 1.1rem;
+      flex: 0 0 auto;
+    }
+    .folder-v__chev {
+      margin-left: auto;
+      color: #9bb0d3;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease;
+      flex: 0 0 auto;
+    }
+    .folder-v.is-open .folder-v__chev {
+      transform: rotate(90deg);
+      color: var(--primary);
+    }
+    .folder-v__tab {
+      display: none !important;
+    }
+    .folder-v__panel {
+      border-top: 1px solid rgba(58, 82, 121, 0.6);
+    }
+    .folder-v__blurb {
+      display: none;
+    }
+    .treasure-game {
+      min-width: 0;
+    }
+    .chain {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="back" href="unit12.html">← Back to Unit 12</a>
+    </div>
+    <h1 id="roundTitle">Unit 12 — Treasure Hunt</h1>
+    <p class="score-line">Total score: <strong id="totalScore">0</strong> (+1 each correct match · saved on your home score)</p>
+
+    <div class="folder-stack" aria-label="Choose a treasure-hunt set">
+      <article class="folder-v" id="folderListen" data-folder-idx="1">
+        <button type="button" class="folder-v__head" id="btnFolderListen" aria-expanded="false" aria-controls="panelListen">
+          <span class="folder-v__icon" aria-hidden="true">📁</span>
+          <span class="folder-v__titles">
+            <span class="folder-v__name">Part 3 — Multiple matching (12.1)</span>
+            <span class="folder-v__sub">Five people talk about a restaurant. Match speakers 1-5 to statements A-H.</span>
+          </span>
+          <span class="folder-v__chev" aria-hidden="true">▶</span>
+        </button>
+        <div class="folder-v__panel" id="panelListen">
+          <div class="folder-v__panel-inner">
+            <div class="folder-card">
+              <h3 class="folder-card__title">Listening set</h3>
+              <p class="folder-card__desc">Treasure Hunt mode: paraphrase → exact phrase in the speaker extract.</p>
+              <button type="button" class="folder-card__open" id="btnOpenListenTrainer">Open trainer →</button>
+            </div>
+            <div id="folderListenMount">
+              <div id="treasureGame" class="treasure-game">
+                <p class="lead" id="leadBox">Listening lexis — Naomi Price, personal trainer. Read the paraphrase, then click the <strong>exact phrase</strong> in the passage. <strong>Every</strong> highlighted chunk is tappable; a wrong tap gives no point — try again.</p>
+                <p class="chain" id="chainNote">Chain: A Opening → B Clients → C Training style → D Spaces &amp; gym → E Going solo</p>
+                <div class="progress-row">
+                  <span id="itemCounter" style="font-size:0.9rem;color:var(--muted);white-space:nowrap;">Item 1 / 7</span>
+                  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+                <div class="paraphrase-wrap">
+                  <span class="paraphrase-label">PARAPHRASE (KEY-WORD STYLE)</span>
+                  <p class="paraphrase-text" id="paraphraseBox"></p>
+                </div>
+                <div class="passage-card">
+                  <div class="speaker-tag" id="speakerLabel">A — Opening</div>
+                  <div class="passage" id="passageBox"></div>
+                </div>
+                <div class="round-nav">
+                  <button type="button" class="nav-btn secondary" id="btnPrevRound" disabled>← Previous round</button>
+                  <button type="button" class="nav-btn" id="btnNextRound">Next round →</button>
+                </div>
+                <p class="complete-msg" id="allDone">All rounds in this folder are complete. Come back anytime to practise. Regular practice is important.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="folder-v" id="folderSoon">
+        <button type="button" class="folder-v__head" id="btnFolderSoon" aria-expanded="false" aria-controls="panelSoon">
+          <span class="folder-v__icon" aria-hidden="true">📁</span>
+          <span class="folder-v__titles">
+            <span class="folder-v__name">More listening</span>
+            <span class="folder-v__sub">Empty slot — add the next task or track page here later.</span>
+          </span>
+          <span class="folder-v__chev" aria-hidden="true">▶</span>
+        </button>
+        <div class="folder-v__panel" id="panelSoon">
+          <div class="folder-v__panel-inner">
+            <div class="folder-card">
+              <h3 class="folder-card__title">More listening</h3>
+              <p class="folder-card__desc">This folder is empty now. Add the next listening task here.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="folder-v" id="folderNaomi" data-folder-idx="0">
+        <button type="button" class="folder-v__head" id="btnFolderNaomi" aria-expanded="false" aria-controls="panelNaomi">
+          <span class="folder-v__icon" aria-hidden="true">📁</span>
+          <span class="folder-v__titles">
+            <span class="folder-v__name">Naomi Price — Health Matters</span>
+            <span class="folder-v__sub">Personal trainer interview · paraphrase to exact phrase.</span>
+          </span>
+          <span class="folder-v__chev" aria-hidden="true">▶</span>
+        </button>
+        <div class="folder-v__panel" id="panelNaomi">
+          <div class="folder-v__panel-inner">
+            <div class="folder-card">
+              <h3 class="folder-card__title">Interview set</h3>
+              <p class="folder-card__desc">Five blocks A-E, same click-in-order mechanic.</p>
+              <button type="button" class="folder-card__open" id="btnOpenNaomiTrainer">Open trainer →</button>
+            </div>
+            <div id="folderNaomiMount"></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </div>
+
+  <script>
+    const scoreKey = "masteringB2Score";
+
+    function getScore() {
+      const raw = localStorage.getItem(scoreKey);
+      const n = Number(raw);
+      return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+    }
+    function addScore(pts) {
+      localStorage.setItem(scoreKey, String(getScore() + pts));
+    }
+
+    const FOLDERS = [
+      {
+        id: "naomi",
+        lead:
+          "Listening lexis — Naomi Price, personal trainer. Read the paraphrase, then click the exact phrase in the passage. Every highlighted chunk is tappable; a wrong tap gives no point — try again.",
+        chain: "Chain: A Opening → B Clients → C Training style → D Spaces & gym → E Going solo",
+        rounds: [
+      {
+        short: "A — Opening",
+        title: "Unit 12 — Treasure Hunt (A Opening)",
+        passage:
+          "I: On Health Matters today we have personal trainer Naomi Price. Naomi, what exactly does a personal trainer do?\n\n" +
+          "N: Well, my main aim is to improve people's quality of life and overall health. So besides helping them develop their fitness, strength and posture, I also work on their diet and lifestyle habits. Of course, each client has their own specific, individual goals, so before we do anything I carry out a needs analysis in order to establish exactly what it is they want to achieve. This includes asking them about their eating habits, their injury history and any medical complaints or conditions, such as high blood pressure. Then basically, I design exercise routines and give advice on nutrition in response to the information they give me.\n\n" +
+          "I: And what reasons do clients have for coming to see you?\n\n" +
+          "N: Oh, there's a wide range.",
+        items: [
+          { phrase: "develop their fitness, strength and posture", paraphrase: "Work on physical condition, muscle tone and how they hold themselves." },
+          { phrase: "carry out a needs analysis", paraphrase: "Find out first what each person really wants and needs." },
+          { phrase: "eating habits", paraphrase: "What they usually eat and how often." },
+          { phrase: "their injury history and any medical complaints or conditions", paraphrase: "Past hurts plus illnesses or health problems they report." },
+          { phrase: "high blood pressure", paraphrase: "Hypertension — a common medical condition." },
+          { phrase: "give advice on nutrition", paraphrase: "Tell them what to eat — food guidance, not only exercise." },
+          { phrase: "there's a wide range", paraphrase: "Motives vary a lot / many different reasons." }
+        ]
+      },
+      {
+        short: "B — Clients",
+        title: "Unit 12 — Treasure Hunt (B Clients)",
+        passage:
+          "I get a lot of clients, especially older ones, who simply want to lose a bit of weight or lower their cholesterol levels. I also have a large number of younger clients who've been injured while doing sport and want to get back to full fitness – that's my area of expertise. I also help one or two people train for marathons and triathlons, but mostly it's people who just want to improve their all-round fitness and as a result, their general self-confidence.\n\n" +
+          "I: And I imagine it's important to build up a good relationship with your clients.\n\n" +
+          "N: Yes, it is. I'm not one of those fitness instructors you sometimes see in films shouting orders at people to do fifty press-ups or run ten times round the park.",
+        items: [
+          { phrase: "to lose a bit of weight or lower their cholesterol levels", paraphrase: "Slim down slightly or reduce harmful blood fats." },
+          { phrase: "that's my area of expertise", paraphrase: "That's my special strength / what I'm best at." },
+          { phrase: "train for marathons", paraphrase: "Prepare for very long running races." },
+          { phrase: "improve their all-round fitness", paraphrase: "Get generally fitter and healthier overall." },
+          { phrase: "build up a good relationship with your clients", paraphrase: "Create trust and rapport with the people you coach." },
+          { phrase: "shouting orders at people to do fifty press-ups", paraphrase: "Yelling commands for dozens of push-ups like in films." }
+        ]
+      },
+      {
+        short: "C — Training style",
+        title: "Unit 12 — Treasure Hunt (C Training style)",
+        passage:
+          "Certainly, clients have to be dedicated and prepared to work hard when they're with me, but I also want them to enjoy exercising as well. So it's important, I think, for trainers to keep it light-hearted, introduce an element of playfulness into their sessions. There's usually a fair amount of laughter in mine.\n\n" +
+          "I: Now, your workplace is your garage, isn't it, Naomi?\n\n" +
+          "N: Well, yes, what used to be my garage. I don't park my car there any more – it's full of equipment. There's a rowing machine, two treadmills, two exercise bikes and loads of weights and things. I've also got a massage table, but that's in my lounge, where it's warmer. And then with some people I go to the park or a nearby wood to run or simply to add a bit of variety to the classes.",
+        items: [
+          { phrase: "have to be dedicated and prepared to work hard", paraphrase: "Must be committed and ready to make a real effort." },
+          { phrase: "keep it light-hearted", paraphrase: "Keep the mood relaxed and fun, not too serious." },
+          { phrase: "introduce an element of playfulness", paraphrase: "Make sessions feel a bit like a game." },
+          { phrase: "a fair amount of laughter", paraphrase: "Plenty of jokes and smiling in the session." },
+          { phrase: "There's a rowing machine, two treadmills, two exercise bikes and loads of weights and things", paraphrase: "Lists the kit in her gym space — rower, runners, bikes, weights." },
+          { phrase: "add a bit of variety to the classes", paraphrase: "Change routines so training doesn't feel boring." }
+        ]
+      },
+      {
+        short: "D — Spaces & gym",
+        title: "Unit 12 — Treasure Hunt (D Spaces & gym)",
+        passage:
+          "Clients appreciate that – they've told me that other local trainers they've been with always hold their sessions inside.\n\n" +
+          "I: You haven't always been your own boss have you?\n\n" +
+          "N: No, I used to work in a gym. The good thing about that was I learnt a lot from watching the other gym instructors and their interaction with the clients – both good and bad examples. I also got experience of working with a lot of different clients, but the trouble was, I rarely had the chance to build up long-lasting relationships with them. The client list was different every month – someone would join the gym in April, say, and by June they'd be gone.\n\n" +
+          "I: And is that why you left?\n\n" +
+          "N: It wasn't the only reason. I was getting tired of working on Saturdays, for one thing – I'd only had two or three Saturdays free in over a year. But it was the whole sales thing that I was least happy about. When they told me I had to persuade people to buy things with the gym's logo on it, that's when I made the decision to resign.",
+        items: [
+          { phrase: "Clients appreciate that", paraphrase: "They value that / they're grateful for outdoor sessions." },
+          { phrase: "The good thing about that was", paraphrase: "The positive side of working there was…" },
+          { phrase: "the trouble was", paraphrase: "The problem / downside was…" },
+          { phrase: "build up long-lasting relationships with them", paraphrase: "Really get to know clients over time, not just one month." },
+          { phrase: "it was the whole sales thing that I was least happy about", paraphrase: "Pushing products bothered her more than anything else." },
+          { phrase: "persuade people to buy things", paraphrase: "Talk customers into purchasing branded goods." },
+          { phrase: "made the decision to resign", paraphrase: "Decided to quit / hand in notice." }
+        ]
+      },
+      {
+        short: "E — Going solo",
+        title: "Unit 12 — Treasure Hunt (E Going solo)",
+        passage:
+          "I didn't feel comfortable pushing T-shirts and baseball caps, or things like protein supplements, which most people take without needing to. It just wasn't my style.\n\n" +
+          "I: Are you pleased you became self-employed?\n\n" +
+          "N: Oh, yes, I've got so much more freedom, and so far, touch wood, things are going really well. I thought I might have to put adverts in the local newspaper to get business but those clients I brought with me from the gym tell all their family and friends about me and those people tell all their friends … and so it goes on. The power of word of mouth.\n\n" +
+          "I: Let's hope your success continues, Naomi. Thank you for coming in to the studio.",
+        items: [
+          { phrase: "I didn't feel comfortable pushing T-shirts and baseball caps", paraphrase: "Uneasy about selling branded clothes to clients." },
+          { phrase: "protein supplements", paraphrase: "Extra protein products many people don't actually need." },
+          { phrase: "so far, touch wood, things are going really well", paraphrase: "Until now, hopefully, business is good (touch wood = superstition)." },
+          { phrase: "put adverts in the local newspaper to get business", paraphrase: "Pay for ads in the local paper to find clients." },
+          { phrase: "The power of word of mouth", paraphrase: "Recommendations spreading from person to person." }
+        ]
+      }
+        ]
+      },
+      {
+        id: "listening",
+        lead:
+          "Listening 12.1 — five people talk about restaurants. Read the paraphrase, then click the exact phrase in the speaker's text. Same rules: only the right phrase in order scores +1.",
+        chain: "Chain: Speaker 1 → Speaker 2 → Speaker 3 → Speaker 4 → Speaker 5",
+        rounds: [
+          {
+            short: "Speaker 1",
+            title: "Unit 12 — Treasure Hunt (Listening 12.1 · Speaker 1)",
+            passage:
+              "It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene. We'd decided to get away from all the people and noise in the centre, where tourist restaurants charge tourist prices, and try something more local, more authentic. The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about having to wait a little too long for the food to arrive. What they didn't mention were the sticky tables that hadn't been wiped, the stained cutlery and the filthy floor. We just ordered a main course, and left as soon as we could.",
+            items: [
+              { phrase: "fairly inexpensive restaurant", paraphrase: "A place that didn't cost much / good value for money." },
+              { phrase: "no excuse for poor hygiene", paraphrase: "Dirty conditions aren't justified, even if prices are low." },
+              { phrase: "sticky tables that hadn't been wiped", paraphrase: "Tables still dirty — not cleaned before you sat down." },
+              { phrase: "stained cutlery", paraphrase: "Knives and forks with marks — not properly clean." },
+              { phrase: "filthy floor", paraphrase: "The ground was extremely dirty." }
+            ]
+          },
+          {
+            short: "Speaker 2",
+            title: "Unit 12 — Treasure Hunt (Listening 12.1 · Speaker 2)",
+            passage:
+              "My partner and I went to a new vegan restaurant that had just opened in town. We weren't expecting very much from the food, but everything we ordered was surprisingly tasty. There wasn't a massive amount of variety on the menu but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, some of which might not be particularly well cooked. What spoilt it, though, was the large group of people on the table next to ours, all talking at the tops of their voices. Neither of us could hear what the other was saying, so we had to shout most of the time.",
+            items: [
+              { phrase: "There wasn't a massive amount of variety on the menu", paraphrase: "Not many different dishes to pick from." },
+              { phrase: "What spoilt it, though,", paraphrase: "The thing that ruined the evening was…" },
+              { phrase: "talking at the tops of their voices", paraphrase: "Shouting / speaking extremely loudly." }
+            ]
+          },
+          {
+            short: "Speaker 3",
+            title: "Unit 12 — Treasure Hunt (Listening 12.1 · Speaker 3)",
+            passage:
+              "The only time I've ever made a complaint about anything was when I went for a meal once with my parents. I told the waiter the meat in my stew was chewy, and should have been left in the oven longer. My dad said he thought I'd been rude to the waiter, but my mum told me I was right to complain. Her attitude is, if something's not right, then kick up a fuss, make a noise about it, otherwise nothing will get changed. As it was, the waiter said he couldn't change it, but he wouldn't charge for my dessert. So I ordered the most expensive one on the menu!",
+            items: [
+              { phrase: "made a complaint", paraphrase: "Said officially that something was wrong (first time ever)." },
+              { phrase: "the meat in my stew was chewy", paraphrase: "The stew meat was tough / hard to chew." },
+              { phrase: "kick up a fuss", paraphrase: "Complain loudly so people notice." },
+              { phrase: "charge for my dessert", paraphrase: "Make you pay for the pudding (here: they didn't)." }
+            ]
+          },
+          {
+            short: "Speaker 4",
+            title: "Unit 12 — Treasure Hunt (Listening 12.1 · Speaker 4)",
+            passage:
+              "Recently, we treated ourselves to dinner in a five-star seafood restaurant. We'd heard several negative things about the place before we went: the food was overpriced, the waiters were too formal, you didn't get much on your plate … But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked. Well, the food was to die for: the crab, the mussels, the seabass – absolutely delicious. And whoever said the portions were small was lying. We just wished they'd been a bit quicker about bringing the food out. They certainly weren't in any hurry, and we'd run out of things to say to each other by the time the main course arrived.",
+            items: [
+              { phrase: "treated ourselves to dinner", paraphrase: "Splashed out on a special meal out." },
+              { phrase: "overpriced", paraphrase: "Rumour: too expensive for what you get." },
+              { phrase: "you didn't get much on your plate", paraphrase: "People said portions were tiny." },
+              { phrase: "we're not big eaters", paraphrase: "We don't eat huge amounts." },
+              { phrase: "we felt like spoiling ourselves", paraphrase: "We wanted to indulge / pamper ourselves." },
+              { phrase: "the food was to die for", paraphrase: "The meal was absolutely amazing." },
+              { phrase: "mussels", paraphrase: "One of the shellfish dishes they loved." },
+              { phrase: "weren't in any hurry", paraphrase: "Staff were slow — no rush to serve." },
+              { phrase: "run out of things to say to each other", paraphrase: "Had nothing left to chat about while waiting." }
+            ]
+          },
+          {
+            short: "Speaker 5",
+            title: "Unit 12 — Treasure Hunt (Listening 12.1 · Speaker 5)",
+            passage:
+              "My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from. Unfortunately, the restaurant in the hotel we stayed in with our walking group offered hardly any choice at all – just a few starters and a couple of mains – so we only ate there once. We had no complaints about the food we actually ordered, and the service was second to none. In fact, most of the people from our group liked the place so much they had dinner there every evening. We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area.",
+            items: [
+              { phrase: "fussy eaters", paraphrase: "Picky about what we eat." },
+              { phrase: "offered hardly any choice at all", paraphrase: "Very few dishes on offer." },
+              { phrase: "the service was second to none", paraphrase: "The staff were outstanding / unbeatable." },
+              { phrase: "come across as antisocial", paraphrase: "Seemed unfriendly because we didn't join the group every night." }
+            ]
+          }
+        ]
+      }
+    ];
+
+    /** 0 = Naomi (folder 3 in UI), 1 = Listening 12.1 (folder 1 in UI) */
+    let activeFolder = 1;
+    let openFolderKey = "";
+
+    function getRounds() {
+      return FOLDERS[activeFolder].rounds;
+    }
+
+    function syncFolderPanels() {
+      var game = document.getElementById("treasureGame");
+      var listenMount = document.getElementById("folderListenMount");
+      var naomiMount = document.getElementById("folderNaomiMount");
+      var stack = document.querySelector(".folder-stack");
+      var fl = document.getElementById("folderListen");
+      var fn = document.getElementById("folderNaomi");
+      var fs = document.getElementById("folderSoon");
+      var bl = document.getElementById("btnFolderListen");
+      var bn = document.getElementById("btnFolderNaomi");
+      var bs = document.getElementById("btnFolderSoon");
+      if (!game || !fl || !fn || !fs || !listenMount || !naomiMount) {
+        return;
+      }
+      var listenOn = openFolderKey === "listen";
+      var soonOn = openFolderKey === "soon";
+      var naomiOn = openFolderKey === "naomi";
+      if (stack) {
+        stack.classList.toggle("folder-stack--single", !!openFolderKey);
+      }
+      if (listenOn && game.parentNode !== listenMount) {
+        listenMount.appendChild(game);
+      } else if (naomiOn && game.parentNode !== naomiMount) {
+        naomiMount.appendChild(game);
+      }
+      game.hidden = !(listenOn || naomiOn);
+      fl.classList.toggle("is-selected", listenOn);
+      fl.classList.toggle("is-open", listenOn);
+      fs.classList.toggle("is-selected", soonOn);
+      fs.classList.toggle("is-open", soonOn);
+      fn.classList.toggle("is-selected", naomiOn);
+      fn.classList.toggle("is-open", naomiOn);
+      if (bl) {
+        bl.setAttribute("aria-expanded", listenOn ? "true" : "false");
+      }
+      if (bs) {
+        bs.setAttribute("aria-expanded", soonOn ? "true" : "false");
+      }
+      if (bn) {
+        bn.setAttribute("aria-expanded", naomiOn ? "true" : "false");
+      }
+    }
+
+    let roundIndex = 0;
+    let itemIndex = 0;
+
+    function escapeHtml(s) {
+      return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function wrapPhrases(passage, items) {
+      const pairs = items
+        .map(function (it, i) {
+          const idx = passage.indexOf(it.phrase);
+          return idx >= 0 ? { idx: idx, i: i, phrase: it.phrase } : null;
+        })
+        .filter(Boolean)
+        .sort(function (a, b) {
+          return a.idx - b.idx;
+        });
+      let out = "";
+      let cursor = 0;
+      pairs.forEach(function (p) {
+        out += escapeHtml(passage.slice(cursor, p.idx));
+        out +=
+          '<span class="pick" data-i="' +
+          p.i +
+          '" role="button" tabindex="0">' +
+          escapeHtml(p.phrase) +
+          "</span>";
+        cursor = p.idx + p.phrase.length;
+      });
+      out += escapeHtml(passage.slice(cursor));
+      return "<p>" + out.replace(/\n\n/g, "</p><p>") + "</p>";
+    }
+
+    function updateProgress() {
+      const r = getRounds()[roundIndex];
+      const total = r.items.length;
+      const done = itemIndex >= total;
+      const cur = done ? total : itemIndex + 1;
+      const pct = total ? (cur / total) * 100 : 0;
+      document.getElementById("progressFill").style.width = pct + "%";
+      document.getElementById("itemCounter").textContent = done
+        ? "Round " + (roundIndex + 1) + " complete (" + total + "/" + total + ") · " + (roundIndex + 1) + "/" + getRounds().length
+        : "Item " + cur + " / " + total + " · Round " + (roundIndex + 1) + " / " + getRounds().length;
+    }
+
+    function render() {
+      syncFolderPanels();
+      document.getElementById("totalScore").textContent = String(getScore());
+      if (openFolderKey !== "listen" && openFolderKey !== "naomi") {
+        document.getElementById("roundTitle").textContent = "Unit 12 — Treasure Hunt";
+        return;
+      }
+      const meta = FOLDERS[activeFolder];
+      document.getElementById("leadBox").textContent = meta.lead;
+      document.getElementById("chainNote").textContent = meta.chain;
+      const r = getRounds()[roundIndex];
+      document.getElementById("roundTitle").textContent = r.title;
+      document.getElementById("speakerLabel").textContent = r.short;
+      document.getElementById("passageBox").innerHTML = wrapPhrases(r.passage, r.items);
+      if (itemIndex < r.items.length) {
+        document.getElementById("paraphraseBox").textContent = r.items[itemIndex].paraphrase;
+      } else {
+        document.getElementById("paraphraseBox").textContent =
+          "Round complete — press Next round to continue (or finish if this was the last round in this folder).";
+      }
+      const picks = document.querySelectorAll(".pick");
+      const roundDone = itemIndex >= r.items.length;
+      picks.forEach(function (el) {
+        const i = Number(el.getAttribute("data-i"));
+        el.classList.remove("wrong-flash");
+        if (i < itemIndex || roundDone) {
+          el.classList.add("done");
+        } else {
+          el.classList.remove("done");
+        }
+      });
+
+      document.getElementById("btnPrevRound").disabled = roundIndex === 0;
+      const allRoundsDone = roundIndex === getRounds().length - 1 && roundDone;
+      document.getElementById("btnNextRound").disabled = !roundDone || allRoundsDone;
+      document.getElementById("btnNextRound").textContent = allRoundsDone
+        ? "Finished"
+        : "Next round →";
+
+      updateProgress();
+      bindPicks();
+    }
+
+    function bindPicks() {
+      document.querySelectorAll(".pick").forEach(function (el) {
+        el.replaceWith(el.cloneNode(true));
+      });
+      document.querySelectorAll(".pick").forEach(function (el) {
+        const i = Number(el.getAttribute("data-i"));
+        if (itemIndex >= getRounds()[roundIndex].items.length) {
+          return;
+        }
+        if (i < itemIndex) {
+          return;
+        }
+        function handler() {
+          onPick(i, el);
+        }
+        el.addEventListener("click", handler);
+        el.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handler();
+          }
+        });
+      });
+    }
+
+    function onPick(i, el) {
+      const r = getRounds()[roundIndex];
+      if (itemIndex >= r.items.length) {
+        return;
+      }
+      if (i < itemIndex || el.classList.contains("done")) {
+        return;
+      }
+      if (i > itemIndex) {
+        el.classList.add("wrong-flash");
+        setTimeout(function () {
+          el.classList.remove("wrong-flash");
+        }, 450);
+        return;
+      }
+      addScore(1);
+      document.getElementById("totalScore").textContent = String(getScore());
+      if (itemIndex < r.items.length - 1) {
+        itemIndex += 1;
+        render();
+      } else {
+        itemIndex = r.items.length;
+        document.getElementById("paraphraseBox").textContent =
+          "Round complete — press Next round to continue (or finish if this was the last round in this folder).";
+        render();
+        if (roundIndex === getRounds().length - 1) {
+          document.getElementById("allDone").classList.add("show");
+        }
+      }
+    }
+
+    function toggleFolder(key) {
+      if (openFolderKey === key) {
+        openFolderKey = "";
+        document.getElementById("allDone").classList.remove("show");
+        render();
+        return;
+      }
+      openFolderKey = key;
+      if (key === "listen" || key === "naomi") {
+        var targetIdx = key === "listen" ? 1 : 0;
+        var changed = targetIdx !== activeFolder;
+        activeFolder = targetIdx;
+        if (changed) {
+          roundIndex = 0;
+          itemIndex = 0;
+          document.getElementById("allDone").classList.remove("show");
+        }
+      } else {
+        document.getElementById("allDone").classList.remove("show");
+      }
+      render();
+    }
+
+    document.getElementById("btnFolderListen").addEventListener("click", function () {
+      toggleFolder("listen");
+    });
+    document.getElementById("btnFolderNaomi").addEventListener("click", function () {
+      toggleFolder("naomi");
+    });
+    document.getElementById("btnFolderSoon").addEventListener("click", function () {
+      toggleFolder("soon");
+    });
+    document.getElementById("btnOpenListenTrainer").addEventListener("click", function () {
+      if (openFolderKey !== "listen") {
+        toggleFolder("listen");
+      }
+      var host = document.getElementById("treasureGame");
+      if (host) {
+        host.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    document.getElementById("btnOpenNaomiTrainer").addEventListener("click", function () {
+      if (openFolderKey !== "naomi") {
+        toggleFolder("naomi");
+      }
+      var host = document.getElementById("treasureGame");
+      if (host) {
+        host.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+
+    document.getElementById("btnNextRound").addEventListener("click", function () {
+      if (roundIndex < getRounds().length - 1) {
+        roundIndex += 1;
+        itemIndex = 0;
+        document.getElementById("allDone").classList.remove("show");
+        render();
+      }
+    });
+
+    document.getElementById("btnPrevRound").addEventListener("click", function () {
+      if (roundIndex > 0) {
+        roundIndex -= 1;
+        itemIndex = 0;
+        document.getElementById("allDone").classList.remove("show");
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

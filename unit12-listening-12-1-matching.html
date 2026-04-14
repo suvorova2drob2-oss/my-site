@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Listening 12.1 · Multiple matching</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { font-size: 1.35rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .tag {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .instr {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      padding: 14px;
+      background: var(--panel-soft);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    audio { width: 100%; margin-bottom: 20px; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .task-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 760px) {
+      .task-split {
+        grid-template-columns: 1fr;
+      }
+    }
+    .options,
+    .match-block {
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a4065;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .letter { font-weight: 800; color: var(--accent); }
+    .match-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a4065;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-row label {
+      font-weight: 600;
+      min-width: 6.5rem;
+      flex: 0 0 auto;
+    }
+    select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1rem;
+      width: 100%;
+      max-width: 160px;
+    }
+    select.correct { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok); }
+    select.wrong { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-check {
+      background: var(--ok);
+      color: #05271a;
+    }
+    .btn-reset {
+      background: #3d4f6f;
+      color: var(--text);
+    }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border: 1px solid var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback.partial {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid var(--bad);
+      color: #fecaca;
+    }
+
+    .detective-module {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.55s ease, opacity 0.45s ease, margin-top 0.45s ease, padding-top 0.45s ease, border-color 0.45s;
+    }
+    .detective-module.detective-module--unlocked {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      max-height: 5600px;
+      opacity: 1;
+    }
+    .detective-module h2 {
+      margin-bottom: 8px;
+    }
+    .detective-module .hint-bar {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+    .detective-flow {
+      position: relative;
+    }
+    .d-screen {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: max-height 0.5s ease, opacity 0.4s ease, margin-bottom 0.4s;
+      margin-bottom: 0;
+    }
+    .d-screen.is-active {
+      max-height: 2000px;
+      opacity: 1;
+      pointer-events: auto;
+      margin-bottom: 8px;
+    }
+    .task-passage {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #c8dcf5;
+      padding: 18px;
+      background: #1a2c49;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 16px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .choice-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .choice-row:hover {
+      border-color: #4a6898;
+    }
+    .choice-row input {
+      margin-top: 3px;
+      accent-color: var(--accent);
+    }
+    .choice-row label {
+      cursor: pointer;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .choice-letter {
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 1.25rem;
+    }
+    .btn-submit {
+      background: #5b7ab8;
+      color: #fff;
+    }
+    .btn-next {
+      background: var(--accent);
+      color: #062536;
+    }
+    .feedback-panel {
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 16px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .feedback-panel.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border-color: var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback-panel.bad {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: var(--bad);
+      color: #fecaca;
+    }
+    .lab-instr {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .trainer-progress {
+      margin-bottom: 18px;
+    }
+    .trainer-progress-track {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .trainer-progress-step {
+      flex: 1 1 140px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      transition: border-color 0.35s, background 0.35s, color 0.35s, box-shadow 0.35s;
+    }
+    .trainer-progress-step.is-pending {
+      opacity: 0.65;
+    }
+    .trainer-progress-step.is-current {
+      border-color: var(--accent);
+      color: var(--text);
+      box-shadow: 0 0 0 1px rgba(86, 204, 242, 0.35);
+      background: #223657;
+    }
+    .trainer-progress-step.is-done {
+      border-color: var(--ok);
+      color: #a7f3d0;
+      background: rgba(54, 211, 153, 0.1);
+    }
+    .trainer-step-head {
+      margin-bottom: 12px;
+    }
+    .trainer-task-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+    .trainer-counter {
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .smart-hint-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-hint-q {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      background: #3d5a86;
+      color: var(--text);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .btn-hint-q:hover {
+      filter: brightness(1.08);
+    }
+    .smart-hint-box {
+      flex: 1 1 220px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #4a6898;
+      background: #243a5c;
+      color: #c8dcf5;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      animation: hintPop 0.35s ease;
+    }
+    .smart-hint-box[hidden] {
+      display: none !important;
+    }
+    @keyframes hintPop {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .marker-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .marker-btn {
+      background: #2a4065;
+      color: var(--text);
+      border: 2px solid transparent;
+      transition: border-color 0.2s, background 0.2s, opacity 0.2s;
+    }
+    .marker-btn:not(:disabled) {
+      cursor: crosshair;
+    }
+    .marker-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+    .marker-btn.is-active:not(:disabled) {
+      border-color: var(--accent);
+      background: #324a78;
+    }
+    .marker-btn.marker-evidence.is-active:not(:disabled) {
+      border-color: var(--ok);
+      box-shadow: 0 0 0 1px rgba(54, 211, 153, 0.4);
+    }
+    .marker-btn.marker-distractor.is-active:not(:disabled) {
+      border-color: var(--bad);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.4);
+    }
+    .lab-passage-wrap {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #c8dcf5;
+      padding: 18px;
+      background: #1a2c49;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .lab-passage-wrap--large {
+      font-size: 1.2rem;
+      line-height: 1.85;
+      padding: 22px 24px;
+    }
+    @media (min-width: 720px) {
+      .lab-passage-wrap--large {
+        font-size: 1.28rem;
+        line-height: 1.9;
+      }
+    }
+    .lab-passage-wrap p {
+      margin: 0;
+    }
+    /* Tailwind-style arbitrary opacity (green-500 / red-500 @ 30%) */
+    .bg-green-500\/30 {
+      background-color: rgba(34, 197, 94, 0.3);
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);
+    }
+    .bg-red-500\/30 {
+      background-color: rgba(239, 68, 68, 0.3);
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.35);
+    }
+    .trainer-lock {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .trainer-phrase-wrap {
+      display: inline;
+      white-space: normal;
+    }
+    .trainer-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      margin-left: 6px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      padding: 5px 10px;
+      font-size: 0.72em;
+      font-weight: 800;
+      vertical-align: middle;
+      border-radius: 6px;
+      background: #3d1a1a;
+      color: #fecaca;
+      border: 1px solid var(--bad);
+      animation: badgeIn 0.4s ease;
+      max-width: min(320px, 94vw);
+      white-space: normal;
+      line-height: 1.3;
+    }
+    .trainer-badge-line {
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .trainer-badge-option {
+      font-weight: 600;
+      font-size: 1.05em;
+      color: #fde8e8;
+    }
+    @keyframes badgeIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .flash-wrong {
+      background: rgba(148, 163, 184, 0.65) !important;
+      border-radius: 4px;
+      animation: flashPulse 0.55s ease;
+    }
+    @keyframes flashPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.35); }
+    }
+    .trainer-toast {
+      min-height: 0;
+      margin-top: 10px;
+      padding: 0 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #fecaca;
+      line-height: 1.45;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .trainer-toast.is-visible {
+      opacity: 1;
+      padding: 10px 12px;
+      min-height: 2.5rem;
+    }
+    .trainer-final {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .trainer-final[hidden] {
+      display: none !important;
+    }
+    .trainer-speaker-label {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .clickable-passage {
+      line-height: 1.85;
+      color: #c8dcf5;
+    }
+    .clickable-passage.is-locked {
+      pointer-events: none;
+      opacity: 0.88;
+    }
+    .click-chunk--static {
+      pointer-events: none;
+      user-select: text;
+      cursor: text;
+    }
+    .click-chunk--target {
+      cursor: pointer;
+      border-radius: 4px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.35);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .click-chunk--target:hover:not(.is-disabled-hit):not(.is-green):not(.is-red) {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .click-chunk--target.is-green {
+      background-color: rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);
+      cursor: default;
+      border-bottom: none;
+    }
+    .click-chunk--target.is-red {
+      background-color: rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.35);
+      cursor: default;
+      border-bottom: none;
+    }
+    .click-chunk--target.is-disabled-hit {
+      pointer-events: none;
+    }
+    .trainer-distr-wrap {
+      display: inline;
+      white-space: normal;
+    }
+    .lab-final-summary {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--ok);
+      background: rgba(54, 211, 153, 0.1);
+      color: #a7f3d0;
+      font-size: 1rem;
+      line-height: 1.55;
+      animation: hintPop 0.4s ease;
+    }
+    .lab-final-summary[hidden] {
+      display: none !important;
+    }
+    .lab-detective-score {
+      margin-bottom: 14px;
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--accent);
+      background: rgba(86, 204, 242, 0.08);
+      text-align: center;
+    }
+    .lab-detective-score[hidden] {
+      display: none !important;
+    }
+    .lab-detective-score-num {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .lab-detective-congrats {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #a7f3d0;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Listening Part 3 — Multiple matching</h1>
+        <p class="tag">Track 12.1 · <code style="color: var(--muted);">RfB2First_SB_Track 12.1.mp3</code></p>
+      </div>
+      <a class="back" href="unit12-listening.html">Back to Listening</a>
+    </header>
+
+    <p class="instr">
+      You will hear <strong>five short extracts</strong> in which people are talking about a restaurant they went to.
+      For questions <strong>1–5</strong>, choose from the options (A–H) what each person says about the restaurant.
+      Use the letters <strong>only once</strong>. There are <strong>three extra</strong> letters which you do not need to use.
+    </p>
+
+    <audio controls preload="metadata" src="RfB2First_SB_Track 12.1.mp3"></audio>
+
+    <div class="task-split">
+      <section class="options" aria-labelledby="optHeading">
+        <h2 id="optHeading">Options A–H</h2>
+        <div id="optionsList"></div>
+      </section>
+
+      <section class="match-block" aria-labelledby="matchHeading">
+        <h2 id="matchHeading">Speakers — choose a letter</h2>
+        <div id="matchRows"></div>
+      </section>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear choices</button>
+    </div>
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <!-- GEP pattern: Guided Evidence Passage (Detective Lab). See .cursor/rules/listening-gep-pattern.mdc -->
+    <section id="detectiveModule" class="detective-module" data-detective-pattern="GEP" aria-labelledby="detectiveHeading" hidden>
+      <h2 id="detectiveHeading">Five speakers — Detective lab</h2>
+      <p class="hint-bar">Unlocked after you use <strong>Check answers</strong> on the exam task above. Flow: five short <strong>Task</strong> screens (Speakers 1–5) → <strong>Guided trainer</strong> for each speaker (evidence, then distractors tied to wrong letters A–H from the options list). Plain text in the trainer is not clickable.</p>
+
+      <div class="detective-flow">
+        <div class="d-screen d-screen-task is-active" id="screenTask" role="region" aria-label="Task" aria-hidden="false">
+          <h2 style="color: var(--accent); font-size: 1.05rem; margin-bottom: 10px;">Task</h2>
+          <p id="detectiveTaskInstr" class="lab-instr" style="margin-bottom: 12px;"></p>
+          <div id="detectiveTaskPassage" class="task-passage" aria-readonly="true"></div>
+          <div id="detectiveChoiceHost" class="choice-list" role="radiogroup" aria-label="Answer choices"></div>
+          <p id="detectiveSubmitErr" style="display: none; color: var(--bad); font-size: 0.9rem; margin-top: 10px;">Choose one option before submitting.</p>
+          <button type="button" class="btn-submit" id="btnDetectiveSubmit">Submit</button>
+        </div>
+
+        <div class="d-screen d-screen-feedback" id="screenFeedback" role="region" aria-label="Result" aria-hidden="true">
+          <h2 style="color: var(--accent); font-size: 1.05rem; margin-bottom: 10px;">Result</h2>
+          <div id="detectiveFeedbackBox" class="feedback-panel" role="status"></div>
+          <button type="button" class="btn-next" id="btnDetectiveContinue">Continue</button>
+        </div>
+
+        <div class="d-screen d-screen-lab" id="screenLab" role="region" aria-label="Guided trainer" aria-hidden="true">
+          <h2 style="color: var(--accent); font-size: 1.05rem; margin-bottom: 12px;">Guided Step-by-Step Trainer</h2>
+          <p class="lab-instr" style="margin-bottom: 14px;"><strong>Step 1:</strong> tap only the dashed phrases — three turn green (evidence). <strong>Step 2:</strong> tap the two dashed distractors — they turn red and show which wrong letter (A–H) from the exam list they echo. Plain text is not clickable.</p>
+
+          <div class="trainer-progress" aria-label="Trainer progress">
+            <div class="trainer-progress-track">
+              <div class="trainer-progress-step is-current" id="progStep1" data-label="evidence">Step 1: Evidence</div>
+              <div class="trainer-progress-step is-pending" id="progStep2" data-label="distractors">Step 2: Distractors</div>
+              <div class="trainer-progress-step is-pending" id="progStep3" data-label="done">Step 3: Done</div>
+            </div>
+          </div>
+
+          <div class="trainer-step-head">
+            <p id="trainerTaskTitle" class="trainer-task-title"></p>
+            <p id="trainerCounter" class="trainer-counter" aria-live="polite"></p>
+          </div>
+
+          <div class="smart-hint-wrap">
+            <button type="button" class="btn-hint-q" id="btnSmartHint" title="Show smart hint" aria-label="Show smart hint">?</button>
+            <div id="smartHintBox" class="smart-hint-box" hidden role="note"></div>
+          </div>
+
+          <div class="lab-passage-wrap lab-passage-wrap--large" id="labPassageWrap">
+            <p id="trainerSpeakerLabel" class="trainer-speaker-label">Speaker 1</p>
+            <div id="clickablePassageHost" class="clickable-passage" role="text"></div>
+          </div>
+
+          <div class="btn-row" style="margin-bottom: 10px;">
+            <button type="button" class="btn-next" id="btnNextSpeakerLab" hidden>Next speaker →</button>
+          </div>
+
+          <div id="trainerToast" class="trainer-toast" role="status" aria-live="polite"></div>
+
+          <div class="trainer-final" id="trainerFinalBlock" hidden>
+            <div id="labFinalScore" class="lab-detective-score" hidden>
+              <p id="labFinalScoreNum" class="lab-detective-score-num"></p>
+              <p id="labFinalCongrats" class="lab-detective-congrats"></p>
+            </div>
+            <div id="labFinalSummary" class="lab-final-summary" hidden></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    var OPTIONS = [
+      { letter: "A", text: "The food was too expensive." },
+      { letter: "B", text: "The restaurant was dirty." },
+      { letter: "C", text: "The menu was not varied enough." },
+      { letter: "D", text: "The food portions were too small." },
+      { letter: "E", text: "There was too much noise." },
+      { letter: "F", text: "The service was slow." },
+      { letter: "G", text: "The waiters were rude." },
+      { letter: "H", text: "The food was not well cooked." }
+    ];
+
+    var CORRECT = ["B", "E", "H", "F", "C"];
+
+    var optionsList = document.getElementById("optionsList");
+    var matchRows = document.getElementById("matchRows");
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+
+    var selects = [];
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    optionsList.innerHTML = OPTIONS.map(function (o) {
+      return (
+        '<div class="opt-row"><span class="letter">' +
+        escapeHtml(o.letter) +
+        '</span><span>' +
+        escapeHtml(o.text) +
+        "</span></div>"
+      );
+    }).join("");
+
+    function getValues() {
+      return selects.map(function (s) {
+        return s.value;
+      });
+    }
+
+    function rebuildSelects() {
+      var vals = getValues();
+      selects.forEach(function (sel, idx) {
+        var current = vals[idx];
+        var usedElsewhere = {};
+        vals.forEach(function (v, j) {
+          if (j !== idx && v) {
+            usedElsewhere[v] = true;
+          }
+        });
+        sel.innerHTML = "";
+        var opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "— choose —";
+        sel.appendChild(opt0);
+        OPTIONS.forEach(function (o) {
+          var L = o.letter;
+          if (!usedElsewhere[L] || L === current) {
+            var opt = document.createElement("option");
+            opt.value = L;
+            opt.textContent = L;
+            if (L === current) {
+              opt.selected = true;
+            }
+            sel.appendChild(opt);
+          }
+        });
+        if (current && !sel.value) {
+          sel.value = "";
+        }
+      });
+    }
+
+    for (var i = 0; i < 5; i += 1) {
+      var row = document.createElement("div");
+      row.className = "match-row";
+      var lab = document.createElement("label");
+      lab.setAttribute("for", "spk" + i);
+      lab.textContent = "Speaker " + (i + 1);
+      var sel = document.createElement("select");
+      sel.id = "spk" + i;
+      sel.setAttribute("aria-label", "Answer for speaker " + (i + 1));
+      sel.addEventListener("change", function (ev) {
+        var target = ev.target;
+        var newVal = target.value;
+        if (newVal) {
+          selects.forEach(function (other) {
+            if (other !== target && other.value === newVal) {
+              other.value = "";
+            }
+          });
+        }
+        clearResultStyles();
+        feedback.classList.remove("show");
+        rebuildSelects();
+      });
+      row.appendChild(lab);
+      row.appendChild(sel);
+      matchRows.appendChild(row);
+      selects.push(sel);
+    }
+    rebuildSelects();
+
+    function clearResultStyles() {
+      selects.forEach(function (s) {
+        s.classList.remove("correct", "wrong");
+      });
+    }
+
+    btnCheck.addEventListener("click", function () {
+      var vals = getValues();
+      var allFilled = vals.every(function (v) {
+        return v;
+      });
+      if (!allFilled) {
+        feedback.textContent = "Choose a letter for all five speakers before checking.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+      var dup = {};
+      var hasDup = false;
+      vals.forEach(function (v) {
+        if (dup[v]) {
+          hasDup = true;
+        }
+        dup[v] = true;
+      });
+      if (hasDup) {
+        feedback.textContent = "Each letter can only be used once. Fix duplicates.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+
+      clearResultStyles();
+      var ok = 0;
+      for (var j = 0; j < 5; j += 1) {
+        if (vals[j] === CORRECT[j]) {
+          selects[j].classList.add("correct");
+          ok += 1;
+        } else {
+          selects[j].classList.add("wrong");
+        }
+      }
+
+      unlockDetectiveModule();
+
+      if (ok === 5) {
+        feedback.innerHTML =
+          "<strong>All correct.</strong> Key: 1 B, 2 E, 3 H, 4 F, 5 C. (A, D and G not used.)";
+        feedback.className = "feedback ok show";
+      } else {
+        feedback.innerHTML =
+          "You have <strong>" +
+          ok +
+          "/5</strong> correct. Wrong rows are marked. Answer key: 1 B, 2 E, 3 H, 4 F, 5 C — A, D and G are distractors.";
+        feedback.className = "feedback partial show";
+      }
+    });
+
+    btnReset.addEventListener("click", function () {
+      selects.forEach(function (s) {
+        s.value = "";
+      });
+      clearResultStyles();
+      feedback.classList.remove("show");
+      rebuildSelects();
+    });
+
+    function unlockDetectiveModule() {
+      var mod = document.getElementById("detectiveModule");
+      if (!mod || mod.getAttribute("data-unlocked") === "1") {
+        return;
+      }
+      mod.setAttribute("data-unlocked", "1");
+      mod.hidden = false;
+      requestAnimationFrame(function () {
+        mod.classList.add("detective-module--unlocked");
+      });
+      if (typeof window.__detectiveOnFirstUnlock === "function") {
+        window.__detectiveOnFirstUnlock();
+      }
+    }
+
+    (function guidedClickTrainer() {
+      function examOptionText(letter) {
+        var L = String(letter || "").toUpperCase();
+        for (var oi = 0; oi < OPTIONS.length; oi += 1) {
+          if (OPTIONS[oi].letter === L) {
+            return OPTIONS[oi].text;
+          }
+        }
+        return "";
+      }
+
+      var SP1_SEGMENTS = [
+        {
+          kind: "plain",
+          text: "It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene. We'd decided to "
+        },
+        { kind: "distractor", key: "E", text: "get away from all the people and noise in the centre" },
+        {
+          kind: "plain",
+          text: ", where tourist restaurants charge tourist prices, and try something more local, more authentic. The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about "
+        },
+        { kind: "distractor", key: "F", text: "having to wait a little too long for the food to arrive" },
+        {
+          kind: "plain",
+          text: ". What they didn't mention were the "
+        },
+        { kind: "evidence", id: "sticky", text: "sticky tables" },
+        { kind: "plain", text: " that hadn't been wiped, the " },
+        { kind: "evidence", id: "cutlery", text: "stained cutlery" },
+        { kind: "plain", text: " and the " },
+        { kind: "evidence", id: "floor", text: "filthy floor" },
+        { kind: "plain", text: ". We just ordered a main course, and left as soon as we could." }
+      ];
+
+      var SP2_SEGMENTS = [
+        {
+          kind: "plain",
+          text: "My partner and I went to a new vegan restaurant that had just opened in town. We weren't expecting very much from the food, but everything we ordered was surprisingly tasty. "
+        },
+        { kind: "distractor", key: "C", text: "There wasn't a massive amount of variety on the menu" },
+        {
+          kind: "plain",
+          text: " but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, "
+        },
+        { kind: "distractor", key: "H", text: "some of which might not be particularly well cooked" },
+        {
+          kind: "plain",
+          text: ". What spoilt it, though, was the large group of people on the table next to ours, all "
+        },
+        { kind: "evidence", id: "voices", text: "talking at the tops of their voices" },
+        { kind: "plain", text: ". " },
+        { kind: "evidence", id: "hear", text: "Neither of us could hear what the other was saying" },
+        { kind: "plain", text: ", so " },
+        { kind: "evidence", id: "shout", text: "we had to shout most of the time" },
+        { kind: "plain", text: "." }
+      ];
+
+      var SP3_SEGMENTS = [
+        {
+          kind: "plain",
+          text: "The only time I've ever made a complaint about anything was when I went for a meal once with my parents. I told the waiter "
+        },
+        { kind: "evidence", id: "stew", text: "the meat in my stew was chewy" },
+        { kind: "plain", text: ", and " },
+        { kind: "evidence", id: "oven", text: "should have been left in the oven longer" },
+        { kind: "plain", text: ". My dad said he thought " },
+        { kind: "distractor", key: "G", text: "I'd been rude to the waiter" },
+        {
+          kind: "plain",
+          text: ", but my mum told me I was right to complain. Her attitude is, if something's not right, then kick up a fuss, "
+        },
+        { kind: "distractor", key: "E", text: "make a noise about it" },
+        {
+          kind: "plain",
+          text: ", otherwise nothing will get changed. As it was, the waiter said "
+        },
+        { kind: "evidence", id: "couldnt", text: "he couldn't change it" },
+        {
+          kind: "plain",
+          text: ", but he wouldn't charge for my dessert. So I ordered the most expensive one on the menu!"
+        }
+      ];
+
+      var SP4_SEGMENTS = [
+        {
+          kind: "plain",
+          text: "Recently, we treated ourselves to dinner in a five-star seafood restaurant. We'd heard several negative things about the place before we went: "
+        },
+        { kind: "distractor", key: "A", text: "the food was overpriced" },
+        { kind: "plain", text: ", the waiters were too formal, " },
+        { kind: "distractor", key: "D", text: "you didn't get much on your plate" },
+        {
+          kind: "plain",
+          text: " … But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked. Well, the food was to die for: the crab, the mussels, the seabass – absolutely delicious. And whoever said the portions were small was lying. We just "
+        },
+        { kind: "evidence", id: "quicker", text: "wished they'd been a bit quicker about bringing the food out" },
+        { kind: "plain", text: ". They certainly " },
+        { kind: "evidence", id: "hurry", text: "weren't in any hurry" },
+        { kind: "plain", text: ", and we'd run out of things to say to each other " },
+        { kind: "evidence", id: "maincourse", text: "by the time the main course arrived" },
+        { kind: "plain", text: "." }
+      ];
+
+      var SP5_SEGMENTS = [
+        {
+          kind: "plain",
+          text: "My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from. Unfortunately, the restaurant in the hotel we stayed in with our walking group offered "
+        },
+        { kind: "evidence", id: "choice", text: "hardly any choice at all" },
+        { kind: "plain", text: " – " },
+        { kind: "evidence", id: "starters", text: "just a few starters" },
+        { kind: "plain", text: " and " },
+        { kind: "evidence", id: "mains", text: "a couple of mains" },
+        { kind: "plain", text: " – so we only ate there once. " },
+        { kind: "distractor", key: "H", text: "We had no complaints about the food we actually ordered" },
+        { kind: "plain", text: ", and " },
+        { kind: "distractor", key: "F", text: "the service was second to none" },
+        {
+          kind: "plain",
+          text: ". In fact, most of the people from our group liked the place so much they had dinner there every evening. We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area."
+        }
+      ];
+
+      var LAB_SPEAKERS = [
+        {
+          segments: SP1_SEGMENTS,
+          evidenceIds: ["sticky", "cutlery", "floor"],
+          distractorKeys: ["E", "F"],
+          hints: {
+            1: "Hint: Look for what was wrong with tables, cutlery, and the floor.",
+            2: "Hint: Leaving the noisy centre (E) and reviews about waiting (F) are background — the attack is hygiene (B)."
+          },
+          evidenceLine: "Tap 3 phrases that prove the place was dirty (main answer B).",
+          distractorLine:
+            "Tap both distractors — each matches a wrong exam letter: E (There was too much noise) and F (The service was slow).",
+          wrongEvidenceToast: "This is a distractor, not evidence for dirtiness. Try again!"
+        },
+        {
+          segments: SP2_SEGMENTS,
+          evidenceIds: ["voices", "hear", "shout"],
+          distractorKeys: ["C", "H"],
+          hints: {
+            1: "Hint: Find what made conversation impossible — shouting, not hearing each other.",
+            2: "Hint: Menu variety and cooking worries (C and H) are side comments; the complaint is noise (E)."
+          },
+          evidenceLine: "Tap 3 phrases that prove it was too noisy (main answer E).",
+          distractorLine:
+            "Tap both distractors: C (The menu was not varied enough) and H (The food was not well cooked).",
+          wrongEvidenceToast: "That's a trap — find phrases about volume and not being able to talk."
+        },
+        {
+          segments: SP3_SEGMENTS,
+          evidenceIds: ["stew", "oven", "couldnt"],
+          distractorKeys: ["G", "E"],
+          hints: {
+            1: "Hint: Look for what was wrong with the food — chewy meat, oven time, the waiter’s response.",
+            2: "Hint: Rudeness (G) and making a noise (E) are traps; the core issue is how the food was cooked (H)."
+          },
+          evidenceLine: "Tap 3 phrases that prove the food was badly cooked (main answer H).",
+          distractorLine:
+            "Tap both distractors: G (The waiters were rude) and E (There was too much noise).",
+          wrongEvidenceToast: "That's not evidence for bad cooking — look for chewy meat, oven time, and the dish couldn’t be fixed."
+        },
+        {
+          segments: SP4_SEGMENTS,
+          evidenceIds: ["quicker", "hurry", "maincourse"],
+          distractorKeys: ["A", "D"],
+          hints: {
+            1: "Hint: Look for how long it took for food to arrive — not in a hurry, main course timing.",
+            2: "Hint: Rumours about price (A) and small plates (D) are things they dismiss; the real problem is speed (F)."
+          },
+          evidenceLine: "Tap 3 phrases that prove the service was slow (main answer F).",
+          distractorLine:
+            "Tap both distractors: A (The food was too expensive) and D (The food portions were too small).",
+          wrongEvidenceToast: "That's about money or portions, not how slow service was. Find delays and waiting."
+        },
+        {
+          segments: SP5_SEGMENTS,
+          evidenceIds: ["choice", "starters", "mains"],
+          distractorKeys: ["H", "F"],
+          hints: {
+            1: "Hint: Look for how little there was to choose from — starters, mains, overall choice.",
+            2: "Hint: No complaints about the food (H) and great service (F) are positives; the problem is the menu (C)."
+          },
+          evidenceLine: "Tap 3 phrases that prove the menu was not varied enough (main answer C).",
+          distractorLine:
+            "Tap both distractors: H (The food was not well cooked) and F (The service was slow).",
+          wrongEvidenceToast: "That's about food quality or service, not variety. Find how few dishes there were."
+        }
+      ];
+
+      var DETECTIVE_MCQS = [
+        {
+          passage:
+            "It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene. We'd decided to get away from all the people and noise in the centre, where tourist restaurants charge tourist prices, and try something more local, more authentic. The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about having to wait a little too long for the food to arrive. What they didn't mention were the sticky tables that hadn't been wiped, the stained cutlery and the filthy floor. We just ordered a main course, and left as soon as we could.",
+          correct: "B",
+          choices: [
+            { value: "A", label: "The food was too expensive." },
+            { value: "B", label: "The restaurant was dirty." },
+            { value: "E", label: "There was too much noise." },
+            { value: "F", label: "The service was slow." }
+          ],
+          okHtml:
+            "<strong>Correct.</strong> The decisive criticism is hygiene: sticky tables, stained cutlery, a filthy floor — that matches <strong>B</strong>.",
+          badTail:
+            "The speaker’s main attack is on cleanliness (dirt), not price, noise, or speed alone."
+        },
+        {
+          passage:
+            "My partner and I went to a new vegan restaurant that had just opened in town. We weren't expecting very much from the food, but everything we ordered was surprisingly tasty. There wasn't a massive amount of variety on the menu but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, some of which might not be particularly well cooked. What spoilt it, though, was the large group of people on the table next to ours, all talking at the tops of their voices. Neither of us could hear what the other was saying, so we had to shout most of the time.",
+          correct: "E",
+          choices: [
+            { value: "E", label: "There was too much noise." },
+            { value: "F", label: "The service was slow." },
+            { value: "B", label: "The restaurant was dirty." },
+            { value: "C", label: "The menu was not varied enough." }
+          ],
+          okHtml:
+            "<strong>Correct.</strong> Shouting neighbours and not hearing each other — that matches <strong>E</strong>.",
+          badTail: "The speaker accepts the menu and even the cooking risk; the real problem is how loud it was."
+        },
+        {
+          passage:
+            "The only time I've ever made a complaint about anything was when I went for a meal once with my parents. I told the waiter the meat in my stew was chewy, and should have been left in the oven longer. My dad said he thought I'd been rude to the waiter, but my mum told me I was right to complain. Her attitude is, if something's not right, then kick up a fuss, make a noise about it, otherwise nothing will get changed. As it was, the waiter said he couldn't change it, but he wouldn't charge for my dessert. So I ordered the most expensive one on the menu!",
+          correct: "H",
+          choices: [
+            { value: "H", label: "The food was not well cooked." },
+            { value: "A", label: "The food was too expensive." },
+            { value: "D", label: "The food portions were too small." },
+            { value: "F", label: "The service was slow." }
+          ],
+          okHtml:
+            "<strong>Correct.</strong> Chewy stew and needing more time in the oven point to poor cooking — <strong>H</strong>.",
+          badTail: "Rudeness and ‘making a noise’ are side issues; the speaker’s complaint to the waiter was about the dish itself."
+        },
+        {
+          passage:
+            "Recently, we treated ourselves to dinner in a five-star seafood restaurant. We'd heard several negative things about the place before we went: the food was overpriced, the waiters were too formal, you didn't get much on your plate … But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked. Well, the food was to die for: the crab, the mussels, the seabass – absolutely delicious. And whoever said the portions were small was lying. We just wished they'd been a bit quicker about bringing the food out. They certainly weren't in any hurry, and we'd run out of things to say to each other by the time the main course arrived.",
+          correct: "F",
+          choices: [
+            { value: "F", label: "The service was slow." },
+            { value: "B", label: "The restaurant was dirty." },
+            { value: "E", label: "There was too much noise." },
+            { value: "H", label: "The food was not well cooked." }
+          ],
+          okHtml:
+            "<strong>Correct.</strong> Not in a hurry and waiting for the main — that’s slow service (<strong>F</strong>).",
+          badTail: "They loved the food and dismiss the rumours about price and portions; the problem is how long everything took."
+        },
+        {
+          passage:
+            "My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from. Unfortunately, the restaurant in the hotel we stayed in with our walking group offered hardly any choice at all – just a few starters and a couple of mains – so we only ate there once. We had no complaints about the food we actually ordered, and the service was second to none. In fact, most of the people from our group liked the place so much they had dinner there every evening. We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area.",
+          correct: "C",
+          choices: [
+            { value: "C", label: "The menu was not varied enough." },
+            { value: "G", label: "The waiters were rude." },
+            { value: "D", label: "The food portions were too small." },
+            { value: "E", label: "There was too much noise." }
+          ],
+          okHtml:
+            "<strong>Correct.</strong> Almost no choice — few starters and mains — limited variety (<strong>C</strong>).",
+          badTail: "Good food and great service are positives; the speaker’s problem is how little there was to choose from."
+        }
+      ];
+
+      var clickablePassageHost = document.getElementById("clickablePassageHost");
+      var trainerSpeakerLabel = document.getElementById("trainerSpeakerLabel");
+      var btnNextSpeakerLab = document.getElementById("btnNextSpeakerLab");
+      var screenTask = document.getElementById("screenTask");
+      var screenFeedback = document.getElementById("screenFeedback");
+      var screenLab = document.getElementById("screenLab");
+      var detectiveTaskInstr = document.getElementById("detectiveTaskInstr");
+      var detectiveTaskPassage = document.getElementById("detectiveTaskPassage");
+      var detectiveChoiceHost = document.getElementById("detectiveChoiceHost");
+      var detectiveSubmitErr = document.getElementById("detectiveSubmitErr");
+      var btnDetectiveSubmit = document.getElementById("btnDetectiveSubmit");
+      var detectiveFeedbackBox = document.getElementById("detectiveFeedbackBox");
+      var btnDetectiveContinue = document.getElementById("btnDetectiveContinue");
+      var btnSmartHint = document.getElementById("btnSmartHint");
+      var smartHintBox = document.getElementById("smartHintBox");
+      var trainerTaskTitle = document.getElementById("trainerTaskTitle");
+      var trainerCounter = document.getElementById("trainerCounter");
+      var trainerToast = document.getElementById("trainerToast");
+      var trainerFinalBlock = document.getElementById("trainerFinalBlock");
+      var labFinalScore = document.getElementById("labFinalScore");
+      var labFinalScoreNum = document.getElementById("labFinalScoreNum");
+      var labFinalCongrats = document.getElementById("labFinalCongrats");
+      var labFinalSummary = document.getElementById("labFinalSummary");
+      var progStep1 = document.getElementById("progStep1");
+      var progStep2 = document.getElementById("progStep2");
+      var progStep3 = document.getElementById("progStep3");
+
+      var speakerStage = 1;
+      var trainingStep = 1;
+      var evidenceFound = {};
+      var distractorFound = {};
+      var hintTimerId = null;
+      var hintShownForStep = 0;
+      var detectiveTaskIdx = 0;
+      var detectiveMcqScore = 0;
+      var detectiveMcqRecorded = [false, false, false, false, false];
+      var detectiveLabScore = 0;
+      var detectiveLabRecorded = [false, false, false, false, false];
+
+      function currentLab() {
+        return LAB_SPEAKERS[speakerStage - 1];
+      }
+
+      function evidenceIds() {
+        return currentLab().evidenceIds;
+      }
+
+      function distractorKeys() {
+        return currentLab().distractorKeys;
+      }
+
+      function segmentsForStage() {
+        return currentLab().segments;
+      }
+
+      function hintText(step) {
+        return currentLab().hints[step] || "";
+      }
+
+      function labEscape(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderDetectiveTask() {
+        if (!detectiveTaskInstr || !detectiveTaskPassage || !detectiveChoiceHost) {
+          return;
+        }
+        var item = DETECTIVE_MCQS[detectiveTaskIdx];
+        detectiveTaskInstr.innerHTML =
+          "Read the extract from <strong>Speaker " +
+          (detectiveTaskIdx + 1) +
+          "</strong> and choose the best option. You cannot highlight the text on this screen.";
+        detectiveTaskPassage.textContent = item.passage;
+        detectiveChoiceHost.innerHTML = item.choices
+          .map(function (c) {
+            return (
+              '<label class="choice-row"><input type="radio" name="detectiveChoice" value="' +
+              labEscape(c.value) +
+              '" /><span><span class="choice-letter">' +
+              labEscape(c.value) +
+              "</span> " +
+              labEscape(c.label) +
+              "</span></label>"
+            );
+          })
+          .join("");
+        if (detectiveSubmitErr) {
+          detectiveSubmitErr.style.display = "none";
+        }
+      }
+
+      function updateDetectiveContinueLabel() {
+        if (!btnDetectiveContinue) {
+          return;
+        }
+        if (detectiveTaskIdx < DETECTIVE_MCQS.length - 1) {
+          btnDetectiveContinue.textContent = "Continue to Speaker " + (detectiveTaskIdx + 2) + " task →";
+        } else {
+          btnDetectiveContinue.textContent = "Go to Guided Trainer";
+        }
+      }
+
+      function updateDetectiveFinalUi() {
+        var total = detectiveMcqScore + detectiveLabScore;
+        if (labFinalScoreNum) {
+          labFinalScoreNum.textContent = total + " / 10";
+        }
+        if (labFinalCongrats) {
+          if (total === 10) {
+            labFinalCongrats.textContent =
+              "You're a real detective! Ты настоящий детектив!";
+          } else {
+            labFinalCongrats.textContent =
+              "Nice progress — aim for 10/10 (five tasks + five lab rounds).";
+          }
+        }
+        if (labFinalScore) {
+          labFinalScore.hidden = false;
+        }
+        if (labFinalSummary) {
+          labFinalSummary.innerHTML =
+            "<strong>Breakdown:</strong> Multiple-choice tasks <strong>" +
+            detectiveMcqScore +
+            "/5</strong>; lab rounds (evidence + distractors) <strong>" +
+            detectiveLabScore +
+            "/5</strong>. Key for this exam task: 1 B, 2 E, 3 H, 4 F, 5 C — A, D and G unused.";
+          labFinalSummary.hidden = false;
+        }
+      }
+
+      function recordLabRoundIfNeeded() {
+        var i = speakerStage - 1;
+        if (!detectiveLabRecorded[i]) {
+          detectiveLabRecorded[i] = true;
+          detectiveLabScore += 1;
+        }
+      }
+
+      function renderPassage() {
+        if (!clickablePassageHost) {
+          return;
+        }
+        clickablePassageHost.innerHTML = "";
+        segmentsForStage().forEach(function (seg) {
+          var span = document.createElement("span");
+          span.textContent = seg.text;
+          if (seg.kind === "plain") {
+            span.className = "click-chunk--static";
+          } else if (seg.kind === "evidence") {
+            span.className = "click-chunk--target";
+            span.setAttribute("data-kind", "evidence");
+            span.setAttribute("data-id", seg.id);
+          } else {
+            span.className = "click-chunk--target";
+            span.setAttribute("data-kind", "distractor");
+            span.setAttribute("data-key", seg.key);
+            var rubric = examOptionText(seg.key);
+            if (rubric) {
+              span.setAttribute("title", rubric);
+              span.setAttribute(
+                "aria-label",
+                "Distractor — could suggest wrong answer " + seg.key + ": " + rubric
+              );
+            }
+          }
+          clickablePassageHost.appendChild(span);
+        });
+      }
+
+      function showDetectiveScreen(screenEl) {
+        [screenTask, screenFeedback, screenLab].forEach(function (el) {
+          if (!el) {
+            return;
+          }
+          var on = el === screenEl;
+          el.classList.toggle("is-active", on);
+          el.setAttribute("aria-hidden", on ? "false" : "true");
+        });
+      }
+
+      function clearHintTimer() {
+        if (hintTimerId !== null) {
+          clearTimeout(hintTimerId);
+          hintTimerId = null;
+        }
+      }
+
+      function showSmartHintForStep(step) {
+        if (!smartHintBox) {
+          return;
+        }
+        smartHintBox.textContent = hintText(step);
+        smartHintBox.hidden = false;
+      }
+
+      function hideSmartHint() {
+        if (smartHintBox) {
+          smartHintBox.hidden = true;
+        }
+      }
+
+      function scheduleHintTimer() {
+        clearHintTimer();
+        hintTimerId = setTimeout(function () {
+          hintTimerId = null;
+          if (trainingStep >= 1 && trainingStep <= 2 && hintShownForStep !== trainingStep) {
+            hintShownForStep = trainingStep;
+            showSmartHintForStep(trainingStep);
+          }
+        }, 5000);
+      }
+
+      function updateProgressUi() {
+        if (!progStep1 || !progStep2 || !progStep3) {
+          return;
+        }
+        [progStep1, progStep2, progStep3].forEach(function (el) {
+          el.classList.remove("is-done", "is-current", "is-pending");
+        });
+        if (trainingStep === 1) {
+          progStep1.classList.add("is-current");
+          progStep2.classList.add("is-pending");
+          progStep3.classList.add("is-pending");
+        } else if (trainingStep === 2) {
+          progStep1.classList.add("is-done");
+          progStep2.classList.add("is-current");
+          progStep3.classList.add("is-pending");
+        } else {
+          progStep1.classList.add("is-done");
+          progStep2.classList.add("is-done");
+          progStep3.classList.add("is-done");
+        }
+      }
+
+      function updateTaskUi() {
+        if (!trainerTaskTitle || !trainerCounter) {
+          return;
+        }
+        var lab = currentLab();
+        if (trainingStep === 1) {
+          trainerTaskTitle.textContent = lab.evidenceLine;
+          var n = evidenceIds().filter(function (id) {
+            return evidenceFound[id];
+          }).length;
+          trainerCounter.textContent = n + " / 3";
+        } else if (trainingStep === 2) {
+          trainerTaskTitle.textContent = lab.distractorLine;
+          var nd = distractorKeys().filter(function (k) {
+            return distractorFound[k];
+          }).length;
+          trainerCounter.textContent = nd + " / 2";
+        } else {
+          trainerTaskTitle.textContent = "Round complete.";
+          trainerCounter.textContent = "";
+        }
+      }
+
+      function showToast(msg, durationMs) {
+        if (!trainerToast) {
+          return;
+        }
+        var ms = durationMs != null ? durationMs : 2200;
+        trainerToast.textContent = msg;
+        trainerToast.classList.add("is-visible");
+        setTimeout(function () {
+          trainerToast.classList.remove("is-visible");
+          trainerToast.textContent = "";
+        }, ms);
+      }
+
+      function allEvidenceDone() {
+        return evidenceIds().every(function (id) {
+          return evidenceFound[id];
+        });
+      }
+
+      function allDistractorsDone() {
+        return distractorKeys().every(function (k) {
+          return distractorFound[k];
+        });
+      }
+
+      function wrapRedWithBadge(el, letter) {
+        el.classList.add("is-red", "is-disabled-hit");
+        var wrap = document.createElement("span");
+        wrap.className = "trainer-distr-wrap";
+        el.parentNode.insertBefore(wrap, el);
+        wrap.appendChild(el);
+        var badge = document.createElement("span");
+        badge.className = "trainer-badge";
+        var rubric = examOptionText(letter);
+        var line1 = document.createElement("span");
+        line1.className = "trainer-badge-line";
+        line1.textContent = "[! " + letter + "]";
+        badge.appendChild(line1);
+        if (rubric) {
+          var line2 = document.createElement("span");
+          line2.className = "trainer-badge-option";
+          line2.textContent = rubric;
+          badge.appendChild(line2);
+          badge.setAttribute("title", rubric);
+        }
+        wrap.appendChild(badge);
+      }
+
+      function onChunkClick(ev) {
+        if (!screenLab || !screenLab.classList.contains("is-active")) {
+          return;
+        }
+        if (!clickablePassageHost || clickablePassageHost.classList.contains("is-locked")) {
+          return;
+        }
+        var el = ev.target.closest(".click-chunk--target");
+        if (!el || !clickablePassageHost.contains(el)) {
+          return;
+        }
+        var kind = el.getAttribute("data-kind");
+        if (!kind) {
+          return;
+        }
+
+        if (trainingStep === 1) {
+          if (kind === "evidence") {
+            var eid = el.getAttribute("data-id");
+            if (evidenceFound[eid] || el.classList.contains("is-green")) {
+              return;
+            }
+            el.classList.add("is-green", "is-disabled-hit");
+            evidenceFound[eid] = true;
+            updateTaskUi();
+            if (allEvidenceDone()) {
+              trainingStep = 2;
+              hintShownForStep = 0;
+              hideSmartHint();
+              scheduleHintTimer();
+              updateProgressUi();
+              updateTaskUi();
+            }
+          } else {
+            showToast(currentLab().wrongEvidenceToast, 2000);
+          }
+          return;
+        }
+
+        if (trainingStep === 2) {
+          if (kind === "distractor") {
+            var key = el.getAttribute("data-key");
+            if (distractorFound[key] || el.classList.contains("is-red")) {
+              return;
+            }
+            distractorFound[key] = true;
+            wrapRedWithBadge(el, key);
+            updateTaskUi();
+            if (allDistractorsDone()) {
+              trainingStep = 4;
+              clearHintTimer();
+              hideSmartHint();
+              updateProgressUi();
+              updateTaskUi();
+              clickablePassageHost.classList.add("is-locked");
+              recordLabRoundIfNeeded();
+              showToast("Bingo! Speaker " + speakerStage + " cracked.", 2400);
+              if (speakerStage < LAB_SPEAKERS.length) {
+                if (btnNextSpeakerLab) {
+                  btnNextSpeakerLab.textContent = "Speaker " + (speakerStage + 1) + " →";
+                  btnNextSpeakerLab.hidden = false;
+                }
+              } else {
+                if (btnNextSpeakerLab) {
+                  btnNextSpeakerLab.hidden = true;
+                }
+                if (trainerFinalBlock) {
+                  trainerFinalBlock.hidden = false;
+                }
+                updateDetectiveFinalUi();
+              }
+            }
+          } else {
+            showToast("Now tap the two distractor phrases for this speaker.", 2000);
+          }
+        }
+      }
+
+      function initTrainer() {
+        speakerStage = 1;
+        trainingStep = 1;
+        evidenceFound = {};
+        distractorFound = {};
+        hintShownForStep = 0;
+        detectiveLabScore = 0;
+        detectiveLabRecorded = [false, false, false, false, false];
+        if (trainerSpeakerLabel) {
+          trainerSpeakerLabel.textContent = "Speaker 1";
+        }
+        if (clickablePassageHost) {
+          clickablePassageHost.classList.remove("is-locked");
+        }
+        renderPassage();
+        hideSmartHint();
+        clearHintTimer();
+        scheduleHintTimer();
+        updateProgressUi();
+        updateTaskUi();
+        if (trainerFinalBlock) {
+          trainerFinalBlock.hidden = true;
+        }
+        if (labFinalScore) {
+          labFinalScore.hidden = true;
+        }
+        if (labFinalSummary) {
+          labFinalSummary.hidden = true;
+        }
+        if (btnNextSpeakerLab) {
+          btnNextSpeakerLab.hidden = true;
+        }
+      }
+
+      function goToNextSpeakerLab() {
+        if (speakerStage >= LAB_SPEAKERS.length) {
+          return;
+        }
+        speakerStage += 1;
+        trainingStep = 1;
+        evidenceFound = {};
+        distractorFound = {};
+        hintShownForStep = 0;
+        if (trainerSpeakerLabel) {
+          trainerSpeakerLabel.textContent = "Speaker " + speakerStage;
+        }
+        if (clickablePassageHost) {
+          clickablePassageHost.classList.remove("is-locked");
+        }
+        renderPassage();
+        hideSmartHint();
+        clearHintTimer();
+        scheduleHintTimer();
+        updateProgressUi();
+        updateTaskUi();
+        if (btnNextSpeakerLab) {
+          btnNextSpeakerLab.hidden = true;
+        }
+      }
+
+      if (clickablePassageHost) {
+        clickablePassageHost.addEventListener("click", onChunkClick);
+      }
+
+      if (btnSmartHint && smartHintBox) {
+        btnSmartHint.addEventListener("click", function () {
+          if (trainingStep >= 1 && trainingStep <= 2) {
+            hintShownForStep = trainingStep;
+            showSmartHintForStep(trainingStep);
+          }
+        });
+      }
+
+      if (btnNextSpeakerLab) {
+        btnNextSpeakerLab.addEventListener("click", function () {
+          goToNextSpeakerLab();
+        });
+      }
+
+      if (btnDetectiveSubmit && detectiveFeedbackBox) {
+        btnDetectiveSubmit.addEventListener("click", function () {
+          var picked = document.querySelector('input[name="detectiveChoice"]:checked');
+          if (!picked) {
+            if (detectiveSubmitErr) {
+              detectiveSubmitErr.style.display = "block";
+            }
+            return;
+          }
+          if (detectiveSubmitErr) {
+            detectiveSubmitErr.style.display = "none";
+          }
+          var item = DETECTIVE_MCQS[detectiveTaskIdx];
+          var v = picked.value;
+          if (v === item.correct) {
+            if (!detectiveMcqRecorded[detectiveTaskIdx]) {
+              detectiveMcqRecorded[detectiveTaskIdx] = true;
+              detectiveMcqScore += 1;
+            }
+            detectiveFeedbackBox.className = "feedback-panel ok";
+            detectiveFeedbackBox.innerHTML = item.okHtml;
+          } else {
+            detectiveFeedbackBox.className = "feedback-panel bad";
+            detectiveFeedbackBox.innerHTML =
+              "<strong>Not quite.</strong> You chose <strong>" +
+              labEscape(v) +
+              "</strong>. " +
+              item.badTail;
+          }
+          updateDetectiveContinueLabel();
+          showDetectiveScreen(screenFeedback);
+        });
+      }
+
+      if (btnDetectiveContinue) {
+        btnDetectiveContinue.addEventListener("click", function () {
+          if (detectiveTaskIdx < DETECTIVE_MCQS.length - 1) {
+            detectiveTaskIdx += 1;
+            renderDetectiveTask();
+            showDetectiveScreen(screenTask);
+          } else {
+            initTrainer();
+            showDetectiveScreen(screenLab);
+          }
+        });
+      }
+
+      window.__detectiveOnFirstUnlock = function () {
+        detectiveTaskIdx = 0;
+        detectiveMcqScore = 0;
+        detectiveMcqRecorded = [false, false, false, false, false];
+        renderDetectiveTask();
+        updateDetectiveContinueLabel();
+        showDetectiveScreen(screenTask);
+      };
+
+      initTrainer();
+    })();
+  </script>
+</body>
+</html>

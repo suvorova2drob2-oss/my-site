@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Speaking</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { font-size: 1.5rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); margin-bottom: 16px; line-height: 1.4; }
+    .grid { display: grid; gap: 14px; }
+    .card {
+      background: linear-gradient(180deg, #233a60 0%, #203555 100%);
+      border: 1px solid #3a5888;
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 84px;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 10px 24px rgba(4, 10, 24, 0.24), inset 0 1px 0 rgba(175, 215, 255, 0.06);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover {
+      transform: translateY(-1px);
+      border-color: #5d84c0;
+      box-shadow: 0 12px 26px rgba(3, 10, 28, 0.3), inset 0 1px 0 rgba(190, 227, 255, 0.12);
+    }
+    .folder-toggle {
+      width: 100%;
+      border: none;
+      background: rgba(10, 25, 48, 0.32);
+      border: 1px solid #3f6092;
+      border-radius: 12px;
+      color: inherit;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 12px;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+    .folder-toggle:hover {
+      border-color: #69cbff;
+      background: rgba(18, 40, 73, 0.55);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.14) inset;
+    }
+    .folder-toggle:hover h2 { color: #e7f7ff; }
+    .folder-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .folder-icon { font-size: 1.05rem; opacity: 0.96; }
+    .folder-chevron {
+      color: #5ed5ff;
+      font-size: 0.84rem;
+      transition: transform 0.2s ease;
+      line-height: 1;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26, 68, 108, 0.65);
+      border: 1px solid #3e6996;
+    }
+    .card.closed .folder-chevron { transform: rotate(-90deg); }
+    .card h2 { font-size: 1.18rem; margin-bottom: 0; font-weight: 800; letter-spacing: .01em; }
+    .card-desc { color: var(--muted); font-size: 0.92rem; line-height: 1.35; flex: 1; }
+    .open { margin-top: auto; color: var(--accent); font-weight: 600; }
+    .folder-content {
+      overflow: hidden;
+      max-height: 1200px;
+      opacity: 1;
+      margin-top: 10px;
+      transition: max-height .26s ease, opacity .18s ease, margin-top .2s ease;
+    }
+    .card.closed .folder-content {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+      pointer-events: none;
+    }
+    .card.hidden-by-open { display: none; }
+    .subgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .subcard {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(180deg, #243f68 0%, #1f3658 100%);
+      border: 1px solid #4c6fa1;
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 188px;
+      box-shadow: inset 0 1px 0 rgba(196, 226, 255, 0.08);
+      transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease;
+    }
+    .subcard:hover {
+      transform: translateY(-2px);
+      border-color: #6fd6ff;
+      box-shadow: inset 0 1px 0 rgba(210, 236, 255, 0.14), 0 10px 20px rgba(5, 12, 28, 0.24);
+    }
+    .subcard h3 { font-size: 1.18rem; margin-bottom: 8px; line-height: 1.25; }
+    .subcard p { color: #b7cae8; font-size: 0.92rem; line-height: 1.42; margin-bottom: 12px; }
+    .subcard .open { font-size: 0.92rem; }
+    .subcard.placeholder {
+      border-style: dashed;
+      border-color: #5679a9;
+      background: linear-gradient(180deg, #22395d 0%, #1e3353 100%);
+      cursor: default;
+    }
+    .subcard.placeholder:hover {
+      transform: none;
+      border-color: #6a90be;
+      box-shadow: inset 0 1px 0 rgba(210, 236, 255, 0.1);
+    }
+    .folder-back {
+      margin-top: 12px;
+      border: 1px solid #3d5885;
+      background: #13233f;
+      color: #d8e9ff;
+      border-radius: 9px;
+      padding: 8px 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .folder-back:hover { border-color: #56ccf2; color: #e9f7ff; }
+    @media (max-width: 640px) {
+      .subgrid { grid-template-columns: 1fr; }
+      .card h2 { font-size: 1.32rem; }
+      .folder-toggle { padding: 10px 11px; }
+      .subcard { min-height: 158px; padding: 13px; }
+      .subcard h3 { font-size: 1.05rem; }
+      .subcard p { font-size: 0.92rem; }
+      .subcard .open { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Speaking — Unit 12</h1>
+      <a class="back" href="unit12.html">Back to Unit 12</a>
+    </header>
+    <p class="subtitle">Read a whole block, then retell with highlighted support phrases and a 40-second timer. Stop to save points, then move to the next block.</p>
+
+    <section class="grid">
+      <article class="card closed" id="retellingFolder">
+        <button class="folder-toggle" id="retellingToggle" type="button" aria-expanded="false" aria-controls="retellingContent">
+          <span class="folder-left">
+            <span class="folder-icon" aria-hidden="true">📁</span>
+            <h2>Retelling mode</h2>
+          </span>
+          <span class="folder-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="folder-content" id="retellingContent">
+          <p class="card-desc">Folder in folder: choose a read-retell drill format.</p>
+          <div class="subgrid">
+            <a class="subcard" href="unit12-speaking.html">
+              <h3>Health Matters (A-E)</h3>
+              <p>Тренажер про интервью Naomi Price: читаешь блок, пересказываешь за 40 секунд и сохраняешь баллы.</p>
+              <span class="open">Open speaking →</span>
+            </a>
+            <a class="subcard" href="unit12-speaking-12-1.html">
+              <h3>Listening 12.1 (S1-S5)</h3>
+              <p>Тренажер по ресторанной теме: 5 спикеров, ключевые фразы и пересказ в том же формате retelling.</p>
+              <span class="open">Open speaking →</span>
+            </a>
+          </div>
+          <button class="folder-back" type="button" data-back-folders>← Back to folders</button>
+        </div>
+      </article>
+      <article class="card closed" id="microFolder">
+        <button class="folder-toggle" id="microToggle" type="button" aria-expanded="false" aria-controls="microContent">
+          <span class="folder-left">
+            <span class="folder-icon" aria-hidden="true">📁</span>
+            <h2>Micro Speaking mode</h2>
+          </span>
+          <span class="folder-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="folder-content" id="microContent">
+          <p class="card-desc">Second mode: 15-second fast prompts with a target phrase and unlimited repeats.</p>
+          <div class="subgrid">
+            <a class="subcard" href="unit12-speaking-micro.html">
+              <h3>Micro Speaking</h3>
+              <p>Быстрый устный тренажер: таймер 15 секунд, используй target phrase, отмечай удачный ответ и переходи дальше.</p>
+              <span class="open">Open micro speaking →</span>
+            </a>
+          </div>
+          <button class="folder-back" type="button" data-back-folders>← Back to folders</button>
+        </div>
+      </article>
+      <article class="card closed" id="examFolder">
+        <button class="folder-toggle" id="examToggle" type="button" aria-expanded="false" aria-controls="examContent">
+          <span class="folder-left">
+            <span class="folder-icon" aria-hidden="true">📁</span>
+            <h2>Speaking Exam</h2>
+          </span>
+          <span class="folder-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="folder-content" id="examContent">
+          <p class="card-desc">Пустая папка под будущий экзаменационный тренажер speaking.</p>
+          <div class="subgrid">
+            <div class="subcard placeholder">
+              <h3>Coming soon</h3>
+              <p>Сюда позже добавим exam mode: таймер, строгие попытки и итоговый speaking score.</p>
+              <span class="open">Empty slot for next trainer</span>
+            </div>
+          </div>
+          <button class="folder-back" type="button" data-back-folders>← Back to folders</button>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script>
+    const folders = [
+      { card: document.getElementById("retellingFolder"), toggle: document.getElementById("retellingToggle") },
+      { card: document.getElementById("microFolder"), toggle: document.getElementById("microToggle") },
+      { card: document.getElementById("examFolder"), toggle: document.getElementById("examToggle") }
+    ].filter(x => x.card && x.toggle);
+
+    function setFolderOpenState(card, toggle, open) {
+      card.classList.toggle("closed", !open);
+      toggle.setAttribute("aria-expanded", String(open));
+    }
+
+    function openSingleFolder(activeCard) {
+      folders.forEach(({ card, toggle }) => {
+        const isActive = card === activeCard;
+        setFolderOpenState(card, toggle, isActive);
+        card.classList.toggle("hidden-by-open", !isActive);
+      });
+    }
+
+    function resetFoldersView() {
+      folders.forEach(({ card, toggle }) => {
+        setFolderOpenState(card, toggle, false);
+        card.classList.remove("hidden-by-open");
+      });
+    }
+
+    folders.forEach(({ card, toggle }) => {
+      toggle.addEventListener("click", () => {
+        if (card.classList.contains("hidden-by-open")) return;
+        if (!card.classList.contains("closed")) {
+          resetFoldersView();
+          return;
+        }
+        openSingleFolder(card);
+      });
+    });
+
+    document.querySelectorAll("[data-back-folders]").forEach(btn => {
+      btn.addEventListener("click", resetFoldersView);
+    });
+  </script>
+</body>
+</html>
