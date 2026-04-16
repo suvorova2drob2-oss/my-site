@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 - Speedy Typing</title>
+  <style>
+    :root {
+      --bg: #081127;
+      --panel: #121f3f;
+      --line: #304a75;
+      --text: #f3f6ff;
+      --muted: #9cb2d8;
+      --accent: #56ccf2;
+      --yellow: #ffd75a;
+      --active: #4f78b9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #050c1d 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .page {
+      width: min(1300px, 100%);
+      margin: 0 auto;
+      padding: 18px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .top-player {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8, 17, 39, 0.96);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .top-row h1 {
+      font-size: 1.2rem;
+      line-height: 1.2;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+    audio { width: 100%; }
+    .board-switch {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+    .board-switch button {
+      border: 0;
+      background: #17294d;
+      color: var(--text);
+      font-weight: 700;
+      padding: 9px 14px;
+      cursor: pointer;
+    }
+    .board-switch button + button { border-left: 1px solid var(--line); }
+    .board-switch button.active { background: var(--active); }
+    .board-area {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0d1a36;
+      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .board {
+      display: none;
+      flex: 1;
+      min-height: 0;
+    }
+    .board.active { display: flex; }
+    .live-board {
+      border: 1px solid #3a5788;
+      border-radius: 12px;
+      background: #0a1430;
+      padding: 14px;
+      overflow-y: auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+    .grid-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 10px;
+      width: 100%;
+      min-height: 0;
+    }
+    .speaker-col {
+      border: 1px solid #3a5788;
+      border-radius: 12px;
+      background: #0a1430;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .speaker-head {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      color: #d2def4;
+      border-bottom: 1px solid #2f4771;
+      background: #12264b;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+    .speaker-head.active {
+      color: #fff;
+      background: #274373;
+    }
+    .speaker-log {
+      padding: 10px;
+      overflow-y: auto;
+      min-height: 0;
+      flex: 1;
+    }
+    .line {
+      line-height: 1.35;
+      color: var(--text);
+      word-break: break-word;
+      opacity: 0;
+      transform: scale(0.98);
+      animation: popFade 220ms ease forwards;
+      border: 1px solid #2e4772;
+      border-radius: 10px;
+      background: #102149;
+      padding: 8px 10px;
+    }
+    .line-naomi {
+      font-size: 1.4rem;
+      color: var(--yellow);
+      background: #0f2149;
+    }
+    .line-restaurants {
+      font-size: 1rem;
+      color: var(--text);
+      border-radius: 8px;
+      background: #0f1e42;
+      margin-bottom: 8px;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sheet-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sheet-btn {
+      border: 1px solid #446696;
+      border-radius: 7px;
+      background: #1a315b;
+      color: var(--text);
+      width: 32px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .sheet-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .sheet-label {
+      font-size: 0.86rem;
+      color: #c5d3ee;
+      min-width: 92px;
+      text-align: center;
+    }
+    .controls {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #132446;
+      padding: 10px;
+    }
+    .speaker-quick {
+      display: none;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .speaker-quick.show { display: flex; }
+    .speaker-btn {
+      border: 1px solid #3e5d8d;
+      border-radius: 8px;
+      background: #1a315b;
+      color: var(--text);
+      font-weight: 800;
+      min-width: 58px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+    .speaker-btn.active {
+      background: #2f4f83;
+      border-color: #6c95d3;
+      color: #fff;
+    }
+    .main-input {
+      width: 100%;
+      border: 1px solid #49689b;
+      border-radius: 10px;
+      background: #0a1732;
+      color: var(--text);
+      font-size: 1.05rem;
+      padding: 12px;
+    }
+    .main-input::placeholder { color: #88a0ca; }
+    .main-input:focus {
+      outline: 2px solid #7fb5ea;
+      outline-offset: 1px;
+    }
+    @keyframes popFade {
+      from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @media (max-width: 1100px) {
+      .grid-board {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+    }
+    @media (max-width: 620px) {
+      .grid-board {
+        grid-template-columns: 1fr;
+      }
+      .line { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="top-player">
+      <div class="top-row">
+        <h1>Speedy Typing - Unit 12</h1>
+        <a class="back" href="unit12-shadowing.html">Back to Shadowing</a>
+      </div>
+      <p id="audioLabel" class="hint">Audio: Naomi Price - Health Matters (Track 12.3)</p>
+      <audio id="mainAudio" controls preload="metadata" src="../RfB2First_SB_Track 12.3.mp3"></audio>
+    </section>
+
+    <div class="board-switch" role="tablist" aria-label="Board mode">
+      <button type="button" class="active" data-mode="naomi" role="tab" aria-selected="true">Naomi</button>
+      <button type="button" data-mode="restaurants" role="tab" aria-selected="false">Restaurants</button>
+    </div>
+
+    <section class="board-area">
+      <div class="hint-row">
+        <p class="hint" id="boardHint">Naomi mode: type and press Enter to drop lines onto the live board.</p>
+        <div class="sheet-nav" aria-label="Sheet navigation">
+          <button type="button" id="sheetPrev" class="sheet-btn" aria-label="Previous sheet">←</button>
+          <span id="sheetLabel" class="sheet-label">Sheet 1 / 1</span>
+          <button type="button" id="sheetNext" class="sheet-btn" aria-label="Next sheet">→</button>
+        </div>
+      </div>
+
+      <div id="boardNaomi" class="board active" role="tabpanel">
+        <div id="naomiLiveBoard" class="live-board" aria-label="Naomi Live Board"></div>
+      </div>
+
+      <div id="boardRestaurants" class="board" role="tabpanel">
+        <div class="grid-board">
+          <article class="speaker-col">
+            <h2 class="speaker-head active" data-speaker-head="1">Speaker 1</h2>
+            <div class="speaker-log" id="speakerLog1"></div>
+          </article>
+          <article class="speaker-col">
+            <h2 class="speaker-head" data-speaker-head="2">Speaker 2</h2>
+            <div class="speaker-log" id="speakerLog2"></div>
+          </article>
+          <article class="speaker-col">
+            <h2 class="speaker-head" data-speaker-head="3">Speaker 3</h2>
+            <div class="speaker-log" id="speakerLog3"></div>
+          </article>
+          <article class="speaker-col">
+            <h2 class="speaker-head" data-speaker-head="4">Speaker 4</h2>
+            <div class="speaker-log" id="speakerLog4"></div>
+          </article>
+          <article class="speaker-col">
+            <h2 class="speaker-head" data-speaker-head="5">Speaker 5</h2>
+            <div class="speaker-log" id="speakerLog5"></div>
+          </article>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="controls">
+      <div id="speakerQuick" class="speaker-quick" aria-label="Speaker quick switch">
+        <button type="button" class="speaker-btn active" data-speaker="1">S1</button>
+        <button type="button" class="speaker-btn" data-speaker="2">S2</button>
+        <button type="button" class="speaker-btn" data-speaker="3">S3</button>
+        <button type="button" class="speaker-btn" data-speaker="4">S4</button>
+        <button type="button" class="speaker-btn" data-speaker="5">S5</button>
+      </div>
+      <input
+        id="mainInput"
+        class="main-input"
+        type="text"
+        autocomplete="off"
+        placeholder="Type the phrase and press Enter..."
+        aria-label="Speedy typing input"
+      />
+    </section>
+  </main>
+
+  <script>
+    const modeButtons = document.querySelectorAll(".board-switch button");
+    const boards = {
+      naomi: document.getElementById("boardNaomi"),
+      restaurants: document.getElementById("boardRestaurants")
+    };
+    const boardHint = document.getElementById("boardHint");
+    const audioLabel = document.getElementById("audioLabel");
+    const mainAudio = document.getElementById("mainAudio");
+    const naomiLiveBoard = document.getElementById("naomiLiveBoard");
+    const speakerQuick = document.getElementById("speakerQuick");
+    const speakerButtons = document.querySelectorAll(".speaker-btn");
+    const speakerHeads = document.querySelectorAll("[data-speaker-head]");
+    const mainInput = document.getElementById("mainInput");
+    const sheetPrev = document.getElementById("sheetPrev");
+    const sheetNext = document.getElementById("sheetNext");
+    const sheetLabel = document.getElementById("sheetLabel");
+
+    let activeMode = "naomi";
+    let activeSpeaker = 1;
+    const maxSheets = 10;
+    const maxNaomiLinesPerSheet = 24;
+    const maxRestaurantsLinesPerSheet = 40;
+
+    function createRestaurantsSheet() {
+      return { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    }
+
+    const sheetsState = {
+      naomi: { sheets: [[]], currentIndex: 0 },
+      restaurants: { sheets: [createRestaurantsSheet()], currentIndex: 0 }
+    };
+
+    function setMode(mode) {
+      const wasPlaying = !mainAudio.paused;
+      activeMode = mode;
+      modeButtons.forEach(function (button) {
+        const selected = button.getAttribute("data-mode") === mode;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-selected", selected ? "true" : "false");
+      });
+      Object.keys(boards).forEach(function (key) {
+        boards[key].classList.toggle("active", key === mode);
+      });
+      const isRestaurants = mode === "restaurants";
+      speakerQuick.classList.toggle("show", isRestaurants);
+      boardHint.textContent = isRestaurants
+        ? "Restaurants mode: choose S1-S5 (or keys 1-5), then press Enter."
+        : "Naomi mode: type and press Enter to drop lines onto the live board.";
+
+      if (isRestaurants) {
+        mainAudio.src = "../RfB2First_SB_Track 12.1.mp3";
+        audioLabel.textContent = "Audio: Listening 12.1 - Five speakers (Restaurants)";
+      } else {
+        mainAudio.src = "../RfB2First_SB_Track 12.3.mp3";
+        audioLabel.textContent = "Audio: Naomi Price - Health Matters (Track 12.3)";
+      }
+      mainAudio.load();
+      if (wasPlaying) {
+        mainAudio.play().catch(function () {});
+      }
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    }
+
+    function setActiveSpeaker(speaker) {
+      activeSpeaker = speaker;
+      speakerButtons.forEach(function (button) {
+        const isActive = Number(button.getAttribute("data-speaker")) === speaker;
+        button.classList.toggle("active", isActive);
+      });
+      speakerHeads.forEach(function (head) {
+        const isActive = Number(head.getAttribute("data-speaker-head")) === speaker;
+        head.classList.toggle("active", isActive);
+      });
+    }
+
+    function createLine(text, modeType) {
+      const line = document.createElement("p");
+      line.className = "line " + (modeType === "naomi" ? "line-naomi" : "line-restaurants");
+      line.textContent = text;
+      return line;
+    }
+
+    function getRestaurantsLineCount(sheet) {
+      return sheet[1].length + sheet[2].length + sheet[3].length + sheet[4].length + sheet[5].length;
+    }
+
+    function pushNewSheet(mode) {
+      const modeState = sheetsState[mode];
+      if (mode === "naomi") {
+        modeState.sheets.push([]);
+      } else {
+        modeState.sheets.push(createRestaurantsSheet());
+      }
+      if (modeState.sheets.length > maxSheets) {
+        modeState.sheets.shift();
+      }
+      modeState.currentIndex = modeState.sheets.length - 1;
+    }
+
+    function addLineToCurrentSheet(text) {
+      const modeState = sheetsState[activeMode];
+      modeState.currentIndex = modeState.sheets.length - 1;
+
+      if (activeMode === "naomi") {
+        const currentSheet = modeState.sheets[modeState.currentIndex];
+        currentSheet.push(text);
+        if (currentSheet.length >= maxNaomiLinesPerSheet) {
+          pushNewSheet("naomi");
+        }
+        return;
+      }
+
+      const restaurantsSheet = modeState.sheets[modeState.currentIndex];
+      restaurantsSheet[activeSpeaker].push(text);
+      if (getRestaurantsLineCount(restaurantsSheet) >= maxRestaurantsLinesPerSheet) {
+        pushNewSheet("restaurants");
+      }
+    }
+
+    function renderNaomiSheet(lines) {
+      naomiLiveBoard.innerHTML = "";
+      lines.forEach(function (text) {
+        naomiLiveBoard.appendChild(createLine(text, "naomi"));
+      });
+      naomiLiveBoard.scrollTop = naomiLiveBoard.scrollHeight;
+    }
+
+    function renderRestaurantsSheet(sheet) {
+      [1, 2, 3, 4, 5].forEach(function (speaker) {
+        const log = document.getElementById("speakerLog" + String(speaker));
+        if (!log) {
+          return;
+        }
+        log.innerHTML = "";
+        sheet[speaker].forEach(function (text) {
+          log.appendChild(createLine(text, "restaurants"));
+        });
+        log.scrollTop = log.scrollHeight;
+      });
+    }
+
+    function renderCurrentSheet() {
+      const modeState = sheetsState[activeMode];
+      const sheet = modeState.sheets[modeState.currentIndex];
+      if (activeMode === "naomi") {
+        renderNaomiSheet(sheet);
+      } else {
+        renderRestaurantsSheet(sheet);
+      }
+    }
+
+    function updateSheetControls() {
+      const modeState = sheetsState[activeMode];
+      const current = modeState.currentIndex + 1;
+      const total = modeState.sheets.length;
+      sheetLabel.textContent = "Sheet " + String(current) + " / " + String(total);
+      sheetPrev.disabled = modeState.currentIndex <= 0;
+      sheetNext.disabled = modeState.currentIndex >= total - 1;
+    }
+
+
+    modeButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        setMode(button.getAttribute("data-mode"));
+      });
+    });
+
+    speakerButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        setActiveSpeaker(Number(button.getAttribute("data-speaker")));
+        mainInput.focus();
+      });
+    });
+
+    sheetPrev.addEventListener("click", function () {
+      const modeState = sheetsState[activeMode];
+      if (modeState.currentIndex <= 0) {
+        return;
+      }
+      modeState.currentIndex -= 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    sheetNext.addEventListener("click", function () {
+      const modeState = sheetsState[activeMode];
+      if (modeState.currentIndex >= modeState.sheets.length - 1) {
+        return;
+      }
+      modeState.currentIndex += 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    mainInput.addEventListener("keydown", function (event) {
+      if (
+        activeMode === "restaurants" &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        ["1", "2", "3", "4", "5"].includes(event.key)
+      ) {
+        setActiveSpeaker(Number(event.key));
+        event.preventDefault();
+        return;
+      }
+
+      if (event.key !== "Enter") {
+        return;
+      }
+
+      event.preventDefault();
+      const text = mainInput.value.trim();
+      if (!text) {
+        return;
+      }
+
+      addLineToCurrentSheet(text);
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.value = "";
+    });
+
+    setMode("naomi");
+    setActiveSpeaker(1);
+    renderCurrentSheet();
+    updateSheetControls();
+  </script>
+</body>
+</html>

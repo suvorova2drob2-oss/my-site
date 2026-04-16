@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Word Formation (Nouns 2)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); line-height: 1.4; margin-bottom: 12px; }
+    .attempt-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1a2c49;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      color: #d4e2fb;
+      font-weight: 600;
+    }
+    .task {
+      border: 1px solid #c7d8ec;
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 14px;
+      line-height: 1.7;
+      font-size: 1.03rem;
+      color: #0f223f;
+    }
+    .task h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      color: #6fa2c8;
+      font-size: 2.1rem;
+      margin-bottom: 6px;
+      border-bottom: 2px solid #7db4dc;
+      padding-bottom: 4px;
+    }
+    .task-intro {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .gap {
+      width: 120px;
+      border: none;
+      border-bottom: 2px solid #7f98bb;
+      border-radius: 0;
+      background: transparent;
+      color: #0f223f;
+      padding: 2px 6px;
+      margin: 0 2px;
+      font-size: 0.95rem;
+    }
+    .gap:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
+      background: #f5f9ff;
+    }
+    .verbs {
+      color: #2f598f;
+      font-style: italic;
+      white-space: nowrap;
+    }
+    .btn-row {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      padding: 10px 12px;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.12);
+      color: #a7f3d0;
+    }
+    .feedback.bad {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.12);
+      color: #9e2b3b;
+    }
+    .answer-key {
+      margin-top: 10px;
+      border: 1px solid #4a6898;
+      border-radius: 10px;
+      background: #1a2c49;
+      color: #cfe0fb;
+      padding: 10px 12px;
+      line-height: 1.45;
+      font-size: 0.94rem;
+      display: none;
+    }
+    .answer-key.show { display: block; }
+    .answer-reveal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 28px 20px;
+      background: rgba(8, 11, 18, 0.97);
+    }
+    .answer-reveal-layer.is-open {
+      display: flex !important;
+    }
+    .answer-reveal-inner {
+      width: min(560px, 100%);
+      text-align: center;
+    }
+    .answer-reveal-label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .answer-reveal-body {
+      color: #4ade80;
+      font-size: clamp(1.05rem, 3.2vw, 1.35rem);
+      font-weight: 700;
+      white-space: pre-line;
+      line-height: 1.65;
+      margin-bottom: 22px;
+      padding: 22px 20px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.14);
+      box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
+      text-align: left;
+    }
+    .answer-reveal-motivate {
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+    .answer-reveal-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #052030;
+    }
+    .answer-reveal-btn:hover { filter: brightness(1.08); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Word Formation — Nouns 2</h1>
+      <a class="back" href="../unit12-use-of-english.html">Back to Use of English</a>
+    </header>
+
+    <p class="subtitle">Complete each gap with the correct noun form of the verb in brackets. You have 3 attempts. After each wrong attempt, all answers reset and you start again.</p>
+    <div id="attemptBox" class="attempt-box">Attempt 1 / 3</div>
+
+    <section class="task">
+      <p class="task-intro">1) Complete each gap with the correct noun form of the verb in brackets.</p>
+      <p>
+        I carry out a needs <input class="gap" data-gap="1" />
+        <span class="verbs">(analyse)</span> ...
+        This includes asking them about their eating habits, their
+        <input class="gap" data-gap="2" /> <span class="verbs">(injure)</span> history and any medical
+        <input class="gap" data-gap="3" /> <span class="verbs">(complain)</span> or conditions, such as high blood
+        <input class="gap" data-gap="4" /> <span class="verbs">(press)</span>.
+        Then basically, I design exercise routines and give
+        <input class="gap" data-gap="5" /> <span class="verbs">(advise)</span> on nutrition in
+        <input class="gap" data-gap="6" /> <span class="verbs">(respond)</span> to the information they give me.
+      </p>
+    </section>
+
+    <div class="btn-row">
+      <button id="btnCheck" class="btn-check" type="button">Submit</button>
+      <button id="btnReset" class="btn-reset" type="button">Reset now</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="answerKey" class="answer-key"><strong>Correct answers:</strong> 1 analysis, 2 injury, 3 complaints, 4 pressure, 5 advice, 6 response.</div>
+  </main>
+
+  <div
+    id="answerRevealLayer"
+    class="answer-reveal-layer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="answerRevealLabel"
+    aria-hidden="true"
+  >
+    <div class="answer-reveal-inner">
+      <p class="answer-reveal-label" id="answerRevealLabel">Правильные ответы</p>
+      <p id="answerRevealBody" class="answer-reveal-body"></p>
+      <p class="answer-reveal-motivate">Давай, ты справишься!</p>
+      <button type="button" id="answerRevealBtn" class="answer-reveal-btn">Продолжить</button>
+    </div>
+  </div>
+
+  <script>
+    var ANSWERS = {
+      1: "analysis",
+      2: "injury",
+      3: "complaints",
+      4: "pressure",
+      5: "advice",
+      6: "response"
+    };
+    var maxAttempts = 3;
+    var attempt = 1;
+
+    var gaps = Array.prototype.slice.call(document.querySelectorAll(".gap"));
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var attemptBox = document.getElementById("attemptBox");
+    var answerKey = document.getElementById("answerKey");
+    var answerRevealLayer = document.getElementById("answerRevealLayer");
+    var answerRevealBody = document.getElementById("answerRevealBody");
+    var answerRevealBtn = document.getElementById("answerRevealBtn");
+
+    var REVEAL_TEXT =
+      "1 — analysis\n" +
+      "2 — injury\n" +
+      "3 — complaints\n" +
+      "4 — pressure\n" +
+      "5 — advice\n" +
+      "6 — response";
+
+    document.body.appendChild(answerRevealLayer);
+
+    var afterAnswerReveal = null;
+
+    function normalize(v) {
+      return String(v || "").trim().toLowerCase();
+    }
+
+    function renderAttempt() {
+      attemptBox.textContent = "Attempt " + attempt + " / " + maxAttempts;
+    }
+
+    function clearInputs() {
+      gaps.forEach(function (input) {
+        input.value = "";
+      });
+    }
+
+    function resetCycle() {
+      clearInputs();
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      answerKey.classList.remove("show");
+    }
+
+    function openAnswerReveal(text) {
+      answerRevealBody.textContent = text;
+      answerRevealLayer.classList.add("is-open");
+      answerRevealLayer.style.display = "flex";
+      answerRevealLayer.setAttribute("aria-hidden", "false");
+      answerRevealBtn.focus();
+    }
+
+    function closeAnswerReveal() {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
+
+    function runAfterWrongReveal(score) {
+      var wrongNow = gaps.length - score;
+      if (attempt < maxAttempts) {
+        attempt += 1;
+        renderAttempt();
+        feedback.className = "feedback show bad";
+        feedback.innerHTML =
+          "Correct: <strong>" + score + "</strong>, Incorrect: <strong>" + wrongNow + "</strong>. Start again from the beginning.";
+        clearInputs();
+        return;
+      }
+      feedback.className = "feedback show bad";
+      feedback.innerHTML =
+        "Attempt 3 finished. Correct: <strong>" + score + "</strong>, Incorrect: <strong>" + wrongNow + "</strong>. Start again from zero.";
+      attempt = 1;
+      renderAttempt();
+      clearInputs();
+    }
+
+    answerRevealBtn.addEventListener("click", function () {
+      closeAnswerReveal();
+      if (typeof afterAnswerReveal === "function") {
+        var fn = afterAnswerReveal;
+        afterAnswerReveal = null;
+        fn();
+      }
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var score = 0;
+      gaps.forEach(function (input) {
+        var idx = input.getAttribute("data-gap");
+        if (normalize(input.value) === ANSWERS[idx]) {
+          score += 1;
+        }
+      });
+
+      if (score === gaps.length) {
+        var wrong = gaps.length - score;
+        feedback.className = "feedback show ok";
+        feedback.innerHTML = "Excellent! Correct: <strong>" + score + "</strong>, Incorrect: <strong>" + wrong + "</strong>.";
+        answerKey.classList.add("show");
+        btnCheck.disabled = true;
+        return;
+      }
+
+      afterAnswerReveal = function () {
+        runAfterWrongReveal(score);
+      };
+      openAnswerReveal(REVEAL_TEXT);
+    });
+
+    gaps.forEach(function (input) {
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          btnCheck.click();
+        }
+      });
+    });
+
+    btnReset.addEventListener("click", function () {
+      afterAnswerReveal = null;
+      attempt = 1;
+      renderAttempt();
+      resetCycle();
+      closeAnswerReveal();
+      btnCheck.disabled = false;
+    });
+
+    renderAttempt();
+  </script>
+</body>
+</html>

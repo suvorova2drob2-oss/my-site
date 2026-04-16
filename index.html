@@ -35,50 +35,89 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             border: 1px solid #334155;
         }
-        .container.wide { max-width: 920px; }
+        .container.wide {
+            max-width: 1100px;
+            padding: 24px;
+        }
 
         .hub-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            width: 100%;
+            max-width: 1080px;
             gap: 12px;
-            margin-top: 8px;
+            margin: 8px auto 0;
+            justify-content: center;
         }
         .unit-tile {
-            flex: 0 0 148px;
-            max-width: 160px;
+            width: 100%;
+            max-width: none;
+            min-height: 104px;
             background: #334155;
-            border: 1px solid transparent;
-            border-radius: 14px;
-            padding: 16px 12px;
+            border: 1px solid #2f456a;
+            border-radius: 16px;
+            padding: 14px 12px;
             cursor: pointer;
             text-align: left;
-            transition: 0.2s;
+            transition: transform 0.15s ease, border-color 0.15s ease;
             color: var(--text);
         }
         .unit-tile:hover { border-color: var(--primary); background: #3e4e63; }
-        .unit-tile strong { display: block; font-size: 15px; margin-bottom: 6px; }
-        .unit-tile span { font-size: 11px; color: var(--muted); line-height: 1.35; }
+        .unit-tile strong {
+            display: block;
+            font-size: clamp(16px, 1.8vw, 19px);
+            margin-bottom: 8px;
+            line-height: 1.15;
+        }
+        .unit-tile span {
+            font-size: clamp(12px, 1.2vw, 14px);
+            color: var(--muted);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
         .unit-tile.unit-8 span,
         .unit-tile.unit-9 span { color: var(--primary); }
         .tile-meta { font-size: 11px; color: var(--success); margin-top: 8px; letter-spacing: 1px; }
         .unit-tile.coming-soon {
-            opacity: 0.42;
+            opacity: 0.7;
             cursor: not-allowed;
             pointer-events: none;
-            text-align: center;
         }
         .unit-tile.coming-soon:hover { border-color: transparent; background: #334155; }
         .unit-tile.coming-soon strong {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 4px 6px;
-            margin-bottom: 0;
-            font-size: 14px;
+            display: block;
+            font-size: 1.06rem;
+            margin-bottom: 8px;
         }
-        .unit-tile.coming-soon .tile-lock { font-size: 16px; line-height: 1; opacity: 0.85; }
+        .unit-tile.coming-soon .tile-lock { font-size: 14px; line-height: 1; opacity: 0.85; margin-right: 4px; }
+        @media (max-width: 1200px) {
+            .hub-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 900px) {
+            .hub-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .container.wide {
+                padding: 14px;
+            }
+            .hub-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+            .unit-tile {
+                min-height: 92px;
+                padding: 12px 10px;
+            }
+            .unit-tile strong { font-size: 0.98rem; }
+            .unit-tile span { font-size: 0.82rem; }
+        }
         .hub-back {
             background: none;
             border: 1px solid #334155;
@@ -179,6 +218,15 @@
             flex-direction: column;
         }
         .folder:hover { border-color: var(--primary); background: #3e4e63; }
+        .folder.folder-disabled {
+            opacity: 0.62;
+            cursor: default;
+            pointer-events: none;
+        }
+        .folder.folder-disabled:hover {
+            border-color: transparent;
+            background: #334155;
+        }
         .check-marks { color: var(--success); font-size: 14px; margin-top: 5px; letter-spacing: 2px; }
 
         #screen-unit9-activity-hub .u9-hub-lead,
@@ -190,16 +238,15 @@
         }
         #screen-unit9-activity-hub .u9-subfolder,
         #screen-unit8-activity-hub .u9-subfolder {
-            margin-left: 6px;
-            border-left: 3px solid var(--primary);
-            padding-left: 14px;
-            background: #1e293b;
+            margin-left: 0;
+            border-left: 0;
+            padding-left: 15px;
+            background: #334155;
         }
         #screen-unit9-activity-hub .u9-subfolder:hover,
         #screen-unit8-activity-hub .u9-subfolder:hover {
-            background: #273549;
+            background: #3e4e63;
         }
-
         #screen-unit9-fall {
             text-align: left;
         }
@@ -357,6 +404,87 @@
             color: var(--success);
             min-height: 18px;
         }
+        #screen-unit9-wordbank .wb-themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px; }
+        #screen-unit9-wordbank .wb-theme-btn {
+            border: 1px solid #4c6ea2;
+            border-radius: 12px;
+            background: #1a2d4b;
+            color: #d7e8ff;
+            padding: 10px 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+        }
+        #screen-unit9-wordbank .wb-theme-btn.active {
+            border-color: #56ccf2;
+            box-shadow: 0 0 0 1px #56ccf2 inset;
+            background: linear-gradient(180deg, #1f3a61 0%, #17304f 100%);
+        }
+        #screen-unit9-wordbank .wb-repeat-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        #screen-unit9-wordbank .wb-repeat-btn {
+            border: 1px solid #4c6ea2;
+            border-radius: 10px;
+            background: #1a2d4b;
+            color: #d7e8ff;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #screen-unit9-wordbank .wb-repeat-btn.active { border-color: #56ccf2; box-shadow: 0 0 0 1px #56ccf2 inset; }
+        #screen-unit9-wordbank .wb-sort,
+        #screen-unit9-wordbank .wb-search {
+            border: 1px solid #4c6ea2;
+            border-radius: 10px;
+            background: #1a2d4b;
+            color: #d7e8ff;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        #screen-unit9-wordbank .wb-search { width: 100%; margin: 0 0 10px; font-weight: 500; }
+        #screen-unit9-wordbank .wb-stats {
+            border: 1px solid #3e5f8f;
+            border-left: 3px solid var(--primary);
+            border-radius: 10px;
+            padding: 10px;
+            background: rgba(56, 189, 248, 0.08);
+            font-size: 0.9rem;
+            color: #dce9ff;
+            margin-bottom: 10px;
+        }
+        #screen-unit9-wordbank .wb-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+        #screen-unit9-wordbank .wb-item {
+            border: 1px solid #395781;
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: rgba(12, 23, 44, 0.88);
+        }
+        #screen-unit9-wordbank .wb-item .phrase { font-weight: 700; color: #f1f7ff; line-height: 1.4; }
+        #screen-unit9-wordbank .wb-item .hint { color: var(--muted); font-size: 0.86rem; margin-top: 4px; }
+        #screen-unit9-wordbank .wb-item .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        #screen-unit9-wordbank .wb-item .status { color: #8fd8ff; font-size: 0.8rem; font-weight: 700; }
+        #screen-unit9-wordbank .wb-item .act { display: flex; gap: 6px; }
+        #screen-unit9-wordbank .wb-mark-btn {
+            border: 1px solid #4c6ea2;
+            border-radius: 8px;
+            background: #1a2d4b;
+            color: #d7e8ff;
+            padding: 6px 9px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #screen-unit9-wordbank .wb-mark-btn.know { border-color: #22c55e; color: #bbf7d0; }
+        #screen-unit9-wordbank .wb-mark-btn.learn { border-color: #f59e0b; color: #fde68a; }
+        #screen-unit9-wordbank .wb-mark-btn.reset { border-color: #94a3b8; color: #e2e8f0; }
         .u9-lex-prog-wrap {
             margin: 10px 0 12px;
         }
@@ -854,6 +982,114 @@
             50% { color: var(--error); }
         }
         #screen-unit9-phrase .u9v-wrong { animation: u9v-wrong 0.4s ease; }
+
+        #screen-unit9-mark-th .u9mk-lead {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 0 16px;
+            text-align: left;
+        }
+        #screen-unit9-mark-th .u9mk-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        #screen-unit9-mark-th .u9mk-bar-wrap {
+            flex: 1;
+            min-width: 120px;
+            max-width: 220px;
+            background: #0f172a;
+            height: 6px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #1e293b;
+        }
+        #screen-unit9-mark-th .u9mk-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--success);
+            transition: width 0.4s ease;
+            box-shadow: 0 0 8px var(--success);
+        }
+        #screen-unit9-mark-th .u9mk-task {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #22d3ee;
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left;
+        }
+        #screen-unit9-mark-th .u9mk-task-label {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #22d3ee;
+            color: #0f172a;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+        #screen-unit9-mark-th .u9mk-synonym {
+            font-size: 17px;
+            font-weight: bold;
+            font-style: italic;
+            display: block;
+            margin-top: 8px;
+            line-height: 1.45;
+        }
+        #screen-unit9-mark-th .u9mk-reading {
+            text-align: left;
+            line-height: 2.2;
+            font-size: 16px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+            max-height: min(52vh, 480px);
+            overflow-y: auto;
+        }
+        #screen-unit9-mark-th .u9mk-click {
+            cursor: pointer;
+            border-bottom: 1px dashed #475569;
+            transition: background 0.2s, color 0.2s;
+            padding: 0 3px;
+            border-radius: 4px;
+        }
+        #screen-unit9-mark-th .u9mk-click:hover:not(.u9mk-found) { background: rgba(34, 211, 238, 0.12); }
+        #screen-unit9-mark-th .u9mk-found {
+            background: var(--success) !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 0 12px var(--success);
+        }
+        #screen-unit9-mark-th .u9mk-wrong { animation: u9v-wrong 0.4s ease; }
+
+        #screen-unit9-reading-hub .u9readhub-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 4px;
+        }
+        #screen-unit9-reading-hub .u9readhub-card {
+            flex: 1 1 280px;
+            border: 1px solid rgba(51, 65, 85, 0.85);
+            border-radius: 14px;
+            padding: 16px 18px;
+            background: rgba(15, 23, 42, 0.45);
+        }
+        #screen-unit9-reading-hub .u9readhub-card h3 {
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+            color: #f8fafc;
+        }
 
         /* Unit 8 Treasure Hunt — same phrase-match mechanic as Unit 9 */
         #screen-unit8-th-a .u8th-lead,
@@ -1563,6 +1799,33 @@
             padding-right: 8px;
             margin-bottom: 22px;
         }
+        #screen-unit9-speaking .speak-read-para-block {
+            margin: 0 0 1.35em;
+            text-align: left;
+        }
+        #screen-unit9-speaking .speak-read-para-block:last-child {
+            margin-bottom: 0;
+        }
+        #screen-unit9-speaking .speak-read-para-num {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #7dd3fc;
+            margin: 0 0 8px;
+        }
+        #screen-unit9-speaking .speak-full-text .speak-read-para {
+            margin: 0;
+            text-align: left;
+        }
+        #screen-unit9-speaking .speak-v2-key-banner {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #bae6fd;
+            margin: 0 0 10px;
+            letter-spacing: 0.02em;
+        }
         #screen-unit9-speaking .speak-tags {
             display: flex;
             flex-wrap: wrap;
@@ -1684,21 +1947,27 @@
         }
 
         #screen-unit9-speak-freer,
-        #screen-unit9-speak-idiom {
+        #screen-unit9-speak-idiom,
+        #screen-unit9-speak-micro,
+        #screen-unit9-speak-exam {
             min-height: 100vh;
             background:
                 radial-gradient(ellipse 100% 70% at 50% -15%, rgba(167, 139, 250, 0.22), transparent 52%),
                 radial-gradient(ellipse 60% 45% at 0% 80%, rgba(56, 189, 248, 0.12), transparent 50%),
                 linear-gradient(165deg, #0a0f1a 0%, #111827 38%, #0c1222 100%);
         }
-        #screen-unit9-speak-idiom {
+        #screen-unit9-speak-idiom,
+        #screen-unit9-speak-micro,
+        #screen-unit9-speak-exam {
             background:
                 radial-gradient(ellipse 90% 65% at 80% -10%, rgba(52, 211, 153, 0.14), transparent 48%),
                 radial-gradient(ellipse 70% 50% at 10% 90%, rgba(167, 139, 250, 0.12), transparent 45%),
                 linear-gradient(165deg, #0a0f1a 0%, #111827 38%, #0c1222 100%);
         }
         #screen-unit9-speak-freer .speak-freer-shell,
-        #screen-unit9-speak-idiom .speak-freer-shell {
+        #screen-unit9-speak-idiom .speak-freer-shell,
+        #screen-unit9-speak-micro .speak-freer-shell,
+        #screen-unit9-speak-exam .speak-freer-shell {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -1708,7 +1977,9 @@
             box-sizing: border-box;
         }
         #screen-unit9-speak-freer .speak-freer-top,
-        #screen-unit9-speak-idiom .speak-freer-top {
+        #screen-unit9-speak-idiom .speak-freer-top,
+        #screen-unit9-speak-micro .speak-freer-top,
+        #screen-unit9-speak-exam .speak-freer-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -1717,7 +1988,9 @@
             margin-bottom: clamp(12px, 3vh, 24px);
         }
         #screen-unit9-speak-freer .speak-freer-brand,
-        #screen-unit9-speak-idiom .speak-freer-brand {
+        #screen-unit9-speak-idiom .speak-freer-brand,
+        #screen-unit9-speak-micro .speak-freer-brand,
+        #screen-unit9-speak-exam .speak-freer-brand {
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.14em;
@@ -1725,7 +1998,9 @@
             color: rgba(148, 163, 184, 0.95);
         }
         #screen-unit9-speak-freer .speak-freer-view,
-        #screen-unit9-speak-idiom .speak-freer-view {
+        #screen-unit9-speak-idiom .speak-freer-view,
+        #screen-unit9-speak-micro .speak-freer-view,
+        #screen-unit9-speak-exam .speak-freer-view {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -1733,7 +2008,9 @@
             animation: speak-fade 0.5s ease;
         }
         #screen-unit9-speak-freer .speak-freer-card,
-        #screen-unit9-speak-idiom .speak-freer-card {
+        #screen-unit9-speak-idiom .speak-freer-card,
+        #screen-unit9-speak-micro .speak-freer-card,
+        #screen-unit9-speak-exam .speak-freer-card {
             background: rgba(30, 41, 59, 0.55);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -1745,7 +2022,9 @@
                 0 32px 64px rgba(0, 0, 0, 0.45);
         }
         #screen-unit9-speak-freer .speak-freer-pill,
-        #screen-unit9-speak-idiom .speak-freer-pill {
+        #screen-unit9-speak-idiom .speak-freer-pill,
+        #screen-unit9-speak-micro .speak-freer-pill,
+        #screen-unit9-speak-exam .speak-freer-pill {
             display: inline-block;
             font-size: 11px;
             font-weight: 600;
@@ -1757,7 +2036,9 @@
             letter-spacing: 0.04em;
         }
         #screen-unit9-speak-freer .speak-freer-q,
-        #screen-unit9-speak-idiom .speak-freer-q {
+        #screen-unit9-speak-idiom .speak-freer-q,
+        #screen-unit9-speak-micro .speak-freer-q,
+        #screen-unit9-speak-exam .speak-freer-q {
             font-size: clamp(1.35rem, 4.5vw, 2.35rem);
             font-weight: 700;
             line-height: 1.38;
@@ -1770,32 +2051,42 @@
             margin-right: auto;
         }
         #screen-unit9-speak-freer .speak-freer-meta,
-        #screen-unit9-speak-idiom .speak-freer-meta {
+        #screen-unit9-speak-idiom .speak-freer-meta,
+        #screen-unit9-speak-micro .speak-freer-meta,
+        #screen-unit9-speak-exam .speak-freer-meta {
             text-align: center;
             font-size: 13px;
             color: var(--muted);
             margin-bottom: clamp(16px, 3vh, 28px);
         }
         #screen-unit9-speak-freer .speak-freer-meta strong,
-        #screen-unit9-speak-idiom .speak-freer-meta strong {
+        #screen-unit9-speak-idiom .speak-freer-meta strong,
+        #screen-unit9-speak-micro .speak-freer-meta strong,
+        #screen-unit9-speak-exam .speak-freer-meta strong {
             color: var(--primary);
             font-weight: 700;
         }
         #screen-unit9-speak-freer .speak-freer-stage,
-        #screen-unit9-speak-idiom .speak-freer-stage {
+        #screen-unit9-speak-idiom .speak-freer-stage,
+        #screen-unit9-speak-micro .speak-freer-stage,
+        #screen-unit9-speak-exam .speak-freer-stage {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: clamp(16px, 3vh, 28px);
         }
         #screen-unit9-speak-freer .speak-freer-ring-svg,
-        #screen-unit9-speak-idiom .speak-freer-ring-svg {
+        #screen-unit9-speak-idiom .speak-freer-ring-svg,
+        #screen-unit9-speak-micro .speak-freer-ring-svg,
+        #screen-unit9-speak-exam .speak-freer-ring-svg {
             width: min(240px, 58vw);
             height: min(240px, 58vw);
             filter: drop-shadow(0 0 28px rgba(167, 139, 250, 0.35));
         }
         #screen-unit9-speak-freer .speak-freer-ring-bg,
-        #screen-unit9-speak-idiom .speak-freer-ring-bg {
+        #screen-unit9-speak-idiom .speak-freer-ring-bg,
+        #screen-unit9-speak-micro .speak-freer-ring-bg,
+        #screen-unit9-speak-exam .speak-freer-ring-bg {
             fill: none;
             stroke: rgba(51, 65, 85, 0.75);
             stroke-width: 7;
@@ -1818,8 +2109,19 @@
             transform-origin: 60px 60px;
             transition: stroke-dashoffset 0.35s linear;
         }
+        #screen-unit9-speak-micro .speak-freer-ring-prog {
+            fill: none;
+            stroke: url(#speakMicroGrad);
+            stroke-width: 7;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 60px 60px;
+            transition: stroke-dashoffset 0.35s linear;
+        }
         #screen-unit9-speak-freer .speak-freer-time,
-        #screen-unit9-speak-idiom .speak-freer-time {
+        #screen-unit9-speak-idiom .speak-freer-time,
+        #screen-unit9-speak-micro .speak-freer-time,
+        #screen-unit9-speak-exam .speak-freer-time {
             position: absolute;
             font-size: clamp(2.4rem, 10vw, 3.5rem);
             font-weight: 800;
@@ -1828,7 +2130,9 @@
             letter-spacing: -0.03em;
         }
         #screen-unit9-speak-freer .speak-freer-ring-wrap,
-        #screen-unit9-speak-idiom .speak-freer-ring-wrap {
+        #screen-unit9-speak-idiom .speak-freer-ring-wrap,
+        #screen-unit9-speak-micro .speak-freer-ring-wrap,
+        #screen-unit9-speak-exam .speak-freer-ring-wrap {
             position: relative;
             display: flex;
             align-items: center;
@@ -1837,7 +2141,9 @@
             height: min(240px, 58vw);
         }
         #screen-unit9-speak-freer .speak-freer-hint,
-        #screen-unit9-speak-idiom .speak-freer-hint {
+        #screen-unit9-speak-idiom .speak-freer-hint,
+        #screen-unit9-speak-micro .speak-freer-hint,
+        #screen-unit9-speak-exam .speak-freer-hint {
             font-size: 15px;
             color: rgba(203, 213, 225, 0.9);
             text-align: center;
@@ -1846,7 +2152,9 @@
             margin: 0 auto;
         }
         #screen-unit9-speak-freer .speak-freer-actions,
-        #screen-unit9-speak-idiom .speak-freer-actions {
+        #screen-unit9-speak-idiom .speak-freer-actions,
+        #screen-unit9-speak-micro .speak-freer-actions,
+        #screen-unit9-speak-exam .speak-freer-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -1854,19 +2162,94 @@
             margin-top: clamp(8px, 2vh, 20px);
         }
         #screen-unit9-speak-freer .speak-freer-done h3,
-        #screen-unit9-speak-idiom .speak-freer-done h3 {
+        #screen-unit9-speak-idiom .speak-freer-done h3,
+        #screen-unit9-speak-micro .speak-freer-done h3,
+        #screen-unit9-speak-exam .speak-freer-done h3 {
             font-size: clamp(1.4rem, 4vw, 1.85rem);
             margin: 0 0 12px;
             color: #86efac;
             text-align: center;
         }
         #screen-unit9-speak-freer .speak-freer-done p,
-        #screen-unit9-speak-idiom .speak-freer-done p {
+        #screen-unit9-speak-idiom .speak-freer-done p,
+        #screen-unit9-speak-micro .speak-freer-done p,
+        #screen-unit9-speak-exam .speak-freer-done p {
             color: var(--muted);
             font-size: 16px;
             line-height: 1.55;
             text-align: center;
             margin: 0 0 22px;
+        }
+        #screen-unit9-speak-micro .u9-micro-themes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            justify-content: center;
+        }
+        #screen-unit9-speak-micro .u9-micro-theme-btn {
+            border: 1px solid rgba(76, 110, 162, 0.9);
+            border-radius: 10px;
+            background: rgba(26, 45, 75, 0.85);
+            color: #d7e8ff;
+            padding: 9px 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #screen-unit9-speak-micro .u9-micro-theme-btn.active {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px #38bdf8 inset;
+            color: #e0f2fe;
+        }
+        #screen-unit9-speak-micro .u9-micro-prompt {
+            border: 1px solid rgba(62, 95, 143, 0.85);
+            border-left: 3px solid #38bdf8;
+            border-radius: 10px;
+            padding: 14px;
+            background: rgba(56, 189, 248, 0.08);
+            margin-bottom: 12px;
+            color: #e6f4ff;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+        #screen-unit9-speak-micro .u9-micro-target-wrap {
+            border: 1px solid rgba(56, 81, 120, 0.9);
+            border-radius: 10px;
+            padding: 14px;
+            background: rgba(16, 37, 71, 0.65);
+            margin-bottom: 16px;
+        }
+        #screen-unit9-speak-micro .u9-micro-target-kicker {
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
+        }
+        #screen-unit9-speak-micro .u9-micro-target-phrase {
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: #eaf6ff;
+            line-height: 1.35;
+        }
+        #screen-unit9-speak-micro .u9-micro-msg {
+            min-height: 22px;
+            margin-top: 12px;
+            font-size: 0.92rem;
+            text-align: center;
+            color: var(--muted);
+        }
+        #screen-unit9-speak-micro .u9-micro-msg.ok {
+            color: #34d399;
+        }
+        #screen-unit9-speak-micro .u9-micro-score {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            text-align: center;
         }
     </style>
 </head>
@@ -1950,29 +2333,42 @@
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Unit 9</h2>
         <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Open a folder, then choose a reading. You can add more readings under each activity later.</p>
+        <div class="folder" role="button" tabindex="0" onclick="location.href='listening/index.html'" onkeydown="if(event.key==='Enter')location.href='listening/index.html'">
+            <strong>Listening</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 2 sentence completion &middot; MAKING A MARK (more tasks later).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('exams')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('exams')">
+            <strong>Reading</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 7 multiple matching and exam mode.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
+        </div>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9LexGamesHub()" onkeydown="if(event.key==='Enter')openUnit9LexGamesHub()">
             <strong>Lexical games</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; Unit 9 lexis</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; Unit 9 lexis.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
         </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('treasure')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('treasure')">
-            <strong>Treasure Hunt</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Working with texts in English</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('lexical')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('lexical')">
-            <strong>Lexical trainer</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Robots reading + Idioms: Art and creativity &middot; typed gaps + hints</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
+        <div class="folder" role="button" tabindex="0" onclick="location.href='audio-practice/index.html'" onkeydown="if(event.key==='Enter')location.href='audio-practice/index.html'">
+            <strong>Audio practice</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Shadowing, Gap Fill, Disappearing Text, Speedy Typing.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
         </div>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('speaking')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('speaking')">
             <strong>Speaking trainer</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Retell, freer questions, idiom prompts (60 s) &middot; key phrases</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Retell: robots or architecture folder, micro bursts, freer decks</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
         </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('exams')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('exams')">
-            <strong>Exams</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 7 multiple matching and more</div>
+        <div class="folder folder-disabled">
+            <strong>Grammar</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Coming soon.</div>
+        </div>
+        <div class="folder folder-disabled">
+            <strong>Use of English</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Coming soon.</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('treasure')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('treasure')">
+            <strong>Treasure Hunt</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Two folders: robots chain and Making a mark (paraphrase taps).</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
         </div>
     </div>
@@ -1985,34 +2381,42 @@
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Unit 8</h2>
         <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Open a folder, then choose a reading. You can add more readings under each activity later.</p>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit8LexGamesHub()" onkeydown="if(event.key==='Enter')openUnit8LexGamesHub()">
-            <strong>Lexical games</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; same modes as Unit 9</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('treasure')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('treasure')">
-            <strong>Treasure Hunt</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Working with texts in English</div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('exams')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('exams')">
+            <strong>Listening</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Exam tasks folder (Part 7 and more).</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
         </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('lexical')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('lexical')">
-            <strong>Lexical trainer</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Environment collocations + Environment collocations 2 &middot; typed gaps + hints</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; choose pack</div>
+        <div class="folder folder-disabled">
+            <strong>Reading</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical trainer moved to Lexical games.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open Lexical games &rarr; Lexical trainer</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit8LexGamesHub()" onkeydown="if(event.key==='Enter')openUnit8LexGamesHub()">
+            <strong>Lexical games</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; same modes as Unit 9.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
+        </div>
+        <div class="folder folder-disabled">
+            <strong>Audio practice</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Coming soon.</div>
         </div>
         <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('speaking')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('speaking')">
             <strong>Speaking trainer</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Environment article: read full text, then timed retell with phrase tags (40 s) &middot; like Unit 9</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; choose reading &rarr; retell</div>
         </div>
+        <div class="folder folder-disabled">
+            <strong>Grammar</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Coming soon.</div>
+        </div>
         <div class="folder" role="button" tabindex="0" onclick="openUseOfEnglish()" onkeydown="if(event.key==='Enter')openUseOfEnglish()">
             <strong>Use of English</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Word formation &middot; MORE THAN A TUNNEL &middot; eight gaps &middot; same mechanic as Unit 6</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; Word formation</div>
         </div>
-        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('exams')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('exams')">
-            <strong>Exams</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 7 multiple matching and more</div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('treasure')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('treasure')">
+            <strong>Treasure Hunt</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Working with texts in English.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; readings inside</div>
         </div>
     </div>
@@ -2028,6 +2432,11 @@
         <button type="button" class="hub-back" onclick="showScreen('screen-unit8')">&larr; Unit 8 menu</button>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical games</h2>
         <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). On the next screen tick <b>Environment collocations</b> and/or <b>Environment collocations 2</b> (same engine as Unit 9).</p>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('lexical')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('lexical')">
+            <strong>Lexical trainer</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Open the full typed-gap trainer packs: Environment collocations and Environment collocations 2.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; choose pack</div>
+        </div>
         <div class="folder" role="button" tabindex="0" onclick="openLexReadingPickNav('flip')" onkeydown="if(event.key==='Enter')openLexReadingPickNav('flip')">
             <strong>Definition cards</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Front: <b>definition / paraphrase</b> &mdash; flip: <b>exact phrase</b> from the text. Swipe with <b>Prev / Next</b>; mark <b>I know this</b> or <b>Still learning</b> (saved on this device).</div>
@@ -2159,19 +2568,43 @@
     </div>
 
     <div id="screen-unit9-activity-hub" class="screen">
-        <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Unit 9 menu</button>
+        <button type="button" class="hub-back" id="u9-activity-hub-back-btn" onclick="u9ActivityHubBack()">&larr; Unit 9 menu</button>
         <h2 id="u9-activity-hub-title" style="margin:0 0 8px;font-size:1.2rem;">Activity</h2>
         <p id="u9-activity-hub-lead" class="u9-hub-lead"></p>
         <div id="u9-activity-hub-folders"></div>
     </div>
 
     <div id="screen-unit9-reading-hub" class="screen">
-        <button type="button" class="hub-back" onclick="openUnit9ActivityHub('treasure')">&larr; Treasure Hunt readings</button>
+        <button type="button" class="hub-back" onclick="openUnit9ActivityHub('treasure')">&larr; Treasure Hunt</button>
         <h2 style="margin:0 0 8px;font-size:1.25rem;">Lexical reading trainer</h2>
-        <p class="u9readhub-note">Treasure hunt &mdash; Reading: The robots are taking over. Match each paraphrase to the exact phrase in the passage. Your total score updates on every correct tap.</p>
-        <p class="u9readhub-path">Jack &rarr; Valentina &rarr; Phoebe &rarr; Richard &rarr; Kiki</p>
-        <p style="color:var(--muted);font-size:12px;margin:0 0 14px;">Reading: The robots are taking over</p>
-        <button type="button" class="btn" onclick="openUnit9PhraseMatch()">Start with A Jack</button>
+        <p class="u9readhub-note">Treasure Hunt (robots reading). Match each key-word paraphrase (hint) to the <b>exact phrase</b> in the passage. +1 to your home score on every correct tap. <b>Making a mark</b> is its own folder on the Treasure Hunt screen.</p>
+        <div class="u9readhub-grid">
+            <div class="u9readhub-card">
+                <h3>Reading: The robots are taking over</h3>
+                <p class="u9readhub-path">Jack &rarr; Valentina &rarr; Phoebe &rarr; Richard &rarr; Kiki</p>
+                <p style="color:var(--muted);font-size:12px;margin:0 0 14px;line-height:1.45;">Five screens in a chain; same phrases as the reading lexical tasks.</p>
+                <button type="button" class="btn" onclick="openUnit9PhraseMatch()">Start with A Jack</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-unit9-mark-th" class="screen">
+        <button type="button" class="hub-back" onclick="backFromUnit9MarkTh()">&larr; Treasure Hunt</button>
+        <h2 style="margin:0 0 8px;font-size:1.2rem;">Unit 9 &middot; Treasure Hunt (Making a mark)</h2>
+        <p style="margin:0 0 12px;font-size:14px;color:var(--muted);">Total score: <b id="u9mk-live-score">0</b> <span style="opacity:0.85">(+1 each correct match)</span></p>
+        <p class="u9mk-lead" id="u9mk-lead"></p>
+        <div class="u9mk-meta">
+            <span id="u9mk-progress"></span>
+            <div class="u9mk-bar-wrap"><div id="u9mk-bar" class="u9mk-bar-fill"></div></div>
+        </div>
+        <div class="u9mk-task">
+            <div class="u9mk-task-label">PARAPHRASE (KEY-WORD STYLE)</div>
+            <span id="u9mk-synonym" class="u9mk-synonym"></span>
+        </div>
+        <div id="u9mk-reading" class="u9mk-reading" aria-label="Listening passage"></div>
+        <div id="u9mk-next-wrap" style="display:none;margin-top:16px;">
+            <button type="button" class="btn btn-secondary" onclick="backFromUnit9MarkTh()">Back to Treasure Hunt</button>
+        </div>
     </div>
 
     <div id="screen-unit9-lexical-type" class="screen">
@@ -2320,7 +2753,17 @@
     <div id="screen-unit9-lexgames-hub" class="screen">
         <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Unit 9 menu</button>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical games</h2>
-        <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). Tick your <b>reading / idiom pack</b> on the next screen.</p>
+        <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). Tick your <b>reading / idiom / listening</b> packs on the next screen.</p>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit9WordBank()" onkeydown="if(event.key==='Enter')openUnit9WordBank()">
+            <strong>Word Bank (Memrise style)</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Three topic folders + progress + searchable bank.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Robots + Idioms + Listening Part 2 (Making a mark)</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('lexical')" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('lexical')">
+            <strong>Lexical trainer</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Open the typed-gap packs: Reading (robots), Idioms (art &amp; creativity), and Listening Part 2 (<em>Making a mark</em>).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; choose pack</div>
+        </div>
         <div class="folder" role="button" tabindex="0" onclick="openLexReadingPickNav('flip')" onkeydown="if(event.key==='Enter')openLexReadingPickNav('flip')">
             <strong>Definition cards</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Front: <b>definition / paraphrase</b> &mdash; flip: <b>exact phrase</b> from the text. Swipe with <b>Prev / Next</b>; mark <b>I know this</b> or <b>Still learning</b> (saved on this device).</div>
@@ -2363,14 +2806,37 @@
         </div>
     </div>
 
+    <div id="screen-unit9-wordbank" class="screen">
+        <button type="button" class="hub-back" onclick="openUnit9LexGamesHub()">&larr; Lexical games</button>
+        <h2 style="margin:0 0 8px;font-size:1.2rem;">Word Bank (Memrise style)</h2>
+        <p class="u9-hub-lead" style="margin-bottom:12px;">Three topic folders, searchable list, and spaced repetition review status.</p>
+        <div class="wb-themes">
+            <button type="button" class="wb-theme-btn active" data-cpe-wb-theme="robots">Reading: The robots are taking over</button>
+            <button type="button" class="wb-theme-btn" data-cpe-wb-theme="idioms">Idioms: Art and creativity</button>
+            <button type="button" class="wb-theme-btn" data-cpe-wb-theme="listening">Listening: Making a mark</button>
+        </div>
+        <div class="wb-repeat-bar">
+            <button type="button" class="wb-repeat-btn active" data-cpe-wb-filter="all">All words</button>
+            <button type="button" class="wb-repeat-btn" data-cpe-wb-filter="due">Due now</button>
+            <select id="cpe-wb-sort" class="wb-sort">
+                <option value="dueFirst">Sort: Due first</option>
+                <option value="alpha">Sort: A-Z</option>
+            </select>
+        </div>
+        <input id="cpe-wb-search" class="wb-search" autocomplete="off" placeholder="Search phrase or hint...">
+        <div id="cpe-wb-stats" class="wb-stats"></div>
+        <ul id="cpe-wb-list" class="wb-list"></ul>
+    </div>
+
     <div id="screen-unit9-lex-reading-pick" class="screen">
         <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
         <h2 id="u9-lex-pick-title" style="margin:0 0 6px;font-size:1.2rem;">Choose reading</h2>
         <p class="lex-reading-tag">Unit 9 &middot; The robots are taking over</p>
-        <p class="u9-hub-lead" style="margin-bottom:12px;">Tick <b>Reading 7</b> for the robots text, <b>Idioms</b> for the art &amp; creativity pack, or both. (Same gap mechanic as the Lexical trainer.)</p>
+        <p class="u9-hub-lead" style="margin-bottom:12px;">Tick <b>Reading 7</b>, <b>Idioms</b>, and/or <b>Listening Part 2</b> &mdash; same gap / flip / drop mechanics; the trainer uses one pack at a time.</p>
         <div class="u9-fall-pick-box">
             <label><input type="checkbox" id="u9-lex-reading-7" checked data-speakers="A Jack,B Valentina,C Phoebe,D Richard,E Kiki"> <strong>Reading 7</strong> &mdash; The robots are taking over</label>
             <label><input type="checkbox" id="u9-lex-reading-idioms" data-speakers="Idioms: Art and creativity"> <strong>Idioms: Art and creativity</strong> &mdash; fixed expressions (same gap games as the reading)</label>
+            <label style="display:block;margin-top:10px;"><input type="checkbox" id="u9-lex-reading-listen" data-speakers="Listening: Making a mark"> <strong>Listening Part 2</strong> &mdash; <em>Making a mark</em> (high-yield chunks from the sentence-completion task)</label>
         </div>
         <button type="button" class="btn" onclick="u9LexReadingPickContinue()">Continue</button>
     </div>
@@ -2383,7 +2849,7 @@
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical drop</h2>
         <p class="lex-reading-tag">Reading: The robots are taking over</p>
         <div class="u9-fall-intro" id="u9-fall-intro">
-            <p style="margin:0 0 10px;"><b style="color:var(--text);">How it works.</b> You see a <b>full sentence</b> with one gap <b>____</b>. Only <b>1&ndash;4 words</b> from the text fill the gap. If <b>Check</b> is wrong or you are <b>too slow</b>, the <b>correct answer appears in large type</b> and that phrase is saved for a <b>later round</b>. Use the <b>paraphrase hint</b>, then type and press <b>Enter</b> or Check before the line hits the bottom.</p>
+            <p style="margin:0 0 10px;"><b style="color:var(--text);">How it works.</b> You see a <b>full sentence</b> with one gap <b>____</b>. Only a <b>short chunk</b> (usually about <b>1&ndash;8 words</b>) from the text fills the gap. If <b>Check</b> is wrong or you are <b>too slow</b>, the <b>correct answer appears in large type</b> and that phrase is saved for a <b>later round</b>. Use the <b>paraphrase hint</b>, then type and press <b>Enter</b> or Check before the line hits the bottom.</p>
             <p style="margin:0 0 14px;">Each <b>round</b> you aim for up to <b>ten correct</b> catches; speed is the <b>same for every drop in that round</b>. <b>Rounds 1&ndash;4</b> use the slowest tier, then each new round is a bit faster. Play <b>several rounds</b> until <b>every phrase</b> in this reading has been answered correctly at least once &mdash; then you earn a <b>checkmark</b>. Phrases you miss can come back in later rounds.</p>
             <button type="button" class="btn" onclick="u9FallBeginRun()">Start round</button>
             <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="openLexReadingPickNav('fall')">Change reading theme</button>
@@ -2403,7 +2869,7 @@
                 <div class="u9-fall-syn-label">Hint (paraphrase)</div>
                 <div id="u9-fall-syn"></div>
             </div>
-            <input type="text" id="u9-fall-input" class="game-input" style="margin-top:0;" autocomplete="off" placeholder="1&ndash;4 words from the text (English)&hellip;" aria-label="Type one to four words that fill the gap">
+            <input type="text" id="u9-fall-input" class="game-input" style="margin-top:0;" autocomplete="off" placeholder="Short chunk from the text (English)&hellip;" aria-label="Type the short phrase that fills the gap">
             <button type="button" class="btn" onclick="u9FallTrySubmit()">Check</button>
             <p id="u9-fall-feedback" style="min-height:22px;margin:10px 0 0;font-size:14px;color:var(--muted);"></p>
         </div>
@@ -2619,16 +3085,17 @@
                 <div class="speak-card">
                     <span class="speak-step-pill" id="speak-pill-1">Step 1 &middot; Read</span>
                     <h2 class="speak-char-title" id="speak-title-1">A Jack</h2>
-                    <p class="speak-hint" style="text-align:left;margin-bottom:14px;">Read the whole passage. When you are ready, continue &mdash; the full text will hide and only key phrases will stay on screen.</p>
+                    <p class="speak-hint" id="speak-v1-read-hint" style="text-align:left;margin-bottom:14px;">Read the whole passage. When you are ready, continue &mdash; the full text will hide and only key phrases will stay on screen.</p>
                     <div class="speak-full-text" id="speak-full-text"></div>
                     <button type="button" class="btn" id="speak-btn-start-read" onclick="speakingGoToRetellView()">Continue to retell</button>
                 </div>
             </div>
             <div id="speak-v2" class="speak-view" style="display:none;">
                 <div class="speak-card">
-                    <span class="speak-step-pill">Step 2 &middot; Retell</span>
+                    <span class="speak-step-pill" id="speak-pill-2">Step 2 &middot; Retell</span>
                     <h2 class="speak-char-title" id="speak-title-2">A Jack</h2>
                     <p class="speak-hint" id="speak-v2-lead">Key phrases only. Press <b>Start retelling</b> when you begin speaking aloud. The ring is your <span id="speak-sec-label">40</span>-second window (visual mic does not record yet).</p>
+                    <p class="speak-v2-key-banner" id="speak-v2-key-banner" style="display:none;" aria-hidden="true"></p>
                     <div class="speak-tags" id="speak-tags"></div>
                     <div class="speak-timer-wrap">
                         <div class="speak-ring-holder">
@@ -2659,7 +3126,7 @@
                 <div class="speak-card speak-done-card">
                     <h3>Round finished</h3>
                     <p class="speak-hint" id="speak-done-msg">Nice work. Move on when you are ready.</p>
-                    <button type="button" class="btn" id="speak-btn-next" onclick="speakingNextCharacter()">Next character</button>
+                    <button type="button" class="btn" id="speak-btn-next" onclick="speakingUnifiedV3Next()">Next character</button>
                 </div>
             </div>
         </div>
@@ -2673,10 +3140,10 @@
             </div>
             <div id="speak-freer-intro" class="speak-freer-view">
                 <div class="speak-freer-card">
-                    <span class="speak-freer-pill">Freer practice (from reading Robots are taking over)</span>
-                    <h2 style="margin:0 0 14px;font-size:clamp(1.35rem,4vw,1.85rem);font-weight:800;color:#f8fafc;text-align:center;letter-spacing:-0.02em;">Answer the questions</h2>
-                    <p class="speak-freer-hint" style="margin-bottom:22px;">You get <b style="color:var(--text);">one minute per prompt</b>. Speak out loud as if in an exam or a conversation. The timer starts as soon as a question appears. Use <b>Next question</b> when you are finished before the minute ends, or wait for the ring to complete &mdash; then the next prompt loads automatically.</p>
-                    <p class="speak-freer-hint" style="font-size:14px;margin-bottom:26px;">Each new run <b style="color:var(--text);">shuffles</b> the same set of Unit 9-style discussion questions.</p>
+                    <span class="speak-freer-pill" id="speak-freer-intro-pill">Freer practice (from reading The robots are taking over)</span>
+                    <h2 id="speak-freer-intro-title" style="margin:0 0 14px;font-size:clamp(1.35rem,4vw,1.85rem);font-weight:800;color:#f8fafc;text-align:center;letter-spacing:-0.02em;">Answer the questions</h2>
+                    <p id="speak-freer-intro-p1" class="speak-freer-hint" style="margin-bottom:22px;">You get <b style="color:var(--text);">one minute per prompt</b>. Speak out loud as if in an exam or a conversation. The timer starts as soon as a question appears. Use <b>Next question</b> when you are finished before the minute ends, or wait for the ring to complete &mdash; then the next prompt loads automatically.</p>
+                    <p id="speak-freer-intro-p2" class="speak-freer-hint" style="font-size:14px;margin-bottom:26px;">Each new run <b style="color:var(--text);">shuffles</b> the same set of Unit 9-style discussion questions.</p>
                     <div class="speak-freer-actions">
                         <button type="button" class="btn" onclick="u9SpeakFreerStartSession()">Start</button>
                     </div>
@@ -2773,6 +3240,72 @@
                         <button type="button" class="btn" onclick="u9SpeakIdiomStartSession()">Shuffle &amp; play again</button>
                         <button type="button" class="btn btn-secondary" onclick="u9SpeakIdiomShowIntro()">Instructions</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-unit9-speak-micro" class="screen">
+        <div class="speak-freer-shell">
+            <div class="speak-freer-top">
+                <button type="button" class="hub-back" onclick="u9MicroBack()">&larr; Speaking trainer</button>
+                <span class="speak-freer-brand">Speaking trainer</span>
+            </div>
+            <div class="speak-freer-view">
+                <div class="speak-freer-card">
+                    <span class="speak-freer-pill">Micro speaking mode (FCE-style)</span>
+                    <h2 style="margin:0 0 10px;font-size:clamp(1.25rem,3.8vw,1.65rem);font-weight:800;color:#f8fafc;text-align:center;">15-second bursts</h2>
+                    <p class="speak-freer-hint" style="margin-bottom:14px;">Use the <b style="color:var(--text);">target phrase</b> naturally in your own sentence. Unlimited repeats. <b style="color:var(--text);">I used it well</b> adds +1 to your home score and marks a matching item <b style="color:var(--text);">Know</b> in the Word Bank when the wording lines up. <b style="color:var(--text);">Listening</b> = script chunks first, then the nine official sentence-completion keys.</p>
+                    <div class="u9-micro-themes">
+                        <button type="button" class="u9-micro-theme-btn active" id="u9-micro-btn-robots" onclick="u9MicroSetTheme('robots')">Robots reading</button>
+                        <button type="button" class="u9-micro-theme-btn" id="u9-micro-btn-idioms" onclick="u9MicroSetTheme('idioms')">Idioms: Art and creativity</button>
+                        <button type="button" class="u9-micro-theme-btn" id="u9-micro-btn-listen" onclick="u9MicroSetTheme('listening')">Listening: Making a mark</button>
+                    </div>
+                    <p class="u9-micro-prompt" id="u9-micro-prompt-text"></p>
+                    <div class="u9-micro-target-wrap">
+                        <span class="u9-micro-target-kicker">Target phrase</span>
+                        <div class="u9-micro-target-phrase" id="u9-micro-target-phrase"></div>
+                    </div>
+                    <div class="speak-freer-stage">
+                        <div class="speak-freer-ring-wrap">
+                            <svg class="speak-freer-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="speakMicroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#a78bfa"/>
+                                        <stop offset="50%" stop-color="#38bdf8"/>
+                                        <stop offset="100%" stop-color="#22d3ee"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="speak-freer-ring-bg" cx="60" cy="60" r="52"/>
+                                <circle class="speak-freer-ring-prog" id="u9-micro-ring-prog" cx="60" cy="60" r="52"/>
+                            </svg>
+                            <span class="speak-freer-time" id="u9-micro-time-num">15</span>
+                        </div>
+                        <p class="speak-freer-hint" id="u9-micro-status">Press Start when you are ready.</p>
+                    </div>
+                    <div class="speak-freer-actions">
+                        <button type="button" class="btn" id="u9-micro-btn-start" onclick="u9MicroStartTimer()">Start 15s</button>
+                        <button type="button" class="btn" style="background:linear-gradient(180deg,#34d399,#059669);border:none;color:#052e1f;" id="u9-micro-btn-used" onclick="u9MicroMarkUsed()">I used it well (+1)</button>
+                        <button type="button" class="btn btn-secondary" id="u9-micro-btn-next" onclick="u9MicroNextCard()">Next prompt</button>
+                    </div>
+                    <p class="u9-micro-msg" id="u9-micro-msg"></p>
+                    <p class="u9-micro-score" id="u9-micro-score-line">Session score: 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-unit9-speak-exam" class="screen">
+        <div class="speak-freer-shell">
+            <div class="speak-freer-top">
+                <button type="button" class="hub-back" onclick="u9SpeakExamBack()">&larr; Speaking trainer</button>
+                <span class="speak-freer-brand">Speaking trainer</span>
+            </div>
+            <div class="speak-freer-view">
+                <div class="speak-freer-card">
+                    <span class="speak-freer-pill">Exam mode</span>
+                    <h2 style="margin:0 0 14px;font-size:clamp(1.35rem,4vw,1.85rem);font-weight:800;color:#f8fafc;text-align:center;">Coming soon</h2>
+                    <p class="speak-freer-hint">This folder is reserved for timed exam-style speaking tasks. Content will be added in a later update.</p>
                 </div>
             </div>
         </div>
@@ -3358,6 +3891,233 @@ var LEX_IDIOM_HINTS = LEX_IDIOM_DATA.map(function (d) {
     return d.hint;
 });
 var LEX_IDIOM_SECTION_STEPS = [{ label: 'Idioms: Art and creativity', start: 0, end: LEX_IDIOM_DATA.length - 1 }];
+
+/** Unit 9 — Listening Part 2 (Making a mark): before/after/ans taken verbatim from listening/making-a-mark.html TRANSCRIPT_PARTS (audio script). */
+var LEX_LISTEN_SPEAKER = 'Listening: Making a mark';
+var LEX_LISTEN_DATA = [
+    {
+        hint: 'Follow a different path than pure aesthetics (audio uses third person)',
+        before: 'Architecture has an aim that ',
+        after: ' at some level because it involves ',
+        ans: 'diverges from art'
+    },
+    {
+        hint: 'Test the limits of what is physically possible to build',
+        before: 'Architecture has an aim that diverges from art at some level because it involves ',
+        after:
+            ' of what it is physically possible to make when something has to be functional as well as aesthetically pleasing on such a vast scale.',
+        ans: 'pushing the boundaries'
+    },
+    {
+        hint: 'Looks attractive in design / easy on the eye \u2014 pairs with functional in the same clause (how something appears, not only what it does)',
+        before: 'possible to make when something has to be functional as well as ',
+        after: ' on such a vast scale.',
+        ans: 'aesthetically pleasing'
+    },
+    {
+        hint: 'Something that suddenly opens up your sense of what is possible',
+        before: 'As such it presents far greater opportunities to shock and surprise, at times being ',
+        after: ' the creativity of the human mind.',
+        ans: 'a real eye opener into'
+    },
+    {
+        hint: 'Individuals focused on only one goal, often to an obsessive degree',
+        before:
+            "A quick glance around the world's most renowned buildings \u2013 be they ancient or modern \u2013 will confirm that the architects of these kinds of landmark buildings are extremely ",
+        after:
+            ', dead set on leaving behind some kind of legacy project or grand statement that might earn them a reputation for all eternity.',
+        ans: 'single-minded people'
+    },
+    {
+        hint: 'Completely determined to achieve a specific goal',
+        before:
+            "A quick glance around the world's most renowned buildings \u2013 be they ancient or modern \u2013 will confirm that the architects of these kinds of landmark buildings are extremely single-minded people, ",
+        after:
+            ' leaving behind some kind of legacy project or grand statement that might earn them a reputation for all eternity.',
+        ans: 'dead set on'
+    },
+    {
+        hint: 'Operational systems layer (lifts, pipework, circulation) named explicitly in the script',
+        before: 'Opened in 1986, its pioneering high-tech architecture can be seen in the fact that the ',
+        after:
+            " \u2013 including lifts, water pipes and staircases, are actually located on the building's exterior, opening up the interior and creating a space of breath-taking proportions.",
+        ans: "building's services"
+    },
+    {
+        hint: 'Narrow the topic to one area (here: office buildings)',
+        before: "However, what we're going to ",
+        after: " today, is the lowly office building, where many of us spend our days.",
+        ans: 'hone in on'
+    },
+    {
+        hint: 'Be a pioneer or innovator in a field',
+        before: 'As we will see, this is an area where architects have really ',
+        after:
+            '. The eye-watering costs of these buildings are clearly beyond all but the most ambitious or wealthy organisations and therefore it is no surprise that many are located in financial districts in capital cities.',
+        ans: 'blazed a new trail'
+    },
+    {
+        hint: 'Extremely high, almost unbelievable prices',
+        before:
+            'many of us spend our days. As we will see, this is an area where architects have really blazed a new trail. The ',
+        after:
+            ' of these buildings are clearly beyond all but the most ambitious or wealthy organisations and therefore it is no surprise that many are located in financial districts in capital cities.',
+        ans: 'eye-watering costs'
+    },
+    {
+        hint: 'Neither fully positive nor fully negative reception',
+        before: 'It is worth noting that these have been ',
+        after: '.',
+        ans: 'met with mixed reviews'
+    },
+    {
+        hint: 'Public evaluation framing (audio wording for \u201cwidely regarded\u201d-style status)',
+        before: "Take Lloyd's of London \u2013 ",
+        after: ' the first step into innovative workplace architecture.',
+        ans: 'considered by some to be'
+    },
+    {
+        hint: 'Showing very little enthusiasm or interest; indifferent',
+        before: 'it is perhaps unsurprising that the initial reception could be described as ',
+        after:
+            ". It was variously nicknamed an oil rig and a motorbike engine with some even going so far as to call it an eyesore.",
+        ans: 'lukewarm at best'
+    },
+    {
+        hint: 'Recognized as something that changed how people saw the building (\u201cgame changer\u201d in the script)',
+        before: 'However, over the years the building has been embraced, being seen as ',
+        after:
+            ". In fact, it was granted Grade I building protection, affording it the same elite status as other key buildings and monuments in England, such as Buckingham Palace, the Royal Albert Hall and Nelson's Column.",
+        ans: 'iconic and a game changer of its time'
+    },
+    {
+        hint: 'To the extent that (introduces why something is remarkable)',
+        before: 'The building is covered in glass and so appears to shimmer in the sunlight and is really eye-catching. It is also remarkable ',
+        after: ' its budget was relatively low for a building of this magnitude \u2013 $50 million.',
+        ans: 'insofar as'
+    },
+    {
+        hint: 'Paper-only phase before it was built (same paragraph as the budget surprise)',
+        before: 'What is particularly intriguing to note, is that the spiral design actually started out as merely a ',
+        after: ' by the architect company, but despite ',
+        ans: 'theoretical project'
+    },
+    {
+        hint: 'Show the designers\u2019 skill through the building (verbatim from the script)',
+        before: 'Anyway, both these buildings are definitely imposing, intended to ',
+        after: ' in addition to the success and dominance of the companies that are located in them.',
+        ans: 'communicate the expertise of their designers'
+    },
+    {
+        hint: 'Dull and lacking distinctive features (note the comma in the audio script)',
+        before: 'Well, I suppose it offers employees who would otherwise be stuck working in some ',
+        after:
+            ' government building an element of fun, or perhaps a topic for the watercooler, but I wonder what you think of this. Do you think its novelty value will wear off in the future? Is it liable to date quickly and require a revamp or replacement?',
+        ans: 'bland, nondescript'
+    },
+    {
+        hint: 'Judged an unjustified expenditure',
+        before:
+            'Again, opinions are divided on its appeal, although this could be down to the fact that a considerable amount of the space has not been able to be rented out, so for some, it might be ',
+        after: '.',
+        ans: 'deemed a waste of money'
+    }
+];
+
+/**
+ * Unit 9 — Listening Part 2 sentence completion (Making a mark): official gap keys and
+ * printed before/after frames, aligned with listening/making-a-mark.html TASK[].
+ * Used in speaking (micro, retelling, freer) and Word Bank alongside script chunks.
+ */
+var U9_LISTEN_SC_DATA = [
+    {
+        hint: 'Two-word collocation after create a — lasting impact that will stand the test of time.',
+        before: 'Many architects are driven to create a ',
+        after: ' that will stand the test of time.',
+        ans: 'legacy project'
+    },
+    {
+        hint: 'Abstract noun: what those cultural buildings are for (purpose), not shape or fame.',
+        before: 'The ',
+        after:
+            " of the majority of the world's most renowned cultural buildings is comparable, irrespective of location or the era in which it was built.",
+        ans: 'function'
+    },
+    {
+        hint: 'Adjective for reception — divided opinion on bold office towers in general.',
+        before:
+            'The public reception to the more innovatively designed office buildings has tended to be ',
+        after: '.',
+        ans: 'mixed'
+    },
+    {
+        hint: 'Operational layer (lifts, pipework) — same idea as services in the script.',
+        before:
+            'In order to create its vast, minimalist interior, Lloyds of London had some of the ',
+        after: ' commonly associated with a building reimagined and repositioned.',
+        ans: 'services'
+    },
+    {
+        hint: 'Evaluative adjective before examples — status / emblem, not only age.',
+        before:
+            'As far as 20th century architecture is concerned, the Lloyds of London building is widely regarded as one of the most ',
+        after: ' examples there is.',
+        ans: 'iconic'
+    },
+    {
+        hint: 'Adjective before case study — paper-only / not built yet.',
+        before: 'Initially, the twisted F \u0026 F building was intended as a ',
+        after: ' case study.',
+        ans: 'theoretical'
+    },
+    {
+        hint: 'Summary evaluation tied to cheap-for-its-size logic.',
+        before: 'According to the lecturer, what makes the F \u0026 F building ',
+        after:
+            ' is that it was relatively cheap to build for a building of its magnitude.',
+        ans: 'remarkable'
+    },
+    {
+        hint: 'Professional skill on display — parallel to corporate success in the sentence.',
+        before: "Showcasing their architects' ",
+        after:
+            ' is one of the reasons behind the quirky designs of the Lloyds of London and the F\u0026F buildings.',
+        ans: 'expertise'
+    },
+    {
+        hint: 'Sector for boring default offices — not corporate glamour.',
+        before: 'The Fisheries Board office is a contradiction to other ',
+        after: ' buildings.',
+        ans: 'government'
+    }
+];
+
+/** Full Track 9.1 transcript (seven paragraphs) — keep in sync with audio-practice/making-a-mark-data.js PARAGRAPHS. */
+var U9_MARK_TRANSCRIPT_PARAS = ["Architecture has an aim that diverges from art at some level because it involves pushing the boundaries of what it is physically possible to make when something has to be functional as well as aesthetically pleasing on such a vast scale. As such it presents far greater opportunities to shock and surprise, at times being a real eye opener into the creativity of the human mind. A quick glance around the world's most renowned buildings – be they ancient or modern – will confirm that the architects of these kinds of landmark buildings are extremely single-minded people, dead set on leaving behind some kind of legacy project or grand statement that might earn them a reputation for all eternity.","If I were to ask you to illustrate this point, no doubt you'd come up with some classics – the Colosseum in Rome, the Guggenheim in Bilbao, the Sydney Opera House, the list goes on. But these buildings all have one common function in that they're designed for pleasure and entertainment, and, as a genre, have been reimagined and reworked over and over. However, what we're going to hone in on today, is the lowly office building, where many of us spend our days. As we will see, this is an area where architects have really blazed a new trail. The eye-watering costs of these buildings are clearly beyond all but the most ambitious or wealthy organisations and therefore it is no surprise that many are located in financial districts in capital cities.","It is worth noting that these have been met with mixed reviews.","Take Lloyd's of London – considered by some to be the first step into innovative workplace architecture. Opened in 1986, its pioneering high-tech architecture can be seen in the fact that the building's services – including lifts, water pipes and staircases, are actually located on the building's exterior, opening up the interior and creating a space of breath-taking proportions. It reimagined what an office space could look like. However, with the plans having been drawn up with attention to function rather than form, it is perhaps unsurprising that the initial reception could be described as lukewarm at best. It was variously nicknamed an oil rig and a motorbike engine with some even going so far as to call it an eyesore. However, over the years the building has been embraced, being seen as iconic and a game changer of its time. In fact, it was granted Grade I building protection, affording it the same elite status as other key buildings and monuments in England, such as Buckingham Palace, the Royal Albert Hall and Nelson's Column.","Another fascinating example for us to look at is the F&F building, in Panama City, completed in 2011. And look – it is in the shape of a corkscrew. What is particularly intriguing to note, is that the spiral design actually started out as merely a theoretical project by the architect company, but despite not having been intended as an actual building, it caught the eye of one of the company's clients and the decision was taken to go ahead with this design. The building is covered in glass and so appears to shimmer in the sunlight and is really eye-catching. It is also remarkable insofar as its budget was relatively low for a building of this magnitude – $50 million. Again, opinions are divided on its appeal, although this could be down to the fact that a considerable amount of the space has not been able to be rented out, so for some, it might be deemed a waste of money.","These buildings seem to have been more controversial than their cultural counterparts that I mentioned earlier like the Guggenheim, and these could also be described as not fitting everyone's ideas of great design, although it's not altogether clear why this should be. Anyway, both these buildings are definitely imposing, intended to communicate the expertise of their designers in addition to the success and dominance of the companies that are located in them.","Let's now compare those with this one which I'd say is much more whimsical – the office of the National Fisheries Board of India in the city of Hyderabad, which was based on Frank Gehry's Golden Fish in Barcelona, although it possesses none of his trademark flowing design and is instead an altogether more simple representation of a fish. Motives for a design like this? Well, I suppose it offers employees who would otherwise be stuck working in some bland, nondescript government building an element of fun, or perhaps a topic for the watercooler, but I wonder what you think of this. Do you think its novelty value will wear off in the future? Is it liable to date quickly and require a revamp or replacement?"];
+
+function u9LexListenRebuildPassage() {
+    LEX_LISTEN_PASSAGE = LEX_LISTEN_DATA.map(function (d) {
+        return d.before + d.ans + d.after;
+    }).join(' ');
+}
+var LEX_LISTEN_PASSAGE = '';
+u9LexListenRebuildPassage();
+
+var LEX_LISTEN_TRIPLES = LEX_LISTEN_DATA.map(function (d) {
+    return [d.before, d.after, d.ans];
+});
+var LEX_LISTEN_TYPE_TASKS = lexExpand(LEX_LISTEN_SPEAKER, LEX_LISTEN_TRIPLES);
+var LEX_LISTEN_HINTS = LEX_LISTEN_DATA.map(function (d) {
+    return d.hint;
+});
+var LEX_LISTEN_SECTION_STEPS = [{ label: LEX_LISTEN_SPEAKER, start: 0, end: LEX_LISTEN_DATA.length - 1 }];
+
+/** Treasure Hunt (Making a mark): same order as LEX_LISTEN_DATA / lexical Listening pack. */
+var u9MarkThStep = 0;
+var U9_MARK_TH_TASKS = LEX_LISTEN_DATA.map(function (d, i) {
+    return { syn: d.hint, id: String(i + 1) };
+});
+
 var LEX_ENV_HINTS = LEX_ENV_DATA.map(function (d) {
     return d.hint;
 });
@@ -3408,30 +4168,37 @@ function lexTrainerIsUnit8EnvLex() {
 
 function lexTypeTasksNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_TYPE_TASKS;
+    if (lexTrainerPack === 'listening') return LEX_LISTEN_TYPE_TASKS;
     if (lexTrainerPack === 'environment') return LEX_ENV_TYPE_TASKS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_TYPE_TASKS;
     return LEX_ROBOTS_TYPE_TASKS;
 }
 function lexTypeHintsNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_HINTS;
+    if (lexTrainerPack === 'listening') return LEX_LISTEN_HINTS;
     if (lexTrainerPack === 'environment') return LEX_ENV_HINTS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_HINTS;
     return LEX_ROBOTS_HINTS;
 }
 function lexSectionStepsNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_SECTION_STEPS;
+    if (lexTrainerPack === 'listening') return LEX_LISTEN_SECTION_STEPS;
     if (lexTrainerPack === 'environment') return LEX_ENV_SECTION_STEPS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_SECTION_STEPS;
     return LEX_ROBOTS_SECTION_STEPS;
 }
 
 var u9ActivityHubMode = 'treasure';
+/** null | 'freer' | 'retell' — nested folder inside Unit 9 Speaking trainer hub */
+var u9SpeakHubFolder = null;
+/** Unit 9 retelling only: which rounds to use (null = all, rarely used). */
+var speakRetellSubset = null;
 
 function getU9ActivityHubConfig(mode) {
     var cfgs = {
         treasure: {
             title: 'Treasure Hunt',
-            lead: 'Open a reading folder, then start the chain (Jack \u2192 Valentina \u2192 Phoebe \u2192 Richard \u2192 Kiki).',
+            lead: 'Two folders: robots (five-speaker chain) and Listening Making a mark (one full script). Same paraphrase \u2192 exact phrase tap mechanic.',
             readings: [
                 {
                     title: 'Reading: The robots are taking over',
@@ -3440,12 +4207,20 @@ function getU9ActivityHubConfig(mode) {
                     action: function () {
                         showScreen('screen-unit9-reading-hub');
                     }
+                },
+                {
+                    title: 'Listening: Making a mark',
+                    line1: 'Match each paraphrase to the exact phrase in the lecture script. +1 to score per correct tap.',
+                    line2: 'Track 9.1 \u00b7 lexical Listening pack \u00b7 same tap mechanic as robots',
+                    action: function () {
+                        openUnit9MarkPhraseMatch();
+                    }
                 }
             ]
         },
         lexical: {
             title: 'Lexical trainer',
-            lead: 'Pick a pack: the robots reading or the idiom list. Same gap mechanic for both.',
+            lead: 'Pick a pack: robots reading, idiom list, or Listening Part 2 chunks. Same typed-gap mechanic.',
             readings: [
                 {
                     title: 'Reading: The robots are taking over',
@@ -3460,32 +4235,44 @@ function getU9ActivityHubConfig(mode) {
                     action: function () {
                         openLexicalTrainerIdioms();
                     }
+                },
+                {
+                    title: 'Listening: Making a mark',
+                    line1: 'Part 2 sentence-completion chunks + gloss hints \u00b7 3 lives for the whole pack',
+                    action: function () {
+                        openLexicalTrainerListening();
+                    }
                 }
             ]
         },
         speaking: {
             title: 'Speaking trainer',
-            lead: 'Read \u2192 retell, freer questions from the robots reading, or idiom discussion cards (60 s each).',
+            lead: 'Four modes: retelling (pick robots or architecture text), 15s micro bursts, freer practice decks, and exam speaking (coming soon).',
             readings: [
                 {
-                    title: 'Reading: The robots are taking over',
-                    line1: 'Full text, key-phrase tags only, 40s timer, mic (demo)',
+                    title: 'Retelling mode',
+                    line1: 'Two folders: reading (five robots speakers) or Listening booklet (architecture / Making a mark).',
+                    isFolder: true,
+                    folderKey: 'retell'
+                },
+                {
+                    title: 'Micro speaking mode',
+                    line1: 'Robots + Idioms + Listening: script chunks and nine sentence-completion keys \u00b7 15 s \u00b7 Word Bank sync',
                     action: function () {
-                        openSpeakingTrainer();
+                        openU9MicroSpeaking();
                     }
                 },
                 {
-                    title: 'Freer practice (from reading Robots are taking over)',
-                    line1: 'Big-screen prompts \u00b7 60 seconds per question \u00b7 new shuffle every run',
-                    action: function () {
-                        openSpeakFreerPractice();
-                    }
+                    title: 'Freer practice',
+                    line1: 'Three decks: reading questions, idiom cards, and Listening keys (Making a mark) \u2014 60 s, shuffle each run.',
+                    isFolder: true,
+                    folderKey: 'freer'
                 },
                 {
-                    title: 'Idioms: Art and creativity',
-                    line1: 'Creative process, influence, reactions \u00b7 12 prompts \u00b7 60 seconds per question \u00b7 shuffle each run',
+                    title: 'Exam mode',
+                    line1: 'Coming soon.',
                     action: function () {
-                        openSpeakIdiomPractice();
+                        openU9SpeakingExamPlaceholder();
                     }
                 }
             ]
@@ -3501,6 +4288,14 @@ function getU9ActivityHubConfig(mode) {
                     action: function () {
                         location.href = 'c2-multiple-matching.html';
                     }
+                },
+                {
+                    title: 'Reading: The robots are taking over',
+                    line1: 'Part 7 \u2014 Exam mode (guided step-by-step)',
+                    line2: '5-minute skim timer, 10 statements one by one, review and submit',
+                    action: function () {
+                        location.href = 'audio-practice/exam-mode.html';
+                    }
                 }
             ]
         }
@@ -3508,13 +4303,98 @@ function getU9ActivityHubConfig(mode) {
     return cfgs[mode] || null;
 }
 
-function openUnit9ActivityHub(mode) {
-    u9ActivityHubMode = mode;
+function resolveU9ActivityHubCfg(mode) {
     var cfg = getU9ActivityHubConfig(mode);
+    if (!cfg) return null;
+    if (mode === 'speaking' && u9SpeakHubFolder === 'retell') {
+        return {
+            title: 'Retelling mode',
+            lead: 'Choose which text to retell \u2014 same steps (read \u2192 key phrases \u2192 40s ring).',
+            readings: [
+                {
+                    title: 'Retelling \u2014 The robots are taking over',
+                    line1: 'Five speakers: A Jack through E Kiki \u00b7 full passage then phrase tags \u00b7 mic (demo)',
+                    action: function () {
+                        openSpeakingTrainer('robots');
+                    }
+                },
+                {
+                    title: 'Retelling \u2014 Making a mark (architecture)',
+                    line1: 'Chunked: 1\u20132 lecture paragraphs \u2192 retell with lexical Listening key phrases from that slice (then next chunk).',
+                    action: function () {
+                        openSpeakingTrainer('mark');
+                    }
+                }
+            ]
+        };
+    }
+    if (mode === 'speaking' && u9SpeakHubFolder === 'freer') {
+        return {
+            title: 'Freer practice',
+            lead: 'Pick a deck (reading, idioms, or Listening keys). Each run shuffles; 60 seconds per question.',
+            readings: [
+                {
+                    title: 'Freer practice — Reading: The robots are taking over',
+                    line1: 'Big-screen prompts \u00b7 60 seconds per question \u00b7 new shuffle every run',
+                    action: function () {
+                        openSpeakFreerPractice();
+                    }
+                },
+                {
+                    title: 'Freer practice — Idioms: Art and creativity',
+                    line1: 'Creative process, influence, reactions \u00b7 12 prompts \u00b7 60 seconds per question \u00b7 shuffle each run',
+                    action: function () {
+                        openSpeakIdiomPractice();
+                    }
+                },
+                {
+                    title: 'Freer practice — Listening: Making a mark (keys)',
+                    line1: 'Nine discussion prompts \u00b7 official sentence-completion vocabulary \u00b7 60 s \u00b7 shuffle',
+                    action: function () {
+                        openSpeakFreerPractice('listenSc');
+                    }
+                }
+            ]
+        };
+    }
+    return cfg;
+}
+
+function u9ActivityHubBack() {
+    if (u9ActivityHubMode === 'speaking' && u9SpeakHubFolder) {
+        u9SpeakHubFolder = null;
+        openUnit9ActivityHub('speaking');
+        return;
+    }
+    showScreen('screen-unit9');
+}
+
+function openUnit9ActivityHub(mode, opt) {
+    opt = opt || {};
+    if (mode === 'speaking') {
+        if (opt.sub === 'freer') {
+            u9SpeakHubFolder = 'freer';
+        } else if (opt.sub === 'retell') {
+            u9SpeakHubFolder = 'retell';
+        } else {
+            u9SpeakHubFolder = null;
+        }
+    } else {
+        u9SpeakHubFolder = null;
+    }
+    u9ActivityHubMode = mode;
+    var cfg = resolveU9ActivityHubCfg(mode);
     if (!cfg) return;
     var tEl = document.getElementById('u9-activity-hub-title');
     var lEl = document.getElementById('u9-activity-hub-lead');
     var root = document.getElementById('u9-activity-hub-folders');
+    var backBtn = document.getElementById('u9-activity-hub-back-btn');
+    if (backBtn) {
+        backBtn.textContent =
+            mode === 'speaking' && (u9SpeakHubFolder === 'freer' || u9SpeakHubFolder === 'retell')
+                ? '\u2190 Speaking trainer'
+                : '\u2190 Unit 9 menu';
+    }
     if (tEl) tEl.textContent = cfg.title;
     if (lEl) lEl.textContent = cfg.lead;
     if (!root) return;
@@ -3542,7 +4422,15 @@ function openUnit9ActivityHub(mode) {
                 div.appendChild(d2);
             }
             var go = function () {
-                item.action();
+                if (item.isFolder && item.folderKey === 'freer') {
+                    openUnit9ActivityHub('speaking', { sub: 'freer' });
+                    return;
+                }
+                if (item.isFolder && item.folderKey === 'retell') {
+                    openUnit9ActivityHub('speaking', { sub: 'retell' });
+                    return;
+                }
+                if (item.action) item.action();
             };
             div.addEventListener('click', go);
             div.addEventListener('keydown', function (e) {
@@ -4241,8 +5129,8 @@ var U9_FALL_SLOW_ROUNDS = 4;
 var U9_FALL_LIVES_START = 3;
 var u9FallSpeakerFilter = null;
 var U9_FALL_GAP_WORDS_MIN = 1;
-var U9_FALL_GAP_WORDS_MAX = 4;
-var U9_FALL_POOL_SCHEMA = 6;
+var U9_FALL_GAP_WORDS_MAX = 8;
+var U9_FALL_POOL_SCHEMA = 7;
 var u9FallPoolSchema = 0;
 
 function u9FallScrapePhrases(rootId, clickSel) {
@@ -4413,6 +5301,7 @@ function ensureU9FallPool() {
     var pr = u9FallPassagePlain('u9ric-reading');
     var pk = u9FallPassagePlain('u9kik-reading');
     u9LexIdiomRebuildPassage();
+    u9LexListenRebuildPassage();
     lexEnvRebuildPassage();
     lexEnv2RebuildPassage();
     var idiomItems = LEX_IDIOM_DATA.map(function (d) {
@@ -4421,6 +5310,14 @@ function ensureU9FallPool() {
             ans: d.ans,
             speaker: 'Idioms: Art and creativity',
             fallText: u9FallBuildGapLine(LEX_IDIOM_PASSAGE, d.ans, 'Idioms')
+        };
+    });
+    var listenItems = LEX_LISTEN_DATA.map(function (d) {
+        return {
+            syn: d.hint,
+            ans: d.ans,
+            speaker: LEX_LISTEN_SPEAKER,
+            fallText: u9FallBuildGapLine(LEX_LISTEN_PASSAGE, d.ans, LEX_LISTEN_SPEAKER)
         };
     });
     var envItems = LEX_ENV_DATA.map(function (d) {
@@ -4446,6 +5343,7 @@ function ensureU9FallPool() {
         .concat(u9FallZipTasksWithSpeaker(U9_RICHARD_TASKS, u9FallScrapePhrases('u9ric-reading', '.u9ric-click'), 'D Richard', pr))
         .concat(u9FallZipTasksWithSpeaker(U9_KIKI_TASKS, u9FallScrapePhrases('u9kik-reading', '.u9kik-click'), 'E Kiki', pk))
         .concat(idiomItems)
+        .concat(listenItems)
         .concat(envItems)
         .concat(env2Items);
 }
@@ -4509,6 +5407,291 @@ function openUnit9LexGamesHub() {
     u9LexRefreshHubTicks();
 }
 
+var CPE_WB_KEY = 'masteringCpeWordBankV1';
+var cpeWbTheme = 'robots';
+var cpeWbFilter = 'all';
+var cpeWbSort = 'dueFirst';
+var cpeWbState = {};
+var cpeWbReady = false;
+var cpeWbCache = null;
+var CPE_WB_STEPS = [1, 2, 4, 7, 14, 30];
+
+function cpeWbLoadState() {
+    try {
+        var raw = localStorage.getItem(CPE_WB_KEY);
+        cpeWbState = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+        cpeWbState = {};
+    }
+}
+
+function cpeWbSaveState() {
+    localStorage.setItem(CPE_WB_KEY, JSON.stringify(cpeWbState));
+}
+
+function cpeWbNorm(s) {
+    return String(s || '').toLowerCase().replace(/[^a-z0-9'\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function cpeWbEsc(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function cpeWbGet(id) {
+    return cpeWbState[id] || { mark: '', streak: 0, nextAt: 0 };
+}
+
+function cpeWbDueNow(id) {
+    var r = cpeWbGet(id);
+    return !r.nextAt || r.nextAt <= Date.now();
+}
+
+function cpeWbDueLabel(id) {
+    var r = cpeWbGet(id);
+    if (!r.nextAt || r.nextAt <= Date.now()) return 'Due now';
+    var days = Math.ceil((r.nextAt - Date.now()) / 86400000);
+    return 'Next review in ' + days + 'd';
+}
+
+function cpeWbMark(id, mark) {
+    if (mark === 'reset') {
+        delete cpeWbState[id];
+        cpeWbSaveState();
+        return;
+    }
+    var old = cpeWbGet(id);
+    if (mark === 'know') {
+        var streak = Math.max(0, Number(old.streak || 0)) + 1;
+        var stepIdx = Math.min(CPE_WB_STEPS.length - 1, streak - 1);
+        cpeWbState[id] = {
+            mark: 'know',
+            streak: streak,
+            nextAt: Date.now() + CPE_WB_STEPS[stepIdx] * 86400000
+        };
+    } else {
+        cpeWbState[id] = {
+            mark: 'learn',
+            streak: 0,
+            nextAt: Date.now()
+        };
+    }
+    cpeWbSaveState();
+}
+
+function cpeWbBuildRobotsItems() {
+    var pj = u9FallPassagePlain('u9v-reading');
+    var pv = u9FallPassagePlain('u9val-reading');
+    var pp = u9FallPassagePlain('u9pho-reading');
+    var pr = u9FallPassagePlain('u9ric-reading');
+    var pk = u9FallPassagePlain('u9kik-reading');
+    var rows = []
+        .concat(u9FallZipTasksWithSpeaker(U9_PHRASE_TASKS, u9FallScrapePhrases('u9v-reading', '.u9v-click'), 'A Jack', pj))
+        .concat(u9FallZipTasksWithSpeaker(U9_VAL_TASKS, u9FallScrapePhrases('u9val-reading', '.u9val-click'), 'B Valentina', pv))
+        .concat(u9FallZipTasksWithSpeaker(U9_PHOEBE_TASKS, u9FallScrapePhrases('u9pho-reading', '.u9pho-click'), 'C Phoebe', pp))
+        .concat(u9FallZipTasksWithSpeaker(U9_RICHARD_TASKS, u9FallScrapePhrases('u9ric-reading', '.u9ric-click'), 'D Richard', pr))
+        .concat(u9FallZipTasksWithSpeaker(U9_KIKI_TASKS, u9FallScrapePhrases('u9kik-reading', '.u9kik-click'), 'E Kiki', pk));
+    return rows
+        .filter(function (x) { return !!(x && x.ans); })
+        .map(function (x, i) {
+            return {
+                id: 'robots::' + i + '::' + x.speaker + '::' + x.ans,
+                phrase: x.ans,
+                hint: x.syn || '',
+                speaker: x.speaker || 'Reading'
+            };
+        });
+}
+
+function cpeWbBuildIdiomsItems() {
+    return LEX_IDIOM_DATA.map(function (d, i) {
+        return {
+            id: 'idioms::' + i + '::' + d.ans,
+            phrase: d.ans,
+            hint: d.hint || '',
+            speaker: 'Idioms'
+        };
+    });
+}
+
+function cpeWbBuildListeningItems() {
+    var rows = LEX_LISTEN_DATA.map(function (d, i) {
+        return {
+            id: 'listening::' + i + '::' + d.ans,
+            phrase: d.ans,
+            hint: d.hint || '',
+            speaker: 'Listening'
+        };
+    });
+    for (var j = 0; j < U9_LISTEN_SC_DATA.length; j++) {
+        var s = U9_LISTEN_SC_DATA[j];
+        rows.push({
+            id: 'listening::sc::' + j + '::' + s.ans,
+            phrase: s.ans,
+            hint: s.hint || '',
+            speaker: 'Listening (sentence completion)'
+        });
+    }
+    return rows;
+}
+
+function cpeWbItems(theme) {
+    if (!cpeWbCache) {
+        cpeWbCache = {
+            robots: cpeWbBuildRobotsItems(),
+            idioms: cpeWbBuildIdiomsItems(),
+            listening: cpeWbBuildListeningItems()
+        };
+    }
+    return (cpeWbCache[theme] || []).slice();
+}
+
+function cpeWordBankRender() {
+    var list = document.getElementById('cpe-wb-list');
+    var stats = document.getElementById('cpe-wb-stats');
+    var search = document.getElementById('cpe-wb-search');
+    var sortSel = document.getElementById('cpe-wb-sort');
+    if (!list || !stats || !search || !sortSel) return;
+
+    var data = cpeWbItems(cpeWbTheme);
+    var q = cpeWbNorm(search.value || '');
+    var base = cpeWbFilter === 'due' ? data.filter(function (x) { return cpeWbDueNow(x.id); }) : data;
+    var filtered = q
+        ? base.filter(function (x) {
+              return cpeWbNorm(x.phrase + ' ' + x.hint + ' ' + x.speaker).indexOf(q) !== -1;
+          })
+        : base;
+
+    filtered.sort(function (a, b) {
+        if (cpeWbSort === 'alpha') return a.phrase.localeCompare(b.phrase);
+        var ad = cpeWbDueNow(a.id) ? 0 : 1;
+        var bd = cpeWbDueNow(b.id) ? 0 : 1;
+        if (ad !== bd) return ad - bd;
+        return a.phrase.localeCompare(b.phrase);
+    });
+
+    var know = 0;
+    var learn = 0;
+    var i;
+    for (i = 0; i < filtered.length; i++) {
+        var m = cpeWbGet(filtered[i].id).mark;
+        if (m === 'know') know++;
+        else if (m === 'learn') learn++;
+    }
+    var due = data.filter(function (x) { return cpeWbDueNow(x.id); }).length;
+    var unmarked = filtered.length - know - learn;
+
+    stats.textContent =
+        'Theme: ' +
+        (cpeWbTheme === 'robots'
+            ? 'Reading: The robots are taking over'
+            : cpeWbTheme === 'listening'
+              ? 'Listening: Making a mark'
+              : 'Idioms: Art and creativity') +
+        ' · Total: ' +
+        filtered.length +
+        ' · Due now: ' +
+        due +
+        ' · I know: ' +
+        know +
+        ' · Learning: ' +
+        learn +
+        ' · Unmarked: ' +
+        unmarked;
+
+    list.innerHTML =
+        filtered
+            .map(function (x) {
+                var rec = cpeWbGet(x.id);
+                var mark = rec.mark === 'know' ? 'I know' : rec.mark === 'learn' ? 'Learning' : 'Unmarked';
+                return (
+                    '<li class="wb-item">' +
+                    '<div class="phrase">' +
+                    cpeWbEsc(x.phrase) +
+                    '</div>' +
+                    '<div class="hint">' +
+                    cpeWbEsc(x.hint) +
+                    '</div>' +
+                    '<div class="meta"><span class="status">' +
+                    mark +
+                    ' · ' +
+                    cpeWbDueLabel(x.id) +
+                    '</span><div class="act">' +
+                    '<button class="wb-mark-btn know" type="button" data-cpe-wb-mark="know" data-cpe-wb-id="' +
+                    cpeWbEsc(x.id) +
+                    '">Know</button>' +
+                    '<button class="wb-mark-btn learn" type="button" data-cpe-wb-mark="learn" data-cpe-wb-id="' +
+                    cpeWbEsc(x.id) +
+                    '">Learning</button>' +
+                    '<button class="wb-mark-btn reset" type="button" data-cpe-wb-mark="reset" data-cpe-wb-id="' +
+                    cpeWbEsc(x.id) +
+                    '">Reset</button>' +
+                    '</div></div>' +
+                    '</li>'
+                );
+            })
+            .join('') || '<li class="wb-item">No matches.</li>';
+}
+
+function cpeWordBankEnsureBind() {
+    if (cpeWbReady) return;
+    cpeWbReady = true;
+    cpeWbLoadState();
+
+    document.addEventListener('click', function (e) {
+        var themeBtn = e.target.closest('#screen-unit9-wordbank .wb-theme-btn');
+        if (themeBtn) {
+            cpeWbTheme = themeBtn.getAttribute('data-cpe-wb-theme') || 'robots';
+            var allTheme = document.querySelectorAll('#screen-unit9-wordbank .wb-theme-btn');
+            for (var i = 0; i < allTheme.length; i++) {
+                allTheme[i].classList.toggle('active', allTheme[i] === themeBtn);
+            }
+            cpeWordBankRender();
+            return;
+        }
+
+        var filterBtn = e.target.closest('#screen-unit9-wordbank .wb-repeat-btn');
+        if (filterBtn) {
+            cpeWbFilter = filterBtn.getAttribute('data-cpe-wb-filter') || 'all';
+            var allFilter = document.querySelectorAll('#screen-unit9-wordbank .wb-repeat-btn');
+            for (var j = 0; j < allFilter.length; j++) {
+                allFilter[j].classList.toggle('active', allFilter[j] === filterBtn);
+            }
+            cpeWordBankRender();
+            return;
+        }
+
+        var markBtn = e.target.closest('#screen-unit9-wordbank .wb-mark-btn');
+        if (markBtn) {
+            var id = markBtn.getAttribute('data-cpe-wb-id') || '';
+            var mark = markBtn.getAttribute('data-cpe-wb-mark') || '';
+            if (id && mark) {
+                cpeWbMark(id, mark);
+                cpeWordBankRender();
+            }
+        }
+    });
+
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.id === 'cpe-wb-search') cpeWordBankRender();
+    });
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.id === 'cpe-wb-sort') {
+            cpeWbSort = e.target.value || 'dueFirst';
+            cpeWordBankRender();
+        }
+    });
+}
+
+function openUnit9WordBank() {
+    cpeWordBankEnsureBind();
+    cpeWordBankRender();
+    showScreen('screen-unit9-wordbank');
+}
+
 function openUnit9LexReadingPick(mode) {
     u9PendingLexGame = mode || 'fall';
     u9FallStopLoop();
@@ -4536,6 +5719,8 @@ function openUnit9LexReadingPick(mode) {
     if (r7) r7.checked = true;
     var rid = document.getElementById('u9-lex-reading-idioms');
     if (rid) rid.checked = false;
+    var rli = document.getElementById('u9-lex-reading-listen');
+    if (rli) rli.checked = false;
     showScreen('screen-unit9-lex-reading-pick');
 }
 
@@ -6052,7 +7237,7 @@ function u9MatchDealGrid(isStart) {
         cards.push({ pairId: pi, side: 'syn', text: pick[pi].syn });
         cards.push({ pairId: pi, side: 'ans', text: pick[pi].ans });
     }
-    u9FallShuffle(cards);
+    cards = u9MatchShuffleNoAdjacent(cards);
     u9MatchBusy = false;
     u9MatchSelectedCard = null;
     var grid = document.getElementById('u9-match-grid');
@@ -6094,6 +7279,23 @@ function u9MatchDealGrid(isStart) {
         u9MatchPairOffset,
         u9MatchPairsTotalRun
     );
+}
+
+function u9MatchShuffleNoAdjacent(cards) {
+    var tries;
+    for (tries = 0; tries < 40; tries++) {
+        var out = u9FallShuffle(cards);
+        var bad = false;
+        var i;
+        for (i = 0; i < out.length - 1; i++) {
+            if (String(out[i].pairId) === String(out[i + 1].pairId)) {
+                bad = true;
+                break;
+            }
+        }
+        if (!bad) return out;
+    }
+    return u9FallShuffle(cards);
 }
 
 function u9MatchBeginRound() {
@@ -6658,11 +7860,13 @@ function updateLexLocalLine() {
     el.textContent =
         lexTrainerPack === 'idioms'
             ? 'This pack is only these idioms \u2014 not the robots reading.'
-            : lexTrainerPack === 'environment'
-              ? 'Environment collocations only \u2014 seven chunks in example sentences.'
-              : lexTrainerPack === 'environment2'
-                ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
-                : 'You only see this speaker right now \u2014 not the full list of all texts.';
+            : lexTrainerPack === 'listening'
+              ? 'Listening Part 2 pack only \u2014 chunks from Making a mark, not the reading text.'
+              : lexTrainerPack === 'environment'
+                ? 'Environment collocations only \u2014 seven chunks in example sentences.'
+                : lexTrainerPack === 'environment2'
+                  ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
+                  : 'You only see this speaker right now \u2014 not the full list of all texts.';
 }
 
 function updateLexHintDisplay() {
@@ -6768,6 +7972,15 @@ function lexTypeApplyScreenCopy() {
         if (winSub) winSub.textContent = 'Idioms: Art and creativity';
         if (winBody) winBody.textContent = 'You cleared every gap in this idiom pack.';
         if (goFull) goFull.textContent = 'Restart whole idiom pack';
+    } else if (lexTrainerPack === 'listening') {
+        if (tag) tag.textContent = 'Listening: Making a mark';
+        if (lead) {
+            lead.innerHTML =
+                'Use the <b>hint</b> (paraphrase from your listening notes), then <b>type the missing chunk</b> in the practice line &mdash; same mechanic as the idiom pack. <b>Three hearts</b> for the whole pack; after a wrong check, the answer appears and you <b>must type it</b> to continue.';
+        }
+        if (winSub) winSub.textContent = 'Listening: Making a mark';
+        if (winBody) winBody.textContent = 'You cleared every gap in this listening chunk pack.';
+        if (goFull) goFull.textContent = 'Restart listening chunk pack';
     } else if (lexTrainerPack === 'environment') {
         if (tag) tag.textContent = 'Environment collocations';
         if (lead) {
@@ -6802,6 +8015,8 @@ function lexTypeApplyScreenCopy() {
 function lexTrainerRestartFull() {
     if (lexTrainerPack === 'idioms') {
         openLexicalTrainerIdioms();
+    } else if (lexTrainerPack === 'listening') {
+        openLexicalTrainerListening();
     } else if (lexTrainerPack === 'environment') {
         openLexicalTrainerEnvironment();
     } else if (lexTrainerPack === 'environment2') {
@@ -6913,6 +8128,34 @@ function openLexicalTrainerIdioms() {
     renderLexicalTrainerItem();
 }
 
+function openLexicalTrainerListening() {
+    lexTrainerFromUnit8 = false;
+    lexTrainerPack = 'listening';
+    lexTypeIdx = 0;
+    lexTypeLives = 3;
+    lexAwaitingRetype = false;
+    var rev = document.getElementById('lex-type-reveal');
+    if (rev) {
+        rev.style.display = 'none';
+        rev.innerHTML = '';
+    }
+    var ga = document.getElementById('lex-type-go-answer');
+    if (ga) {
+        ga.style.display = 'none';
+        ga.textContent = '';
+    }
+    var go = document.getElementById('lex-type-gameover');
+    var win = document.getElementById('lex-type-win');
+    var act = document.getElementById('lex-type-active');
+    if (go) go.classList.remove('active');
+    if (win) win.classList.remove('active');
+    if (act) act.style.display = '';
+    lexTypeApplyScreenCopy();
+    updateLexTypeLivesDisplay();
+    showScreen('screen-unit9-lexical-type');
+    renderLexicalTrainerItem();
+}
+
 function openLexicalTrainer() {
     lexTrainerFromUnit8 = false;
     lexTrainerPack = 'robots';
@@ -6966,9 +8209,11 @@ function lexAdvanceAfterCorrect() {
         setLexTypeMsg(
             lexTrainerPack === 'idioms'
                 ? 'Pack complete \u2014 you\'ve finished every idiom gap. Brilliant work!'
-                : lexTrainerIsUnit8EnvLex()
-                  ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
-                  : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
+                : lexTrainerPack === 'listening'
+                  ? 'Pack complete \u2014 you\'ve finished every listening chunk gap. Brilliant work!'
+                  : lexTrainerIsUnit8EnvLex()
+                    ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
+                    : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
             'ok'
         );
     } else if (!crossedIntoNewSpeaker) {
@@ -7028,11 +8273,13 @@ function checkLexicalTrainer() {
                 gt.textContent =
                     lexTrainerPack === 'idioms'
                         ? 'Out of lives in this idiom pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                        : lexTrainerIsUnit8EnvLex()
-                          ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                          : 'Out of lives in ' +
-                            (failSec ? failSec.label : 'this') +
-                            '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
+                        : lexTrainerPack === 'listening'
+                          ? 'Out of lives in this listening pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                          : lexTrainerIsUnit8EnvLex()
+                            ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                            : 'Out of lives in ' +
+                              (failSec ? failSec.label : 'this') +
+                              '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
             }
             var ga = document.getElementById('lex-type-go-answer');
             if (ga) {
@@ -7062,6 +8309,8 @@ var speakCountdownActive = false;
 var speakRemainSec = 40;
 var speakMicOn = false;
 var speakRingLen = 0;
+/** Chunked retelling (Making a mark): lexical `ans` phrases per 1–2 transcript paragraphs. */
+var speakMarkState = { roundKey: '', chunkIdx: 0 };
 
 var SPEAKING_ROUNDS = [
     {
@@ -7147,6 +8396,55 @@ var SPEAKING_ROUNDS = [
     }
 ];
 
+(function () {
+    if (typeof LEX_LISTEN_DATA === 'undefined' || !LEX_LISTEN_DATA.length) return;
+    if (typeof U9_MARK_TRANSCRIPT_PARAS === 'undefined' || !U9_MARK_TRANSCRIPT_PARAS.length) return;
+    function markNorm(s) {
+        return String(s || '')
+            .toLowerCase()
+            .replace(/\u2019|\u2018/g, "'")
+            .replace(/[\u2013\u2014]/g, '-')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+    var paras = U9_MARK_TRANSCRIPT_PARAS.slice();
+    var full = paras.join(' ');
+    var ranges = [
+        [0, 1],
+        [2],
+        [3],
+        [4],
+        [5, 6]
+    ];
+    var retellChunks = ranges.map(function (range) {
+        var texts = [];
+        for (var ri = 0; ri < range.length; ri++) {
+            texts.push(paras[range[ri]]);
+        }
+        var joined = markNorm(texts.join(' '));
+        var phrases = [];
+        for (var li = 0; li < LEX_LISTEN_DATA.length; li++) {
+            var ans = LEX_LISTEN_DATA[li].ans;
+            if (joined.indexOf(markNorm(ans)) !== -1) phrases.push(ans);
+        }
+        return { startP: range[0], endP: range[range.length - 1], paras: texts, phrases: phrases };
+    });
+    SPEAKING_ROUNDS.push({
+        title: 'F Making a mark (architecture)',
+        accent: '#22d3ee',
+        fullText: full,
+        readParagraphs: paras,
+        chunkedRetell: true,
+        retellChunks: retellChunks,
+        phrases: [],
+        omitFromMicroRobots: true,
+        readStep1Lead:
+            '<b>Chunked retell.</b> You get <b>one or two lecture paragraphs</b> at a time (from the same script as the lexical Listening pack). Read, continue, then retell using <b>only the key phrases detected in that slice</b> &mdash; then the next slice.',
+        retellKeyBanner: '',
+        retellLead: ''
+    });
+})();
+
 /** 'unit9' = SPEAKING_ROUNDS; 'unit8' = UNITS[8].speakingTrainer.retellRounds */
 var speakTrainerPack = 'unit9';
 
@@ -7165,6 +8463,23 @@ function speakRoundsNow() {
     return SPEAKING_ROUNDS;
 }
 
+/** Retelling flow only: Unit 9 hub can open robots (A\u2013E) or architecture booklet (F) separately. */
+function speakRetellRoundsNow() {
+    var rounds = speakRoundsNow();
+    if (speakTrainerPack !== 'unit9' || speakRetellSubset === null) return rounds;
+    if (speakRetellSubset === 'robots') {
+        return rounds.filter(function (r) {
+            return !(r.readParagraphs && r.readParagraphs.length);
+        });
+    }
+    if (speakRetellSubset === 'mark') {
+        return rounds.filter(function (r) {
+            return r.readParagraphs && r.readParagraphs.length;
+        });
+    }
+    return rounds;
+}
+
 function speakingSetHubBackLabel() {
     var b = document.getElementById('speak-hub-back-btn');
     if (!b) return;
@@ -7173,6 +8488,8 @@ function speakingSetHubBackLabel() {
 }
 
 var U9_SPEAK_FREER_TIME_SEC = 60;
+/** 'reading' = Robots deck; 'listenSc' = Making a mark sentence-completion prompts */
+var u9SpeakFreerDeck = 'reading';
 var U9_SPEAK_FREER_QUESTIONS = [
     'What unique experience or personality traits do you bring to the table in your current job or circle of friends?',
     'In your opinion, do success and hard work always go hand in hand, or is luck more important?',
@@ -7182,6 +8499,17 @@ var U9_SPEAK_FREER_QUESTIONS = [
     "Think of a project or a hobby you've just started. Since it's still in its infancy, what are your biggest fears about it?",
     'Do you agree that occasional failure is part and parcel of the learning process, or should we try to avoid it at all costs?',
     'Do you have a firm grasp of how to manage your personal finances, or do you usually spend money impulsively?'
+];
+var U9_SPEAK_FREER_LISTEN_SC = [
+    'The listening speaker says many architects are driven to create a legacy project. What kind of professional or personal legacy project would you like to leave behind, and what would have to be true for it to stand the test of time?',
+    'The booklet compares renowned cultural buildings by their function rather than only by looks. Pick a museum, theatre, or stadium you know: what is its main function for the city?',
+    'Public reception to boldly designed office towers has tended to be mixed. Can you think of something new in your town that got mixed reviews at first? Did opinions change later?',
+    "Lloyd's moves some of the building's services to the outside. In your view, should services such as lifts and pipework stay hidden inside towers, or can exposing them be part of the architecture?",
+    "Lloyd's is called one of the most iconic examples of its kind. Which building would you describe as iconic in your country, and why?",
+    'The twisted F&F tower began as a theoretical case study. Have you ever worked on something that was only theoretical at first? How did it become real?',
+    'The lecturer calls the F&F tower remarkable because it was relatively cheap for its size. What makes a travel destination remarkable for you without being expensive?',
+    'Those towers showcase their architects\u2019 expertise. How could a small studio prove its expertise when competing with bigger firms?',
+    'The Fisheries Board office is set against bland government buildings. Are typical government offices really that uninspiring in your experience, and what would improve them?'
 ];
 var u9SpeakFreerOrder = [];
 var u9SpeakFreerIdx = 0;
@@ -7221,9 +8549,38 @@ function u9SpeakFreerShowIntro() {
     if (a) a.style.display = '';
     if (b) b.style.display = 'none';
     if (d) d.style.display = 'none';
+    u9SpeakFreerApplyIntroCopy();
 }
 
-function openSpeakFreerPractice() {
+function u9SpeakFreerApplyIntroCopy() {
+    var pill = document.getElementById('speak-freer-intro-pill');
+    var h2 = document.getElementById('speak-freer-intro-title');
+    var p1 = document.getElementById('speak-freer-intro-p1');
+    var p2 = document.getElementById('speak-freer-intro-p2');
+    if (u9SpeakFreerDeck === 'listenSc') {
+        if (pill) pill.textContent = 'Freer practice — Listening: Making a mark (sentence completion)';
+        if (h2) h2.textContent = 'Discuss using the official keys';
+        if (p1)
+            p1.innerHTML =
+                'Nine prompts tied to the <b style="color:var(--text);">same gap keys</b> as <b style="color:var(--text);">listening/making-a-mark.html</b>. You get <b style="color:var(--text);">one minute</b> per card. Speak out loud; the timer starts when the question appears.';
+        if (p2)
+            p2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the set. Weave in words like <em>legacy project</em>, <em>iconic</em>, or <em>mixed</em> where they fit naturally.';
+    } else {
+        if (pill) pill.textContent = 'Freer practice (from reading The robots are taking over)';
+        if (h2) h2.textContent = 'Answer the questions';
+        if (p1)
+            p1.innerHTML =
+                'You get <b style="color:var(--text);">one minute per prompt</b>. Speak out loud as if in an exam or a conversation. The timer starts as soon as a question appears. Use <b>Next question</b> when you are finished before the minute ends, or wait for the ring to complete &mdash; then the next prompt loads automatically.';
+        if (p2)
+            p2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the same set of Unit 9-style discussion questions.';
+    }
+}
+
+/** @param {string} [deck] Pass <code>'listenSc'</code> for Making a mark keys; default Robots deck. */
+function openSpeakFreerPractice(deck) {
+    u9SpeakFreerDeck = deck === 'listenSc' ? 'listenSc' : 'reading';
     u9SpeakIdiomStopTimer();
     u9SpeakFreerStopTimer();
     u9SpeakFreerShowIntro();
@@ -7232,12 +8589,14 @@ function openSpeakFreerPractice() {
 
 function u9SpeakFreerBack() {
     u9SpeakFreerStopTimer();
-    openUnit9ActivityHub('speaking');
+    openUnit9ActivityHub('speaking', { sub: 'freer' });
 }
 
 function u9SpeakFreerStartSession() {
     u9SpeakFreerStopTimer();
-    u9SpeakFreerOrder = u9FallShuffle(U9_SPEAK_FREER_QUESTIONS.slice());
+    var pool =
+        u9SpeakFreerDeck === 'listenSc' ? U9_SPEAK_FREER_LISTEN_SC.slice() : U9_SPEAK_FREER_QUESTIONS.slice();
+    u9SpeakFreerOrder = u9FallShuffle(pool);
     u9SpeakFreerIdx = 0;
     var intro = document.getElementById('speak-freer-intro');
     var play = document.getElementById('speak-freer-play');
@@ -7415,7 +8774,7 @@ function openSpeakIdiomPractice() {
 
 function u9SpeakIdiomBack() {
     u9SpeakIdiomStopTimer();
-    openUnit9ActivityHub('speaking');
+    openUnit9ActivityHub('speaking', { sub: 'freer' });
 }
 
 function u9SpeakIdiomStartSession() {
@@ -7493,6 +8852,239 @@ function u9SpeakIdiomNext() {
     u9SpeakIdiomShowCurrentQuestion(true);
 }
 
+function openU9SpeakingExamPlaceholder() {
+    showScreen('screen-unit9-speak-exam');
+}
+
+function u9SpeakExamBack() {
+    openUnit9ActivityHub('speaking');
+}
+
+var U9_MICRO_TIMER_SEC = 15;
+var u9MicroTheme = 'robots';
+var u9MicroIdx = 0;
+var u9MicroSec = 15;
+var u9MicroTimerId = null;
+var u9MicroSessionScore = 0;
+var u9MicroRingLen = 0;
+
+function u9MicroBuildDeck() {
+    if (u9MicroTheme === 'robots') {
+        var deck = [];
+        var roboRounds = speakRoundsNow();
+        for (var r = 0; r < roboRounds.length; r++) {
+            var round = roboRounds[r];
+            if (round.omitFromMicroRobots) continue;
+            for (var i = 0; i < round.phrases.length; i++) {
+                var t = round.phrases[i];
+                deck.push({
+                    id: 'U9m::robots::' + r + '::' + i,
+                    p:
+                        'In about 15 seconds, say something natural that includes this chunk (ideas from ' +
+                        round.title +
+                        ').',
+                    t: t,
+                    wbTheme: 'robots'
+                });
+            }
+        }
+        return deck;
+    }
+    if (u9MicroTheme === 'listening') {
+        var scriptCards = LEX_LISTEN_DATA.map(function (d, i) {
+            return {
+                id: 'U9m::listening::' + i,
+                p:
+                    'In about 15 seconds, say something natural that includes this chunk (Listening Part 2 \u2014 Making a mark, script).',
+                t: d.ans,
+                wbTheme: 'listening'
+            };
+        });
+        var scCards = U9_LISTEN_SC_DATA.map(function (d, i) {
+            return {
+                id: 'U9m::listening::sc::' + i,
+                p:
+                    'In about 15 seconds, say something natural that includes this exact official key phrase (sentence completion \u2014 Making a mark).',
+                t: d.ans,
+                wbTheme: 'listening'
+            };
+        });
+        return scriptCards.concat(scCards);
+    }
+    return U9_SPEAK_IDIOM_ITEMS.map(function (it, i) {
+        return {
+            id: 'U9m::idioms::' + i,
+            p: it.q,
+            t: it.label,
+            wbTheme: 'idioms'
+        };
+    });
+}
+
+function u9MicroDeckNow() {
+    return u9MicroBuildDeck();
+}
+
+function u9MicroSyncWordBankKnow(targetPhrase, wbTheme) {
+    cpeWbLoadState();
+    var rows =
+        wbTheme === 'idioms'
+            ? cpeWbBuildIdiomsItems()
+            : wbTheme === 'listening'
+              ? cpeWbBuildListeningItems()
+              : cpeWbBuildRobotsItems();
+    var norm = cpeWbNorm(targetPhrase);
+    for (var i = 0; i < rows.length; i++) {
+        if (cpeWbNorm(rows[i].phrase) === norm) {
+            cpeWbMark(rows[i].id, 'know');
+            return rows[i].id;
+        }
+    }
+    return null;
+}
+
+function u9MicroSetMsg(text, ok) {
+    var el = document.getElementById('u9-micro-msg');
+    if (!el) return;
+    el.textContent = text || '';
+    el.className = 'u9-micro-msg' + (ok ? ' ok' : '');
+}
+
+function u9MicroEnsureRing() {
+    var c = document.getElementById('u9-micro-ring-prog');
+    if (!c) return;
+    if (!u9MicroRingLen) {
+        var r = parseFloat(c.getAttribute('r')) || 52;
+        u9MicroRingLen = 2 * Math.PI * r;
+        c.style.strokeDasharray = String(u9MicroRingLen);
+    }
+}
+
+function u9MicroUpdateRing() {
+    var c = document.getElementById('u9-micro-ring-prog');
+    if (!c || !u9MicroRingLen) return;
+    var p = Math.max(0, u9MicroSec / U9_MICRO_TIMER_SEC);
+    c.style.strokeDashoffset = String(u9MicroRingLen * (1 - p));
+}
+
+function u9MicroStopTimer(reset) {
+    if (u9MicroTimerId !== null) {
+        clearInterval(u9MicroTimerId);
+        u9MicroTimerId = null;
+    }
+    if (reset) {
+        u9MicroSec = U9_MICRO_TIMER_SEC;
+        var c = document.getElementById('u9-micro-ring-prog');
+        if (c) c.style.strokeDashoffset = '0';
+        var tn = document.getElementById('u9-micro-time-num');
+        if (tn) tn.textContent = String(U9_MICRO_TIMER_SEC);
+    }
+}
+
+function u9MicroRender() {
+    var d = u9MicroDeckNow();
+    if (!d.length) return;
+    if (u9MicroIdx >= d.length) u9MicroIdx = 0;
+    var card = d[u9MicroIdx];
+    var pt = document.getElementById('u9-micro-prompt-text');
+    if (pt) pt.textContent = card.p;
+    var tp = document.getElementById('u9-micro-target-phrase');
+    if (tp) tp.textContent = card.t;
+    u9MicroSec = U9_MICRO_TIMER_SEC;
+    var tn = document.getElementById('u9-micro-time-num');
+    if (tn) tn.textContent = String(U9_MICRO_TIMER_SEC);
+    u9MicroEnsureRing();
+    u9MicroUpdateRing();
+    var sc = document.getElementById('u9-micro-score-line');
+    if (sc) sc.textContent = 'Session score: ' + String(u9MicroSessionScore);
+}
+
+function u9MicroSetTheme(next) {
+    u9MicroTheme = next;
+    u9MicroIdx = 0;
+    u9MicroStopTimer(true);
+    var st = document.getElementById('u9-micro-status');
+    if (st) st.textContent = 'Press Start when you are ready.';
+    u9MicroSetMsg('', false);
+    var br = document.getElementById('u9-micro-btn-robots');
+    var bi = document.getElementById('u9-micro-btn-idioms');
+    var bl = document.getElementById('u9-micro-btn-listen');
+    if (br) br.classList.toggle('active', u9MicroTheme === 'robots');
+    if (bi) bi.classList.toggle('active', u9MicroTheme === 'idioms');
+    if (bl) bl.classList.toggle('active', u9MicroTheme === 'listening');
+    u9MicroRender();
+}
+
+function u9MicroStartTimer() {
+    if (u9MicroTimerId) return;
+    u9MicroStopTimer(true);
+    var st = document.getElementById('u9-micro-status');
+    if (st) st.textContent = 'Speak now. Use the target phrase.';
+    u9MicroSetMsg('', false);
+    u9MicroTimerId = setInterval(function () {
+        if (!document.getElementById('screen-unit9-speak-micro').classList.contains('active')) {
+            u9MicroStopTimer(false);
+            return;
+        }
+        u9MicroSec--;
+        var tn = document.getElementById('u9-micro-time-num');
+        if (tn) tn.textContent = String(Math.max(0, u9MicroSec));
+        u9MicroUpdateRing();
+        if (u9MicroSec <= 0) {
+            u9MicroStopTimer(false);
+            u9MicroTimerId = null;
+            if (st) st.textContent = 'Time. Mark yourself or go next.';
+        }
+    }, 1000);
+}
+
+function u9MicroMarkUsed() {
+    var d = u9MicroDeckNow();
+    if (!d.length || u9MicroIdx >= d.length) return;
+    var card = d[u9MicroIdx];
+    var wid = u9MicroSyncWordBankKnow(card.t, card.wbTheme);
+    u9MicroSessionScore += 1;
+    userData.score = (Number(userData.score) || 0) + 1;
+    saveData();
+    var disp = document.getElementById('display-score');
+    if (disp) disp.innerText = String(userData.score);
+    u9MicroSetMsg(
+        wid
+            ? 'Great. +1 home score and Word Bank updated (Know).'
+            : 'Great. +1 home score. (No exact Word Bank match for this phrase.)',
+        true
+    );
+    u9MicroRender();
+}
+
+function u9MicroNextCard() {
+    u9MicroIdx++;
+    u9MicroStopTimer(true);
+    var st = document.getElementById('u9-micro-status');
+    if (st) st.textContent = 'Press Start when you are ready.';
+    u9MicroSetMsg('', false);
+    u9MicroRender();
+}
+
+function openU9MicroSpeaking() {
+    u9SpeakFreerStopTimer();
+    u9SpeakIdiomStopTimer();
+    u9MicroStopTimer(true);
+    u9MicroTheme = 'robots';
+    u9MicroIdx = 0;
+    u9MicroSessionScore = 0;
+    u9MicroRingLen = 0;
+    var c = document.getElementById('u9-micro-ring-prog');
+    if (c) c.style.strokeDasharray = '';
+    u9MicroSetTheme('robots');
+    showScreen('screen-unit9-speak-micro');
+}
+
+function u9MicroBack() {
+    u9MicroStopTimer(false);
+    openUnit9ActivityHub('speaking');
+}
+
 function speakingClearTimer() {
     if (speakTimerId !== null) {
         clearInterval(speakTimerId);
@@ -7527,10 +9119,132 @@ function speakingShowView(n) {
     if (v3) v3.style.display = n === 3 ? 'flex' : 'none';
 }
 
+function speakingMarkEnsureRound(r) {
+    if (!r || !r.chunkedRetell || !r.retellChunks) return;
+    var key = String(speakRoundIdx) + '::' + (r.title || '');
+    if (speakMarkState.roundKey !== key) {
+        speakMarkState.roundKey = key;
+        speakMarkState.chunkIdx = 0;
+    }
+}
+
+function speakingMarkRenderReadChunk(r) {
+    if (!r || !r.retellChunks || !r.retellChunks.length) return;
+    var ci = speakMarkState.chunkIdx;
+    var ch = r.retellChunks[ci];
+    var nch = r.retellChunks.length;
+    var p1 = document.getElementById('speak-pill-1');
+    if (p1) p1.textContent = 'Chunk ' + String(ci + 1) + ' / ' + String(nch) + ' \u00b7 Read';
+    var v1h = document.getElementById('speak-v1-read-hint');
+    if (v1h && r.readStep1Lead) v1h.innerHTML = r.readStep1Lead;
+    var ft = document.getElementById('speak-full-text');
+    if (ft) {
+        ft.innerHTML = '';
+        var totalP = r.readParagraphs ? r.readParagraphs.length : 7;
+        for (var pi = 0; pi < ch.paras.length; pi++) {
+            var globalIdx = ch.startP + pi;
+            var wrap = document.createElement('div');
+            wrap.className = 'speak-read-para-block';
+            var lab = document.createElement('div');
+            lab.className = 'speak-read-para-num';
+            lab.textContent =
+                ch.paras.length > 1
+                    ? 'Lecture paragraphs ' +
+                      String(globalIdx + 1) +
+                      '\u2013' +
+                      String(ch.endP + 1) +
+                      ' of ' +
+                      String(totalP)
+                    : 'Lecture paragraph ' + String(globalIdx + 1) + ' of ' + String(totalP);
+            wrap.appendChild(lab);
+            var para = document.createElement('p');
+            para.className = 'speak-read-para';
+            para.textContent = ch.paras[pi];
+            wrap.appendChild(para);
+            ft.appendChild(wrap);
+        }
+    }
+    var tags = document.getElementById('speak-tags');
+    if (tags) tags.innerHTML = '';
+    var kb = document.getElementById('speak-v2-key-banner');
+    if (kb) {
+        kb.innerHTML = '';
+        kb.style.display = 'none';
+        kb.setAttribute('aria-hidden', 'true');
+    }
+    var btnRead = document.getElementById('speak-btn-start-read');
+    if (btnRead) btnRead.textContent = 'Continue to retell this chunk';
+}
+
+function speakingMarkRenderRetellChunk(r) {
+    var ci = speakMarkState.chunkIdx;
+    var ch = r.retellChunks[ci];
+    var nch = r.retellChunks.length;
+    var p2 = document.getElementById('speak-pill-2');
+    if (p2) p2.textContent = 'Chunk ' + String(ci + 1) + ' / ' + String(nch) + ' \u00b7 Retell';
+    var kb = document.getElementById('speak-v2-key-banner');
+    if (kb) {
+        if (ch.phrases.length) {
+            kb.innerHTML =
+                'Step 2 &middot; Key phrases from <b>lexical Listening</b> in this chunk (' +
+                String(ch.phrases.length) +
+                ')';
+            kb.style.display = 'block';
+            kb.setAttribute('aria-hidden', 'false');
+        } else {
+            kb.innerHTML =
+                'Step 2 &middot; No exact lexical-trainer phrase matched this slice automatically &mdash; retell in your own words.';
+            kb.style.display = 'block';
+            kb.setAttribute('aria-hidden', 'false');
+        }
+    }
+    var tags = document.getElementById('speak-tags');
+    if (tags) {
+        tags.innerHTML = '';
+        for (var i = 0; i < ch.phrases.length; i++) {
+            var span = document.createElement('span');
+            span.className = 'speak-tag';
+            span.textContent = ch.phrases[i];
+            tags.appendChild(span);
+        }
+    }
+    var lead = document.getElementById('speak-v2-lead');
+    if (lead) {
+        lead.innerHTML =
+            'Use the tags when they appear. Press <b>Start retelling</b> when you speak. Ring: <span id="speak-sec-label">40</span>s (demo mic).';
+    }
+}
+
+function speakingMarkFromV3Next() {
+    var rounds = speakRetellRoundsNow();
+    var r = rounds[speakRoundIdx];
+    if (!r || !r.chunkedRetell || !r.retellChunks || !r.retellChunks.length) return;
+    if (speakMarkState.chunkIdx < r.retellChunks.length - 1) {
+        speakMarkState.chunkIdx++;
+        speakingMarkRenderReadChunk(r);
+        speakingResetRoundUI();
+        speakingShowView(1);
+        return;
+    }
+    speakMarkState.roundKey = '';
+    speakingNextCharacter();
+}
+
+function speakingUnifiedV3Next() {
+    var rounds = speakRetellRoundsNow();
+    var r = rounds[speakRoundIdx];
+    if (r && r.chunkedRetell && r.retellChunks && r.retellChunks.length) {
+        speakingMarkFromV3Next();
+        return;
+    }
+    speakingNextCharacter();
+}
+
 function speakingRenderCurrentRound() {
-    var rounds = speakRoundsNow();
+    var rounds = speakRetellRoundsNow();
     var r = rounds[speakRoundIdx];
     if (!r) return;
+    speakingMarkEnsureRound(r);
     var t1 = document.getElementById('speak-title-1');
     var t2 = document.getElementById('speak-title-2');
     if (t1) {
@@ -7541,8 +9255,64 @@ function speakingRenderCurrentRound() {
         t2.textContent = r.title;
         t2.style.color = r.accent;
     }
+    if (r.chunkedRetell && r.retellChunks && r.retellChunks.length) {
+        var p2c = document.getElementById('speak-pill-2');
+        if (p2c) p2c.textContent = 'Step 2 \u00b7 Retell';
+        speakingMarkRenderReadChunk(r);
+        return;
+    }
+    var pill1 = document.getElementById('speak-pill-1');
+    if (pill1) pill1.textContent = 'Step 1 \u00b7 Read';
+    var pill2 = document.getElementById('speak-pill-2');
+    if (pill2) pill2.textContent = 'Step 2 \u00b7 Retell';
+    var btnRead = document.getElementById('speak-btn-start-read');
+    if (btnRead) btnRead.textContent = 'Continue to retell';
     var ft = document.getElementById('speak-full-text');
-    if (ft) ft.textContent = r.fullText;
+    if (ft) {
+        if (r.readParagraphs && r.readParagraphs.length) {
+            ft.innerHTML = '';
+            var ptot = r.readParagraphs.length;
+            for (var pi = 0; pi < ptot; pi++) {
+                var wrap = document.createElement('div');
+                wrap.className = 'speak-read-para-block';
+                if (ptot > 1) {
+                    var lab = document.createElement('div');
+                    lab.className = 'speak-read-para-num';
+                    lab.textContent = 'Paragraph ' + String(pi + 1) + ' / ' + String(ptot);
+                    wrap.appendChild(lab);
+                }
+                var para = document.createElement('p');
+                para.className = 'speak-read-para';
+                para.textContent = r.readParagraphs[pi];
+                wrap.appendChild(para);
+                ft.appendChild(wrap);
+            }
+        } else {
+            ft.innerHTML = '';
+            ft.textContent = r.fullText || '';
+        }
+    }
+    var v1h = document.getElementById('speak-v1-read-hint');
+    if (v1h) {
+        if (r.readStep1Lead) {
+            v1h.innerHTML = r.readStep1Lead;
+        } else {
+            v1h.textContent =
+                'Read the whole passage. When you are ready, continue \u2014 the full text will hide and only key phrases will stay on screen.';
+        }
+    }
+    var kb = document.getElementById('speak-v2-key-banner');
+    if (kb) {
+        if (r.retellKeyBanner) {
+            kb.innerHTML = r.retellKeyBanner;
+            kb.style.display = 'block';
+            kb.setAttribute('aria-hidden', 'false');
+        } else {
+            kb.innerHTML = '';
+            kb.style.display = 'none';
+            kb.setAttribute('aria-hidden', 'true');
+        }
+    }
     var tags = document.getElementById('speak-tags');
     if (tags) {
         tags.innerHTML = '';
@@ -7551,6 +9321,15 @@ function speakingRenderCurrentRound() {
             span.className = 'speak-tag';
             span.textContent = r.phrases[i];
             tags.appendChild(span);
+        }
+    }
+    var lead = document.getElementById('speak-v2-lead');
+    if (lead) {
+        if (r.retellLead) {
+            lead.innerHTML = r.retellLead;
+        } else {
+            lead.innerHTML =
+                'Key phrases only. Press <b>Start retelling</b> when you begin speaking aloud. The ring is your <span id="speak-sec-label">40</span>-second window (visual mic does not record yet).';
         }
     }
 }
@@ -7570,10 +9349,13 @@ function speakingResetRoundUI() {
     if (stp) stp.style.display = 'none';
 }
 
-function openSpeakingTrainer() {
+/** @param {'robots'|'mark'} [retellPack] Robots reading (A\u2013E) or Making a mark booklet (architecture). */
+function openSpeakingTrainer(retellPack) {
     u9SpeakFreerStopTimer();
     u9SpeakIdiomStopTimer();
     speakTrainerPack = 'unit9';
+    speakRetellSubset =
+        retellPack === 'mark' ? 'mark' : retellPack === 'robots' ? 'robots' : null;
     speakRoundIdx = 0;
     speakMicOn = false;
     var mic = document.getElementById('speak-btn-mic');
@@ -7596,6 +9378,7 @@ function openSpeakingTrainerUnit8() {
     u9SpeakFreerStopTimer();
     u9SpeakIdiomStopTimer();
     speakTrainerPack = 'unit8';
+    speakRetellSubset = null;
     speakRoundIdx = 0;
     speakMicOn = false;
     var mic = document.getElementById('speak-btn-mic');
@@ -7632,6 +9415,11 @@ function backFromSpeakingTrainer() {
 
 function speakingGoToRetellView() {
     speakingResetRoundUI();
+    var rounds = speakRetellRoundsNow();
+    var r = rounds[speakRoundIdx];
+    if (r && r.chunkedRetell && r.retellChunks && r.retellChunks.length) {
+        speakingMarkRenderRetellChunk(r);
+    }
     speakingShowView(2);
 }
 
@@ -7663,16 +9451,40 @@ function speakingStopRound(timeUp) {
     var stp = document.getElementById('speak-btn-stop');
     if (beg) beg.style.display = '';
     if (stp) stp.style.display = 'none';
+    var rounds = speakRetellRoundsNow();
+    var r = rounds[speakRoundIdx];
     var msg = document.getElementById('speak-done-msg');
     if (msg) {
-        msg.textContent = timeUp
-            ? 'Time is up \u2014 that still counts as solid practice. Take a breath, then continue.'
-            : 'Stopped early \u2014 great if you said what you planned. Continue when you are ready.';
+        if (r && r.chunkedRetell && r.retellChunks && r.retellChunks.length) {
+            var nc = r.retellChunks.length;
+            var isLast = speakMarkState.chunkIdx >= nc - 1;
+            if (timeUp) {
+                msg.textContent = isLast
+                    ? 'Time is up on the last chunk. You can still finish the round from here.'
+                    : 'Time is up on this chunk. Continue when you are ready for the next reading slice.';
+            } else {
+                msg.textContent = isLast
+                    ? 'Last chunk done. Continue to finish this lecture round.'
+                    : 'Chunk finished. Continue to read the next paragraph block.';
+            }
+        } else {
+            msg.textContent = timeUp
+                ? 'Time is up \u2014 that still counts as solid practice. Take a breath, then continue.'
+                : 'Stopped early \u2014 great if you said what you planned. Continue when you are ready.';
+        }
     }
     var nextBtn = document.getElementById('speak-btn-next');
     if (nextBtn) {
-        var rounds = speakRoundsNow();
-        if (speakRoundIdx >= rounds.length - 1) {
+        if (r && r.chunkedRetell && r.retellChunks && r.retellChunks.length) {
+            if (speakMarkState.chunkIdx < r.retellChunks.length - 1) {
+                nextBtn.textContent = 'Next chunk (read)';
+            } else {
+                nextBtn.textContent =
+                    speakRoundIdx >= rounds.length - 1
+                        ? 'Finish \u2014 back to readings'
+                        : 'Next: ' + rounds[speakRoundIdx + 1].title;
+            }
+        } else if (speakRoundIdx >= rounds.length - 1) {
             nextBtn.textContent = 'Finish \u2014 back to readings';
         } else {
             nextBtn.textContent = 'Next: ' + rounds[speakRoundIdx + 1].title;
@@ -7682,7 +9494,7 @@ function speakingStopRound(timeUp) {
 }
 
 function speakingNextCharacter() {
-    var rounds = speakRoundsNow();
+    var rounds = speakRetellRoundsNow();
     if (speakRoundIdx >= rounds.length - 1) {
         if (speakTrainerPack === 'unit8') {
             openUnit8ActivityHub('speaking');
@@ -7730,6 +9542,8 @@ function refreshPhraseLiveScores() {
     if (c) c.textContent = s;
     if (d) d.textContent = s;
     if (ek) ek.textContent = s;
+    var mk = document.getElementById('u9mk-live-score');
+    if (mk) mk.textContent = s;
     if (u8a) u8a.textContent = s;
     if (u8b) u8b.textContent = s;
     if (u8c) u8c.textContent = s;
@@ -7974,6 +9788,107 @@ function openUnit9PhraseMatch() {
 
 function backFromUnit9Phrase() {
     showScreen('screen-unit9-reading-hub');
+}
+
+function u9MarkThEscHtml(s) {
+    return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function u9MarkThBuildReadingInner() {
+    var h = '';
+    for (var i = 0; i < LEX_LISTEN_DATA.length; i++) {
+        var d = LEX_LISTEN_DATA[i];
+        h +=
+            u9MarkThEscHtml(d.before) +
+            '<span class="u9mk-click" data-id="' +
+            String(i + 1) +
+            '">' +
+            u9MarkThEscHtml(d.ans) +
+            '</span>' +
+            u9MarkThEscHtml(d.after);
+        if (i < LEX_LISTEN_DATA.length - 1) h += ' ';
+    }
+    return h;
+}
+
+function openUnit9MarkPhraseMatch() {
+    u9MarkThStep = 0;
+    var rb = document.getElementById('u9mk-reading');
+    if (rb) {
+        rb.innerHTML = u9MarkThBuildReadingInner();
+        var spans = rb.querySelectorAll('.u9mk-click');
+        for (var i = 0; i < spans.length; i++) {
+            spans[i].classList.remove('u9mk-found', 'u9mk-wrong');
+        }
+    }
+    var nw = document.getElementById('u9mk-next-wrap');
+    if (nw) nw.style.display = 'none';
+    var lead = document.getElementById('u9mk-lead');
+    if (lead) {
+        lead.textContent =
+            'Listening Part 2 \u2014 Making a mark (Track 9.1). Read the paraphrase (hint), then tap the matching exact phrase in the lecture script \u2014 same pack as lexical Listening.';
+    }
+    showScreen('screen-unit9-mark-th');
+    refreshPhraseLiveScores();
+    updateUnit9MarkThUI();
+}
+
+function backFromUnit9MarkTh() {
+    openUnit9ActivityHub('treasure');
+}
+
+function updateUnit9MarkThUI() {
+    var total = U9_MARK_TH_TASKS.length;
+    var el = document.getElementById('u9mk-synonym');
+    var prog = document.getElementById('u9mk-progress');
+    var bar = document.getElementById('u9mk-bar');
+    if (!el || !prog || !bar) return;
+    if (u9MarkThStep < total) {
+        el.textContent = U9_MARK_TH_TASKS[u9MarkThStep].syn;
+        prog.textContent = 'Item ' + (u9MarkThStep + 1) + ' / ' + total;
+        bar.style.width = (u9MarkThStep / total) * 100 + '%';
+    }
+}
+
+function finishUnit9MarkTh() {
+    var bar = document.getElementById('u9mk-bar');
+    if (bar) bar.style.width = '100%';
+    var el = document.getElementById('u9mk-synonym');
+    if (el) {
+        el.innerHTML = '<span style="color:var(--success);font-style:normal">Done! All phrases found.</span>';
+    }
+    var prog = document.getElementById('u9mk-progress');
+    if (prog) prog.textContent = 'Complete';
+    userData.wins.unit9markth = (Number(userData.wins.unit9markth) || 0) + 1;
+    saveData();
+    var nw = document.getElementById('u9mk-next-wrap');
+    if (nw) nw.style.display = 'block';
+}
+
+function onUnit9MarkThClick(span) {
+    var total = U9_MARK_TH_TASKS.length;
+    var id = span.dataset.id;
+    if (u9MarkThStep >= total) return;
+    var need = U9_MARK_TH_TASKS[u9MarkThStep].id;
+    if (id === need) {
+        span.classList.add('u9mk-found');
+        awardPhrasePoint();
+        u9MarkThStep++;
+        if (u9MarkThStep >= total) {
+            finishUnit9MarkTh();
+        } else {
+            updateUnit9MarkThUI();
+        }
+    } else {
+        span.classList.add('u9mk-wrong');
+        setTimeout(function () {
+            span.classList.remove('u9mk-wrong');
+        }, 400);
+    }
 }
 
 function updateUnit9PhraseUI() {
@@ -8324,7 +10239,11 @@ function showScreen(id) {
     document.getElementById(id).classList.add('active');
     var box = document.getElementById('main-container');
     var isSpeak =
-        id === 'screen-unit9-speaking' || id === 'screen-unit9-speak-freer' || id === 'screen-unit9-speak-idiom';
+        id === 'screen-unit9-speaking' ||
+        id === 'screen-unit9-speak-freer' ||
+        id === 'screen-unit9-speak-idiom' ||
+        id === 'screen-unit9-speak-micro' ||
+        id === 'screen-unit9-speak-exam';
     var isUnit8Wide =
         id === 'screen-unit8' ||
         id === 'screen-unit8-activity-hub' ||
@@ -8342,14 +10261,17 @@ function showScreen(id) {
                 id === 'screen-uoe' ||
                 id === 'screen-uoe-wf-detail' ||
                 id === 'screen-unit9-phrase' ||
+                id === 'screen-unit9-mark-th' ||
                 id === 'screen-unit9-valentina' ||
                 id === 'screen-unit9-phoebe' ||
                 id === 'screen-unit9-richard' ||
                 id === 'screen-unit9-kiki' ||
                 id === 'screen-unit9-reading-hub' ||
+                id === 'screen-unit9' ||
                 id === 'screen-unit9-activity-hub' ||
                 id === 'screen-unit9-lexical-type' ||
                 id === 'screen-unit9-lexgames-hub' ||
+                id === 'screen-unit9-wordbank' ||
                 id === 'screen-unit9-lex-reading-pick' ||
                 id === 'screen-unit9-fall' ||
                 id === 'screen-unit9-lex-mcq' ||
@@ -8373,38 +10295,59 @@ function ensureHubBuilt() {
     var g = document.getElementById('hub-units-grid');
     if (!g) return;
     g.innerHTML = '';
-    for (var u = 1; u <= 5; u++) {
+    var hubMap = window.UNITS_HUB && typeof window.UNITS_HUB === 'object' ? window.UNITS_HUB : HUB_TILES_FALLBACK;
+
+    function appendComingSoon(unit) {
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'unit-tile coming-soon';
         b.setAttribute('aria-disabled', 'true');
         b.setAttribute('title', 'Coming soon');
-        b.innerHTML = '<strong><span class="tile-lock" aria-hidden="true">\uD83D\uDD12</span> Unit ' + u + ' <span style="color:var(--muted);font-weight:600;">Coming soon</span></strong>';
+        b.innerHTML =
+            '<strong><span class="tile-lock" aria-hidden="true">\uD83D\uDD12</span> Unit ' +
+            unit +
+            ' <span style="color:var(--muted);font-weight:600;">Coming soon</span></strong>';
         g.appendChild(b);
     }
-    var b6 = document.createElement('button');
-    b6.type = 'button';
-    b6.className = 'unit-tile';
-    b6.innerHTML = '<strong>Unit 6</strong><span>Word-formation \u00b7 Key-word transformation</span><div class="tile-meta" id="hub-meta-u6"></div>';
-    b6.onclick = function () { openUnitDetail(6); };
-    g.appendChild(b6);
-    var hubOrder = (window.UNITS_HUB_ORDER && window.UNITS_HUB_ORDER.length ? window.UNITS_HUB_ORDER : [8, 9]).slice();
-    var hubMap = window.UNITS_HUB && typeof window.UNITS_HUB === 'object' ? window.UNITS_HUB : HUB_TILES_FALLBACK;
-    var hi;
-    for (hi = 0; hi < hubOrder.length; hi++) {
-        var uid = hubOrder[hi];
-        var meta = hubMap[uid] || HUB_TILES_FALLBACK[uid];
-        if (!meta || !meta.screen) continue;
-        var tile = document.createElement('button');
-        tile.type = 'button';
-        tile.className = meta.cls || 'unit-tile';
-        tile.innerHTML = meta.html;
-        (function (screenId) {
-            tile.onclick = function () {
-                showScreen(screenId);
-            };
-        })(meta.screen);
-        g.appendChild(tile);
+
+    for (var unit = 1; unit <= 12; unit++) {
+        if (unit <= 5) {
+            appendComingSoon(unit);
+            continue;
+        }
+        if (unit === 6) {
+            var b6 = document.createElement('button');
+            b6.type = 'button';
+            b6.className = 'unit-tile';
+            b6.innerHTML = '<strong>Unit 6</strong><span>Word-formation \u00b7 Key-word transformation</span><div class="tile-meta" id="hub-meta-u6"></div>';
+            b6.onclick = function () { openUnitDetail(6); };
+            g.appendChild(b6);
+            continue;
+        }
+        if (unit === 7) {
+            var b7 = document.createElement('button');
+            b7.type = 'button';
+            b7.className = 'unit-tile';
+            b7.innerHTML = '<strong>Unit 7</strong><span>Use of English &middot; word formation</span>';
+            b7.onclick = function () { openUnitDetail(7); };
+            g.appendChild(b7);
+            continue;
+        }
+        var meta = hubMap[unit] || HUB_TILES_FALLBACK[unit];
+        if (meta && meta.screen) {
+            var tile = document.createElement('button');
+            tile.type = 'button';
+            tile.className = meta.cls || 'unit-tile';
+            tile.innerHTML = meta.html;
+            (function (screenId) {
+                tile.onclick = function () {
+                    showScreen(screenId);
+                };
+            })(meta.screen);
+            g.appendChild(tile);
+            continue;
+        }
+        appendComingSoon(unit);
     }
 }
 
@@ -8609,6 +10552,10 @@ function openStats() {
     rows += '<p style="margin:8px 0;">Unit 9 — C Phoebe (full passage) completions: ' + (userData.wins.unit9p || 0) + '</p>';
     rows += '<p style="margin:8px 0;">Unit 9 — D Richard (full passage) completions: ' + (userData.wins.unit9d || 0) + '</p>';
     rows += '<p style="margin:8px 0;">Unit 9 — E Kiki (full passage) completions: ' + (userData.wins.unit9e || 0) + '</p>';
+    rows +=
+        '<p style="margin:8px 0;">Unit 9 — Treasure Hunt · Listening: Making a mark (full script) completions: ' +
+        (userData.wins.unit9markth || 0) +
+        '</p>';
     rows += '<p style="margin:8px 0;">Unit 9 — Lexical trainer · Reading: The robots are taking over (full run) completions: ' + (userData.wins.unit9lex || 0) + '</p>';
     rows += '<p style="margin:8px 0;color:var(--muted);">Each correct tap in vocabulary tasks adds +1 to Score above. Each correct answer on the Part 7 exam adds +1 to Score when you submit.</p>';
     rows += '<div style="background:#0f172a;padding:14px 16px;border-radius:12px;margin:14px 0;border:1px solid #334155;">';
@@ -8690,6 +10637,14 @@ window.onload = function () {
             onUnit9KikiClick(span);
         });
     }
+    var u9mkread = document.getElementById('u9mk-reading');
+    if (u9mkread) {
+        u9mkread.addEventListener('click', function (e) {
+            var span = e.target.closest('.u9mk-click');
+            if (!span || !this.contains(span)) return;
+            onUnit9MarkThClick(span);
+        });
+    }
     var u8thEnvRead = document.getElementById('u8th-env-reading');
     if (u8thEnvRead) {
         u8thEnvRead.addEventListener('click', function (e) {
@@ -8718,7 +10673,15 @@ window.onload = function () {
         ensureHubBuilt();
         refreshUserBar();
         refreshHubMeta();
-        showScreen('screen-hub');
+        var params = new URLSearchParams(window.location.search);
+        var targetScreen = params.get('screen');
+        if (targetScreen === 'unit9') {
+            showScreen('screen-unit9');
+        } else if (targetScreen === 'unit8') {
+            showScreen('screen-unit8');
+        } else {
+            showScreen('screen-hub');
+        }
     } else {
         showScreen('screen-login');
     }

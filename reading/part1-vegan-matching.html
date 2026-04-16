@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading Part 1 — Multiple matching (vegan experiences)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --letter: #b8d4a0;
+      --name: #c4b5fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); line-height: 1.55; margin-bottom: 12px; font-size: 0.95rem; }
+    .instr {
+      border: 1px solid var(--line);
+      background: rgba(26, 44, 73, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      color: #c5d4ef;
+    }
+    .mc-layout {
+      --mc-opts: 36%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 12px clamp(260px, var(--mc-opts), 46%);
+      gap: 0 16px;
+      align-items: start;
+    }
+    @media (min-width: 881px) {
+      .mc-opts-col {
+        min-width: 0;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(18, 38, 75, 0.55);
+        padding: 12px 10px;
+        max-height: calc(100vh - 160px);
+        overflow-y: auto;
+      }
+    }
+    .mc-resizer {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: stretch;
+      min-height: 120px;
+      cursor: col-resize;
+      touch-action: none;
+      user-select: none;
+      border-radius: 6px;
+      background: var(--line);
+      position: relative;
+      margin: 8px 0;
+    }
+    .mc-resizer::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      transform: translateX(-50%);
+      border-radius: 2px;
+      background: var(--muted);
+      opacity: 0.55;
+    }
+    .mc-resizer:hover,
+    .mc-resizer:focus-visible {
+      background: rgba(86, 204, 242, 0.28);
+      outline: none;
+    }
+    .mc-resizer.is-dragging { background: rgba(86, 204, 242, 0.4); }
+    .mc-resizer:focus-visible::after {
+      opacity: 1;
+      background: var(--accent);
+    }
+    @media (max-width: 880px) {
+      .mc-layout { grid-template-columns: 1fr; gap: 0; }
+      .mc-resizer { display: none; }
+      .mc-text-col,
+      .mc-opts-col { grid-column: 1; }
+      .mc-opts-col { margin-top: 20px; }
+    }
+    .read-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      margin-bottom: 16px;
+      color: #b8d4f5;
+      line-height: 1.35;
+    }
+    .passage-wrap {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      border-radius: 12px;
+      padding: 18px 16px;
+      line-height: 1.72;
+      font-size: 1.02rem;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    @media (max-width: 880px) {
+      .passage-wrap { position: static; max-height: none; }
+    }
+    .person-card {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 14px 16px;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .person-card:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .person-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid #4a6fa5;
+      background: linear-gradient(145deg, #2d4a7c 0%, #1a2f52 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--letter);
+      flex-shrink: 0;
+    }
+    .person-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .person-letter {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--letter);
+      line-height: 1;
+    }
+    .person-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--name);
+      letter-spacing: 0.06em;
+    }
+    .person-text { color: #d5e2f8; }
+    .task-head {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      color: #e0e8f8;
+    }
+    .stmt-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px 12px;
+      align-items: start;
+      margin-bottom: 12px;
+      padding: 10px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(18, 38, 75, 0.4);
+    }
+    .stmt-num {
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .stmt-text { font-size: 0.93rem; line-height: 1.5; color: #d5e2f8; }
+    .ans-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ans-cell label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .ans-cell input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+    }
+    .ans-cell input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .ans-cell input.is-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.15);
+    }
+    .ans-cell input.is-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.12);
+    }
+    .answer-key-inline {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #86efac;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(74, 222, 128, 0.45);
+    }
+    .answer-key-inline[hidden] {
+      display: none !important;
+    }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      padding: 10px 12px;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .answer-reveal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 28px 20px;
+      background: rgba(8, 11, 18, 0.97);
+    }
+    .answer-reveal-layer.is-open { display: flex !important; }
+    .answer-reveal-inner { width: min(520px, 100%); text-align: center; }
+    .answer-reveal-label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .answer-reveal-body {
+      color: #4ade80;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 800;
+      white-space: pre-line;
+      line-height: 1.85;
+      margin-bottom: 22px;
+      padding: 24px 20px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.14);
+      font-variant-numeric: tabular-nums;
+    }
+    .answer-reveal-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #052030;
+    }
+    .answer-reveal-btn:hover { filter: brightness(1.08); }
+
+    /* --- Tabs --- */
+    .opts-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .opts-tab {
+      border: 1px solid var(--line);
+      background: rgba(18, 38, 75, 0.5);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .opts-tab:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .opts-tab.is-on {
+      background: rgba(86, 204, 242, 0.22);
+      border-color: var(--accent);
+      color: #e8f4ff;
+    }
+    /* --- Distractor hunt: full text, phase 1 evidence / phase 2 traps --- */
+    .passage-wrap.hunt-wizard-active .person-card {
+      display: none;
+    }
+    .passage-wrap.hunt-wizard-active .dh-passage-host {
+      display: block !important;
+    }
+    .dh-passage-host {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      border-radius: 12px;
+      padding: 16px 14px;
+      line-height: 1.78;
+      font-size: 1.02rem;
+      color: #d5e2f8;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+    }
+    .dh-passage-host[hidden] {
+      display: none !important;
+    }
+    .dh-block {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .dh-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .dh-block-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .dh-block-head .person-letter {
+      font-size: 1.6rem;
+    }
+    .dh-block-head .person-name {
+      font-size: 1rem;
+    }
+    .dh-inert {
+      color: #9bb0d3;
+      opacity: 0.92;
+    }
+    .hunt-hit {
+      display: inline;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      line-height: inherit;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s, box-shadow 0.15s;
+      text-align: left;
+      color: #e8f0ff;
+    }
+    .hunt-hit:hover:not(:disabled) {
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.45);
+    }
+    .hunt-hit:disabled {
+      cursor: default;
+    }
+    .hunt-hit-evidence.is-found {
+      background: rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.7);
+      color: #ecfdf5;
+    }
+    .hunt-hit-trap-p1.is-hit {
+      background: rgba(251, 191, 36, 0.25);
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.65);
+      color: #fffbeb;
+    }
+    .hunt-hit-trap-p2.is-found {
+      background: rgba(248, 113, 113, 0.28);
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.75);
+      color: #fef2f2;
+    }
+    .hunt-q-badge {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      vertical-align: super;
+      color: #4ade80;
+      letter-spacing: 0.04em;
+    }
+    .dh-progress {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .dh-phase-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #b8d4f5;
+      margin-bottom: 8px;
+    }
+    .dh-hint-w {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    #huntToast {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      border: 1px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+      color: #fef3c7;
+    }
+    #huntToast.show {
+      display: block;
+    }
+    .btn-hunt-small {
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      background: #3d5a86;
+      color: var(--text);
+    }
+    .submit-analysis {
+      margin-top: 14px;
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(18, 38, 75, 0.45);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+    .submit-analysis.show {
+      display: block;
+    }
+    .submit-analysis h3 {
+      font-size: 0.95rem;
+      color: #b8d4f5;
+      margin-bottom: 10px;
+    }
+    .submit-analysis ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .submit-analysis li {
+      margin-bottom: 10px;
+    }
+    .submit-analysis .ok-line {
+      color: #86efac;
+    }
+    .submit-analysis .bad-line {
+      color: #fecaca;
+    }
+    #panelHunt .task-head { margin-top: 0; }
+    .dh-task-statement {
+      margin: 12px 0 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(12, 28, 58, 0.55);
+      line-height: 1.5;
+    }
+    .dh-task-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .dh-task-badge.dh-task-ev {
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.45);
+    }
+    .dh-task-badge.dh-task-trap {
+      background: rgba(248, 113, 113, 0.15);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+    }
+    .dh-task-q {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #e8f0ff;
+      font-weight: 600;
+    }
+    .dh-task-trap-note {
+      margin: 8px 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .btn-hunt-next {
+      margin-top: 8px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Reading Part 1 — Multiple matching</h1>
+      <a class="back" href="../unit12.html">Back to Unit 12</a>
+    </header>
+
+    <p class="subtitle">
+      You are going to read about five people talking about their experiences of becoming vegan. For questions 1–10, choose from the people (A–E). The people may be chosen more than once.
+    </p>
+    <p class="instr">
+      <strong>Submit</strong> marks answers, shows <strong>Key:</strong> per row, and opens an <strong>analysis</strong> (evidence vs traps). <strong>Distractor hunt</strong> (tab): texts <strong>A→E</strong> in order — each time you see the <strong>exam statement</strong> (or which question the trap mimics), then <strong>one</strong> clickable phrase in that person’s text; press <strong>Next</strong> when you have found it.
+    </p>
+
+    <div class="mc-layout" id="mcLayout">
+      <div class="mc-text-col">
+        <h2 class="read-title">Five people share their experiences of becoming vegan</h2>
+        <div class="passage-wrap" id="passageWrapMain">
+          <div id="dhPassageHost" class="dh-passage-host" hidden aria-live="polite"></div>
+          <article class="person-card" data-person="a">
+            <div class="person-avatar" aria-hidden="true">A</div>
+            <div>
+              <div class="person-head">
+                <span class="person-letter">A</span>
+                <span class="person-name">JACK</span>
+              </div>
+              <p class="person-text">
+                I first wanted to go vegan a few years ago, when I was about thirteen, and learnt about the effects of the meat industry on the environment. But my mum told me to wait until I was older and better informed about what being vegan meant. It was probably sound advice, though I now know it was partly because she couldn't face cooking special meals for me. I totally get that, though, and don't hold it against her. Now that I am a vegan, I'm very much aware of the extra effort involved for non-vegans who invite me round for a meal. I always offer to take a dessert, and the other dinner guests are invariably amazed at how delicious it is.
+              </p>
+            </div>
+          </article>
+          <article class="person-card" data-person="b">
+            <div class="person-avatar" aria-hidden="true">B</div>
+            <div>
+              <div class="person-head">
+                <span class="person-letter">B</span>
+                <span class="person-name">SARAH</span>
+              </div>
+              <p class="person-text">
+                I went vegan when I left home and went away to university. My parents were worried I was missing out on essential nutrients and that this could have serious consequences for me. My dad had the biggest problem with it, and he kept sending me articles warning of the pitfalls of a plant-based diet. I tried to put his mind at rest by telling him I was taking supplements, but that just served to reinforce his idea that I wasn't eating properly. Over time, though, they've both gradually come to accept my change to veganism, and that's really important to me, because it's a major part of who I am. My dad even cooks some of the vegan recipes I send him.
+              </p>
+            </div>
+          </article>
+          <article class="person-card" data-person="c">
+            <div class="person-avatar" aria-hidden="true">C</div>
+            <div>
+              <div class="person-head">
+                <span class="person-letter">C</span>
+                <span class="person-name">MAYA</span>
+              </div>
+              <p class="person-text">
+                My sister decided to go vegan to see if a plant-based diet would help her feel better while managing a long-term health condition. I decided to support her by going vegan as well. My sister has kept at it faithfully for over five years and shown amazing willpower. I just wish I could say the same for myself. There were too many types of food I missed, and I threw in the towel after a few months. On the plus side, I learnt a surprising amount about nutrition and the health benefits of certain foods. I still eat loads of fruit, nuts, pulses and vegetables, and feel much healthier than I used to.
+              </p>
+            </div>
+          </article>
+          <article class="person-card" data-person="d">
+            <div class="person-avatar" aria-hidden="true">D</div>
+            <div>
+              <div class="person-head">
+                <span class="person-letter">D</span>
+                <span class="person-name">JUSTIN</span>
+              </div>
+              <p class="person-text">
+                I started off by swapping one product at a time; soya milk for cow's milk, coconut oil for butter, maple syrup for honey. Many people try to make the switch overnight and it can prove too much, so they give up and go back to their vegetarian or meat-based diet. The key is to do it in stages. It gives you time to work out what works for you and what doesn't. While I was going vegan, I got loads of useful tips from a social media group I joined. If I had any questions or concerns, like which health supplements to take, how to reassure my parents I knew what I was doing, or where to buy vegan products, there was always someone who could give me the benefit of their knowledge and experience.
+              </p>
+            </div>
+          </article>
+          <article class="person-card" data-person="e">
+            <div class="person-avatar" aria-hidden="true">E</div>
+            <div>
+              <div class="person-head">
+                <span class="person-letter">E</span>
+                <span class="person-name">RHONA</span>
+              </div>
+              <p class="person-text">
+                I've only recently changed to a plant-based diet. I wish I'd done it ages ago. I'd become increasingly aware of the suffering we cause to animals by what we eat, and I felt it was high time I took a stand against the way we treat them. It's not easy, though. My friends only ever want to meet up in burger restaurants, and my parents seem determined not to try vegan food, let alone cook it, which is disappointing — it's not asking much for them to show a little interest. So, anyway, I just cook all my meals for myself now. I'm gradually getting the hang of it, and I like the independence it brings.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div
+        class="mc-resizer"
+        id="mcResizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize the statements strip width"
+        tabindex="0"
+      ></div>
+
+      <div class="mc-opts-col">
+        <div class="opts-tabs" role="tablist" aria-label="Task panels">
+          <button type="button" class="opts-tab is-on" id="tabAnswers" role="tab" aria-selected="true" aria-controls="panelAnswers" data-tab="answers">Answers</button>
+          <button type="button" class="opts-tab" id="tabHunt" role="tab" aria-selected="false" aria-controls="panelHunt" data-tab="hunt">Distractor hunt</button>
+        </div>
+
+        <div id="panelAnswers" role="tabpanel" aria-labelledby="tabAnswers">
+        <p class="task-head">Which person states the following?</p>
+
+        <div class="stmt-row" data-q="1">
+          <p class="stmt-text"><span class="stmt-num">1</span> I received a great deal of help and advice from other vegans.</p>
+          <div class="ans-cell">
+            <label for="m1">Ans</label>
+            <input id="m1" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 1, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="2">
+          <p class="stmt-text"><span class="stmt-num">2</span> My attempts to reassure someone had the opposite effect.</p>
+          <div class="ans-cell">
+            <label for="m2">Ans</label>
+            <input id="m2" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 2, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="3">
+          <p class="stmt-text"><span class="stmt-num">3</span> I regret not having become a vegan before.</p>
+          <div class="ans-cell">
+            <label for="m3">Ans</label>
+            <input id="m3" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 3, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="4">
+          <p class="stmt-text"><span class="stmt-num">4</span> I understand someone's resistance to me going vegan.</p>
+          <div class="ans-cell">
+            <label for="m4">Ans</label>
+            <input id="m4" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 4, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="5">
+          <p class="stmt-text"><span class="stmt-num">5</span> Some people are not as supportive as they could be.</p>
+          <div class="ans-cell">
+            <label for="m5">Ans</label>
+            <input id="m5" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 5, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="6">
+          <p class="stmt-text"><span class="stmt-num">6</span> I lacked the necessary determination to be a vegan.</p>
+          <div class="ans-cell">
+            <label for="m6">Ans</label>
+            <input id="m6" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 6, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="7">
+          <p class="stmt-text"><span class="stmt-num">7</span> There were concerns that I was putting my health at risk.</p>
+          <div class="ans-cell">
+            <label for="m7">Ans</label>
+            <input id="m7" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 7, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="8">
+          <p class="stmt-text"><span class="stmt-num">8</span> It's important to make the change to a vegan diet gradually.</p>
+          <div class="ans-cell">
+            <label for="m8">Ans</label>
+            <input id="m8" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 8, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="9">
+          <p class="stmt-text"><span class="stmt-num">9</span> People are always surprised by how tasty vegan food can be.</p>
+          <div class="ans-cell">
+            <label for="m9">Ans</label>
+            <input id="m9" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 9, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="stmt-row" data-q="10">
+          <p class="stmt-text"><span class="stmt-num">10</span> Being vegan is a defining feature of my identity.</p>
+          <div class="ans-cell">
+            <label for="m10">Ans</label>
+            <input id="m10" type="text" maxlength="1" inputmode="text" autocomplete="off" aria-label="Answer 10, letter A to E" />
+            <span class="answer-key-inline" hidden aria-hidden="true"></span>
+          </div>
+        </div>
+        </div>
+
+        <div id="panelHunt" role="tabpanel" aria-labelledby="tabHunt" hidden>
+          <p class="task-head">Distractor hunt</p>
+          <p id="dhProgress" class="dh-progress"></p>
+          <p id="dhPhaseTitle" class="dh-phase-title"></p>
+          <p id="dhHint" class="dh-hint-w"></p>
+          <div id="dhTaskStatement" class="dh-task-statement" aria-live="polite"></div>
+          <div id="huntToast" role="status" aria-live="polite"></div>
+          <button type="button" class="btn-hunt-small btn-hunt-next" id="btnHuntNext" disabled>Next</button>
+          <button type="button" class="btn-hunt-small" id="btnHuntRestart">Restart hunt</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" id="btnCheck" class="btn-check">Submit</button>
+      <button type="button" id="btnReset" class="btn-reset">Reset</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="submitAnalysis" class="submit-analysis" aria-labelledby="submitAnalysisTitle">
+      <h3 id="submitAnalysisTitle">After Submit — why correct / why a trap</h3>
+      <ol id="submitAnalysisList"></ol>
+    </div>
+  </main>
+
+  <div
+    id="answerRevealLayer"
+    class="answer-reveal-layer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="answerRevealLabel"
+    aria-hidden="true"
+  >
+    <div class="answer-reveal-inner">
+      <p class="answer-reveal-label" id="answerRevealLabel">Answer key</p>
+      <p id="answerRevealBody" class="answer-reveal-body"></p>
+      <button type="button" id="answerRevealBtn" class="answer-reveal-btn">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    /* Official-style key (same person may appear more than once). */
+    var CORRECT = ["d", "b", "e", "a", "e", "c", "b", "d", "a", "b"];
+
+    var REVEAL_LINES =
+      " 1 D     2 B     3 E     4 A     5 E\n" +
+      " 6 C     7 B     8 D     9 A    10 B";
+
+    var inputs = [];
+    for (var i = 1; i <= 10; i++) {
+      inputs.push(document.getElementById("m" + i));
+    }
+
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var answerRevealLayer = document.getElementById("answerRevealLayer");
+    var answerRevealBody = document.getElementById("answerRevealBody");
+    var answerRevealBtn = document.getElementById("answerRevealBtn");
+
+    document.body.appendChild(answerRevealLayer);
+
+    var afterAnswerReveal = null;
+
+    /* --- Distractor hunt: A→E wizard — show exam statement, one click in that text, Next --- */
+    var wizStepIx = 0;
+    var wizTargetFound = false;
+
+    var WIZARD_STEPS = [
+      { person: "a", name: "Jack", kind: "evidence", q: 4 },
+      { person: "a", name: "Jack", kind: "evidence", q: 9 },
+      {
+        person: "a",
+        name: "Jack",
+        kind: "trap",
+        forQ: 1,
+        trapKey: "a1",
+        trapNoteRu:
+          "В задании вопрос 1 — про помощь от <em>других веганов</em>. Здесь «совет», но от <em>мамы</em>; для Q1 это ловушка."
+      },
+      { person: "b", name: "Sarah", kind: "evidence", q: 2 },
+      { person: "b", name: "Sarah", kind: "evidence", q: 7 },
+      { person: "b", name: "Sarah", kind: "evidence", q: 10 },
+      {
+        person: "b",
+        name: "Sarah",
+        kind: "trap",
+        forQ: 8,
+        trapKey: "b8",
+        trapNoteRu:
+          "Вопрос 8 — про <em>постепенный переход на веганство</em>. «Gradually» здесь про родителей, не про метод смены диеты — ловушка для Q8."
+      },
+      { person: "c", name: "Maya", kind: "evidence", q: 6 },
+      {
+        person: "c",
+        name: "Maya",
+        kind: "trap",
+        forQ: 7,
+        trapKey: "c7",
+        trapNoteRu:
+          "Вопрос 7 — когда <em>боялись за твоё здоровье</em>. «Чувствую здоровее» — про успех Майи, не про риск; ловушка для Q7."
+      },
+      { person: "d", name: "Justin", kind: "evidence", q: 1 },
+      { person: "d", name: "Justin", kind: "evidence", q: 8 },
+      {
+        person: "d",
+        name: "Justin",
+        kind: "trap",
+        forQ: 2,
+        trapKey: "d2",
+        trapNoteRu:
+          "Вопрос 2 — когда успокоение <em>усилило сомнения</em>. «How to reassure…» — ещё не действие с обратным эффектом; ловушка для Q2."
+      },
+      { person: "e", name: "Rhona", kind: "evidence", q: 3 },
+      { person: "e", name: "Rhona", kind: "evidence", q: 5 },
+      {
+        person: "e",
+        name: "Rhona",
+        kind: "trap",
+        forQ: 4,
+        trapKey: "e4",
+        trapNoteRu:
+          "Вопрос 4 — <em>понять</em> чужое сопротивление. У Роны — обида и «disappointing», не принятие, как у Джека; ловушка для Q4."
+      }
+    ];
+
+    var passageWrapEl = document.getElementById("passageWrapMain");
+    var dhPassageHost = document.getElementById("dhPassageHost");
+    var dhProgress = document.getElementById("dhProgress");
+    var dhPhaseTitle = document.getElementById("dhPhaseTitle");
+    var dhHint = document.getElementById("dhHint");
+    var dhTaskStatement = document.getElementById("dhTaskStatement");
+    var huntToast = document.getElementById("huntToast");
+    var btnHuntNext = document.getElementById("btnHuntNext");
+
+    var tabAnswers = document.getElementById("tabAnswers");
+    var tabHunt = document.getElementById("tabHunt");
+    var panelAnswers = document.getElementById("panelAnswers");
+    var panelHunt = document.getElementById("panelHunt");
+
+    var huntToastTimer = null;
+    function showHuntToast(html) {
+      huntToast.innerHTML = html;
+      huntToast.classList.add("show");
+      if (huntToastTimer) clearTimeout(huntToastTimer);
+      huntToastTimer = setTimeout(function () {
+        huntToast.classList.remove("show");
+      }, 7000);
+    }
+
+    function resetHuntState() {
+      wizStepIx = 0;
+      wizTargetFound = false;
+    }
+
+    var TRAP_P2_MSG = {
+      1: "<strong>Trap for Q1 (Jack):</strong> “Sound advice” / mum — “advice” tempts you toward Q1, but the source is a parent, not fellow vegans.",
+      2: "<strong>Trap for Q2 (Justin):</strong> “How to reassure my parents” — “reassure” points to Q2, but this is only a question, not a failed reassurance (Sarah).",
+      7: "<strong>Trap for Q7 (Maya):</strong> “Healthier than I used to” — “health” misleads toward Q7, but Q7 is others worrying about <em>risk</em> to her health (Sarah).",
+      8: "<strong>Trap for Q8 (Sarah):</strong> “Gradually come to accept” — “gradually” points to Q8, but it refers to her parents, not to a gradual <em>diet change</em> (Justin).",
+      4: "<strong>Trap for Q4 (Rhona):</strong> Parents “determined not to try” sounds like “resistance”, but Rhona is <em>upset</em> — she does not <em>understand</em> that resistance the way Jack does (Q4)."
+    };
+
+    function stmtBodyForQ(qNum) {
+      var row = document.querySelector('.stmt-row[data-q="' + qNum + '"] .stmt-text');
+      if (!row) return "";
+      return row.textContent.replace(/^\s*\d+\s*/, "").replace(/\s+/g, " ").trim();
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function personSubstepInfo(ix) {
+      var p = WIZARD_STEPS[ix].person;
+      var indices = [];
+      for (var i = 0; i < WIZARD_STEPS.length; i++) {
+        if (WIZARD_STEPS[i].person === p) indices.push(i);
+      }
+      return { pos: indices.indexOf(ix) + 1, total: indices.length };
+    }
+
+    function appendInert(container, text) {
+      if (!text) return;
+      var s = document.createElement("span");
+      s.className = "dh-inert";
+      s.textContent = text;
+      container.appendChild(s);
+    }
+
+    function appendWizardEvidence(container, q, text) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "hunt-hit hunt-hit-evidence";
+      b.appendChild(document.createTextNode(text + " "));
+      var badge = document.createElement("span");
+      badge.className = "hunt-q-badge";
+      badge.textContent = "";
+      b.appendChild(badge);
+      b.addEventListener("click", function () {
+        if (wizTargetFound) return;
+        wizTargetFound = true;
+        b.classList.add("is-found");
+        b.disabled = true;
+        badge.textContent = "[Q" + q + "]";
+        btnHuntNext.disabled = false;
+        showHuntToast(
+          "<strong>Evidence for Q" + q + ".</strong> Это подтверждение в тексте. Нажми <strong>Next</strong>."
+        );
+      });
+      container.appendChild(b);
+    }
+
+    function appendWizardTrap(container, forQ, text) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "hunt-hit hunt-hit-trap-p2";
+      b.textContent = text + " ";
+      b.addEventListener("click", function () {
+        if (wizTargetFound) return;
+        wizTargetFound = true;
+        b.classList.add("is-found");
+        b.disabled = true;
+        btnHuntNext.disabled = false;
+        showHuntToast(TRAP_P2_MSG[forQ] || "Distractor noted.");
+      });
+      container.appendChild(b);
+    }
+
+    function renderBlockHead(container, letter, name) {
+      var d = document.createElement("div");
+      d.className = "dh-block-head";
+      d.innerHTML =
+        '<span class="person-letter">' +
+        letter.toUpperCase() +
+        '</span><span class="person-name">' +
+        name.toUpperCase() +
+        "</span>";
+      container.appendChild(d);
+    }
+
+    function renderJackRow(row, step) {
+      var evQ = step.kind === "evidence" ? step.q : -1;
+      var tk = step.kind === "trap" ? step.trapKey : "";
+      appendInert(
+        row,
+        "I first wanted to go vegan a few years ago, when I was about thirteen, and learnt about the effects of the meat industry on the environment. "
+      );
+      if (tk === "a1") {
+        appendWizardTrap(
+          row,
+          1,
+          "But my mum told me to wait until I was older and better informed about what being vegan meant. It was probably sound advice, though I now know it was partly because she couldn't face cooking special meals for me."
+        );
+      } else {
+        appendInert(
+          row,
+          "But my mum told me to wait until I was older and better informed about what being vegan meant. It was probably sound advice, though I now know it was partly because she couldn't face cooking special meals for me. "
+        );
+      }
+      appendInert(row, " ");
+      if (evQ === 4) {
+        appendWizardEvidence(row, 4, "I totally get that, though, and don't hold it against her.");
+      } else {
+        appendInert(row, "I totally get that, though, and don't hold it against her. ");
+      }
+      appendInert(
+        row,
+        " Now that I am a vegan, I'm very much aware of the extra effort involved for non-vegans who invite me round for a meal. I always offer to take a dessert, and "
+      );
+      if (evQ === 9) {
+        appendWizardEvidence(row, 9, "the other dinner guests are invariably amazed at how delicious it is.");
+      } else {
+        appendInert(row, "the other dinner guests are invariably amazed at how delicious it is.");
+      }
+    }
+
+    function renderSarahRow(row, step) {
+      var evQ = step.kind === "evidence" ? step.q : -1;
+      var tk = step.kind === "trap" ? step.trapKey : "";
+      appendInert(row, "I went vegan when I left home and went away to university. ");
+      if (evQ === 7) {
+        appendWizardEvidence(
+          row,
+          7,
+          "My parents were worried I was missing out on essential nutrients and that this could have serious consequences for me."
+        );
+      } else {
+        appendInert(
+          row,
+          "My parents were worried I was missing out on essential nutrients and that this could have serious consequences for me. "
+        );
+      }
+      appendInert(
+        row,
+        " My dad had the biggest problem with it, and he kept sending me articles warning of the pitfalls of a plant-based diet. "
+      );
+      if (evQ === 2) {
+        appendWizardEvidence(
+          row,
+          2,
+          "I tried to put his mind at rest by telling him I was taking supplements, but that just served to reinforce his idea that I wasn't eating properly."
+        );
+      } else {
+        appendInert(
+          row,
+          "I tried to put his mind at rest by telling him I was taking supplements, but that just served to reinforce his idea that I wasn't eating properly. "
+        );
+      }
+      appendInert(row, " Over time, though, ");
+      if (tk === "b8") {
+        appendWizardTrap(row, 8, "they've both gradually come to accept");
+      } else {
+        appendInert(row, "they've both gradually come to accept ");
+      }
+      appendInert(row, " my change to veganism, and that's really important to me, because ");
+      if (evQ === 10) {
+        appendWizardEvidence(row, 10, "it's a major part of who I am");
+      } else {
+        appendInert(row, "it's a major part of who I am");
+      }
+      appendInert(row, ". My dad even cooks some of the vegan recipes I send him.");
+    }
+
+    function renderMayaRow(row, step) {
+      var evQ = step.kind === "evidence" ? step.q : -1;
+      var tk = step.kind === "trap" ? step.trapKey : "";
+      appendInert(
+        row,
+        "My sister decided to go vegan to see if a plant-based diet would help her feel better while managing a long-term health condition. I decided to support her by going vegan as well. My sister has kept at it faithfully for over five years and shown amazing willpower. "
+      );
+      if (evQ === 6) {
+        appendWizardEvidence(
+          row,
+          6,
+          "I just wish I could say the same for myself. There were too many types of food I missed, and I threw in the towel after a few months."
+        );
+      } else {
+        appendInert(
+          row,
+          "I just wish I could say the same for myself. There were too many types of food I missed, and I threw in the towel after a few months. "
+        );
+      }
+      appendInert(
+        row,
+        " On the plus side, I learnt a surprising amount about nutrition and the health benefits of certain foods. I still eat loads of fruit, nuts, pulses and vegetables, and "
+      );
+      if (tk === "c7") {
+        appendWizardTrap(row, 7, "feel much healthier than I used to.");
+      } else {
+        appendInert(row, "feel much healthier than I used to.");
+      }
+    }
+
+    function renderJustinRow(row, step) {
+      var evQ = step.kind === "evidence" ? step.q : -1;
+      var tk = step.kind === "trap" ? step.trapKey : "";
+      appendInert(
+        row,
+        "I started off by swapping one product at a time; soya milk for cow's milk, coconut oil for butter, maple syrup for honey. Many people try to make the switch overnight and it can prove too much, so they give up and go back to their vegetarian or meat-based diet. "
+      );
+      if (evQ === 8) {
+        appendWizardEvidence(row, 8, "The key is to do it in stages.");
+      } else {
+        appendInert(row, "The key is to do it in stages. ");
+      }
+      appendInert(row, " It gives you time to work out what works for you and what doesn't. While I was going vegan, ");
+      if (evQ === 1) {
+        appendWizardEvidence(row, 1, "I got loads of useful tips from a social media group I joined.");
+      } else {
+        appendInert(row, "I got loads of useful tips from a social media group I joined. ");
+      }
+      appendInert(row, " If I had any questions or concerns, like which health supplements to take, ");
+      if (tk === "d2") {
+        appendWizardTrap(row, 2, "how to reassure my parents I knew what I was doing");
+      } else {
+        appendInert(row, "how to reassure my parents I knew what I was doing");
+      }
+      appendInert(
+        row,
+        ", or where to buy vegan products, there was always someone who could give me the benefit of their knowledge and experience."
+      );
+    }
+
+    function renderRhonaRow(row, step) {
+      var evQ = step.kind === "evidence" ? step.q : -1;
+      var tk = step.kind === "trap" ? step.trapKey : "";
+      appendInert(row, "I've only recently changed to a plant-based diet. ");
+      if (evQ === 3) {
+        appendWizardEvidence(row, 3, "I wish I'd done it ages ago.");
+      } else {
+        appendInert(row, "I wish I'd done it ages ago. ");
+      }
+      appendInert(
+        row,
+        " I'd become increasingly aware of the suffering we cause to animals by what we eat, and I felt it was high time I took a stand against the way we treat them. It's not easy, though. "
+      );
+      if (evQ === 5) {
+        appendWizardEvidence(
+          row,
+          5,
+          "My friends only ever want to meet up in burger restaurants, and my parents seem determined not to try vegan food, let alone cook it, which is disappointing — it's not asking much for them to show a little interest."
+        );
+      } else if (tk === "e4") {
+        appendInert(row, "My friends only ever want to meet up in burger restaurants, and ");
+        appendWizardTrap(row, 4, "my parents seem determined not to try vegan food");
+        appendInert(
+          row,
+          ", let alone cook it, which is disappointing — it's not asking much for them to show a little interest."
+        );
+      } else {
+        appendInert(
+          row,
+          "My friends only ever want to meet up in burger restaurants, and my parents seem determined not to try vegan food, let alone cook it, which is disappointing — it's not asking much for them to show a little interest."
+        );
+      }
+      appendInert(
+        row,
+        " So, anyway, I just cook all my meals for myself now. I'm gradually getting the hang of it, and I like the independence it brings."
+      );
+    }
+
+    function renderWizardPassage(step) {
+      dhPassageHost.innerHTML = "";
+      var block = document.createElement("div");
+      block.className = "dh-block";
+      renderBlockHead(block, step.person, step.name);
+      var row = document.createElement("div");
+      if (step.person === "a") renderJackRow(row, step);
+      else if (step.person === "b") renderSarahRow(row, step);
+      else if (step.person === "c") renderMayaRow(row, step);
+      else if (step.person === "d") renderJustinRow(row, step);
+      else renderRhonaRow(row, step);
+      block.appendChild(row);
+      dhPassageHost.appendChild(block);
+    }
+
+    function renderWizardAtIndex() {
+      huntToast.classList.remove("show");
+      if (wizStepIx >= WIZARD_STEPS.length) {
+        dhProgress.textContent = "Готово — пройдены все " + WIZARD_STEPS.length + " шагов (A–E)";
+        dhPhaseTitle.textContent = "Сессия завершена";
+        dhHint.textContent =
+          "Нажми <strong>Restart hunt</strong>, чтобы начать сначала, или вернись на вкладку <strong>Answers</strong>.";
+        dhTaskStatement.innerHTML =
+          "<p class=\"dh-task-q\">Все утверждения и дистракторы разобраны по текстам по порядку.</p>";
+        dhPassageHost.innerHTML = "";
+        btnHuntNext.disabled = true;
+        btnHuntNext.textContent = "Готово";
+        wizTargetFound = true;
+        return;
+      }
+
+      btnHuntNext.textContent = "Next";
+      var step = WIZARD_STEPS[wizStepIx];
+      wizTargetFound = false;
+      btnHuntNext.disabled = true;
+
+      var sub = personSubstepInfo(wizStepIx);
+      dhProgress.textContent =
+        "Текст " +
+        step.person.toUpperCase() +
+        " (" +
+        step.name +
+        "): шаг " +
+        sub.pos +
+        " из " +
+        sub.total +
+        " · всего " +
+        (wizStepIx + 1) +
+        " / " +
+        WIZARD_STEPS.length;
+
+      if (step.kind === "evidence") {
+        dhPhaseTitle.textContent = "Найди подтверждение в этом тексте";
+        dhHint.textContent =
+          "В панели с формулировкой — точный текст из задания. В абзаце только <strong>одна</strong> кликабельная фраза — прямое доказательство для вопроса " +
+          step.q +
+          ".";
+        dhTaskStatement.innerHTML =
+          '<span class="dh-task-badge dh-task-ev">Правильное утверждение · Вопрос ' +
+          step.q +
+          '</span><p class="dh-task-q">' +
+          escapeHtml(stmtBodyForQ(step.q)) +
+          "</p>";
+      } else {
+        dhPhaseTitle.textContent = "Найди дистрактор (ловушку) в этом тексте";
+        dhHint.textContent =
+          "Ниже — текст вопроса " +
+          step.forQ +
+          " из экзамена; в <em>этом</em> абзаце есть похожая фраза, но она <strong>не</strong> отвечает на вопрос " +
+          step.forQ +
+          ". Найди её.";
+        var note = step.trapNoteRu ? '<p class="dh-task-trap-note">' + step.trapNoteRu + "</p>" : "";
+        dhTaskStatement.innerHTML =
+          '<span class="dh-task-badge dh-task-trap">Дистрактор · имитирует вопрос ' +
+          step.forQ +
+          "</span>" +
+          '<p class="dh-task-q">«' +
+          escapeHtml(stmtBodyForQ(step.forQ)) +
+          "»</p>" +
+          note;
+      }
+
+      renderWizardPassage(step);
+    }
+
+    function switchTab(which) {
+      var isHunt = which === "hunt";
+      tabAnswers.classList.toggle("is-on", !isHunt);
+      tabHunt.classList.toggle("is-on", isHunt);
+      tabAnswers.setAttribute("aria-selected", !isHunt ? "true" : "false");
+      tabHunt.setAttribute("aria-selected", isHunt ? "true" : "false");
+      panelAnswers.hidden = isHunt;
+      panelHunt.hidden = !isHunt;
+      huntToast.classList.remove("show");
+      if (isHunt) {
+        passageWrapEl.classList.add("hunt-wizard-active");
+        dhPassageHost.removeAttribute("hidden");
+        resetHuntState();
+        renderWizardAtIndex();
+      } else {
+        passageWrapEl.classList.remove("hunt-wizard-active");
+        dhPassageHost.innerHTML = "";
+        dhPassageHost.setAttribute("hidden", "");
+      }
+    }
+
+    tabAnswers.addEventListener("click", function () {
+      switchTab("answers");
+    });
+    tabHunt.addEventListener("click", function () {
+      switchTab("hunt");
+    });
+
+    btnHuntNext.addEventListener("click", function () {
+      if (wizStepIx >= WIZARD_STEPS.length) return;
+      if (!wizTargetFound) return;
+      wizStepIx += 1;
+      renderWizardAtIndex();
+    });
+
+    document.getElementById("btnHuntRestart").addEventListener("click", function () {
+      resetHuntState();
+      huntToast.classList.remove("show");
+      renderWizardAtIndex();
+    });
+
+    var SUBMIT_Q_HELP = [
+      {
+        evidence:
+          "<strong>D (Justin):</strong> “got loads of useful tips from a social media group” = help/advice from other vegans.",
+        trapa:
+          "Classic <strong>trap (Jack)</strong>: mum’s “sound advice” — not ‘other vegans’ (see <strong>Distractor hunt</strong>, Jack / Q1 trap step)."
+      },
+      {
+        evidence:
+          "<strong>B (Sarah):</strong> reassurance that “served to reinforce his idea” = opposite effect.",
+        trapd:
+          "Classic <strong>trap (Justin)</strong>: “how to reassure my parents” — intention only, not a failed reassurance."
+      },
+      {
+        evidence: "<strong>E (Rhona):</strong> “I wish I'd done it ages ago” = regret not going vegan sooner.",
+        trape: "If you picked E for the wrong reason, check you matched <em>regret</em>, not just plant-based diet."
+      },
+      {
+        evidence:
+          "<strong>A (Jack):</strong> “I totally get that… don't hold it against her” = understands mum’s resistance.",
+        trape:
+          "Classic <strong>trap (Rhona)</strong>: parents refusing food — she is angry, not ‘understanding’ (<strong>Distractor hunt</strong>, Rhona / Q4 trap step)."
+      },
+      {
+        evidence:
+          "<strong>E (Rhona):</strong> friends/parents not supportive + “disappointing” = lack of support.",
+        trapa: "Don’t confuse with Jack’s hosting effort — Q5 is Rhona’s disappointment with others."
+      },
+      {
+        evidence:
+          "<strong>C (Maya):</strong> “threw in the towel” + contrast with sister’s willpower = lacked determination.",
+        trapc:
+          "Don’t pick only the sister’s willpower without Maya giving up — the key is <em>Maya</em> quitting."
+      },
+      {
+        evidence:
+          "<strong>B (Sarah):</strong> parents worried about nutrients / “serious consequences” = health at risk.",
+        trapc:
+          "Classic <strong>trap (Maya)</strong>: feeling healthier now — not the same as others’ worries (<strong>Distractor hunt</strong>, Maya / Q7 trap step)."
+      },
+      {
+        evidence: "<strong>D (Justin):</strong> “The key is to do it in stages” = gradual change to the diet.",
+        trapb:
+          "Classic <strong>trap (Sarah)</strong>: parents “gradually” accepting — about them, not the diet method (<strong>Distractor hunt</strong>, Sarah / Q8 trap step)."
+      },
+      {
+        evidence:
+          "<strong>A (Jack):</strong> “guests… amazed at how delicious it is” = surprise at tasty vegan food.",
+        trapa: "Must be surprise at <em>taste</em> at a meal — not generic environment line (Q1 trap zone)."
+      },
+      {
+        evidence: "<strong>B (Sarah):</strong> “it's a major part of who I am” = veganism as identity.",
+        trapb: "Identity line is Sarah’s — don’t muddle with Justin’s practical tips."
+      }
+    ];
+
+    function renderSubmitAnalysis() {
+      var list = document.getElementById("submitAnalysisList");
+      var box = document.getElementById("submitAnalysis");
+      list.innerHTML = "";
+      for (var i = 0; i < 10; i++) {
+        var u = getVal(i);
+        var k = CORRECT[i];
+        var li = document.createElement("li");
+        var H = SUBMIT_Q_HELP[i];
+        if (u === k) {
+          li.innerHTML =
+            '<span class="ok-line"><strong>Question ' +
+            (i + 1) +
+            ".</strong> Correct (" +
+            u.toUpperCase() +
+            "). " +
+            H.evidence +
+            "</span>";
+        } else {
+          var tip = H["trap" + u];
+          if (!tip) {
+            tip =
+              "Key is <strong>" +
+              k.toUpperCase() +
+              "</strong>. " +
+              H.evidence +
+              " Use the <strong>Distractor hunt</strong> tab (A→E wizard: statements + one phrase per step).";
+          }
+          li.innerHTML =
+            '<span class="bad-line"><strong>Question ' +
+            (i + 1) +
+            ".</strong> You chose <strong>" +
+            u.toUpperCase() +
+            "</strong>; key <strong>" +
+            k.toUpperCase() +
+            "</strong>. " +
+            tip +
+            "</span>";
+        }
+        list.appendChild(li);
+      }
+      box.classList.add("show");
+    }
+
+    function hideSubmitAnalysis() {
+      document.getElementById("submitAnalysis").classList.remove("show");
+      document.getElementById("submitAnalysisList").innerHTML = "";
+    }
+
+    function showInlineKeys() {
+      for (var ki = 0; ki < 10; ki++) {
+        var row = document.querySelector('.stmt-row[data-q="' + (ki + 1) + '"]');
+        if (!row) continue;
+        var badge = row.querySelector(".answer-key-inline");
+        if (!badge) continue;
+        badge.textContent = "Key: " + CORRECT[ki].toUpperCase();
+        badge.removeAttribute("hidden");
+        badge.setAttribute("aria-hidden", "false");
+      }
+    }
+
+    function hideInlineKeys() {
+      document.querySelectorAll(".answer-key-inline").forEach(function (b) {
+        b.textContent = "";
+        b.setAttribute("hidden", "");
+        b.setAttribute("aria-hidden", "true");
+      });
+    }
+
+    var SPLIT_KEY = "reading-part1-vegan-opts-pct";
+    var mcLayout = document.getElementById("mcLayout");
+    var mcResizer = document.getElementById("mcResizer");
+    var mqMcNarrow = window.matchMedia("(max-width: 880px)");
+
+    function applyMcOptsPct(pct) {
+      var n = Math.round(Number(pct));
+      if (!isFinite(n)) return;
+      n = Math.max(24, Math.min(46, n));
+      mcLayout.style.setProperty("--mc-opts", n + "%");
+    }
+
+    function readMcOptsPct() {
+      var cs = getComputedStyle(mcLayout).getPropertyValue("--mc-opts").trim();
+      var m = cs.match(/^([\d.]+)%/);
+      return m ? parseFloat(m[1], 10) : 36;
+    }
+
+    try {
+      var savedSplit = localStorage.getItem(SPLIT_KEY);
+      if (savedSplit) applyMcOptsPct(savedSplit);
+    } catch (e0) {}
+
+    function mcSplitFromClientX(clientX) {
+      var rect = mcLayout.getBoundingClientRect();
+      var w = rect.width;
+      if (w < 1) return;
+      var pct = ((rect.right - clientX) / w) * 100;
+      applyMcOptsPct(pct);
+    }
+
+    var mcDragging = false;
+
+    function mcCanDrag() {
+      return !mqMcNarrow.matches;
+    }
+
+    function onMcDragEnd() {
+      if (!mcDragging) return;
+      mcDragging = false;
+      mcResizer.classList.remove("is-dragging");
+      document.body.style.cursor = "";
+      try {
+        localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
+      } catch (e1) {}
+    }
+
+    mcResizer.addEventListener("mousedown", function (e) {
+      if (e.button !== 0 || !mcCanDrag()) return;
+      e.preventDefault();
+      mcDragging = true;
+      mcResizer.classList.add("is-dragging");
+      document.body.style.cursor = "col-resize";
+    });
+
+    document.addEventListener("mousemove", function (e) {
+      if (!mcDragging) return;
+      e.preventDefault();
+      mcSplitFromClientX(e.clientX);
+    });
+
+    document.addEventListener("mouseup", onMcDragEnd);
+
+    mcResizer.addEventListener("touchstart", function (e) {
+      if (!mcCanDrag()) return;
+      if (e.touches.length !== 1) return;
+      mcDragging = true;
+      mcResizer.classList.add("is-dragging");
+    }, { passive: true });
+
+    document.addEventListener(
+      "touchmove",
+      function (e) {
+        if (!mcDragging) return;
+        e.preventDefault();
+        mcSplitFromClientX(e.touches[0].clientX);
+      },
+      { passive: false }
+    );
+
+    document.addEventListener("touchend", onMcDragEnd);
+    document.addEventListener("touchcancel", onMcDragEnd);
+
+    mcResizer.addEventListener("keydown", function (e) {
+      if (!mcCanDrag()) return;
+      var step = e.shiftKey ? 5 : 2;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        applyMcOptsPct(readMcOptsPct() - step);
+        try {
+          localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
+        } catch (e2) {}
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        applyMcOptsPct(readMcOptsPct() + step);
+        try {
+          localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
+        } catch (e3) {}
+      }
+    });
+
+    function normalizeLetter(v) {
+      var t = (v || "").trim().toLowerCase();
+      if (!t) return "";
+      var c = t.charAt(0);
+      if (c >= "a" && c <= "e") return c;
+      return "";
+    }
+
+    function clearInputMarks() {
+      inputs.forEach(function (inp) {
+        inp.classList.remove("is-ok", "is-bad");
+      });
+    }
+
+    function getVal(i) {
+      return normalizeLetter(inputs[i].value);
+    }
+
+    function openAnswerReveal(text) {
+      answerRevealBody.textContent = text;
+      answerRevealLayer.classList.add("is-open");
+      answerRevealLayer.style.display = "flex";
+      answerRevealLayer.setAttribute("aria-hidden", "false");
+      answerRevealBtn.focus();
+    }
+
+    function closeAnswerReveal() {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
+
+    answerRevealBtn.addEventListener("click", function () {
+      closeAnswerReveal();
+      if (typeof afterAnswerReveal === "function") {
+        var fn = afterAnswerReveal;
+        afterAnswerReveal = null;
+        fn();
+      }
+    });
+
+    inputs.forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        clearInputMarks();
+        afterAnswerReveal = null;
+        var n = normalizeLetter(inp.value);
+        inp.value = n ? n.toUpperCase() : "";
+      });
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var missing = false;
+      for (var i = 0; i < 10; i++) {
+        if (!getVal(i)) {
+          missing = true;
+          break;
+        }
+      }
+      if (missing) {
+        feedback.className = "feedback show";
+        feedback.textContent = "Type A, B, C, D or E for every question (1–10), then press Submit.";
+        return;
+      }
+
+      clearInputMarks();
+
+      var score = 0;
+      for (var j = 0; j < 10; j++) {
+        var ok = getVal(j) === CORRECT[j];
+        if (ok) {
+          score += 1;
+          inputs[j].classList.add("is-ok");
+        } else {
+          inputs[j].classList.add("is-bad");
+        }
+      }
+
+      showInlineKeys();
+      renderSubmitAnalysis();
+
+      if (score === 10) {
+        feedback.className = "feedback show";
+        feedback.innerHTML =
+          "Excellent! All <strong>10</strong> answers are correct. " +
+          "Each row shows <strong>Key:</strong>. Below: short evidence for every question. " +
+          "<strong>Distractor hunt</strong> (tab): тексты <strong>A→E</strong> по очереди — на каждом шаге виден <strong>вопрос из задания</strong>, затем одна кликабельная фраза в тексте и кнопка <strong>Next</strong>.";
+        return;
+      }
+
+      var wrong = 10 - score;
+      feedback.className = "feedback show";
+      feedback.innerHTML =
+        "Correct: <strong>" + score + "</strong>, still to fix: <strong>" + wrong + "</strong>. " +
+        "The right letter for every question is shown as <strong>Key:</strong> next to the box. " +
+        "Fix the red boxes and press <strong>Submit</strong> again. " +
+        "Read <strong>After Submit — why correct / why a trap</strong> below for each item. " +
+        "<strong>Distractor hunt</strong>: пошагово по текстам с формулировками вопросов (вкладка).";
+    });
+
+    btnReset.addEventListener("click", function () {
+      afterAnswerReveal = null;
+      inputs.forEach(function (inp) {
+        inp.value = "";
+        inp.classList.remove("is-ok", "is-bad");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      closeAnswerReveal();
+      hideInlineKeys();
+      hideSubmitAnalysis();
+      switchTab("answers");
+    });
+  </script>
+</body>
+</html>

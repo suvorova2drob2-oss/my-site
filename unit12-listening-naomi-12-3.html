@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Listening 12.3 (Naomi)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 10px;
+      margin-bottom: 14px;
+    }
+    audio { width: 100%; margin-top: 6px; }
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q {
+      margin-bottom: 14px;
+      border-bottom: 1px solid #34507d;
+      padding-bottom: 12px;
+    }
+    .q:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .q h3 {
+      font-size: 1rem;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .opts {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      color: #d5e2f8;
+      font-size: 0.95rem;
+    }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+    }
+    .opt-line input {
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+    .label {
+      color: var(--accent);
+      font-weight: 700;
+      display: inline-block;
+      width: 18px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background: var(--ok);
+      color: #05271a;
+    }
+    .btn-next {
+      background: var(--accent);
+      color: #062536;
+    }
+    .feedback {
+      margin-top: 10px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      line-height: 1.4;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.12);
+      color: #a7f3d0;
+    }
+    .feedback.bad {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.1);
+      color: #fecaca;
+    }
+    .trainer {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: none;
+    }
+    .trainer.show { display: block; }
+    .trainer-head {
+      margin-bottom: 10px;
+    }
+    .trainer-head h2 {
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+    }
+    .trainer-note {
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+    .progress {
+      color: #cde0ff;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .passage {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #1a2c49;
+      padding: 16px;
+      line-height: 1.8;
+      font-size: 1.03rem;
+      margin-bottom: 12px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .chunk-static {
+      color: #c8dcf5;
+    }
+    .chunk-target {
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0 1px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .chunk-target:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .chunk-target.ok {
+      background: rgba(34, 197, 94, 0.32);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+      border-bottom: none;
+      cursor: default;
+    }
+    .chunk-target.bad {
+      background: rgba(239, 68, 68, 0.32);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.4);
+      border-bottom: none;
+      cursor: default;
+    }
+    .chunk-target.locked { pointer-events: none; }
+    .explain-box {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1a2c49;
+      padding: 10px 12px;
+      line-height: 1.45;
+      font-size: 0.92rem;
+      color: #d2dff6;
+    }
+    .explain-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #dbe8ff;
+    }
+    .explain-row {
+      margin-top: 4px;
+    }
+    .explain-row.good { color: #a7f3d0; }
+    .explain-row.bad { color: #fecaca; }
+    .tag-mini {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 1px 6px;
+      margin-right: 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      vertical-align: 1px;
+    }
+    .tag-mini.good {
+      background: rgba(34, 197, 94, 0.25);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #a7f3d0;
+    }
+    .tag-mini.bad {
+      background: rgba(239, 68, 68, 0.25);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fecaca;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Listening 12.3 — Naomi Price</h1>
+      <a class="back" href="unit12-listening.html">Back to Listening</a>
+    </header>
+
+    <p class="subtitle">You will hear an interview with a personal trainer. For questions 1-7, choose the best answer (A, B or C).</p>
+
+    <section class="audio-wrap">
+      <strong>Audio: RfB2First_SB_Track 12.3</strong>
+      <audio controls preload="metadata" src="RfB2First_SB_Track 12.3.mp3"></audio>
+    </section>
+
+    <section class="questions" id="mcqHost"></section>
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnSubmit">Submit answers</button>
+    </div>
+    <div id="mcqFeedback" class="feedback"></div>
+
+    <section id="trainer" class="trainer">
+      <div class="trainer-head">
+        <h2>Stage 2 — Distractor Hunt</h2>
+        <p class="trainer-note">For each task: <strong>find the phrase in the text that supports the correct answer</strong> (green), then <strong>find distractor phrase(s) that match the meaning of wrong options</strong> (red).</p>
+      </div>
+      <p id="trainerProgress" class="progress">Task 1 / 7</p>
+      <h3 id="trainerQuestion" style="margin-bottom: 10px;"></h3>
+      <div id="trainerPassage" class="passage"></div>
+      <div id="explainBox" class="explain-box"></div>
+      <div class="btn-row">
+        <button type="button" class="btn-next" id="btnNext" disabled>Next task →</button>
+      </div>
+      <div id="trainerFeedback" class="feedback"></div>
+    </section>
+  </main>
+
+  <script>
+    var MCQ = [
+      {
+        q: "1) When Naomi takes on a new client, what is the first thing she does?",
+        options: {
+          A: "give the client advice on what food to eat",
+          B: "ask the client to do some basic exercises",
+          C: "find out the client's personal aims"
+        },
+        correct: "C"
+      },
+      {
+        q: "2) Naomi says she has specialist knowledge in helping",
+        options: {
+          A: "athletes improve their performance.",
+          B: "sportspeople recover from injury.",
+          C: "older people control their diet."
+        },
+        correct: "B"
+      },
+      {
+        q: "3) What quality does Naomi believe a personal trainer should have?",
+        options: {
+          A: "a sense of fun",
+          B: "a love of hard work",
+          C: "an ability to impose discipline"
+        },
+        correct: "A"
+      },
+      {
+        q: "4) How does Naomi's business differ from that of other personal trainers in the area?",
+        options: {
+          A: "She operates from her converted garage.",
+          B: "She conducts some of her classes outdoors.",
+          C: "She has a large number of exercise machines."
+        },
+        correct: "B"
+      },
+      {
+        q: "5) What did Naomi find frustrating in her job at the gym?",
+        options: {
+          A: "The clients changed frequently.",
+          B: "There were too many clients.",
+          C: "The clients were treated badly."
+        },
+        correct: "A"
+      },
+      {
+        q: "6) Naomi finally decided to leave her job at the gym when she was asked to",
+        options: {
+          A: "work at weekends.",
+          B: "wear specific clothes.",
+          C: "sell the gym's products."
+        },
+        correct: "C"
+      },
+      {
+        q: "7) How does Naomi find new clients?",
+        options: {
+          A: "Her existing clients recommend her to others.",
+          B: "She advertises for clients in the local press.",
+          C: "Her previous employer sends her clients."
+        },
+        correct: "A"
+      }
+    ];
+
+    var TRAINER = [
+      {
+        question: MCQ[0].q,
+        correctLabel: "C",
+        distractorLabels: ["B", "A"],
+        segments: [
+          { kind: "plain", text: "Before we do anything, I carry out " },
+          { kind: "correct", text: "a needs analysis in order to establish exactly what it is they want to achieve" },
+          { kind: "plain", text: ". Then basically, I " },
+          { kind: "distractor", text: "design exercise routines", label: "B" },
+          { kind: "plain", text: " and " },
+          { kind: "distractor", text: "give advice on nutrition", label: "A" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[1].q,
+        correctLabel: "B",
+        distractorLabels: ["A", "C"],
+        segments: [
+          { kind: "plain", text: "I also have a large number of younger clients who've been injured while doing sport and want to " },
+          { kind: "correct", text: "get back to full fitness - that's my area of expertise" },
+          { kind: "plain", text: ". I also help one or two people train for " },
+          { kind: "distractor", text: "marathons and triathlons", label: "A" },
+          { kind: "plain", text: ", and many older clients want to " },
+          { kind: "distractor", text: "lower their cholesterol levels", label: "C" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[2].q,
+        correctLabel: "A",
+        distractorLabels: ["C", "B"],
+        segments: [
+          { kind: "plain", text: "I want clients to work hard, but I also want them to enjoy exercising. So trainers should keep it light-hearted and " },
+          { kind: "correct", text: "introduce an element of playfulness" },
+          { kind: "plain", text: ". I'm not one of those instructors " },
+          { kind: "distractor", text: "shouting orders at people", label: "C" },
+          { kind: "plain", text: ". Clients still have to " },
+          { kind: "distractor", text: "be dedicated and prepared to work hard", label: "B" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[3].q,
+        correctLabel: "B",
+        distractorLabels: ["A", "C"],
+        segments: [
+          { kind: "plain", text: "My garage is full of equipment. And then with some people " },
+          { kind: "correct", text: "I go to the park or a nearby wood to run" },
+          { kind: "plain", text: ". Clients say other local trainers " },
+          { kind: "distractor", text: "always hold their sessions inside", label: "A" },
+          { kind: "plain", text: ". I have " },
+          { kind: "distractor", text: "a rowing machine, two treadmills, two bikes and loads of weights", label: "C" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[4].q,
+        correctLabel: "A",
+        distractorLabels: ["B", "C"],
+        segments: [
+          { kind: "plain", text: "At the gym, I rarely had the chance to build long-lasting relationships. " },
+          { kind: "correct", text: "The client list was different every month" },
+          { kind: "plain", text: ". Another issue was " },
+          { kind: "distractor", text: "working on Saturdays", label: "B" },
+          { kind: "plain", text: ". But what made me resign was " },
+          { kind: "distractor", text: "the whole sales thing", label: "C" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[5].q,
+        correctLabel: "C",
+        distractorLabels: ["A", "B"],
+        segments: [
+          { kind: "plain", text: "When they told me I had to " },
+          { kind: "correct", text: "persuade people to buy things with the gym's logo on it" },
+          { kind: "plain", text: ", I made the decision to resign. I was also tired of " },
+          { kind: "distractor", text: "working on Saturdays", label: "A" },
+          { kind: "plain", text: ", and I didn't like pushing " },
+          { kind: "distractor", text: "protein supplements", label: "B" },
+          { kind: "plain", text: "." }
+        ]
+      },
+      {
+        question: MCQ[6].q,
+        correctLabel: "A",
+        distractorLabels: ["C", "B"],
+        segments: [
+          { kind: "plain", text: "I thought I might have to put adverts in the local newspaper, but those clients from the gym " },
+          { kind: "correct", text: "tell all their family and friends about me" },
+          { kind: "plain", text: " and then those people tell their friends. That's " },
+          { kind: "distractor", text: "the power of word of mouth", label: "C" },
+          { kind: "plain", text: ". So it is not mainly about " },
+          { kind: "distractor", text: "adverts in the local newspaper", label: "B" },
+          { kind: "plain", text: "." }
+        ]
+      }
+    ];
+
+    var mcqHost = document.getElementById("mcqHost");
+    var btnSubmit = document.getElementById("btnSubmit");
+    var mcqFeedback = document.getElementById("mcqFeedback");
+    var trainer = document.getElementById("trainer");
+    var trainerProgress = document.getElementById("trainerProgress");
+    var trainerQuestion = document.getElementById("trainerQuestion");
+    var trainerPassage = document.getElementById("trainerPassage");
+    var explainBox = document.getElementById("explainBox");
+    var btnNext = document.getElementById("btnNext");
+    var trainerFeedback = document.getElementById("trainerFeedback");
+
+    var currentStep = 0;
+    var hits = { correct: false, distractors: 0 };
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderMcq() {
+      mcqHost.innerHTML = MCQ.map(function (item, qIdx) {
+        var optionsHtml = Object.keys(item.options).map(function (k) {
+          return (
+            '<li class="opt-line"><input type="radio" name="q' + qIdx + '" value="' + k + '" id="q' + qIdx + k + '" />' +
+            '<label for="q' + qIdx + k + '"><span class="label">' + k + "</span>" + escapeHtml(item.options[k]) + "</label></li>"
+          );
+        }).join("");
+        return '<article class="q"><h3>' + escapeHtml(item.q) + "</h3><ul class=\"opts\">" + optionsHtml + "</ul></article>";
+      }).join("");
+    }
+
+    function getSelectedAnswers() {
+      return MCQ.map(function (_, i) {
+        var picked = document.querySelector('input[name="q' + i + '"]:checked');
+        return picked ? picked.value : "";
+      });
+    }
+
+    function renderTrainerStep() {
+      var step = TRAINER[currentStep];
+      var taskMcq = MCQ[currentStep];
+      hits = { correct: false, distractors: 0 };
+      btnNext.disabled = true;
+      trainerFeedback.className = "feedback";
+      trainerFeedback.textContent = "";
+      trainerProgress.textContent = "Task " + (currentStep + 1) + " / " + TRAINER.length;
+      trainerQuestion.textContent = step.question;
+      explainBox.innerHTML =
+        '<div class="explain-title">Task instruction</div>' +
+        '<div class="explain-row good"><span class="tag-mini good">Find correct</span>Find the phrase that proves the best answer in this question.</div>' +
+        '<div class="explain-row bad"><span class="tag-mini bad">Find distractor</span>Find phrase(s) that sound relevant but actually match wrong options by meaning.</div>' +
+        '<div class="explain-row good"><span class="tag-mini good">Target meaning</span>' + escapeHtml(taskMcq.options[step.correctLabel]) + "</div>" +
+        step.distractorLabels.map(function (label) {
+          return '<div class="explain-row bad"><span class="tag-mini bad">Distractor meaning</span>' + escapeHtml(taskMcq.options[label]) + "</div>";
+        }).join("");
+      trainerPassage.innerHTML = "";
+      step.segments.forEach(function (seg) {
+        var span = document.createElement("span");
+        span.textContent = seg.text;
+        if (seg.kind === "plain") {
+          span.className = "chunk-static";
+        } else {
+          span.className = "chunk-target";
+          span.setAttribute("data-kind", seg.kind);
+          if (seg.label) {
+            span.setAttribute("data-label", seg.label);
+            span.setAttribute("title", (seg.kind === "correct" ? "Correct option " : "Distractor option ") + seg.label);
+          }
+        }
+        trainerPassage.appendChild(span);
+      });
+    }
+
+    trainerPassage.addEventListener("click", function (event) {
+      var el = event.target.closest(".chunk-target");
+      if (!el || el.classList.contains("locked")) {
+        return;
+      }
+      var kind = el.getAttribute("data-kind");
+      el.classList.add("locked");
+      if (kind === "correct") {
+        el.classList.add("ok");
+        hits.correct = true;
+      } else {
+        el.classList.add("bad");
+        hits.distractors += 1;
+      }
+      if (hits.correct && hits.distractors >= 2) {
+        btnNext.disabled = false;
+        trainerFeedback.className = "feedback ok show";
+        trainerFeedback.textContent = "Good. Correct idea found (green) + distractors found (red).";
+      }
+    });
+
+    btnSubmit.addEventListener("click", function () {
+      var answers = getSelectedAnswers();
+      var allFilled = answers.every(function (a) { return a; });
+      if (!allFilled) {
+        mcqFeedback.className = "feedback bad show";
+        mcqFeedback.textContent = "Choose one answer for all 7 questions before submitting.";
+        return;
+      }
+      var score = 0;
+      answers.forEach(function (value, i) {
+        if (value === MCQ[i].correct) {
+          score += 1;
+        }
+      });
+      mcqFeedback.className = "feedback ok show";
+      mcqFeedback.innerHTML =
+        "Submitted. Your score: <strong>" + score + "/7</strong>. " +
+        "Key: 1 C, 2 B, 3 A, 4 B, 5 A, 6 C, 7 A. " +
+        "Stage 2 is now unlocked.";
+      trainer.classList.add("show");
+      currentStep = 0;
+      renderTrainerStep();
+      trainer.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    btnNext.addEventListener("click", function () {
+      if (currentStep >= TRAINER.length - 1) {
+        btnNext.disabled = true;
+        trainerFeedback.className = "feedback ok show";
+        trainerFeedback.textContent = "Done. You finished all 7 distractor tasks.";
+        return;
+      }
+      currentStep += 1;
+      renderTrainerStep();
+    });
+
+    renderMcq();
+  </script>
+</body>
+</html>

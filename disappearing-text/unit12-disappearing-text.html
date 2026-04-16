@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 - Disappearing Text</title>
+  <style>
+    :root {
+      --bg: #08142f;
+      --panel: #15274c;
+      --line: #355286;
+      --text: #eaf1ff;
+      --muted: #9db4dc;
+      --accent: #56ccf2;
+      --ok: #5ad3a4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #040b1b 0%, var(--bg) 100%);
+      color: var(--text);
+      padding: 20px;
+    }
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 40px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(21, 39, 76, 0.95);
+      padding: 10px;
+    }
+    audio { width: 100%; margin-top: 6px; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .mode, .speed {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    button {
+      border: 0;
+      background: #1f3967;
+      color: var(--text);
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    button.active { background: #2f4f85; }
+    .text-box {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0e1d41;
+      padding: 12px;
+      overflow-y: auto;
+    }
+    .line {
+      margin-bottom: 8px;
+      line-height: 1.5;
+      color: #dbe7ff;
+      transition: opacity 0.25s ease;
+    }
+    .target-slot {
+      display: inline-block;
+    }
+    .target-slot .gap-input {
+      display: none;
+      width: 110px;
+      border: 1px solid #537ab2;
+      border-radius: 7px;
+      background: #0b1734;
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 0.9rem;
+      margin-right: 2px;
+    }
+    .target-slot.hidden .word {
+      display: none;
+    }
+    .target-slot.hidden .gap-input {
+      display: inline-block;
+    }
+    .status {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .status.done {
+      color: var(--ok);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Disappearing Text - Unit 12</h1>
+      <a class="back" href="../Audio%20practice/unit12-shadowing.html">Back to Shadowing</a>
+    </header>
+
+    <section class="audio-wrap">
+      <div class="controls">
+        <div class="mode">
+          <button type="button" class="active" data-mode="naomi">Naomi</button>
+          <button type="button" data-mode="restaurants">Restaurants</button>
+        </div>
+        <div class="speed">
+          <button type="button" data-speed="0.7">Slow</button>
+          <button type="button" class="active" data-speed="1">Medium</button>
+          <button type="button" data-speed="1.4">Hard</button>
+        </div>
+        <button type="button" id="resetBtn">Reset visible</button>
+      </div>
+      <audio id="audio" controls preload="metadata" src="../RfB2First_SB_Track 12.3.mp3"></audio>
+    </section>
+
+    <section id="textBox" class="text-box"></section>
+    <p id="status" class="status">Press Play. Disappearing starts with mode delay; each 10th word becomes a typing gap.</p>
+  </main>
+
+  <script>
+    const modeButtons = document.querySelectorAll("[data-mode]");
+    const speedButtons = document.querySelectorAll("[data-speed]");
+    const resetBtn = document.getElementById("resetBtn");
+    const textBox = document.getElementById("textBox");
+    const audio = document.getElementById("audio");
+    const statusEl = document.getElementById("status");
+
+    const tracks = {
+      naomi: {
+        src: "../RfB2First_SB_Track 12.3.mp3",
+        lines: [
+          "I: On Health Matters today we have personal trainer Naomi Price. Naomi, what exactly does a personal trainer do?",
+          "N: Well, my main aim is to improve people's quality of life and overall health.",
+          "So besides helping them develop their fitness, strength and posture, I also work on their diet and lifestyle habits.",
+          "Of course, each client has their own specific, individual goals, so before we do anything I carry out a needs analysis in order to establish exactly what it is they want to achieve.",
+          "This includes asking them about their eating habits, their injury history and any medical complaints or conditions, such as high blood pressure.",
+          "Then basically, I design exercise routines and give advice on nutrition in response to the information they give me.",
+          "I: And what reasons do clients have for coming to see you?",
+          "N: Oh, there's a wide range.",
+          "I get a lot of clients, especially older ones, who simply want to lose a bit of weight or lower their cholesterol levels.",
+          "I also have a large number of younger clients who've been injured while doing sport and want to get back to full fitness - that's my area of expertise.",
+          "I also help one or two people train for marathons and triathlons, but mostly it's people who just want to improve their all-round fitness and as a result, their general self-confidence.",
+          "I: And I imagine it's important to build up a good relationship with your clients.",
+          "N: Yes, it is. I'm not one of those fitness instructors you sometimes see in films shouting orders at people to do fifty press-ups or run ten times round the park.",
+          "Certainly, clients have to be dedicated and prepared to work hard when they're with me, but I also want them to enjoy exercising as well.",
+          "So it's important, I think, for trainers to keep it light-hearted, introduce an element of playfulness into their sessions. There's usually a fair amount of laughter in mine.",
+          "I: Now, your workplace is your garage, isn't it, Naomi?",
+          "N: Well, yes, what used to be my garage. I don't park my car there any more - it's full of equipment.",
+          "There's a rowing machine, two treadmills, two exercise bikes and loads of weights and things.",
+          "I've also got a massage table, but that's in my lounge, where it's warmer.",
+          "And then with some people I go to the park or a nearby wood to run or simply to add a bit of variety to the classes.",
+          "Clients appreciate that - they've told me that other local trainers they've been with always hold their sessions inside.",
+          "I: You haven't always been your own boss have you?",
+          "N: No, I used to work in a gym.",
+          "The good thing about that was I learnt a lot from watching the other gym instructors and their interaction with the clients - both good and bad examples.",
+          "I also got experience of working with a lot of different clients, but the trouble was, I rarely had the chance to build up long-lasting relationships with them.",
+          "The client list was different every month - someone would join the gym in April, say, and by June they'd be gone.",
+          "I: And is that why you left?",
+          "N: It wasn't the only reason. I was getting tired of working on Saturdays, for one thing - I'd only had two or three Saturdays free in over a year.",
+          "But it was the whole sales thing that I was least happy about.",
+          "When they told me I had to persuade people to buy things with the gym's logo on it, that's when I made the decision to resign.",
+          "I didn't feel comfortable pushing T-shirts and baseball caps, or things like protein supplements, which most people take without needing to. It just wasn't my style.",
+          "I: Are you pleased you became self-employed?",
+          "N: Oh, yes, I've got so much more freedom, and so far, touch wood, things are going really well.",
+          "I thought I might have to put adverts in the local newspaper to get business but those clients I brought with me from the gym tell all their family and friends about me and those people tell all their friends ... and so it goes on.",
+          "The power of word of mouth.",
+          "I: Let's hope your success continues, Naomi. Thank you for coming in to the studio."
+        ]
+      },
+      restaurants: {
+        src: "../RfB2First_SB_Track 12.1.mp3",
+        lines: [
+          "Speaker 1: It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene.",
+          "We'd decided to get away from all the people and noise in the centre, where tourist restaurants charge tourist prices, and try something more local, more authentic.",
+          "The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about having to wait a little too long for the food to arrive.",
+          "What they didn't mention were the sticky tables that hadn't been wiped, the stained cutlery and the filthy floor.",
+          "We just ordered a main course, and left as soon as we could.",
+          "",
+          "Speaker 2: My partner and I went to a new vegan restaurant that had just opened in town.",
+          "We weren't expecting very much from the food, but everything we ordered was surprisingly tasty.",
+          "There wasn't a massive amount of variety on the menu but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, some of which might not be particularly well cooked.",
+          "What spoilt it, though, was the large group of people on the table next to ours, all talking at the tops of their voices.",
+          "Neither of us could hear what the other was saying, so we had to shout most of the time.",
+          "",
+          "Speaker 3: The only time I've ever made a complaint about anything was when I went for a meal once with my parents.",
+          "I told the waiter the meat in my stew was chewy, and should have been left in the oven longer.",
+          "My dad said he thought I'd been rude to the waiter, but my mum told me I was right to complain.",
+          "Her attitude is, if something's not right, then kick up a fuss, make a noise about it, otherwise nothing will get changed.",
+          "As it was, the waiter said he couldn't change it, but he wouldn't charge for my dessert.",
+          "So I ordered the most expensive one on the menu!",
+          "",
+          "Speaker 4: Recently, we treated ourselves to dinner in a five-star seafood restaurant.",
+          "We'd heard several negative things about the place before we went: the food was overpriced, the waiters were too formal, you didn't get much on your plate ...",
+          "But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked.",
+          "Well, the food was to die for: the crab, the mussels, the seabass - absolutely delicious.",
+          "And whoever said the portions were small was lying.",
+          "We just wished they'd been a bit quicker about bringing the food out.",
+          "They certainly weren't in any hurry, and we'd run out of things to say to each other by the time the main course arrived.",
+          "",
+          "Speaker 5: My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from.",
+          "Unfortunately, the restaurant in the hotel we stayed in with our walking group offered hardly any choice at all - just a few starters and a couple of mains - so we only ate there once.",
+          "We had no complaints about the food we actually ordered, and the service was second to none.",
+          "In fact, most of the people from our group liked the place so much they had dinner there every evening.",
+          "We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area."
+        ]
+      }
+    };
+
+    let mode = "naomi";
+    let speedFactor = 1;
+    let targetWordSlots = [];
+    let hiddenTargetCount = 0;
+    const modeDelaySec = {
+      naomi: 18,
+      restaurants: 23
+    };
+
+    function renderLines() {
+      textBox.innerHTML = "";
+      targetWordSlots = [];
+      let wordCount = 0;
+      tracks[mode].lines.forEach(function (line) {
+        const p = document.createElement("p");
+        p.className = "line";
+        const parts = line.split(/\s+/).filter(Boolean);
+        parts.forEach(function (part, index) {
+          if (!part.length) {
+            return;
+          }
+          const slot = document.createElement("span");
+          slot.className = "target-slot";
+          const span = document.createElement("span");
+          span.className = "word";
+          span.textContent = part + (index < parts.length - 1 ? " " : "");
+          slot.appendChild(span);
+          wordCount += 1;
+          if (wordCount % 10 === 0) {
+            const input = document.createElement("input");
+            input.className = "gap-input";
+            input.setAttribute("type", "text");
+            input.setAttribute("aria-label", "Type missing word");
+            slot.appendChild(input);
+            targetWordSlots.push(slot);
+          }
+          p.appendChild(slot);
+          if (index < parts.length - 1) {
+            p.appendChild(document.createTextNode(" "));
+          }
+        });
+        textBox.appendChild(p);
+      });
+      hiddenTargetCount = 0;
+      statusEl.className = "status";
+      statusEl.textContent =
+        "Press Play. " + mode.charAt(0).toUpperCase() + mode.slice(1) +
+        " delay: " + String(modeDelaySec[mode]) + "s, then every 10th word becomes a typing gap.";
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      modeButtons.forEach(function (btn) {
+        btn.classList.toggle("active", btn.getAttribute("data-mode") === mode);
+      });
+      audio.src = tracks[mode].src;
+      audio.load();
+      renderLines();
+    }
+
+    function setSpeed(nextSpeed) {
+      speedFactor = Number(nextSpeed);
+      speedButtons.forEach(function (btn) {
+        btn.classList.toggle("active", Number(btn.getAttribute("data-speed")) === speedFactor);
+      });
+    }
+
+    function applyHiddenCount(targetCount) {
+      targetWordSlots.forEach(function (slot, index) {
+        slot.classList.toggle("hidden", index < targetCount);
+      });
+      hiddenTargetCount = targetCount;
+    }
+
+    function syncDisappearingToAudio() {
+      if (!Number.isFinite(audio.duration) || audio.duration <= 0 || targetWordSlots.length === 0) {
+        return;
+      }
+      const delay = modeDelaySec[mode] || 5;
+      const effectiveDuration = Math.max(audio.duration - delay, 0.1);
+      const effectiveCurrent = Math.max(audio.currentTime - delay, 0);
+      const progress = Math.max(0, Math.min(effectiveCurrent / effectiveDuration, 1));
+      const scaledProgress = Math.max(0, Math.min(progress * speedFactor, 1));
+      const shouldHide = Math.floor(scaledProgress * targetWordSlots.length);
+      if (shouldHide !== hiddenTargetCount) {
+        applyHiddenCount(shouldHide);
+      }
+      if (audio.currentTime < delay) {
+        statusEl.className = "status";
+        statusEl.textContent =
+          "Waiting: disappearing starts in " + String(Math.ceil(delay - audio.currentTime)) + "s.";
+      } else {
+        statusEl.className = "status";
+        statusEl.textContent =
+          "Gaps opened: " + String(hiddenTargetCount) + " / " + String(targetWordSlots.length) + ". Type missing words.";
+      }
+    }
+
+    function resetVisible() {
+      applyHiddenCount(0);
+      statusEl.className = "status";
+      statusEl.textContent =
+        "Reset complete. Press Play; disappearing starts after " + String(modeDelaySec[mode] || 5) + " seconds.";
+    }
+
+    modeButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setMode(btn.getAttribute("data-mode"));
+      });
+    });
+
+    speedButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setSpeed(btn.getAttribute("data-speed"));
+      });
+    });
+
+    resetBtn.addEventListener("click", resetVisible);
+    audio.addEventListener("timeupdate", syncDisappearingToAudio);
+    audio.addEventListener("play", function () {
+      syncDisappearingToAudio();
+    });
+    audio.addEventListener("ended", function () {
+      applyHiddenCount(targetWordSlots.length);
+      statusEl.className = "status done";
+      statusEl.textContent = "All target words became gaps. Fill all missing words.";
+    });
+
+    setMode("naomi");
+    setSpeed(1);
+  </script>
+</body>
+</html>

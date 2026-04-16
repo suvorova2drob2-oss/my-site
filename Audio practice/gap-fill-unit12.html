@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 - Gap Fill</title>
+  <style>
+    :root {
+      --bg: #0b1732;
+      --panel: #14264a;
+      --line: #345384;
+      --text: #eaf1ff;
+      --muted: #9cb2d8;
+      --accent: #56ccf2;
+      --ok: #4fcc97;
+      --bad: #ff7b8f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #060f22 0%, #0b1732 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .page {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 40px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .top h1 { font-size: 1.25rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(20, 38, 74, 0.96);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .mode {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      align-self: flex-start;
+    }
+    .mode button {
+      border: 0;
+      background: #193360;
+      color: var(--text);
+      font-weight: 700;
+      padding: 9px 14px;
+      cursor: pointer;
+    }
+    .mode button + button { border-left: 1px solid var(--line); }
+    .mode button.active { background: #2a4a80; }
+    .transcript-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0e1d3f;
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .line {
+      margin-bottom: 9px;
+      line-height: 1.55;
+      color: #d8e5ff;
+      font-size: 0.98rem;
+    }
+    .gap {
+      width: 110px;
+      border: 1px solid #4d72a8;
+      border-radius: 7px;
+      background: #0b1734;
+      color: #fff;
+      padding: 2px 7px;
+      margin: 0 3px;
+      font-size: 0.92rem;
+    }
+    .gap.ok {
+      border-color: var(--ok);
+      background: #12392f;
+    }
+    .gap.bad {
+      border-color: var(--bad);
+      background: #4b1e2c;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .actions button {
+      border: 1px solid #5278ae;
+      border-radius: 8px;
+      background: #1c3a69;
+      color: #fff;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    .score {
+      color: #c8d8f6;
+      font-size: 0.9rem;
+    }
+    .answers-box {
+      border: 1px solid #4a628d;
+      border-radius: 10px;
+      background: #102346;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: #d6e3fa;
+      display: none;
+    }
+    .answers-box.show { display: block; }
+    .answers-box strong { color: #ffb8c1; }
+    .answer-row {
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+    .wrong-word { color: #ff8f9f; font-weight: 700; }
+    .right-word { color: #77e3ae; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Gap Fill - Unit 12 Shadowing</h1>
+      <a class="back" href="unit12-shadowing.html">Back to Shadowing</a>
+    </header>
+
+    <section class="audio-wrap">
+      <p id="audioLabel" class="hint">Naomi audio + full transcript gap fill</p>
+      <audio id="audio" controls preload="metadata" src="../RfB2First_SB_Track 12.3.mp3"></audio>
+    </section>
+
+    <div class="mode">
+      <button type="button" class="active" data-mode="naomi">Naomi</button>
+      <button type="button" data-mode="restaurants">Restaurants</button>
+    </div>
+
+    <section id="answersBox" class="answers-box"></section>
+
+    <section id="transcriptBox" class="transcript-box"></section>
+
+    <section class="actions">
+      <button type="button" id="checkBtn">Check answers</button>
+      <button type="button" id="resetBtn">Reset inputs</button>
+      <button type="button" id="showBtn">Show answers</button>
+      <span id="score" class="score"></span>
+    </section>
+  </main>
+
+  <script>
+    const modeButtons = document.querySelectorAll(".mode button");
+    const audio = document.getElementById("audio");
+    const audioLabel = document.getElementById("audioLabel");
+    const transcriptBox = document.getElementById("transcriptBox");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const showBtn = document.getElementById("showBtn");
+    const score = document.getElementById("score");
+    const answersBox = document.getElementById("answersBox");
+
+    const data = {
+      naomi: {
+        src: "../RfB2First_SB_Track 12.3.mp3",
+        label: "Naomi audio + full transcript gap fill",
+        transcript: [
+          "I: On Health Matters today we have personal trainer Naomi Price. Naomi, what exactly does a personal trainer do?",
+          "N: Well, my main aim is to improve people's quality of life and overall health.",
+          "So besides helping them develop their fitness, strength and posture, I also work on their diet and lifestyle habits.",
+          "Of course, each client has their own specific, individual goals, so before we do anything I carry out a needs analysis in order to establish exactly what it is they want to achieve.",
+          "This includes asking them about their eating habits, their injury history and any medical complaints or conditions, such as high blood pressure.",
+          "Then basically, I design exercise routines and give advice on nutrition in response to the information they give me.",
+          "I: And what reasons do clients have for coming to see you?",
+          "N: Oh, there's a wide range.",
+          "I get a lot of clients, especially older ones, who simply want to lose a bit of weight or lower their cholesterol levels.",
+          "I also have a large number of younger clients who've been injured while doing sport and want to get back to full fitness – that's my area of expertise.",
+          "I also help one or two people train for marathons and triathlons, but mostly it's people who just want to improve their all-round fitness and as a result, their general self-confidence.",
+          "I: And I imagine it's important to build up a good relationship with your clients.",
+          "N: Yes, it is. I'm not one of those fitness instructors you sometimes see in films shouting orders at people to do fifty press-ups or run ten times round the park.",
+          "Certainly, clients have to be dedicated and prepared to work hard when they're with me, but I also want them to enjoy exercising as well.",
+          "So it's important, I think, for trainers to keep it light-hearted, introduce an element of playfulness into their sessions. There's usually a fair amount of laughter in mine.",
+          "I: Now, your workplace is your garage, isn't it, Naomi?",
+          "N: Well, yes, what used to be my garage. I don't park my car there any more – it's full of equipment.",
+          "There's a rowing machine, two treadmills, two exercise bikes and loads of weights and things.",
+          "I've also got a massage table, but that's in my lounge, where it's warmer.",
+          "And then with some people I go to the park or a nearby wood to run or simply to add a bit of variety to the classes.",
+          "Clients appreciate that – they've told me that other local trainers they've been with always hold their sessions inside.",
+          "I: You haven't always been your own boss have you?",
+          "N: No, I used to work in a gym.",
+          "The good thing about that was I learnt a lot from watching the other gym instructors and their interaction with the clients – both good and bad examples.",
+          "I also got experience of working with a lot of different clients, but the trouble was, I rarely had the chance to build up long-lasting relationships with them.",
+          "The client list was different every month – someone would join the gym in April, say, and by June they'd be gone.",
+          "I: And is that why you left?",
+          "N: It wasn't the only reason. I was getting tired of working on Saturdays, for one thing – I'd only had two or three Saturdays free in over a year.",
+          "But it was the whole sales thing that I was least happy about.",
+          "When they told me I had to persuade people to buy things with the gym's logo on it, that's when I made the decision to resign.",
+          "I didn't feel comfortable pushing T-shirts and baseball caps, or things like protein supplements, which most people take without needing to. It just wasn't my style.",
+          "I: Are you pleased you became self-employed?",
+          "N: Oh, yes, I've got so much more freedom, and so far, touch wood, things are going really well.",
+          "I thought I might have to put adverts in the local newspaper to get business but those clients I brought with me from the gym tell all their family and friends about me and those people tell all their friends … and so it goes on.",
+          "The power of word of mouth.",
+          "I: Let's hope your success continues, Naomi. Thank you for coming in to the studio."
+        ],
+        keywords: [
+          "quality", "posture", "analysis", "injury", "pressure", "nutrition", "cholesterol",
+          "expertise", "triathlons", "self-confidence", "dedicated", "playfulness", "garage",
+          "equipment", "massage", "variety", "appreciate", "interaction", "relationships",
+          "Saturdays", "sales", "resign", "supplements", "self-employed", "freedom", "newspaper", "mouth"
+        ]
+      },
+      restaurants: {
+        src: "../RfB2First_SB_Track 12.1.mp3",
+        label: "Restaurants audio + full transcript gap fill",
+        transcript: [
+          "Speaker 1: It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene.",
+          "We'd decided to get away from all the people and noise in the centre, where tourist restaurants charge tourist prices, and try something more local, more authentic.",
+          "The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about having to wait a little too long for the food to arrive.",
+          "What they didn't mention were the sticky tables that hadn't been wiped, the stained cutlery and the filthy floor.",
+          "We just ordered a main course, and left as soon as we could.",
+          "",
+          "Speaker 2: My partner and I went to a new vegan restaurant that had just opened in town.",
+          "We weren't expecting very much from the food, but everything we ordered was surprisingly tasty.",
+          "There wasn't a massive amount of variety on the menu but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, some of which might not be particularly well cooked.",
+          "What spoilt it, though, was the large group of people on the table next to ours, all talking at the tops of their voices.",
+          "Neither of us could hear what the other was saying, so we had to shout most of the time.",
+          "",
+          "Speaker 3: The only time I've ever made a complaint about anything was when I went for a meal once with my parents.",
+          "I told the waiter the meat in my stew was chewy, and should have been left in the oven longer.",
+          "My dad said he thought I'd been rude to the waiter, but my mum told me I was right to complain.",
+          "Her attitude is, if something's not right, then kick up a fuss, make a noise about it, otherwise nothing will get changed.",
+          "As it was, the waiter said he couldn't change it, but he wouldn't charge for my dessert.",
+          "So I ordered the most expensive one on the menu!",
+          "",
+          "Speaker 4: Recently, we treated ourselves to dinner in a five-star seafood restaurant.",
+          "We'd heard several negative things about the place before we went: the food was overpriced, the waiters were too formal, you didn't get much on your plate ...",
+          "But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked.",
+          "Well, the food was to die for: the crab, the mussels, the seabass - absolutely delicious.",
+          "And whoever said the portions were small was lying.",
+          "We just wished they'd been a bit quicker about bringing the food out.",
+          "They certainly weren't in any hurry, and we'd run out of things to say to each other by the time the main course arrived.",
+          "",
+          "Speaker 5: My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from.",
+          "Unfortunately, the restaurant in the hotel we stayed in with our walking group offered hardly any choice at all - just a few starters and a couple of mains - so we only ate there once.",
+          "We had no complaints about the food we actually ordered, and the service was second to none.",
+          "In fact, most of the people from our group liked the place so much they had dinner there every evening.",
+          "We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area."
+        ],
+        keywords: [
+          "inexpensive", "hygiene", "tourist", "authentic", "home-cooked", "portions", "sticky",
+          "cutlery", "vegan", "surprisingly", "variety", "cooked", "voices", "complaint", "chewy",
+          "attitude", "dessert", "seafood", "overpriced", "mussels", "seabass", "quicker",
+          "fussy", "starters", "complaints", "antisocial"
+        ]
+      }
+    };
+
+    let activeMode = "naomi";
+    let gapItems = [];
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalize(word) {
+      return word.toLowerCase().replace(/[^a-z'-]/g, "");
+    }
+
+    function setMode(mode) {
+      const wasPlaying = !audio.paused;
+      activeMode = mode;
+      modeButtons.forEach(function (btn) {
+        btn.classList.toggle("active", btn.getAttribute("data-mode") === mode);
+      });
+      audio.src = data[mode].src;
+      audioLabel.textContent = data[mode].label;
+      audio.load();
+      if (wasPlaying) {
+        audio.play().catch(function () {});
+      }
+      renderGapFill();
+    }
+
+    function createGapFillLine(line, lineIndex, keywordSet) {
+      if (!line.trim()) {
+        return "<p class=\"line\"></p>";
+      }
+      const words = line.split(" ");
+      let html = "";
+      let gapsInLine = 0;
+      words.forEach(function (word, wordIndex) {
+        const clean = normalize(word);
+        const punctuation = word.replace(/[A-Za-z'-]/g, "");
+        const canGap = keywordSet.has(clean) && gapsInLine < 2;
+        if (canGap) {
+          const inputId = "gap-" + activeMode + "-" + String(lineIndex) + "-" + String(wordIndex);
+          gapItems.push({ id: inputId, answer: clean });
+          html += "<input class=\"gap\" id=\"" + inputId + "\" />";
+          gapsInLine += 1;
+          if (punctuation) {
+            html += escapeHtml(punctuation);
+          }
+        } else {
+          html += escapeHtml(word);
+        }
+        html += " ";
+      });
+      return "<p class=\"line\">" + html.trim() + "</p>";
+    }
+
+    function renderGapFill() {
+      gapItems = [];
+      const item = data[activeMode];
+      const keywordSet = new Set(item.keywords.map(normalize));
+      const html = item.transcript
+        .map(function (line, lineIndex) {
+          return createGapFillLine(line, lineIndex, keywordSet);
+        })
+        .join("");
+      transcriptBox.innerHTML = html;
+      score.textContent = "";
+      answersBox.classList.remove("show");
+      answersBox.innerHTML = "";
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      const wrongAnswers = [];
+      gapItems.forEach(function (entry) {
+        const input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        const rawValue = input.value.trim();
+        const value = rawValue.toLowerCase();
+        const ok = value === entry.answer;
+        input.classList.toggle("ok", ok);
+        input.classList.toggle("bad", !ok);
+        if (ok) {
+          correct += 1;
+        } else {
+          wrongAnswers.push({
+            got: rawValue || "(empty)",
+            expected: entry.answer
+          });
+        }
+      });
+      score.textContent = "Correct: " + String(correct) + " / " + String(gapItems.length);
+      if (wrongAnswers.length > 0) {
+        let html = "<strong>Mistakes:</strong>";
+        wrongAnswers.forEach(function (item) {
+          html +=
+            "<div class=\"answer-row\">you wrote <span class=\"wrong-word\">" +
+            escapeHtml(item.got) +
+            "</span> -> correct: <span class=\"right-word\">" +
+            escapeHtml(item.expected) +
+            "</span></div>";
+        });
+        answersBox.innerHTML = html;
+        answersBox.classList.add("show");
+      } else {
+        answersBox.classList.remove("show");
+        answersBox.innerHTML = "";
+      }
+    }
+
+    function resetInputs() {
+      gapItems.forEach(function (entry) {
+        const input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        input.value = "";
+        input.classList.remove("ok", "bad");
+      });
+      score.textContent = "";
+      answersBox.classList.remove("show");
+      answersBox.innerHTML = "";
+    }
+
+    function showAnswers() {
+      gapItems.forEach(function (entry) {
+        const input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        input.value = entry.answer;
+        input.classList.remove("bad");
+        input.classList.add("ok");
+      });
+      score.textContent = "Answers shown.";
+    }
+
+    function focusNextGap(currentId) {
+      const currentIndex = gapItems.findIndex(function (entry) {
+        return entry.id === currentId;
+      });
+      if (currentIndex < 0) {
+        return;
+      }
+      for (let i = currentIndex + 1; i < gapItems.length; i += 1) {
+        const nextInput = document.getElementById(gapItems[i].id);
+        if (nextInput) {
+          nextInput.focus();
+          nextInput.select();
+          return;
+        }
+      }
+    }
+
+    modeButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        setMode(button.getAttribute("data-mode"));
+      });
+    });
+
+    transcriptBox.addEventListener("keydown", function (event) {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || !target.classList.contains("gap")) {
+        return;
+      }
+      if (event.key !== "Enter") {
+        return;
+      }
+      event.preventDefault();
+      focusNextGap(target.id);
+    });
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetInputs);
+    showBtn.addEventListener("click", showAnswers);
+
+    setMode("naomi");
+  </script>
+</body>
+</html>

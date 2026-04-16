@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Part 4 Key word transformation</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --key: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); line-height: 1.5; margin-bottom: 16px; font-size: 0.98rem; }
+    .instr {
+      border: 1px solid var(--line);
+      background: rgba(26, 44, 73, 0.6);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.96rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .kw-item {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .kw-num { font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+    .kw-first { margin-bottom: 10px; line-height: 1.55; }
+    .kw-given { margin-bottom: 10px; }
+    .kw-given strong { color: var(--key); letter-spacing: 0.04em; }
+    .kw-second {
+      line-height: 1.8;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .kw-input {
+      flex: 1;
+      min-width: 200px;
+      max-width: 100%;
+      border: 1px solid #4d6fa1;
+      border-radius: 8px;
+      background: #12264b;
+      color: #fff;
+      padding: 8px 10px;
+      font-size: 0.98rem;
+    }
+    .kw-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .kw-input.ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); }
+    .kw-input.bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.12); }
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      padding: 10px 12px;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .answer-reveal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 28px 20px;
+      background: rgba(8, 11, 18, 0.97);
+    }
+    .answer-reveal-layer.is-open { display: flex !important; }
+    .answer-reveal-inner { width: min(620px, 100%); text-align: center; }
+    .answer-reveal-label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .answer-reveal-body {
+      color: #4ade80;
+      font-size: clamp(0.98rem, 2.8vw, 1.2rem);
+      font-weight: 700;
+      white-space: pre-line;
+      line-height: 1.65;
+      margin-bottom: 22px;
+      padding: 22px 20px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.14);
+      box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
+      text-align: left;
+    }
+    .answer-reveal-motivate {
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+    .answer-reveal-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #052030;
+    }
+    .answer-reveal-btn:hover { filter: brightness(1.08); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Part 4 — Key word transformation</h1>
+      <a class="back" href="unit12-use-of-english.html">Back to Use of English</a>
+    </header>
+
+    <p class="subtitle">
+      For questions 1–6, complete the second sentence so that it has a similar meaning to the first, using the word given. Do not change the word given.
+      You must use between two and five words, including the word given.
+    </p>
+
+    <p class="instr">
+      Type only the words that go in the gap. Do not repeat words that are already printed before or after the box.
+      When you are ready, press <strong>Submit</strong> to check your answers.
+    </p>
+
+    <section class="task">
+      <article class="kw-item">
+        <p class="kw-num">1.</p>
+        <p class="kw-first">I don't weigh as much as I did when I last saw you.</p>
+        <p class="kw-given">Key word: <strong>LOST</strong></p>
+        <p class="kw-second">
+          I <input type="text" class="kw-input" data-i="0" autocomplete="off" spellcheck="false" placeholder="your words" />
+          I last saw you.
+        </p>
+      </article>
+
+      <article class="kw-item">
+        <p class="kw-num">2.</p>
+        <p class="kw-first">I'm amazed by how much he knows about wild flowers.</p>
+        <p class="kw-given">Key word: <strong>OF</strong></p>
+        <p class="kw-second">
+          His
+          <input type="text" class="kw-input" data-i="1" autocomplete="off" spellcheck="false" placeholder="your words" />
+          me.
+        </p>
+      </article>
+
+      <article class="kw-item">
+        <p class="kw-num">3.</p>
+        <p class="kw-first">‘There'll be very few people at the meeting tomorrow,’ she told Roger.</p>
+        <p class="kw-given">Key word: <strong>NOT</strong></p>
+        <p class="kw-second">
+          She told Roger there
+          <input type="text" class="kw-input" data-i="2" autocomplete="off" spellcheck="false" placeholder="your words" />
+          people at the meeting the next day.
+        </p>
+      </article>
+
+      <article class="kw-item">
+        <p class="kw-num">4.</p>
+        <p class="kw-first">It's a pity we don't live nearer the school.</p>
+        <p class="kw-given">Key word: <strong>CLOSER</strong></p>
+        <p class="kw-second">
+          I wish we
+          <input type="text" class="kw-input" data-i="3" autocomplete="off" spellcheck="false" placeholder="your words" />
+          the school.
+        </p>
+      </article>
+
+      <article class="kw-item">
+        <p class="kw-num">5.</p>
+        <p class="kw-first">I really regret not accepting that part-time job offer.</p>
+        <p class="kw-given">Key word: <strong>WISH</strong></p>
+        <p class="kw-second">
+          I really
+          <input type="text" class="kw-input" data-i="4" autocomplete="off" spellcheck="false" placeholder="your words" />
+          down that part-time job offer.
+        </p>
+      </article>
+
+      <article class="kw-item">
+        <p class="kw-num">6.</p>
+        <p class="kw-first">My parents would prefer me not to wear jeans to the wedding.</p>
+        <p class="kw-given">Key word: <strong>RATHER</strong></p>
+        <p class="kw-second">
+          My parents would
+          <input type="text" class="kw-input" data-i="5" autocomplete="off" spellcheck="false" placeholder="your words" />
+          jeans to the wedding.
+        </p>
+      </article>
+    </section>
+
+    <div class="btn-row">
+      <button type="button" id="btnCheck" class="btn-check">Submit</button>
+      <button type="button" id="btnReset" class="btn-reset">Reset</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+  </main>
+
+  <div
+    id="answerRevealLayer"
+    class="answer-reveal-layer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="answerRevealLabel"
+    aria-hidden="true"
+  >
+    <div class="answer-reveal-inner">
+      <p class="answer-reveal-label" id="answerRevealLabel">Правильные ответы</p>
+      <p id="answerRevealBody" class="answer-reveal-body" aria-live="polite"></p>
+      <p class="answer-reveal-motivate">Давай, ты справишься!</p>
+      <button type="button" id="answerRevealBtn" class="answer-reveal-btn">Продолжить</button>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Normalised strings the gap must match (lowercase, single spaces).
+     * Covers: optional words in keys, slash alternatives, common contractions.
+     */
+    var ACCEPT = [
+      [
+        "have lost some weight since",
+        "have lost weight since",
+        "'ve lost some weight since",
+        "'ve lost weight since",
+        "ve lost some weight since",
+        "ve lost weight since",
+        "i've lost some weight since",
+        "i've lost weight since",
+        "ive lost some weight since",
+        "ive lost weight since"
+      ],
+      ["knowledge of wild flowers amazes"],
+      [
+        "would not be very many",
+        "would not be many",
+        "wouldn't be very many",
+        "wouldn't be many"
+      ],
+      ["lived closer to", "could live closer to"],
+      ["wish i had not turned", "wish i hadn't turned"],
+      [
+        "rather i did not wear",
+        "rather i didn't wear"
+      ]
+    ];
+
+    var REVEAL_LINES =
+      "1 — have/'ve lost (some) weight since\n" +
+      "2 — knowledge of wild flowers amazes\n" +
+      "3 — would not be (very) many\n" +
+      "4 — lived/could live closer to\n" +
+      "5 — wish I had not/hadn't turned\n" +
+      "6 — rather I did not/didn't wear";
+
+    var inputs = Array.prototype.slice.call(document.querySelectorAll(".kw-input"));
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var answerRevealLayer = document.getElementById("answerRevealLayer");
+    var answerRevealBody = document.getElementById("answerRevealBody");
+    var answerRevealBtn = document.getElementById("answerRevealBtn");
+
+    document.body.appendChild(answerRevealLayer);
+
+    var afterAnswerReveal = null;
+
+    function clearCheckState() {
+      inputs.forEach(function (inp) {
+        inp.classList.remove("ok", "bad");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+    }
+
+    function normalizeAnswer(v) {
+      var s = String(v || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+        .replace(/\s+/g, " ");
+      s = s.replace(/\bi\s+am\b/g, "i'm").replace(/\bi\s+have\b/g, "i've");
+      return s;
+    }
+
+    function isAccepted(index, userNorm) {
+      var list = ACCEPT[index] || [];
+      for (var i = 0; i < list.length; i++) {
+        if (userNorm === list[i]) return true;
+      }
+      return false;
+    }
+
+    function openAnswerReveal(text) {
+      answerRevealBody.textContent = text;
+      answerRevealLayer.classList.add("is-open");
+      answerRevealLayer.style.display = "flex";
+      answerRevealLayer.setAttribute("aria-hidden", "false");
+      answerRevealBtn.focus();
+    }
+
+    function closeAnswerReveal() {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
+
+    answerRevealBtn.addEventListener("click", function () {
+      closeAnswerReveal();
+      if (typeof afterAnswerReveal === "function") {
+        var fn = afterAnswerReveal;
+        afterAnswerReveal = null;
+        fn();
+      }
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var score = 0;
+      inputs.forEach(function (input, idx) {
+        var userNorm = normalizeAnswer(input.value);
+        var ok = userNorm.length > 0 && isAccepted(idx, userNorm);
+        input.classList.remove("ok", "bad");
+        input.classList.add(ok ? "ok" : "bad");
+        if (ok) score += 1;
+      });
+
+      if (score === inputs.length) {
+        feedback.className = "feedback show";
+        feedback.innerHTML = "Excellent! All <strong>6</strong> transformations are correct.";
+        return;
+      }
+
+      var wrong = inputs.length - score;
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      afterAnswerReveal = function () {
+        feedback.className = "feedback show";
+        feedback.innerHTML =
+          "Correct: <strong>" + score + "</strong>, still to fix: <strong>" + wrong + "</strong>. " +
+          "Edit the red gaps and press <strong>Submit</strong> again.";
+      };
+      openAnswerReveal(REVEAL_LINES);
+    });
+
+    inputs.forEach(function (input) {
+      input.addEventListener("input", function () {
+        clearCheckState();
+        afterAnswerReveal = null;
+      });
+    });
+
+    btnReset.addEventListener("click", function () {
+      afterAnswerReveal = null;
+      inputs.forEach(function (input) {
+        input.value = "";
+        input.classList.remove("ok", "bad");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      closeAnswerReveal();
+    });
+  </script>
+</body>
+</html>
