@@ -5070,7 +5070,7 @@
         </div>
         <label for="login-password-input" class="login-fld-label">Course password</label>
         <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Required — see hint below" autocomplete="current-password" />
-        <p class="login-password-hint" id="login-password-hint">Teacher: CPET · Student: CPE</p>
+        <p class="login-password-hint" id="login-password-hint">Password: suvorova2drob2</p>
         <details class="login-author-details">
             <summary>Platform author — “My courses” on the right</summary>
             <label for="login-author-pin" class="login-fld-label" style="margin-top: 10px;">Author PIN (optional)</label>
@@ -20900,11 +20900,8 @@ function openUnitDetail(unit) {
 var PREP_PLATFORM_AUTHOR_PIN = "EMP-platform-2026";
 
 var loginCourseTrackPick = "cpe";
-var LOGIN_COURSE_PASSWORDS = {
-    cpe: { teacher: "CPET", student: "CPE" },
-    ege: { teacher: "EGET", student: "EGE" },
-    fce: { teacher: "FCET", student: "FCE" }
-};
+/** Single login password for CPE / EGE / FCE / Creator on this screen. */
+var PREP_LOGIN_PASSWORD = "suvorova2drob2";
 
 function setLoginCourseTrack(track) {
     loginCourseTrackPick = track || "cpe";
@@ -20920,10 +20917,7 @@ function setLoginCourseTrack(track) {
     if (lbl) lbl.style.display = isCreator ? "none" : "";
     var hint = document.getElementById("login-password-hint");
     if (hint) {
-        if (isCreator) hint.textContent = "Password: creator";
-        else if (loginCourseTrackPick === "ege") hint.textContent = "Teacher: EGET · Student: EGE";
-        else if (loginCourseTrackPick === "fce") hint.textContent = "Teacher: FCET · Student: FCE";
-        else hint.textContent = "Teacher: CPET · Student: CPE";
+        hint.textContent = "Password: " + PREP_LOGIN_PASSWORD;
     }
 }
 
@@ -20976,23 +20970,16 @@ function registerUser() {
     var password = pwEl ? String(pwEl.value || '').trim() : '';
     var track = loginCourseTrackPick || 'cpe';
 
+    if (password !== PREP_LOGIN_PASSWORD) {
+        alert('Wrong password.');
+        return;
+    }
     if (track === 'creator') {
-        if (password !== 'creator') {
-            alert('Wrong password for Creator. Use: creator');
-            return;
-        }
         userData.liveRole = 'teacher';
     } else {
         var bTe = document.getElementById('login-role-teacher');
         var isTeacher = bTe && bTe.classList.contains('active');
-        var role = isTeacher ? 'teacher' : 'student';
-        var row = LOGIN_COURSE_PASSWORDS[track];
-        var expected = row && row[role];
-        if (password !== expected) {
-            alert('Wrong password for this course and role.');
-            return;
-        }
-        userData.liveRole = role;
+        userData.liveRole = isTeacher ? 'teacher' : 'student';
     }
 
     userData.name = n;
