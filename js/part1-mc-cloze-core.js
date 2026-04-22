@@ -2,12 +2,40 @@
  * Part 1 — Multiple-choice cloze (shared).
  * Configure before load: window.PART1_MC_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle }
  * Or URL: ?context=slug&src=relative/path/to/published.json&back=unit3.html&backLabel=...
- * Optional: &admin=1
+ * Edit mode: &prepView=edit (hub / track) and/or legacy &admin=1
  */
 (function () {
   var boot = window.PART1_MC_BOOT || window.PART1_MC_CONFIG || {};
   var sp = new URLSearchParams(window.location.search);
   var contextId = String(boot.contextId || sp.get("context") || "default").trim() || "default";
+  function isEditModeParams(params) {
+    var p = params || sp;
+    return p.get("admin") === "1" || p.get("prepView") === "edit";
+  }
+  var isEditRoute = isEditModeParams(sp);
+  if (!isEditRoute && /^prep-hub-/.test(contextId) && typeof window.PrepSiteContent !== "undefined" && PrepSiteContent.load) {
+    try {
+      var folderId = contextId.replace(/^prep-hub-/, "");
+      var flds = PrepSiteContent.load().folders || [];
+      var folderRec = null;
+      for (var iLock = 0; iLock < flds.length; iLock++) {
+        if (flds[iLock].id === folderId) {
+          folderRec = flds[iLock];
+          break;
+        }
+      }
+      if (folderRec && folderRec.studentLocked === true) {
+        var backRaw = sp.get("back");
+        try {
+          if (backRaw) window.location.replace(decodeURIComponent(backRaw));
+          else window.location.replace(new URL("../../index.html", window.location.href).href);
+        } catch (eLockNav) {
+          window.location.href = "../../index.html";
+        }
+        return;
+      }
+    } catch (eLock) {}
+  }
   var dataSrc = String(boot.dataSrc || sp.get("src") || "").trim();
   var backHref = String(boot.backHref || sp.get("back") || "").trim();
   var backLabel = String(
@@ -32,7 +60,7 @@
     if (!el) {
       return {
         title: "PART 1 — DEMO",
-        subtitle: "Добавь [[1]] в текст и четыре варианта в админке (?admin=1).",
+        subtitle: "Добавь [[1]] в текст и четыре варианта в режиме Edit (в адресе prepView=edit).",
         passage: "Replace this demo with your text and a gap [[1]].\n\nSecond paragraph.",
         example: null,
         items: [{ options: ["option A", "option B", "option C", "option D"], correctIndex: 0 }]
@@ -74,10 +102,15 @@
     return new URL("published.json", window.location.href).href;
   }
 
-  function buildNavQuery(adminOn) {
+  function buildNavQuery(editOn) {
     var p = new URLSearchParams(window.location.search);
-    if (adminOn) p.set("admin", "1");
-    else p.delete("admin");
+    if (editOn) {
+      p.set("prepView", "edit");
+      p.set("admin", "1");
+    } else {
+      p.delete("admin");
+      p.delete("prepView");
+    }
     var q = p.toString();
     return window.location.pathname + (q ? "?" + q : "") + window.location.hash;
   }
@@ -91,10 +124,16 @@
     var h1 = document.getElementById("part1McH1");
     if (h1) h1.textContent = pageTitle;
 
-    var admStudent = document.getElementById("part1McAdminLink");
-    var admBackStudent = document.getElementById("part1McStudentLink");
-    if (admStudent) admStudent.href = buildNavQuery(true);
-    if (admBackStudent) admBackStudent.href = buildNavQuery(false);
+    var tabPrev = document.getElementById("part1McPreviewTab");
+    var tabEdit = document.getElementById("part1McEditTab");
+    if (tabPrev) {
+      tabPrev.href = buildNavQuery(false);
+      tabPrev.classList.toggle("is-active", !isAdmin);
+    }
+    if (tabEdit) {
+      tabEdit.href = buildNavQuery(true);
+      tabEdit.classList.toggle("is-active", !!isAdmin);
+    }
   }
 
   function extractGapNums(passage) {
@@ -122,12 +161,91 @@
     });
   }
 
+  /** Номера пропусков в порядке первого появления в тексте (как читает ученик). Не сортирует 3,4,5 — важно для редактора и сопоставления items. */
+  function questionNumsInDocumentOrder(passage) {
+    var re = /\[\[(\d+)\]\]/g;
+    var m;
+    var seen = {};
+    var out = [];
+    while ((m = re.exec(String(passage || ""))) !== null) {
+      var n = parseInt(m[1], 10);
+      if (!isFinite(n) || n <= 0) continue;
+      if (seen[n]) continue;
+      seen[n] = true;
+      out.push(n);
+    }
+    return out;
+  }
+
+  /** В файле / localStorage items идут в порядке возрастания номера пропуска (как раньше). В редакторе — в порядке текста. */
+  function alignItemsToDocumentPassage(passage, items) {
+    var sorted = questionNumsFromPassage(passage);
+    var doc = questionNumsInDocumentOrder(passage);
+    var arr = Array.isArray(items) ? items : [];
+    var byNum = {};
+    sorted.forEach(function (g, si) {
+      var it = arr[si];
+      if (it) {
+        byNum[g] = {
+          options: (it.options || []).slice(0, 4),
+          correctIndex: Number(it.correctIndex) || 0
+        };
+      }
+    });
+    return doc.map(function (g) {
+      var x = byNum[g];
+      return x
+        ? { options: x.options.slice(), correctIndex: x.correctIndex }
+        : { options: ["", "", "", ""], correctIndex: 0 };
+    });
+  }
+
+  function itemsDocumentToSortedStorage(passage, itemsDoc) {
+    var sorted = questionNumsFromPassage(passage);
+    var doc = questionNumsInDocumentOrder(passage);
+    var arr = Array.isArray(itemsDoc) ? itemsDoc : [];
+    var byNum = {};
+    doc.forEach(function (g, di) {
+      var it = arr[di];
+      if (it) {
+        byNum[g] = {
+          options: (it.options || []).slice(0, 4),
+          correctIndex: Number(it.correctIndex) || 0
+        };
+      }
+    });
+    return sorted.map(function (g) {
+      var x = byNum[g];
+      return x
+        ? { options: x.options.slice(), correctIndex: x.correctIndex }
+        : { options: ["", "", "", ""], correctIndex: 0 };
+    });
+  }
+
+  function exerciseForStorage(data) {
+    var o = deepClone(data);
+    o.items = itemsDocumentToSortedStorage(o.passage, o.items || []);
+    return o;
+  }
+
   function validateExercise(data) {
     var errs = [];
     if (!data.title || !String(data.title).trim()) errs.push("Нужен заголовок.");
     if (!data.passage || !String(data.passage).trim()) errs.push("Нужен текст с [[1]] …");
     var qnums = questionNumsFromPassage(data.passage);
     if (!qnums.length) errs.push("В тексте нет пропусков [[1]], [[2]], …");
+    var dupSeen = {};
+    var reDup = /\[\[(\d+)\]\]/g;
+    var dm;
+    while ((dm = reDup.exec(String(data.passage || ""))) !== null) {
+      var dn = parseInt(dm[1], 10);
+      if (!isFinite(dn) || dn <= 0) continue;
+      if (dupSeen[dn]) {
+        errs.push("Пропуск [[" + dn + "]] встречается в тексте больше одного раза — оставь один маркер.");
+        break;
+      }
+      dupSeen[dn] = true;
+    }
     var maxq = qnums[qnums.length - 1];
     for (var i = 1; i <= maxq; i++) {
       if (qnums.indexOf(i) === -1) {
@@ -144,18 +262,40 @@
       errs.push("Число блоков ответов (" + (data.items ? data.items.length : 0) + ") должно совпадать с числом пропусков " + qnums.length + ".");
     }
     if (data.items) {
+      var docLab = questionNumsInDocumentOrder(data.passage);
       data.items.forEach(function (it, idx) {
+        var qLabel = docLab[idx] != null ? "[[" + docLab[idx] + "]]" : String(idx + 1);
         if (!it.options || it.options.length !== 4) {
-          errs.push("Вопрос " + (idx + 1) + ": нужно ровно 4 варианта.");
+          errs.push("Пропуск " + qLabel + ": нужны слоты A–D (внутренняя ошибка).");
           return;
         }
         var ci = Number(it.correctIndex);
         if (!isFinite(ci) || ci < 0 || ci > 3) {
-          errs.push("Вопрос " + (idx + 1) + ": верный ответ — A, B, C или D.");
+          errs.push("Пропуск " + qLabel + ": верный ответ — ячейка A, B, C или D.");
+          return;
         }
+        var filled = 0;
+        var correctText = "";
         it.options.forEach(function (op, j) {
-          if (!String(op || "").trim()) errs.push("Вопрос " + (idx + 1) + ", вариант " + LETTERS_U[j] + ": пусто.");
+          var t = String(op || "").trim();
+          if (t) filled++;
+          if (j === ci) correctText = t;
         });
+        if (!correctText) {
+          errs.push(
+            "Пропуск " + qLabel + ": в ячейке верного ответа (" + LETTERS_U[ci] + ") должен быть текст."
+          );
+          return;
+        }
+        if (filled < 2) {
+          errs.push(
+            "Пропуск " +
+              qLabel +
+              ": нужен хотя бы один неверный вариант (сейчас заполнено слотов: " +
+              filled +
+              "). Пустые буквы можно не трогать."
+          );
+        }
       });
     }
     return errs;
@@ -199,10 +339,42 @@
     return inner || "<p>" + merged + "</p>";
   }
 
-  function buildCorrectLetters(data) {
+  /** Radio values are original slot indices "0".."3", not display letters. */
+  function buildCorrectChoiceValues(data) {
     return (data.items || []).map(function (it) {
-      return LETTERS[Number(it.correctIndex) || 0];
+      return String(Number(it.correctIndex) || 0);
     });
+  }
+
+  function displayLetterForCorrect(it) {
+    var ci = Number(it.correctIndex) || 0;
+    var k = 0;
+    for (var j = 0; j < 4; j++) {
+      if (!String(it.options[j] || "").trim()) continue;
+      if (j === ci) return LETTERS_U[k];
+      k++;
+    }
+    return LETTERS_U[Math.min(ci, 3)];
+  }
+
+  var state = {
+    exercise: parseDefaultJson(),
+    names: [],
+    blocks: [],
+    nQuestions: 0,
+    /** Для каждого вопроса — порядок слотов 0..3 в колонке A, B, C… (после перемешивания у ученика). */
+    studentOptionOrder: []
+  };
+
+  function displayLetterForStudentView(qIndex, it) {
+    var order = state.studentOptionOrder && state.studentOptionOrder[qIndex];
+    var ci = Number(it.correctIndex) || 0;
+    if (order && order.length) {
+      for (var v = 0; v < order.length; v++) {
+        if (order[v] === ci) return LETTERS_U[v];
+      }
+    }
+    return displayLetterForCorrect(it);
   }
 
   function buildRevealLines(data) {
@@ -210,7 +382,7 @@
     var row = [];
     (data.items || []).forEach(function (it, i) {
       var num = i + 1;
-      var L = LETTERS_U[it.correctIndex] || "A";
+      var L = displayLetterForStudentView(i, it);
       row.push(" " + num + " " + L + "    ");
       if (row.length === 4) {
         lines.push(row.join(""));
@@ -221,14 +393,17 @@
     return lines.join("\n").trim();
   }
 
-  var state = {
-    exercise: parseDefaultJson(),
-    names: [],
-    blocks: [],
-    nQuestions: 0
-  };
+  function shuffleIntArray(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i];
+      arr[i] = arr[j];
+      arr[j] = t;
+    }
+    return arr;
+  }
 
-  var isAdmin = /\badmin=1\b/.test(location.search);
+  var isAdmin = isEditModeParams(new URLSearchParams(window.location.search));
 
   var elTitle = document.getElementById("elTitle");
   var elSubtitle = document.getElementById("elSubtitle");
@@ -252,6 +427,77 @@
 
   wireNav();
 
+  /**
+   * Общая отрисовка заголовка, текста и колонки вариантов (как у ученика).
+   * @param {boolean} cfg.collectState — заполнить state.names / state.blocks для Submit
+   * @param {boolean} cfg.shuffleForStudent — случайный порядок вариантов (режим Preview / ученик); в редакторе — false
+   */
+  function renderExerciseLayout(data, cfg) {
+    cfg.titleEl.textContent = data.title || "";
+    if (cfg.subtitleEl) cfg.subtitleEl.textContent = data.subtitle || "";
+    cfg.passageEl.innerHTML = passageToHtml(data);
+    cfg.optsCol.innerHTML = "";
+    var collect = !!cfg.collectState;
+    var shuffleStudent = !!cfg.shuffleForStudent;
+    var names = collect ? [] : null;
+    var blocks = collect ? [] : null;
+    if (collect) {
+      state.studentOptionOrder = [];
+    }
+    var n = (data.items || []).length;
+    var docNums = questionNumsInDocumentOrder(data.passage);
+    var prefix = cfg.radioPrefix;
+    var idPref = cfg.blockIdPrefix != null ? cfg.blockIdPrefix : "q";
+    for (var i = 0; i < n; i++) {
+      var gapLabel = docNums[i] != null ? docNums[i] : i + 1;
+      var nm = prefix + "_" + (i + 1);
+      if (names) names.push(nm);
+      var block = document.createElement("div");
+      block.className = "gap-block";
+      block.id = idPref + gapLabel;
+      block.setAttribute("data-q", String(gapLabel));
+      var head = document.createElement("div");
+      head.className = "gap-num";
+      head.textContent = String(gapLabel);
+      var rg = document.createElement("div");
+      rg.className = "choices";
+      rg.setAttribute("role", "radiogroup");
+      rg.setAttribute("aria-label", "Вопрос " + gapLabel);
+      var it = data.items[i];
+      var filled = [];
+      for (var j0 = 0; j0 < 4; j0++) {
+        if (String(it.options[j0] || "").trim()) filled.push(j0);
+      }
+      var order = filled.slice();
+      if (shuffleStudent && order.length > 1) {
+        shuffleIntArray(order);
+      }
+      if (collect) {
+        state.studentOptionOrder.push(order.slice());
+      }
+      var vis = 0;
+      for (var si = 0; si < order.length; si++) {
+        var j = order[si];
+        var optText = String(it.options[j] || "").trim();
+        if (!optText) continue;
+        var lab = document.createElement("label");
+        var radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = nm;
+        radio.value = String(j);
+        lab.appendChild(radio);
+        lab.appendChild(document.createTextNode(" " + LETTERS_U[vis] + " " + optText));
+        rg.appendChild(lab);
+        vis++;
+      }
+      block.appendChild(head);
+      block.appendChild(rg);
+      cfg.optsCol.appendChild(block);
+      if (blocks) blocks.push(block);
+    }
+    return collect ? { names: names, blocks: blocks } : null;
+  }
+
   function renderStudent(data) {
     state.exercise = data;
     var errs = validateExercise(data);
@@ -263,47 +509,19 @@
     feedback.className = "feedback";
     feedback.textContent = "";
 
-    elTitle.textContent = data.title;
-    elSubtitle.textContent = data.subtitle || "";
-    elPassage.innerHTML = passageToHtml(data);
-
-    mcOptsCol.innerHTML = "";
-    state.names = [];
-    state.blocks = [];
-    var n = (data.items || []).length;
-    state.nQuestions = n;
-    for (var i = 0; i < n; i++) {
-      var qnum = i + 1;
-      var nm = "mc_" + contextId.replace(/[^\w-]/g, "_") + "_" + qnum;
-      state.names.push(nm);
-      var block = document.createElement("div");
-      block.className = "gap-block";
-      block.id = "q" + qnum;
-      block.setAttribute("data-q", String(qnum));
-      var head = document.createElement("div");
-      head.className = "gap-num";
-      head.textContent = String(qnum);
-      var rg = document.createElement("div");
-      rg.className = "choices";
-      rg.setAttribute("role", "radiogroup");
-      rg.setAttribute("aria-label", "Question " + qnum);
-      var it = data.items[i];
-      for (var j = 0; j < 4; j++) {
-        var lab = document.createElement("label");
-        var radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = nm;
-        radio.value = LETTERS[j];
-        lab.appendChild(radio);
-        lab.appendChild(document.createTextNode(" " + LETTERS_U[j] + " " + (it.options[j] || "")));
-        rg.appendChild(lab);
-      }
-      block.appendChild(head);
-      block.appendChild(rg);
-      mcOptsCol.appendChild(block);
-      state.blocks.push(block);
-    }
-
+    var r = renderExerciseLayout(data, {
+      titleEl: elTitle,
+      subtitleEl: elSubtitle,
+      passageEl: elPassage,
+      optsCol: mcOptsCol,
+      radioPrefix: "mc_" + contextId.replace(/[^\w-]/g, "_"),
+      blockIdPrefix: "q",
+      collectState: true,
+      shuffleForStudent: true
+    });
+    state.names = r.names;
+    state.blocks = r.blocks;
+    state.nQuestions = state.names.length;
     wireRadios();
     return true;
   }
@@ -441,7 +659,7 @@
   }
 
   function applyMarksForQuestion(index) {
-    var CORRECT = buildCorrectLetters(state.exercise);
+    var CORRECT = buildCorrectChoiceValues(state.exercise);
     var block = state.blocks[index];
     var key = CORRECT[index];
     clearLabelMarks(block);
@@ -510,11 +728,11 @@
     }
     if (missing) {
       feedback.className = "feedback show";
-      feedback.textContent = "Choose A, B, C or D for every question, then press Submit.";
+      feedback.textContent = "Отметьте вариант по каждому вопросу, затем Submit.";
       return;
     }
 
-    var CORRECT = buildCorrectLetters(state.exercise);
+    var CORRECT = buildCorrectChoiceValues(state.exercise);
     var score = 0;
     for (var j = 0; j < n; j++) {
       applyMarksForQuestion(j);
@@ -565,11 +783,113 @@
   var admDataBanner = document.getElementById("admDataBanner");
   var hasAdminDom = !!(admTitle && admPassage && admGapsWrap && admDataBanner);
 
+  function applyExerciseMetaLock() {
+    if (!hasAdminDom) return;
+    var lock = boot.lockExerciseMeta === true || boot.lockExerciseMeta === "1";
+    var t0 = boot.activityTitle || boot.presetTitle || "";
+    var s0 = boot.activitySubtitle || boot.presetSubtitle || "";
+    try {
+      if (sp.get("activityTitle")) {
+        t0 = decodeURIComponent(String(sp.get("activityTitle")).replace(/\+/g, " "));
+      }
+      if (sp.get("activitySubtitle")) {
+        s0 = decodeURIComponent(String(sp.get("activitySubtitle")).replace(/\+/g, " "));
+      }
+    } catch (eM) {}
+    if (t0) {
+      admTitle.value = t0;
+      admTitle.readOnly = true;
+      admTitle.classList.add("admin-meta-from-activity");
+    }
+    if (s0) {
+      admSubtitle.value = s0;
+      admSubtitle.readOnly = true;
+      admSubtitle.classList.add("admin-meta-from-activity");
+    }
+    if (lock) {
+      admTitle.readOnly = true;
+      admSubtitle.readOnly = true;
+      admTitle.classList.add("admin-meta-from-activity");
+      admSubtitle.classList.add("admin-meta-from-activity");
+    }
+  }
+
+  function normalizeItemsForPassage(passage, itemsIn) {
+    var qnums = questionNumsInDocumentOrder(passage);
+    var items = Array.isArray(itemsIn) ? itemsIn.map(function (x) {
+      return {
+        options: (x.options || []).slice(0, 4),
+        correctIndex: Number(x.correctIndex) || 0
+      };
+    }) : [];
+    while (items.length < qnums.length) {
+      items.push({ options: ["", "", "", ""], correctIndex: 0 });
+    }
+    while (items.length > qnums.length) {
+      items.pop();
+    }
+    items.forEach(function (it) {
+      while (it.options.length < 4) it.options.push("");
+      if (it.options.length > 4) it.options = it.options.slice(0, 4);
+    });
+    return items;
+  }
+
+  var livePreviewTimer = null;
+
+  function scheduleLivePreview() {
+    if (!isAdmin || !hasAdminDom) return;
+    window.clearTimeout(livePreviewTimer);
+    livePreviewTimer = window.setTimeout(function () {
+      syncAdminLivePreview();
+    }, 260);
+  }
+
+  function syncAdminLivePreview() {
+    if (!isAdmin || !hasAdminDom) return;
+    var titleEl = document.getElementById("adminLiveTitle");
+    var optsEl = document.getElementById("adminLiveOpts");
+    if (!titleEl || !optsEl) return;
+    var raw = readDraftFromDom();
+    var items = normalizeItemsForPassage(raw.passage, raw.items);
+    var data = {
+      title: raw.title,
+      subtitle: raw.subtitle,
+      passage: raw.passage,
+      example: raw.example,
+      items: items
+    };
+    var errs = validateExercise(data);
+    renderExerciseLayout(data, {
+      titleEl: titleEl,
+      subtitleEl: document.getElementById("adminLiveSubtitle"),
+      passageEl: document.getElementById("adminLivePassage"),
+      optsCol: optsEl,
+      radioPrefix: "mc_lp_" + contextId.replace(/[^\w-]/g, "_"),
+      blockIdPrefix: "qlp-",
+      collectState: false
+    });
+    var fb = document.getElementById("adminLiveFeedback");
+    if (fb) {
+      if (errs.length) {
+        fb.className = "admin-live-preview-feedback is-warn";
+        fb.textContent =
+          "Черновик (сохранение и полный Preview после исправления): " + errs.slice(0, 3).join(" ");
+        if (errs.length > 3) fb.textContent += "\u2026";
+      } else {
+        fb.className = "admin-live-preview-feedback is-ok";
+        fb.textContent =
+          "Превью: как у ученика. Справа в редакторе порядок букв — как после «Перемешать показ»; у ученика при открытии снова случайный. Submit — «Проверить как ученик».";
+      }
+    }
+  }
+
   function adminFillFromData(data) {
     if (!hasAdminDom) return;
-    admTitle.value = data.title || "";
-    admSubtitle.value = data.subtitle || "";
-    admPassage.value = data.passage || "";
+    if (!admTitle.readOnly) admTitle.value = data.title || "";
+    if (!admSubtitle.readOnly) admSubtitle.value = data.subtitle || "";
+    var passage = String(data.passage || "");
+    admPassage.value = passage;
     if (data.example) {
       admExLetter.value = (data.example.letter || "").toString();
       admExText.value = (data.example.text || "").toString();
@@ -577,54 +897,400 @@
       admExLetter.value = "";
       admExText.value = "";
     }
-    adminRenderGapEditors();
+    var itemsDoc = alignItemsToDocumentPassage(passage, data.items || []);
+    var merged = normalizeItemsForPassage(admPassage.value, itemsDoc);
+    adminRenderGapEditors(merged);
+    adminRenderPassageInteractive();
+    scheduleLivePreview();
   }
 
-  function adminRenderGapEditors() {
+  function parseAdminWordsPaste(raw) {
+    return String(raw || "")
+      .split(/[,;|•·\n\r]+/)
+      .map(function (s) {
+        return s.trim();
+      })
+      .filter(Boolean)
+      .slice(0, 4);
+  }
+
+  function uniqueAdminWords(arr) {
+    var seen = {};
+    var out = [];
+    (arr || []).forEach(function (w) {
+      var k = String(w).toLowerCase();
+      if (!w || seen[k]) return;
+      seen[k] = true;
+      out.push(String(w).trim());
+    });
+    return out;
+  }
+
+  function sortedStorageSlotsFromWords(words) {
+    var u = uniqueAdminWords(words).slice(0, 4);
+    u.sort(function (a, b) {
+      return a.localeCompare(b, undefined, { sensitivity: "base" });
+    });
+    while (u.length < 4) u.push("");
+    return u.slice(0, 4);
+  }
+
+  function itemToWordsTextareaLines(it) {
+    var o = (it && it.options) || [];
+    var w = [];
+    for (var i = 0; i < 4; i++) {
+      var t = String(o[i] || "").trim();
+      if (t) w.push(t);
+    }
+    w.sort(function (a, b) {
+      return a.localeCompare(b, undefined, { sensitivity: "base" });
+    });
+    return w.join("\n");
+  }
+
+  function correctWordFromItem(it) {
+    if (!it || !it.options) return "";
+    var ci = Number(it.correctIndex) || 0;
+    return String(it.options[ci] || "").trim();
+  }
+
+  function rebuildGapShuffledPreview(box, preferredCorrectWord) {
+    var ta = box.querySelector(".admin-gap-words-input");
+    var prev = box.querySelector(".admin-gap-shuffled-preview");
+    if (!ta || !prev) return;
+    var words = uniqueAdminWords(parseAdminWordsPaste(ta.value));
+    prev.innerHTML = "";
+    if (words.length < 2) {
+      var p = document.createElement("p");
+      p.className = "admin-gap-preview-hint";
+      p.textContent = "Вставь минимум два разных слова (через запятую или с новой строки).";
+      prev.appendChild(p);
+      return;
+    }
+    var order = words.slice();
+    shuffleIntArray(order);
+    var picked = String(preferredCorrectWord || "").trim();
+    var matched = false;
+    for (var i = 0; i < order.length; i++) {
+      var lab = document.createElement("label");
+      lab.className = "admin-gap-radio-line";
+      var radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "adm-gap-correct-" + box.id;
+      radio.value = order[i];
+      if (picked && order[i] === picked) {
+        radio.checked = true;
+        matched = true;
+      } else if (picked && order[i].toLowerCase() === picked.toLowerCase()) {
+        radio.checked = true;
+        matched = true;
+      }
+      lab.appendChild(radio);
+      lab.appendChild(
+        document.createTextNode(" " + LETTERS_U[i] + " " + order[i])
+      );
+      prev.appendChild(lab);
+    }
+    if (!matched) {
+      var r0 = prev.querySelector('input[type="radio"]');
+      if (r0) r0.checked = true;
+    }
+  }
+
+  /** Следующий свободный номер пропуска (заполняет «дыры»: при [[9]],[[12]] вернёт 1, а не 13). */
+  function nextFreeQuestionNum(oldQ) {
+    var s = {};
+    (oldQ || []).forEach(function (n) {
+      s[n] = true;
+    });
+    var n = 1;
+    while (s[n]) n++;
+    return n;
+  }
+
+  /**
+   * Перенумеровать все пропуски в тексте подряд [[1]]…[[N]] в порядке возрастания старых номеров;
+   * порядок элементов items не меняется.
+   */
+  function adminRenumberGapsPassageAndItems(precookedItems) {
+    if (!hasAdminDom) return;
+    var pass = admPassage.value;
+    var oldQ = questionNumsFromPassage(pass);
+    var items;
+    if (precookedItems != null) {
+      items = normalizeItemsForPassage(pass, precookedItems);
+    } else {
+      items = normalizeItemsForPassage(pass, readDraftFromDom().items);
+    }
+    if (!oldQ.length) {
+      adminRenderGapEditors(items);
+      adminRenderPassageInteractive();
+      scheduleLivePreview();
+      return;
+    }
+    var map = {};
+    oldQ.forEach(function (on, i) {
+      map[on] = i + 1;
+    });
+    var newPass = pass.replace(/\[\[(\d+)\]\]/g, function (full, d) {
+      var n = parseInt(d, 10);
+      if (n === 0) return full;
+      if (map[n] != null) return "[[" + map[n] + "]]";
+      return full;
+    });
+    admPassage.value = newPass;
+    items = normalizeItemsForPassage(newPass, items);
+    adminRenderGapEditors(items);
+    adminRenderPassageInteractive();
+    scheduleLivePreview();
+  }
+
+  /** Удалить [[num]] из текста и соответствующий блок вариантов; затем нормализовать 1…N. */
+  function adminRemoveQuestionGap(questionNum) {
+    if (!hasAdminDom) return;
+    var num = parseInt(questionNum, 10);
+    if (!isFinite(num) || num <= 0) return;
+    var pass = admPassage.value;
+    var token = "[[" + num + "]]";
+    if (pass.indexOf(token) === -1) return;
+    var draft = readDraftFromDom();
+    var ix = questionNumsInDocumentOrder(pass).indexOf(num);
+    if (ix < 0) return;
+    var newPass = pass.split(token).join("");
+    var merged = draft.items.slice();
+    if (ix < merged.length) merged.splice(ix, 1);
+    admPassage.value = newPass;
+    merged = normalizeItemsForPassage(newPass, merged);
+    adminRenumberGapsPassageAndItems(merged);
+  }
+
+  function adminRenderGapEditors(precookedItems) {
     if (!hasAdminDom) return;
     var passage = admPassage.value;
-    var qnums = questionNumsFromPassage(passage);
+    var qnums = questionNumsInDocumentOrder(passage);
+    var items = precookedItems;
+    if (!items) {
+      items = readDraftFromDom().items;
+    }
+    items = normalizeItemsForPassage(passage, items);
     admGapsWrap.innerHTML = "";
-    var draft = readDraftFromDom();
     qnums.forEach(function (num, idx) {
-      var it = draft.items[idx] || { options: ["", "", "", ""], correctIndex: 0 };
+      var it = items[idx] || { options: ["", "", "", ""], correctIndex: 0 };
       var box = document.createElement("div");
-      box.className = "gap-editor";
+      box.className = "gap-editor gap-editor--paste";
+      box.id = "gap-editor-q-" + num;
+      var headRow = document.createElement("div");
+      headRow.className = "gap-editor-head";
       var h = document.createElement("div");
       h.className = "row-head";
-      h.textContent = "Вопрос " + num;
-      box.appendChild(h);
-      for (var j = 0; j < 4; j++) {
-        var row = document.createElement("div");
-        row.className = "opt-grid";
-        var sp = document.createElement("span");
-        sp.textContent = LETTERS_U[j];
-        var inp = document.createElement("input");
-        inp.type = "text";
-        inp.setAttribute("data-qidx", String(idx));
-        inp.setAttribute("data-oj", String(j));
-        inp.value = it.options[j] || "";
-        row.appendChild(sp);
-        row.appendChild(inp);
-        box.appendChild(row);
+      h.textContent =
+        "Пропуск [[" +
+        num +
+        "]] — вставь 3–4 слова; ниже порядок как у ученика (перемешан). Отметь верный.";
+      headRow.appendChild(h);
+      var delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "btn-muted admin-gap-remove";
+      delBtn.textContent = "Удалить";
+      delBtn.title = "Убрать [[" + num + "]] из текста и этот блок.";
+      (function (nDel) {
+        delBtn.addEventListener("click", function () {
+          if (!window.confirm("Удалить пропуск [[" + nDel + "]] из текста и варианты к нему?")) return;
+          adminRemoveQuestionGap(nDel);
+        });
+      })(num);
+      headRow.appendChild(delBtn);
+      box.appendChild(headRow);
+
+      var taLab = document.createElement("label");
+      taLab.className = "admin-gap-words-label";
+      taLab.textContent = "Слова (запятая или новая строка). Для сохранения сортируются по алфавиту в слоты A–D.";
+      var ta = document.createElement("textarea");
+      ta.className = "admin-gap-words-input";
+      ta.rows = 4;
+      ta.setAttribute("spellcheck", "true");
+      ta.setAttribute("autocomplete", "off");
+      ta.value = itemToWordsTextareaLines(it);
+      taLab.setAttribute("for", "adm-gap-words-" + num);
+      ta.id = "adm-gap-words-" + num;
+      box.appendChild(taLab);
+      box.appendChild(ta);
+
+      var btnRow = document.createElement("div");
+      btnRow.className = "admin-gap-btn-row";
+      var shufBtn = document.createElement("button");
+      shufBtn.type = "button";
+      shufBtn.className = "btn-muted admin-gap-reshuffle-btn";
+      shufBtn.textContent = "Перемешать показ";
+      shufBtn.title = "Новый случайный порядок букв A, B, C… как у ученика";
+      var sortTaBtn = document.createElement("button");
+      sortTaBtn.type = "button";
+      sortTaBtn.className = "btn-muted admin-gap-sort-list-btn";
+      sortTaBtn.textContent = "Упорядочить список";
+      sortTaBtn.title = "Отсортировать строки в поле по алфавиту";
+      btnRow.appendChild(shufBtn);
+      btnRow.appendChild(sortTaBtn);
+      box.appendChild(btnRow);
+
+      var prevLab = document.createElement("div");
+      prevLab.className = "admin-gap-preview-label";
+      prevLab.textContent = "Как увидит ученик (выбери верный):";
+      box.appendChild(prevLab);
+      var prev = document.createElement("div");
+      prev.className = "admin-gap-shuffled-preview";
+      box.appendChild(prev);
+
+      function currentCorrectFromRadios() {
+        var r = box.querySelector('.admin-gap-shuffled-preview input[type="radio"]:checked');
+        return r ? String(r.value) : "";
       }
-      var cr = document.createElement("div");
-      cr.className = "correct-row";
-      cr.innerHTML = "<span>Верно:</span>";
-      var sel = document.createElement("select");
-      sel.setAttribute("data-qidx", String(idx));
-      for (var k = 0; k < 4; k++) {
-        var opt = document.createElement("option");
-        opt.value = String(k);
-        opt.textContent = LETTERS_U[k];
-        if (Number(it.correctIndex) === k) opt.selected = true;
-        sel.appendChild(opt);
+
+      function refreshPreview(keepCorrectWord) {
+        var keep = keepCorrectWord || currentCorrectFromRadios() || correctWordFromItem(it);
+        rebuildGapShuffledPreview(box, keep);
       }
-      cr.appendChild(sel);
-      box.appendChild(cr);
+
+      ta.addEventListener("input", function () {
+        refreshPreview(currentCorrectFromRadios() || correctWordFromItem(it));
+      });
+      shufBtn.addEventListener("click", function () {
+        refreshPreview(currentCorrectFromRadios());
+        scheduleLivePreview();
+      });
+      sortTaBtn.addEventListener("click", function () {
+        var u = uniqueAdminWords(parseAdminWordsPaste(ta.value));
+        u.sort(function (a, b) {
+          return a.localeCompare(b, undefined, { sensitivity: "base" });
+        });
+        ta.value = u.join("\n");
+        refreshPreview(currentCorrectFromRadios());
+        scheduleLivePreview();
+      });
+      prev.addEventListener("change", function () {
+        scheduleLivePreview();
+      });
+
+      refreshPreview(correctWordFromItem(it));
       admGapsWrap.appendChild(box);
     });
+    scheduleLivePreview();
   }
+
+  function jumpToGapEditor(numStr) {
+    if (!hasAdminDom) return;
+    var n = parseInt(numStr, 10);
+    if (!isFinite(n) || n < 1) return;
+    var qnums = questionNumsInDocumentOrder(admPassage.value);
+    var idx = qnums.indexOf(n);
+    if (idx < 0) return;
+    var box = admGapsWrap.children[idx];
+    if (!box) return;
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    box.classList.add("gap-editor--flash");
+    window.setTimeout(function () {
+      box.classList.remove("gap-editor--flash");
+    }, 1400);
+    var ta = box.querySelector(".admin-gap-words-input");
+    if (ta) {
+      ta.focus();
+      return;
+    }
+  }
+
+  function addGapFromWordClick(absStart, absEnd, word) {
+    if (!hasAdminDom) return;
+    var w = String(word || "").trim();
+    if (!w) return;
+    var draft = readDraftFromDom();
+    var oldPass = draft.passage;
+    var oldQ = questionNumsFromPassage(oldPass);
+    if (absStart < 0 || absEnd > oldPass.length || absStart >= absEnd) return;
+    var nextN = nextFreeQuestionNum(oldQ);
+    var newPass = oldPass.slice(0, absStart) + "[[" + nextN + "]]" + oldPass.slice(absEnd);
+    admPassage.value = newPass;
+    var newQ = questionNumsInDocumentOrder(newPass);
+    var oldDoc = questionNumsInDocumentOrder(oldPass);
+    var merged = [];
+    for (var i = 0; i < newQ.length; i++) {
+      var num = newQ[i];
+      var jDoc = oldDoc.indexOf(num);
+      if (num === nextN) {
+        var ri = Math.floor(Math.random() * 4);
+        var ro = ["", "", "", ""];
+        ro[ri] = w;
+        merged.push({ options: ro, correctIndex: ri });
+      } else if (jDoc >= 0 && draft.items[jDoc]) {
+        merged.push({
+          options: draft.items[jDoc].options.slice(),
+          correctIndex: draft.items[jDoc].correctIndex
+        });
+      } else {
+        merged.push({ options: ["", "", "", ""], correctIndex: 0 });
+      }
+    }
+    adminRenderGapEditors(merged);
+    adminRenderPassageInteractive();
+  }
+
+  function adminRenderPassageInteractive() {
+    var el = document.getElementById("admPassageVisual");
+    if (!el || !hasAdminDom) return;
+    var passage = admPassage.value;
+    el.innerHTML = "";
+    var parts = passage.split(/(\[\[\d+\]\])/g);
+    var globalOffset = 0;
+    for (var pi = 0; pi < parts.length; pi++) {
+      var part = parts[pi];
+      var mm = part.match(/^\[\[(\d+)\]\]$/);
+      if (mm) {
+        var gLabel = mm[1] === "0" ? "0" : mm[1];
+        var chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "adm-gap-chip" + (mm[1] === "0" ? " adm-gap-chip--ex" : "");
+        chip.textContent = "[" + gLabel + "]";
+        chip.title = mm[1] === "0" ? "Пример [[0]]" : "К вопросу " + mm[1] + ": ввести неверные варианты";
+        if (mm[1] !== "0") {
+          chip.setAttribute("data-gap-num", mm[1]);
+          chip.addEventListener("click", function (ev) {
+            jumpToGapEditor(ev.currentTarget.getAttribute("data-gap-num"));
+          });
+        }
+        el.appendChild(chip);
+        globalOffset += part.length;
+        continue;
+      }
+      var re = /[A-Za-z]+(?:'[A-Za-z]+)?/g;
+      var last = 0;
+      var m;
+      while ((m = re.exec(part)) !== null) {
+        if (m.index > last) {
+          el.appendChild(document.createTextNode(part.slice(last, m.index)));
+        }
+        var absA = globalOffset + m.index;
+        var absB = globalOffset + re.lastIndex;
+        var wordTxt = m[0];
+        var wbtn = document.createElement("button");
+        wbtn.type = "button";
+        wbtn.className = "adm-word";
+        wbtn.textContent = wordTxt;
+        wbtn.title =
+          "Сделать пропуск; «" + wordTxt + "» → верный ответ в случайной позиции A–D (кнопка «Перемешать A–D» — ещё раз)";
+        (function (a0, a1, wt) {
+          wbtn.addEventListener("click", function () {
+            addGapFromWordClick(a0, a1, wt);
+          });
+        })(absA, absB, wordTxt);
+        el.appendChild(wbtn);
+        last = re.lastIndex;
+      }
+      if (last < part.length) {
+        el.appendChild(document.createTextNode(part.slice(last)));
+      }
+      globalOffset += part.length;
+    }
+  }
+
+  var admVisTimer = null;
 
   function readDraftFromDom() {
     if (!hasAdminDom) {
@@ -643,29 +1309,69 @@
         text: admExText.value.trim()
       };
     }
-    var qnums = questionNumsFromPassage(data.passage);
+    var qnums = questionNumsInDocumentOrder(data.passage);
     qnums.forEach(function (num, idx) {
       var box = admGapsWrap.children[idx];
       if (!box) {
         data.items.push({ options: ["", "", "", ""], correctIndex: 0 });
         return;
       }
-      var opts = [];
+      var ta = box.querySelector(".admin-gap-words-input");
+      var words = uniqueAdminWords(parseAdminWordsPaste(ta ? ta.value : ""));
+      var sortedSlots = sortedStorageSlotsFromWords(words);
+      var r = box.querySelector('.admin-gap-shuffled-preview input[type="radio"]:checked');
+      var correctW = r ? String(r.value).trim() : "";
+      if (!correctW && sortedSlots[0]) correctW = sortedSlots[0];
+      var ci = 0;
+      var found = false;
       for (var j = 0; j < 4; j++) {
-        var inp = box.querySelector('input[data-oj="' + j + '"]');
-        opts.push(inp ? inp.value.trim() : "");
+        if (sortedSlots[j] === correctW) {
+          ci = j;
+          found = true;
+          break;
+        }
       }
-      var sel = box.querySelector("select");
-      var ci = sel ? parseInt(sel.value, 10) : 0;
-      data.items.push({ options: opts, correctIndex: ci });
+      if (!found && correctW) {
+        for (var k = 0; k < 4; k++) {
+          if (String(sortedSlots[k] || "").toLowerCase() === correctW.toLowerCase()) {
+            ci = k;
+            break;
+          }
+        }
+      }
+      data.items.push({ options: sortedSlots, correctIndex: ci });
     });
     return data;
   }
 
   if (hasAdminDom) {
+    applyExerciseMetaLock();
     admPassage.addEventListener("blur", function () {
+      var v = admPassage.value;
+      var v2 = v.replace(/\((\d+)\)/g, "[[$1]]");
+      if (v2 !== v) admPassage.value = v2;
       adminRenderGapEditors();
+      adminRenderPassageInteractive();
     });
+    admPassage.addEventListener("input", function () {
+      window.clearTimeout(admVisTimer);
+      admVisTimer = window.setTimeout(function () {
+        try {
+          var qn = questionNumsInDocumentOrder(admPassage.value);
+          if (qn.length !== admGapsWrap.children.length) {
+            adminRenderGapEditors();
+          }
+        } catch (eGap) {}
+        adminRenderPassageInteractive();
+        scheduleLivePreview();
+      }, 180);
+    });
+
+    var admShell = document.querySelector(".admin-shell");
+    if (admShell) {
+      admShell.addEventListener("input", scheduleLivePreview);
+      admShell.addEventListener("change", scheduleLivePreview);
+    }
   }
 
   function setDataBanner(text, ok) {
@@ -676,18 +1382,46 @@
 
   function publishExercise(data) {
     try {
-      localStorage.setItem(STORAGE_PUBLISH_KEY, JSON.stringify(data));
-      var srcHint = dataSrc
-        ? "Файл для загрузки на сервер: по адресу <strong>" + esc(dataSrc) + "</strong> (относительно этой страницы)."
-        : "Положи <strong>published.json</strong> рядом с этой страницей на хостинге.";
-      setDataBanner(
-        "Сохранено в браузере (ключ контекста: <strong>" +
-          esc(contextId) +
-          "</strong>). " +
-          srcHint +
-          " Студенты получат данные из файла, если он открывается по сети; иначе из этого браузера.",
-        true
-      );
+      var toStore = exerciseForStorage(data);
+      localStorage.setItem(STORAGE_PUBLISH_KEY, JSON.stringify(toStore));
+      var autoDl =
+        boot.saveAlsoDownloadsPublishedJson === true || /^prep-hub-/.test(contextId);
+      if (autoDl) {
+        try {
+          downloadJson("published.json", toStore);
+        } catch (eDl) {}
+      }
+      var localOk =
+        "<strong>Сохранено.</strong> На этом устройстве открывается эта версия. " +
+        (autoDl ? "Файл скачан — можно подложить в репозиторий при желании. " : "");
+      var cloudW =
+        typeof window.PrepCloudClient !== "undefined" &&
+        PrepCloudClient.isWriteConfigured &&
+        PrepCloudClient.isWriteConfigured();
+      if (cloudW) {
+        PrepCloudClient.pushExercise(contextId, toStore)
+          .then(function () {
+            setDataBanner(
+              localOk + "<strong>Облако:</strong> по этой ссылке ученики видят это задание (Supabase).",
+              true
+            );
+          })
+          .catch(function (err) {
+            setDataBanner(
+              localOk +
+                "<strong>Облако не записалось:</strong> " +
+                String((err && err.message) || err) +
+                " (см. infra/supabase/PREP-CLOUD.md).",
+              false
+            );
+          });
+      } else {
+        setDataBanner(
+          localOk +
+            "Для учеников без ручного деплоя подключи облако — <code>infra/supabase/PREP-CLOUD.md</code>.",
+          true
+        );
+      }
     } catch (e) {
       setDataBanner("Не удалось записать localStorage: " + (e && e.message), false);
     }
@@ -736,7 +1470,15 @@
         return;
       }
       try {
-        localStorage.setItem(STORAGE_PUBLISH_KEY, JSON.stringify(data));
+        var prev = exerciseForStorage(data);
+        localStorage.setItem(STORAGE_PUBLISH_KEY, JSON.stringify(prev));
+        if (
+          typeof window.PrepCloudClient !== "undefined" &&
+          PrepCloudClient.isWriteConfigured &&
+          PrepCloudClient.isWriteConfigured()
+        ) {
+          PrepCloudClient.pushExercise(contextId, prev).catch(function () {});
+        }
       } catch (e) {
         setDataBanner("Не удалось сохранить для предпросмотра: " + (e && e.message), false);
         return;
@@ -751,7 +1493,7 @@
         setDataBanner(errs.join(" "), false);
         return;
       }
-      downloadJson("published.json", data);
+      downloadJson("published.json", exerciseForStorage(data));
     });
 
     document.getElementById("btnAdmImport").addEventListener("click", function () {
@@ -767,13 +1509,21 @@
         try {
           var data = JSON.parse(reader.result);
           adminFillFromData(data);
-          setDataBanner("JSON загружен в форму. Нажми «Сохранить и опубликовать» или «Скачать».", true);
+          setDataBanner("JSON загружен в форму. Нажми «Сохранить».", true);
         } catch (e) {
           setDataBanner("Файл не JSON или битый.", false);
         }
       };
       reader.readAsText(f, "UTF-8");
     });
+
+    var btnRenumber = document.getElementById("btnAdmRenumberGaps");
+    if (btnRenumber) {
+      btnRenumber.addEventListener("click", function () {
+        adminRenumberGapsPassageAndItems(null);
+        setDataBanner("Пропуски перенумерованы подряд [[1]]…[[N]] (порядок вариантов сохранён).", true);
+      });
+    }
 
     document.getElementById("btnAdmReset").addEventListener("click", function () {
       var d = parseDefaultJson();
@@ -788,49 +1538,87 @@
     });
   }
 
-  function mergeLoadOrder() {
-    /* Course CMS: open with ?sessionKey=... after sessionStorage.setItem(key, JSON.stringify(exercise)) */
+  function resolveSessionExercisePayload() {
     var sk = sp.get("sessionKey");
     if (sk) {
       try {
         var rawS = sessionStorage.getItem(sk);
-        if (rawS) return Promise.resolve(JSON.parse(rawS));
+        if (rawS) return JSON.parse(rawS);
       } catch (eS) {}
     }
-    var def = parseDefaultJson();
-    var url = publishedFetchUrl();
-    return fetch(url, { cache: "no-store" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("no file");
-        return r.json();
-      })
-      .catch(function () {
-        var loc = readLocalPublished();
-        if (loc) return loc;
-        return def;
-      });
+    return null;
   }
 
-  mergeLoadOrder().then(function (data) {
+  /** Встроенный в страницу JSON для context unit9-uoe, если fetch к файлу недоступен (file:// и т.д.). */
+  function readBundledPublishedFallback() {
+    if (String(contextId) !== "unit9-uoe") return null;
+    var el = document.getElementById("part1-mc-bundled-unit9-interior");
+    if (!el) return null;
+    try {
+      return JSON.parse(el.textContent.trim());
+    } catch (eBund) {
+      return null;
+    }
+  }
+
+  function loadPublishedFileThenFallback() {
+    var def = parseDefaultJson();
+    var url = publishedFetchUrl();
+    var tryCloud =
+      typeof window.PrepCloudClient !== "undefined" && PrepCloudClient.pullExercise
+        ? PrepCloudClient.pullExercise(contextId).then(function (row) {
+            return row && row.data ? row.data : null;
+          })
+        : Promise.resolve(null);
+    return tryCloud.then(function (cloudData) {
+      if (cloudData) return cloudData;
+      return fetch(url, { cache: "no-store" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("no file");
+          return r.json();
+        })
+        .catch(function () {
+          var loc = readLocalPublished();
+          if (loc) return loc;
+          var bundled = readBundledPublishedFallback();
+          if (bundled) return bundled;
+          return def;
+        });
+    });
+  }
+
+  /** Ученик и Preview: сессия → сеть → опубликованный localStorage → шаблон. */
+  function mergeLoadOrderStudent() {
+    var sess = resolveSessionExercisePayload();
+    if (sess) return Promise.resolve(sess);
+    return loadPublishedFileThenFallback();
+  }
+
+  /** Режим Edit: сессия CMS → как у ученика (файл / опубликованный слой / шаблон). Без автосейва черновика. */
+  function mergeLoadOrderAdmin() {
+    var sess = resolveSessionExercisePayload();
+    if (sess) return Promise.resolve(sess);
+    return loadPublishedFileThenFallback();
+  }
+
+  (isAdmin && hasAdminDom ? mergeLoadOrderAdmin() : mergeLoadOrderStudent()).then(function (data) {
     if (isAdmin && hasAdminDom) {
       adminFillFromData(deepClone(data));
       try {
-        var hasLoc = !!readLocalPublished();
+        var hasPub = !!readLocalPublished();
         setDataBanner(
-          hasLoc
-            ? "Контекст <strong>" +
-                esc(contextId) +
-                "</strong>. Есть черновик в localStorage. Для продакшена положи JSON по пути из <code>src</code> или рядом со страницей."
-            : "Контекст <strong>" +
-                esc(contextId) +
-                "</strong>. Редактируй и сохрани, либо импортируй JSON.",
+          "После <strong>«Сохранить»</strong> фиксируется версия для учеников (облако Supabase, если настроено — см. <code>infra/supabase/PREP-CLOUD.md</code>; иначе файл и localStorage). " +
+            (hasPub ? "На этом устройстве уже есть опубликованная копия." : ""),
           true
         );
       } catch (e) {
         setDataBanner("", true);
       }
     } else {
-      renderStudent(data);
+      var forStudent = deepClone(data);
+      forStudent.items = alignItemsToDocumentPassage(forStudent.passage || "", forStudent.items || []);
+      renderStudent(forStudent);
     }
   });
+
 })();

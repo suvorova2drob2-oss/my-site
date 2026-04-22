@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Курсы — CMS</title>
+  <title>Courses — CMS</title>
   <style>
     :root {
       --bg: #0a1228;
@@ -199,20 +199,22 @@
 </head>
 <body>
   <header class="cms-top">
-    <h1 id="cmsTitle">Курсы</h1>
+    <h1 id="cmsTitle">Courses</h1>
     <div class="top-actions">
-      <span id="modeBadge" class="badge b-admin">Админ</span>
-      <button type="button" class="btn ghost" id="btnModeStudent">Студент</button>
-      <button type="button" class="btn ghost" id="btnModeAdmin">Админ</button>
+      <span id="modeBadge" class="badge b-admin">Admin</span>
+      <button type="button" class="btn ghost" id="btnModeStudent">Student</button>
+      <button type="button" class="btn ghost" id="btnModeAdmin">Admin</button>
     </div>
   </header>
   <p class="hint-bar">
-    Сохранение — автоматически в браузер (тот же каталог, что и плитки на главной). Чтобы структура попала к ученикам на хостинге, обнови <code>course-cms/config.json</code> в репозитории и сделай <strong>git push</strong>.
+    In <strong>Admin</strong>, folder/section/tree edits stay in memory until you tap <strong>Save course</strong> (same store as hub tiles). Use <strong>Save exercise</strong> for the open card. <strong>Student</strong> mode still syncs the seed from <code>config.json</code> into the browser so tiles work. For hosted students to get your latest structure, update <code>course-cms/config.json</code> in the repo and run <strong>git push</strong>.
   </p>
   <div id="adminBar" class="cms-top" style="border-top: none; position: static;">
     <div class="top-actions" style="padding-left: 8px;">
-      <button type="button" class="btn primary" id="btnAddFolder">+ Папка курса</button>
-      <button type="button" class="btn" id="btnImportFileTrigger">Импорт JSON…</button>
+      <button type="button" class="btn primary" id="btnSaveCourse" disabled>Save course</button>
+      <span id="courseUnsavedHint" class="muted" style="display: none; font-size: 0.85rem; align-self: center;">Unsaved changes</span>
+      <button type="button" class="btn primary" id="btnAddFolder">+ Course folder</button>
+      <button type="button" class="btn" id="btnImportFileTrigger">Import JSON…</button>
       <input type="file" id="btnImportFile" accept="application/json,.json" style="display:none" />
     </div>
   </div>
@@ -220,7 +222,10 @@
     <aside class="tree-col" id="treePanel"></aside>
     <main class="main-col" id="mainPanel"></main>
   </div>
+  <script src="../js/prep-course-profile.js"></script>
   <script src="../js/prep-site-content.js"></script>
+  <script src="../live-supabase-local.js"></script>
+  <script src="../js/prep-cloud-client.js"></script>
   <script src="cms-app.js"></script>
 </body>
 </html>

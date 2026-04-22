@@ -19,6 +19,9 @@
 window.__LIVE_SUPABASE_URL__ = "https://YOUR_REF.supabase.co";
 window.__LIVE_SUPABASE_KEY__ = "YOUR_PUBLISHABLE_OR_ANON_KEY";
 
+/** Секрет записи Prep Cloud (тот же, что secret PREP_CLOUD_WRITE_SECRET у Edge Function prep-cloud). Не публикуй и не коммить. */
+window.__PREP_CLOUD_WRITE_SECRET__ = "YOUR_LONG_RANDOM_PREP_CLOUD_SECRET";
+
 /**
  * База для абсолютной ссылки ученику при открытии index через file:// (иначе будет только index.html?...).
  * По умолчанию совпадает с npm run start (порт 3000). Для Live Server укажите свой порт, например 5500.

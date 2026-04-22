@@ -22,19 +22,20 @@
       <h1 id="part1McH1">Part 1 — Multiple-choice cloze</h1>
       <div class="top-links">
         <a class="back" id="part1McBack" href="../unit12-use-of-english.html">Back to Use of English</a>
-        <a class="admin-link student-only" id="part1McAdminLink" href="index.html?admin=1">Админка</a>
-        <a class="admin-link admin-only" id="part1McStudentLink" href="index.html">Как у студента</a>
+        <div class="part1-view-toggle" role="group" aria-label="View mode">
+          <a class="part1-vm-tab" id="part1McPreviewTab" href="index.html">Preview</a>
+          <a class="part1-vm-tab" id="part1McEditTab" href="index.html?prepView=edit&amp;admin=1">Edit</a>
+        </div>
       </div>
     </header>
 
     <div class="admin-only">
       <div class="admin-shell">
-        <h2>Редактор задания</h2>
+        <h2>Редактор задания (режим Edit)</h2>
         <p class="admin-hint">
-          В тексте пропуски: <strong>[[0]]</strong> — пример, <strong>[[1]]</strong> … — вопросы. Пустая строка между абзацами.
-          Общий движок: <code>../../js/part1-mc-cloze-core.js</code> — тот же URL можно открыть из ЕГЭ и других юнитов с другим <code>context</code>.
+          Title/subtitle may be preset from the activity. <strong>Left:</strong> paste text, gaps <strong>[[1]]</strong>… <strong>Right:</strong> paste 3–4 words per gap, shuffle preview, mark correct. <strong>Save</strong>. Preview below.
         </p>
-        <div class="admin-grid" style="margin-top: 14px;">
+        <div class="admin-grid admin-meta-grid">
           <div class="admin-field">
             <label for="admTitle">Заголовок текста</label>
             <input type="text" id="admTitle" autocomplete="off" />
@@ -43,41 +44,79 @@
             <label for="admSubtitle">Подзаголовок / инструкция</label>
             <input type="text" id="admSubtitle" autocomplete="off" />
           </div>
-          <div class="admin-field" style="grid-column: 1 / -1;">
-            <label for="admPassage">Текст с [[0]] [[1]] …</label>
-            <textarea id="admPassage" spellcheck="false"></textarea>
+        </div>
+        <div class="admin-edit-split">
+          <div class="admin-edit-col admin-edit-col--passage">
+            <label for="admPassage" class="admin-passage-label">Текст с пропусками</label>
+            <textarea id="admPassage" class="admin-passage-textarea" spellcheck="true"></textarea>
+            <p class="admin-mini-hint">(1) from Word becomes [[1]] on blur. [[0]] = example (see «Дополнительно»).</p>
+            <details class="admin-passage-visual-details">
+              <summary class="admin-passage-visual-summary">Optional: click word to make gap</summary>
+              <div id="admPassageVisual" class="adm-passage-visual" aria-label="Interactive text"></div>
+            </details>
+          </div>
+          <div class="admin-edit-col admin-edit-col--gaps">
+            <p class="admin-gaps-column-title">Options per gap (text order)</p>
+            <div id="admGapsWrap"></div>
           </div>
         </div>
-        <div class="admin-field">
-          <label>Пример (0)</label>
-          <div class="admin-example-row">
-            <div>
-              <label for="admExLetter" style="font-size: 0.75rem;">Буква</label>
-              <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
-            </div>
-            <div>
-              <label for="admExText" style="font-size: 0.75rem;">Формулировка (после «—»)</label>
-              <input type="text" id="admExText" />
+        <details class="admin-example-details">
+          <summary>Example (0) if passage has [[0]]</summary>
+          <div class="admin-field" style="margin-top: 10px;">
+            <div class="admin-example-row">
+              <div>
+                <label for="admExLetter" style="font-size: 0.75rem;">Letter</label>
+                <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
+              </div>
+              <div>
+                <label for="admExText" style="font-size: 0.75rem;">After «—»</label>
+                <input type="text" id="admExText" />
+              </div>
             </div>
           </div>
+        </details>
+        <div class="admin-actions admin-actions-primary">
+          <button type="button" class="btn-save" id="btnAdmSave">Сохранить</button>
+          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить как ученик</button>
         </div>
-        <div id="admGapsWrap"></div>
-        <div class="admin-actions">
-          <button type="button" class="btn-save" id="btnAdmSave">Сохранить и опубликовать</button>
-          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить (как студент)</button>
-          <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
-          <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
-          <input type="file" id="adminImportFile" accept="application/json,.json" />
-          <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к встроенному демо</button>
-        </div>
+        <details class="admin-advanced">
+          <summary class="admin-advanced-summary">Дополнительно (файл для сайта, импорт…)</summary>
+          <div class="admin-actions admin-actions-advanced">
+            <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
+            <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
+            <input type="file" id="adminImportFile" accept="application/json,.json" />
+            <button type="button" class="btn-muted" id="btnAdmRenumberGaps" title="Исправить дыры в номерах [[1]]…[[N]]">
+              Пронумеровать пропуски 1…N
+            </button>
+            <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к встроенному демо</button>
+          </div>
+        </details>
         <p class="data-banner" id="admDataBanner"></p>
       </div>
+
+      <section class="admin-live-preview" aria-label="Live preview">
+        <h3 class="admin-live-preview-heading">Как увидит ученик</h3>
+        <p class="subtitle admin-live-preview-subtitle" id="adminLiveSubtitle"></p>
+        <p class="admin-live-preview-instr">
+          Буквы только у заполненных полей. Здесь порядок как в форме; у ученика строки в случайном порядке.
+        </p>
+        <div class="mc-layout admin-live-mc-layout" style="--mc-opts: 36%">
+          <div class="mc-text-col">
+            <h2 class="title-text" id="adminLiveTitle"></h2>
+            <div class="passage" id="adminLivePassage"></div>
+          </div>
+          <div class="mc-resizer admin-live-resizer" aria-hidden="true"></div>
+          <div class="mc-opts-col" id="adminLiveOpts"></div>
+        </div>
+        <p class="admin-live-preview-feedback" id="adminLiveFeedback" aria-live="polite"></p>
+      </section>
     </div>
 
     <p class="subtitle student-only" id="elSubtitle"></p>
     <p class="instr student-only">
-      Текст слева; ответы справа — потяни <strong>разделитель</strong>. <strong>Submit</strong> — проверка: верный вариант и ключ —
-      <strong>зелёным</strong>, неверный выбор — <strong>красным</strong>. Если не всё верно, откроется экран с ключом.
+      Текст слева, варианты справа (буквы A, B, C… — по числу непустых ответов; порядок строк <strong>случайный</strong> при каждом открытии).
+      <strong>Полоса между колонками</strong> — потяни, чтобы изменить ширину блока с вариантами.
+      <strong>Submit</strong> — проверка: верный вариант и ключ — <strong>зелёным</strong>, неверный — <strong>красным</strong>.
     </p>
 
     <div class="mc-layout student-only" id="mcLayout">
@@ -90,7 +129,8 @@
         id="mcResizer"
         role="separator"
         aria-orientation="vertical"
-        aria-label="Resize the options strip width"
+        aria-label="Разделитель: потяни, чтобы изменить ширину колонки с вариантами"
+        title="Потяни влево или вправо"
         tabindex="0"
       ></div>
       <div class="mc-opts-col" id="mcOptsCol"></div>

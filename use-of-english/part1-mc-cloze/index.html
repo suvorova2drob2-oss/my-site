@@ -6,7 +6,7 @@
   <title>Part 1 — Multiple-choice cloze</title>
   <link rel="stylesheet" href="../../css/part1-mc-cloze.css" />
   <script>
-    /* Опционально: задать до загрузки core, иначе берутся query ?context=&src=&back=&backLabel= */
+    /* До загрузки core: contextId, dataSrc, backHref, backLabel, activityTitle, activitySubtitle, lockExerciseMeta, saveAlsoDownloadsPublishedJson */
     window.PART1_MC_BOOT = window.PART1_MC_BOOT || {};
   </script>
 </head>
@@ -16,21 +16,22 @@
       <h1 id="part1McH1">Part 1 — Multiple-choice cloze</h1>
       <div class="top-links">
         <a class="back" id="part1McBack" href="../../index.html">Назад</a>
-        <a class="admin-link student-only" id="part1McAdminLink" href="?admin=1">Админка</a>
-        <a class="admin-link admin-only" id="part1McStudentLink" href="?">Как у студента</a>
+        <div class="part1-view-toggle" role="group" aria-label="Режим просмотра">
+          <a class="part1-vm-tab" id="part1McPreviewTab" href="?">Preview</a>
+          <a class="part1-vm-tab" id="part1McEditTab" href="?prepView=edit&amp;admin=1">Edit</a>
+        </div>
       </div>
     </header>
 
     <div class="admin-only">
       <div class="admin-shell">
-        <h2>Редактор задания</h2>
+        <h2>Редактор задания (режим Edit)</h2>
         <p class="admin-hint">
-          Параметры в адресе: <strong>context</strong> — уникальный id (отдельное сохранение для каждого юнита);
-          <strong>src</strong> — относительный путь к <code>published.json</code> от этой страницы (необязательно);
-          <strong>back</strong> / <strong>backLabel</strong> — ссылка «Назад».
-          Пропуски в тексте: <strong>[[0]]</strong> пример, <strong>[[1]]</strong>… — вопросы; пустая строка между абзацами.
+          Заголовок и подзаголовок часто уже заданы при создании активности (поля ниже тогда только для просмотра).
+          <strong>Слева</strong> — вставь текст и расставь пропуски <strong>[[1]]</strong>, <strong>[[2]]</strong>… между фразами (из Word можно <strong>(1)</strong> — при сохранении фокуса станет [[1]]).
+          <strong>Справа</strong> — для каждого пропуска вставь 3–4 слова, нажми «Перемешать показ», отметь верный. Нажми <strong>Сохранить</strong>. Ниже — превью; Submit — «Проверить как ученик».
         </p>
-        <div class="admin-grid" style="margin-top: 14px;">
+        <div class="admin-grid admin-meta-grid">
           <div class="admin-field">
             <label for="admTitle">Заголовок текста</label>
             <input type="text" id="admTitle" autocomplete="off" />
@@ -39,40 +40,80 @@
             <label for="admSubtitle">Подзаголовок / инструкция</label>
             <input type="text" id="admSubtitle" autocomplete="off" />
           </div>
-          <div class="admin-field" style="grid-column: 1 / -1;">
-            <label for="admPassage">Текст с [[0]] [[1]] …</label>
-            <textarea id="admPassage" spellcheck="false"></textarea>
+        </div>
+        <div class="admin-edit-split">
+          <div class="admin-edit-col admin-edit-col--passage">
+            <label for="admPassage" class="admin-passage-label">Текст с пропусками</label>
+            <textarea id="admPassage" class="admin-passage-textarea" spellcheck="true"></textarea>
+            <p class="admin-mini-hint">Один номер пропуска — один раз в тексте. Пример в начале: маркер <strong>[[0]]</strong> (настройка в «Дополнительно»).</p>
+            <details class="admin-passage-visual-details">
+              <summary class="admin-passage-visual-summary">Дополнительно: клик по слову → вставить пропуск</summary>
+              <p class="admin-visual-hint">Клик по <strong>[1], [2]…</strong> здесь — прокрутка к блоку вариантов справа.</p>
+              <div id="admPassageVisual" class="adm-passage-visual" aria-label="Интерактивный текст"></div>
+            </details>
+          </div>
+          <div class="admin-edit-col admin-edit-col--gaps">
+            <p class="admin-gaps-column-title">Варианты по порядку пропусков в тексте слева</p>
+            <div id="admGapsWrap"></div>
           </div>
         </div>
-        <div class="admin-field">
-          <label>Пример (0)</label>
-          <div class="admin-example-row">
-            <div>
-              <label for="admExLetter" style="font-size: 0.75rem;">Буква</label>
-              <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
-            </div>
-            <div>
-              <label for="admExText" style="font-size: 0.75rem;">После «—»</label>
-              <input type="text" id="admExText" />
+        <details class="admin-example-details">
+          <summary>Пример задания (0) — если в тексте есть [[0]]</summary>
+          <div class="admin-field" style="margin-top: 10px;">
+            <div class="admin-example-row">
+              <div>
+                <label for="admExLetter" style="font-size: 0.75rem;">Буква</label>
+                <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
+              </div>
+              <div>
+                <label for="admExText" style="font-size: 0.75rem;">После «—»</label>
+                <input type="text" id="admExText" />
+              </div>
             </div>
           </div>
+        </details>
+        <div class="admin-actions admin-actions-primary">
+          <button type="button" class="btn-save" id="btnAdmSave">Сохранить</button>
+          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить как ученик</button>
         </div>
-        <div id="admGapsWrap"></div>
-        <div class="admin-actions">
-          <button type="button" class="btn-save" id="btnAdmSave">Сохранить и опубликовать</button>
-          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить (как студент)</button>
-          <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
-          <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
-          <input type="file" id="adminImportFile" accept="application/json,.json" />
-          <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к шаблону страницы</button>
-        </div>
+        <details class="admin-advanced">
+          <summary class="admin-advanced-summary">Дополнительно (файл для сайта, импорт…)</summary>
+          <div class="admin-actions admin-actions-advanced">
+            <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
+            <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
+            <input type="file" id="adminImportFile" accept="application/json,.json" />
+            <button type="button" class="btn-muted" id="btnAdmRenumberGaps" title="Исправить дыры в номерах [[1]]…[[N]]">
+              Пронумеровать пропуски 1…N
+            </button>
+            <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к шаблону страницы</button>
+          </div>
+        </details>
         <p class="data-banner" id="admDataBanner"></p>
       </div>
+
+      <section class="admin-live-preview" aria-label="Живой превью задания">
+        <h3 class="admin-live-preview-heading">Как увидит ученик</h3>
+        <p class="subtitle admin-live-preview-subtitle" id="adminLiveSubtitle"></p>
+        <p class="admin-live-preview-instr">
+          Буквы только у заполненных полей (часто A–D, но если слот пуст — его буквы нет). Здесь порядок как в форме; у ученика строки перемешиваются.
+        </p>
+        <div class="mc-layout admin-live-mc-layout" style="--mc-opts: 36%">
+          <div class="mc-text-col">
+            <h2 class="title-text" id="adminLiveTitle"></h2>
+            <div class="passage" id="adminLivePassage"></div>
+          </div>
+          <div class="mc-resizer admin-live-resizer" aria-hidden="true"></div>
+          <div class="mc-opts-col" id="adminLiveOpts"></div>
+        </div>
+        <p class="admin-live-preview-feedback" id="adminLiveFeedback" aria-live="polite"></p>
+      </section>
     </div>
 
     <p class="subtitle student-only" id="elSubtitle"></p>
     <p class="instr student-only">
-      Текст слева; ответы справа — потяни разделитель. <strong>Submit</strong> — проверка; неверные ответы открывают ключ.
+      Текст <strong>слева</strong>, варианты <strong>справа</strong> (столько букв, сколько непустых ответов; порядок строк <strong>случайный</strong> при каждом открытии страницы).
+      Между колонками — <strong>полоса-разделитель</strong>: потяни влево/вправо, чтобы изменить ширину колонки с ответами.
+      <strong>Submit</strong> — проверка; неверные ответы открывают ключ.
     </p>
 
     <div class="mc-layout student-only" id="mcLayout">
@@ -85,7 +126,8 @@
         id="mcResizer"
         role="separator"
         aria-orientation="vertical"
-        aria-label="Resize the options strip width"
+        aria-label="Разделитель: потяни мышью, чтобы сузить или расширить колонку с вариантами ответа"
+        title="Потяни влево или вправо"
         tabindex="0"
       ></div>
       <div class="mc-opts-col" id="mcOptsCol"></div>
@@ -114,10 +156,13 @@
     </div>
   </div>
 
+  <script id="part1-mc-bundled-unit9-interior" type="application/json">
+{"title":"INTERIOR DESIGN: different strokes for different folks","subtitle":"Choose the word that best fits each gap (multiple choice).","passage":"Interior design for the average person has come on leaps and bounds since the advent of home makeover TV shows back in the 1970s, and one thing that these shows have made crystal clear is the distinctive nature of taste. After all, as the saying goes, beauty is in the eye of the beholder and this is definitely the case when it comes to how we decorate our homes.\n\nSome people believe interior design should have a [[1]] look and feel, considering embellishments, such as cushions to be unnecessary as they detract from purpose and function. These people tend to splash out on a few timeless pieces of furniture from [[2]] designers or shops, rather than have lots of bits and pieces at a lower price point. They would choose [[3]] elegance over anything that could be considered [[4]] or showy. This [[5]] approach is synonymous with contemporary design. Replete with sleek fixtures and fittings, many [[6]] modern offices have adopted this look in order to denote a level of success, sophistication and quality.\n\nNot everyone is into this however, and for the more [[7]] amongst us, when it comes to curtains, cushions, rugs and ornaments, the more [[8]] the approach, the better. These people enjoy being surrounded by items that will stand out and take centre stage. They are likely to choose [[9]], eye-catching colours for the walls to create a bold contrast with those of the furnishings.\n\nThen, there are those who love an eclectic, vintage look. These people are often to be found at flea markets looking for items to collect that reflect the motifs and styles of bygone eras, from wallpaper and colour schemes to furniture and accessories. Take the 1980s, for instance, when bright, [[10]] colours were all the rage. While this style may still be loved by fans of vintage, others consider it to be [[11]] and a sign of poor taste.\n\nAt the end of the day, whatever your style preference, be it the wild and the wacky or something altogether more muted and [[12]], the best advice is probably to embrace it and enjoy it.","example":null,"items":[{"options":["garish","utilitarian","whimsical","minimalistic"],"correctIndex":1},{"options":["renowned","vulgar","unassuming","garish"],"correctIndex":0},{"options":["imposing","understated","vulgar","garish"],"correctIndex":1},{"options":["minimalistic","ostentatious","utilitarian","whimsical"],"correctIndex":1},{"options":["flamboyant","minimalistic","renowned","utilitarian"],"correctIndex":1},{"options":["garish","imposing","swanky","unassuming"],"correctIndex":2},{"options":["flamboyant","imposing","utilitarian","understated"],"correctIndex":0},{"options":["unassuming","utilitarian","whimsical","garish"],"correctIndex":2},{"options":["imposing","minimalistic","unassuming","understated"],"correctIndex":0},{"options":["garish","minimalistic","swanky","unassuming"],"correctIndex":0},{"options":["renowned","vulgar","understated","utilitarian"],"correctIndex":1},{"options":["garish","renowned","unassuming","whimsical"],"correctIndex":2}]}
+  </script>
   <script id="part1-mc-default-data" type="application/json">
 {
   "title": "ШАБЛОН — PART 1 MULTIPLE-CHOICE CLOZE",
-  "subtitle": "Замени этот текст в админке (?admin=1) или положи рядом published.json для этого context.",
+  "subtitle": "Замени этот текст в режиме Edit (prepView=edit) или положи рядом published.json для этого context.",
   "passage": "This is a minimal demo with one gap [[1]].\n\nAdd more paragraphs and [[2]] when you are ready.",
   "example": null,
   "items": [
@@ -126,6 +171,9 @@
   ]
 }
   </script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../live-supabase-local.js"></script>
+  <script src="../../js/prep-cloud-client.js"></script>
   <script src="../../js/part1-mc-cloze-core.js"></script>
 </body>
 </html>
