@@ -795,21 +795,6 @@
     var wantFolder = sp.get("folder");
 
     function wireUi() {
-      if (wantFolder && state.mode === "student") {
-        var wfLock = state.config.folders.find(function (x) {
-          return x.id === wantFolder;
-        });
-        if (wfLock && wfLock.studentLocked === true) {
-          alert("This folder is locked for students.");
-          var back = sp.get("back");
-          if (back) {
-            location.replace(decodeURIComponent(back));
-          } else {
-            history.back();
-          }
-          return;
-        }
-      }
       $("cmsTitle").textContent = state.config.title || "Courses";
       $("modeBadge").textContent = state.mode === "admin" ? "Admin" : "Student";
       $("modeBadge").className = "badge " + (state.mode === "admin" ? "b-admin" : "b-student");

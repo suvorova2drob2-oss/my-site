@@ -17379,7 +17379,8 @@ function hubEscHtml(s) {
 }
 
 function hubHubNavBlockedForStudent() {
-    return typeof getHubViewMode === "function" && getHubViewMode() === "preview";
+    /* Student “locks” on hub tiles are disabled — preview users can open all levels/folders. */
+    return false;
 }
 
 function hubIsPrepFolderStudentLocked(f) {
@@ -18751,7 +18752,7 @@ function hubMountBuiltinHubTile(g, unit, tileMetaAll, subs, edit, mainGridSlotLe
     var subCls = "unit-tile__subtitle unit-tile__subtitle--hub-slot";
     if ((unit === 8 || unit === 9) && subLine) subCls += " unit-tile__subtitle--accent";
     var meta6 = unit === 6 ? '<div class="tile-meta unit-tile__meta" id="hub-meta-u6"></div>' : "";
-    var lockedU = meta.studentLocked === true;
+    var lockedU = hubIsBuiltinUnitStudentLocked(unit) && hubHubNavBlockedForStudent();
     if (lockedU) {
         b.classList.add("hub-tile--student-locked");
         b.setAttribute("title", HUB_I18N.lockedTitleShort);
@@ -18830,7 +18831,7 @@ function hubMountPrepFolderMainHubTile(g, f, edit, mainGridSlotLevel, orderIdx0)
     tile.tabIndex = 0;
     tile.className = "unit-tile unit-dynamic hub-sync-dynamic unit-tile--hub-card";
     if (!Lf.isActivity) tile.classList.add("unit-tile--prep-main-folder");
-    var lockedSync = hubIsPrepFolderStudentLocked(f);
+    var lockedSync = hubIsPrepFolderStudentLocked(f) && hubHubNavBlockedForStudent();
     if (lockedSync) {
         tile.classList.add("hub-tile--student-locked");
         tile.setAttribute("title", HUB_I18N.lockedTitleShort);
@@ -18943,7 +18944,7 @@ function renderLinkedFoldersInto(containerId, unitNum) {
         var f = linked[i];
         var Lf = hubPrepFolderHeadSub(f);
         var card = document.createElement("div");
-        var lfLinked = hubIsPrepFolderStudentLocked(f);
+        var lfLinked = hubIsPrepFolderStudentLocked(f) && hubHubNavBlockedForStudent();
         card.className =
             "folder unit-tile unit-tile--hub-card" +
             (edit ? " folder--hub-linked-edit" : "") +
@@ -19686,7 +19687,7 @@ function hubAppendPrepFolderTileToGrid(grid, f) {
     tile.setAttribute("role", "button");
     tile.tabIndex = 0;
     tile.className = "unit-tile unit-dynamic unit-tile--hub-card";
-    var lockedPf = hubIsPrepFolderStudentLocked(f);
+    var lockedPf = hubIsPrepFolderStudentLocked(f) && hubHubNavBlockedForStudent();
     if (lockedPf) {
         tile.classList.add("hub-tile--student-locked");
         tile.setAttribute("title", HUB_I18N.lockedTitleShort);
@@ -19751,7 +19752,7 @@ function appendActivityHubPrepTiles(root, unit, mode) {
         (function (item) {
             var L = hubPrepFolderHeadSub(item);
             var div = document.createElement("div");
-            var lockedAh = hubIsPrepFolderStudentLocked(item);
+            var lockedAh = hubIsPrepFolderStudentLocked(item) && hubHubNavBlockedForStudent();
             div.className =
                 "folder u9-subfolder unit-tile unit-tile--hub-card" +
                 (edit ? " folder--hub-linked-edit" : "") +

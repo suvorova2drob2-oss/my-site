@@ -13,29 +13,6 @@
     return p.get("admin") === "1" || p.get("prepView") === "edit";
   }
   var isEditRoute = isEditModeParams(sp);
-  if (!isEditRoute && /^prep-hub-/.test(contextId) && typeof window.PrepSiteContent !== "undefined" && PrepSiteContent.load) {
-    try {
-      var folderId = contextId.replace(/^prep-hub-/, "");
-      var flds = PrepSiteContent.load().folders || [];
-      var folderRec = null;
-      for (var iLock = 0; iLock < flds.length; iLock++) {
-        if (flds[iLock].id === folderId) {
-          folderRec = flds[iLock];
-          break;
-        }
-      }
-      if (folderRec && folderRec.studentLocked === true) {
-        var backRaw = sp.get("back");
-        try {
-          if (backRaw) window.location.replace(decodeURIComponent(backRaw));
-          else window.location.replace(new URL("../../index.html", window.location.href).href);
-        } catch (eLockNav) {
-          window.location.href = "../../index.html";
-        }
-        return;
-      }
-    } catch (eLock) {}
-  }
   var dataSrc = String(boot.dataSrc || sp.get("src") || "").trim();
   var backHref = String(boot.backHref || sp.get("back") || "").trim();
   var backLabel = String(
