@@ -6697,6 +6697,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/live-game-api.js"></script>
 <script src="js/live-game-api-supabase.js"></script>
+<script src="js/prep-content-tools-gate.js"></script>
 <script>
 var STORAGE_KEY = 'english_mastery_perfect';
 
@@ -16865,7 +16866,7 @@ function getActivePrepScreenId() {
 function updatePrepGlobalHubVmForScreen(screenId) {
     var wrap = document.getElementById('prep-global-hub-vm');
     if (!wrap) return;
-    var show = screenId !== 'screen-login';
+    var show = screenId !== 'screen-login' && prepContentToolsEnabled();
     wrap.hidden = !show;
     if (show) {
         wireHubViewToggleOnce();
@@ -19193,11 +19194,20 @@ window.addEventListener("prep-workspace-changed", function () {
 var HUB_VIEW_MODE_KEY = "prep-hub-view-mode-v1";
 var hubViewToggleWired = false;
 
+function prepContentToolsEnabled() {
+    try {
+        return window.__PREP_CONTENT_TOOLS_ENABLED__ === true;
+    } catch (eCt) {
+        return false;
+    }
+}
+
 function getHubViewMode() {
+    if (!prepContentToolsEnabled()) return "preview";
     try {
         return localStorage.getItem(HUB_VIEW_MODE_KEY) === "preview" ? "preview" : "edit";
     } catch (eHubVm) {
-        return "edit";
+        return "preview";
     }
 }
 
@@ -19297,6 +19307,7 @@ function prepCourseWizardMaybeOpen() {
 }
 
 function setHubViewMode(mode) {
+    if (!prepContentToolsEnabled()) return;
     try {
         localStorage.setItem(HUB_VIEW_MODE_KEY, mode === "preview" ? "preview" : "edit");
     } catch (eHubVm2) {}
@@ -19323,6 +19334,10 @@ function syncHubViewToggleUi() {
 
 function wireHubViewToggleOnce() {
     if (hubViewToggleWired) return;
+    if (!prepContentToolsEnabled()) {
+        hubViewToggleWired = true;
+        return;
+    }
     var prev = document.getElementById("hub-vm-preview");
     var edit = document.getElementById("hub-vm-edit");
     if (!prev || !edit) return;

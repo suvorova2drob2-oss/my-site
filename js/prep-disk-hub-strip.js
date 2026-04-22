@@ -5,6 +5,15 @@
  * If a .folders block precedes .prep-disk-strip-host, new cards are inserted there (fourth tile beside static ones).
  */
 (function (global) {
+    if (global.__PREP_CONTENT_TOOLS_ENABLED__ !== true) {
+        try {
+            if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("prep_content_tools_session") === "1") {
+                global.__PREP_CONTENT_TOOLS_ENABLED__ = true;
+            }
+        } catch (e0) {}
+    }
+    if (global.__PREP_CONTENT_TOOLS_ENABLED__ !== true) return;
+
     var HUB_VM_KEY = "prep-hub-view-mode-v1";
 
     function isEditMode() {

@@ -4,6 +4,15 @@
  * Uses PrepSiteContent with prepPageKey prep-track:<leaf> or linkedUnit for unitN.html.
  */
 (function () {
+  if (window.__PREP_CONTENT_TOOLS_ENABLED__ !== true) {
+    try {
+      if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("prep_content_tools_session") === "1") {
+        window.__PREP_CONTENT_TOOLS_ENABLED__ = true;
+      }
+    } catch (e0) {}
+  }
+  if (window.__PREP_CONTENT_TOOLS_ENABLED__ !== true) return;
+
   var HUB_VM_KEY = "prep-hub-view-mode-v1";
   var HOST_ID = "prep-track-edit-host";
   var SKILL_LABELS = {

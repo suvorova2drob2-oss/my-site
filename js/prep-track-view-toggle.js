@@ -2,6 +2,15 @@
  * Preview / Edit pill for EGE & FCE hub pages. Uses same localStorage key as CPE hub.
  */
 (function () {
+  if (window.__PREP_CONTENT_TOOLS_ENABLED__ !== true) {
+    try {
+      if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("prep_content_tools_session") === "1") {
+        window.__PREP_CONTENT_TOOLS_ENABLED__ = true;
+      }
+    } catch (e0) {}
+  }
+  if (window.__PREP_CONTENT_TOOLS_ENABLED__ !== true) return;
+
   var HUB_VIEW_MODE_KEY = "prep-hub-view-mode-v1";
 
   function getHubViewMode() {

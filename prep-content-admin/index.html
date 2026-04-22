@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prep — материалы для преподавателя</title>
+  <style>
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 28px;
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    a { color: #38bdf8; }
+    code { font-size: 0.9em; background: #1e293b; padding: 2px 6px; border-radius: 6px; }
+    .btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 12px 20px;
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn:hover { background: #1d4ed8; }
+    .muted { color: #94a3b8; font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <h1>Режим преподавателя</h1>
+  <p>
+    На обычных страницах CPE, ЕГЭ и FCE студенты видят только учебный интерфейс: без
+    <strong>Edit</strong>, без «создать папку / активность» и без полосы на дисковых хабах.
+  </p>
+  <p><strong>Course CMS</strong> — папки, задания, порядок: <a href="../course-cms/">открыть Course CMS</a></p>
+  <p>
+    <strong>CPE hub</strong> — переключатель Preview/Edit и мастер курса на главной приложения
+    доступны только после кнопки ниже (на время этой сессии браузера).
+  </p>
+  <p>
+    <button type="button" class="btn" id="enable-hub">Включить Edit в CPE hub (эта вкладка)</button>
+  </p>
+  <p class="muted">
+    Откроется <code>index.html</code>. Новая вкладка или закрытие браузера — снова только студенческий вид.
+    Для ЕГЭ/FCE правки делайте в Course CMS или в упражнениях с <code>?admin=1</code>, где это предусмотрено.
+  </p>
+  <script>
+    document.getElementById("enable-hub").addEventListener("click", function () {
+      try {
+        sessionStorage.setItem("prep_content_tools_session", "1");
+      } catch (e) {}
+      location.href = "../index.html";
+    });
+  </script>
+</body>
+</html>
