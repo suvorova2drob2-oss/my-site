@@ -77,6 +77,10 @@
     }
     .board-switch button + button { border-left: 1px solid var(--line); }
     .board-switch button.active { background: var(--active); }
+    body.restaurants-only .board-switch,
+    body.hub-pro-fitness .board-switch {
+      display: none;
+    }
     .board-area {
       flex: 1;
       min-height: 0;
@@ -544,6 +548,40 @@
       mainInput.focus();
     });
 
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get("track") === "restaurants") {
+        document.body.classList.add("restaurants-only");
+        var back = document.querySelector(".back");
+        if (back) {
+          back.setAttribute("href", "../unit12-12-1-restaurants-listening/audio-practice/index.html");
+        }
+        setMode("restaurants");
+        setActiveSpeaker(1);
+        renderCurrentSheet();
+        updateSheetControls();
+        mainInput.focus();
+        return;
+      }
+      if (params.get("hub") === "pro-fitness") {
+        document.body.classList.add("hub-pro-fitness");
+        var backPf = document.querySelector(".back");
+        if (backPf) {
+          backPf.setAttribute("href", "../unit12-pro-fitness-coaching/audio-practice/index.html");
+        }
+        setMode("naomi");
+        setActiveSpeaker(1);
+        renderCurrentSheet();
+        updateSheetControls();
+        mainInput.focus();
+        return;
+      }
+      setMode("naomi");
+      setActiveSpeaker(1);
+      renderCurrentSheet();
+      updateSheetControls();
+    })();
+
     mainInput.addEventListener("keydown", function (event) {
       if (
         activeMode === "restaurants" &&
@@ -573,10 +611,6 @@
       mainInput.value = "";
     });
 
-    setMode("naomi");
-    setActiveSpeaker(1);
-    renderCurrentSheet();
-    updateSheetControls();
   </script>
 </body>
 </html>

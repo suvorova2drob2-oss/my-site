@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Курсы — CMS</title>
+  <style>
+    :root {
+      --bg: #0a1228;
+      --panel: #152238;
+      --line: #2c3f5c;
+      --text: #e8f0ff;
+      --muted: #8fa3c4;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(165deg, #060d1c 0%, var(--bg) 45%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .cms-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(21, 34, 56, 0.92);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .cms-top h1 { font-size: 1.15rem; font-weight: 800; }
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .b-admin { background: rgba(86, 204, 242, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+    .b-student { background: rgba(54, 211, 153, 0.15); color: var(--ok); border: 1px solid rgba(54, 211, 153, 0.45); }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+      background: #3d4f6f;
+      color: var(--text);
+    }
+    .btn:hover { filter: brightness(1.08); }
+    .btn.primary { background: var(--ok); color: #05271a; }
+    .btn.small { padding: 5px 10px; font-size: 0.82rem; }
+    .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+    .cms-body { display: flex; min-height: calc(100vh - 58px); }
+    .tree-col {
+      width: min(300px, 38vw);
+      flex-shrink: 0;
+      border-right: 1px solid var(--line);
+      background: rgba(12, 22, 42, 0.65);
+      overflow-y: auto;
+      max-height: calc(100vh - 58px);
+    }
+    .main-col { flex: 1; overflow-y: auto; max-height: calc(100vh - 58px); }
+    .tree-head {
+      padding: 12px 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+    }
+    .tree-list, .tree-list ul { list-style: none; padding-left: 0; margin: 0; }
+    .tree-list ul { padding-left: 12px; }
+    .tree-line {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      margin: 2px 0;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .tree-line:hover { background: rgba(86, 204, 242, 0.08); }
+    .tree-line.is-sel {
+      background: rgba(86, 204, 242, 0.18);
+      border-color: rgba(86, 204, 242, 0.35);
+    }
+    .tree-indent { font-size: 0.86rem; }
+    .tree-item { font-size: 0.84rem; color: #d5e2f8; }
+    .tree-item .eng { font-size: 0.7rem; color: var(--muted); margin-left: 4px; }
+    .panel-inner { padding: 20px 22px; max-width: 900px; }
+    .panel-inner h2 { margin-bottom: 12px; font-size: 1.2rem; }
+    .muted { color: var(--muted); line-height: 1.5; font-size: 0.92rem; margin-bottom: 12px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+    .field input[type="text"],
+    .field input[type="number"],
+    .field textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 36, 0.75);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+    .field textarea { min-height: 220px; resize: vertical; line-height: 1.55; font-family: inherit; }
+    .field.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 16px; }
+    .import-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .import-row label { margin: 0; white-space: nowrap; }
+    .row-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .gap-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: rgba(18, 32, 58, 0.5);
+    }
+    .gap-h { font-weight: 800; color: var(--accent); margin-bottom: 8px; font-size: 0.88rem; }
+    .opt-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .opt-row .L { width: 22px; font-weight: 800; color: var(--muted); font-size: 0.85rem; }
+    .opt-row input { flex: 1; }
+    .cor-row { margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
+    .cor-row select {
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: var(--text);
+      padding: 6px 10px;
+    }
+    .err { color: #fca5a5; margin-top: 10px; font-size: 0.88rem; min-height: 1.2em; }
+    .item-list { margin-top: 12px; padding-left: 18px; color: #d5e2f8; }
+    .item-list li { margin-bottom: 8px; }
+    .linklike {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+      font-size: inherit;
+      padding: 0;
+    }
+    .hint-bar {
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      background: rgba(21, 34, 56, 0.5);
+    }
+    .hint-bar code { color: #a5d8ff; font-size: 0.85em; }
+    .tree-row {
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+      margin: 2px 0;
+    }
+    .tree-grow { flex: 1; min-width: 0; }
+    .tree-tools {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 2px;
+      padding-right: 4px;
+    }
+    .tico {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 36, 0.6);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .tico:hover { border-color: var(--accent); color: var(--accent); }
+    .tico.danger:hover { border-color: #f87171; color: #fca5a5; }
+    .tree-owner-hint { font-weight: 600; color: #86efac; text-transform: none; letter-spacing: 0; }
+  </style>
+</head>
+<body>
+  <header class="cms-top">
+    <h1 id="cmsTitle">Курсы</h1>
+    <div class="top-actions">
+      <span id="modeBadge" class="badge b-admin">Админ</span>
+      <button type="button" class="btn ghost" id="btnModeStudent">Студент</button>
+      <button type="button" class="btn ghost" id="btnModeAdmin">Админ</button>
+    </div>
+  </header>
+  <p class="hint-bar">
+    Сохранение — автоматически в браузер (тот же каталог, что и плитки на главной). Чтобы структура попала к ученикам на хостинге, обнови <code>course-cms/config.json</code> в репозитории и сделай <strong>git push</strong>.
+  </p>
+  <div id="adminBar" class="cms-top" style="border-top: none; position: static;">
+    <div class="top-actions" style="padding-left: 8px;">
+      <button type="button" class="btn primary" id="btnAddFolder">+ Папка курса</button>
+      <button type="button" class="btn" id="btnImportFileTrigger">Импорт JSON…</button>
+      <input type="file" id="btnImportFile" accept="application/json,.json" style="display:none" />
+    </div>
+  </div>
+  <div class="cms-body">
+    <aside class="tree-col" id="treePanel"></aside>
+    <main class="main-col" id="mainPanel"></main>
+  </div>
+  <script src="../js/prep-site-content.js"></script>
+  <script src="cms-app.js"></script>
+</body>
+</html>

@@ -15,14 +15,18 @@
       --accent: #56ccf2;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    html { overflow-x: hidden; }
     body {
       background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
       color: var(--text);
       min-height: 100vh;
       padding: 24px;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
     }
     .page {
       width: min(1100px, 100%);
+      max-width: 100%;
       margin: 0 auto;
       background: var(--panel);
       border: 1px solid var(--line);
@@ -38,10 +42,10 @@
       padding-bottom: 16px;
       margin-bottom: 20px;
     }
-    .top h1 { font-size: 1.5rem; }
+    .top h1 { font-size: 1.5rem; line-height: 1.2; overflow-wrap: anywhere; }
     .back { color: var(--accent); text-decoration: none; font-weight: 600; }
     .back:hover { text-decoration: underline; }
-    .subtitle { color: var(--muted); margin-bottom: 16px; }
+    .subtitle { color: var(--muted); margin-bottom: 16px; overflow-wrap: anywhere; line-height: 1.45; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -57,16 +61,13 @@
       display: flex;
       flex-direction: column;
     }
-    .card h2 { font-size: 1.1rem; margin-bottom: 10px; }
+    .card h2 { font-size: 1.1rem; margin-bottom: 10px; line-height: 1.25; overflow-wrap: anywhere; }
     .card-link {
       text-decoration: none;
       color: inherit;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    .card-link:hover {
-      transform: translateY(-2px);
-      border-color: #4a6898;
-    }
+    .card-link:hover { border-color: #4a6898; }
     .card-link .link-hint {
       margin-top: auto;
       color: var(--accent);
@@ -77,18 +78,62 @@
       border: 1px dashed #4f6c98;
       border-radius: 10px;
       min-height: 92px;
-      padding: 10px;
+      padding: 10px 12px;
       color: var(--muted);
       font-size: 0.94rem;
+      line-height: 1.42;
+      overflow-wrap: anywhere;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
       flex: 1;
     }
     .placeholder.listening-open {
       border-style: solid;
       border-color: #3d5a86;
+    }
+    .placeholder.lines-2 {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      min-height: 3.65em;
+      gap: 0.22em;
+    }
+    .placeholder.lines-2 .l1 { font-weight: 600; color: var(--text); }
+    .placeholder.lines-2 .l2 { font-weight: 400; color: var(--muted); font-size: 0.92em; }
+
+    @media (max-width: 1024px) {
+      body { padding: 16px 14px 24px; }
+      .page { padding: 20px 16px; border-radius: 16px; }
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      body { padding: 12px 10px 20px; }
+      .page { padding: 16px 12px; }
+      .top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .top h1 { font-size: 1.22rem; }
+      .back { align-self: flex-end; min-height: 44px; display: inline-flex; align-items: center; }
+      .subtitle { font-size: 0.9rem; }
+      .card { min-height: 0; padding: 14px 12px; }
+      .card h2 { font-size: 1.02rem; }
+      .placeholder { font-size: 0.9rem; min-height: 0; padding: 10px; }
+      .card-link .link-hint {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding-top: 4px;
+      }
+      .card-link:active { transform: none; }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .card-link:hover { transform: translateY(-2px); }
     }
   </style>
 </head>
@@ -98,47 +143,55 @@
       <h1>Mastering B2 - Unit 12</h1>
       <a class="back" href="fce.html">Back to units</a>
     </header>
-    <p class="subtitle">Trainers for Unit 12 — same card layout everywhere; Listening = exam tasks; Shadowing = repeat-listen tracks.</p>
+    <p class="subtitle"><strong>B2 First</strong> (Cambridge English B2). Trainers for Unit 12 — <strong>Restaurants listening</strong> and <strong>Pro Fitness Coaching</strong> each hold exam, audio, speaking, and lexical (Treasure Hunt + Sticky board) in one place. Open <strong>Vocabulary Games</strong> for the full Word Bank across topics.</p>
 
     <section class="grid">
-      <a class="card card-link" href="unit12-listening.html">
-        <h2>Listening</h2>
-        <div class="placeholder listening-open">Part 3 multiple matching (12.1) and more listening tasks</div>
+      <a class="card card-link" href="unit12-12-1-restaurants-listening/index.html">
+        <h2>Listening: Restaurants</h2>
+        <div class="placeholder listening-open lines-2">
+          <span class="l1">Part 3 · Multiple matching</span>
+          <span class="l2">5 speakers, statements A–H.</span>
+        </div>
+        <span class="link-hint">Open folder →</span>
+      </a>
+      <a class="card card-link" href="unit12-12-1-restaurants-listening/reading-going-vegan/index.html">
+        <h2>Reading: Going Vegan</h2>
+        <div class="placeholder listening-open lines-2">
+          <span class="l1">Part 7 · Multiple matching</span>
+          <span class="l2">Match people to their stories.</span>
+        </div>
+        <span class="link-hint">Open folder →</span>
+      </a>
+      <a class="card card-link" href="unit12-pro-fitness-coaching/index.html">
+        <h2>Listening: Fitness Coach</h2>
+        <div class="placeholder listening-open lines-2">
+          <span class="l1">Part 4 · Multiple choice</span>
+          <span class="l2">Interview with personal trainer.</span>
+        </div>
         <span class="link-hint">Open folder →</span>
       </a>
       <a class="card card-link" href="unit12-lexical-games.html">
-        <h2>Lexical Game</h2>
-        <div class="placeholder listening-open">Lexical games — same set as in index: lexical drop, paraphrase pick, express, echo, match, and cards.</div>
-        <span class="link-hint">Choose a game → tick reading theme</span>
-      </a>
-      <a class="card card-link" href="reading/part1-vegan-matching.html">
-        <h2>Reading</h2>
-        <div class="placeholder listening-open">Part 1 — multiple matching: five people, vegan / plant-based experiences (split view + draggable strip)</div>
-        <span class="link-hint">Open task →</span>
-      </a>
-      <a class="card card-link" href="Audio%20practice/unit12-shadowing.html">
-        <h2>Audio Practice</h2>
-        <div class="placeholder listening-open">Naomi Price — Health Matters (karaoke / by ear, 5 listens, trophy) and more tracks in <code style="color: #b8c9e6;">Audio practice/</code></div>
-        <span class="link-hint">Open folder →</span>
-      </a>
-      <a class="card card-link" href="unit12-speaking-hub.html">
-        <h2>Speaking</h2>
-        <div class="placeholder listening-open">Two speaking trainers: Health Matters (A-E) and Listening 12.1 (five speakers). Read block → retell (40s) → points.</div>
+        <h2>Vocabulary Games</h2>
+        <div class="placeholder listening-open lines-2">
+          <span class="l1">Play to master Unit 12 phrases.</span>
+          <span class="l2">Naomi, Restaurants, Going vegan — tick themes in the hub</span>
+        </div>
         <span class="link-hint">Open folder →</span>
       </a>
       <article class="card">
         <h2>Grammar</h2>
-        <div class="placeholder">Empty content block</div>
+        <div class="placeholder lines-2">
+          <span class="l1">Coming soon.</span>
+          <span class="l2">Reserved for this unit.</span>
+        </div>
       </article>
       <a class="card card-link" href="unit12-use-of-english.html">
-        <h2>Use of English</h2>
-        <div class="placeholder listening-open">Parts 1–4 (multiple-choice cloze, open cloze, word formation, key word transformation) plus word formation trainer folder.</div>
+        <h2>Use of English (Parts 1–4)</h2>
+        <div class="placeholder listening-open lines-2">
+          <span class="l1">Cloze, Word Formation, Transformations.</span>
+          <span class="l2">Includes Word Formation Trainer.</span>
+        </div>
         <span class="link-hint">Open folder →</span>
-      </a>
-      <a class="card card-link" href="unit12-treasure-hunt.html">
-        <h2>Treasure hunt</h2>
-        <div class="placeholder listening-open">Three folder cards: Listening 12.1 first, a reserved slot, then Naomi Price (Health Matters). Paraphrase → exact phrase, +1 per match.</div>
-        <span class="link-hint">Open trainer →</span>
       </a>
     </section>
   </main>

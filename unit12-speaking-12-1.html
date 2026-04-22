@@ -53,11 +53,11 @@
   <div class="shell">
     <div class="nav-top">
       <a href="unit12-speaking-hub.html">← Back to Speaking folder</a>
-      <span class="segment-badge" id="segmentBadge" aria-live="polite"><strong>1</strong> / 5 · speakers</span>
+      <span class="segment-badge" id="segmentBadge" aria-live="polite"><strong>1</strong> / 5 · Speaker 1</span>
     </div>
 
     <div id="finale" class="finale" aria-live="polite">
-      <h2>All five speaker blocks done</h2>
+      <h2 id="finaleHeading">All five speaker blocks done</h2>
       <p style="color: var(--muted); margin-bottom: 20px;">Great work. Your points are already added to the home score.</p>
       <a href="unit12-speaking-hub.html" class="btn-primary" style="display:inline-block; max-width:280px; text-decoration:none; text-align:center;">Back to Speaking folder</a>
     </div>
@@ -65,18 +65,18 @@
     <div id="mainFlow">
       <section id="stepRead" class="step active">
         <span class="pill">Step 1 · Read</span>
-        <h1 class="title-read">Listening 12.1 — Five speakers</h1>
+        <h1 class="title-read" id="mainTitleRead">Listening 12.1 — Five speakers</h1>
         <h2 class="block-heading read-h" id="headingRead">Speaker 1</h2>
-        <p class="instr">Read the whole speaker extract. Dotted lines show key phrases. Then continue to retell with the 40-second timer.</p>
+        <p class="instr" id="instrRead">Read the whole speaker extract. Dotted lines show key phrases. Then continue to retell with the timer.</p>
         <div class="passage" id="readPassage"></div>
         <div class="btn-row"><button type="button" class="btn-primary" id="btnContinue">Continue to retell</button></div>
       </section>
 
       <section id="stepRetell" class="step">
         <span class="pill">Step 2 · Retell</span>
-        <h1 class="title-retell">Listening 12.1 — Five speakers</h1>
+        <h1 class="title-retell" id="mainTitleRetell">Listening 12.1 — Five speakers</h1>
         <h2 class="block-heading retell-h" id="headingRetell">Speaker 1</h2>
-        <p class="instr">Use these exact highlighted phrases as prompts. Press Start, retell, then Stop to save points.</p>
+        <p class="instr" id="instrRetell">Use these exact highlighted phrases as prompts. Press Start, retell, then Stop to save points.</p>
         <div class="bubbles" id="phraseBubbles"></div>
         <div class="timer-block">
           <div class="timer-ring-wrap" aria-hidden="true">
@@ -107,13 +107,82 @@
     var RING_R = 44;
     var CIRC = 2 * Math.PI * RING_R;
 
-    var BLOCKS = [
+    var BLOCKS_REST = [
       { short: "Speaker 1", passage: "It was a fairly inexpensive restaurant on the edge of the city, but low prices are no excuse for poor hygiene. We'd decided to get away from all the people and noise in the centre, where tourist restaurants charge tourist prices, and try something more local, more authentic. The reviews we'd read spoke about the genuine home-cooked food and the size of the portions, with only one or two negative comments about having to wait a little too long for the food to arrive. What they didn't mention were the sticky tables that hadn't been wiped, the stained cutlery and the filthy floor. We just ordered a main course, and left as soon as we could.", phrases: ["fairly inexpensive restaurant", "no excuse for poor hygiene", "sticky tables that hadn't been wiped", "stained cutlery", "filthy floor"] },
       { short: "Speaker 2", passage: "My partner and I went to a new vegan restaurant that had just opened in town. We weren't expecting very much from the food, but everything we ordered was surprisingly tasty. There wasn't a massive amount of variety on the menu but, to be honest, I'd rather have just a few decent things to choose from than a huge number of dishes, some of which might not be particularly well cooked. What spoilt it, though, was the large group of people on the table next to ours, all talking at the tops of their voices. Neither of us could hear what the other was saying, so we had to shout most of the time.", phrases: ["There wasn't a massive amount of variety on the menu", "What spoilt it, though,", "talking at the tops of their voices"] },
       { short: "Speaker 3", passage: "The only time I've ever made a complaint about anything was when I went for a meal once with my parents. I told the waiter the meat in my stew was chewy, and should have been left in the oven longer. My dad said he thought I'd been rude to the waiter, but my mum told me I was right to complain. Her attitude is, if something's not right, then kick up a fuss, make a noise about it, otherwise nothing will get changed. As it was, the waiter said he couldn't change it, but he wouldn't charge for my dessert. So I ordered the most expensive one on the menu!", phrases: ["made a complaint", "the meat in my stew was chewy", "kick up a fuss", "charge for my dessert"] },
       { short: "Speaker 4", passage: "Recently, we treated ourselves to dinner in a five-star seafood restaurant. We'd heard several negative things about the place before we went: the food was overpriced, the waiters were too formal, you didn't get much on your plate ... But we're not big eaters and we felt like spoiling ourselves, so we ignored the warnings and booked. Well, the food was to die for: the crab, the mussels, the seabass - absolutely delicious. And whoever said the portions were small was lying. We just wished they'd been a bit quicker about bringing the food out. They certainly weren't in any hurry, and we'd run out of things to say to each other by the time the main course arrived.", phrases: ["treated ourselves to dinner", "overpriced", "you didn't get much on your plate", "we're not big eaters", "we felt like spoiling ourselves", "the food was to die for", "mussels", "weren't in any hurry", "run out of things to say to each other"] },
       { short: "Speaker 5", passage: "My wife and I are both quite fussy eaters, so if we eat out, there have to be plenty of dishes to choose from. Unfortunately, the restaurant in the hotel we stayed in with our walking group offered hardly any choice at all - just a few starters and a couple of mains - so we only ate there once. We had no complaints about the food we actually ordered, and the service was second to none. In fact, most of the people from our group liked the place so much they had dinner there every evening. We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area.", phrases: ["fussy eaters", "offered hardly any choice at all", "the service was second to none", "come across as antisocial"] }
     ];
+
+    var BLOCKS_VEGAN = [
+      {
+        short: "Jack",
+        passage:
+          "I first wanted to go vegan a few years ago, when I was about thirteen, and learnt about the effects of the meat industry on the environment. But my mum told me to wait until I was older and better informed about what being vegan meant. It was probably sound advice, though I now know it was partly because she couldn't face cooking special meals for me. I totally get that, though, and don't hold it against her. Now that I am a vegan, I'm very much aware of the extra effort involved for non-vegans who invite me round for a meal. I always offer to take a dessert, and the other dinner guests are invariably amazed at how delicious it is.",
+        phrases: [
+          "sound advice",
+          "hold it against her",
+          "invite me round for a meal",
+          "extra effort involved",
+          "invariably amazed"
+        ]
+      },
+      {
+        short: "Sarah",
+        passage:
+          "I went vegan when I left home and went away to university. My parents were worried I was missing out on essential nutrients and that this could have serious consequences for me. My dad had the biggest problem with it, and he kept sending me articles warning of the pitfalls of a plant-based diet. I tried to put his mind at rest by telling him I was taking supplements, but that just served to reinforce his idea that I wasn't eating properly. Over time, though, they've both gradually come to accept my change to veganism, and that's really important to me, because it's a major part of who I am. My dad even cooks some of the vegan recipes I send him.",
+        phrases: [
+          "missing out on essential nutrients",
+          "pitfalls of a plant-based diet",
+          "put his mind at rest",
+          "reinforce his idea",
+          "gradually come to accept"
+        ]
+      },
+      {
+        short: "Maya",
+        passage:
+          "My sister decided to go vegan to see if a plant-based diet would help her feel better while managing a long-term health condition. I decided to support her by going vegan as well. My sister has kept at it faithfully for over five years and shown amazing willpower. I just wish I could say the same for myself. There were too many types of food I missed, and I threw in the towel after a few months. On the plus side, I learnt a surprising amount about nutrition and the health benefits of certain foods. I still eat loads of fruit, nuts, pulses and vegetables, and feel much healthier than I used to.",
+        phrases: [
+          "managing a long-term health condition",
+          "kept at it faithfully",
+          "shown amazing willpower",
+          "threw in the towel",
+          "On the plus side",
+          "the health benefits of certain foods"
+        ]
+      },
+      {
+        short: "Justin",
+        passage:
+          "I started off by swapping one product at a time; soya milk for cow's milk, coconut oil for butter, maple syrup for honey. Many people try to make the switch overnight and it can prove too much, so they give up and go back to their vegetarian or meat-based diet. The key is to do it in stages. It gives you time to work out what works for you and what doesn't. While I was going vegan, I got loads of useful tips from a social media group I joined. If I had any questions or concerns, like which health supplements to take, how to reassure my parents I knew what I was doing, or where to buy vegan products, there was always someone who could give me the benefit of their knowledge and experience.",
+        phrases: [
+          "make the switch overnight",
+          "prove too much",
+          "do it in stages",
+          "work out what works for you",
+          "reassure my parents",
+          "give me the benefit of their knowledge and experience"
+        ]
+      },
+      {
+        short: "Rhona",
+        passage:
+          "I've only recently changed to a plant-based diet. I wish I'd done it ages ago. I'd become increasingly aware of the suffering we cause to animals by what we eat, and I felt it was high time I took a stand against the way we treat them. It's not easy, though. My friends only ever want to meet up in burger restaurants, and my parents seem determined not to try vegan food, let alone cook it, which is disappointing \u2014 it's not asking much for them to show a little interest. So, anyway, I just cook all my meals for myself now. I'm gradually getting the hang of it, and I like the independence it brings.",
+        phrases: [
+          "done it ages ago",
+          "become increasingly aware of",
+          "it was high time",
+          "took a stand against",
+          "let alone cook it",
+          "it's not asking much",
+          "getting the hang of it"
+        ]
+      }
+    ];
+
+    var BLOCKS = BLOCKS_REST;
 
     var readPassage = document.getElementById("readPassage");
     var phraseBubbles = document.getElementById("phraseBubbles");
@@ -160,10 +229,49 @@
 
     btnContinue.addEventListener("click", function(){ stepRead.classList.remove("active"); stepRetell.classList.add("active"); pointsBanner.classList.remove("show"); paragraphCompleted=false; btnNextParagraph.disabled=true; btnStartRetell.disabled=false; btnStartRetell.textContent="Start retelling"; btnStop.disabled=true; timerStatus.textContent="Press Start when you are ready."; stopTimerUi(true); });
     btnBackRead.addEventListener("click", function(){ stepRetell.classList.remove("active"); stepRead.classList.add("active"); if(!paragraphCompleted){ stopTimerUi(true); btnStartRetell.disabled=false; btnStartRetell.textContent="Start retelling"; btnStop.disabled=true; } });
-    btnStartRetell.addEventListener("click", function(){ if(timerInterval||paragraphCompleted){return;} ringProgress.style.strokeDashoffset="0"; timerNum.textContent=String(TIMER_SEC); btnStartRetell.disabled=true; btnStartRetell.textContent="Speaking..."; btnStop.disabled=false; timerStatus.textContent="Up to 40 seconds."; var start=Date.now(); timerInterval=setInterval(function(){ var elapsed=(Date.now()-start)/1000; var left=Math.max(0,TIMER_SEC-elapsed); timerNum.textContent=String(Math.ceil(left)); var frac=Math.min(1,elapsed/TIMER_SEC); ringProgress.style.strokeDashoffset=String(frac*CIRC); if(left<=0){ clearInterval(timerInterval); timerInterval=null; finishParagraph("timeup"); } },80); });
+    btnStartRetell.addEventListener("click", function(){ if(timerInterval||paragraphCompleted){return;} ringProgress.style.strokeDashoffset="0"; timerNum.textContent=String(TIMER_SEC); btnStartRetell.disabled=true; btnStartRetell.textContent="Speaking..."; btnStop.disabled=false; timerStatus.textContent="Up to " + String(TIMER_SEC) + " seconds."; var start=Date.now(); timerInterval=setInterval(function(){ var elapsed=(Date.now()-start)/1000; var left=Math.max(0,TIMER_SEC-elapsed); timerNum.textContent=String(Math.ceil(left)); var frac=Math.min(1,elapsed/TIMER_SEC); ringProgress.style.strokeDashoffset=String(frac*CIRC); if(left<=0){ clearInterval(timerInterval); timerInterval=null; finishParagraph("timeup"); } },80); });
     btnStop.addEventListener("click", function(){ if(!timerInterval||paragraphCompleted){return;} stopTimerUi(false); finishParagraph("stop"); });
     btnNextParagraph.addEventListener("click", function(){ if(!paragraphCompleted){return;} segmentIndex+=1; renderSegment(); });
 
+    function applySpeakingTrack() {
+      var p = new URLSearchParams(location.search);
+      var raw = p.get("track");
+      var finaleHeading = document.getElementById("finaleHeading");
+      if (raw === "going-vegan") {
+        BLOCKS = BLOCKS_VEGAN;
+        TIMER_SEC = 60;
+        document.title = "Unit 12 — Speaking · Going vegan";
+        document.getElementById("mainTitleRead").textContent = "Reading — Going vegan";
+        document.getElementById("mainTitleRetell").textContent = "Reading — Going vegan";
+        document.getElementById("instrRead").textContent =
+          "Read the whole extract. Dotted lines show key phrases. Then continue to retell with the 1-minute timer.";
+        document.getElementById("instrRetell").textContent =
+          "Use these exact phrases as prompts. Press Start, retell for up to one minute, then Stop to save points.";
+        finaleHeading.textContent = "All five stories done";
+        document.querySelectorAll('a[href="unit12-speaking-hub.html"]').forEach(function (a) {
+          a.setAttribute("href", "unit12-12-1-restaurants-listening/reading-going-vegan/speaking/index.html");
+        });
+      } else {
+        BLOCKS = BLOCKS_REST;
+        TIMER_SEC = 40;
+        document.title = "Unit 12 — Speaking · Listening 12.1";
+        document.getElementById("mainTitleRead").textContent = "Listening 12.1 — Five speakers";
+        document.getElementById("mainTitleRetell").textContent = "Listening 12.1 — Five speakers";
+        document.getElementById("instrRead").textContent =
+          "Read the whole speaker extract. Dotted lines show key phrases. Then continue to retell with the 40-second timer.";
+        document.getElementById("instrRetell").textContent =
+          "Use these exact highlighted phrases as prompts. Press Start, retell, then Stop to save points.";
+        finaleHeading.textContent = "All five speaker blocks done";
+        if (raw === "restaurants") {
+          document.querySelectorAll('a[href="unit12-speaking-hub.html"]').forEach(function (a) {
+            a.setAttribute("href", "unit12-12-1-restaurants-listening/speaking/index.html");
+          });
+        }
+      }
+      timerNum.textContent = String(TIMER_SEC);
+    }
+
+    applySpeakingTrack();
     renderSegment();
   </script>
 </body>

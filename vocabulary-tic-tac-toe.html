@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocabulary Tic-Tac-Toe — multiplayer</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="live-supabase-local.js"></script>
+  <script src="js/prepositional-phrases-core.js"></script>
+  <script src="js/unit9-ttt-word-bank.js"></script>
+  <style>
+    :root {
+      --bg: #030712;
+      --panel: #0c1929;
+      --line: #1e3a5f;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --x: #38bdf8;
+      --o: #f472b6;
+      --ok: #4ade80;
+      --bad: #fb7185;
+      --term: #22d3ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -10%, #0f172a 0%, var(--bg) 55%);
+      color: var(--text);
+      padding: 20px 16px 40px;
+      line-height: 1.45;
+    }
+    h1 {
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      margin: 0 0 6px;
+      letter-spacing: 0.04em;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      max-width: 52rem;
+      margin-bottom: 18px;
+    }
+    .layout {
+      display: grid;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .layout { grid-template-columns: 320px 1fr; }
+    }
+    .panel {
+      background: linear-gradient(165deg, rgba(15, 32, 61, 0.95), rgba(8, 18, 38, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+    }
+    label { display: block; font-size: 0.72rem; color: var(--muted); margin: 10px 0 4px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #020617;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    button {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1e293b;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    button.primary { background: linear-gradient(180deg, #38bdf8, #0ea5e9); color: #020617; border-color: transparent; }
+    button.ghost { background: transparent; color: var(--muted); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .status { font-size: 0.82rem; color: var(--muted); margin-top: 10px; min-height: 2.6em; white-space: pre-wrap; }
+    .topic-box {
+      margin-top: 12px;
+      padding: 10px 10px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(30, 58, 95, 0.9);
+      background: rgba(2, 6, 23, 0.5);
+    }
+    .topic-box.locked { opacity: 0.92; }
+    .topic-legend {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
+    .topic-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 6px 0;
+      font-size: 0.86rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .topic-row input { margin-top: 3px; accent-color: var(--x); }
+    .topic-row span { text-transform: none; font-weight: 600; letter-spacing: 0.02em; }
+    .topic-hint { font-size: 0.72rem; color: var(--muted); margin: 8px 0 0; line-height: 1.35; }
+    .share { font-size: 0.78rem; word-break: break-all; color: #7dd3fc; margin-top: 8px; }
+    .arena { text-align: center; }
+    .teams {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .team {
+      flex: 1;
+      min-width: 140px;
+      max-width: 220px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(148, 163, 184, 0.35);
+      background: rgba(2, 6, 23, 0.65);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .team.x { border-color: rgba(56, 189, 248, 0.45); }
+    .team.o { border-color: rgba(244, 114, 182, 0.45); }
+    .team.active.x {
+      border-color: var(--x);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35), 0 0 28px rgba(56, 189, 248, 0.25);
+      transform: translateY(-2px);
+    }
+    .team.active.o {
+      border-color: var(--o);
+      box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.35), 0 0 28px rgba(244, 114, 182, 0.25);
+      transform: translateY(-2px);
+    }
+    .team .lab { font-size: 0.68rem; font-weight: 900; letter-spacing: 0.12em; color: var(--muted); }
+    .team .sym { font-size: 1.6rem; font-weight: 900; margin: 4px 0; }
+    .team.x .sym { color: var(--x); }
+    .team.o .sym { color: var(--o); }
+    .team .nm { font-size: 0.85rem; color: #cbd5e1; font-weight: 700; }
+    .grid-wrap {
+      display: inline-block;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.95));
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      box-shadow: inset 0 0 60px rgba(2, 132, 199, 0.08);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: min(92vw, 420px);
+      height: min(92vw, 420px);
+    }
+    @media (min-width: 600px) {
+      .grid { width: min(72vw, 480px); height: min(72vw, 480px); gap: 14px; }
+    }
+    .cell {
+      border-radius: 14px;
+      border: 2px solid rgba(51, 80, 120, 0.85);
+      background: radial-gradient(circle at 30% 20%, rgba(30, 58, 95, 0.5), rgba(2, 6, 23, 0.92));
+      font-size: clamp(2.4rem, 10vw, 3.6rem);
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      transition: border-color 0.15s, transform 0.12s;
+      user-select: none;
+    }
+    .cell:hover:not(:disabled) { border-color: rgba(34, 211, 238, 0.55); transform: scale(1.02); }
+    .cell:disabled { cursor: default; opacity: 0.85; }
+    .cell .mark.x { color: var(--x); text-shadow: 0 0 24px rgba(56, 189, 248, 0.55); }
+    .cell .mark.o { color: var(--o); text-shadow: 0 0 24px rgba(244, 114, 182, 0.55); }
+    .feed {
+      margin-top: 16px;
+      text-align: left;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      color: #5eead4;
+      background: #020617;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      max-height: 140px;
+      overflow: auto;
+      line-height: 1.5;
+    }
+    .feed div { opacity: 0.92; }
+    /* Terminal modal */
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-back.on { display: flex; }
+    .modal {
+      width: min(520px, 100%);
+      border-radius: 4px;
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      background: #020617;
+      box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.15), 0 24px 80px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .modal-head {
+      padding: 10px 14px;
+      background: linear-gradient(90deg, rgba(8, 51, 68, 0.95), rgba(2, 6, 23, 0.98));
+      border-bottom: 1px solid rgba(34, 211, 238, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-head strong {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      color: var(--term);
+      text-shadow: 0 0 12px rgba(34, 211, 238, 0.45);
+    }
+    .modal-head span { font-size: 0.65rem; color: #22c55e; }
+    .modal-body { padding: 14px 16px 16px; }
+    .scan {
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      padding: 12px;
+      margin-bottom: 12px;
+      color: #a5f3fc;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .scan::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 55%, rgba(34, 211, 238, 0.06) 56%, transparent 57%);
+      background-size: 100% 5px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .modal-body label { margin-top: 0; color: #67e8f9; }
+    .modal-body input { font-family: inherit; }
+    .hint-label { font-size: 0.65rem; color: #64748b; margin-bottom: 6px; letter-spacing: 0.12em; }
+    .result-line { margin-top: 10px; font-size: 0.78rem; min-height: 1.4em; }
+    .result-line.ok { color: var(--ok); }
+    .result-line.bad { color: var(--bad); }
+    .warn { color: #fcd34d; font-size: 0.8rem; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Vocabulary Tic-Tac-Toe</h1>
+  <p class="sub">
+    <strong>Обычный вход:</strong> создатель нажимает «Создать комнату» и делится <strong>ссылкой</strong> — остальные открывают её (код подставится), вводят имя и нажимают <strong>Войти</strong>.
+    Карточки — <strong>тот же Word Bank Unit 9</strong>, что в лексических играх: четыре темы (Reading / Idioms / Listening / Prep). Набор фиксирует только <strong>создатель комнаты</strong>.
+    По ссылке открывается режим <strong>только «Войти»</strong> (без создания комнаты). До <strong>8 участников</strong>: равномерно в команды X и O; внутри команды ход по очереди — отвечает следующий игрок.
+    Если в O никого нет, можно тренироваться <strong>одному за X</strong>. Нужны <code>live-supabase-local.js</code> и открытие по <strong>http(s)</strong>.
+    Клик по клетке — терминал с подсказкой из банка; верно — символ команды, неверно — клетка пустая, ход к другой команде.
+  </p>
+
+  <div class="layout">
+    <div class="panel">
+      <label>Ваше имя</label>
+      <input type="text" id="playerName" maxlength="32" placeholder="Например: Мария или Mr Smith" autocomplete="off" />
+      <label>Код комнаты</label>
+      <input type="text" id="roomInput" maxlength="10" placeholder="Из ссылки ?room=… или введите вручную" autocomplete="off" />
+      <div class="topic-box" id="topicBox">
+        <div class="topic-legend">Темы карточек</div>
+        <div id="topicChecks"></div>
+        <p class="topic-hint" id="topicHint">
+          Те же четыре папки, что в Unit 9 Word Bank. Набор задаётся только при «Создать комнату».
+        </p>
+      </div>
+      <div class="row">
+        <button type="button" class="primary" id="btnJoin">Войти</button>
+        <button type="button" id="btnCreate">Создать комнату</button>
+      </div>
+      <p class="share" id="shareLine" hidden></p>
+      <p class="status" id="netStatus">Подключение…</p>
+      <button type="button" class="ghost" id="btnNewRound" hidden>Новый раунд (хост)</button>
+    </div>
+
+    <div class="panel arena">
+      <div class="teams" id="teamsRow">
+        <div class="team x" id="teamX">
+          <div class="lab">TEAM</div>
+          <div class="sym">X</div>
+          <div class="nm" id="nameX">—</div>
+        </div>
+        <div class="team o" id="teamO">
+          <div class="lab">TEAM</div>
+          <div class="sym">O</div>
+          <div class="nm" id="nameO">—</div>
+        </div>
+      </div>
+      <div class="grid-wrap">
+        <div class="grid" id="board"></div>
+      </div>
+      <div class="feed" id="feed" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="modal-back" id="cipherModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cipherTitle">
+      <div class="modal-head">
+        <strong id="cipherTitle">DECIPHER THE CODE</strong>
+        <span id="cipherMeta">CELL —</span>
+      </div>
+      <div class="modal-body">
+        <div class="hint-label">INCOMING SIGNAL / DEFINITION</div>
+        <div class="scan" id="cipherHint"></div>
+        <label for="cipherInput">TRANSMIT ANSWER (PHRASE)</label>
+        <input type="text" id="cipherInput" autocomplete="off" placeholder="Type the exact phrase…" />
+        <div class="row">
+          <button type="button" class="primary" id="cipherSubmit">Execute</button>
+        </div>
+        <div class="result-line" id="cipherResult"></div>
+        <p class="warn" id="cipherSpectator" hidden>Вы наблюдатель: ввод только у игрока чей ход.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var WORDS = (typeof VOCAB_TTT_WORDS !== "undefined" && VOCAB_TTT_WORDS.length) ? VOCAB_TTT_WORDS : [];
+      var WIN_LINES = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      function playerId() {
+        try {
+          var k = "vttt_player_id";
+          var id = sessionStorage.getItem(k);
+          if (!id) {
+            id = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(36).slice(2);
+            sessionStorage.setItem(k, id);
+          }
+          return id;
+        } catch (e) {
+          return "p_" + String(Date.now());
+        }
+      }
+
+      function normAns(s) {
+        return String(s || "")
+          .toLowerCase()
+          .replace(/[\u2019']/g, "'")
+          .replace(/[^\w\s']/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function answersMatch(typed, phrase) {
+        return normAns(typed) === normAns(phrase);
+      }
+
+      function pickWordId(used) {
+        var n = WORDS.length;
+        if (!n) return 0;
+        var g = game;
+        var restrict = g && g.topicIds && g.topicIds.length;
+        var allowed = [];
+        var i;
+        for (i = 0; i < n; i++) {
+          if (used.indexOf(i) !== -1) continue;
+          if (restrict) {
+            var wt = WORDS[i].topic;
+            if (!wt || g.topicIds.indexOf(wt) === -1) continue;
+          }
+          allowed.push(i);
+        }
+        if (!allowed.length) {
+          for (i = 0; i < n; i++) {
+            if (used.indexOf(i) === -1) allowed.push(i);
+          }
+        }
+        if (!allowed.length) return Math.floor(Math.random() * n);
+        return allowed[Math.floor(Math.random() * allowed.length)];
+      }
+
+      function emptyBoard() {
+        return ["", "", "", "", "", "", "", "", ""];
+      }
+
+      function initialState(roomCode, hostId, hostName, topicIds) {
+        return {
+          roomCode: roomCode,
+          hostId: hostId,
+          teamX: [{ id: String(hostId), name: hostName }],
+          teamO: [],
+          xSeat: 0,
+          oSeat: 0,
+          phase: "playing",
+          board: emptyBoard(),
+          turn: "X",
+          pending: null,
+          usedWordIds: [],
+          winner: null,
+          winLine: null,
+          feed: [],
+          rev: 1,
+          topicIds: topicIds && topicIds.length ? topicIds.slice() : null
+        };
+      }
+
+      function allTopicIds() {
+        if (typeof VOCAB_TTT_TOPIC_LIST === "undefined" || !VOCAB_TTT_TOPIC_LIST.length) return [];
+        return VOCAB_TTT_TOPIC_LIST.map(function (t) {
+          return t.id;
+        });
+      }
+
+      function readSelectedTopicIds() {
+        var inputs = document.querySelectorAll("#topicChecks input[type=checkbox]");
+        var out = [];
+        var i;
+        for (i = 0; i < inputs.length; i++) {
+          if (inputs[i].checked) out.push(inputs[i].value);
+        }
+        var all = allTopicIds();
+        if (!inputs.length || !out.length) return null;
+        if (all.length && out.length >= all.length) return null;
+        return out;
+      }
+
+      function topicLabelsForGame(g) {
+        if (!g || !g.topicIds || !g.topicIds.length) return "все темы";
+        var map = {};
+        if (typeof VOCAB_TTT_TOPIC_LIST !== "undefined") {
+          for (var i = 0; i < VOCAB_TTT_TOPIC_LIST.length; i++) {
+            map[VOCAB_TTT_TOPIC_LIST[i].id] = VOCAB_TTT_TOPIC_LIST[i].label;
+          }
+        }
+        return g.topicIds
+          .map(function (id) {
+            return map[id] || id;
+          })
+          .join(", ");
+      }
+
+      function syncTopicPickerLock() {
+        var inputs = document.querySelectorAll("#topicChecks input[type=checkbox]");
+        var hint = document.getElementById("topicHint");
+        var box = document.getElementById("topicBox");
+        if (!inputs.length) return;
+        if (!game) {
+          for (var i = 0; i < inputs.length; i++) inputs[i].disabled = false;
+          if (hint) {
+            hint.textContent =
+              "Отметьте папки Word Bank Unit 9. Набор фиксируется при «Создать комнату» для всех в комнате.";
+          }
+          if (box) box.classList.remove("locked");
+          return;
+        }
+        var all = allTopicIds();
+        var active = game.topicIds && game.topicIds.length ? game.topicIds : all;
+        for (var j = 0; j < inputs.length; j++) {
+          inputs[j].disabled = true;
+          inputs[j].checked = active.indexOf(inputs[j].value) !== -1;
+        }
+        if (hint) {
+          hint.textContent =
+            myId === game.hostId
+              ? "Набор зафиксирован: " + topicLabelsForGame(game) + "."
+              : "В этой комнате: " + topicLabelsForGame(game) + ".";
+        }
+        if (box) box.classList.add("locked");
+      }
+
+      function initTopicPicker() {
+        var wrap = document.getElementById("topicChecks");
+        if (!wrap) return;
+        wrap.innerHTML = "";
+        if (typeof VOCAB_TTT_TOPIC_LIST === "undefined" || !VOCAB_TTT_TOPIC_LIST.length) {
+          wrap.innerHTML = "<span style=\"color:#94a3b8;font-size:0.85rem\">Список тем не загружен.</span>";
+          return;
+        }
+        for (var i = 0; i < VOCAB_TTT_TOPIC_LIST.length; i++) {
+          var t = VOCAB_TTT_TOPIC_LIST[i];
+          var lab = document.createElement("label");
+          lab.className = "topic-row";
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.name = "vttt_topic";
+          cb.value = t.id;
+          cb.checked = true;
+          var sp = document.createElement("span");
+          sp.textContent = t.label;
+          lab.appendChild(cb);
+          lab.appendChild(sp);
+          wrap.appendChild(lab);
+        }
+      }
+
+      function migrateGameRosters(g) {
+        if (!g) return;
+        if (!Array.isArray(g.teamX)) {
+          g.teamX = [];
+          if (g.pX) g.teamX.push({ id: String(g.pX.id), name: String(g.pX.name || "Игрок").slice(0, 32) });
+        }
+        if (!Array.isArray(g.teamO)) {
+          g.teamO = [];
+          if (g.pO) g.teamO.push({ id: String(g.pO.id), name: String(g.pO.name || "Игрок").slice(0, 32) });
+        }
+        if (typeof g.xSeat !== "number" || g.xSeat < 0) g.xSeat = 0;
+        if (typeof g.oSeat !== "number" || g.oSeat < 0) g.oSeat = 0;
+      }
+
+      function rosterTeam(g, team) {
+        if (!g) return [];
+        migrateGameRosters(g);
+        return team === "X" ? g.teamX || [] : g.teamO || [];
+      }
+
+      function totalPlayers(g) {
+        migrateGameRosters(g);
+        return (g.teamX || []).length + (g.teamO || []).length;
+      }
+
+      function findPlayerTeam(g, pid) {
+        migrateGameRosters(g);
+        var x = g.teamX || [],
+          o = g.teamO || [],
+          i;
+        for (i = 0; i < x.length; i++) if (x[i].id === pid) return "X";
+        for (i = 0; i < o.length; i++) if (o[i].id === pid) return "O";
+        return null;
+      }
+
+      function rosterHasPid(g, pid) {
+        return findPlayerTeam(g, pid) !== null;
+      }
+
+      function nextActorForTeam(g, team) {
+        migrateGameRosters(g);
+        var r = rosterTeam(g, team);
+        if (!r.length) return null;
+        var idx = team === "X" ? g.xSeat || 0 : g.oSeat || 0;
+        idx = idx % r.length;
+        return r[idx];
+      }
+
+      /** Если в команде O никого нет — только ходы X (соло). */
+      function normalizeSoloTurn(g) {
+        if (!g) return;
+        migrateGameRosters(g);
+        if (rosterTeam(g, "O").length === 0 && g.turn === "O") g.turn = "X";
+      }
+
+      function checkWinner(board) {
+        var w, a, b, c, i;
+        for (w = 0; w < WIN_LINES.length; w++) {
+          a = WIN_LINES[w][0];
+          b = WIN_LINES[w][1];
+          c = WIN_LINES[w][2];
+          if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return { winner: board[a], line: WIN_LINES[w].slice() };
+          }
+        }
+        var full = true;
+        for (i = 0; i < 9; i++) {
+          if (!board[i]) full = false;
+        }
+        if (full) return { winner: "draw", line: null };
+        return null;
+      }
+
+      var myId = playerId();
+      var ch = null;
+      var roomCode = "";
+      var game = null;
+      var subscribed = false;
+      var joinInterval = null;
+      var joinNameSaved = "";
+
+      var elName = document.getElementById("playerName");
+      var elRoom = document.getElementById("roomInput");
+      var elNet = document.getElementById("netStatus");
+      var elShare = document.getElementById("shareLine");
+      var elBoard = document.getElementById("board");
+      var elFeed = document.getElementById("feed");
+      var elTeamX = document.getElementById("teamX");
+      var elTeamO = document.getElementById("teamO");
+      var elNameX = document.getElementById("nameX");
+      var elNameO = document.getElementById("nameO");
+      var elModal = document.getElementById("cipherModal");
+      var elHint = document.getElementById("cipherHint");
+      var elCipherIn = document.getElementById("cipherInput");
+      var elCipherRes = document.getElementById("cipherResult");
+      var elCipherMeta = document.getElementById("cipherMeta");
+      var elSpect = document.getElementById("cipherSpectator");
+      var btnNewRound = document.getElementById("btnNewRound");
+
+      function logFeed(msg) {
+        if (!game) return;
+        game.feed = game.feed || [];
+        game.feed.unshift({ t: Date.now(), msg: msg });
+        if (game.feed.length > 14) game.feed.length = 14;
+      }
+
+      function broadcast() {
+        if (!ch || !game) return;
+        game.rev = (game.rev || 0) + 1;
+        try {
+          ch.send({ type: "broadcast", event: "vttt_state", payload: JSON.parse(JSON.stringify(game)) });
+        } catch (e) {
+          elNet.textContent = "Ошибка отправки: " + (e && e.message ? e.message : e);
+        }
+      }
+
+      function applyState(g) {
+        if (!g || !g.roomCode) return;
+        if (game && (g.rev || 0) < (game.rev || 0)) return;
+        game = g;
+        if (!("topicIds" in game)) game.topicIds = null;
+        migrateGameRosters(game);
+        normalizeSoloTurn(game);
+        if (joinInterval && game && findPlayerTeam(game, myId)) {
+          clearInterval(joinInterval);
+          joinInterval = null;
+        }
+        render();
+      }
+
+      var MAX_VTTT_PLAYERS = 8;
+
+      function handleJoinPing(payload) {
+        if (!payload || String(payload.room || "").toUpperCase() !== roomCode) return;
+        if (!game || myId !== game.hostId) return;
+        migrateGameRosters(game);
+        var pid = String(payload.pid);
+        var pname = String(payload.name || "Игрок").slice(0, 32);
+        if (rosterHasPid(game, pid)) return;
+        if (pid === game.hostId) return;
+        if (totalPlayers(game) >= MAX_VTTT_PLAYERS) return;
+        var nX = (game.teamX || []).length;
+        var nO = (game.teamO || []).length;
+        var assign = nX <= nO ? "X" : "O";
+        if (assign === "X") game.teamX.push({ id: pid, name: pname });
+        else game.teamO.push({ id: pid, name: pname });
+        logFeed("В команду " + assign + ": " + pname + " (" + (nX + nO + 1) + "/" + MAX_VTTT_PLAYERS + ")");
+        normalizeSoloTurn(game);
+        broadcast();
+        render();
+      }
+
+      function renderBoard() {
+        elBoard.innerHTML = "";
+        var b = (game && game.board) || emptyBoard();
+        var i;
+        for (i = 0; i < 9; i++) {
+          (function (idx) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "cell";
+            btn.dataset.i = String(idx);
+            if (b[idx]) {
+              var sp = document.createElement("span");
+              sp.className = "mark " + (b[idx] === "X" ? "x" : "o");
+              sp.textContent = b[idx];
+              btn.appendChild(sp);
+              btn.disabled = true;
+            } else {
+              var actorMove = game ? nextActorForTeam(game, game.turn) : null;
+              var canClick =
+                game &&
+                game.phase === "playing" &&
+                !game.pending &&
+                !game.winner &&
+                actorMove &&
+                actorMove.id === myId;
+              btn.disabled = !canClick;
+              btn.addEventListener("click", onCellClick);
+            }
+            elBoard.appendChild(btn);
+          })(i);
+        }
+      }
+
+      function formatRosterNames(g, team) {
+        var r = rosterTeam(g, team);
+        if (!r.length) return "— пока пусто —";
+        return r
+          .map(function (p) {
+            return p.name;
+          })
+          .join(", ");
+      }
+
+      function renderTeams() {
+        if (!game) {
+          elNameX.textContent = "—";
+          elNameO.textContent = "—";
+          return;
+        }
+        migrateGameRosters(game);
+        elNameX.textContent = formatRosterNames(game, "X");
+        elNameO.textContent = formatRosterNames(game, "O");
+        elTeamX.classList.remove("active");
+        elTeamO.classList.remove("active");
+        if (game.phase !== "playing") return;
+        normalizeSoloTurn(game);
+        if (game.turn === "X") elTeamX.classList.add("active", "x");
+        else elTeamO.classList.add("active", "o");
+      }
+
+      function renderFeed() {
+        var lines = (game && game.feed) || [];
+        elFeed.innerHTML = lines
+          .map(function (row) {
+            return "<div>&gt; " + esc(row.msg) + "</div>";
+          })
+          .join("");
+      }
+
+      function esc(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function isGuestJoinFlow() {
+        var q = (new URLSearchParams(location.search).get("room") || "").trim().toUpperCase();
+        if (!q) return false;
+        try {
+          var hr = (sessionStorage.getItem("vttt_host_room") || "").trim().toUpperCase();
+          return hr !== q;
+        } catch (eG) {
+          return true;
+        }
+      }
+
+      function syncGuestHostChrome() {
+        var btnC = document.getElementById("btnCreate");
+        var tb = document.getElementById("topicBox");
+        var guest = isGuestJoinFlow();
+        if (btnC) btnC.style.display = game || guest ? "none" : "";
+        if (tb) {
+          if (!game) tb.style.display = guest ? "none" : "";
+          else if (myId !== game.hostId) tb.style.display = "none";
+          else tb.style.display = "";
+        }
+      }
+
+      function render() {
+        syncTopicPickerLock();
+        syncGuestHostChrome();
+        if (!game) {
+          if (joinInterval) {
+            elNet.textContent =
+              "Запрос к хосту… код " +
+              roomCode +
+              " (убедитесь, что вкладка создателя открыта).";
+          } else if (subscribed && joinNameSaved) {
+            elNet.textContent = "Комната " + roomCode + " — ждём состояние от хоста…";
+          } else {
+            elNet.textContent = "Создайте комнату или введите код и нажмите «Войти».";
+          }
+          return;
+        }
+        migrateGameRosters(game);
+        var myTeam = findPlayerTeam(game, myId);
+        var spec = myTeam === null && totalPlayers(game) > 0;
+        renderBoard();
+        renderTeams();
+        renderFeed();
+        if (spec) {
+          elNet.textContent =
+            "Комната " +
+            game.roomCode +
+            " — вы вне команд (наблюдатель). В комнате до " +
+            MAX_VTTT_PLAYERS +
+            " игроков; дождитесь новой ссылки или освободите место.";
+        } else if (game.phase === "playing" && rosterTeam(game, "O").length === 0) {
+          elNet.textContent =
+            "Код " +
+            game.roomCode +
+            " — команда O пуста (соло за X). Ссылка: до " +
+            MAX_VTTT_PLAYERS +
+            " человек, распределение по командам поровну.";
+        } else if (game.phase === "playing") {
+          var actorShow = nextActorForTeam(game, game.turn);
+          var turnHint = !game.winner && actorShow ? " Сейчас отвечает: " + actorShow.name + "." : "";
+          elNet.textContent = game.winner
+            ? game.winner === "draw"
+              ? "Ничья."
+              : "Победила команда " + game.winner + "."
+            : "Ход команды " + game.turn + "." + turnHint + " Карточки: " + topicLabelsForGame(game) + ".";
+        } else {
+          elNet.textContent = "Комната: " + game.roomCode;
+        }
+        btnNewRound.hidden = !(game.hostId === myId && game.phase === "playing" && game.winner);
+
+        if (game.pending) {
+          showCipherModal(game.pending);
+        } else {
+          hideCipherModal();
+        }
+      }
+
+      function showCipherModal(p) {
+        var w = WORDS[p.wordId];
+        var hint = w ? w.hint : "—";
+        elHint.textContent = hint;
+        elCipherMeta.textContent = "CELL " + (p.cell + 1) + " · TEAM " + p.team;
+        elCipherRes.textContent = "";
+        elCipherRes.className = "result-line";
+        var actor = p.actorId === myId;
+        var myTm = findPlayerTeam(game, myId);
+        var isMyTeam = myTm && myTm === p.team;
+        elCipherIn.disabled = !actor;
+        document.getElementById("cipherSubmit").disabled = !actor;
+        elSpect.hidden = !!actor;
+        if (!actor) {
+          elSpect.textContent = isMyTeam
+            ? "Ответ вводит ваш союзник на другом устройстве."
+            : "Ход соперника — режим просмотра.";
+        }
+        elModal.classList.add("on");
+        elModal.setAttribute("aria-hidden", "false");
+        if (actor) {
+          elCipherIn.value = "";
+          setTimeout(function () {
+            elCipherIn.focus();
+          }, 80);
+        }
+      }
+
+      function hideCipherModal() {
+        elModal.classList.remove("on");
+        elModal.setAttribute("aria-hidden", "true");
+      }
+
+      function onCellClick(ev) {
+        if (!WORDS.length) {
+          elNet.textContent =
+            "Нет карточек — проверьте js/prepositional-phrases-core.js и js/unit9-ttt-word-bank.js (Unit 9 Word Bank).";
+          return;
+        }
+        var btn = ev.currentTarget;
+        var idx = parseInt(btn.getAttribute("data-i"), 10);
+        if (!game || game.phase !== "playing" || game.pending || game.winner) return;
+        if (game.board[idx]) return;
+        var team = game.turn;
+        var actCell = nextActorForTeam(game, team);
+        if (!actCell || actCell.id !== myId) return;
+        var wid = pickWordId(game.usedWordIds || []);
+        game.pending = { cell: idx, wordId: wid, team: team, actorId: myId };
+        logFeed("TEAM " + team + " opened cipher on cell " + (idx + 1));
+        broadcast();
+      }
+
+      function submitCipher() {
+        if (!game || !game.pending) return;
+        if (game.pending.actorId !== myId) return;
+        var p = game.pending;
+        var w = WORDS[p.wordId];
+        var phrase = w ? w.phrase : "";
+        var typed = elCipherIn.value;
+        var ok = answersMatch(typed, phrase);
+        elCipherRes.textContent = ok ? "ACCESS GRANTED — symbol locked." : "ACCESS DENIED — cell remains empty.";
+        elCipherRes.className = "result-line " + (ok ? "ok" : "bad");
+        if (ok) {
+          game.board[p.cell] = p.team;
+          if (game.usedWordIds.indexOf(p.wordId) === -1) game.usedWordIds.push(p.wordId);
+          var win = checkWinner(game.board);
+          if (win) {
+            game.winner = win.winner;
+            game.winLine = win.line;
+            logFeed(win.winner === "draw" ? "GRID SATURATED — DRAW." : "TEAM " + win.winner + " WINS.");
+          }
+        }
+        if (p.team === "X") game.xSeat = (game.xSeat || 0) + 1;
+        else game.oSeat = (game.oSeat || 0) + 1;
+        game.turn = game.turn === "X" ? "O" : "X";
+        normalizeSoloTurn(game);
+        game.pending = null;
+        logFeed((ok ? "Верно" : "Неверно") + " — ход: команда " + game.turn);
+        broadcast();
+        setTimeout(function () {
+          hideCipherModal();
+          render();
+        }, ok ? 420 : 520);
+      }
+
+      document.getElementById("cipherSubmit").addEventListener("click", submitCipher);
+      elCipherIn.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          submitCipher();
+        }
+      });
+
+      function sendJoinPing() {
+        if (!ch || !roomCode) return;
+        try {
+          ch.send({
+            type: "broadcast",
+            event: "vttt_ping",
+            payload: { room: roomCode, pid: myId, name: joinNameSaved || "Team O" }
+          });
+        } catch (e) {}
+      }
+
+      function subscribeChannel(code) {
+        var url = window.__LIVE_SUPABASE_URL__;
+        var key = window.__LIVE_SUPABASE_KEY__;
+        if (!url || !key || !window.supabase || typeof window.supabase.createClient !== "function") {
+          elNet.textContent = "Нет Supabase: добавьте live-supabase-local.js в корень сайта.";
+          return false;
+        }
+        var client = window.supabase.createClient(String(url).trim(), String(key).trim());
+        roomCode = String(code || "").toUpperCase().trim();
+        ch = client.channel("vocab-ttt-" + roomCode, {
+          config: { broadcast: { ack: false, self: true } }
+        });
+        ch.on("broadcast", { event: "vttt_state" }, function (ctx) {
+          var raw = ctx && ctx.payload != null ? ctx.payload : ctx;
+          var g = typeof raw === "string" ? JSON.parse(raw) : raw;
+          applyState(g);
+        });
+        ch.on("broadcast", { event: "vttt_ping" }, function (ctx) {
+          var raw = ctx && ctx.payload != null ? ctx.payload : ctx;
+          handleJoinPing(raw || {});
+        });
+        ch.subscribe(function (status) {
+          if (status === "SUBSCRIBED") {
+            subscribed = true;
+            elNet.textContent = "Канал подключён: " + roomCode;
+            if (game && game.hostId === myId) {
+              broadcast();
+            }
+            if (joinInterval === null && joinNameSaved) {
+              sendJoinPing();
+              var n = 0;
+              joinInterval = setInterval(function () {
+                n++;
+                sendJoinPing();
+                if (n >= 12) {
+                  clearInterval(joinInterval);
+                  joinInterval = null;
+                  if (!game) {
+                    elNet.textContent =
+                      "Хост не ответил. Проверьте код комнаты и что у создателя игры открыта эта же страница в браузере.";
+                  } else if (!findPlayerTeam(game, myId) && totalPlayers(game) >= MAX_VTTT_PLAYERS) {
+                    elNet.textContent =
+                      "В комнате уже " + MAX_VTTT_PLAYERS + " игроков — свободных мест нет. Попросите новую ссылку у преподавателя.";
+                  }
+                }
+              }, 1500);
+            }
+          }
+        });
+        return true;
+      }
+
+      function countWordsForTopics(topicIds) {
+        if (!WORDS.length) return 0;
+        if (!topicIds || !topicIds.length) return WORDS.length;
+        var c = 0;
+        for (var i = 0; i < WORDS.length; i++) {
+          var wt = WORDS[i].topic;
+          if (wt && topicIds.indexOf(wt) !== -1) c++;
+        }
+        return c;
+      }
+
+      function createGame() {
+        var name = (elName.value || "").trim().slice(0, 32) || "Player X";
+        var code = Math.random().toString(36).slice(2, 8).toUpperCase();
+        joinNameSaved = "";
+        if (joinInterval) {
+          clearInterval(joinInterval);
+          joinInterval = null;
+        }
+        var topicIds = readSelectedTopicIds();
+        if (topicIds && topicIds.length && countWordsForTopics(topicIds) === 0) {
+          elNet.textContent = "В выбранных темах нет карточек — отметьте другие темы.";
+          return;
+        }
+        game = initialState(code, myId, name, topicIds);
+        normalizeSoloTurn(game);
+        try {
+          sessionStorage.setItem("vttt_host_room", code);
+        } catch (eHost) {}
+        logFeed("Комната " + code + " — вы в команде X (" + name + ")");
+        logFeed("Темы: " + topicLabelsForGame(game));
+        if (!subscribeChannel(code)) return;
+        var link = location.origin + location.pathname + "?room=" + encodeURIComponent(code);
+        elShare.removeAttribute("hidden");
+        elShare.textContent = "Ссылка для входа (ученик или второй игрок): " + link;
+        try {
+          history.replaceState({}, "", "?room=" + encodeURIComponent(code));
+        } catch (eH) {}
+        render();
+      }
+
+      function joinGame() {
+        var code = (elRoom.value || "").trim().toUpperCase();
+        var name = (elName.value || "").trim().slice(0, 32) || "Игрок";
+        if (!/^[A-Z0-9]{4,10}$/.test(code)) {
+          elNet.textContent = "Введите код комнаты из ссылки (латиница и цифры) или откройте полную ссылку от учителя.";
+          return;
+        }
+        try {
+          var hsRoom = (sessionStorage.getItem("vttt_host_room") || "").trim().toUpperCase();
+          if (hsRoom && hsRoom !== code) sessionStorage.removeItem("vttt_host_room");
+        } catch (eRm) {}
+        joinNameSaved = name;
+        if (joinInterval) {
+          clearInterval(joinInterval);
+          joinInterval = null;
+        }
+        game = null;
+        if (!subscribeChannel(code)) return;
+        elNet.textContent = "Запрос к хосту…";
+        render();
+      }
+
+      btnNewRound.addEventListener("click", function () {
+        if (!game || game.hostId !== myId) return;
+        game.board = emptyBoard();
+        game.turn = "X";
+        game.xSeat = 0;
+        game.oSeat = 0;
+        game.pending = null;
+        game.winner = null;
+        game.winLine = null;
+        game.usedWordIds = [];
+        game.phase = "playing";
+        logFeed("NEW ROUND — GRID CLEARED.");
+        broadcast();
+        render();
+      });
+
+      function tryEnterRoom() {
+        var code = (elRoom.value || "").trim().toUpperCase();
+        if (!code) {
+          elNet.textContent = "Вставьте код из ссылки (?room=…) или попросите ссылку у создателя комнаты.";
+          return;
+        }
+        elRoom.value = code;
+        joinGame();
+      }
+
+      document.getElementById("btnCreate").addEventListener("click", createGame);
+      document.getElementById("btnJoin").addEventListener("click", tryEnterRoom);
+      elName.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          tryEnterRoom();
+        }
+      });
+      elRoom.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          tryEnterRoom();
+        }
+      });
+
+      var qs = new URLSearchParams(location.search);
+      var qRoom = (qs.get("room") || "").trim().toUpperCase();
+      if (qRoom) elRoom.value = qRoom;
+
+      initTopicPicker();
+      syncGuestHostChrome();
+
+      if (window.__LIVE_SUPABASE_URL__ && window.__LIVE_SUPABASE_KEY__) {
+        if (qRoom && isGuestJoinFlow()) {
+          elNet.textContent =
+            "Вы открыли ссылку ученика — введите имя и нажмите «Войти». Кнопка «Создать комнату» скрыта.";
+        } else {
+          elNet.textContent = qRoom
+            ? "Код комнаты в ссылке подставлен — введите имя и нажмите «Войти» (или создайте свою комнату, если вы преподаватель на этом устройстве)."
+            : "Введите имя. Преподаватель: «Создать комнату» и темы Word Bank; остальные — код из ссылки и «Войти».";
+        }
+      } else {
+        elNet.textContent = "Скопируйте live-supabase-local.example.js → live-supabase-local.js и укажите URL и ключ.";
+      }
+    })();
+  </script>
+</body>
+</html>

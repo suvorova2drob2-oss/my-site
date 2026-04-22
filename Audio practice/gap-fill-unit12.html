@@ -142,6 +142,11 @@
     }
     .wrong-word { color: #ff8f9f; font-weight: 700; }
     .right-word { color: #77e3ae; font-weight: 700; }
+    body.restaurants-only .mode,
+    body.hub-pro-fitness .mode,
+    body.going-vegan-only .mode {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -275,6 +280,52 @@
           "cutlery", "vegan", "surprisingly", "variety", "cooked", "voices", "complaint", "chewy",
           "attitude", "dessert", "seafood", "overpriced", "mussels", "seabass", "quicker",
           "fussy", "starters", "complaints", "antisocial"
+        ]
+      },
+      vegan: {
+        src: "../RfB2First_SB_Track 12.1.mp3",
+        label: "Going vegan — key phrases (optional sample audio: Track 12.1)",
+        transcript: [
+          "Jack: People still value sound advice when money is tight.",
+          "He does not hold it against people who cancel plans late.",
+          "He likes to invite someone round for a meal when he shares recipes.",
+          "There is extra effort involved when you cook from scratch nightly.",
+          "Guests are invariably amazed by simple bean soups.",
+          "",
+          "Sarah: She worried she might miss out on essential nutrients from diet changes.",
+          "The article listed pitfalls of a plant-based diet when planning is lazy.",
+          "A short talk helped put someone's mind at rest about calcium.",
+          "Charts reinforce the idea that colour on the plate matters.",
+          "She gradually came to accept tofu in her stir-fry bowls.",
+          "",
+          "Maya: Yoga and routines helped Maya manage symptoms during flare months.",
+          "She kept at it faithfully even when cravings returned after exams.",
+          "Friends say Maya can show amazing willpower at noisy barbecues.",
+          "Once she almost threw in the towel then messaged her coach fast.",
+          "On the plus side her skin cleared before term began again.",
+          "She read about the health benefits of certain foods before breakfast swaps.",
+          "",
+          "Justin: He could not make the switch overnight because he travels weekly.",
+          "A strict juice plan proved too much so he stopped on day three.",
+          "He chose to do it in stages instead of banning sweets forever.",
+          "He took weeks to work out what works for you on busy days.",
+          "He rang to reassure my parents before he moved into the flat share.",
+          "The forum promised to give someone the benefit of their experience.",
+          "",
+          "Rhona: She wishes she could do it ages ago instead of waiting years.",
+          "She became increasingly aware of factory-farm footage at night.",
+          "For Rhona it was high time to clear cheap sausages from the pantry.",
+          "She wanted to take a stand against plastic wrapped snacks in shops.",
+          "She feared tofu let alone tempeh on her plate back in twenty ten.",
+          "She said it is not asking much to bring one salad to the picnic.",
+          "After six months she got the hang of it in her tiny kitchen."
+        ],
+        keywords: [
+          "advice", "hold", "against", "invite", "meal", "effort", "involved", "invariably", "amazed",
+          "miss", "nutrients", "pitfalls", "plant-based", "mind", "rest", "reinforce", "idea", "gradually", "accept",
+          "manage", "symptoms", "faithfully", "willpower", "towel", "plus", "benefits", "foods",
+          "switch", "overnight", "prove", "stages", "works", "you", "reassure", "parents", "benefit", "experience",
+          "ago", "increasingly", "aware", "high", "stand", "let", "alone", "much", "hang"
         ]
       }
     };
@@ -457,7 +508,34 @@
     resetBtn.addEventListener("click", resetInputs);
     showBtn.addEventListener("click", showAnswers);
 
-    setMode("naomi");
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var restaurantsOnly = params.get("track") === "restaurants";
+      var goingVegan = params.get("track") === "going-vegan";
+      var hubFitness = params.get("hub") === "pro-fitness";
+      var back = document.querySelector(".back");
+      if (goingVegan) {
+        document.body.classList.add("going-vegan-only");
+        if (back) {
+          back.setAttribute("href", "../unit12-12-1-restaurants-listening/reading-going-vegan/index.html");
+        }
+        setMode("vegan");
+      } else if (restaurantsOnly) {
+        document.body.classList.add("restaurants-only");
+        if (back) {
+          back.setAttribute("href", "../unit12-12-1-restaurants-listening/audio-practice/index.html");
+        }
+        setMode("restaurants");
+      } else if (hubFitness) {
+        document.body.classList.add("hub-pro-fitness");
+        if (back) {
+          back.setAttribute("href", "../unit12-pro-fitness-coaching/audio-practice/index.html");
+        }
+        setMode("naomi");
+      } else {
+        setMode("naomi");
+      }
+    })();
   </script>
 </body>
 </html>

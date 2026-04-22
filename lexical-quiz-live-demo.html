@@ -16,13 +16,16 @@
       --bad: #f87171;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: linear-gradient(180deg, #09122a 0%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 20px; }
-    .page { width: min(1000px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
-    .top { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:10px; }
+    body { background: linear-gradient(180deg, #070d18 0%, #0d1b2a 45%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 20px; }
+    .page { width: min(1000px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 20px; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35); }
+    .top { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:8px; }
+    .top h1 { font-size: clamp(1.25rem, 3.5vw, 1.65rem); font-weight: 700; letter-spacing: -0.02em; }
     .back { color: var(--accent); text-decoration: none; font-weight: 700; }
-    .muted { color: var(--muted); }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .card { border:1px solid var(--line); border-radius:12px; background:var(--panel-soft); padding:12px; }
+    .back:hover { text-decoration: underline; }
+    .muted { color: var(--muted); font-size: 0.92rem; line-height: 1.45; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .card { border:1px solid var(--line); border-radius:12px; background:var(--panel-soft); padding:14px 14px 16px; }
+    .card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.02em; }
     .btn { border:1px solid #4c6ea2; border-radius:10px; background:#1a2d4b; color:#d7e8ff; padding:8px 10px; cursor:pointer; font-weight:700; }
     .btn.primary { border:none; background:var(--accent); color:#072a3b; }
     .btn:disabled { opacity:.6; cursor:default; }
@@ -39,11 +42,38 @@
     .msg { min-height:18px; margin-top:8px; }
     .ok { color: var(--ok); }
     .bad { color: var(--bad); }
+    .hidden { display: none !important; }
+    .role-gate {
+      padding: 32px 20px 28px;
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+    .role-gate h2 { margin-bottom: 10px; font-size: 1.35rem; font-weight: 700; }
+    .gate-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+    .gate-btns .btn { min-width: 140px; padding: 12px 16px; font-size: 1rem; }
+    body.demo-student-only #teacher-demo-card { display: none !important; }
+    body.demo-student-only .grid { grid-template-columns: 1fr; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .student-solo-row { display: none; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    body.demo-student-only .student-solo-row { display: flex; }
     @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <main class="page">
+    <div id="role-gate" class="role-gate">
+      <h2>Choose your role</h2>
+      <p class="muted">Teacher runs the race and sees the roster. Student practices here alone; in the full app, students join with the teacher&rsquo;s room link.</p>
+      <div class="gate-btns">
+        <button type="button" class="btn primary" id="gateTeacher">Teacher</button>
+        <button type="button" class="btn" id="gateStudent">Student</button>
+      </div>
+    </div>
+
+    <div id="main-demo" class="hidden">
     <header class="top">
       <h1>Lexical Quiz Live — Demo</h1>
       <a class="back" href="unit12-lexical-games.html">Back to lexical games</a>
@@ -51,7 +81,7 @@
     <p class="muted">No downloads. Demo on one page: teacher panel + students panel.</p>
 
     <div class="grid">
-      <section class="card">
+      <section class="card" id="teacher-demo-card">
         <h2>Teacher</h2>
         <div class="row">
           <button class="btn primary" id="startBtn" type="button">Start demo race</button>
@@ -63,6 +93,10 @@
       <section class="card">
         <h2>Student (you)</h2>
         <input id="studentName" placeholder="Your name" value="Student 1" />
+        <div class="row student-solo-row" id="studentSoloRow">
+          <button class="btn primary" id="studentSoloStart" type="button">Start practice</button>
+          <button class="btn" id="studentSoloReset" type="button">Reset</button>
+        </div>
         <p class="muted" id="progressText" style="margin-top:8px;">Press Start demo race.</p>
         <div class="q" id="qWrap" style="display:none;">
           <p id="qText"></p>
@@ -70,6 +104,7 @@
         </div>
         <p class="msg" id="msg"></p>
       </section>
+    </div>
     </div>
   </main>
 
@@ -79,7 +114,11 @@
       { q: "Service was very slow:", options: ["service was second to none", "weren't in any hurry", "to die for"], correct: 1 },
       { q: "Very picky with food:", options: ["fussy eaters", "offered hardly any choice at all", "keep it light-hearted"], correct: 0 },
       { q: "Complain loudly:", options: ["carry out a needs analysis", "kick up a fuss", "build up a good relationship"], correct: 1 },
-      { q: "Seem unfriendly:", options: ["come across as antisocial", "second to none", "word of mouth"], correct: 0 }
+      { q: "Seem unfriendly:", options: ["come across as antisocial", "second to none", "word of mouth"], correct: 0 },
+      { q: "Sensible guidance you can trust:", options: ["sound advice", "kick up a fuss", "the power of word of mouth"], correct: 0 },
+      { q: "Stop blaming someone for the past:", options: ["Hold it against her", "Throw in the towel", "Prove too much"], correct: 0 },
+      { q: "Calm someone's worries with facts:", options: ["Put his mind at rest", "Carry out a needs analysis", "Come across as antisocial"], correct: 0 },
+      { q: "Give up on a difficult change:", options: ["Throw in the towel", "To die for", "Second to none"], correct: 0 }
     ];
 
     const bots = [
@@ -93,9 +132,11 @@
 
     function byId(id) { return document.getElementById(id); }
     function renderLeader() {
+      const el = byId("leader");
+      if (!el) return;
       const all = [{ name: me.name, progress: me.progress, wrong: me.wrong }, ...bots];
       all.sort((a, b) => b.progress - a.progress || a.wrong - b.wrong || a.name.localeCompare(b.name));
-      byId("leader").innerHTML = all.map((p, i) => `
+      el.innerHTML = all.map((p, i) => `
         <div class="leader-item">
           <div class="leader-head"><span>#${i + 1} ${p.name}</span><span>${p.progress}% · wrong ${p.wrong}</span></div>
           <div class="bar-wrap"><div class="bar" style="width:${p.progress}%"></div></div>
@@ -104,17 +145,21 @@
     }
     function showQuestion() {
       if (!running) return;
+      const qWrap = byId("qWrap");
+      const pt = byId("progressText");
+      const qText = byId("qText");
+      const opts = byId("opts");
       const idx = Math.floor((me.progress / 100) * QUIZ.length);
       if (idx >= QUIZ.length) {
-        byId("qWrap").style.display = "none";
-        byId("progressText").textContent = "Finished!";
+        if (qWrap) qWrap.style.display = "none";
+        if (pt) pt.textContent = "Finished!";
         return;
       }
       const cur = QUIZ[idx];
-      byId("qWrap").style.display = "block";
-      byId("progressText").textContent = `Question ${idx + 1} / ${QUIZ.length}`;
-      byId("qText").textContent = cur.q;
-      byId("opts").innerHTML = cur.options.map((op, i) => `<button class="opt" type="button" data-i="${i}">${op}</button>`).join("");
+      if (qWrap) qWrap.style.display = "block";
+      if (pt) pt.textContent = `Question ${idx + 1} / ${QUIZ.length}`;
+      if (qText) qText.textContent = cur.q;
+      if (opts) opts.innerHTML = cur.options.map((op, i) => `<button class="opt" type="button" data-i="${i}">${op}</button>`).join("");
     }
     function tickBots() {
       bots.forEach((b) => {
@@ -130,11 +175,13 @@
       }
     }
     function startDemo() {
-      me.name = byId("studentName").value.trim() || "Student 1";
+      var nameInp = byId("studentName");
+      me.name = (nameInp && nameInp.value ? nameInp.value.trim() : "") || "Student 1";
       me.progress = 0; me.wrong = 0; me.correct = 0;
       bots.forEach((b) => { b.progress = 0; b.wrong = 0; });
       running = true;
-      byId("msg").textContent = "";
+      var msgEl = byId("msg");
+      if (msgEl) msgEl.textContent = "";
       renderLeader();
       showQuestion();
       if (botTimer) clearInterval(botTimer);
@@ -146,37 +193,83 @@
       botTimer = 0;
       me.progress = 0; me.wrong = 0; me.correct = 0;
       bots.forEach((b) => { b.progress = 0; b.wrong = 0; });
-      byId("msg").textContent = "";
-      byId("qWrap").style.display = "none";
-      byId("progressText").textContent = "Press Start demo race.";
+      var msgEl = byId("msg");
+      var qWrap = byId("qWrap");
+      var pt = byId("progressText");
+      if (msgEl) msgEl.textContent = "";
+      if (qWrap) qWrap.style.display = "none";
+      if (pt) pt.textContent = document.body.classList.contains("demo-student-only")
+        ? "Press Start practice, or wait for your teacher in the main app."
+        : "Press Start demo race.";
       renderLeader();
     }
 
-    byId("startBtn").addEventListener("click", startDemo);
-    byId("resetBtn").addEventListener("click", resetDemo);
-    byId("opts").addEventListener("click", (e) => {
+    var ROLE_KEY = "lexical_quiz_live_demo_role";
+    function applyDemoRole(role) {
+      var isStudent = role === "student";
+      document.body.classList.toggle("demo-student-only", isStudent);
+      var gate = byId("role-gate");
+      var main = byId("main-demo");
+      if (gate) gate.classList.add("hidden");
+      if (main) main.classList.remove("hidden");
+      var pt = byId("progressText");
+      if (pt) pt.textContent = isStudent ? "Press Start practice, or wait for your teacher in the main app." : "Press Start demo race.";
+    }
+    function wireGate() {
+      var gt = byId("gateTeacher");
+      var gs = byId("gateStudent");
+      if (gt) gt.addEventListener("click", function () {
+        try { sessionStorage.setItem(ROLE_KEY, "teacher"); } catch (e) {}
+        applyDemoRole("teacher");
+        resetDemo();
+      });
+      if (gs) gs.addEventListener("click", function () {
+        try { sessionStorage.setItem(ROLE_KEY, "student"); } catch (e2) {}
+        applyDemoRole("student");
+        resetDemo();
+      });
+    }
+    wireGate();
+    var savedRole = null;
+    try { savedRole = sessionStorage.getItem(ROLE_KEY); } catch (e3) {}
+    if (savedRole === "teacher" || savedRole === "student") {
+      applyDemoRole(savedRole);
+      resetDemo();
+    }
+
+    var startBtn = byId("startBtn");
+    var resetBtn = byId("resetBtn");
+    if (startBtn) startBtn.addEventListener("click", startDemo);
+    if (resetBtn) resetBtn.addEventListener("click", resetDemo);
+    var ss = byId("studentSoloStart");
+    var sr = byId("studentSoloReset");
+    if (ss) ss.addEventListener("click", startDemo);
+    if (sr) sr.addEventListener("click", resetDemo);
+    var optsHost = byId("opts");
+    if (optsHost) optsHost.addEventListener("click", (e) => {
       const btn = e.target.closest(".opt");
       if (!btn || !running) return;
       const idx = Math.floor((me.progress / 100) * QUIZ.length);
       const cur = QUIZ[idx];
       if (!cur) return;
       const chosen = Number(btn.getAttribute("data-i"));
+      var msgEl = byId("msg");
       if (chosen === cur.correct) {
         me.correct += 1;
         me.progress += 20;
         if (me.progress > 100) me.progress = 100;
-        byId("msg").textContent = "Correct!";
-        byId("msg").className = "msg ok";
+        if (msgEl) { msgEl.textContent = "Correct!"; msgEl.className = "msg ok"; }
       } else {
         me.wrong += 1;
-        byId("msg").textContent = "Wrong.";
-        byId("msg").className = "msg bad";
+        if (msgEl) { msgEl.textContent = "Wrong."; msgEl.className = "msg bad"; }
       }
       renderLeader();
       showQuestion();
     });
 
-    resetDemo();
+    if (!(savedRole === "teacher" || savedRole === "student")) {
+      resetDemo();
+    }
   </script>
 </body>
 </html>

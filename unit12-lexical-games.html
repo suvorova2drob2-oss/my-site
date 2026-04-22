@@ -621,7 +621,7 @@
       font-size: 0.82rem;
       font-weight: 700;
     }
-    .wb-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .wb-themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .wb-theme-btn {
       border: 1px solid #4c6ea2;
       border-radius: 12px;
@@ -697,6 +697,7 @@
       .cards-def, .cards-answer { font-size: clamp(1.2rem, 5.1vw, 1.6rem); }
       .match-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .theme-game-list { grid-template-columns: 1fr; }
+      .wb-themes { grid-template-columns: 1fr; }
       .echo-row { justify-content: stretch; }
       .echo-btn { flex: 1 1 100%; text-align: center; }
       .top h1 { font-size: 1.2rem; }
@@ -710,7 +711,17 @@
       <a class="back" href="unit12.html">Back to Unit 12</a>
     </header>
 
+    <script src="js/unit12-l121-blocks.js"></script>
+    <script src="js/unit12-naomi-blocks.js"></script>
+    <script src="js/unit12-vegan-reading-blocks.js"></script>
+
     <p class="subtitle"><b>Lexical games, Unit 12.</b> Click a folder. Only one folder is shown at a time.</p>
+    <div id="lexMiniThemeBar" class="lex-mini-theme" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:14px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel-soft);">
+      <span style="font-size:0.88rem;color:var(--muted);"><b style="color:var(--text);">Reading theme</b> (cards, pick, express, echo):</span>
+      <label class="pack-check" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;"><input type="checkbox" id="miniNaomi" checked /><span>Naomi</span></label>
+      <label class="pack-check" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;"><input type="checkbox" id="miniL121" checked /><span>Restaurants</span></label>
+      <label class="pack-check" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;"><input type="checkbox" id="miniVegan" checked /><span>Going vegan</span></label>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
       <a class="live-link" href="lexical-quiz-live-demo.html">Lexical Quiz Live (open for students now) →</a>
       <a class="live-link" href="lexical-quiz-live.html">Teacher realtime (Supabase setup next) →</a>
@@ -799,112 +810,64 @@
       };
     }
     function fullPhraseFromItem(it) {
+      if (it && it.phrase && String(it.phrase).trim()) return String(it.phrase).trim();
       const left = String(it.pre || "").replace(/^Phrase:\s*/i, "").trim();
       const mid = String(it.answer || "").trim();
       const right = String(it.post || "").trim();
       return [left, mid, right].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
     }
+    /** Full key phrase as in the text (Word Bank, cards back, echo, pick options). */
     function fullAnswerOf(it) {
       return fullPhraseFromItem(it) || String(it.answer || "").trim();
     }
+    /** Typed gap: one sticky keyword when present, else trainer gap chunk. */
+    function typedGapAnswer(it) {
+      const st = it && it.stickyAnswer != null ? String(it.stickyAnswer).trim() : "";
+      if (st) return st;
+      return String((it && it.answer) || "").trim();
+    }
+    function trainerUsesSticky(it) {
+      return !!(it && it.stickyBefore != null && String(it.stickyAnswer || "").trim());
+    }
+    function trainerPre(it) {
+      return trainerUsesSticky(it) ? String(it.stickyBefore) : String(it.pre || "");
+    }
+    function trainerPost(it) {
+      return trainerUsesSticky(it) ? String(it.stickyAfter || "") : String(it.post || "");
+    }
     const TRAINER = {
-      naomi: [
-        { name: "A Opening", items: [
-          mk("develop their fitness, strength and posture","Work on physical condition and posture."),
-          mk("carry out a needs analysis","Find out each client's goals first."),
-          mk("eating habits","What they usually eat."),
-          mk("their injury history and any medical complaints or conditions","Past injuries and health conditions."),
-          mk("high blood pressure","Hypertension."),
-          mk("give advice on nutrition","Food guidance, not only exercise."),
-          mk("there's a wide range","Many different reasons.")
-        ]},
-        { name: "B Clients", items: [
-          mk("to lose a bit of weight or lower their cholesterol levels","Slim down or lower cholesterol."),
-          mk("that's my area of expertise","My special strength."),
-          mk("train for marathons","Prepare for long races."),
-          mk("improve their all-round fitness","Get generally fitter."),
-          mk("build up a good relationship with your clients","Create trust with clients."),
-          mk("shouting orders at people to do fifty press-ups","Yelling commands like in films.")
-        ]},
-        { name: "C Style", items: [
-          mk("have to be dedicated and prepared to work hard","Be committed and ready to work."),
-          mk("keep it light-hearted","Keep mood relaxed and fun."),
-          mk("introduce an element of playfulness","Make sessions playful."),
-          mk("a fair amount of laughter","Lots of jokes and smiles."),
-          mk("There's a rowing machine, two treadmills, two exercise bikes and loads of weights and things","Gym equipment list."),
-          mk("add a bit of variety to the classes","Change routines so it's not boring.")
-        ]},
-        { name: "D Gym", items: [
-          mk("Clients appreciate that","Clients value this."),
-          mk("The good thing about that was","The positive side was..."),
-          mk("the trouble was","The downside was..."),
-          mk("build up long-lasting relationships with them","Keep clients long-term."),
-          mk("it was the whole sales thing that I was least happy about","Sales pressure was the worst part."),
-          mk("persuade people to buy things","Push people to buy products."),
-          mk("made the decision to resign","Decided to quit.")
-        ]},
-        { name: "E Solo", items: [
-          mk("I didn't feel comfortable pushing T-shirts and baseball caps","Uncomfortable selling branded clothes."),
-          mk("protein supplements","Extra protein products."),
-          mk("so far, touch wood, things are going really well","Business is going well so far."),
-          mk("put adverts in the local newspaper to get business","Advertise in local paper."),
-          mk("The power of word of mouth","Recommendations spread person to person.")
-        ]}
-      ],
-      l121: [
-        { name: "S1", items: [
-          mk("fairly inexpensive restaurant","A place that didn't cost much."),
-          mk("no excuse for poor hygiene","Low prices don't justify dirt."),
-          mk("sticky tables that hadn't been wiped","Tables still dirty."),
-          mk("stained cutlery","Dirty knives and forks."),
-          mk("filthy floor","Very dirty floor.")
-        ]},
-        { name: "S2", items: [
-          mk("There wasn't a massive amount of variety on the menu","Not many choices."),
-          mk("What spoilt it, though,","What ruined it was..."),
-          mk("talking at the tops of their voices","Speaking very loudly.")
-        ]},
-        { name: "S3", items: [
-          mk("made a complaint","Said officially something was wrong."),
-          mk("the meat in my stew was chewy","Stew meat was tough."),
-          mk("kick up a fuss","Complain loudly."),
-          mk("charge for my dessert","Make me pay for dessert.")
-        ]},
-        { name: "S4", items: [
-          mk("treated ourselves to dinner","We went for a special meal."),
-          mk("overpriced","Too expensive."),
-          mk("you didn't get much on your plate","Portions looked small."),
-          mk("we're not big eaters","We don't eat huge amounts."),
-          mk("we felt like spoiling ourselves","We wanted to indulge."),
-          mk("the food was to die for","The food was amazing."),
-          mk("mussels","Shellfish dish."),
-          mk("weren't in any hurry","Service was slow."),
-          mk("run out of things to say to each other","Nothing left to chat about.")
-        ]},
-        { name: "S5", items: [
-          mk("fussy eaters","Picky eaters."),
-          mk("offered hardly any choice at all","Very little choice."),
-          mk("the service was second to none","Service was excellent."),
-          mk("come across as antisocial","Seem unfriendly.")
-        ]}
-      ]
+      naomi: typeof UNIT12_NAOMI_BLOCKS !== "undefined" ? UNIT12_NAOMI_BLOCKS : [],
+      l121: typeof UNIT12_L121_BLOCKS !== "undefined" ? UNIT12_L121_BLOCKS : [],
+      vegan: typeof UNIT12_VEGAN_READING_BLOCKS !== "undefined" ? UNIT12_VEGAN_READING_BLOCKS : []
     };
 
     const GAMES = [
       { key: "trainer", title: "Lexical trainer", desc: "Typed gaps + hints with lives and points.", hint: "Folder → readings inside" },
-      { key: "cards", title: "Definition cards", desc: "Flashcards with mark status.", hint: "Naomi + Restaurants" },
-      { key: "drop", title: "Lexical drop", desc: "Falling sentence with missing chunk.", hint: "Naomi + Restaurants" },
-      { key: "pick", title: "Paraphrase pick", desc: "Pick exact phrase by paraphrase.", hint: "Naomi + Restaurants" },
-      { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Naomi + Restaurants" },
-      { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Naomi + Restaurants" },
+      { key: "cards", title: "Definition cards", desc: "Flashcards with mark status.", hint: "Tick Reading theme above" },
+      { key: "drop", title: "Lexical drop", desc: "Falling sentence with missing chunk.", hint: "All reading themes" },
+      { key: "pick", title: "Paraphrase pick", desc: "Pick exact phrase by paraphrase.", hint: "Tick themes above" },
+      { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Tick themes above" },
+      { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Tick themes above" },
       { key: "match", title: "Pair Blitz", desc: "Quizlet-style match for paraphrase and text phrase.", hint: "Up to 10 pairs · multi-grids · timer" },
-      { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Two topic folders + progress + searchable bank.", hint: "Naomi + Restaurants folders" }
+      { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Three topic folders + progress + searchable bank.", hint: "Naomi · Restaurants · Going vegan" }
     ];
-    let ACTIVE_THEME = "both";
-    function itemsForTheme(themeKey) {
-      if (themeKey === "naomi") return TRAINER.naomi.flatMap(s => s.items);
-      if (themeKey === "l121") return TRAINER.l121.flatMap(s => s.items);
-      return [...TRAINER.naomi.flatMap(s => s.items), ...TRAINER.l121.flatMap(s => s.items)];
+    function miniThemeFlags() {
+      const n = document.getElementById("miniNaomi");
+      const l = document.getElementById("miniL121");
+      const v = document.getElementById("miniVegan");
+      let naomi = !n || n.checked;
+      let l121 = !l || l.checked;
+      let vegan = !v || v.checked;
+      if (n && l && v && !n.checked && !l.checked && !v.checked) naomi = l121 = vegan = true;
+      return { naomi, l121, vegan };
+    }
+    function itemsForMiniGames() {
+      const t = miniThemeFlags();
+      const out = [];
+      if (t.naomi) out.push(...TRAINER.naomi.flatMap((s) => s.items));
+      if (t.l121) out.push(...TRAINER.l121.flatMap((s) => s.items));
+      if (t.vegan) out.push(...TRAINER.vegan.flatMap((s) => s.items));
+      return out.length ? out : TRAINER.naomi.flatMap((s) => s.items);
     }
     const host = document.getElementById("gamesHost");
     host.innerHTML = GAMES.map((g) => `
@@ -927,6 +890,10 @@
           <label class="pack-card pack-check">
             <input type="checkbox" id="packL121" />
             <span><b>Listening 12.1 — Five speakers</b>Restaurant phrases · S1-S5 list.</span>
+          </label>
+          <label class="pack-card pack-check">
+            <input type="checkbox" id="packVegan" />
+            <span><b>Reading — Going vegan (Part 7)</b>Jack–Rhona key phrases · same list as Sticky / Treasure Hunt.</span>
           </label>
           <button class="continue-btn" id="btnContinuePacks" type="button">Continue</button>
         </div>
@@ -958,6 +925,7 @@
           <p><b style="color:var(--text)">How it works.</b> You see a sentence with one gap <b>___</b>. Type the missing chunk. If wrong, the correct answer appears and you must type it to continue.</p>
           <label class="pack-check pack-card"><input type="checkbox" id="dropNaomi" checked><span><b>Reading: Naomi Price — Health Matters</b></span></label>
           <label class="pack-check pack-card"><input type="checkbox" id="dropL121" checked><span><b>Listening 12.1 — five speakers</b></span></label>
+          <label class="pack-check pack-card"><input type="checkbox" id="dropVegan" checked><span><b>Reading — Going vegan</b></span></label>
           <button class="continue-btn" id="dropStartBtn" type="button">Start round</button>
         </div>
       </div>
@@ -1053,7 +1021,7 @@
           <button class="echo-btn" id="echoShowBtn" type="button">Show answer</button>
           <button class="echo-btn" id="echoNextBtn" type="button" style="display:none;">Next phrase</button>
         </div>
-        <input id="echoInput" class="echo-input" autocomplete="off" placeholder="Type exact phrase from audio...">
+        <input id="echoInput" class="echo-input" autocomplete="off" placeholder="Type exact phrase from the text...">
         <button class="check-btn" id="echoCheckBtn" type="button">Check</button>
         <div class="echo-reveal" id="echoReveal"></div>
         <div class="msg" id="echoMsg"></div>
@@ -1067,6 +1035,7 @@
           <button class="echo-btn" id="matchSelectAllBtn" type="button">Select all</button>
           <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchNaomi" checked><span><b>Naomi</b>Health matters phrases.</span></label>
           <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchL121" checked><span><b>Restaurants</b>Listening 12.1 phrases.</span></label>
+          <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchVegan" checked><span><b>Going vegan</b>Part 7 reading.</span></label>
           <button class="continue-btn" id="matchStartBtn" type="button" style="margin-top:10px;">Start round (10 phrases)</button>
         </div>
         <div class="match-play" id="matchPlay">
@@ -1083,6 +1052,7 @@
         <div class="wb-themes">
           <button class="wb-theme-btn" data-wb-theme="naomi" type="button">Naomi</button>
           <button class="wb-theme-btn" data-wb-theme="l121" type="button">Restaurants</button>
+          <button class="wb-theme-btn" data-wb-theme="vegan" type="button">Going vegan</button>
         </div>
         <div class="wb-repeat-bar">
           <button class="wb-repeat-btn active" data-wb-filter="all" type="button">All words</button>
@@ -1117,6 +1087,11 @@
         if (!isOpen) {
           folder.classList.add("open");
           host.classList.add("single-open");
+          if (key === "cards") {
+            cardsIdx = 0;
+            cardsFlipped = false;
+            cardsRender();
+          }
           if (key === "pick") { pickBuildRound(); pickRender(); }
           if (key === "express") { expressBuild(); expressStartTimer(); expressRender(); }
           if (key === "echo") { echoBuild(); echoRender(); }
@@ -1132,6 +1107,28 @@
       });
     });
 
+    const lexMiniThemeBar = document.getElementById("lexMiniThemeBar");
+    if (lexMiniThemeBar) {
+      lexMiniThemeBar.addEventListener("change", () => {
+        cardsIdx = 0;
+        cardsFlipped = false;
+        if (document.getElementById("cardsHud")) cardsRender();
+        if (document.getElementById("pickHud")) {
+          pickBuildRound();
+          pickRender();
+        }
+        if (document.getElementById("expressHud")) {
+          expressBuild();
+          expressStartTimer();
+          expressRender();
+        }
+        if (document.getElementById("echoHud")) {
+          echoBuild();
+          echoRender();
+        }
+      });
+    }
+
     // Definition cards logic
     const CARDS_MARKS_KEY = "masteringB2Unit12DefinitionCardsMarks";
     const cardsDeck = [
@@ -1139,7 +1136,7 @@
         speakerBlock.items.map((it) => ({
           id: "N::" + speakerBlock.name + "::" + it.answer,
           def: it.hint,
-          answer: fullPhraseFromItem(it),
+          answer: fullAnswerOf(it),
           speaker: "Naomi · " + speakerBlock.name
         }))
       ),
@@ -1147,8 +1144,16 @@
         speakerBlock.items.map((it) => ({
           id: "R::" + speakerBlock.name + "::" + it.answer,
           def: it.hint,
-          answer: fullPhraseFromItem(it),
+          answer: fullAnswerOf(it),
           speaker: "Restaurant · " + speakerBlock.name
+        }))
+      ),
+      ...TRAINER.vegan.flatMap((speakerBlock) =>
+        speakerBlock.items.map((it, idx) => ({
+          id: "G::" + speakerBlock.name + "::" + idx,
+          def: it.hint,
+          answer: fullAnswerOf(it),
+          speaker: "Going vegan · " + speakerBlock.name
         }))
       )
     ];
@@ -1173,9 +1178,13 @@
       return cardsMarks[id] === "know" ? "know" : cardsMarks[id] === "learn" ? "learn" : "none";
     }
     function cardsActiveDeck() {
-      if (ACTIVE_THEME === "naomi") return cardsDeck.filter(c => c.id.startsWith("N::"));
-      if (ACTIVE_THEME === "l121") return cardsDeck.filter(c => c.id.startsWith("R::"));
-      return cardsDeck.slice();
+      const t = miniThemeFlags();
+      return cardsDeck.filter((c) => {
+        if (c.id.startsWith("N::")) return t.naomi;
+        if (c.id.startsWith("R::")) return t.l121;
+        if (c.id.startsWith("G::")) return t.vegan;
+        return false;
+      });
     }
     function cardsRender() {
       const hud = document.getElementById("cardsHud");
@@ -1186,8 +1195,21 @@
       const frontP = document.getElementById("cardsFrontPill");
       const backP = document.getElementById("cardsBackPill");
       const next = document.getElementById("cardsNext");
+      if (!hud || !def || !ans || !sp || !inner || !frontP || !backP || !next) return;
       const deck = cardsActiveDeck();
-      if (!hud || !def || !ans || !sp || !inner || !frontP || !backP || !next || !deck.length) return;
+      if (!deck.length) {
+        hud.innerHTML = "Tick at least one <b>Reading theme</b> above (Naomi / Restaurants / Going vegan). No cards match the current selection.";
+        def.textContent = "";
+        ans.textContent = "";
+        sp.textContent = "";
+        frontP.textContent = "";
+        backP.textContent = "";
+        frontP.className = "cards-pill none";
+        backP.className = "cards-pill none";
+        inner.classList.remove("flipped");
+        next.disabled = true;
+        return;
+      }
       if (cardsIdx >= deck.length) cardsIdx = 0;
       const c = deck[cardsIdx];
       const knowCount = deck.filter(x => cardsMarks[x.id] === "know").length;
@@ -1266,6 +1288,15 @@
       srsSave();
     }
     function wordBankData(theme) {
+      if (theme === "vegan") {
+        return TRAINER.vegan.flatMap((block) =>
+          block.items.map((it, idx) => ({
+            id: "G::" + block.name + "::" + idx,
+            phrase: fullAnswerOf(it),
+            hint: it.hint
+          }))
+        );
+      }
       const src = theme === "naomi" ? TRAINER.naomi : TRAINER.l121;
       const prefix = theme === "naomi" ? "N::" : "R::";
       return src.flatMap((block) =>
@@ -1281,7 +1312,7 @@
       return normalizeForCheck(phrase) + "||" + normalizeForCheck(hint || "");
     }
     function buildWordIndex() {
-      const all = [...wordBankData("naomi"), ...wordBankData("l121")];
+      const all = [...wordBankData("naomi"), ...wordBankData("l121"), ...wordBankData("vegan")];
       for (let i = 0; i < all.length; i += 1) {
         const x = all[i];
         WORD_INDEX[wbIndexKey(x.phrase, x.hint)] = x.id;
@@ -1321,7 +1352,8 @@
       document.querySelectorAll(".wb-repeat-btn").forEach((b) => {
         b.classList.toggle("active", b.getAttribute("data-wb-filter") === WB_FILTER);
       });
-      stats.textContent = "Theme: " + (WB_THEME === "naomi" ? "Naomi" : "Restaurants") + " · Total: " + filtered.length + " · Due now: " + due + " · I know: " + know + " · Learning: " + learn + " · Unmarked: " + rest + " · Unlimited practice enabled.";
+      const themeLabel = WB_THEME === "naomi" ? "Naomi" : WB_THEME === "vegan" ? "Going vegan" : "Restaurants";
+      stats.textContent = "Theme: " + themeLabel + " · Total: " + filtered.length + " · Due now: " + due + " · I know: " + know + " · Learning: " + learn + " · Unmarked: " + rest + " · Unlimited practice enabled.";
       list.innerHTML = filtered.map((x) => {
         const mark = cardsMarks[x.id] || "";
         const markTxt = mark === "know" ? "I know" : mark === "learn" ? "Learning" : "Unmarked";
@@ -1347,7 +1379,7 @@
     // Paraphrase pick logic
     const PICK = { q: [], i: 0, score: 0, done: false };
     function pickBuildRound() {
-      const all = itemsForTheme(ACTIVE_THEME);
+      const all = itemsForMiniGames();
       PICK.q = shuffle(all).slice(0, 10).map((it) => {
         const target = fullAnswerOf(it);
         const distractors = shuffle(all.filter(x => fullAnswerOf(x) !== target)).slice(0, 3).map(x => fullAnswerOf(x));
@@ -1405,7 +1437,7 @@
     // 60-second express logic
     const EXPRESS = { deck: [], i: 0, score: 0, endAt: 0, timer: 0, revealAnswer: false };
     function expressBuild() {
-      EXPRESS.deck = shuffle(itemsForTheme(ACTIVE_THEME)).slice(0, 24).map((it, idx) => ({
+      EXPRESS.deck = shuffle(itemsForMiniGames()).slice(0, 24).map((it, idx) => ({
         type: idx % 2 === 0 ? "paraphrase" : "gap",
         item: { ...it, full: fullAnswerOf(it) }
       }));
@@ -1455,7 +1487,7 @@
     const ECHO = { q: [], i: 0, score: 0, reveal: false };
     function echoBuild() {
       ECHO.q = shuffle(
-        itemsForTheme(ACTIVE_THEME).map((it) => ({
+        itemsForMiniGames().map((it) => ({
           hint: it.hint,
           answer: fullAnswerOf(it)
         }))
@@ -1516,10 +1548,11 @@
       }
       return shuffle(cards);
     }
-    function matchBuildDeck(useNaomi, useL121) {
+    function matchBuildDeck(useNaomi, useL121, useVegan) {
       let all = [];
       if (useNaomi) all = all.concat(TRAINER.naomi.flatMap(s => s.items));
       if (useL121) all = all.concat(TRAINER.l121.flatMap(s => s.items));
+      if (useVegan) all = all.concat(TRAINER.vegan.flatMap(s => s.items));
       MATCH.pairs = shuffle(all).slice(0, 10).map((it) => ({ syn: it.hint, ans: fullAnswerOf(it) }));
       MATCH.pairTotal = MATCH.pairs.length;
       MATCH.donePairs = 0;
@@ -1601,7 +1634,8 @@
     }
 
     // Trainer logic
-    let pack = null;
+    let trainerActive = false;
+    let trainerPackFlags = { naomi: true, l121: false, vegan: false };
     let activeSpeakers = [];
     let speaker = 0;
     let item = 0;
@@ -1612,24 +1646,21 @@
     function current() { return currentItems()[item]; }
 
     function buildActiveSpeakers() {
-      if (pack === "naomi") {
-        activeSpeakers = TRAINER.naomi.map(s => ({ name: "N " + s.name, items: s.items.slice() }));
-      } else if (pack === "l121") {
-        activeSpeakers = TRAINER.l121.map(s => ({ name: s.name, items: s.items.slice() }));
-      } else {
-        activeSpeakers = [
-          ...TRAINER.naomi.map(s => ({ name: "N " + s.name, items: s.items.slice() })),
-          ...TRAINER.l121.map(s => ({ name: s.name, items: s.items.slice() }))
-        ];
-      }
+      const { naomi: uN, l121: uL, vegan: uV } = trainerPackFlags;
+      activeSpeakers = [];
+      if (uN) activeSpeakers.push(...TRAINER.naomi.map((s) => ({ name: "N " + s.name, items: s.items.slice() })));
+      if (uL) activeSpeakers.push(...TRAINER.l121.map((s) => ({ name: s.name, items: s.items.slice() })));
+      if (uV) activeSpeakers.push(...TRAINER.vegan.map((s) => ({ name: "Vegan · " + s.name, items: s.items.slice() })));
     }
 
     function updatePackSummary() {
       const el = document.getElementById("packSummary");
       if (!el) return;
-      if (pack === "naomi") el.textContent = "Pack: Naomi";
-      else if (pack === "l121") el.textContent = "Pack: Listening 12.1";
-      else el.textContent = "Pack: Naomi + Listening 12.1";
+      const bits = [];
+      if (trainerPackFlags.naomi) bits.push("Naomi");
+      if (trainerPackFlags.l121) bits.push("Listening 12.1");
+      if (trainerPackFlags.vegan) bits.push("Going vegan");
+      el.textContent = "Pack: " + (bits.join(" + ") || "—");
     }
 
     function renderTabs() {
@@ -1648,7 +1679,7 @@
       document.getElementById("sessionScore").textContent = String(sessionPoints);
       const chooser = document.getElementById("packChoice");
       const play = document.getElementById("trainerPlay");
-      if (!pack) {
+      if (!trainerActive) {
         chooser.classList.remove("hidden");
         play.classList.add("hidden");
         return;
@@ -1660,8 +1691,8 @@
       document.getElementById("lives").textContent = "❤".repeat(lives) + "♡".repeat(Math.max(0,3-lives));
       document.getElementById("counter").textContent = (item + 1) + " / " + currentItems().length;
       document.getElementById("hintBox").textContent = c.hint;
-      document.getElementById("linePre").textContent = c.pre;
-      document.getElementById("linePost").textContent = c.post;
+      document.getElementById("linePre").textContent = trainerPre(c);
+      document.getElementById("linePost").textContent = trainerPost(c);
       document.getElementById("answerInput").value = "";
       document.getElementById("msg").textContent = "";
       document.getElementById("msg").className = "msg";
@@ -1680,11 +1711,12 @@
     function handleCheck() {
       const inp = document.getElementById("answerInput");
       const msg = document.getElementById("msg");
-      const expectedRaw = current().answer;
+      const cur = current();
+      const expectedRaw = typedGapAnswer(cur);
       const expected = normalizeForCheck(expectedRaw);
       const got = normalizeForCheck(inp.value);
       if (!got) {
-        msg.textContent = "Incorrect: empty answer. Type the missing chunk.";
+        msg.textContent = "Incorrect: empty answer. Type the missing word or chunk.";
         msg.className = "msg bad";
         return;
       }
@@ -1715,37 +1747,37 @@
       if (e.target.id === "btnContinuePacks") {
         const useNaomi = document.getElementById("packNaomi").checked;
         const useL121 = document.getElementById("packL121").checked;
+        const useVegan = document.getElementById("packVegan").checked;
         const msg = document.getElementById("msg");
-        if (!useNaomi && !useL121) {
+        if (!useNaomi && !useL121 && !useVegan) {
           if (msg) {
             msg.textContent = "Tick at least one pack before Continue.";
             msg.className = "msg bad";
           }
           return;
         }
-        if (useNaomi && useL121) pack = "both";
-        else if (useNaomi) pack = "naomi";
-        else pack = "l121";
+        trainerPackFlags = { naomi: useNaomi, l121: useL121, vegan: useVegan };
         buildActiveSpeakers();
+        trainerActive = true;
         speaker = 0; item = 0; lives = 3;
         renderTrainer();
       }
       if (e.target.id === "btnBackPacks") {
-        pack = null;
+        trainerActive = false;
         renderTrainer();
       }
       if (e.target.id === "checkBtn") {
         handleCheck();
       }
       if (e.target.id === "btnHintMore") {
-        const ans = current().answer;
+        const ans = typedGapAnswer(current());
         const msg = document.getElementById("msg");
         msg.textContent = "Hint: starts with '" + ans.charAt(0) + "' and has " + ans.length + " characters.";
         msg.className = "msg ok";
       }
       if (e.target.id === "btnShowAnswer") {
         const msg = document.getElementById("msg");
-        document.getElementById("answerInput").value = current().answer;
+        document.getElementById("answerInput").value = typedGapAnswer(current());
         msg.textContent = "Answer shown. Press Check to continue (no point for this line).";
         msg.className = "msg bad";
       }
@@ -1842,10 +1874,21 @@
       "We had no complaints about the food we actually ordered, and the service was second to none.",
       "We might have come across as antisocial, but we preferred to eat in some of the other restaurants in the area."
     ];
-    function buildDropCorpus(useNaomi, useL121) {
+    function veganDropContextLines() {
+      const lines = [];
+      TRAINER.vegan.forEach((b) => {
+        b.items.forEach((it) => {
+          const s = String(it.contextSentence || "").trim();
+          if (s) lines.push(s);
+        });
+      });
+      return lines;
+    }
+    function buildDropCorpus(useNaomi, useL121, useVegan) {
       let out = [];
       if (useNaomi) out = out.concat(DROP_TEXT_NAOMI);
       if (useL121) out = out.concat(DROP_TEXT_L121);
+      if (useVegan) out = out.concat(veganDropContextLines());
       return out;
     }
     function findSentenceForAnswer(answer) {
@@ -1856,11 +1899,17 @@
       }
       return "Phrase from text: " + answer;
     }
-    function allPackItems(useNaomi, useL121) {
+    function allPackItems(useNaomi, useL121, useVegan) {
       let out = [];
-      if (useNaomi) out = out.concat(TRAINER.naomi.flatMap(s => s.items).map(it => ({ ...it, answer: fullAnswerOf(it) })));
-      if (useL121) out = out.concat(TRAINER.l121.flatMap(s => s.items).map(it => ({ ...it, answer: fullAnswerOf(it) })));
+      if (useNaomi) out = out.concat(TRAINER.naomi.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
+      if (useL121) out = out.concat(TRAINER.l121.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
+      if (useVegan) out = out.concat(TRAINER.vegan.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
       return out;
+    }
+    function dropSentenceForItem(item) {
+      const ctx = item && String(item.contextSentence || "").trim();
+      if (ctx) return ctx;
+      return findSentenceForAnswer(fullAnswerOf(item));
     }
     function shuffle(a) {
       const x = a.slice();
@@ -1939,7 +1988,7 @@
     }
     function dropLoseLife(missedItem) {
       DROP.lives -= 1;
-      registerGameResult(missedItem.answer, missedItem.hint, false);
+      registerGameResult(fullAnswerOf(missedItem), missedItem.hint, false);
       const big = document.getElementById("dropBig");
       const ans = document.getElementById("dropBigAnswer");
       if (big && ans) {
@@ -1992,7 +2041,7 @@
       const drop = {
         id: DROP.nextId++,
         item,
-        sentence: findSentenceForAnswer(item.answer),
+        sentence: dropSentenceForItem(item),
         x: dropPickX(y),
         y
       };
@@ -2056,7 +2105,7 @@
         dropRemoveById(hit.id);
         DROP.caught += 1;
         addScore(1);
-        registerGameResult(hit.item.answer, hit.item.hint, true);
+        registerGameResult(fullAnswerOf(hit.item), hit.item.hint, true);
         dropClearBig();
         dropSetNote("Caught! +1", false);
         if (inp) inp.value = "";
@@ -2071,7 +2120,7 @@
       if (!DROP.on || DROP.paused || !DROP.activeDrops.length) return;
       const current = DROP.activeDrops[0];
       dropRemoveById(current.id);
-      registerGameResult(current.item.answer, current.item.hint, false);
+      registerGameResult(fullAnswerOf(current.item), current.item.hint, false);
       dropApplyLifeLoss(current.item.answer);
     }
     function dropContinueAfterOverlay() {
@@ -2099,9 +2148,10 @@
       if (e.target.id === "dropStartBtn") {
         const useNaomi = document.getElementById("dropNaomi").checked;
         const useL121 = document.getElementById("dropL121").checked;
-        if (!useNaomi && !useL121) return;
-        DROP.pool = allPackItems(useNaomi, useL121);
-        DROP.corpus = buildDropCorpus(useNaomi, useL121);
+        const useVegan = document.getElementById("dropVegan").checked;
+        if (!useNaomi && !useL121 && !useVegan) return;
+        DROP.pool = allPackItems(useNaomi, useL121, useVegan);
+        DROP.corpus = buildDropCorpus(useNaomi, useL121, useVegan);
         DROP.q = shuffle(DROP.pool);
         dropClearNodes();
         DROP.caught = 0;
@@ -2220,16 +2270,20 @@
       if (e.target.id === "matchSelectAllBtn") {
         const n = document.getElementById("matchNaomi");
         const l = document.getElementById("matchL121");
+        const v = document.getElementById("matchVegan");
         if (n) n.checked = true;
         if (l) l.checked = true;
+        if (v) v.checked = true;
       }
       if (e.target.id === "matchStartBtn") {
         const n = document.getElementById("matchNaomi");
         const l = document.getElementById("matchL121");
+        const v = document.getElementById("matchVegan");
         const useNaomi = !!(n && n.checked);
         const useL121 = !!(l && l.checked);
+        const useVegan = !!(v && v.checked);
         const msg = document.getElementById("matchMsg");
-        if (!useNaomi && !useL121) {
+        if (!useNaomi && !useL121 && !useVegan) {
           if (msg) { msg.textContent = "Choose at least one theme."; msg.className = "msg bad"; }
           return;
         }
@@ -2237,12 +2291,13 @@
         const play = document.getElementById("matchPlay");
         if (intro) intro.style.display = "none";
         if (play) play.classList.add("on");
-        matchBuildDeck(useNaomi, useL121);
+        matchBuildDeck(useNaomi, useL121, useVegan);
       }
       if (e.target.id === "matchRestartBtn") {
         const n = document.getElementById("matchNaomi");
         const l = document.getElementById("matchL121");
-        matchBuildDeck(!!(n && n.checked), !!(l && l.checked));
+        const v = document.getElementById("matchVegan");
+        matchBuildDeck(!!(n && n.checked), !!(l && l.checked), !!(v && v.checked));
       }
       if (e.target.closest("#matchGrid .match-card")) {
         const btn = e.target.closest("#matchGrid .match-card");

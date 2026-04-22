@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading — Sticky board · Going vegan</title>
+  <style>
+    :root {
+      --page: #0c1428;
+      --panel: #1a2640;
+      --line: #334a78;
+      --text: #e8f0ff;
+      --muted: #94a8c8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --bad: #f87171;
+      --board-bg: #e5e7eb;
+      --success: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(180deg, #060c1a 0%, var(--page) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 22px 16px 32px;
+      line-height: 1.45;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+    .page {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 22px 26px;
+    }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .top h1 { font-size: 1.28rem; font-weight: 700; }
+    .sub { color: var(--muted); font-size: 0.92rem; max-width: 48rem; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .back:hover { text-decoration: underline; }
+    .jump-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 0.88rem;
+    }
+    .jump-strip .label {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .jump-strip a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(30, 58, 95, 0.55);
+    }
+    .jump-strip a:hover {
+      text-decoration: underline;
+      border-color: var(--accent);
+    }
+    .jump-strip .here {
+      padding: 5px 11px;
+      border-radius: 8px;
+      border: 1px solid rgba(125, 211, 252, 0.55);
+      background: rgba(56, 189, 248, 0.12);
+      color: #e0f2fe;
+      font-weight: 700;
+    }
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .hud strong { color: #bae6fd; }
+    .btn-reset {
+      border: 1px solid var(--line);
+      background: #24365a;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-reset:hover { border-color: var(--accent); }
+    .board {
+      min-height: 280px;
+      border: 2px dashed rgba(56, 189, 248, 0.55);
+      border-radius: 22px;
+      background: var(--board-bg);
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 12px;
+    }
+    .note {
+      border-radius: 10px;
+      padding: 10px 11px;
+      min-height: 132px;
+      min-width: 160px;
+      max-width: 300px;
+      flex: 1 1 220px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.32;
+      color: #1f2937;
+      box-shadow: 0 8px 14px rgba(15, 23, 42, 0.12);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.15s ease;
+    }
+    .note .tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .note.c0 { background: #fef08a; }
+    .note.c1 { background: #fdba74; }
+    .note.c2 { background: #93c5fd; }
+    .note.c3 { background: #bef264; }
+    .note.c4 { background: #fbcfe8; }
+    .note.done { box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.65), 0 8px 14px rgba(15, 23, 42, 0.12); }
+    .gap-line { font-weight: 700; margin-bottom: 6px; word-break: break-word; }
+    .type-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .inp {
+      width: 100%;
+      border: 1px solid rgba(15, 23, 42, 0.22);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #111827;
+    }
+    .ctrl { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .sbtn {
+      border: none;
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.12);
+      color: #111827;
+      font-weight: 600;
+    }
+    .sbtn:hover { background: rgba(15, 23, 42, 0.2); }
+    .fb { margin-top: 6px; font-size: 12px; min-height: 16px; color: #374151; }
+    .ctx {
+      display: none;
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.42;
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 6px;
+      padding: 6px 8px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    .ctx.on { display: block; }
+    @media (max-width: 1024px) {
+      body { padding: 16px 12px 26px; }
+      .page { padding: 16px 14px 22px; }
+    }
+    @media (max-width: 640px) {
+      .note { max-width: 100%; min-width: 100%; flex-basis: 100%; }
+      body { padding: 10px 8px 22px; }
+      .page { padding: 14px 12px 18px; border-radius: 14px; }
+      .back {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        overflow-wrap: anywhere;
+      }
+      .btn-reset {
+        min-height: 44px;
+        padding: 10px 16px;
+      }
+      .jump-strip a,
+      .jump-strip .here {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .inp { font-size: 16px; padding: 10px; }
+      .sub { font-size: 0.88rem; overflow-wrap: anywhere; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <div>
+        <h1>Sticky board — Going vegan (reading)</h1>
+        <p class="sub">Key phrases for <strong>Jack, Sarah, Maya, Justin, Rhona</strong> (Part 7). Each gap is <strong>exactly one word</strong>, but always the hook inside a <strong>collocation or idiom</strong> from the reading (not a bare grammar word like <em>my</em> or <em>her</em> as the answer). <strong>Context</strong> shows the full sentence.</p>
+      </div>
+      <a class="back" href="../index.html">← Back to Going vegan hub</a>
+    </header>
+    <nav class="jump-strip" aria-label="Sticky boards and Word Bank">
+      <span class="label">Jump</span>
+      <a href="../../sticky-board/index.html">Restaurants sticky</a>
+      <a href="../../../unit12-pro-fitness-coaching/sticky-board/index.html">Naomi sticky</a>
+      <span class="here" title="You are here">Going vegan sticky</span>
+      <a href="../../../unit12-lexical-games.html">Vocabulary Games</a>
+    </nav>
+    <div class="hud">
+      <span>Done: <strong id="doneCount">0</strong> / <span id="totalCount">0</span></span>
+      <button type="button" class="btn-reset" id="btnShuffle">Shuffle board</button>
+    </div>
+    <div class="board" id="board" aria-label="Going vegan sticky notes"></div>
+  </div>
+
+  <script src="../../../js/sticky-board-core.js"></script>
+  <script src="../../../js/unit12-vegan-reading-blocks.js"></script>
+  <script>
+    function personLabel(blockName) {
+      return String(blockName || "Person");
+    }
+
+    var stickyClueFromItem = window.stickyBoardClueFromItem;
+    var stickyExpectedAnswer = window.stickyBoardExpectedAnswer;
+    var normAns = window.stickyBoardNormAns;
+    var matchAns = window.stickyBoardMatchAns;
+    var STICKY_TYPE_HINT = window.STICKY_BOARD_TYPE_HINT;
+
+    var blocks = typeof UNIT12_VEGAN_READING_BLOCKS !== "undefined" ? UNIT12_VEGAN_READING_BLOCKS : [];
+    if (typeof stickyBoardAuditSingleWordStickies === "function") {
+      stickyBoardAuditSingleWordStickies(blocks, "going-vegan-reading");
+    }
+    var CARDS = [];
+    blocks.forEach(function (block) {
+      var sp = personLabel(block.name);
+      block.items.forEach(function (it) {
+        var full =
+          typeof unit12VeganFullPhraseFromItem === "function"
+            ? unit12VeganFullPhraseFromItem(it)
+            : "";
+        var expected = stickyExpectedAnswer(it);
+        var sentence = String(it.contextSentence || "").trim();
+        var ctx =
+          sp +
+          " — Going vegan (reading)\n\n" +
+          "Practice sentence:\n" +
+          sentence +
+          "\n\nKey phrase: " +
+          full +
+          "\n\nHint: " +
+          String(it.hint || "");
+        CARDS.push({
+          speaker: sp,
+          clue: stickyClueFromItem(it),
+          answer: expected,
+          ctx: ctx
+        });
+      });
+    });
+
+    var deck = [];
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+      }
+      return a;
+    }
+
+    function colorClass(i) {
+      return "c" + String(i % 5);
+    }
+
+    function updateHud() {
+      var done = 0;
+      for (var i = 0; i < deck.length; i++) {
+        if (deck[i].ok) done++;
+      }
+      document.getElementById("doneCount").textContent = String(done);
+      document.getElementById("totalCount").textContent = String(deck.length);
+    }
+
+    function render() {
+      var board = document.getElementById("board");
+      board.innerHTML = "";
+      for (var i = 0; i < deck.length; i++) {
+        (function (idx) {
+          var item = deck[idx];
+          var note = document.createElement("div");
+          note.className = "note " + colorClass(idx);
+          if (item.ok) note.classList.add("done");
+          note.style.transform = "rotate(" + (Math.random() * 10 - 5).toFixed(1) + "deg)";
+
+          var tag = document.createElement("div");
+          tag.className = "tag";
+          tag.textContent = item.speaker;
+
+          var gapEl = document.createElement("div");
+          gapEl.className = "gap-line";
+          gapEl.textContent = item.clue;
+
+          var typeHint = document.createElement("div");
+          typeHint.className = "type-hint";
+          typeHint.textContent = STICKY_TYPE_HINT;
+
+          var inp = document.createElement("input");
+          inp.type = "text";
+          inp.className = "inp";
+          inp.placeholder = "one word for ____";
+          inp.autocomplete = "off";
+          inp.disabled = !!item.ok;
+          if (item.ok) inp.value = item.answer;
+
+          var fb = document.createElement("div");
+          fb.className = "fb";
+          fb.id = "fb-" + idx;
+
+          var ctrl = document.createElement("div");
+          ctrl.className = "ctrl";
+          ["Check", "Show answer", "Context"].forEach(function (label) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "sbtn";
+            b.textContent = label;
+            b.addEventListener("click", function () {
+              if (label === "Check") check(idx, inp, fb, note);
+              if (label === "Show answer") showAns(idx, inp, fb);
+              if (label === "Context") toggleCtx(idx);
+            });
+            ctrl.appendChild(b);
+          });
+
+          var ctx = document.createElement("div");
+          ctx.className = "ctx";
+          ctx.id = "ctx-" + idx;
+          ctx.textContent = item.ctx;
+
+          note.appendChild(tag);
+          note.appendChild(gapEl);
+          note.appendChild(typeHint);
+          note.appendChild(inp);
+          note.appendChild(ctrl);
+          note.appendChild(fb);
+          note.appendChild(ctx);
+          board.appendChild(note);
+
+          inp.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              check(idx, inp, fb, note);
+            }
+          });
+        })(i);
+      }
+      updateHud();
+    }
+
+    function check(idx, inp, fb, note) {
+      var item = deck[idx];
+      if (!item || item.ok) return;
+      if (matchAns(inp.value, item.answer)) {
+        item.ok = true;
+        note.classList.add("done");
+        inp.disabled = true;
+        inp.value = item.answer;
+        fb.textContent = "Correct";
+        fb.style.color = "var(--success)";
+      } else {
+        fb.textContent = "Try again";
+        fb.style.color = "var(--bad)";
+      }
+      updateHud();
+    }
+
+    function showAns(idx, inp, fb) {
+      var item = deck[idx];
+      if (!item) return;
+      inp.value = item.answer;
+      fb.textContent = "Answer shown";
+      fb.style.color = "#6b7280";
+    }
+
+    function toggleCtx(idx) {
+      var el = document.getElementById("ctx-" + idx);
+      if (el) el.classList.toggle("on");
+    }
+
+    function rebuild() {
+      deck = shuffle(
+        CARDS.map(function (c) {
+          return {
+            speaker: c.speaker,
+            clue: c.clue,
+            answer: c.answer,
+            ctx: c.ctx,
+            ok: false
+          };
+        })
+      );
+      render();
+    }
+
+    document.getElementById("btnShuffle").addEventListener("click", rebuild);
+    rebuild();
+  </script>
+</body>
+</html>

@@ -4,305 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 12 — Part 1 Multiple-choice cloze</title>
-  <style>
-    :root {
-      --panel: #1d2b4a;
-      --panel-soft: #223657;
-      --line: #324a71;
-      --text: #e8f0ff;
-      --muted: #9bb0d3;
-      --accent: #56ccf2;
-      --ok: #36d399;
-      --bad: #f87171;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-    body {
-      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 24px;
-    }
-    .page {
-      width: min(1120px, 100%);
-      margin: 0 auto;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-    }
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-    }
-    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
-    .back:hover { text-decoration: underline; }
-    .subtitle { color: var(--muted); line-height: 1.5; margin-bottom: 14px; font-size: 0.95rem; }
-    .instr {
-      border: 1px solid var(--line);
-      background: rgba(26, 44, 73, 0.55);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-      font-size: 0.92rem;
-      color: #c5d4ef;
-    }
-    .title-text {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      margin-bottom: 12px;
-      color: #b8d4f5;
-    }
-    .mc-layout {
-      /* Text uses all free space; right column = options strip (width = --mc-opts) */
-      --mc-opts: 36%;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 12px clamp(260px, var(--mc-opts), 46%);
-      gap: 0 16px;
-      align-items: start;
-    }
-    @media (min-width: 881px) {
-      .mc-opts-col {
-        min-width: 0;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: rgba(18, 38, 75, 0.55);
-        padding: 12px 10px;
-        max-height: calc(100vh - 160px);
-        overflow-y: auto;
-      }
-    }
-    .mc-resizer {
-      grid-column: 2;
-      grid-row: 1 / -1;
-      align-self: stretch;
-      min-height: 120px;
-      cursor: col-resize;
-      touch-action: none;
-      user-select: none;
-      border-radius: 6px;
-      background: var(--line);
-      position: relative;
-      margin: 8px 0;
-    }
-    .mc-resizer::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 20%;
-      bottom: 20%;
-      width: 3px;
-      transform: translateX(-50%);
-      border-radius: 2px;
-      background: var(--muted);
-      opacity: 0.55;
-    }
-    .mc-resizer:hover,
-    .mc-resizer:focus-visible {
-      background: rgba(86, 204, 242, 0.28);
-      outline: none;
-    }
-    .mc-resizer.is-dragging {
-      background: rgba(86, 204, 242, 0.4);
-    }
-    .mc-resizer:focus-visible::after {
-      opacity: 1;
-      background: var(--accent);
-    }
-    @media (max-width: 880px) {
-      .mc-layout {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-      .mc-resizer {
-        display: none;
-      }
-      .mc-text-col,
-      .mc-opts-col {
-        grid-column: 1;
-      }
-      .mc-opts-col {
-        margin-top: 20px;
-      }
-    }
-    .mc-text-col .passage {
-      border: 1px solid var(--line);
-      background: var(--panel-soft);
-      border-radius: 12px;
-      padding: 18px 16px;
-      line-height: 1.75;
-      font-size: 1.02rem;
-      position: sticky;
-      top: 12px;
-    }
-    @media (max-width: 880px) {
-      .mc-text-col .passage { position: static; }
-    }
-    .example-line { margin-bottom: 12px; color: #d0ddf0; }
-    .example-ans {
-      font-weight: 800;
-      color: var(--ok);
-      padding: 0 4px;
-    }
-    .gap-num {
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-size: 0.88rem;
-    }
-    .gap-block {
-      margin-bottom: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(18, 38, 75, 0.4);
-    }
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .choices label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      color: #d5e2f8;
-      font-size: 0.94rem;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid transparent;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .choices input { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
-    /* After Submit: correct letter in the key — always green */
-    .choices label.is-correct-key {
-      background: rgba(54, 211, 153, 0.22);
-      border-color: #4ade80;
-      color: #ecfdf5;
-      font-weight: 600;
-    }
-    /* User chose wrong option — red */
-    .choices label.is-pick-bad {
-      background: rgba(248, 113, 113, 0.22);
-      border-color: #f87171;
-      color: #fee2e2;
-    }
-    /* User chose correctly (same as key) — strong green */
-    .choices label.is-pick-ok {
-      background: rgba(34, 197, 94, 0.28);
-      border-color: #22c55e;
-      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.35);
-    }
-    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-check { background: var(--ok); color: #05271a; }
-    .btn-reset { background: #3d4f6f; color: var(--text); }
-    .feedback {
-      margin-top: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #1a2c49;
-      color: #d5e2f8;
-      padding: 10px 12px;
-      line-height: 1.45;
-      display: none;
-    }
-    .feedback.show { display: block; }
-    .answer-reveal-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 28px 20px;
-      background: rgba(8, 11, 18, 0.97);
-    }
-    .answer-reveal-layer.is-open { display: flex !important; }
-    .answer-reveal-inner { width: min(520px, 100%); text-align: center; }
-    .answer-reveal-label {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .answer-reveal-body {
-      color: #4ade80;
-      font-size: clamp(1.1rem, 3vw, 1.45rem);
-      font-weight: 800;
-      white-space: pre-line;
-      line-height: 1.8;
-      margin-bottom: 22px;
-      padding: 24px 20px;
-      border: 2px solid rgba(74, 222, 128, 0.55);
-      border-radius: 16px;
-      background: rgba(34, 197, 94, 0.14);
-      font-variant-numeric: tabular-nums;
-    }
-    .answer-reveal-motivate {
-      font-size: 1.2rem;
-      color: var(--text);
-      margin-bottom: 28px;
-      font-weight: 600;
-    }
-    .answer-reveal-btn {
-      border: none;
-      border-radius: 12px;
-      padding: 14px 28px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      background: var(--accent);
-      color: #052030;
-    }
-    .answer-reveal-btn:hover { filter: brightness(1.08); }
-  </style>
+  <link rel="stylesheet" href="../css/part1-mc-cloze.css" />
+  <script>
+    window.PART1_MC_BOOT = {
+      contextId: "unit12-part1-sedentary",
+      dataSrc: "",
+      backHref: "../unit12-use-of-english.html",
+      backLabel: "Back to Use of English",
+      pageTitle: "Part 1 — Multiple-choice cloze",
+      documentTitle: "Unit 12 — Part 1 Multiple-choice cloze"
+    };
+  </script>
 </head>
 <body>
-  <main class="page">
+  <main class="part1-mc-page">
     <header class="top">
-      <h1>Part 1 — Multiple-choice cloze</h1>
-      <a class="back" href="../unit12-use-of-english.html">Back to Use of English</a>
+      <h1 id="part1McH1">Part 1 — Multiple-choice cloze</h1>
+      <div class="top-links">
+        <a class="back" id="part1McBack" href="../unit12-use-of-english.html">Back to Use of English</a>
+        <a class="admin-link student-only" id="part1McAdminLink" href="index.html?admin=1">Админка</a>
+        <a class="admin-link admin-only" id="part1McStudentLink" href="index.html">Как у студента</a>
+      </div>
     </header>
 
-    <p class="subtitle">
-      Reading and Use of English Part 1 — for questions 1–8, read the text and decide which answer (A, B, C or D) best fits each gap. There is an example at the beginning (0).
-    </p>
-    <p class="instr">
-      Text fills the main area; answers sit in a <strong>narrow strip</strong> on the right — drag the <strong>bar</strong> to make that strip wider or narrower (text always takes the rest). Press <strong>Submit</strong> to check. Then: your correct choices turn <strong>green</strong>, wrong choices <strong>red</strong>, and the <strong>correct letter</strong> for each question is always highlighted in <strong>green</strong>. If not everything is right, you will also see the answer key on a full screen. Change any option to clear colours until you submit again.
-    </p>
-
-    <div class="mc-layout" id="mcLayout">
-      <div class="mc-text-col" id="mcTextCol">
-        <h2 class="title-text">THE DANGERS OF A SEDENTARY LIFESTYLE</h2>
-        <div class="passage">
-          <p class="example-line">
-            Evidence <strong>(0)</strong> <span class="example-ans">C — suggests</span> that a sedentary lifestyle can have a serious <strong>(1)</strong> on your health. According to the World Heart Foundation, physical inactivity <strong>(2)</strong> the risk of heart disease by 50%.
-          </p>
-          <p>
-            You should, therefore, <strong>(3)</strong> of spending too long in front of your computer without taking breaks. Sitting for lengthy periods at your desk may cause your shoulders, neck and upper back to become <strong>(4)</strong>, and you are likely to become increasingly unproductive as your concentration begins to wander. In an attempt to remedy this, you may try to keep yourself going with junk food, sweetened coffee or <strong>(5)</strong> drinks, leading to weight gain and perhaps even high blood <strong>(6)</strong>.
-          </p>
-          <p style="margin-top: 12px;">
-            If taking time out for vigorous exercise is not a possibility, you should at least get up from your desk at regular <strong>(7)</strong> to do stretching exercises or walk around. Drink <strong>(8)</strong> of water too – it improves concentration, and the resulting trips to the toilet will keep you active.
-          </p>
+    <div class="admin-only">
+      <div class="admin-shell">
+        <h2>Редактор задания</h2>
+        <p class="admin-hint">
+          В тексте пропуски: <strong>[[0]]</strong> — пример, <strong>[[1]]</strong> … — вопросы. Пустая строка между абзацами.
+          Общий движок: <code>../../js/part1-mc-cloze-core.js</code> — тот же URL можно открыть из ЕГЭ и других юнитов с другим <code>context</code>.
+        </p>
+        <div class="admin-grid" style="margin-top: 14px;">
+          <div class="admin-field">
+            <label for="admTitle">Заголовок текста</label>
+            <input type="text" id="admTitle" autocomplete="off" />
+          </div>
+          <div class="admin-field">
+            <label for="admSubtitle">Подзаголовок / инструкция</label>
+            <input type="text" id="admSubtitle" autocomplete="off" />
+          </div>
+          <div class="admin-field" style="grid-column: 1 / -1;">
+            <label for="admPassage">Текст с [[0]] [[1]] …</label>
+            <textarea id="admPassage" spellcheck="false"></textarea>
+          </div>
         </div>
+        <div class="admin-field">
+          <label>Пример (0)</label>
+          <div class="admin-example-row">
+            <div>
+              <label for="admExLetter" style="font-size: 0.75rem;">Буква</label>
+              <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
+            </div>
+            <div>
+              <label for="admExText" style="font-size: 0.75rem;">Формулировка (после «—»)</label>
+              <input type="text" id="admExText" />
+            </div>
+          </div>
+        </div>
+        <div id="admGapsWrap"></div>
+        <div class="admin-actions">
+          <button type="button" class="btn-save" id="btnAdmSave">Сохранить и опубликовать</button>
+          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить (как студент)</button>
+          <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
+          <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
+          <input type="file" id="adminImportFile" accept="application/json,.json" />
+          <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к встроенному демо</button>
+        </div>
+        <p class="data-banner" id="admDataBanner"></p>
       </div>
+    </div>
 
+    <p class="subtitle student-only" id="elSubtitle"></p>
+    <p class="instr student-only">
+      Текст слева; ответы справа — потяни <strong>разделитель</strong>. <strong>Submit</strong> — проверка: верный вариант и ключ —
+      <strong>зелёным</strong>, неверный выбор — <strong>красным</strong>. Если не всё верно, откроется экран с ключом.
+    </p>
+
+    <div class="mc-layout student-only" id="mcLayout">
+      <div class="mc-text-col" id="mcTextCol">
+        <h2 class="title-text" id="elTitle"></h2>
+        <div class="passage" id="elPassage"></div>
+      </div>
       <div
         class="mc-resizer"
         id="mcResizer"
@@ -311,84 +93,10 @@
         aria-label="Resize the options strip width"
         tabindex="0"
       ></div>
-
-      <div class="mc-opts-col" id="mcOptsCol">
-        <div id="q1" class="gap-block" data-q="1">
-          <div class="gap-num">1</div>
-          <div class="choices" role="radiogroup" aria-label="Question 1">
-            <label><input type="radio" name="mc1" value="a" /> A harm</label>
-            <label><input type="radio" name="mc1" value="b" /> B damage</label>
-            <label><input type="radio" name="mc1" value="c" /> C effect</label>
-            <label><input type="radio" name="mc1" value="d" /> D importance</label>
-          </div>
-        </div>
-        <div id="q2" class="gap-block" data-q="2">
-          <div class="gap-num">2</div>
-          <div class="choices" role="radiogroup" aria-label="Question 2">
-            <label><input type="radio" name="mc2" value="a" /> A rises</label>
-            <label><input type="radio" name="mc2" value="b" /> B increases</label>
-            <label><input type="radio" name="mc2" value="c" /> C gains</label>
-            <label><input type="radio" name="mc2" value="d" /> D grows</label>
-          </div>
-        </div>
-        <div id="q3" class="gap-block" data-q="3">
-          <div class="gap-num">3</div>
-          <div class="choices" role="radiogroup" aria-label="Question 3">
-            <label><input type="radio" name="mc3" value="a" /> A beware</label>
-            <label><input type="radio" name="mc3" value="b" /> B avoid</label>
-            <label><input type="radio" name="mc3" value="c" /> C discourage</label>
-            <label><input type="radio" name="mc3" value="d" /> D care</label>
-          </div>
-        </div>
-        <div id="q4" class="gap-block" data-q="4">
-          <div class="gap-num">4</div>
-          <div class="choices" role="radiogroup" aria-label="Question 4">
-            <label><input type="radio" name="mc4" value="a" /> A tough</label>
-            <label><input type="radio" name="mc4" value="b" /> B hurtful</label>
-            <label><input type="radio" name="mc4" value="c" /> C stiff</label>
-            <label><input type="radio" name="mc4" value="d" /> D intense</label>
-          </div>
-        </div>
-        <div id="q5" class="gap-block" data-q="5">
-          <div class="gap-num">5</div>
-          <div class="choices" role="radiogroup" aria-label="Question 5">
-            <label><input type="radio" name="mc5" value="a" /> A floppy</label>
-            <label><input type="radio" name="mc5" value="b" /> B foggy</label>
-            <label><input type="radio" name="mc5" value="c" /> C furry</label>
-            <label><input type="radio" name="mc5" value="d" /> D fizzy</label>
-          </div>
-        </div>
-        <div id="q6" class="gap-block" data-q="6">
-          <div class="gap-num">6</div>
-          <div class="choices" role="radiogroup" aria-label="Question 6">
-            <label><input type="radio" name="mc6" value="a" /> A tenseness</label>
-            <label><input type="radio" name="mc6" value="b" /> B movement</label>
-            <label><input type="radio" name="mc6" value="c" /> C problem</label>
-            <label><input type="radio" name="mc6" value="d" /> D pressure</label>
-          </div>
-        </div>
-        <div id="q7" class="gap-block" data-q="7">
-          <div class="gap-num">7</div>
-          <div class="choices" role="radiogroup" aria-label="Question 7">
-            <label><input type="radio" name="mc7" value="a" /> A intervals</label>
-            <label><input type="radio" name="mc7" value="b" /> B interruptions</label>
-            <label><input type="radio" name="mc7" value="c" /> C stops</label>
-            <label><input type="radio" name="mc7" value="d" /> D delays</label>
-          </div>
-        </div>
-        <div id="q8" class="gap-block" data-q="8">
-          <div class="gap-num">8</div>
-          <div class="choices" role="radiogroup" aria-label="Question 8">
-            <label><input type="radio" name="mc8" value="a" /> A much</label>
-            <label><input type="radio" name="mc8" value="b" /> B full</label>
-            <label><input type="radio" name="mc8" value="c" /> C plenty</label>
-            <label><input type="radio" name="mc8" value="d" /> D lot</label>
-          </div>
-        </div>
-      </div>
+      <div class="mc-opts-col" id="mcOptsCol"></div>
     </div>
 
-    <div class="btn-row">
+    <div class="btn-row student-only">
       <button type="button" id="btnCheck" class="btn-check">Submit</button>
       <button type="button" id="btnReset" class="btn-reset">Reset</button>
     </div>
@@ -411,263 +119,24 @@
     </div>
   </div>
 
-  <script>
-    /* Answer key: 1 C, 2 B, 3 A, 4 C, 5 D, 6 D, 7 A, 8 C */
-    var CORRECT = ["c", "b", "a", "c", "d", "d", "a", "c"];
-
-    var REVEAL_LINES =
-      " 1 C     2 B     3 A     4 C\n" +
-      " 5 D     6 D     7 A     8 C";
-
-    var names = ["mc1", "mc2", "mc3", "mc4", "mc5", "mc6", "mc7", "mc8"];
-    var blocks = [];
-    for (var i = 1; i <= 8; i++) {
-      blocks.push(document.getElementById("q" + i));
-    }
-
-    var btnCheck = document.getElementById("btnCheck");
-    var btnReset = document.getElementById("btnReset");
-    var feedback = document.getElementById("feedback");
-    var answerRevealLayer = document.getElementById("answerRevealLayer");
-    var answerRevealBody = document.getElementById("answerRevealBody");
-    var answerRevealBtn = document.getElementById("answerRevealBtn");
-
-    document.body.appendChild(answerRevealLayer);
-
-    var afterAnswerReveal = null;
-
-    /* Draggable width of the right-hand options strip (wide layout only) */
-    var SPLIT_KEY = "unit12-part1-mc-opts-pct";
-    var mcLayout = document.getElementById("mcLayout");
-    var mcResizer = document.getElementById("mcResizer");
-    var mqMcNarrow = window.matchMedia("(max-width: 880px)");
-
-    function applyMcOptsPct(pct) {
-      var n = Math.round(Number(pct));
-      if (!isFinite(n)) return;
-      n = Math.max(24, Math.min(46, n));
-      mcLayout.style.setProperty("--mc-opts", n + "%");
-    }
-
-    function readMcOptsPct() {
-      var cs = getComputedStyle(mcLayout).getPropertyValue("--mc-opts").trim();
-      var m = cs.match(/^([\d.]+)%/);
-      return m ? parseFloat(m[1], 10) : 36;
-    }
-
-    try {
-      var savedSplit = localStorage.getItem(SPLIT_KEY);
-      if (savedSplit) {
-        applyMcOptsPct(savedSplit);
-      } else {
-        var legacy = localStorage.getItem("unit12-part1-mc-split");
-        if (legacy) {
-          var L = parseFloat(legacy, 10);
-          if (isFinite(L)) applyMcOptsPct(100 - L - 1.5);
-        }
-      }
-    } catch (e1) {}
-
-    function mcSplitFromClientX(clientX) {
-      var rect = mcLayout.getBoundingClientRect();
-      var w = rect.width;
-      if (w < 1) return;
-      var pct = ((rect.right - clientX) / w) * 100;
-      applyMcOptsPct(pct);
-    }
-
-    var mcDragging = false;
-
-    function mcCanDrag() {
-      return !mqMcNarrow.matches;
-    }
-
-    function onMcDragEnd() {
-      if (!mcDragging) return;
-      mcDragging = false;
-      mcResizer.classList.remove("is-dragging");
-      document.body.style.cursor = "";
-      try {
-        localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
-      } catch (e2) {}
-    }
-
-    mcResizer.addEventListener("mousedown", function (e) {
-      if (e.button !== 0 || !mcCanDrag()) return;
-      e.preventDefault();
-      mcDragging = true;
-      mcResizer.classList.add("is-dragging");
-      document.body.style.cursor = "col-resize";
-    });
-
-    document.addEventListener("mousemove", function (e) {
-      if (!mcDragging) return;
-      e.preventDefault();
-      mcSplitFromClientX(e.clientX);
-    });
-
-    document.addEventListener("mouseup", onMcDragEnd);
-
-    mcResizer.addEventListener("touchstart", function (e) {
-      if (!mcCanDrag()) return;
-      if (e.touches.length !== 1) return;
-      mcDragging = true;
-      mcResizer.classList.add("is-dragging");
-    }, { passive: true });
-
-    document.addEventListener(
-      "touchmove",
-      function (e) {
-        if (!mcDragging) return;
-        e.preventDefault();
-        mcSplitFromClientX(e.touches[0].clientX);
-      },
-      { passive: false }
-    );
-
-    document.addEventListener("touchend", onMcDragEnd);
-    document.addEventListener("touchcancel", onMcDragEnd);
-
-    mcResizer.addEventListener("keydown", function (e) {
-      if (!mcCanDrag()) return;
-      var step = e.shiftKey ? 5 : 2;
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        applyMcOptsPct(readMcOptsPct() - step);
-        try {
-          localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
-        } catch (e3) {}
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        applyMcOptsPct(readMcOptsPct() + step);
-        try {
-          localStorage.setItem(SPLIT_KEY, String(Math.round(readMcOptsPct())));
-        } catch (e4) {}
-      }
-    });
-
-    function getChoice(index) {
-      var sel = document.querySelector('input[name="' + names[index] + '"]:checked');
-      return sel ? sel.value : "";
-    }
-
-    function clearLabelMarks(block) {
-      block.querySelectorAll("label").forEach(function (lab) {
-        lab.classList.remove("is-correct-key", "is-pick-ok", "is-pick-bad");
-      });
-    }
-
-    function clearCheckState() {
-      blocks.forEach(function (el) {
-        clearLabelMarks(el);
-      });
-      feedback.className = "feedback";
-      feedback.textContent = "";
-    }
-
-    function applyMarksForQuestion(index) {
-      var block = blocks[index];
-      var key = CORRECT[index];
-      var picked = getChoice(index);
-      clearLabelMarks(block);
-      block.querySelectorAll('input[type="radio"]').forEach(function (radio) {
-        var lab = radio.closest("label");
-        var v = radio.value;
-        if (v === key) {
-          lab.classList.add("is-correct-key");
-        }
-        if (radio.checked) {
-          if (v === key) {
-            lab.classList.add("is-pick-ok");
-          } else {
-            lab.classList.add("is-pick-bad");
-          }
-        }
-      });
-    }
-
-    function openAnswerReveal(text) {
-      answerRevealBody.textContent = text;
-      answerRevealLayer.classList.add("is-open");
-      answerRevealLayer.style.display = "flex";
-      answerRevealLayer.setAttribute("aria-hidden", "false");
-      answerRevealBtn.focus();
-    }
-
-    function closeAnswerReveal() {
-      answerRevealLayer.classList.remove("is-open");
-      answerRevealLayer.style.display = "none";
-      answerRevealLayer.setAttribute("aria-hidden", "true");
-    }
-
-    answerRevealBtn.addEventListener("click", function () {
-      closeAnswerReveal();
-      if (typeof afterAnswerReveal === "function") {
-        var fn = afterAnswerReveal;
-        afterAnswerReveal = null;
-        fn();
-      }
-    });
-
-    btnCheck.addEventListener("click", function () {
-      var missing = false;
-      for (var i = 0; i < 8; i++) {
-        if (!getChoice(i)) {
-          missing = true;
-          break;
-        }
-      }
-      if (missing) {
-        feedback.className = "feedback show";
-        feedback.textContent = "Choose A, B, C or D for every question (1–8), then press Submit.";
-        return;
-      }
-
-      var score = 0;
-      for (var j = 0; j < 8; j++) {
-        applyMarksForQuestion(j);
-        if (getChoice(j) === CORRECT[j]) {
-          score += 1;
-        }
-      }
-
-      if (score === 8) {
-        feedback.className = "feedback show";
-        feedback.innerHTML = "Excellent! All <strong>8</strong> answers are correct.";
-        return;
-      }
-
-      var wrong = 8 - score;
-      feedback.className = "feedback";
-      feedback.textContent = "";
-      afterAnswerReveal = function () {
-        feedback.className = "feedback show";
-        feedback.innerHTML =
-          "Correct: <strong>" + score + "</strong>, still to fix: <strong>" + wrong + "</strong>. " +
-          "Green = right letter; if you chose wrong, your choice is red. Press <strong>Submit</strong> again after changes.";
-      };
-      openAnswerReveal(REVEAL_LINES);
-    });
-
-    names.forEach(function (nm) {
-      document.querySelectorAll('input[name="' + nm + '"]').forEach(function (radio) {
-        radio.addEventListener("change", function () {
-          clearCheckState();
-          afterAnswerReveal = null;
-        });
-      });
-    });
-
-    btnReset.addEventListener("click", function () {
-      afterAnswerReveal = null;
-      names.forEach(function (nm) {
-        document.querySelectorAll('input[name="' + nm + '"]').forEach(function (r) {
-          r.checked = false;
-        });
-      });
-      clearCheckState();
-      closeAnswerReveal();
-    });
+  <script id="part1-mc-default-data" type="application/json">
+{
+  "title": "THE DANGERS OF A SEDENTARY LIFESTYLE",
+  "subtitle": "Reading and Use of English Part 1 — for questions 1–8, read the text and decide which answer (A, B, C or D) best fits each gap. There is an example at the beginning (0).",
+  "passage": "Evidence [[0]] that a sedentary lifestyle can have a serious [[1]] on your health. According to the World Heart Foundation, physical inactivity [[2]] the risk of heart disease by 50%.\n\nYou should, therefore, [[3]] of spending too long in front of your computer without taking breaks. Sitting for lengthy periods at your desk may cause your shoulders, neck and upper back to become [[4]], and you are likely to become increasingly unproductive as your concentration begins to wander. In an attempt to remedy this, you may try to keep yourself going with junk food, sweetened coffee or [[5]] drinks, leading to weight gain and perhaps even high blood [[6]].\n\nIf taking time out for vigorous exercise is not a possibility, you should at least get up from your desk at regular [[7]] to do stretching exercises or walk around. Drink [[8]] of water too – it improves concentration, and the resulting trips to the toilet will keep you active.",
+  "example": { "letter": "C", "text": "suggests" },
+  "items": [
+    { "options": ["harm", "damage", "effect", "importance"], "correctIndex": 2 },
+    { "options": ["rises", "increases", "gains", "grows"], "correctIndex": 1 },
+    { "options": ["beware", "avoid", "discourage", "care"], "correctIndex": 0 },
+    { "options": ["tough", "hurtful", "stiff", "intense"], "correctIndex": 2 },
+    { "options": ["floppy", "foggy", "furry", "fizzy"], "correctIndex": 3 },
+    { "options": ["tenseness", "movement", "problem", "pressure"], "correctIndex": 3 },
+    { "options": ["intervals", "interruptions", "stops", "delays"], "correctIndex": 0 },
+    { "options": ["much", "full", "plenty", "lot"], "correctIndex": 2 }
+  ]
+}
   </script>
+  <script src="../js/part1-mc-cloze-core.js"></script>
 </body>
 </html>

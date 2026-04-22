@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live room — Supabase demo</title>
+  <style>
+    :root { --bg: #0f172a; --panel: #1e293b; --line: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; --ok: #34d399; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.45; max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 1.25rem; margin-bottom: 8px; }
+    .muted { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; }
+    .panel { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 14px; background: var(--panel); }
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+    input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0f172a; color: var(--text); margin-bottom: 10px; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: #334155; color: var(--text); font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 4px; }
+    button.primary { background: var(--accent); color: #0f172a; border-color: transparent; }
+    pre { margin-top: 10px; padding: 10px; border-radius: 8px; background: #020617; font-size: 0.75rem; overflow-x: auto; border: 1px solid var(--line); }
+    .ok { color: var(--ok); font-size: 0.85rem; margin-top: 6px; }
+    .err { color: #fca5a5; font-size: 0.85rem; margin-top: 6px; white-space: pre-wrap; }
+    .warn { color: #fcd34d; font-size: 0.85rem; margin-top: 8px; }
+    .lb-phase { font-size: 0.95rem; margin-bottom: 10px; }
+    .lb-phase strong { color: var(--accent); }
+    table.lb { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    table.lb th, table.lb td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+    table.lb th { color: var(--muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    table.lb td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .copy-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+    .copy-row input { flex: 1; min-width: 200px; margin-bottom: 0; }
+    body.student-view #panelHost,
+    body.student-view #shareWrap,
+    body.student-view #leadSetup,
+    body.student-view #leadHost { display: none !important; }
+    body.student-view #resultsHintHost { display: none !important; }
+    body.student-view #techSnap { display: none !important; }
+  </style>
+</head>
+<body>
+  <h1>Комната + лидерборд (Supabase)</h1>
+  <p class="muted" id="leadSetup">
+    Шаг 1: в Supabase выполните <code>infra/supabase/rpc-live-room-snapshot.sql</code>. Шаг 2: скопируйте
+    <code>live-supabase-local.example.js</code> в <strong>live-supabase-local.js</strong> и вставьте URL + ключ. Шаг 3: откройте эту страницу через локальный сервер (из корня сайта), чтобы подтянулся локальный JS.
+  </p>
+  <p class="muted" id="leadHost" style="border-left:3px solid var(--accent);padding-left:12px;margin-bottom:16px;">
+    <strong>Учителю:</strong> после «Создать комнату» скопируйте <strong>ссылку для учеников</strong> (ниже) и отправьте её в чат.
+    Ссылка открывает страницу <strong>без панели учителя и без секретного токена</strong>. Ученику остаётся ввести имя и нажать «Войти».
+    Таблица очков ниже обновляется сама, пока открыта эта вкладка.
+    <strong>Себе</strong> открывайте эту страницу <strong>без</strong> <code>?view=student</code> в адресе — иначе скроется панель учителя.
+    <strong>Prep vault (сейф)</strong> в основном приложении: учитель создаёт комнату в <code>index.html</code> на экране Prep vault (панель Live-класс) и даёт ссылку с <code>live_prep=1</code> — ученик после входа по имени на сайте попадает в сейф; «Начать сейф» синхронизирует старт по фазе <code>playing</code>.
+  </p>
+  <p class="muted" id="leadStudent" style="display: none; border-left: 3px solid var(--ok); padding-left: 12px; margin-bottom: 16px;">
+    Введите <strong>имя</strong> и нажмите «Войти». Код комнаты уже в ссылке от учителя; таблица ниже покажет участников и очки.
+  </p>
+  <p class="warn" id="cfgWarn"></p>
+
+  <div class="panel" id="panelHost">
+    <h2 style="font-size:1rem;margin-bottom:10px;">Учитель</h2>
+    <button type="button" class="primary" id="btnCreate">Создать комнату</button>
+    <p class="ok" id="hostOut"></p>
+    <label>Код комнаты</label>
+    <input id="roomCode" type="text" readonly placeholder="—" />
+    <label>Host token (только вы)</label>
+    <input id="hostToken" type="text" readonly placeholder="—" />
+    <button type="button" id="btnStart">Старт (playing)</button>
+    <button type="button" id="btnLeader">Фаза leaderboard</button>
+  </div>
+
+  <div class="panel" id="shareWrap" style="display: none;">
+    <h2 style="font-size:1rem;margin-bottom:8px;">Ссылка для учеников</h2>
+    <p class="muted" style="margin:0 0 10px;font-size:0.88rem;">
+      Ученик открывает ссылку — откроется отдельный вид страницы <strong>только для ученика</strong> (без вашей панели и токена). Код комнаты подставится; имя вводит сам.
+    </p>
+    <label>Ссылка (можно вставить в Zoom / Telegram / Classroom)</label>
+    <div class="copy-row">
+      <input id="shareLink" type="text" readonly placeholder="Появится после создания комнаты" />
+      <button type="button" class="primary" id="btnCopyLink">Копировать</button>
+    </div>
+    <p class="ok" id="copyFeedback" style="display: none; margin-top: 8px;">Скопировано в буфер обмена</p>
+  </div>
+
+  <div class="panel" id="panelStudent">
+    <h2 style="font-size:1rem;margin-bottom:10px;">Ученик</h2>
+    <p class="warn" id="studentRoomMissing" style="display: none; margin-top: 0;">
+      В адресе нет кода комнаты. Попросите у учителя полную ссылку (она содержит <code>?room=…</code>).
+    </p>
+    <label>Код комнаты</label>
+    <input id="stuRoom" type="text" maxlength="12" autocomplete="off" placeholder="От учителя" />
+    <label>Имя</label>
+    <input id="stuName" type="text" value="Ученик" autocomplete="off" />
+    <button type="button" class="primary" id="btnJoin">Войти</button>
+    <button type="button" id="btnScore">Тест: +очки (как верный ответ)</button>
+    <p class="ok" id="stuOut"></p>
+  </div>
+
+  <h2 style="font-size:1rem;margin-top:18px;">Таблица результатов</h2>
+  <p class="muted" style="margin-top: 0;" id="resultsHint">
+    <span id="resultsHintAll">Список игроков и очки (сортировка по очкам). Обновляется автоматически, когда кто-то входит в комнату или меняются очки.</span>
+    <span id="resultsHintHost"> Кнопки учителя «Старт» / «Фаза leaderboard» меняют поле <code>phase</code> в базе — для будущих экранов игры.</span>
+  </p>
+  <div id="hostBoard" class="panel" style="min-height: 72px;">
+    <p class="muted" style="margin: 0;">Создайте комнату (учитель) или войдите по ссылке (ученик) — здесь появятся участники.</p>
+  </div>
+
+  <details id="techSnap" style="margin-top: 14px;">
+    <summary style="cursor: pointer; color: var(--muted); font-size: 0.85rem;">Технический JSON (снимок с сервера)</summary>
+    <pre id="snap">{}</pre>
+  </details>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="live-supabase-local.js"></script>
+  <script src="js/live-game-api.js"></script>
+  <script src="js/live-game-api-supabase.js"></script>
+  <script>
+    (function () {
+      var api = null;
+      var unsub = null;
+      var roomCode = "";
+      var playerId = "";
+      var hostToken = "";
+
+      function $(id) { return document.getElementById(id); }
+
+      function isStudentView() {
+        try {
+          var v = (new URLSearchParams(location.search).get("view") || "").toLowerCase().trim();
+          return v === "student" || v === "learner";
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function applyStudentLayout() {
+        if (!isStudentView()) return;
+        document.body.classList.add("student-view");
+        document.title = "Комната — ученик (Supabase)";
+        var h1 = document.querySelector("h1");
+        if (h1) h1.textContent = "Вход в комнату";
+        var ls = $("leadStudent");
+        if (ls) ls.style.display = "block";
+      }
+
+      function escapeHtml(s) {
+        if (s == null) return "";
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function buildStudentLink(code) {
+        var rc = String(code || "").toUpperCase().trim();
+        return (
+          location.origin +
+          location.pathname +
+          "?room=" +
+          encodeURIComponent(rc) +
+          "&view=student"
+        );
+      }
+
+      function showSharePanel(code) {
+        var wrap = $("shareWrap");
+        var inp = $("shareLink");
+        if (!wrap || !inp) return;
+        inp.value = buildStudentLink(code);
+        wrap.style.display = "block";
+      }
+
+      function initRoomFromUrl() {
+        try {
+          var p = new URLSearchParams(location.search);
+          var c = (p.get("room") || p.get("code") || "").trim().toUpperCase();
+          if (c) $("stuRoom").value = c;
+          if (isStudentView()) {
+            var miss = $("studentRoomMissing");
+            if (miss) miss.style.display = c ? "none" : "block";
+          }
+        } catch (e) {}
+      }
+
+      function warnCfg() {
+        var w = $("cfgWarn");
+        if (!window.__LIVE_SUPABASE_URL__ || !window.__LIVE_SUPABASE_KEY__) {
+          w.textContent =
+            "Нет window.__LIVE_SUPABASE_URL__ / __LIVE_SUPABASE_KEY__. Создайте live-supabase-local.js рядом с этим HTML (см. live-supabase-local.example.js).";
+          return false;
+        }
+        w.textContent = "";
+        return true;
+      }
+
+      function connect() {
+        if (!warnCfg()) return;
+        LiveGameApi.registerDriver("supabase", LiveGameSupabase.buildDriver({}));
+        api = LiveGameApi.createClient({ driver: "supabase" });
+      }
+
+      function showSnap(s) {
+        var pre = $("snap");
+        if (pre) pre.textContent = s ? JSON.stringify(s, null, 2) : "null";
+
+        var board = $("hostBoard");
+        if (!board) return;
+        if (!s) {
+          board.innerHTML = "<p class=\"muted\" style=\"margin:0\">Нет данных по этой комнате.</p>";
+          return;
+        }
+        var phase = s.phase != null ? String(s.phase) : "—";
+        var lb = Array.isArray(s.leaderboard) ? s.leaderboard : [];
+        var rows = lb
+          .map(function (row, i) {
+            return (
+              "<tr><td>" +
+              (i + 1) +
+              "</td><td>" +
+              escapeHtml(row.displayName) +
+              "</td><td class=\"num\"><strong>" +
+              escapeHtml(String(row.score != null ? row.score : 0)) +
+              "</strong></td></tr>"
+            );
+          })
+          .join("");
+        var table =
+          "<p class=\"lb-phase\"><strong>Фаза:</strong> " +
+          escapeHtml(phase) +
+          "</p>" +
+          (rows
+            ? "<table class=\"lb\" aria-label=\"Результаты\"><thead><tr><th>#</th><th>Имя</th><th>Очки</th></tr></thead><tbody>" +
+              rows +
+              "</tbody></table>"
+            : "<p class=\"muted\" style=\"margin:0\">Пока никто не зашёл в комнату.</p>");
+        board.innerHTML = table;
+      }
+
+      function subscribe() {
+        if (unsub) unsub();
+        if (!api || !roomCode) return;
+        unsub = api.subscribeRoom(roomCode, showSnap);
+      }
+
+      applyStudentLayout();
+      connect();
+      initRoomFromUrl();
+      (function subscribeIfRoomInUrl() {
+        var code = ($("stuRoom") && $("stuRoom").value || "").trim().toUpperCase();
+        if (!code || !api) return;
+        roomCode = code;
+        subscribe();
+      })();
+
+      $("btnCopyLink").onclick = function () {
+        var el = $("shareLink");
+        var fb = $("copyFeedback");
+        if (!el || !el.value) return;
+        function ok() {
+          if (fb) {
+            fb.style.display = "block";
+            setTimeout(function () {
+              fb.style.display = "none";
+            }, 2000);
+          }
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(el.value).then(ok).catch(function () {
+            el.select();
+            document.execCommand("copy");
+            ok();
+          });
+        } else {
+          el.select();
+          document.execCommand("copy");
+          ok();
+        }
+      };
+
+      $("btnCreate").onclick = function () {
+        $("hostOut").textContent = "";
+        $("hostOut").className = "ok";
+        if (!api) return;
+        api
+          .createRoom({ deckId: "prep-vault", hostDisplayName: "Teacher" })
+          .then(function (r) {
+            roomCode = r.roomCode;
+            hostToken = r.hostToken;
+            $("roomCode").value = roomCode;
+            $("hostToken").value = hostToken;
+            $("stuRoom").value = roomCode;
+            $("hostOut").textContent = "Комната создана. Скопируйте ссылку для учеников ниже.";
+            showSharePanel(roomCode);
+            subscribe();
+          })
+          .catch(function (e) {
+            $("hostOut").textContent = String(e.message || e);
+            $("hostOut").className = "err";
+          });
+      };
+
+      $("btnJoin").onclick = function () {
+        $("stuOut").textContent = "";
+        $("stuOut").className = "ok";
+        if (!api) return;
+        var code = $("stuRoom").value.trim().toUpperCase();
+        var name = $("stuName").value.trim() || "Ученик";
+        api
+          .joinRoom({ roomCode: code, displayName: name })
+          .then(function (r) {
+            roomCode = code;
+            playerId = r.playerId;
+            $("stuOut").textContent = "Вошли. playerId в sessionStorage.";
+            try {
+              sessionStorage.setItem("live_player_" + code, playerId);
+            } catch (e) {}
+            try {
+              var u = new URL(location.href);
+              u.search = "";
+              u.searchParams.set("room", code);
+              u.searchParams.set("view", "student");
+              history.replaceState(null, "", u.toString());
+              applyStudentLayout();
+            } catch (e2) {}
+            subscribe();
+          })
+          .catch(function (e) {
+            $("stuOut").textContent = String(e.message || e);
+            $("stuOut").className = "err";
+          });
+      };
+
+      $("btnScore").onclick = function () {
+        if (!api || !roomCode || !playerId) return;
+        api
+          .submitAnswer({
+            roomCode: roomCode,
+            playerId: playerId,
+            cardId: "demo",
+            text: "",
+            correct: true,
+            latencyMs: 1000
+          })
+          .catch(function (e) {
+            $("stuOut").textContent = String(e.message || e);
+            $("stuOut").className = "err";
+          });
+      };
+
+      $("btnStart").onclick = function () {
+        if (!api || !roomCode || !hostToken) return;
+        api.setPhase({ roomCode: roomCode, hostToken: hostToken, phase: "playing" }).catch(function (e) {
+          $("hostOut").textContent = String(e.message || e);
+          $("hostOut").className = "err";
+        });
+      };
+
+      $("btnLeader").onclick = function () {
+        if (!api || !roomCode || !hostToken) return;
+        api.setPhase({ roomCode: roomCode, hostToken: hostToken, phase: "leaderboard" }).catch(function (e) {
+          $("hostOut").textContent = String(e.message || e);
+          $("hostOut").className = "err";
+        });
+      };
+    })();
+  </script>
+</body>
+</html>

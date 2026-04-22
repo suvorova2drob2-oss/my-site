@@ -475,6 +475,17 @@
       white-space: normal;
       overflow-wrap: anywhere;
     }
+    body.restaurants-only #folderNaomi,
+    body.restaurants-only #folderSoon {
+      display: none !important;
+    }
+    body.restaurants-only #folderListen .folder-card {
+      display: none;
+    }
+    body.naomi-only #folderListen,
+    body.naomi-only #folderSoon {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -1020,6 +1031,36 @@
         render();
       }
     });
+
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get("track") !== "restaurants") return;
+      document.body.classList.add("restaurants-only");
+      var back = document.querySelector(".top-bar .back");
+      if (back) {
+        back.setAttribute("href", "unit12-12-1-restaurants-listening/index.html");
+      }
+      activeFolder = 1;
+      openFolderKey = "listen";
+      roundIndex = 0;
+      itemIndex = 0;
+      document.getElementById("allDone").classList.remove("show");
+    })();
+
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get("track") !== "naomi") return;
+      document.body.classList.add("naomi-only");
+      var back = document.querySelector(".top-bar .back");
+      if (back) {
+        back.setAttribute("href", "unit12-pro-fitness-coaching/index.html");
+      }
+      activeFolder = 0;
+      openFolderKey = "naomi";
+      roundIndex = 0;
+      itemIndex = 0;
+      document.getElementById("allDone").classList.remove("show");
+    })();
 
     render();
   </script>

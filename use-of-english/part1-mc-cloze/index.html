@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 1 — Multiple-choice cloze</title>
+  <link rel="stylesheet" href="../../css/part1-mc-cloze.css" />
+  <script>
+    /* Опционально: задать до загрузки core, иначе берутся query ?context=&src=&back=&backLabel= */
+    window.PART1_MC_BOOT = window.PART1_MC_BOOT || {};
+  </script>
+</head>
+<body>
+  <main class="part1-mc-page">
+    <header class="top">
+      <h1 id="part1McH1">Part 1 — Multiple-choice cloze</h1>
+      <div class="top-links">
+        <a class="back" id="part1McBack" href="../../index.html">Назад</a>
+        <a class="admin-link student-only" id="part1McAdminLink" href="?admin=1">Админка</a>
+        <a class="admin-link admin-only" id="part1McStudentLink" href="?">Как у студента</a>
+      </div>
+    </header>
+
+    <div class="admin-only">
+      <div class="admin-shell">
+        <h2>Редактор задания</h2>
+        <p class="admin-hint">
+          Параметры в адресе: <strong>context</strong> — уникальный id (отдельное сохранение для каждого юнита);
+          <strong>src</strong> — относительный путь к <code>published.json</code> от этой страницы (необязательно);
+          <strong>back</strong> / <strong>backLabel</strong> — ссылка «Назад».
+          Пропуски в тексте: <strong>[[0]]</strong> пример, <strong>[[1]]</strong>… — вопросы; пустая строка между абзацами.
+        </p>
+        <div class="admin-grid" style="margin-top: 14px;">
+          <div class="admin-field">
+            <label for="admTitle">Заголовок текста</label>
+            <input type="text" id="admTitle" autocomplete="off" />
+          </div>
+          <div class="admin-field">
+            <label for="admSubtitle">Подзаголовок / инструкция</label>
+            <input type="text" id="admSubtitle" autocomplete="off" />
+          </div>
+          <div class="admin-field" style="grid-column: 1 / -1;">
+            <label for="admPassage">Текст с [[0]] [[1]] …</label>
+            <textarea id="admPassage" spellcheck="false"></textarea>
+          </div>
+        </div>
+        <div class="admin-field">
+          <label>Пример (0)</label>
+          <div class="admin-example-row">
+            <div>
+              <label for="admExLetter" style="font-size: 0.75rem;">Буква</label>
+              <input type="text" id="admExLetter" maxlength="1" style="text-transform: uppercase;" />
+            </div>
+            <div>
+              <label for="admExText" style="font-size: 0.75rem;">После «—»</label>
+              <input type="text" id="admExText" />
+            </div>
+          </div>
+        </div>
+        <div id="admGapsWrap"></div>
+        <div class="admin-actions">
+          <button type="button" class="btn-save" id="btnAdmSave">Сохранить и опубликовать</button>
+          <button type="button" class="btn-muted" id="btnAdmPreview">Проверить (как студент)</button>
+          <button type="button" class="btn-muted" id="btnAdmExport">Скачать published.json</button>
+          <button type="button" class="btn-import" id="btnAdmImport">Импорт JSON</button>
+          <input type="file" id="adminImportFile" accept="application/json,.json" />
+          <button type="button" class="btn-muted" id="btnAdmReset">Сбросить к шаблону страницы</button>
+        </div>
+        <p class="data-banner" id="admDataBanner"></p>
+      </div>
+    </div>
+
+    <p class="subtitle student-only" id="elSubtitle"></p>
+    <p class="instr student-only">
+      Текст слева; ответы справа — потяни разделитель. <strong>Submit</strong> — проверка; неверные ответы открывают ключ.
+    </p>
+
+    <div class="mc-layout student-only" id="mcLayout">
+      <div class="mc-text-col" id="mcTextCol">
+        <h2 class="title-text" id="elTitle"></h2>
+        <div class="passage" id="elPassage"></div>
+      </div>
+      <div
+        class="mc-resizer"
+        id="mcResizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize the options strip width"
+        tabindex="0"
+      ></div>
+      <div class="mc-opts-col" id="mcOptsCol"></div>
+    </div>
+
+    <div class="btn-row student-only">
+      <button type="button" id="btnCheck" class="btn-check">Submit</button>
+      <button type="button" id="btnReset" class="btn-reset">Reset</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+  </main>
+
+  <div
+    id="answerRevealLayer"
+    class="answer-reveal-layer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="answerRevealLabel"
+    aria-hidden="true"
+  >
+    <div class="answer-reveal-inner">
+      <p class="answer-reveal-label" id="answerRevealLabel">Правильные ответы</p>
+      <p id="answerRevealBody" class="answer-reveal-body"></p>
+      <p class="answer-reveal-motivate">Давай, ты справишься!</p>
+      <button type="button" id="answerRevealBtn" class="answer-reveal-btn">Продолжить</button>
+    </div>
+  </div>
+
+  <script id="part1-mc-default-data" type="application/json">
+{
+  "title": "ШАБЛОН — PART 1 MULTIPLE-CHOICE CLOZE",
+  "subtitle": "Замени этот текст в админке (?admin=1) или положи рядом published.json для этого context.",
+  "passage": "This is a minimal demo with one gap [[1]].\n\nAdd more paragraphs and [[2]] when you are ready.",
+  "example": null,
+  "items": [
+    { "options": ["wrong A", "correct answer", "wrong C", "wrong D"], "correctIndex": 1 },
+    { "options": ["alpha", "beta", "gamma", "delta"], "correctIndex": 2 }
+  ]
+}
+  </script>
+  <script src="../../js/part1-mc-cloze-core.js"></script>
+</body>
+</html>

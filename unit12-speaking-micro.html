@@ -138,6 +138,11 @@
       .timer-ring-wrap { width: 112px; height: 112px; }
       .timer-num { font-size: 1.65rem; }
     }
+    body.restaurants-only .themes,
+    body.naomi-only .themes,
+    body.going-vegan-only .themes {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -148,7 +153,7 @@
     </div>
 
     <section class="panel">
-      <p class="lead">Quick speaking burst: 15 seconds per card. Use the target phrase naturally in your own sentence. Unlimited repeats.</p>
+      <p class="lead" id="microLead">Quick speaking burst: 15 seconds per card. Use the target phrase naturally in your own sentence. Unlimited repeats.</p>
 
       <div class="themes">
         <button class="theme-btn active" id="btnThemeNaomi" type="button">Naomi</button>
@@ -179,7 +184,7 @@
       </div>
 
       <div class="row">
-        <button class="btn btn-start" id="btnStart" type="button">Start 15s</button>
+        <button class="btn btn-start" id="btnStart" type="button">Start speaking</button>
         <button class="btn btn-used" id="btnUsed" type="button">I used it well (+1)</button>
         <button class="btn" id="btnNext" type="button">Next prompt</button>
       </div>
@@ -194,7 +199,6 @@
     const CARDS_MARKS_KEY = "masteringB2Unit12DefinitionCardsMarks";
     const SRS_KEY = "masteringB2Unit12Srs";
     const SRS_STEPS = [1, 2, 4, 7, 14, 30];
-    const TIMER_SEC = 15;
     const R = 44;
     const CIRC = 2 * Math.PI * R;
     function getScore() {
@@ -217,6 +221,37 @@
       { id: "R::S4::weren't in any hurry", p: "Describe very slow restaurant service.", t: "weren't in any hurry" },
       { id: "R::S5::offered hardly any choice at all", p: "Describe a place with too little menu variety.", t: "offered hardly any choice at all" }
     ];
+    const VEGAN = [
+      { id: "V::Jack::sound advice", p: "Personal: talk about a time someone gave you sound advice—or when you really needed some.", t: "sound advice" },
+      { id: "V::Jack::hold it against her", p: "Personal: describe someone you do not hold it against even though they upset you once.", t: "hold it against her" },
+      { id: "V::Jack::invite me round for a meal", p: "Personal: when were you invited round for a meal where the host had to work around diets—or when did you do that for a guest?", t: "invite me round for a meal" },
+      { id: "V::Jack::extra effort involved", p: "Personal: give your own example where there was extra effort involved for you or for someone helping you.", t: "extra effort involved" },
+      { id: "V::Jack::invariably amazed", p: "Personal: recall a moment when people were invariably amazed at something you made, said, or did.", t: "invariably amazed" },
+      { id: "V::Sarah::missing out on essential nutrients", p: "Personal: has anyone worried you were missing out on essential nutrients? What did you tell them—or what would you say?", t: "missing out on essential nutrients" },
+      { id: "V::Sarah::pitfalls of a plant-based diet", p: "Personal: mention something you once read or heard about pitfalls of a plant-based or other special diet.", t: "pitfalls of a plant-based diet" },
+      { id: "V::Sarah::put his mind at rest", p: "Personal: how did you (or someone you know) try to put a worried person's mind at rest?", t: "put his mind at rest" },
+      { id: "V::Sarah::reinforce his idea", p: "Personal: tell about a time a small action accidentally reinforced someone's wrong idea about you.", t: "reinforce his idea" },
+      { id: "V::Sarah::gradually come to accept", p: "Personal: what habit or choice did your family or friends gradually come to accept?", t: "gradually come to accept" },
+      { id: "V::Maya::managing a long-term health condition", p: "Personal: speak only about yourself or people close to you—support, diet, or energy while managing ongoing health (keep details general if you prefer).", t: "managing a long-term health condition" },
+      { id: "V::Maya::kept at it faithfully", p: "Personal: what is one habit or project you (or someone you admire) has kept at it faithfully?", t: "kept at it faithfully" },
+      { id: "V::Maya::shown amazing willpower", p: "Personal: when have you shown—or seen—amazing willpower with food, sport, or exams?", t: "shown amazing willpower" },
+      { id: "V::Maya::threw in the towel", p: "Personal: describe a challenge where you threw in the towel, or almost did, and what happened next.", t: "threw in the towel" },
+      { id: "V::Maya::On the plus side", p: "Personal: you lost or quit something—finish the thought: \"On the plus side, …\" from your own life.", t: "On the plus side" },
+      { id: "V::Maya::the health benefits of certain foods", p: "Personal: name foods whose health benefits actually matter to you and say why.", t: "the health benefits of certain foods" },
+      { id: "V::Justin::make the switch overnight", p: "Personal: would you try to make the switch overnight with a habit or diet? Why or why not?", t: "make the switch overnight" },
+      { id: "V::Justin::prove too much", p: "Personal: describe a plan that proved too much so you slowed down or quit.", t: "prove too much" },
+      { id: "V::Justin::do it in stages", p: "Personal: what did you last do in stages instead of all at once?", t: "do it in stages" },
+      { id: "V::Justin::work out what works for you", p: "Personal: how did you work out what works for you with sleep, food, study, or sport?", t: "work out what works for you" },
+      { id: "V::Justin::reassure my parents", p: "Personal: a time you had to reassure your parents (or carers) about a decision you made.", t: "reassure my parents" },
+      { id: "V::Justin::give me the benefit of their knowledge and experience", p: "Personal: who recently gave you the benefit of their knowledge and experience—online or offline?", t: "give me the benefit of their knowledge and experience" },
+      { id: "V::Rhona::done it ages ago", p: "Personal: something you wish you had done it ages ago.", t: "done it ages ago" },
+      { id: "V::Rhona::become increasingly aware of", p: "Personal: what problem or issue have you become increasingly aware of in the last few years?", t: "become increasingly aware of" },
+      { id: "V::Rhona::it was high time", p: "Personal: tell about a moment when you felt it was high time to change something in your routine or attitude.", t: "it was high time" },
+      { id: "V::Rhona::took a stand against", p: "Personal: a small way you took a stand against something you disliked at school, work, or home.", t: "took a stand against" },
+      { id: "V::Rhona::let alone cook it", p: "Personal: use your own example with food or chores—what will people try, let alone cook?", t: "let alone cook it" },
+      { id: "V::Rhona::it's not asking much", p: "Personal: something small you think is not asking much from friends or family—but still annoys you when they skip it.", t: "it's not asking much" },
+      { id: "V::Rhona::getting the hang of it", p: "Personal: what are you gradually getting the hang of right now?", t: "getting the hang of it" }
+    ];
 
     const ring = document.getElementById("ringProgress");
     ring.style.strokeDasharray = String(CIRC);
@@ -224,10 +259,16 @@
 
     let theme = "naomi";
     let idx = 0;
-    let sec = TIMER_SEC;
+    function getTimerLimit() {
+      return theme === "vegan" ? 30 : 15;
+    }
+    let sec = getTimerLimit();
     let timer = null;
     let session = 0;
-    function deck() { return theme === "naomi" ? NAOMI : REST; }
+    function deck() {
+      if (theme === "vegan") return VEGAN;
+      return theme === "naomi" ? NAOMI : REST;
+    }
     function cardsLoadMarks() {
       try {
         const raw = localStorage.getItem(CARDS_MARKS_KEY);
@@ -281,16 +322,21 @@
       document.getElementById("targetPhrase").textContent = d[idx].t;
       document.getElementById("timerNum").textContent = String(sec);
       document.getElementById("scoreLine").textContent = "Session score: " + session;
-      const frac = 1 - (sec / TIMER_SEC);
+      const lim = getTimerLimit();
+      const frac = 1 - (sec / lim);
       ring.style.strokeDashoffset = String(frac * CIRC);
+      const startBtn = document.getElementById("btnStart");
+      if (startBtn && !timer) {
+        startBtn.textContent = "Start " + String(lim) + "s";
+      }
     }
 
     function stopTimer(reset) {
       if (timer) { clearInterval(timer); timer = null; }
       if (reset) {
-        sec = TIMER_SEC;
+        sec = getTimerLimit();
         ring.style.strokeDashoffset = "0";
-        document.getElementById("timerNum").textContent = String(TIMER_SEC);
+        document.getElementById("timerNum").textContent = String(sec);
       }
     }
 
@@ -301,6 +347,11 @@
       document.getElementById("btnThemeNaomi").classList.toggle("active", theme === "naomi");
       document.getElementById("btnThemeRest").classList.toggle("active", theme === "rest");
       document.getElementById("timerStatus").textContent = "Press Start when you are ready.";
+      const lead = document.getElementById("microLead");
+      if (lead) {
+        lead.textContent =
+          "Quick speaking burst: 15 seconds per card. Use the target phrase naturally in your own sentence. Unlimited repeats.";
+      }
       setMsg("", false);
       render();
     }
@@ -308,12 +359,16 @@
     function startTimer() {
       if (timer) return;
       stopTimer(true);
-      document.getElementById("timerStatus").textContent = "Speak now. Use the target phrase.";
+      const lim = getTimerLimit();
+      document.getElementById("timerStatus").textContent =
+        theme === "vegan"
+          ? "Speak now: something personal from your life linked to this idea (use the phrase if it fits)."
+          : "Speak now. Use the target phrase.";
       setMsg("", false);
       timer = setInterval(() => {
         sec -= 1;
         document.getElementById("timerNum").textContent = String(Math.max(0, sec));
-        const frac = 1 - (sec / TIMER_SEC);
+        const frac = 1 - (sec / lim);
         ring.style.strokeDashoffset = String(frac * CIRC);
         if (sec <= 0) {
           clearInterval(timer);
@@ -341,6 +396,40 @@
       setMsg("", false);
       render();
     });
+
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const track = params.get("track");
+      const back = document.querySelector(".top a");
+      if (track === "going-vegan") {
+        document.body.classList.add("going-vegan-only");
+        theme = "vegan";
+        idx = 0;
+        stopTimer(true);
+        document.getElementById("btnThemeNaomi").classList.remove("active");
+        document.getElementById("btnThemeRest").classList.remove("active");
+        const lead = document.getElementById("microLead");
+        if (lead) {
+          lead.textContent =
+            "Going vegan — personal micro-speaking: 30 seconds per card. Read the prompt, then say something from your own life connected to the key phrase below (invent a believable detail if you prefer). Unlimited repeats.";
+        }
+        if (back) back.setAttribute("href", "unit12-12-1-restaurants-listening/reading-going-vegan/speaking/index.html");
+      } else if (track === "restaurants") {
+        document.body.classList.add("restaurants-only");
+        if (back) back.setAttribute("href", "unit12-12-1-restaurants-listening/speaking/index.html");
+        setTheme("rest");
+      } else if (track === "naomi") {
+        document.body.classList.add("naomi-only");
+        if (back) {
+          if (params.get("hub") === "pro-fitness") {
+            back.setAttribute("href", "unit12-pro-fitness-coaching/speaking/index.html");
+          } else {
+            back.setAttribute("href", "unit12-speaking-hub.html");
+          }
+        }
+        setTheme("naomi");
+      }
+    })();
 
     render();
   </script>

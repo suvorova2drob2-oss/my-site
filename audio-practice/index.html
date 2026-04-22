@@ -14,11 +14,15 @@
       --accent: #56ccf2;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
     body {
-      min-height: 100vh;
+      min-height: 100dvh;
       background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
       color: var(--text);
-      padding: 24px;
+      padding: max(16px, env(safe-area-inset-top, 0px))
+        max(16px, env(safe-area-inset-right, 0px))
+        max(16px, env(safe-area-inset-bottom, 0px))
+        max(16px, env(safe-area-inset-left, 0px));
     }
     .page {
       width: min(980px, 100%);
@@ -26,7 +30,7 @@
       border: 1px solid var(--line);
       border-radius: 16px;
       background: var(--panel);
-      padding: 18px;
+      padding: clamp(12px, 3vw, 18px);
     }
     .top {
       display: flex;
@@ -42,6 +46,12 @@
       color: var(--accent);
       text-decoration: none;
       font-weight: 700;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      padding: 6px 2px;
     }
     .back:hover { text-decoration: underline; }
     .subtitle {
@@ -65,24 +75,43 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      overflow-wrap: anywhere;
     }
     .card:hover { border-color: #5a79ab; }
     .card p { color: var(--muted); font-size: 0.9rem; }
     .go { color: var(--accent); font-weight: 700; }
+    .top h1 { font-size: clamp(1.05rem, 4.2vw, 1.45rem); line-height: 1.2; }
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <main class="page">
     <header class="top">
       <h1>Audio Practice</h1>
-      <a class="back" href="../index.html?screen=unit9">Back to Unit 9 CPE</a>
+      <a class="back" id="audio-practice-back" href="../Listening Part 2 - Sentence completion - Making a mark/index.html">&larr; Back</a>
     </header>
     <p class="subtitle">
       <strong>MAKING A MARK</strong> (Listening Part 2, Track 9.1) &mdash; same transcript and Yandex audio as
-      <a href="../listening/making-a-mark.html" style="color:var(--accent);">listening/making-a-mark.html</a>.
+      <a href="../Listening%20Part%202%20-%20Sentence%20completion%20-%20Making%20a%20mark/exam%20trainer/making-a-mark.html" style="color:var(--accent);">Listening Part 2 / Making a mark / exam trainer</a>.
       Shadowing: five counted full listens, trophy, +3 home score per listen (stored in your main site progress).
       Gap fill, disappearing text, and speedy typing reuse the Unit 12 mechanics with this one lecture.
     </p>
+    <script>
+      (function () {
+        var el = document.getElementById('audio-practice-back');
+        if (!el) return;
+        el.addEventListener('click', function (e) {
+          if (window.history.length > 1) {
+            e.preventDefault();
+            window.history.back();
+          }
+        });
+      })();
+    </script>
     <section class="grid">
       <a class="card" href="unit9-making-a-mark-shadowing.html">
         <h2>Shadowing</h2>

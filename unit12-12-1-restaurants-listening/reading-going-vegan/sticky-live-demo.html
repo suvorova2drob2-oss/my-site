@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticky live — API demo (Going vegan)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 22px 16px 40px;
+      line-height: 1.45;
+    }
+    .page { width: min(900px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+    h1 { font-size: 1.35rem; margin-bottom: 8px; }
+    .muted { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+    .back { color: var(--accent); font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 16px; }
+    .back:hover { text-decoration: underline; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    .panel { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: rgba(34, 54, 87, 0.45); }
+    .panel h2 { font-size: 1.05rem; margin-bottom: 10px; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+    input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0f203d; color: var(--text); margin-bottom: 10px; }
+    button {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid #4c6ea2; background: #1a2d4b; color: #d7e8ff; font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 4px;
+    }
+    button.primary { background: var(--accent); color: #072a3b; border-color: transparent; }
+    pre {
+      margin-top: 12px; padding: 10px; border-radius: 8px; background: #0c1828; font-size: 0.78rem; overflow-x: auto; color: #b8cce8; border: 1px solid var(--line);
+    }
+    .ok { color: var(--ok); font-size: 0.88rem; margin-top: 8px; }
+    .err { color: #fca5a5; font-size: 0.88rem; margin-top: 8px; white-space: pre-wrap; }
+    .hidden { display: none !important; }
+    .invite-banner {
+      margin-bottom: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line);
+      background: rgba(86, 204, 242, 0.12); font-size: 0.92rem;
+    }
+    .invite-banner strong { color: var(--accent); }
+    input[readonly] { opacity: 0.92; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a class="back" href="index.html">← Back to Going vegan hub</a>
+    <h1>Sticky live — wiring demo</h1>
+    <p class="muted">
+      <strong>Как тестировать:</strong> Netlify не обязателен — откройте эту страницу с любого хоста (или локально через простой сервер). Для игры <strong>между разными устройствами</strong> выберите драйвер <strong>yandexHttp</strong> и настройте функцию + YDB в облаке.
+      <strong>stub</strong> — только внутри одной вкладки браузера (ссылку другому человеку на другом ПК так не «шлёте» — там своя память).
+    </p>
+    <div id="inviteBanner" class="invite-banner hidden"></div>
+    <div id="panelDriver" class="panel" style="margin-bottom: 16px;">
+      <label for="driverPick">Драйвер</label>
+      <select id="driverPick" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0f203d; color:var(--text); margin-bottom:10px;">
+        <option value="stub" selected>stub (локально в браузере)</option>
+        <option value="yandex">yandexHttp (облако)</option>
+      </select>
+      <label for="yandexUrl">URL функции (POST JSON)</label>
+      <input id="yandexUrl" type="url" autocomplete="off" value="https://functions.yandexcloud.net/d4ec3ee2q0ju79ri544c" />
+      <button type="button" class="primary" id="btnApplyDriver">Подключить драйвер</button>
+      <p class="ok" id="driverOut"></p>
+    </div>
+
+    <div class="grid">
+      <div id="panelHost" class="panel">
+        <h2>Учитель (host)</h2>
+        <label for="hostName">Имя</label>
+        <input id="hostName" type="text" value="Teacher" autocomplete="off" />
+        <button type="button" class="primary" id="btnCreate">Создать комнату</button>
+        <p class="ok" id="hostOut"></p>
+        <label for="hostToken">Host token (только для вас)</label>
+        <input id="hostToken" type="text" readonly placeholder="—" />
+        <button type="button" id="btnCopyInvite" class="hidden">Скопировать ссылку для учеников</button>
+        <button type="button" id="btnStart">Старт раунда (playing)</button>
+        <button type="button" id="btnBoard">Таблица лидеров</button>
+      </div>
+      <div id="panelStudent" class="panel">
+        <h2 id="studentHeading">Ученик</h2>
+        <label for="roomCode">Код комнаты</label>
+        <input id="roomCode" type="text" maxlength="12" autocomplete="off" placeholder="Из ссылки или от учителя" />
+        <label for="stuName">Ваше имя</label>
+        <input id="stuName" type="text" value="Student" autocomplete="off" />
+        <button type="button" class="primary" id="btnJoin">Войти в комнату</button>
+        <p class="ok" id="stuOut"></p>
+        <button type="button" id="btnFakeCheck">Тест: «верно + быстро»</button>
+      </div>
+    </div>
+
+    <h2 id="snapHeading" style="margin-top: 20px; font-size: 1.05rem;">Снимок (live)</h2>
+    <pre id="snap">{}</pre>
+  </div>
+
+  <script src="../../js/live-game-api.js"></script>
+  <script src="../../js/live-game-api-yandex.js"></script>
+  <script>
+    (function () {
+      var api = null;
+      var unsub = null;
+      var roomCode = "";
+      var playerId = "";
+      var hostToken = "";
+      var roomLockedFromUrl = false;
+      var studentInviteMode = false;
+
+      function readInviteParams() {
+        var u;
+        try {
+          u = new URL(window.location.href);
+        } catch (e) {
+          return { join: false, room: "", fn: "" };
+        }
+        var join = u.searchParams.get("join") === "1" || u.searchParams.get("role") === "student";
+        var room = (u.searchParams.get("room") || u.searchParams.get("code") || "").trim().toUpperCase();
+        var fn = (u.searchParams.get("fn") || "").trim();
+        var stub = u.searchParams.get("stub") === "1";
+        return { join: join, room: room, fn: fn, stub: stub };
+      }
+
+      var invite = readInviteParams();
+      studentInviteMode = invite.join && !!invite.room;
+      roomLockedFromUrl = studentInviteMode;
+
+      function $(id) { return document.getElementById(id); }
+      function setHostMsg(text, isError) {
+        var el = $("hostOut");
+        el.textContent = text || "";
+        el.className = isError ? "err" : "ok";
+      }
+      function setStuMsg(text, isError) {
+        var el = $("stuOut");
+        if (!el) return;
+        el.textContent = text || "";
+        el.className = isError ? "err" : "ok";
+      }
+      function showSnap(s) {
+        $("snap").textContent = s ? JSON.stringify(s, null, 2) : "null";
+      }
+
+      function buildStudentInviteLink(code) {
+        var u = new URL(window.location.href);
+        u.search = "";
+        u.hash = "";
+        u.searchParams.set("join", "1");
+        u.searchParams.set("room", String(code || "").trim().toUpperCase());
+        if ($("driverPick").value === "yandex") {
+          var fn = $("yandexUrl").value.trim();
+          if (fn) u.searchParams.set("fn", fn);
+        } else {
+          u.searchParams.set("stub", "1");
+        }
+        return u.toString();
+      }
+
+      function applyStudentShell() {
+        if (!studentInviteMode) return;
+        $("panelHost").classList.add("hidden");
+        $("panelDriver").classList.add("hidden");
+        $("studentHeading").textContent = "Вход по приглашению";
+        $("roomCode").value = invite.room;
+        $("roomCode").readOnly = true;
+        var b = $("inviteBanner");
+        b.classList.remove("hidden");
+        b.innerHTML =
+          "<strong>Комната " +
+          invite.room +
+          "</strong> — введите имя и нажмите «Войти в комнату». Код уже взят из ссылки; учителю его набирать не нужно.";
+        if (invite.stub) {
+          $("driverPick").value = "stub";
+        } else {
+          if (invite.fn) {
+            $("yandexUrl").value = invite.fn;
+          }
+          $("driverPick").value = "yandex";
+        }
+      }
+
+      if (invite.join && !invite.room) {
+        $("inviteBanner").classList.remove("hidden");
+        $("inviteBanner").innerHTML =
+          "<strong>Неполная ссылка:</strong> нет параметра <code>room</code>. Попросите у учителя полную ссылку после создания комнаты.";
+        $("inviteBanner").classList.add("err");
+      }
+
+      applyStudentShell();
+
+      function applyDriver() {
+        if (typeof LiveGameApi === "undefined") return;
+        var pick = $("driverPick").value;
+        if (pick === "yandex") {
+          var url = $("yandexUrl").value.trim();
+          if (!url) {
+            $("driverOut").textContent = "Укажите URL функции.";
+            $("driverOut").className = "err";
+            return;
+          }
+          try {
+            LiveGameApi.registerDriver("yandexHttp", LiveGameYandex.buildDriver(url));
+            api = LiveGameApi.createClient({ driver: "yandexHttp" });
+            $("driverOut").textContent = "Подключено: yandexHttp → " + url;
+            $("driverOut").className = "ok";
+          } catch (e) {
+            $("driverOut").textContent = String(e && e.message ? e.message : e);
+            $("driverOut").className = "err";
+          }
+        } else {
+          api = LiveGameApi.createClient({ driver: "stub" });
+          $("driverOut").textContent = "Подключено: stub (только эта вкладка)";
+          $("driverOut").className = "ok";
+        }
+        if (unsub) unsub();
+        unsub = null;
+        roomCode = "";
+        playerId = "";
+        hostToken = "";
+        $("hostToken").value = "";
+        if (!roomLockedFromUrl) {
+          $("roomCode").value = "";
+          $("roomCode").readOnly = false;
+        }
+        $("btnCopyInvite").classList.add("hidden");
+        showSnap(null);
+      }
+
+      $("btnApplyDriver").addEventListener("click", applyDriver);
+      applyDriver();
+
+      function wireSubscribe() {
+        if (unsub) unsub();
+        unsub = null;
+        if (!api || !roomCode) return;
+        unsub = api.subscribeRoom(roomCode, function (snap) {
+          showSnap(snap);
+        });
+      }
+
+      $("btnCreate").addEventListener("click", function () {
+        if (!api) return;
+        setHostMsg("Запрос…", false);
+        api.createRoom({ deckId: "going-vegan", hostDisplayName: $("hostName").value.trim() || "Host" }).then(function (res) {
+          roomCode = res.roomCode;
+          hostToken = res.hostToken;
+          $("roomCode").value = roomCode;
+          $("hostToken").value = hostToken;
+          if ($("driverPick").value === "yandex") {
+            setHostMsg("Комната " + roomCode + " — отправьте ученикам ссылку кнопкой ниже.", false);
+            $("btnCopyInvite").classList.remove("hidden");
+          } else {
+            setHostMsg(
+              "Комната " +
+                roomCode +
+                " — stub только в этой вкладке. Чтобы слать ссылку классу, переключите драйвер на yandexHttp и «Подключить драйвер», затем создайте комнату снова.",
+              false
+            );
+          }
+          wireSubscribe();
+        }).catch(function (e) {
+          setHostMsg(String(e && e.message ? e.message : e), true);
+        });
+      });
+
+      $("btnCopyInvite").addEventListener("click", function () {
+        if (!roomCode) return;
+        var link = buildStudentInviteLink(roomCode);
+        function done() {
+          setHostMsg("Ссылка скопирована в буфер. Вставьте в чат / мессенджер.", false);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link).then(done).catch(function () {
+            window.prompt("Скопируйте ссылку:", link);
+          });
+        } else {
+          window.prompt("Скопируйте ссылку:", link);
+        }
+      });
+
+      $("btnJoin").addEventListener("click", function () {
+        if (!api) return;
+        setStuMsg("", false);
+        roomCode = $("roomCode").value.trim().toUpperCase();
+        if (!roomCode) {
+          setStuMsg("Укажите код комнаты (или откройте приглашение по ссылке).", true);
+          return;
+        }
+        api.joinRoom({ roomCode: roomCode, displayName: $("stuName").value.trim() || "Student" }).then(function (res) {
+          playerId = res.playerId;
+          setStuMsg("Вы вошли как «" + ($("stuName").value.trim() || "Student") + "».", false);
+          wireSubscribe();
+        }).catch(function (e) {
+          var msg = String(e && e.message ? e.message : e);
+          setStuMsg(msg, true);
+          showSnap({ error: msg });
+        });
+      });
+
+      $("btnFakeCheck").addEventListener("click", function () {
+        if (!api || !roomCode || !playerId) return;
+        api.submitAnswer({
+          roomCode: roomCode,
+          playerId: playerId,
+          cardId: "demo-1",
+          text: "hold",
+          correct: true,
+          latencyMs: 800
+        });
+      });
+
+      $("btnStart").addEventListener("click", function () {
+        if (!api || !roomCode || !hostToken) return;
+        api.setPhase({ roomCode: roomCode, hostToken: hostToken, phase: "playing" });
+      });
+
+      $("btnBoard").addEventListener("click", function () {
+        if (!api || !roomCode || !hostToken) return;
+        api.setPhase({ roomCode: roomCode, hostToken: hostToken, phase: "leaderboard" });
+      });
+    })();
+  </script>
+</body>
+</html>

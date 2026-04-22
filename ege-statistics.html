@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЕГЭ - Statistics</title>
+  <style>
+    :root {
+      --bg: #071432;
+      --panel: #1a2a47;
+      --panel-2: #223656;
+      --border: #2e4365;
+      --text: #e6eefc;
+      --muted: #9daecb;
+      --blue: #38bdf8;
+      --green: #36d399;
+      --pink: #f472b6;
+      --yellow: #fbbf24;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 28px;
+      background: radial-gradient(1000px 420px at 50% -15%, #132754 0%, var(--bg) 55%);
+      color: var(--text);
+    }
+
+    .app {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+      padding: 24px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .hero-card,
+    .panel,
+    .unit-card,
+    .gym-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #223657 0%, #1d2f4f 100%);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .subtitle,
+    .small {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .stat-pill {
+      border-radius: 14px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      padding: 12px;
+    }
+
+    .stat-pill strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #06243a;
+      background: var(--green);
+    }
+
+    button.secondary {
+      background: #dbeafe;
+      color: #10233e;
+    }
+
+    button.warning {
+      background: var(--yellow);
+      color: #2c2204;
+    }
+
+    button.reset {
+      background: #fecdd3;
+      color: #4b1020;
+    }
+
+    .section {
+      margin-top: 22px;
+    }
+
+    .section h2 {
+      font-size: 1.18rem;
+      margin-bottom: 12px;
+    }
+
+    .mastery-grid,
+    .gym-grid,
+    .units-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mastery-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), #60a5fa);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    .bar-fill.mastered {
+      background: linear-gradient(90deg, #34d399, #10b981);
+      box-shadow: 0 0 18px rgba(52, 211, 153, 0.35);
+    }
+
+    .bar-fill.legendary {
+      background: linear-gradient(90deg, #f472b6, #f59e0b, #34d399);
+      box-shadow: 0 0 22px rgba(244, 114, 182, 0.35);
+    }
+
+    .row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--blue);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      white-space: nowrap;
+    }
+
+    .units-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .unit-card.locked {
+      opacity: 0.7;
+      border-color: rgba(251, 113, 133, 0.35);
+    }
+
+    .unit-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .unit-score {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .lock {
+      font-size: 1.2rem;
+    }
+
+    .unit-detail {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(157, 174, 203, 0.18);
+      display: grid;
+      gap: 8px;
+    }
+
+    .skill-chip {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+    }
+
+    .gym-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend span {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <a class="back" href="ege.html">&larr; Назад</a>
+
+    <section class="hero">
+      <div class="hero-card">
+        <div class="title">Statistics Hub</div>
+        <p class="subtitle">
+          Первый экран статистики для ЕГЭ: допуск к следующим юнитам от <strong>60%</strong>,
+          шкалы мастерства по разделам и отдельный учёт качалок.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <strong id="overallScore">0%</strong>
+            <span class="small">Общий mastery score</span>
+          </div>
+          <div class="stat-pill">
+            <strong id="unlockedUnits">1/4</strong>
+            <span class="small">Открыто exam units</span>
+          </div>
+          <div class="stat-pill">
+            <strong id="gymAverage">0%</strong>
+            <span class="small">Средний прогресс gym</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Demo Controls</h2>
+        <p class="small">Нажми кнопку и сразу увидишь, как открываются юниты и меняется статистика.</p>
+        <div class="controls" style="margin-top: 14px;">
+          <div class="control-row">
+            <button type="button" data-demo="59">Unit 1 = 59%</button>
+            <button type="button" data-demo="60" class="warning">Unit 1 = 60%</button>
+            <button type="button" data-demo="85" class="secondary">Unit 1 = 85%</button>
+          </div>
+          <div class="control-row">
+            <button type="button" id="startGym">Начать качалки</button>
+            <button type="button" id="masterMode" class="secondary">Master Mode</button>
+            <button type="button" id="resetStats" class="reset">Сбросить</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span>0-59%: locked route</span>
+          <span>60%+: next unit unlocked</span>
+          <span>95%+: legendary glow</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Exam Units</h2>
+      <div id="unitsGrid" class="units-grid"></div>
+    </section>
+
+    <section class="section">
+      <h2>Section Mastery</h2>
+      <div id="masteryGrid" class="mastery-grid"></div>
+    </section>
+
+    <section class="section">
+      <h2>Gym Panel</h2>
+      <div id="gymGrid" class="gym-grid"></div>
+    </section>
+  </main>
+
+  <script>
+    const UNLOCK_THRESHOLD = 60;
+    const STORAGE_KEY = "egeStatisticsDemoState";
+
+    const defaultState = {
+      examUnits: [
+        {
+          id: 1,
+          title: "Unit 1",
+          score: 0,
+          skills: [
+            { name: "Reading: Matching Headlines", score: 0 },
+            { name: "Listening: Matching", score: 0 },
+            { name: "Grammar Exam", score: 0 }
+          ]
+        },
+        {
+          id: 2,
+          title: "Unit 2",
+          score: 0,
+          skills: [
+            { name: "Reading: Gapped Text", score: 0 },
+            { name: "Lexis Exam", score: 0 },
+            { name: "Speaking Exam", score: 0 }
+          ]
+        },
+        {
+          id: 3,
+          title: "Unit 3",
+          score: 0,
+          skills: [
+            { name: "Listening: Multiple Choice", score: 0 },
+            { name: "Word Formation Exam", score: 0 },
+            { name: "Grammar Exam Advanced", score: 0 }
+          ]
+        },
+        {
+          id: 4,
+          title: "Boss Unit",
+          score: 0,
+          skills: [
+            { name: "Mixed Reading", score: 0 },
+            { name: "Mixed Speaking", score: 0 },
+            { name: "Mixed Lexis", score: 0 }
+          ]
+        }
+      ],
+      gym: {
+        "The Verb Pump": 0,
+        "Passive Power": 0,
+        "Word Formation Nouns": 0,
+        "Lexis Sniper: synonym-trap": 0,
+        "phonetic-flow": 0,
+        "logic-comparison": 0
+      }
+    };
+
+    const masteryDefinitions = [
+      { name: "Reading", sources: ["Reading: Matching Headlines", "Reading: Gapped Text", "Mixed Reading"] },
+      { name: "Listening", sources: ["Listening: Matching", "Listening: Multiple Choice"] },
+      { name: "Grammar", sources: ["Grammar Exam", "Grammar Exam Advanced", "The Verb Pump", "Passive Power"] },
+      { name: "Word Formation", sources: ["Word Formation Exam", "Word Formation Nouns"] },
+      { name: "Lexis 30-36", sources: ["Lexis Exam", "Lexis Sniper: synonym-trap", "Mixed Lexis"] },
+      { name: "Speaking", sources: ["Speaking Exam", "phonetic-flow", "logic-comparison", "Mixed Speaking"] }
+    ];
+
+    const unitsGrid = document.getElementById("unitsGrid");
+    const masteryGrid = document.getElementById("masteryGrid");
+    const gymGrid = document.getElementById("gymGrid");
+    const overallScoreEl = document.getElementById("overallScore");
+    const unlockedUnitsEl = document.getElementById("unlockedUnits");
+    const gymAverageEl = document.getElementById("gymAverage");
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return structuredClone(defaultState);
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed;
+      } catch (error) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function clampScore(value) {
+      return Math.max(0, Math.min(100, Math.round(value)));
+    }
+
+    function getUnitUnlocked(index) {
+      if (index === 0) {
+        return true;
+      }
+
+      return state.examUnits[index - 1].score >= UNLOCK_THRESHOLD;
+    }
+
+    function getBarClass(score) {
+      if (score >= 95) {
+        return "bar-fill legendary";
+      }
+      if (score >= UNLOCK_THRESHOLD) {
+        return "bar-fill mastered";
+      }
+      return "bar-fill";
+    }
+
+    function renderUnits() {
+      unitsGrid.innerHTML = "";
+
+      state.examUnits.forEach((unit, index) => {
+        const unlocked = getUnitUnlocked(index);
+        const card = document.createElement("article");
+        card.className = "unit-card" + (unlocked ? "" : " locked");
+
+        const lockIcon = unlocked ? "🔓" : "🔒";
+        const unlockText = unlocked ? "Открыт" : "Нужен прошлый unit >= 60%";
+
+        card.innerHTML = `
+          <div class="unit-head">
+            <div>
+              <div class="row-top">
+                <strong>${unit.title}</strong>
+                <span class="badge">${unlockText}</span>
+              </div>
+              <p class="small" style="margin-top: 8px;">Твой реальный результат сохраняется честно: хоть 61%, хоть 98%.</p>
+            </div>
+            <div class="lock">${lockIcon}</div>
+          </div>
+          <div class="row-top">
+            <div class="unit-score">${unit.score}%</div>
+            <span class="small">${unit.score >= UNLOCK_THRESHOLD ? "Route clear" : "Need more power"}</span>
+          </div>
+          <div class="bar-track">
+            <div class="${getBarClass(unit.score)}" style="width:${unit.score}%"></div>
+          </div>
+          <div class="unit-detail">
+            ${unit.skills.map((skill) => `
+              <div class="skill-chip">
+                <span>${skill.name}</span>
+                <strong>${skill.score}%</strong>
+              </div>
+            `).join("")}
+          </div>
+        `;
+
+        unitsGrid.appendChild(card);
+      });
+    }
+
+    function collectSourceScores(sourceNames) {
+      const scores = [];
+
+      state.examUnits.forEach((unit) => {
+        unit.skills.forEach((skill) => {
+          if (sourceNames.includes(skill.name)) {
+            scores.push(skill.score);
+          }
+        });
+      });
+
+      Object.entries(state.gym).forEach(([name, score]) => {
+        if (sourceNames.includes(name)) {
+          scores.push(score);
+        }
+      });
+
+      return scores;
+    }
+
+    function renderMastery() {
+      masteryGrid.innerHTML = "";
+
+      const sectionScores = masteryDefinitions.map((section) => {
+        const scores = collectSourceScores(section.sources);
+        const average = scores.length ? Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length) : 0;
+
+        const card = document.createElement("article");
+        card.className = "panel";
+        card.innerHTML = `
+          <div class="row-top">
+            <strong>${section.name}</strong>
+            <span class="badge">${average}%</span>
+          </div>
+          <p class="small" style="margin-top: 8px;">Шкала мастерства по среднему баллу всех активностей раздела.</p>
+          <div class="bar-track">
+            <div class="${getBarClass(average)}" style="width:${average}%"></div>
+          </div>
+        `;
+        masteryGrid.appendChild(card);
+        return average;
+      });
+
+      const overall = sectionScores.length ? Math.round(sectionScores.reduce((sum, value) => sum + value, 0) / sectionScores.length) : 0;
+      overallScoreEl.textContent = overall + "%";
+    }
+
+    function renderGym() {
+      gymGrid.innerHTML = "";
+
+      const gymEntries = Object.entries(state.gym);
+      gymEntries.forEach(([name, score]) => {
+        const card = document.createElement("article");
+        card.className = "gym-card";
+        card.innerHTML = `
+          <div class="row-top">
+            <strong>${name}</strong>
+            <span class="badge">${score}%</span>
+          </div>
+          <p class="small" style="margin-top: 8px;">Качалка учитывается отдельно и появляется в статистике сразу после первого прохождения.</p>
+          <div class="bar-track">
+            <div class="${getBarClass(score)}" style="width:${score}%"></div>
+          </div>
+        `;
+        gymGrid.appendChild(card);
+      });
+
+      const gymAverage = gymEntries.length
+        ? Math.round(gymEntries.reduce((sum, entry) => sum + entry[1], 0) / gymEntries.length)
+        : 0;
+
+      gymAverageEl.textContent = gymAverage + "%";
+    }
+
+    function renderMeta() {
+      const unlockedCount = state.examUnits.filter((unit, index) => getUnitUnlocked(index)).length;
+      unlockedUnitsEl.textContent = unlockedCount + "/" + state.examUnits.length;
+    }
+
+    function renderAll() {
+      renderUnits();
+      renderMastery();
+      renderGym();
+      renderMeta();
+      saveState();
+    }
+
+    function applyDemoScore(score) {
+      const unit1 = state.examUnits[0];
+      unit1.score = clampScore(score);
+      unit1.skills[0].score = clampScore(score - 4);
+      unit1.skills[1].score = clampScore(score + 3);
+      unit1.skills[2].score = clampScore(score - 1);
+      renderAll();
+    }
+
+    function activateGymDemo() {
+      state.gym["The Verb Pump"] = 72;
+      state.gym["Passive Power"] = 64;
+      state.gym["Word Formation Nouns"] = 80;
+      state.gym["Lexis Sniper: synonym-trap"] = 48;
+      state.gym["phonetic-flow"] = 67;
+      state.gym["logic-comparison"] = 52;
+      renderAll();
+    }
+
+    function activateMasterMode() {
+      state.examUnits[0].score = 98;
+      state.examUnits[0].skills = [
+        { name: "Reading: Matching Headlines", score: 96 },
+        { name: "Listening: Matching", score: 99 },
+        { name: "Grammar Exam", score: 97 }
+      ];
+      state.examUnits[1].score = 82;
+      state.examUnits[1].skills = [
+        { name: "Reading: Gapped Text", score: 78 },
+        { name: "Lexis Exam", score: 85 },
+        { name: "Speaking Exam", score: 83 }
+      ];
+      state.examUnits[2].score = 0;
+      state.examUnits[2].skills = [
+        { name: "Listening: Multiple Choice", score: 0 },
+        { name: "Word Formation Exam", score: 0 },
+        { name: "Grammar Exam Advanced", score: 0 }
+      ];
+      state.examUnits[3].score = 0;
+      state.examUnits[3].skills = [
+        { name: "Mixed Reading", score: 0 },
+        { name: "Mixed Speaking", score: 0 },
+        { name: "Mixed Lexis", score: 0 }
+      ];
+
+      state.gym = {
+        "The Verb Pump": 94,
+        "Passive Power": 88,
+        "Word Formation Nouns": 80,
+        "Lexis Sniper: synonym-trap": 76,
+        "phonetic-flow": 91,
+        "logic-comparison": 84
+      };
+
+      renderAll();
+    }
+
+    let state = loadState();
+
+    document.querySelectorAll("[data-demo]").forEach((button) => {
+      button.addEventListener("click", () => applyDemoScore(Number(button.dataset.demo)));
+    });
+
+    document.getElementById("startGym").addEventListener("click", activateGymDemo);
+    document.getElementById("masterMode").addEventListener("click", activateMasterMode);
+    document.getElementById("resetStats").addEventListener("click", () => {
+      state = structuredClone(defaultState);
+      renderAll();
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>

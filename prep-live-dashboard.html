@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live — админка (Prep vault)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --live-accent: #22d3ee;
+      --live-accent-dark: #0e7490;
+      --live-ink: #0f172a;
+      --qz-yellow: #fbbf24;
+      --qz-yellow-dark: #f59e0b;
+      --qz-card: rgba(255, 255, 255, 0.97);
+      --qz-card-soft: rgba(255, 255, 255, 0.14);
+      --qz-text: #0f172a;
+      --qz-muted: #64748b;
+      --gold: linear-gradient(145deg, #fde047, #eab308);
+      --silver: linear-gradient(145deg, #e2e8f0, #94a3b8);
+      --bronze: linear-gradient(145deg, #fdba74, #c2410c);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Nunito", system-ui, sans-serif;
+      background: linear-gradient(180deg, #070d18 0%, #0f1c35 38%, #152238 100%);
+      color: #fff;
+      padding: 20px 16px 40px;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    .top {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .top .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--qz-card-soft);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .top h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      font-weight: 900;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    }
+    .top .room {
+      margin-top: 8px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      opacity: 0.95;
+    }
+    .muted {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      max-width: 640px;
+      margin: 12px auto 0;
+    }
+    .err {
+      max-width: 920px;
+      margin: 0 auto 14px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(220, 38, 38, 0.25);
+      border: 1px solid rgba(252, 165, 165, 0.5);
+      color: #fecaca;
+      font-weight: 700;
+    }
+    .card {
+      background: var(--qz-card);
+      color: var(--qz-text);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--live-accent-dark);
+    }
+    .phase-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #cffafe;
+      color: var(--live-accent-dark);
+      font-weight: 900;
+      font-size: 0.95rem;
+    }
+    .phase-pill span {
+      font-weight: 800;
+      text-transform: capitalize;
+    }
+    .phase-pill.is-playing {
+      background: linear-gradient(180deg, #6ee7b7, #34d399);
+      color: #064e3b;
+      border: 1px solid rgba(6, 78, 59, 0.35);
+    }
+    .phase-pill.is-leaderboard {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fef9c3;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+    }
+    .card-stats-dark {
+      background: linear-gradient(165deg, #1d2b4a 0%, #152238 100%);
+      color: #e8f0ff;
+      border: 1px solid rgba(86, 204, 242, 0.28);
+    }
+    .card-stats-dark h2 {
+      color: #f8fafc;
+    }
+    .dash-playing-flash {
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #34d399, #059669);
+      color: #022c22;
+      font-weight: 900;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+    .dash-playing-flash[hidden] {
+      display: none !important;
+    }
+    .dash-section-hint {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #9bb0d3;
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+    .dash-roster-cap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: rgba(248, 250, 252, 0.94);
+      line-height: 1.35;
+    }
+    .dash-pill-live {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #34d399, #059669);
+      color: #022c22;
+      font-weight: 900;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .dash-pill-lobby {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.3);
+      color: #f1f5f9;
+      font-weight: 900;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .dash-rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dash-rank-card {
+      border: 1px solid rgba(100, 139, 180, 0.55);
+      border-radius: 10px;
+      padding: 8px 10px 10px;
+      background: rgba(12, 24, 46, 0.75);
+    }
+    .dash-rank-card.is-first {
+      border-color: rgba(250, 204, 21, 0.55);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.15);
+    }
+    .dash-rank-card.is-last {
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+    .dash-rank-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .dash-rank-name {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #f8fafc;
+    }
+    .dash-rank-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #9bb0d3;
+      white-space: nowrap;
+    }
+    .dash-rank-barwrap {
+      height: 10px;
+      border-radius: 999px;
+      background: #142845;
+      overflow: hidden;
+      border: 1px solid rgba(50, 74, 115, 0.9);
+    }
+    .dash-rank-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8, #34d399);
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    button.qz-secondary {
+      background: #e2e8f0;
+      color: var(--live-accent-dark);
+    }
+    button.qz-secondary:hover {
+      background: #cbd5e1;
+    }
+    button.qz-primary {
+      background: linear-gradient(180deg, var(--qz-yellow) 0%, var(--qz-yellow-dark) 100%);
+      color: #422006;
+      box-shadow: 0 4px 0 #b45309;
+    }
+    button.qz-primary:hover {
+      filter: brightness(1.05);
+    }
+    button.qz-ghost {
+      background: #f1f5f9;
+      color: var(--qz-muted);
+    }
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      margin: 8px 0 20px;
+      min-height: 200px;
+    }
+    .podium-slot {
+      flex: 1;
+      max-width: 200px;
+      text-align: center;
+    }
+    .podium-slot .stand {
+      border-radius: 16px 16px 8px 8px;
+      padding: 12px 8px 16px;
+      margin-top: 8px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    .podium-slot.rank1 .stand {
+      min-height: 100px;
+      background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
+    }
+    .podium-slot.rank2 .stand {
+      min-height: 72px;
+      background: linear-gradient(180deg, #94a3b8 0%, #475569 100%);
+    }
+    .podium-slot.rank3 .stand {
+      min-height: 56px;
+      background: linear-gradient(180deg, #94a3b8 0%, #475569 100%);
+    }
+    .podium-av {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #fff;
+      border: 4px solid #fff;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    .podium-slot.rank1 .podium-av { background: var(--gold); color: #713f12; border-color: #fef08a; }
+    .podium-slot.rank2 .podium-av { background: var(--silver); color: #334155; }
+    .podium-slot.rank3 .podium-av { background: var(--bronze); color: #fff; }
+    .podium-slot .nm {
+      font-weight: 900;
+      font-size: 0.95rem;
+      margin-top: 6px;
+      color: var(--qz-text);
+      word-break: break-word;
+    }
+    .podium-slot .sc {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--live-accent-dark);
+      margin-top: 2px;
+    }
+    .podium-slot .rk {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--qz-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .card-stats-dark .podium-slot .nm {
+      color: #f1f5f9;
+    }
+    .card-stats-dark .podium-slot .sc {
+      color: #fde68a;
+    }
+    .card-stats-dark .podium-slot .rk {
+      color: #cbd5e1;
+    }
+    details {
+      max-width: 920px;
+      margin: 20px auto 0;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 800;
+    }
+    pre {
+      font-size: 0.7rem;
+      overflow: auto;
+      max-height: 160px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="badge">Live session</div>
+      <h1>Prep vault — класс</h1>
+      <div class="room" id="roomLabel">Комната —</div>
+      <p class="muted">
+        Окно из Prep vault. Очки растут, когда игрок закрывает канал в сейфе. Управление фазой — как «старт / пауза» у Quizizz.
+      </p>
+    </div>
+    <p class="err" id="err" hidden></p>
+
+    <div class="card">
+      <h2>Управление</h2>
+      <div class="phase-row">
+        <div class="phase-pill" id="phasePill">Сейчас: <span id="phaseVal">—</span></div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="qz-ghost" id="btnLobby">Lobby</button>
+        <button type="button" class="qz-primary" id="btnPlay">Старт игры (playing)</button>
+        <button type="button" class="qz-secondary" id="btnLead">Таблица (leaderboard)</button>
+      </div>
+      <p class="muted" style="color: var(--qz-muted); margin-top: 12px; font-size: 0.8rem;">
+        Host token берётся из sessionStorage после «Создать комнату» в index.
+      </p>
+    </div>
+
+    <div class="card card-stats-dark" id="dashStatsCard">
+      <h2>Статистика класса</h2>
+      <div id="dashPlayingFlash" class="dash-playing-flash" hidden role="status">Игра началась!</div>
+      <div id="dashPodiumOnly" hidden>
+        <p class="dash-section-hint">Фаза leaderboard — только подиум (топ-3).</p>
+        <div class="podium" id="podium"></div>
+      </div>
+      <div id="dashListArea">
+        <div id="dashRosterCap" class="dash-roster-cap"></div>
+        <div id="board" class="dash-rank-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Технический JSON</summary>
+    <pre id="raw">{}</pre>
+  </details>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="live-supabase-local.js"></script>
+  <script src="js/live-game-api.js"></script>
+  <script src="js/live-game-api-supabase.js"></script>
+  <script>
+    (function () {
+      var api = null;
+      var unsub = null;
+      var room = "";
+      var hostToken = "";
+      var lastPhaseDash = null;
+      var dashFlashTimer = null;
+
+      function $(id) { return document.getElementById(id); }
+
+      function err(t) {
+        var e = $("err");
+        if (!e) return;
+        if (t) {
+          e.textContent = t;
+          e.removeAttribute("hidden");
+        } else {
+          e.textContent = "";
+          e.setAttribute("hidden", "hidden");
+        }
+      }
+
+      function escapeHtml(s) {
+        if (s == null) return "";
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      function letter(name) {
+        var s = String(name || "?").trim();
+        return s ? s.charAt(0).toUpperCase() : "?";
+      }
+
+      function maxPtsGuess() {
+        return 120;
+      }
+
+      function podiumSlot(rankCls, rankLabel, row) {
+        var nm = row && row.displayName ? row.displayName : "—";
+        var sc = row && row.score != null ? Number(row.score) : 0;
+        return (
+          '<div class="podium-slot ' +
+          rankCls +
+          '"><div class="rk">' +
+          rankLabel +
+          '</div><div class="podium-av">' +
+          escapeHtml(letter(nm)) +
+          '</div><div class="nm">' +
+          escapeHtml(nm) +
+          '</div><div class="sc">' +
+          sc +
+          '</div><div class="stand">' +
+          rankLabel +
+          "</div></div>"
+        );
+      }
+
+      function dashRankCard(row, rank, cap, isFirst, isLast) {
+        var sc = Number(row && row.score != null ? row.score : 0) || 0;
+        var pct = Math.min(100, Math.round((sc / cap) * 100));
+        var nm = row && row.displayName ? String(row.displayName) : "—";
+        var cls = "dash-rank-card" + (isFirst ? " is-first" : "") + (isLast ? " is-last" : "");
+        return (
+          '<div class="' +
+          cls +
+          '"><div class="dash-rank-head"><span class="dash-rank-name">#' +
+          rank +
+          " " +
+          escapeHtml(nm) +
+          '</span><span class="dash-rank-meta">' +
+          pct +
+          "% · " +
+          sc +
+          ' pts</span></div><div class="dash-rank-barwrap"><div class="dash-rank-bar"><span style="width:' +
+          pct +
+          '%"></span></div></div></div>'
+        );
+      }
+
+      function render(snap) {
+        $("raw").textContent = snap ? JSON.stringify(snap, null, 2) : "null";
+        $("roomLabel").textContent = room ? "Комната " + room : "Комната —";
+        var ph = snap && snap.phase != null ? String(snap.phase) : "lobby";
+        var pill = $("phasePill");
+        if (pill) {
+          pill.className = "phase-pill";
+          if (ph === "playing") pill.classList.add("is-playing");
+          else if (ph === "leaderboard") pill.classList.add("is-leaderboard");
+        }
+        var flashEl = $("dashPlayingFlash");
+        if (snap && ph === "playing" && lastPhaseDash !== "playing" && flashEl) {
+          flashEl.removeAttribute("hidden");
+          if (dashFlashTimer) clearTimeout(dashFlashTimer);
+          dashFlashTimer = setTimeout(function () {
+            dashFlashTimer = null;
+            if (flashEl) flashEl.setAttribute("hidden", "hidden");
+          }, 2600);
+        }
+        lastPhaseDash = snap ? ph : null;
+
+        var podiumOnly = $("dashPodiumOnly");
+        var listArea = $("dashListArea");
+        var capEl = $("dashRosterCap");
+
+        if (!snap) {
+          $("phaseVal").textContent = "—";
+          if (podiumOnly) podiumOnly.setAttribute("hidden", "hidden");
+          if (listArea) listArea.removeAttribute("hidden");
+          $("podium").innerHTML = "";
+          $("board").innerHTML = "<p style=\"color:#9bb0d3;font-weight:800\">Нет данных.</p>";
+          if (capEl) capEl.innerHTML = "";
+          return;
+        }
+        $("phaseVal").textContent = ph;
+        var lb = Array.isArray(snap.leaderboard) ? snap.leaderboard.slice() : [];
+        var cap = maxPtsGuess();
+
+        if (!lb.length) {
+          if (podiumOnly) podiumOnly.setAttribute("hidden", "hidden");
+          if (listArea) listArea.removeAttribute("hidden");
+          $("podium").innerHTML =
+            podiumSlot("rank2", "2", null) + podiumSlot("rank1", "1", null) + podiumSlot("rank3", "3", null);
+          $("board").innerHTML = "<p style=\"color:#9bb0d3;font-weight:800\">Никого в комнате.</p>";
+          if (capEl) capEl.innerHTML = "";
+          return;
+        }
+
+        if (ph === "leaderboard") {
+          if (listArea) listArea.setAttribute("hidden", "hidden");
+          if (podiumOnly) podiumOnly.removeAttribute("hidden");
+          var first = lb[0] || { displayName: "—", score: 0 };
+          var second = lb[1] || { displayName: "—", score: 0 };
+          var third = lb[2] || { displayName: "—", score: 0 };
+          $("podium").innerHTML =
+            podiumSlot("rank2", "2 место", second) +
+            podiumSlot("rank1", "1 место", first) +
+            podiumSlot("rank3", "3 место", third);
+          return;
+        }
+
+        if (podiumOnly) podiumOnly.setAttribute("hidden", "hidden");
+        if (listArea) listArea.removeAttribute("hidden");
+        var firstN = lb[0].displayName || "—";
+        var lastN = lb[lb.length - 1].displayName || "—";
+        if (capEl) {
+          capEl.innerHTML =
+            (ph === "playing"
+              ? '<span class="dash-pill-live">Игра идёт</span>'
+              : '<span class="dash-pill-lobby">Лобби</span>') +
+            "<span>1-е место: <strong>" +
+            escapeHtml(firstN) +
+            "</strong> · последнее: <strong>" +
+            escapeHtml(lastN) +
+            "</strong></span>";
+        }
+        var cards = "";
+        for (var i = 0; i < lb.length; i++) {
+          cards += dashRankCard(lb[i], i + 1, cap, i === 0, i === lb.length - 1);
+        }
+        $("board").innerHTML = cards;
+        $("podium").innerHTML = "";
+      }
+
+      function connect() {
+        if (!window.__LIVE_SUPABASE_URL__ || !window.__LIVE_SUPABASE_KEY__) {
+          err("Нет live-supabase-local.js (URL и ключ).");
+          return false;
+        }
+        LiveGameApi.registerDriver("supabase", LiveGameSupabase.buildDriver({}));
+        api = LiveGameApi.createClient({ driver: "supabase" });
+        return true;
+      }
+
+      function subscribe() {
+        if (unsub) unsub();
+        if (!api || !room) return;
+        unsub = api.subscribeRoom(room, render);
+      }
+
+      function setPhase(ph) {
+        if (!api || !room || !hostToken) {
+          err("Нет host token: создайте комнату в index и откройте админку из Prep vault.");
+          return;
+        }
+        err("");
+        api
+          .setPhase({ roomCode: room, hostToken: hostToken, phase: ph })
+          .catch(function (e) {
+            err(String((e && e.message) || e));
+          });
+      }
+
+      try {
+        var p = new URLSearchParams(location.search);
+        room = (p.get("room") || "").trim().toUpperCase();
+        hostToken = sessionStorage.getItem("prep_live_host_token") || "";
+        if (!room) {
+          err("В URL добавьте ?room=КОД.");
+          return;
+        }
+        if (!connect()) return;
+        $("btnLobby").onclick = function () { setPhase("lobby"); };
+        $("btnPlay").onclick = function () { setPhase("playing"); };
+        $("btnLead").onclick = function () { setPhase("leaderboard"); };
+        subscribe();
+      } catch (e) {
+        err(String(e.message || e));
+      }
+    })();
+  </script>
+</body>
+</html>

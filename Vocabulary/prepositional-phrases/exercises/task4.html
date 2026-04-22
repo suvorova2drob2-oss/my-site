@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercise 4 — Conversations — Prepositional phrases</title>
+  <script src="../../../js/prepositional-phrases-core.js"></script>
+  <script src="../../../js/prep-course-progress.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --bad: #f43f5e;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: max(18px, env(safe-area-inset-top, 0px))
+        max(12px, env(safe-area-inset-right, 0px))
+        max(22px, env(safe-area-inset-bottom, 0px))
+        max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 720px; margin: 0 auto; }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .top a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      touch-action: manipulation;
+    }
+    .top a:hover { text-decoration: underline; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 16px 22px;
+    }
+    h1 { font-size: 1.12rem; margin-bottom: 8px; line-height: 1.3; }
+    .instr {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .ex {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #2d3f54;
+    }
+    .ex:last-of-type { border-bottom: none; margin-bottom: 10px; padding-bottom: 0; }
+    .ex-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .dialogue {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .gap-block {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid #334155;
+    }
+    .gap-hint {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      color: #93c5fd;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .gap-block input {
+      width: 100%;
+      max-width: 320px;
+      font: inherit;
+      font-size: 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      outline: none;
+    }
+    .gap-block input:focus { border-color: var(--accent); }
+    .gap-block input.ok { border-color: var(--ok); }
+    .gap-block input.bad { border-color: var(--bad); }
+    .gap-feedback {
+      font-size: 12px;
+      margin-top: 6px;
+      min-height: 18px;
+      color: var(--muted);
+    }
+    .gap-feedback.ok { color: var(--ok); }
+    .gap-feedback.bad { color: var(--bad); }
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      font: inherit;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-primary { background: var(--accent); color: #0c1222; }
+    .btn-secondary { background: #334155; color: var(--text); }
+    .sum {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      min-height: 48px;
+      line-height: 1.45;
+    }
+    .sum.ok { color: var(--ok); }
+    .sum.bad { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="../index.html">&larr; Hub</a>
+      <a href="task3.html">&larr; Exercise 3</a>
+    </div>
+    <div class="card">
+      <h1 id="t4-title"></h1>
+      <p class="instr" id="t4-instr"></p>
+      <div id="ex-host"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btn-check">Check answers</button>
+        <button type="button" class="btn btn-secondary" id="btn-clear">Clear</button>
+      </div>
+      <p class="sum" id="sum" aria-live="polite"></p>
+      <p style="margin-top:14px;text-align:center;"><a href="task5.html" style="color:#38bdf8;font-weight:700;text-decoration:none;">Exercise 5 &rarr; gallery description (by / in / out of)</a></p>
+    </div>
+  </div>
+  <script>
+(function () {
+  var core = window.PREP_PHRASES_CORE;
+  if (!core || !core.tasks) return;
+  var T = null;
+  for (var ti = 0; ti < core.tasks.length; ti++) {
+    if (core.tasks[ti].id === 'task-04-crypto-dialogues') {
+      T = core.tasks[ti];
+      break;
+    }
+  }
+  if (!T || !T.items) return;
+
+  function norm(s) {
+    return String(s || '')
+      .toLowerCase()
+      .replace(/\u2019|\u2018|`/g, "'")
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/\s+/g, ' ')
+      .replace(/\.+$/, '')
+      .trim();
+  }
+
+  function matchesAcceptable(got, acc) {
+    var g = norm(got);
+    if (!g) return false;
+    for (var i = 0; i < acc.length; i++) {
+      if (norm(acc[i]) === g) return true;
+    }
+    return false;
+  }
+
+  document.getElementById('t4-title').textContent = T.title;
+  document.getElementById('t4-instr').innerHTML = T.instruction;
+
+  var host = document.getElementById('ex-host');
+  var gapInputs = [];
+
+  function buildAll() {
+    host.innerHTML = '';
+    gapInputs = [];
+    for (var ei = 0; ei < T.items.length; ei++) {
+      var it = T.items[ei];
+      var box = document.createElement('div');
+      box.className = 'ex';
+      var num = document.createElement('div');
+      num.className = 'ex-num';
+      num.textContent = 'Conversation ' + String(ei + 1);
+      box.appendChild(num);
+      var dlg = document.createElement('div');
+      dlg.className = 'dialogue';
+      var buf = '';
+      for (var pi = 0; pi < it.segments.length; pi++) {
+        var seg = it.segments[pi];
+        if (seg && seg.gap) {
+          if (buf.length) dlg.appendChild(document.createTextNode(buf));
+          buf = '';
+          if (dlg.childNodes.length) {
+            box.appendChild(dlg);
+            dlg = document.createElement('div');
+            dlg.className = 'dialogue';
+          }
+          var gb = document.createElement('div');
+          gb.className = 'gap-block';
+          var h = document.createElement('div');
+          h.className = 'gap-hint';
+          h.textContent = seg.hint;
+          var inp = document.createElement('input');
+          inp.type = 'text';
+          inp.autocomplete = 'off';
+          inp.spellcheck = false;
+          inp.maxLength = Math.max(String(seg.answer || '').length + 4, 6);
+          inp.id = 'g-' + it.id + '-' + pi;
+          inp.setAttribute('aria-label', 'Missing word, hint ' + seg.hint);
+          var fb = document.createElement('div');
+          fb.className = 'gap-feedback';
+          gb.appendChild(h);
+          gb.appendChild(inp);
+          gb.appendChild(fb);
+          box.appendChild(gb);
+          gapInputs.push({
+            input: inp,
+            feedback: fb,
+            acceptable: seg.acceptable,
+            teach: seg.answer,
+            exTeach: it.teach
+          });
+        } else {
+          buf += typeof seg === 'string' ? seg : seg.text || '';
+        }
+      }
+      if (buf.length) dlg.appendChild(document.createTextNode(buf));
+      if (dlg.childNodes.length) box.appendChild(dlg);
+      host.appendChild(box);
+    }
+  }
+
+  buildAll();
+
+  document.getElementById('btn-check').addEventListener('click', function () {
+    var ok = 0;
+    var total = gapInputs.length;
+    for (var i = 0; i < gapInputs.length; i++) {
+      var g = gapInputs[i];
+      var inp = g.input;
+      var fb = g.feedback;
+      var good = matchesAcceptable(inp.value, g.acceptable);
+      inp.classList.remove('ok', 'bad');
+      fb.className = 'gap-feedback';
+      if (good) {
+        ok++;
+        inp.classList.add('ok');
+        fb.textContent = '\u2713 ' + g.teach;
+        fb.classList.add('ok');
+      } else {
+        inp.classList.add('bad');
+        fb.textContent = 'Try: ' + g.teach;
+        fb.classList.add('bad');
+      }
+    }
+    var sum = document.getElementById('sum');
+    if (ok === total) {
+      var pts = T.pointsFirstPass != null ? T.pointsFirstPass : 12;
+      var r = window.prepProgressAward ? prepProgressAward(T.id, pts) : { awarded: false, points: 0 };
+      var extra = r.awarded
+        ? ' First pass: +' +
+          String(r.points) +
+          ' to your home score (English Mastery Pro) and a tick on the hub.'
+        : ' You already earned points for this task; hub tick stays on.';
+      sum.textContent = 'All ' + String(total) + ' gaps correct.' + extra;
+      sum.className = 'sum ok';
+    } else {
+      sum.textContent = String(ok) + ' / ' + String(total) + ' gaps correct. Adjust and check again.';
+      sum.className = 'sum bad';
+    }
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    for (var i = 0; i < gapInputs.length; i++) {
+      gapInputs[i].input.value = '';
+      gapInputs[i].input.classList.remove('ok', 'bad');
+      gapInputs[i].feedback.textContent = '';
+      gapInputs[i].feedback.className = 'gap-feedback';
+    }
+    var sm = document.getElementById('sum');
+    sm.textContent = '';
+    sm.className = 'sum';
+  });
+})();
+  </script>
+</body>
+</html>
