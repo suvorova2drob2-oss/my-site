@@ -65,6 +65,9 @@
     }
 
     function railAllowed(screenId) {
+        var d = global.__PREP_DEPLOY_TRACK__;
+        if (d === "ege" && isEgePage()) return false;
+        if (d === "fce" && isFcePage()) return false;
         if (isFcePage() || isEgePage()) return true;
         var u = readCpeUser();
         if (!u.name) return false;

@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="Cache-Control" content="no-cache">
     <title>English Mastery Pro</title>
+    <!-- prep-deploy-track content patched only in Netlify split build (see scripts/build-netlify-track.mjs) -->
+    <meta name="prep-deploy-track" content="__PREP_META_TRACK__">
+    <script>
+    (function () {
+        var m = document.querySelector('meta[name="prep-deploy-track"]');
+        var raw = m && m.getAttribute("content");
+        var t = raw && raw !== "__PREP_META_TRACK__" ? String(raw).trim().toLowerCase() : "";
+        if (t !== "cpe" && t !== "ege" && t !== "fce") t = "";
+        window.__PREP_DEPLOY_TRACK__ = t || null;
+        var qs = location.search || "";
+        var stay =
+            qs.indexOf("prep_reauth=1") >= 0 ||
+            qs.indexOf("prep_stay=1") >= 0 ||
+            qs.indexOf("stay=1") >= 0 ||
+            qs.indexOf("live_prep=1") >= 0 ||
+            /(?:[?&])screen=unit9\b/.test(qs) ||
+            /(?:[?&])screen=unit8\b/.test(qs);
+        if (stay) return;
+        if (t === "ege" && /index\.html$/i.test(location.pathname)) {
+            location.replace(location.pathname.replace(/index\.html$/i, "ege.html"));
+            return;
+        }
+        if (t === "fce" && /index\.html$/i.test(location.pathname)) {
+            location.replace(location.pathname.replace(/index\.html$/i, "fce.html"));
+            return;
+        }
+    })();
+    </script>
     <style>
         :root {
             --primary: #38bdf8;
@@ -21355,7 +21383,16 @@ window.onload = function () {
             params.get("screen") === "unit8";
         if (!skipExamHomeRedirect) {
             try {
-                if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
+                var dTrack = window.__PREP_DEPLOY_TRACK__;
+                if (dTrack === "cpe") {
+                    /* single-site CPE deploy: never auto-bounce to ЕГЭ / FCE */
+                } else if (dTrack === "ege") {
+                    window.location.replace(prepResolveSiteFile("ege.html"));
+                    return;
+                } else if (dTrack === "fce") {
+                    window.location.replace(prepResolveSiteFile("fce.html"));
+                    return;
+                } else if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
                     var examTrack = prepCourseProfile.load().courseTrack;
                     if (examTrack === "ege") {
                         window.location.replace(prepResolveSiteFile("ege.html"));

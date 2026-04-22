@@ -1,0 +1,45 @@
+Separate Netlify sites (same repo, lighter entry per course)
+=============================================================
+
+Why
+---
+- One huge index.html + auto-redirects between CPE / EGE / FCE can feel slow and
+  "kick you" between login and hubs. Netlify is fine; splitting reduces noise.
+
+This repo builds three folders:
+  publish-cpe   — home "/" → index.html (English Mastery Pro only on this site)
+  publish-ege   — home "/" → ege.html
+  publish-fce   — home "/" → fce.html
+
+Each folder gets a _redirects file and index.html meta prep-deploy-track so the
+app does not auto-send CPE users to ЕГЭ/FCE on a CPE-only deploy.
+
+Default site (main branch)
+--------------------------
+netlify.toml runs:  node scripts/build-netlify-track.mjs cpe
+publish directory:  publish-cpe
+
+Second site (ЕГЭ)
+-----------------
+Netlify → Build settings:
+  Build command:   node scripts/build-netlify-track.mjs ege
+  Publish directory: publish-ege
+
+Third site (FCE)
+----------------
+  Build command:   node scripts/build-netlify-track.mjs fce
+  Publish directory: publish-fce
+
+Local check
+-----------
+  node scripts/build-netlify-track.mjs ege
+  npx serve publish-ege
+
+Passwords
+---------
+Unchanged in code. On a single-track site students only see one course on the
+welcome screen if you deep-link or brand that site for one exam.
+
+Cross-links between sites use relative URLs in HTML; for a clean jump from the
+ЕГЭ Netlify URL to the CPE URL, edit ege.html / fce.html course-switch links
+to absolute URLs once you know all three domains.
