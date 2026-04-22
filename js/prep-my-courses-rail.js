@@ -68,10 +68,10 @@
         var d = global.__PREP_DEPLOY_TRACK__;
         if (d === "ege" && isEgePage()) return false;
         if (d === "fce" && isFcePage()) return false;
-        if (isFcePage() || isEgePage()) return true;
         var u = readCpeUser();
         if (!u.name) return false;
         if (screenId === "screen-login") return false;
+        /* Students use one course — no cross-course rail. Teachers keep it on CPE / EGE / FCE. */
         return u.liveRole === "teacher";
     }
 
@@ -193,10 +193,23 @@
             return;
         }
 
+        var uSwitch = readCpeUser();
+        var root = siteRoot();
+        /* Teachers: jump straight to the other hub (no login screen). Everyone else: re-auth on index. */
+        if (uSwitch.liveRole === "teacher") {
+            var destT;
+            try {
+                destT = new global.URL(targetFile, root).href;
+            } catch (eT) {
+                destT = root + targetFile;
+            }
+            global.location.replace(destT);
+            return;
+        }
+
         try {
             global.sessionStorage.setItem("prep_course_switch_track", track);
         } catch (eSs) {}
-        var root = siteRoot();
         var dest;
         try {
             dest = new global.URL("index.html?prep_reauth=1", root).href;
