@@ -1179,19 +1179,32 @@
             min-width: 120px;
             padding: 12px 14px;
             border-radius: 12px;
-            border: 2px solid #475569;
-            background: #334155;
+            border: 2px solid #64748b;
+            background: linear-gradient(180deg, #3d4f63 0%, #334155 100%);
             color: var(--text);
             cursor: pointer;
             font-weight: 700;
             font-size: 14px;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.1s ease;
         }
-        .login-role-btn:hover { border-color: var(--primary); }
+        .login-role-btn:hover {
+            border-color: var(--primary);
+            background: linear-gradient(180deg, #455a73 0%, #3a4d62 100%);
+            transform: translateY(-1px);
+        }
+        .login-role-btn:active {
+            transform: translateY(0);
+        }
+        .login-role-btn:focus-visible {
+            outline: 2px solid var(--primary-ui);
+            outline-offset: 3px;
+        }
         .login-role-btn.active {
             border-color: var(--primary-ui);
             box-shadow: 0 0 0 3px var(--primary-ring);
-            background: rgba(29, 78, 216, 0.12);
+            background: rgba(29, 78, 216, 0.18);
         }
 
         .user-stats {
@@ -5014,15 +5027,18 @@
         <p style="color:var(--muted);margin-top:0;">English Mastery Pro — exam practice.</p>
         <p class="login-role-label">Course</p>
         <div class="login-role-row" role="group" aria-label="Exam course">
-            <button type="button" class="login-role-btn active" data-login-course="cpe" onclick="setLoginCourseTrack('cpe')">CPE</button>
-            <button type="button" class="login-role-btn" data-login-course="ege" onclick="setLoginCourseTrack('ege')">EGE</button>
-            <button type="button" class="login-role-btn" data-login-course="fce" onclick="setLoginCourseTrack('fce')">FCE</button>
-            <button type="button" class="login-role-btn" data-login-course="creator" onclick="setLoginCourseTrack('creator')">Creator</button>
+            <button type="button" class="login-role-btn active" data-login-course="cpe">CPE</button>
+            <button type="button" class="login-role-btn" data-login-course="ege">EGE</button>
+            <button type="button" class="login-role-btn" data-login-course="fce">FCE</button>
+            <button type="button" class="login-role-btn" data-login-course="creator">Creator</button>
         </div>
+        <p style="font-size:12px;color:var(--muted);margin:-6px 0 14px;line-height:1.45;">
+            All course and role buttons are active — tap to switch. The blue ring is the current choice, not the only option.
+        </p>
         <p class="login-role-label" id="login-live-role-label">You are joining as (used for Live prep rooms)</p>
         <div class="login-role-row" id="login-live-role-row" role="group" aria-label="Role for live class">
-            <button type="button" class="login-role-btn" id="login-role-student" onclick="setLoginLiveRole('student')">Student</button>
-            <button type="button" class="login-role-btn active" id="login-role-teacher" onclick="setLoginLiveRole('teacher')">Teacher</button>
+            <button type="button" class="login-role-btn" id="login-role-student">Student</button>
+            <button type="button" class="login-role-btn active" id="login-role-teacher">Teacher</button>
         </div>
         <label for="login-password-input" class="login-fld-label">Course password</label>
         <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Required — see hint below" autocomplete="current-password" />
@@ -20874,6 +20890,40 @@ function setLoginLiveRole(role) {
     var bTe = document.getElementById('login-role-teacher');
     if (bSt) bSt.classList.toggle('active', r === 'student');
     if (bTe) bTe.classList.toggle('active', r === 'teacher');
+}
+
+try {
+    window.setLoginCourseTrack = setLoginCourseTrack;
+    window.setLoginLiveRole = setLoginLiveRole;
+} catch (eWinLogin) {}
+
+/** Делегирование: работает при строгом CSP без inline onclick и надёжнее на тач-устройствах. */
+function wireLoginScreenPickersOnce() {
+    var root = document.getElementById("screen-login");
+    if (!root || root.getAttribute("data-login-delegation") === "1") return;
+    root.setAttribute("data-login-delegation", "1");
+    root.addEventListener("click", function (ev) {
+        var t = ev.target;
+        if (!t || typeof t.closest !== "function") return;
+        var cBtn = t.closest("[data-login-course]");
+        if (cBtn && root.contains(cBtn)) {
+            var tr = cBtn.getAttribute("data-login-course");
+            if (tr) setLoginCourseTrack(tr);
+            return;
+        }
+        if (t.closest("#login-role-student")) {
+            setLoginLiveRole("student");
+            return;
+        }
+        if (t.closest("#login-role-teacher")) {
+            setLoginLiveRole("teacher");
+        }
+    });
+}
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireLoginScreenPickersOnce);
+} else {
+    wireLoginScreenPickersOnce();
 }
 
 function registerUser() {
