@@ -21018,13 +21018,13 @@ function registerUser() {
     }
     if (track === "ege") {
         try {
-            window.location.href = "ege.html";
+            window.location.replace(prepResolveSiteFile("ege.html"));
         } catch (eRedir) {}
         return;
     }
     if (track === "fce") {
         try {
-            window.location.href = "fce.html";
+            window.location.replace(prepResolveSiteFile("fce.html"));
         } catch (eRedir2) {}
         return;
     }
@@ -21201,6 +21201,16 @@ function resetAll() {
     }
 }
 
+/** Root-relative path to a top-level HTML file (works in site subfolders). */
+function prepResolveSiteFile(relHtml) {
+    var path = window.location.pathname || "/";
+    var dir = path.replace(/[^/]*$/, "");
+    if (!dir || dir.charAt(dir.length - 1) !== "/") {
+        dir = dir ? dir + "/" : "/";
+    }
+    return dir + relHtml;
+}
+
 window.onload = function () {
     userData = loadUserData();
     try {
@@ -21294,8 +21304,49 @@ window.onload = function () {
             onUnit8ThIndClick(span);
         });
     }
+    var bootParams = new URLSearchParams(window.location.search);
+    if (bootParams.get("prep_reauth") === "1") {
+        try {
+            var trQ = bootParams.get("prep_track");
+            if (trQ && /^(cpe|ege|fce)$/.test(trQ)) {
+                if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.save) {
+                    prepCourseProfile.save({
+                        courseTrack: trQ,
+                        prepRole: userData.liveRole === "teacher" ? "teacher" : "student",
+                        wizardCompleted: true
+                    });
+                }
+                if (window.setLoginCourseTrack) setLoginCourseTrack(trQ);
+            } else {
+                var swTr = sessionStorage.getItem("prep_course_switch_track");
+                if (swTr && /^(cpe|ege|fce|creator)$/.test(swTr) && window.setLoginCourseTrack) {
+                    setLoginCourseTrack(swTr);
+                } else if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load && window.setLoginCourseTrack) {
+                    var pt = prepCourseProfile.load().courseTrack;
+                    if (pt && /^(cpe|ege|fce|creator)$/.test(pt)) setLoginCourseTrack(pt);
+                }
+            }
+            sessionStorage.removeItem("prep_course_switch_track");
+        } catch (ePrepReauth) {}
+        try {
+            history.replaceState({}, "", window.location.pathname || "/");
+        } catch (eRs) {}
+        userData.name = "";
+        try {
+            saveData();
+        } catch (eSd) {}
+        var _ni = document.getElementById("name-input");
+        if (_ni) _ni.value = "";
+        var _pi = document.getElementById("login-password-input");
+        if (_pi) _pi.value = "";
+        try {
+            setLoginLiveRole(userData.liveRole === "teacher" ? "teacher" : "student");
+        } catch (eLr) {}
+        showScreen("screen-login");
+        return;
+    }
     if (userData.name) {
-        var params = new URLSearchParams(window.location.search);
+        var params = bootParams;
         var skipExamHomeRedirect =
             params.get("prep_stay") === "1" ||
             params.get("stay") === "1" ||
@@ -21307,11 +21358,11 @@ window.onload = function () {
                 if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
                     var examTrack = prepCourseProfile.load().courseTrack;
                     if (examTrack === "ege") {
-                        window.location.replace("ege.html");
+                        window.location.replace(prepResolveSiteFile("ege.html"));
                         return;
                     }
                     if (examTrack === "fce") {
-                        window.location.replace("fce.html");
+                        window.location.replace(prepResolveSiteFile("fce.html"));
                         return;
                     }
                 }

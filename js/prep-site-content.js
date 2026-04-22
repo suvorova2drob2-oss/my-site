@@ -117,6 +117,41 @@
     broadcast();
   }
 
+  /**
+   * Pull course folders from Supabase when PrepCloudClient is loaded and URL/key are set.
+   * Safe no-op (resolves false) when cloud is not configured.
+   */
+  function hydrateFromCloud() {
+    try {
+      var PC = global.PrepCloudClient;
+      if (
+        !PC ||
+        typeof PC.pullCourseSnapshot !== "function" ||
+        typeof PC.isReadConfigured !== "function" ||
+        !PC.isReadConfigured()
+      ) {
+        return Promise.resolve(false);
+      }
+      var cid = getCourseId();
+      return PC.pullCourseSnapshot(cid)
+        .then(function (snap) {
+          if (!snap || snap.data == null) return false;
+          var data = snap.data;
+          if (!data || !Array.isArray(data.folders)) return false;
+          try {
+            global.localStorage.setItem(namespacedKey(cid), JSON.stringify(data));
+          } catch (eStore) {}
+          broadcast();
+          return true;
+        })
+        .catch(function () {
+          return false;
+        });
+    } catch (e) {
+      return Promise.resolve(false);
+    }
+  }
+
   var syncFns = [];
 
   function onSync(fn) {

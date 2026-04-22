@@ -9,10 +9,24 @@
         for (var i = scripts.length - 1; i >= 0; i--) {
             var s = scripts[i].src || "";
             if (/\/js\/prep-my-courses-rail\.js(\?|$)/i.test(s)) {
-                return s.replace(/\/js\/prep-my-courses-rail\.js(\?.*)?$/i, "/");
+                try {
+                    var abs = new URL(s, global.location.href);
+                    return abs.href.replace(/\/js\/prep-my-courses-rail\.js(\?.*)?$/i, "/");
+                } catch (e0) {
+                    return s.replace(/\/js\/prep-my-courses-rail\.js(\?.*)?$/i, "/");
+                }
             }
         }
-        return "";
+        try {
+            var path = String(global.location.pathname || "/");
+            var dir = path.replace(/[^/]*$/, "");
+            if (!dir || dir.charAt(dir.length - 1) !== "/") {
+                dir = dir ? dir + "/" : "/";
+            }
+            return new URL(dir, global.location.origin).href;
+        } catch (e1) {
+            return global.location.origin + "/";
+        }
     }
 
     function currentLeafFile() {
@@ -160,23 +174,33 @@
             });
         }
 
-        var file = "index.html";
-        if (track === "fce") file = "fce.html";
-        else if (track === "ege") file = "ege.html";
-        else file = "index.html";
+        var targetFile = "index.html";
+        if (track === "fce") targetFile = "fce.html";
+        else if (track === "ege") targetFile = "ege.html";
+        else targetFile = "index.html";
 
         var leaf = currentLeafFile();
         var same =
-            (file === "index.html" && isIndexApp()) ||
-            (file === "fce.html" && /fce\.html/i.test(leaf)) ||
-            (file === "ege.html" && /ege\.html/i.test(leaf));
+            (targetFile === "index.html" && isIndexApp()) ||
+            (targetFile === "fce.html" && /fce\.html/i.test(leaf)) ||
+            (targetFile === "ege.html" && /ege\.html/i.test(leaf));
 
         if (same) {
             dispatchWorkspaceChanged();
             return;
         }
 
-        global.location.href = siteRoot() + file;
+        try {
+            global.sessionStorage.setItem("prep_course_switch_track", track);
+        } catch (eSs) {}
+        var root = siteRoot();
+        var dest;
+        try {
+            dest = new global.URL("index.html?prep_reauth=1", root).href;
+        } catch (eUrl) {
+            dest = root + "index.html?prep_reauth=1";
+        }
+        global.location.replace(dest);
     }
 
     function wireOnce() {
