@@ -26,6 +26,14 @@
                 global.localStorage.setItem(KEY, name);
             } catch (eK) {}
             try {
+                global.document.cookie =
+                    "prep_player_display=" +
+                    encodeURIComponent(name) +
+                    ";path=/;max-age=" +
+                    60 * 60 * 24 * 400 +
+                    ";SameSite=Lax";
+            } catch (eC) {}
+            try {
                 var raw = global.localStorage.getItem(MAIN);
                 var p = raw ? JSON.parse(raw) : {};
                 if (!p || typeof p !== "object") p = {};

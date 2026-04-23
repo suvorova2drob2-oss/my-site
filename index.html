@@ -5083,11 +5083,30 @@
             var nm = "";
             if (r) nm = String(JSON.parse(r).name || "").trim();
             if (!nm) nm = String(localStorage.getItem("prep-player-display-name-v1") || "").trim();
+            if (!nm) {
+                try {
+                    var ck = document.cookie.split(";");
+                    for (var ci = 0; ci < ck.length; ci++) {
+                        var cpart = String(ck[ci] || "").trim();
+                        if (cpart.indexOf("prep_player_display=") === 0) {
+                            nm = decodeURIComponent(cpart.slice("prep_player_display=".length).trim()).slice(0, 60);
+                            break;
+                        }
+                    }
+                } catch (eCk0) {}
+            }
             has = !!nm;
         } catch (e) {
             try {
                 has = !!String(localStorage.getItem("prep-player-display-name-v1") || "").trim();
             } catch (e2) {}
+            if (!has) {
+                try {
+                    has = !!document.cookie.split(";").some(function (c) {
+                        return String(c || "").trim().indexOf("prep_player_display=") === 0;
+                    });
+                } catch (e3) {}
+            }
         }
         var login = document.getElementById("screen-login");
         var hub = document.getElementById("screen-hub");
@@ -6836,6 +6855,7 @@
 <script src="js/prep-my-courses-rail.js"></script>
 <script src="js/prep-site-content.js"></script>
 <script src="js/prep-boxed.js"></script>
+<script src="js/prep-remote-defaults.js"></script>
 <script src="live-supabase-local.js"></script>
 <script src="js/prep-cloud-client.js"></script>
 <script>
@@ -6861,6 +6881,40 @@
 var STORAGE_KEY = 'english_mastery_perfect';
 /** Stable copy of display name — survives partial JSON corruption; do not clear elsewhere. */
 var PREP_PLAYER_NAME_KEY = 'prep-player-display-name-v1';
+var PREP_PLAYER_NAME_COOKIE = 'prep_player_display';
+
+function prepReadNameCookie() {
+    try {
+        var all = document.cookie.split(';');
+        for (var i = 0; i < all.length; i++) {
+            var part = String(all[i] || '').trim();
+            if (part.indexOf(PREP_PLAYER_NAME_COOKIE + '=') === 0) {
+                return decodeURIComponent(part.slice(PREP_PLAYER_NAME_COOKIE.length + 1).trim()).slice(0, 60);
+            }
+        }
+    } catch (eCk) {}
+    return '';
+}
+
+function prepWriteNameCookie(name) {
+    try {
+        var n = String(name || '').trim().slice(0, 60);
+        if (!n) return;
+        document.cookie =
+            PREP_PLAYER_NAME_COOKIE +
+            '=' +
+            encodeURIComponent(n) +
+            ';path=/;max-age=' +
+            60 * 60 * 24 * 400 +
+            ';SameSite=Lax';
+    } catch (eW) {}
+}
+
+function prepClearNameCookie() {
+    try {
+        document.cookie = PREP_PLAYER_NAME_COOKIE + '=;path=/;max-age=0';
+    } catch (eZ) {}
+}
 
 var PACK_KEYWORD = [
     { orig: "Without the appropriate training, puppies can become difficult to manage around other dogs.", key: "HAND", b: "It's necessary to train puppies to prevent their behaviour ", a: " around other dogs.", ans: "from getting out of hand" },
@@ -7078,6 +7132,9 @@ function loadUserData() {
     try {
         canon = String(localStorage.getItem(PREP_PLAYER_NAME_KEY) || '').trim().slice(0, 60);
     } catch (eC) {}
+    if (!canon) {
+        canon = prepReadNameCookie();
+    }
     try {
         var raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) {
@@ -7134,6 +7191,7 @@ function prepRepairSessionName() {
     if (userData && String(userData.name || "").trim()) return true;
     try {
         var canon = String(localStorage.getItem(PREP_PLAYER_NAME_KEY) || "").trim().slice(0, 60);
+        if (!canon) canon = prepReadNameCookie();
         if (!canon) return false;
         var raw = localStorage.getItem(STORAGE_KEY);
         var p = raw ? JSON.parse(raw) : {};
@@ -17767,7 +17825,10 @@ function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
     try {
         var n = String(userData.name || '').trim().slice(0, 60);
-        if (n) localStorage.setItem(PREP_PLAYER_NAME_KEY, n);
+        if (n) {
+            localStorage.setItem(PREP_PLAYER_NAME_KEY, n);
+            prepWriteNameCookie(n);
+        }
     } catch (eNm) {}
 }
 
@@ -22143,6 +22204,7 @@ function resetAll() {
         try {
             localStorage.removeItem(PREP_PLAYER_NAME_KEY);
         } catch (eR) {}
+        prepClearNameCookie();
         location.reload();
     }
 }
