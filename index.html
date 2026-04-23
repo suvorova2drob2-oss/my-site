@@ -4858,6 +4858,7 @@
         #main-container.container {
             width: 100%;
             max-width: min(650px, calc(100vw - 24px));
+            contain: layout style;
         }
         #main-container.container.wide {
             max-width: min(1100px, calc(100vw - 24px));
@@ -6873,10 +6874,50 @@
 </script>
 <script src="js/prepositional-phrases-core.js"></script>
 <script src="js/interior-design-vocab-core.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/live-game-api.js"></script>
-<script src="js/live-game-api-supabase.js"></script>
 <script src="js/prep-content-tools-gate.js"></script>
+<script>
+(function (W) {
+    var loadStarted = false;
+    function loadScript(src, cb) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.onload = function () {
+            if (cb) cb();
+        };
+        s.onerror = function () {
+            if (cb) cb();
+        };
+        document.head.appendChild(s);
+    }
+    function beginLoad() {
+        if (loadStarted) return;
+        loadStarted = true;
+        loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", function () {
+            loadScript("js/live-game-api.js", function () {
+                loadScript("js/live-game-api-supabase.js", function () {
+                    try {
+                        W.dispatchEvent(new CustomEvent("prep-live-sdk-ready"));
+                    } catch (eEv) {}
+                });
+            });
+        });
+    }
+    W.prepLiveKickLazySdkLoad = beginLoad;
+    function scheduleIdle() {
+        if (W.requestIdleCallback) {
+            W.requestIdleCallback(beginLoad, { timeout: 4000 });
+        } else {
+            setTimeout(beginLoad, 200);
+        }
+    }
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", scheduleIdle);
+    } else {
+        scheduleIdle();
+    }
+})(window);
+</script>
 <script>
 var STORAGE_KEY = 'english_mastery_perfect';
 /** Stable copy of display name — survives partial JSON corruption; do not clear elsewhere. */
@@ -13440,6 +13481,9 @@ function prepLiveDisconnect() {
 
 function prepLiveEnsureApi() {
     if (prepLiveApi) return true;
+    try {
+        if (typeof prepLiveKickLazySdkLoad === "function") prepLiveKickLazySdkLoad();
+    } catch (eKick) {}
     if (!window.__LIVE_SUPABASE_URL__ || !window.__LIVE_SUPABASE_KEY__) return false;
     if (!window.LiveGameApi || !window.LiveGameSupabase) return false;
     try {
