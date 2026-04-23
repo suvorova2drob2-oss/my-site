@@ -7125,6 +7125,28 @@ function loadUserData() {
 }
 
 var userData = loadUserData();
+
+/** If main blob lost .name (race, partial write, tab restore), pull from prep-player-display-name-v1. */
+function prepRepairSessionName() {
+    try {
+        userData = loadUserData();
+    } catch (e0) {}
+    if (userData && String(userData.name || "").trim()) return true;
+    try {
+        var canon = String(localStorage.getItem(PREP_PLAYER_NAME_KEY) || "").trim().slice(0, 60);
+        if (!canon) return false;
+        var raw = localStorage.getItem(STORAGE_KEY);
+        var p = raw ? JSON.parse(raw) : {};
+        if (!p || typeof p !== "object") p = {};
+        p.name = canon;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+        userData = loadUserData();
+        return !!String(userData.name || "").trim();
+    } catch (e1) {
+        return false;
+    }
+}
+
 var currentUnit = 6;
 var currentMode = 'keyword';
 var currentIdx = 0;
@@ -13419,7 +13441,7 @@ function prepLiveBuildStudentIndexLink(room) {
             if (sel && sel.value) join = String(sel.value).trim();
         }
     } catch (eJ) {}
-    var qs = "?screen=unit9&live_prep=1&room=" + encodeURIComponent(rc) + "&view=student";
+    var qs = "?prep_stay=1&screen=unit9&live_prep=1&room=" + encodeURIComponent(rc) + "&view=student";
     if (join === "u9sticky") qs += "&join=u9sticky";
     try {
         if (location.protocol === "http:" || location.protocol === "https:") {
@@ -21588,8 +21610,10 @@ function showHub() {
         userData = loadUserData();
     } catch (eHubLd) {}
     if (!userData || !String(userData.name || "").trim()) {
-        showScreen("screen-login");
-        return;
+        if (!prepRepairSessionName()) {
+            showScreen("screen-login");
+            return;
+        }
     }
     hubWorkspace = { kind: "unit", unit: 1 };
     showScreen("screen-hub");
@@ -22136,6 +22160,11 @@ function prepResolveSiteFile(relHtml) {
 window.onload = function () {
     userData = loadUserData();
     try {
+        if (String(userData.name || "").trim()) {
+            sessionStorage.removeItem("prep_live_deeplink");
+        }
+    } catch (eDeeplinkClr) {}
+    try {
         if (!userData.name) {
             var pLive = new URLSearchParams(window.location.search);
             if (pLive.get('live_prep') === '1' && pLive.get('room')) {
@@ -22266,8 +22295,10 @@ window.onload = function () {
         userData = loadUserData();
     } catch (eBootLd) {}
     if (!String(userData.name || "").trim()) {
-        showScreen("screen-login");
-        return;
+        if (!prepRepairSessionName()) {
+            showScreen("screen-login");
+            return;
+        }
     }
     var params = bootParams;
     var skipExamHomeRedirect =
@@ -22389,13 +22420,28 @@ window.addEventListener('pageshow', function (ev) {
     try {
         userData = loadUserData();
     } catch (ePs) {}
-    if (!String(userData.name || '').trim()) return;
+    if (!String(userData.name || '').trim() && !prepRepairSessionName()) return;
     try {
         var loginEl = document.getElementById('screen-login');
         if (loginEl && loginEl.classList.contains('active')) {
             showHub();
         }
     } catch (eSh) {}
+});
+
+window.addEventListener('focus', function () {
+    try {
+        var loginEl = document.getElementById('screen-login');
+        if (!loginEl || !loginEl.classList.contains('active')) return;
+        if (prepRepairSessionName()) {
+            try {
+                if (String(userData.name || "").trim()) {
+                    sessionStorage.removeItem("prep_live_deeplink");
+                }
+            } catch (eC) {}
+            showHub();
+        }
+    } catch (eF) {}
 });
 </script>
 <div
