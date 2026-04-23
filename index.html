@@ -21872,7 +21872,14 @@ function registerUser() {
             );
         }
     }
-    saveData();
+    try {
+        saveData();
+    } catch (eSave) {
+        alert(
+            "Не удалось сохранить данные в браузере (часто в приватном режиме или при блокировке памяти сайта). Разрешите хранение или откройте страницу в обычном окне."
+        );
+        return;
+    }
 
     prepSyncProfileAfterLogin(track);
     var pend = null;
@@ -21897,18 +21904,7 @@ function registerUser() {
             }
         } catch (e4) {}
     }
-    if (track === "ege") {
-        try {
-            window.location.replace(prepResolveSiteFile("ege.html"));
-        } catch (eRedir) {}
-        return;
-    }
-    if (track === "fce") {
-        try {
-            window.location.replace(prepResolveSiteFile("fce.html"));
-        } catch (eRedir2) {}
-        return;
-    }
+    /* Stay on CPE hub after naming; use “My courses” (or profile track) to open EGE/FCE — avoid immediate replace away from index. */
     showHub();
 }
 
@@ -22221,6 +22217,9 @@ window.onload = function () {
         } catch (eApply) {}
     }
     prepApplyPrepTrackFromQuery(bootParams);
+    try {
+        userData = loadUserData();
+    } catch (eBootLd) {}
     if (!String(userData.name || "").trim()) {
         showScreen("screen-login");
         return;
