@@ -19840,7 +19840,7 @@ function hubFolderWorkspaceStripAdd(action) {
     if (!par) {
         try {
             hubToastShow(
-                "Эта папка больше не в данных курса. Нажми «Back to Levels» и открой папку с главного экрана или создай новую (Edit → + Folder). Сохранение дерева курса — в course-cms («Save course»)."
+                "This folder is missing from the course data. Go back to Levels and open it from the hub, or create a new folder (Edit → + Folder) if you have hub editing enabled."
             );
         } catch (eStrip) {}
         return;
@@ -20474,6 +20474,10 @@ function hubNavigateToCmsFolder(folderId) {
             return;
         }
     }
+    if (typeof prepCourseCmsAvailable === "function" && !prepCourseCmsAvailable()) {
+        openHubFolderWorkspace(folderId);
+        return;
+    }
     var m = getHubViewMode();
     var p = hubCmsBackParams();
     window.location.href =
@@ -20687,7 +20691,7 @@ function openHubFolderWorkspace(fid) {
     if (!f) {
         try {
             hubToastShow(
-                "Папка больше не в данных курса (удалена или другой курс). Вернись на главный экран и открой папку с плитки уровня либо создай новую: режим Edit → + Folder. Дерево курса в редакторе сохраняется кнопкой «Save course» на странице course-cms (не на этом экране)."
+                "This folder is missing from the course data (removed or another course). Go back to the hub and open the folder from the level grid, or add a new one with Edit → + Folder."
             );
         } catch (eOfw) {}
         hubWorkspace = { kind: "unit", unit: 1 };
@@ -21311,7 +21315,7 @@ function renderHubUnitTasksContent() {
     if (!fd) {
         try {
             hubToastShow(
-                "Папка больше не в данных курса (устаревший id). Вернись на главный экран и открой папку с плитки. Если правила структуру в course-cms — сохрани её там кнопкой «Save course»."
+                "This folder id is out of date. Go back to the hub and open the folder from the grid."
             );
         } catch (eNf) {}
         hubWorkspace = { kind: "unit", unit: 1 };
@@ -21591,6 +21595,12 @@ function ensureCmsCreatorId() {
 }
 
 function openTeacherCourseCms() {
+    if (typeof prepCourseCmsAvailable === "function" && !prepCourseCmsAvailable()) {
+        try {
+            hubToastShow("Course CMS is off. Use hub folder tiles, or add ?prep_enable_cms=1 once to re-enable it for this browser.");
+        } catch (e) {}
+        return;
+    }
     var back = encodeURIComponent(location.pathname + (location.search || ""));
     window.location.href =
         "course-cms/index.html?mode=admin&back=" + back + "&backLabel=" + encodeURIComponent("Back to hub");
@@ -22219,6 +22229,16 @@ function prepResolveSiteFile(relHtml) {
     return dir + relHtml;
 }
 
+function prepStripPrepOpenFolderFromUrl() {
+    try {
+        var u = new URL(window.location.href);
+        u.searchParams.delete("prep_open_folder");
+        return u.pathname + u.search + u.hash;
+    } catch (e) {
+        return (window.location.pathname || "/") + (window.location.search || "").replace(/([?&])prep_open_folder=[^&]*&?/g, "$1").replace(/[?&]$/, "") + (window.location.hash || "");
+    }
+}
+
 window.onload = function () {
     userData = loadUserData();
     try {
@@ -22441,6 +22461,15 @@ window.onload = function () {
     } else {
         showScreen('screen-hub');
     }
+    try {
+        var pOf = params.get("prep_open_folder");
+        if (pOf && String(pOf).trim()) {
+            openHubFolderWorkspace(String(pOf).trim());
+            try {
+                history.replaceState({}, "", prepStripPrepOpenFolderFromUrl());
+            } catch (eStripOf) {}
+        }
+    } catch (ePof) {}
 };
 
 document.addEventListener('keydown', function (e) {

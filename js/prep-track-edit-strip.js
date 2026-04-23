@@ -13,6 +13,15 @@
   }
   if (window.__PREP_CONTENT_TOOLS_ENABLED__ !== true) return;
 
+  function prepCourseCmsSessionOn() {
+    try {
+      if (typeof window.prepCourseCmsAvailable === "function") return window.prepCourseCmsAvailable();
+      return typeof sessionStorage !== "undefined" && sessionStorage.getItem("prep_course_cms_session") === "1";
+    } catch (eCms) {
+      return false;
+    }
+  }
+
   var HUB_VM_KEY = "prep-hub-view-mode-v1";
   var HOST_ID = "prep-track-edit-host";
   var SKILL_LABELS = {
@@ -97,6 +106,11 @@
 
   function openFolderInCms(f) {
     var p = cmsBackParams();
+    if (!prepCourseCmsSessionOn()) {
+      location.href =
+        "index.html?prep_stay=1&prep_open_folder=" + encodeURIComponent(f.id);
+      return;
+    }
     var mode = getViewMode() === "preview" ? "student" : "admin";
     location.href =
       "course-cms/index.html?mode=" +

@@ -42,6 +42,8 @@ const IGNORE_TOP = new Set([
 
 function shouldCopyTopLevel(name) {
   if (IGNORE_TOP.has(name)) return false;
+  /* Course CMS not shipped on student-facing Netlify builds (sources stay in repo). */
+  if (name === "course-cms") return false;
   return true;
 }
 
