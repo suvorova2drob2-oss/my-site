@@ -5060,43 +5060,35 @@
 
 <div id="main-container" class="container">
     <div id="screen-login" class="screen active">
-        <h1>Welcome!</h1>
-        <p style="color:var(--muted);margin-top:0;">English Mastery Pro — exam practice.</p>
-        <p class="login-role-label">Course</p>
-        <div class="login-role-row" role="group" aria-label="Exam course">
-            <button type="button" class="login-role-btn active" data-login-course="cpe">CPE</button>
-            <button type="button" class="login-role-btn" data-login-course="ege">EGE</button>
-            <button type="button" class="login-role-btn" data-login-course="fce">FCE</button>
-            <button type="button" class="login-role-btn" data-login-course="creator">Creator</button>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin:-6px 0 14px;line-height:1.45;">
-            All course and role buttons are active — tap to switch. The blue ring is the current choice, not the only option.
+        <h1 style="margin:0 0 8px;font-size:1.35rem;">Как вас зовут?</h1>
+        <p style="color:var(--muted);margin:0 0 18px;line-height:1.45;font-size:14px;">
+            Имя сохранится в этом браузере. Пароль не нужен — дальше откроется хаб, курсы переключаются справа (My courses).
         </p>
-        <p class="login-role-label" id="login-live-role-label">You are joining as (used for Live prep rooms)</p>
-        <div class="login-role-row" id="login-live-role-row" role="group" aria-label="Role for live class">
-            <button type="button" class="login-role-btn" id="login-role-student">Student</button>
-            <button type="button" class="login-role-btn active" id="login-role-teacher">Teacher</button>
+        <label for="name-input" class="login-fld-label">Ваше имя</label>
+        <input type="text" id="name-input" class="hub-fld-input" placeholder="Например, Анна" autocomplete="name" maxlength="60" />
+        <button type="button" class="btn" style="margin-top:16px;width:100%;" onclick="registerUser()">Продолжить</button>
+        <div id="login-compat-hidden" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+            <button type="button" class="login-role-btn" id="login-role-student"></button>
+            <button type="button" class="login-role-btn active" id="login-role-teacher"></button>
+            <input type="text" id="login-password-input" value="" autocomplete="off" />
+            <input type="text" id="login-author-pin" value="" autocomplete="off" />
         </div>
-        <label for="login-password-input" class="login-fld-label">Course password <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
-        <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Leave empty for open beta, or enter class / admin password" autocomplete="current-password" />
-        <p class="login-password-hint" id="login-password-hint">While <code style="font-size:10px">PREP_ALLOW_PASSWORDLESS_LOGIN</code> is on, you only need your name and <strong>Start</strong>. Turn it off in <code style="font-size:10px">index.html</code> before a public launch.</p>
-        <details class="login-author-details">
-            <summary>Advanced — author PIN (optional)</summary>
-            <label for="login-author-pin" class="login-fld-label" style="margin-top: 10px;">Author PIN</label>
-            <input type="password" id="login-author-pin" class="hub-fld-input" placeholder="Only if your setup uses PREP_PLATFORM_AUTHOR_PIN" autocomplete="off" />
-            <p class="login-password-hint">
-                For maintainers: set <code style="font-size: 11px">PREP_PLATFORM_AUTHOR_PIN</code> in <code style="font-size: 11px">index.html</code>.
-            </p>
-        </details>
-        <label for="name-input" class="login-fld-label">Your name</label>
-        <input type="text" id="name-input" placeholder="Your name..." autocomplete="name">
-        <button type="button" class="btn" onclick="registerUser()">Start</button>
-        <p style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.45;max-width:28rem;">
-            <strong>Direct links (optional):</strong> open a URL with <code style="font-size:10px">prep_link=1</code>,
-            <code style="font-size:10px">prep_pass</code> (optional if open beta; else class or admin password),
-            <code style="font-size:10px">prep_name</code>, and e.g. <code style="font-size:10px">screen=unit9</code> — the app logs in and removes the password from the address bar. Extra per-group passwords: set <code style="font-size:10px">PREP_LINK_CLASS_PASSWORDS</code> + <code style="font-size:10px">prep_class=</code> in <code style="font-size:10px">index.html</code>.
-        </p>
     </div>
+    <script>
+    (function () {
+        var has = false;
+        try {
+            var r = localStorage.getItem("english_mastery_perfect");
+            if (r && String(JSON.parse(r).name || "").trim()) has = true;
+        } catch (e) {}
+        var login = document.getElementById("screen-login");
+        var hub = document.getElementById("screen-hub");
+        if (login && hub) {
+            login.classList.toggle("active", !has);
+            hub.classList.toggle("active", has);
+        }
+    })();
+    </script>
 
     <div id="screen-hub" class="screen">
         <div class="hub-top-bar">
@@ -21555,9 +21547,6 @@ function showHub() {
     } catch (eHubLd) {}
     if (!userData || !String(userData.name || "").trim()) {
         showScreen("screen-login");
-        try {
-            setLoginLiveRole(userData && userData.liveRole === "teacher" ? "teacher" : "student");
-        } catch (eHubLr) {}
         return;
     }
     hubWorkspace = { kind: "unit", unit: 1 };
@@ -21616,7 +21605,7 @@ var loginCourseTrackPick = "cpe";
 /** Single login password for CPE / EGE / FCE / Creator on this screen. */
 /** Learners / class teachers — not shown in the UI. */
 var PREP_PUBLIC_LOGIN_PASSWORD = "suvorova2drob2";
-/** Site admin — full “My courses” rail; not shown in the UI. */
+/** Site admin (prepAdmin); optional if you still use prep_link with admin password. */
 var PREP_ADMIN_LOGIN_PASSWORD = "0608";
 
 /**
@@ -21743,6 +21732,26 @@ function prepSyncProfileAfterLogin(track) {
     } catch (eProf) {}
 }
 
+/** ?prep_track= / ?prep_exam= — switch workspace from nav links (e.g. ege.html → CPE). */
+function prepApplyPrepTrackFromQuery(params) {
+    if (!params || typeof params.get !== "function") return;
+    var tr = params.get("prep_track") || params.get("prep_exam");
+    if (!tr || !/^(cpe|ege|fce|creator)$/.test(tr)) return;
+    try {
+        prepSyncProfileAfterLogin(tr);
+    } catch (e0) {}
+    try {
+        if (window.setLoginCourseTrack) setLoginCourseTrack(tr);
+    } catch (e1) {}
+    try {
+        var u = new URL(window.location.href);
+        u.searchParams.delete("prep_track");
+        u.searchParams.delete("prep_exam");
+        var qs = u.searchParams.toString();
+        history.replaceState({}, "", u.pathname + (qs ? "?" + qs : "") + (u.hash || ""));
+    } catch (e2) {}
+}
+
 function setLoginCourseTrack(track) {
     loginCourseTrackPick = track || "cpe";
     var buttons = document.querySelectorAll("[data-login-course]");
@@ -21804,19 +21813,33 @@ if (document.readyState === "loading") {
 }
 
 function registerUser() {
-    var n = document.getElementById('name-input').value.trim();
-    if (!n) { alert('Please enter your name.'); return; }
+    var ni = document.getElementById("name-input");
+    var n = ni ? String(ni.value || "").trim() : "";
+    if (!n) {
+        alert("Введите имя, чтобы продолжить.");
+        if (ni) ni.focus();
+        return;
+    }
+    if (n.length > 60) n = n.slice(0, 60);
     var pwEl = document.getElementById('login-password-input');
     var password = pwEl ? String(pwEl.value || '').trim() : '';
     var track = loginCourseTrackPick || 'cpe';
+    try {
+        if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
+            var pt = prepCourseProfile.load().courseTrack;
+            if (pt && /^(cpe|ege|fce|creator)$/.test(pt)) track = pt;
+        }
+    } catch (eTr) {}
 
     var isAdmin = password === PREP_ADMIN_LOGIN_PASSWORD;
     var isPublic = password === PREP_PUBLIC_LOGIN_PASSWORD;
     var allowPwdless = typeof PREP_ALLOW_PASSWORDLESS_LOGIN !== "undefined" && PREP_ALLOW_PASSWORDLESS_LOGIN === true;
     var openEntry = allowPwdless && password === "";
     if (!isAdmin && !isPublic && !openEntry) {
-        alert('Wrong password.');
-        return;
+        if (!allowPwdless) {
+            alert('Wrong password.');
+            return;
+        }
     }
 
     userData.prepAdmin = !!isAdmin;
@@ -22073,11 +22096,6 @@ window.onload = function () {
     userData = loadUserData();
     try {
         if (!userData.name) {
-            setLoginLiveRole(userData.liveRole === "teacher" ? "teacher" : "student");
-        }
-    } catch (eLoginRole) {}
-    try {
-        if (!userData.name) {
             var pLive = new URLSearchParams(window.location.search);
             if (pLive.get('live_prep') === '1' && pLive.get('room')) {
                 sessionStorage.setItem('prep_live_deeplink', window.location.pathname + window.location.search);
@@ -22179,34 +22197,10 @@ window.onload = function () {
         }
     } catch (eQuickBoot) {}
     if (bootParams.get("prep_reauth") === "1") {
-        /**
-         * ?prep_reauth=1 is used by js/prep-my-courses-rail.js (students switching CPE/EGE/FCE) and ege.html → CPE links.
-         * Only the rail path sets prep_course_switch_track right before navigation — that is the one case where a plain
-         * student should sign in again. All other ?prep_reauth visits must not wipe english_mastery_perfect (random “back to Welcome”).
-         */
-        var hadStudentCourseRailSwitch = false;
-        try {
-            var _swRail = sessionStorage.getItem("prep_course_switch_track");
-            hadStudentCourseRailSwitch = !!(_swRail && /^(cpe|ege|fce|creator)$/.test(_swRail));
-        } catch (eSwRail) {}
-        var isPrivilegedSession =
-            userData.prepAdmin === true ||
-            userData.liveRole === "teacher" ||
-            userData.prepPlatformSwitch === true;
-        var shouldForceLoginAfterReauth =
-            !!String(userData.name || "").trim() &&
-            hadStudentCourseRailSwitch &&
-            !isPrivilegedSession;
         try {
             var trQ = bootParams.get("prep_track");
-            if (trQ && /^(cpe|ege|fce)$/.test(trQ)) {
-                if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.save) {
-                    prepCourseProfile.save({
-                        courseTrack: trQ,
-                        prepRole: userData.liveRole === "teacher" ? "teacher" : "student",
-                        wizardCompleted: true
-                    });
-                }
+            if (trQ && /^(cpe|ege|fce|creator)$/.test(trQ)) {
+                prepSyncProfileAfterLogin(trQ);
                 if (window.setLoginCourseTrack) setLoginCourseTrack(trQ);
             } else {
                 var swTr = sessionStorage.getItem("prep_course_switch_track");
@@ -22222,107 +22216,93 @@ window.onload = function () {
         try {
             history.replaceState({}, "", window.location.pathname || "/");
         } catch (eRs) {}
-        if (shouldForceLoginAfterReauth) {
-            userData.name = "";
-            try {
-                saveData();
-            } catch (eSd) {}
-            var _ni = document.getElementById("name-input");
-            if (_ni) _ni.value = "";
-            var _pi = document.getElementById("login-password-input");
-            if (_pi) _pi.value = "";
-            try {
-                setLoginLiveRole(userData.liveRole === "teacher" ? "teacher" : "student");
-            } catch (eLr) {}
-            showScreen("screen-login");
-            return;
-        }
         try {
             if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.applyDom) prepCourseProfile.applyDom();
         } catch (eApply) {}
     }
-    if (userData.name) {
-        var params = bootParams;
-        var skipExamHomeRedirect =
-            params.get("prep_stay") === "1" ||
-            params.get("stay") === "1" ||
-            params.get("live_prep") === "1" ||
-            params.get("screen") === "unit9" ||
-            params.get("screen") === "unit8";
-        if (!skipExamHomeRedirect) {
-            try {
-                var dTrack = window.__PREP_DEPLOY_TRACK__;
-                if (dTrack === "cpe") {
-                    /* single-site CPE deploy: never auto-bounce to ЕГЭ / FCE */
-                } else if (dTrack === "ege") {
+    prepApplyPrepTrackFromQuery(bootParams);
+    if (!String(userData.name || "").trim()) {
+        showScreen("screen-login");
+        return;
+    }
+    var params = bootParams;
+    var skipExamHomeRedirect =
+        params.get("prep_stay") === "1" ||
+        params.get("stay") === "1" ||
+        params.get("live_prep") === "1" ||
+        params.get("screen") === "unit9" ||
+        params.get("screen") === "unit8";
+    if (!skipExamHomeRedirect) {
+        try {
+            var dTrack = window.__PREP_DEPLOY_TRACK__;
+            if (dTrack === "cpe") {
+                /* single-site CPE deploy: never auto-bounce to ЕГЭ / FCE */
+            } else if (dTrack === "ege") {
+                window.location.replace(prepResolveSiteFile("ege.html"));
+                return;
+            } else if (dTrack === "fce") {
+                window.location.replace(prepResolveSiteFile("fce.html"));
+                return;
+            } else if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
+                var examTrack = prepCourseProfile.load().courseTrack;
+                if (examTrack === "ege") {
                     window.location.replace(prepResolveSiteFile("ege.html"));
                     return;
-                } else if (dTrack === "fce") {
+                }
+                if (examTrack === "fce") {
                     window.location.replace(prepResolveSiteFile("fce.html"));
                     return;
-                } else if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
-                    var examTrack = prepCourseProfile.load().courseTrack;
-                    if (examTrack === "ege") {
-                        window.location.replace(prepResolveSiteFile("ege.html"));
-                        return;
-                    }
-                    if (examTrack === "fce") {
-                        window.location.replace(prepResolveSiteFile("fce.html"));
-                        return;
-                    }
                 }
-            } catch (eExamHome) {}
-        }
-        ensureHubBuilt();
-        refreshUserBar();
-        refreshHubMeta();
-        var targetScreen = params.get('screen');
-        if (targetScreen === 'unit9') {
-            showScreen('screen-unit9');
-            requestAnimationFrame(function () {
-                if (params.get('live_prep') === '1' && params.get('room')) {
-                    applyLivePrepFromParams(params);
-                    return;
-                }
-                if (params.get("u9_uoe") === "1") {
-                    showScreen("screen-unit9-uoe");
-                    return;
-                }
-                if (params.get('u9_lex_th') === 'robots') {
-                    showScreen('screen-unit9-reading-hub');
-                } else if (params.get('u9_lex_th') === 'mark') {
-                    openUnit9MarkPhraseMatch();
-                } else                 if (params.get('u9_lex_games') === '1') {
-                    openUnit9LexGamesHub();
-                }
-                if (params.get('u9_lex_type') === 'interior') {
-                    openLexicalTrainerInterior();
-                    return;
-                }
-                var u9sp = params.get('u9_speak');
-                if (u9sp === 'retell_robots') openSpeakingTrainer('robots');
-                else if (u9sp === 'micro_robots') openU9MicroSpeaking('robots');
-                else if (u9sp === 'freer_reading') openSpeakFreerPractice();
-                else if (u9sp === 'retell_mark') openSpeakingTrainer('mark');
-                else if (u9sp === 'micro_listen') openU9MicroSpeaking('listening');
-                else if (u9sp === 'freer_listen') openSpeakFreerPractice('listenSc');
-                else if (u9sp === 'micro_idioms') openU9MicroSpeaking('idioms');
-                else if (u9sp === 'freer_idioms') openSpeakIdiomPractice();
-                else if (u9sp === 'micro_prep') openU9MicroSpeaking('prep');
-                else if (u9sp === 'freer_prep') openSpeakPrepPractice();
-                else if (u9sp === 'retell_prep_gallery') openSpeakingTrainer('prep_gallery');
-                else if (u9sp === 'micro_interior') openU9MicroSpeaking('interior');
-                else if (u9sp === 'freer_interior') openSpeakFreerPractice('interior');
-                else if (u9sp === 'phrase_interior') openSpeakInteriorPhrasePractice();
-                else if (u9sp === 'retell_interior') openSpeakingTrainer('interior_gallery');
-            });
-        } else if (targetScreen === 'unit8') {
-            showScreen('screen-unit8');
-        } else {
-            showScreen('screen-hub');
-        }
+            }
+        } catch (eExamHome) {}
+    }
+    ensureHubBuilt();
+    refreshUserBar();
+    refreshHubMeta();
+    var targetScreen = params.get('screen');
+    if (targetScreen === 'unit9') {
+        showScreen('screen-unit9');
+        requestAnimationFrame(function () {
+            if (params.get('live_prep') === '1' && params.get('room')) {
+                applyLivePrepFromParams(params);
+                return;
+            }
+            if (params.get("u9_uoe") === "1") {
+                showScreen("screen-unit9-uoe");
+                return;
+            }
+            if (params.get('u9_lex_th') === 'robots') {
+                showScreen('screen-unit9-reading-hub');
+            } else if (params.get('u9_lex_th') === 'mark') {
+                openUnit9MarkPhraseMatch();
+            } else                 if (params.get('u9_lex_games') === '1') {
+                openUnit9LexGamesHub();
+            }
+            if (params.get('u9_lex_type') === 'interior') {
+                openLexicalTrainerInterior();
+                return;
+            }
+            var u9sp = params.get('u9_speak');
+            if (u9sp === 'retell_robots') openSpeakingTrainer('robots');
+            else if (u9sp === 'micro_robots') openU9MicroSpeaking('robots');
+            else if (u9sp === 'freer_reading') openSpeakFreerPractice();
+            else if (u9sp === 'retell_mark') openSpeakingTrainer('mark');
+            else if (u9sp === 'micro_listen') openU9MicroSpeaking('listening');
+            else if (u9sp === 'freer_listen') openSpeakFreerPractice('listenSc');
+            else if (u9sp === 'micro_idioms') openU9MicroSpeaking('idioms');
+            else if (u9sp === 'freer_idioms') openSpeakIdiomPractice();
+            else if (u9sp === 'micro_prep') openU9MicroSpeaking('prep');
+            else if (u9sp === 'freer_prep') openSpeakPrepPractice();
+            else if (u9sp === 'retell_prep_gallery') openSpeakingTrainer('prep_gallery');
+            else if (u9sp === 'micro_interior') openU9MicroSpeaking('interior');
+            else if (u9sp === 'freer_interior') openSpeakFreerPractice('interior');
+            else if (u9sp === 'phrase_interior') openSpeakInteriorPhrasePractice();
+            else if (u9sp === 'retell_interior') openSpeakingTrainer('interior_gallery');
+        });
+    } else if (targetScreen === 'unit8') {
+        showScreen('screen-unit8');
     } else {
-        showScreen('screen-login');
+        showScreen('screen-hub');
     }
 };
 

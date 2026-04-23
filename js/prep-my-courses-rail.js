@@ -70,10 +70,9 @@
         if (d === "ege" && isEgePage()) return false;
         if (d === "fce" && isFcePage()) return false;
         var u = readCpeUser();
-        if (!u.name) return false;
+        if (!String(u.name || "").trim()) return false;
         if (screenId === "screen-login") return false;
-        /* “My courses” rail: site admin only (logged in with admin password on index). */
-        return u.prepAdmin === true;
+        return true;
     }
 
     function injectStylesOnce() {
@@ -194,30 +193,14 @@
             return;
         }
 
-        var uSwitch = readCpeUser();
         var root = siteRoot();
-        /* Teachers / admin: jump straight to the other hub (no login screen). Everyone else: re-auth on index. */
-        if (uSwitch.prepAdmin || uSwitch.liveRole === "teacher") {
-            var destT;
-            try {
-                destT = new global.URL(targetFile, root).href;
-            } catch (eT) {
-                destT = root + targetFile;
-            }
-            global.location.replace(destT);
-            return;
-        }
-
+        var destT;
         try {
-            global.sessionStorage.setItem("prep_course_switch_track", track);
-        } catch (eSs) {}
-        var dest;
-        try {
-            dest = new global.URL("index.html?prep_reauth=1", root).href;
-        } catch (eUrl) {
-            dest = root + "index.html?prep_reauth=1";
+            destT = new global.URL(targetFile, root).href;
+        } catch (eT) {
+            destT = root + targetFile;
         }
-        global.location.replace(dest);
+        global.location.replace(destT);
     }
 
     function wireOnce() {
