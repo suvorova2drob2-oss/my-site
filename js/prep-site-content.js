@@ -123,6 +123,9 @@
    */
   function hydrateFromCloud() {
     try {
+      if (global.__PREP_BOXED_SITE__ === true) {
+        return Promise.resolve(false);
+      }
       var PC = global.PrepCloudClient;
       if (
         !PC ||

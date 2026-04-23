@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 — Concession, contrast, purpose &amp; reason (C2)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 720px; margin: 0 auto; }
+    .top { margin-bottom: 14px; }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; margin-bottom: 6px; }
+    .top .sub { color: var(--muted); font-size: 13px; }
+
+    .stepper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 16px;
+      align-items: center;
+    }
+    .stepper button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .stepper button:hover { border-color: var(--accent); }
+    .stepper button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+    .stepper .step-ref { flex: 1 1 100%; }
+    @media (min-width: 520px) {
+      .stepper .step-ref { flex: 0 1 auto; }
+    }
+
+    .panel { display: none; }
+    .panel.is-active { display: block; }
+
+    section.sheet {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      margin-bottom: 14px;
+    }
+    section.sheet h2 { font-size: 1.02rem; margin-bottom: 8px; }
+    section.sheet h3 { font-size: 0.95rem; margin: 14px 0 8px; color: #e2e8f0; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .must {
+      background: rgba(56, 189, 248, 0.12);
+      border-left: 3px solid var(--accent);
+      padding: 10px 12px;
+      margin: 10px 0 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13px;
+    }
+    .must strong { color: #7dd3fc; }
+    .book {
+      font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+      font-size: 13px;
+      background: #0f172a;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    hr.sep { border: none; border-top: 1px solid var(--line); margin: 14px 0; }
+
+    /* Drill window */
+    .drill-window {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      margin-bottom: 14px;
+    }
+    .drill-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .drill-head h2 { font-size: 1.02rem; flex: 1 1 200px; }
+    .drill-meta { font-size: 12px; color: var(--muted); }
+    .phase {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .phase-a { background: rgba(251, 191, 36, 0.2); color: var(--warn); }
+    .phase-b { background: rgba(52, 211, 153, 0.18); color: var(--ok); }
+
+    .prompt-block {
+      background: #0f172a;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .prompt-block .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 6px; }
+    .prompt-block .en { font-size: 1.05rem; line-height: 1.45; }
+    .prompt-block .ru { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+    .anchor {
+      font-size: 1rem;
+      color: #7dd3fc;
+      font-weight: 600;
+      margin: 12px 0 4px;
+      padding: 10px 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .anchor .lab { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+
+    .timer-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 14px;
+    }
+    .timer-display {
+      font-variant-numeric: tabular-nums;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--warn);
+      min-width: 5.2ch;
+    }
+    .timer-display.done { color: var(--ok); animation: pulse 0.6s ease; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .timer-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .timer-btns button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .timer-btns button.primary {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: #7dd3fc;
+    }
+    .timer-btns button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .card-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .card-nav button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .card-nav button:disabled { opacity: 0.35; cursor: not-allowed; color: var(--muted); }
+    .card-nav .count { font-size: 13px; color: var(--muted); }
+
+    .back { margin-top: 18px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+
+    .hint-ban { font-size: 12px; color: #fca5a5; margin-top: 8px; }
+
+    .examples-wrap {
+      margin: 14px 0 10px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .examples-wrap .examples-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a5b4fc;
+      margin-bottom: 6px;
+    }
+    .examples-wrap .examples-task {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .examples-wrap .examples-task strong { color: #c4b5fd; font-weight: 600; }
+    .examples-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .examples-body p + p { margin-top: 8px; }
+
+    /* Book Language focus — personal stems (flip cards) */
+    #panel-personal .hud-pers {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    #panel-personal .hud-pers strong { color: var(--accent); }
+    #panel-personal .flip-scene {
+      perspective: 1100px;
+      max-width: 560px;
+      margin: 0 auto 8px;
+      cursor: pointer;
+      outline: none;
+    }
+    #panel-personal .flip-scene:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.45);
+      border-radius: 20px;
+    }
+    #panel-personal .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: min(260px, 42vh);
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+    }
+    #panel-personal .flip-inner.flipped { transform: rotateY(180deg); }
+    #panel-personal .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    #panel-personal .flip-front {
+      background: linear-gradient(160deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
+    }
+    #panel-personal .flip-back {
+      background: linear-gradient(160deg, rgba(56, 189, 248, 0.14), rgba(30, 41, 59, 0.96));
+      transform: rotateY(180deg);
+    }
+    #panel-personal .flip-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin-bottom: 10px;
+    }
+    #panel-personal .flip-q { font-size: 1.02rem; line-height: 1.5; max-width: 36rem; }
+    #panel-personal .flip-note { margin-top: 14px; font-size: 13px; color: var(--muted); max-width: 34rem; }
+    #panel-personal .tap-hint { text-align: center; font-size: 12px; color: var(--muted); margin: 8px 0 14px; }
+    #panel-personal .nav-row-pers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    #panel-personal .nav-row-pers button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    #panel-personal .nav-row-pers button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .speak-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f472b6;
+      margin-bottom: 8px;
+    }
+    #panel-personal .flip-q strong { color: #7dd3fc; font-weight: 700; }
+    #panel-personal .timer-row { margin: 14px 0 10px; }
+    #panel-personal .timer-display {
+      font-variant-numeric: tabular-nums;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--warn);
+      min-width: 5.2ch;
+    }
+    #panel-personal .timer-display.done { color: var(--ok); animation: pulse 0.6s ease; }
+    #panel-personal .timer-btns button.primary {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: #7dd3fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>Unit 9 &mdash; Concession, contrast, purpose &amp; reason</h1>
+      <p class="sub">
+        <strong>Reference</strong> &mdash; its own tab. <strong>Five windows</strong> &mdash; one task type each; inside, timed cards.
+        Each card includes <strong>full-sentence models</strong> (how you might say it): a guide to meaning and shape.
+        <strong>Your job</strong> &mdash; think of and say <strong>your own</strong> line with the same structure (do not copy a model word for word). Aim for naturalness.
+      </p>
+      <p class="sub" style="margin-top:10px;">
+        <a href="../exercises/exercises%20in%20grammar%20-%20grammar%20unit%209/index.html" style="color:var(--accent);font-weight:700;text-decoration:none;">Written book exercises (incl. Language focus tabs 5–6) →</a>
+      </p>
+    </div>
+
+    <div class="stepper" role="tablist" aria-label="Sections">
+      <button type="button" class="step-ref" role="tab" id="tab-ref" aria-controls="panel-ref" aria-selected="true" data-panel="ref">Textbook reference</button>
+      <button type="button" role="tab" id="tab-0" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="0" title="Concession">1 · Concession</button>
+      <button type="button" role="tab" id="tab-1" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="1" title="Nor">2 · Nor</button>
+      <button type="button" role="tab" id="tab-2" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="2" title="Purpose">3 · Purpose</button>
+      <button type="button" role="tab" id="tab-3" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="3" title="Reason">4 · Reason</button>
+      <button type="button" role="tab" id="tab-4" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="4" title="As for myself">5 · As for myself</button>
+      <button type="button" class="step-ref" role="tab" id="tab-personal" aria-controls="panel-personal" aria-selected="false" data-panel="personal">6 · Speak (book + timer)</button>
+    </div>
+
+    <div id="panel-ref" class="panel is-active" role="tabpanel" aria-labelledby="tab-ref">
+      <section class="sheet">
+        <h2>Textbook reference (examples)</h2>
+        <p class="muted">Model wording. In windows 1&ndash;5 each card has <strong>full-sentence examples</strong>; your job is the same structure with <strong>your own</strong> wording.</p>
+
+        <h3>Concession</h3>
+        <div class="book">However + adjective + subject + verb
+However ugly it may be, the tower is a landmark.
+However surprising this may seem, the interior is warm.
+
+Whatever / whoever + subject + verb
+Whatever you may think of the façade, the gallery is world-class.
+Whoever they may be, critics agree the lighting is harsh.</div>
+
+        <h3>Contrast (neither / nor + inversion)</h3>
+        <div class="book">Neither / nor + be + subject
+The first scheme was not cheap, nor was the second.
+
+Neither / nor + auxiliary + subject + verb
+The architect did not compromise, nor did the client.</div>
+
+        <h3>Purpose</h3>
+        <div class="book">In order (not) to + infinitive
+They exposed the ducts in order to signal honesty.
+
+So as (not) to + infinitive
+The gallery kept walls raw so as not to compete with the art.</div>
+
+        <h3>Reason</h3>
+        <div class="book">As / since (reason)
+As the budget was tight, they chose plywood over marble.
+
+As / while (time + reason)
+While the debate raged, the team froze the finishes.
+
+Now that / as / since (present result)
+Now that the scaffolding is down, the proportions read clearly.
+
+In that (formal explanation)
+The scheme is radical in that it rejects ornament altogether.
+
+As for myself (personal stance)
+As for myself, I prefer working in one of those quiet courtyards.</div>
+
+        <hr class="sep" />
+        <p class="muted" style="margin-top:12px;">More rules and practice: <strong>Ready for Grammar</strong> (Unit 9 / page reference in your book).</p>
+        <h3>How to run the session</h3>
+        <ul class="muted" style="margin-left:1.1rem;">
+          <li style="margin:6px 0;">5&ndash;7 minutes: read the reference aloud (choral / round).</li>
+          <li style="margin:6px 0;">Windows 1&ndash;5: phase A, then B. On-screen examples are a guide; learners produce their own lines.</li>
+          <li style="margin:6px 0;">Tab 6: <strong>SPEAK</strong> &mdash; timed stems from the book; pair work or solo; flip for an optional model line.</li>
+          <li style="margin:6px 0;">Feedback: inversion after <em>nor</em>, no <em>because</em> in the purpose sprint, natural concession.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div id="panel-drill" class="panel" role="tabpanel" aria-labelledby="tab-0" hidden>
+      <div class="drill-window">
+        <div class="drill-head">
+          <h2 id="drill-title"></h2>
+          <span class="drill-meta" id="drill-task-label"></span>
+        </div>
+        <div class="must" id="drill-must"></div>
+
+        <span class="phase" id="drill-phase"></span>
+        <div class="prompt-block">
+          <div class="label" id="prompt-label"></div>
+          <p class="en" id="prompt-en"></p>
+          <p class="ru muted" id="prompt-ru" hidden></p>
+        </div>
+        <div class="anchor">
+          <div class="lab">Target structure (use in your utterance)</div>
+          <div id="anchor-text"></div>
+        </div>
+        <div class="examples-wrap" id="drill-examples-wrap" hidden>
+          <div class="examples-title">Examples &mdash; how you could say it</div>
+          <p class="examples-task" id="drill-examples-intro"></p>
+          <div class="examples-body" id="drill-examples-body"></div>
+        </div>
+        <p class="muted" id="drill-hint"></p>
+        <p class="hint-ban" id="drill-ban" hidden></p>
+
+        <div class="timer-row">
+          <div class="timer-display" id="timer-display" aria-live="polite">—</div>
+          <div class="timer-btns">
+            <button type="button" class="primary" id="btn-start">Start</button>
+            <button type="button" id="btn-pause" disabled>Pause</button>
+            <button type="button" id="btn-reset">Reset</button>
+          </div>
+        </div>
+
+        <div class="card-nav">
+          <button type="button" id="btn-prev-card">&larr; Previous card</button>
+          <span class="count" id="card-count"></span>
+          <button type="button" id="btn-next-card">Next card &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-personal" class="panel" role="tabpanel" aria-labelledby="tab-personal" hidden>
+      <section class="sheet">
+        <span class="speak-badge">Speak</span>
+        <h2>Exercise 4 &mdash; true for you</h2>
+        <p class="muted"><strong>Work in pairs.</strong> Complete the sentences so they are <strong>true for you</strong>, then compare your ideas. (You can also practise solo.) Use the timed slot to speak without writing first.</p>
+        <div class="must"><strong>Timer:</strong> default <strong>75 seconds</strong> per stem &mdash; enough for both partners in a pair to try a line. Start when you are ready; Reset loads the full time again for this card.</div>
+        <p class="hud-pers" id="pers-hud" aria-live="polite"></p>
+        <div class="timer-row">
+          <div class="timer-display" id="pers-timer-display" aria-live="polite">01:15</div>
+          <div class="timer-btns">
+            <button type="button" class="primary" id="pers-btn-start">Start</button>
+            <button type="button" id="pers-btn-pause" disabled>Pause</button>
+            <button type="button" id="pers-btn-reset">Reset</button>
+          </div>
+        </div>
+        <div class="flip-scene" id="pers-scene" role="button" tabindex="0" aria-label="Flip card"
+          onclick="persFlip()"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();persFlip();}">
+          <div class="flip-inner" id="pers-inner">
+            <div class="flip-face flip-front">
+              <span class="flip-kicker">Your turn</span>
+              <p class="flip-q" id="pers-front"></p>
+            </div>
+            <div class="flip-face flip-back">
+              <span class="flip-kicker">Example only (optional)</span>
+              <p class="flip-q" id="pers-example" style="color:#e0f2fe;"></p>
+              <p class="flip-note" id="pers-note"></p>
+            </div>
+          </div>
+        </div>
+        <p class="tap-hint">Tap the card or press Space when it is focused &mdash; after your speaking time if you want a model.</p>
+        <div class="nav-row-pers">
+          <button type="button" id="pers-prev" onclick="persPrev()">&larr; Back</button>
+          <button type="button" id="pers-next" onclick="persNext()">Next &rarr;</button>
+        </div>
+      </section>
+    </div>
+
+    <p class="back"><a href="../index.html">&larr; Grammar hub</a> &middot; <a href="../../index.html?screen=unit9">Level 9</a></p>
+  </div>
+
+  <script>
+(function () {
+  var DEFAULT_EXAMPLES_INTRO = 'The lines below are models only. <strong>Say your own version</strong> with the same structure, in your own words.';
+
+  var PERSONAL_STEMS = [
+    {
+      seconds: 75,
+      stemHtml: 'When it comes to artistic and creative things, I\'m not very good at … <strong>whereas</strong> … .',
+      example: 'When it comes to artistic and creative things, I\'m not very good at life drawing, whereas I can edit short video clips without much trouble.',
+      note: 'Keep <strong>whereas</strong> to contrast the two skills or areas.'
+    },
+    {
+      seconds: 75,
+      stemHtml: 'For me art is about … <strong>in that</strong> … .',
+      example: 'For me art is about attention and patience, in that you have to keep looking until the piece stops being “noise” and starts making sense.',
+      note: '<strong>In that</strong> explains what you mean by the first noun phrase.'
+    },
+    {
+      seconds: 90,
+      stemHtml: 'Doing creative activities is important / not important to me <strong>since</strong> … .',
+      example: 'Doing creative activities is important to me since they are the only hours in the week when I stop optimising everything.',
+      note: 'Choose <strong>is important</strong> or <strong>is not important</strong> to match your view, then give a real reason after <em>since</em>.'
+    }
+  ];
+
+  var persIndex = 0;
+  var persFlipped = false;
+  var persTimerId = null;
+  var persRemaining = 0;
+  var persTotalForStem = 75;
+
+  var persElDisplay = document.getElementById('pers-timer-display');
+  var persBtnStart = document.getElementById('pers-btn-start');
+  var persBtnPause = document.getElementById('pers-btn-pause');
+  var persBtnReset = document.getElementById('pers-btn-reset');
+
+  function persStopTimer() {
+    if (persTimerId) {
+      clearInterval(persTimerId);
+      persTimerId = null;
+    }
+    persBtnPause.disabled = true;
+    persBtnPause.textContent = 'Pause';
+  }
+
+  function persTick() {
+    persRemaining--;
+    if (persRemaining <= 0) {
+      persRemaining = 0;
+      persElDisplay.textContent = formatTime(0);
+      persElDisplay.classList.add('done');
+      persStopTimer();
+      persBtnStart.disabled = false;
+      return;
+    }
+    persElDisplay.textContent = formatTime(persRemaining);
+  }
+
+  function persResetTimerDisplay() {
+    persStopTimer();
+    persElDisplay.classList.remove('done');
+    var sec = PERSONAL_STEMS[persIndex].seconds || 75;
+    persTotalForStem = sec;
+    persRemaining = persTotalForStem;
+    persElDisplay.textContent = formatTime(persRemaining);
+    persBtnStart.disabled = false;
+  }
+
+  function persRender() {
+    var c = PERSONAL_STEMS[persIndex];
+    document.getElementById('pers-front').innerHTML = (persIndex + 1) + '. ' + c.stemHtml;
+    document.getElementById('pers-example').textContent = c.example;
+    document.getElementById('pers-note').innerHTML = c.note;
+    document.getElementById('pers-inner').classList.toggle('flipped', persFlipped);
+    var sec = c.seconds || 75;
+    document.getElementById('pers-hud').innerHTML =
+      'Stem <strong>' + (persIndex + 1) + '</strong> / <strong>' + PERSONAL_STEMS.length + '</strong> · ' +
+      sec + 's slot for this prompt';
+    document.getElementById('pers-prev').disabled = persIndex <= 0;
+    document.getElementById('pers-next').disabled = persIndex >= PERSONAL_STEMS.length - 1;
+    persResetTimerDisplay();
+  }
+  window.persFlip = function () {
+    persFlipped = !persFlipped;
+    var c = PERSONAL_STEMS[persIndex];
+    document.getElementById('pers-front').innerHTML = (persIndex + 1) + '. ' + c.stemHtml;
+    document.getElementById('pers-example').textContent = c.example;
+    document.getElementById('pers-note').innerHTML = c.note;
+    document.getElementById('pers-inner').classList.toggle('flipped', persFlipped);
+  };
+  window.persPrev = function () {
+    if (persIndex <= 0) return;
+    persIndex--;
+    persFlipped = false;
+    persRender();
+  };
+  window.persNext = function () {
+    if (persIndex >= PERSONAL_STEMS.length - 1) return;
+    persIndex++;
+    persFlipped = false;
+    persRender();
+  };
+
+  persBtnStart.addEventListener('click', function () {
+    if (persRemaining <= 0) persRemaining = persTotalForStem;
+    persElDisplay.classList.remove('done');
+    if (persTimerId) return;
+    persTimerId = setInterval(persTick, 1000);
+    persBtnStart.disabled = true;
+    persBtnPause.disabled = false;
+    persElDisplay.textContent = formatTime(persRemaining);
+  });
+
+  persBtnPause.addEventListener('click', function () {
+    if (persTimerId) {
+      clearInterval(persTimerId);
+      persTimerId = null;
+      persBtnStart.disabled = false;
+      persBtnPause.disabled = true;
+    }
+  });
+
+  persBtnReset.addEventListener('click', function () {
+    persResetTimerDisplay();
+  });
+
+  var DRILLS = [
+    {
+      title: '1. Concession duel (but / however)',
+      must: '<strong>Required:</strong> in your utterance, one of <strong>however + adj + subject + may be/seem</strong> or <strong>whatever + clause + may be</strong> (see reference). Meaning: acknowledge a counter-argument, keep your position.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Situation (your wording)', en: 'The tower is brutal and heavy.', ru: 'Focus: skyline / recognisability. Structure &mdash; in the box below.', anchor: 'however ungainly it may seem', hint: 'One fluent sentence or two short ones &mdash; whichever sounds more natural.', examples: ['However ungainly it may seem, it anchors the skyline &mdash; you recognize the city from that silhouette.', 'The tower is brutal and heavy; however ungainly it may seem from the pavement, it reads as a landmark from the river.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Situation (your wording)', en: 'The open plan feels cold.', ru: 'Focus: daylight, flexibility of furniture layout.', anchor: 'however sparse this may seem', hint: '', examples: ['However sparse this may seem at first, the light actually carries the room once the sun moves round.', 'The open plan feels cold; however sparse this may seem on a grey morning, it was deliberate &mdash; the client wanted a gallery calm.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Situation (your wording)', en: 'The lobby looks unfinished.', ru: 'Focus: honest materials, no “decoration for decoration’s sake”.', anchor: 'whatever you may think of the finishes', hint: '', examples: ['Whatever you may think of the finishes, at least the materials are honest &mdash; nothing is pretending to be marble.', 'The lobby looks unfinished, but whatever you may think of that choice, it signals budget and craft rather than polish.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 20, promptLabel: 'Two ideas in one utterance', en: 'People say the tower is ugly, yet in the cityscape it reads differently &mdash; it holds its own from the bridge.', ru: 'Pick one structure from the target box. Do not pad the sentence for length.', anchor: 'however surprising this may seem / whatever it may be', hint: 'One turn &mdash; one natural sentence.', ban: '', examples: ['However surprising this may seem, that brutal tower works as a landmark once you see the whole waterfront.', 'The tower is ugly at street level; whatever it may be as sculpture, it photographs well against the sky.', 'However surprising this may seem from close up, from the river it finally makes sense.'] }
+      ]
+    },
+    {
+      title: '2. Nor chain (contrast)',
+      must: '<strong>Required:</strong> after a negative, add a second downside with <strong>nor + inversion</strong>: <em>Nor is it…</em> / <em>Nor does it…</em>. Same topic: interior / style.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'First part given &mdash; you continue', en: 'Minimalism is not for everyone. …', ru: 'Second clause &mdash; with <em>Nor is it…</em> or <em>Nor does it…</em> (inversion!).', anchor: 'Nor is it… / Nor does it…', hint: '', examples: ['Minimalism is not for everyone, nor is it cheap to heat a glass box like this.', 'Minimalism is not for everyone, nor does it forgive bad storage when every surface is visible.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'First part given &mdash; you continue', en: 'The loft is not exactly cosy. …', ru: 'Continue with <em>Nor does it…</em>.', anchor: 'Nor does it…', hint: '', examples: ['The loft is not exactly cosy, nor does it forgive bad acoustics when half the team is on video calls.', 'The loft is not exactly cosy, nor does the single radiator cope with January drafts from those steel frames.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'First part given &mdash; you continue', en: 'The colour palette is not adventurous. …', ru: 'Continue with <em>Nor is it…</em> (you may reference the brief).', anchor: 'Nor is it…', hint: '', examples: ['The colour palette is not adventurous, nor is it trying to be &mdash; the brief was deliberately calm.', 'The colour palette is not adventurous, nor is that accidental: the art was meant to supply the drama.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 30, promptLabel: 'Your downside in one sentence', en: 'Same office / same style: add another downside.', ru: 'Only <em>Nor is it…</em> or <em>Nor does it…</em>.', anchor: 'Nor is it… / Nor does it…', hint: 'Repeat the card with a different idea.', ban: '', examples: ['Nor does it help that the carpet shows every coffee stain.', 'Nor is there anywhere to escape the echo when the AV is on full blast.'] }
+      ]
+    },
+    {
+      title: '3. Purpose sprint',
+      must: '<strong>Required:</strong> one answer &mdash; one sentence: only <strong>in order (not) to</strong> or <strong>so as (not) to</strong>.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Question (full answer, your wording)', en: 'Why did they move the lifts to the façade?', ru: '', anchor: 'in order to… / so as (not) to…', hint: '', ban: 'Not allowed in this round: because, so that.', examples: ['They moved the lifts to the façade in order to free the core and pull daylight deeper into the floorplate.', 'They did it so as to stop the reception queue from blocking the main axis.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Question (full answer, your wording)', en: 'Why leave the concrete bare?', ru: '', anchor: 'in order to… / so as (not) to…', hint: '', ban: 'Not allowed in this round: because, so that.', examples: ['They left the concrete bare in order to signal that structure is part of the finish.', 'They left it raw so as not to pretend the building is more polished than it is.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Question (full answer, your wording)', en: 'Why shrink the reception desk?', ru: '', anchor: 'in order to… / so as (not) to…', hint: '', ban: 'Not allowed in this round: because, so that.', examples: ['They shrank the desk in order to keep sightlines clear into the gallery.', 'They did it so as not to turn the lobby into a barrier between street and collection.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 40, promptLabel: 'Prompt (why did they do it?)', en: 'exposed services — Why?', ru: 'Optional: swap the prompt &mdash; single loaded corridor; no ceiling tiles.', anchor: 'in order to… / so as (not) to…', hint: 'Tap Reset and give another answer.', ban: 'Not allowed: because, so that.', examples: ['They left the services exposed in order to show that maintenance access was always part of the concept.', 'They routed ducts visibly so as not to bury the mechanics behind a false ceiling they would never reopen.'] }
+      ]
+    },
+    {
+      title: '4. Reason lines',
+      must: '<strong>Required:</strong> your sentence uses exactly the linker given. Case: the building divides opinion.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Case + linker', en: 'This building divides opinion. Your sentence must begin with Since…', ru: 'One sentence.', anchor: 'Since …', hint: '', examples: ['Since the façade ignores every local guideline, the scheme was always going to split the public.', 'Since the render promised trees and the reality is bare concrete, the backlash was predictable.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Case + linker', en: 'This building divides opinion. Your sentence must use As… (reason, not “like”).', ru: '', anchor: 'As …', hint: '', examples: ['As the scale is so aggressive, pedestrians feel overwhelmed at street level.', 'As the budget went to the shell, the interior finishes were bound to disappoint some visitors.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Case + linker', en: 'This building divides opinion. Only While… (scene + reason).', ru: '', anchor: 'While …', hint: '', examples: ['While commentators were still arguing about taste, the developer had already topped out.', 'While the conservation lobby protested, the cladding trucks were unloading on site.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Case + linker', en: 'This building divides opinion. Only Now that…', ru: '', anchor: 'Now that …', hint: '', examples: ['Now that the scaffolding is down, the proportions read more honestly than in the mock-ups.', 'Now that the stone has weathered, the entrance feels less arrogant than on day one.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 35, promptLabel: 'Case + linker', en: 'This building divides opinion. Formal explanation: … in that …', ru: 'One sentence.', anchor: '… in that …', hint: '', examples: ['The scheme is controversial in that it trades comfort for a stark visual statement.', 'The tower is divisive in that it reads as a monument in a neighbourhood of modest blocks.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 35, promptLabel: 'Your case', en: 'A controversial museum / tower / open-plan office — give a reason.', ru: 'The tutor names the linker (Since / As / While / Now that / in that). Give <strong>your</strong> reason.', anchor: '(linker named by tutor)', hint: 'Say the linker first, then finish the thought.', examples: ['Since the galleries are all glass, the curators fight the sun every summer.', 'Now that the hype has faded, people argue about whether the building still earns its upkeep.'] }
+      ]
+    },
+    {
+      title: '5. As for myself — personal stance',
+      must: '<strong>Required:</strong> one utterance opening with <strong>As for myself,</strong> + your view on home / office / neighbourhood.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 25, promptLabel: 'Your ending', en: 'Start with: As for myself, … (your idea).', ru: 'Do not copy a model &mdash; say something plausible about yourself.', anchor: 'As for myself,', hint: '', examples: ['As for myself, I would rather work somewhere with lower ceilings and softer light than in that atrium.', 'As for myself, I need a corner with a door &mdash; open plan looks heroic but ruins my focus.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 30, promptLabel: 'Prompt only', en: 'Where would you work in this city?', ru: 'No full template on screen; you still open with <em>As for myself,</em>.', anchor: 'As for myself,', hint: '', examples: ['As for myself, I would take the old warehouse quarter over the glass business district any day.', 'As for myself, I would commute to the campus by the park &mdash; I cannot stand the CBD towers.'] }
+      ]
+    }
+  ];
+
+  var panelRef = document.getElementById('panel-ref');
+  var panelDrill = document.getElementById('panel-drill');
+  var panelPersonal = document.getElementById('panel-personal');
+  var tabRef = document.getElementById('tab-ref');
+  var tabPersonal = document.getElementById('tab-personal');
+  var tabsDrill = document.querySelectorAll('.stepper button[data-task]');
+
+  var taskIndex = 0;
+  var slideIndex = 0;
+  var timerId = null;
+  var remaining = 0;
+  var totalForSlide = 0;
+
+  var elTitle = document.getElementById('drill-title');
+  var elTaskLabel = document.getElementById('drill-task-label');
+  var elMust = document.getElementById('drill-must');
+  var elPhase = document.getElementById('drill-phase');
+  var elPromptLabel = document.getElementById('prompt-label');
+  var elPromptEn = document.getElementById('prompt-en');
+  var elPromptRu = document.getElementById('prompt-ru');
+  var elAnchor = document.getElementById('anchor-text');
+  var elHint = document.getElementById('drill-hint');
+  var elBan = document.getElementById('drill-ban');
+  var elExamplesWrap = document.getElementById('drill-examples-wrap');
+  var elExamplesIntro = document.getElementById('drill-examples-intro');
+  var elExamplesBody = document.getElementById('drill-examples-body');
+  var elDisplay = document.getElementById('timer-display');
+  var btnStart = document.getElementById('btn-start');
+  var btnPause = document.getElementById('btn-pause');
+  var btnReset = document.getElementById('btn-reset');
+  var btnPrev = document.getElementById('btn-prev-card');
+  var btnNext = document.getElementById('btn-next-card');
+  var elCardCount = document.getElementById('card-count');
+
+  function formatTime(s) {
+    if (s < 0) s = 0;
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function stopTimer() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    btnPause.disabled = true;
+    btnPause.textContent = 'Pause';
+  }
+
+  function tick() {
+    remaining--;
+    if (remaining <= 0) {
+      remaining = 0;
+      elDisplay.textContent = formatTime(0);
+      elDisplay.classList.add('done');
+      stopTimer();
+      btnStart.disabled = false;
+      return;
+    }
+    elDisplay.textContent = formatTime(remaining);
+  }
+
+  function resetTimerDisplay() {
+    stopTimer();
+    elDisplay.classList.remove('done');
+    var slide = DRILLS[taskIndex].slides[slideIndex];
+    totalForSlide = slide.seconds;
+    remaining = totalForSlide;
+    elDisplay.textContent = formatTime(remaining);
+    btnStart.disabled = false;
+  }
+
+  function renderSlide() {
+    var drill = DRILLS[taskIndex];
+    var slide = drill.slides[slideIndex];
+    elTitle.textContent = drill.title;
+    elTaskLabel.textContent = 'Task ' + (taskIndex + 1) + ' of 5';
+    elMust.innerHTML = drill.must;
+    elPhase.textContent = slide.phaseLabel;
+    elPhase.className = 'phase ' + slide.phaseClass;
+    elPromptLabel.textContent = slide.promptLabel;
+    elPromptEn.textContent = slide.en;
+    if (slide.ru) {
+      elPromptRu.innerHTML = slide.ru;
+      elPromptRu.hidden = false;
+    } else {
+      elPromptRu.textContent = '';
+      elPromptRu.hidden = true;
+    }
+    elAnchor.textContent = slide.anchor;
+    elExamplesIntro.innerHTML = slide.examplesIntro || DEFAULT_EXAMPLES_INTRO;
+    if (slide.examples && slide.examples.length) {
+      elExamplesWrap.hidden = false;
+      elExamplesBody.innerHTML = slide.examples.map(function (line) {
+        var safe = String(line).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        return '<p>' + safe + '</p>';
+      }).join('');
+    } else {
+      elExamplesWrap.hidden = true;
+      elExamplesBody.innerHTML = '';
+    }
+    elHint.textContent = slide.hint || '';
+    if (slide.ban) {
+      elBan.textContent = slide.ban;
+      elBan.hidden = false;
+    } else {
+      elBan.hidden = true;
+    }
+    elCardCount.textContent = 'Card ' + (slideIndex + 1) + ' of ' + drill.slides.length;
+    btnPrev.disabled = slideIndex === 0;
+    btnNext.disabled = slideIndex >= drill.slides.length - 1;
+    resetTimerDisplay();
+  }
+
+  function showPanel(which, taskIdx) {
+    stopTimer();
+    btnStart.disabled = false;
+    persStopTimer();
+    if (persBtnStart) persBtnStart.disabled = false;
+
+    if (which === 'personal') {
+      panelRef.hidden = true;
+      panelRef.classList.remove('is-active');
+      panelDrill.hidden = true;
+      panelDrill.classList.remove('is-active');
+      panelPersonal.hidden = false;
+      panelPersonal.classList.add('is-active');
+      tabRef.setAttribute('aria-selected', 'false');
+      tabPersonal.setAttribute('aria-selected', 'true');
+      tabsDrill.forEach(function (t) {
+        t.setAttribute('aria-selected', 'false');
+      });
+      persFlipped = false;
+      persRender();
+      return;
+    }
+
+    panelPersonal.hidden = true;
+    panelPersonal.classList.remove('is-active');
+    tabPersonal.setAttribute('aria-selected', 'false');
+
+    var isRef = which === 'ref';
+    panelRef.classList.toggle('is-active', isRef);
+    panelRef.hidden = !isRef;
+    panelDrill.classList.toggle('is-active', !isRef);
+    panelDrill.hidden = isRef;
+    tabRef.setAttribute('aria-selected', isRef ? 'true' : 'false');
+    tabsDrill.forEach(function (t) {
+      var ti = parseInt(t.getAttribute('data-task'), 10);
+      t.setAttribute('aria-selected', !isRef && ti === taskIdx ? 'true' : 'false');
+    });
+    if (!isRef) {
+      taskIndex = taskIdx;
+      if (slideIndex >= DRILLS[taskIndex].slides.length) slideIndex = 0;
+      renderSlide();
+    }
+  }
+
+  document.querySelectorAll('.stepper button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var panel = btn.getAttribute('data-panel');
+      if (panel === 'personal') {
+        showPanel('personal', taskIndex);
+        return;
+      }
+      if (panel === 'ref') {
+        showPanel('ref', taskIndex);
+        return;
+      }
+      var ti = parseInt(btn.getAttribute('data-task'), 10);
+      slideIndex = 0;
+      showPanel('drill', ti);
+    });
+  });
+
+  btnStart.addEventListener('click', function () {
+    if (remaining <= 0) remaining = totalForSlide;
+    elDisplay.classList.remove('done');
+    if (timerId) return;
+    timerId = setInterval(tick, 1000);
+    btnStart.disabled = true;
+    btnPause.disabled = false;
+    elDisplay.textContent = formatTime(remaining);
+  });
+
+  btnPause.addEventListener('click', function () {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+    }
+  });
+
+  btnReset.addEventListener('click', function () {
+    resetTimerDisplay();
+    btnStart.disabled = false;
+  });
+
+  btnPrev.addEventListener('click', function () {
+    if (slideIndex > 0) {
+      slideIndex--;
+      renderSlide();
+    }
+  });
+
+  btnNext.addEventListener('click', function () {
+    if (slideIndex < DRILLS[taskIndex].slides.length - 1) {
+      slideIndex++;
+      renderSlide();
+    }
+  });
+
+  persRender();
+  showPanel('ref', 0);
+})();
+  </script>
+</body>
+</html>

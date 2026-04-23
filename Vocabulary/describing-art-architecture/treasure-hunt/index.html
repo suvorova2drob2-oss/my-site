@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treasure Hunt — Interior design vocabulary</title>
+  <script src="../../../js/interior-design-vocab-core.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --ok: #10b981;
+      --err: #f43f5e;
+      --speaker: #f87171;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: max(20px, env(safe-area-inset-top, 0px)) 16px 24px;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .back { color: var(--primary); text-decoration: none; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+    .back:hover { text-decoration: underline; }
+    h1 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .lead { font-size: 0.9rem; color: var(--muted); margin-bottom: 14px; }
+    .chain { font-size: 0.82rem; color: var(--primary); margin-bottom: 16px; }
+    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .progress-bar { flex: 1; height: 8px; background: #334155; border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--ok); border-radius: 999px; transition: width 0.25s ease; }
+    .paraphrase-wrap {
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .paraphrase-label {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .paraphrase-text { font-size: 1.05rem; font-weight: 600; font-style: italic; }
+    .passage-card {
+      border-left: 4px solid var(--primary);
+      padding: 16px 16px 16px 18px;
+      background: var(--panel);
+      border-radius: 0 12px 12px 0;
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+    }
+    .speaker-tag { color: var(--speaker); font-weight: 800; margin-bottom: 12px; }
+    .passage { font-size: 1rem; color: #e2e8f0; line-height: 1.65; }
+    .pick {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      color: #bae6fd;
+    }
+    .pick:hover:not(.done):not(.disabled) { background: rgba(56, 189, 248, 0.15); }
+    .pick.done { color: var(--ok); text-decoration: none; cursor: default; }
+    .pick.wrong-flash { animation: shake 0.4s ease; color: var(--err); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    .nav-rounds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .nav-rounds button {
+      border: 1px solid #475569;
+      border-radius: 8px;
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .nav-rounds button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .all-done { display: none; margin-top: 14px; padding: 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); color: #a7f3d0; font-weight: 600; }
+    .all-done.show { display: block; }
+    .score-line { font-size: 0.95rem; color: var(--muted); margin-bottom: 8px; }
+    .err { color: var(--err); font-weight: 600; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top-bar">
+      <h1>Treasure Hunt — Art &amp; architecture</h1>
+      <a class="back" href="../index.html">&larr; Hub</a>
+    </div>
+    <p class="lead">Read the paraphrase, then click the <strong>exact phrase</strong> in the passage. Only the next phrase in order scores. Data: <code>js/interior-design-vocab-core.js</code>.</p>
+    <p class="chain" id="chainNote"></p>
+    <p class="score-line">Home score (shared): <strong id="totalScore">0</strong></p>
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span id="itemCounter" style="font-size:0.88rem;color:var(--muted)"></span>
+    </div>
+    <div class="paraphrase-wrap">
+      <span class="paraphrase-label">Paraphrase</span>
+      <p class="paraphrase-text" id="paraphraseBox"></p>
+    </div>
+    <div class="passage-card">
+      <div class="speaker-tag" id="speakerLabel"></div>
+      <div class="passage" id="passageBox"></div>
+    </div>
+    <div class="nav-rounds">
+      <button type="button" id="btnPrevRound">&larr; Prev round</button>
+      <button type="button" id="btnNextRound">Next round &rarr;</button>
+    </div>
+    <p class="all-done" id="allDone">All rounds complete — return to the vocabulary hub or open Speaking trainer.</p>
+    <p class="err" id="mountErr" style="display:none;"></p>
+  </div>
+  <script>
+(function () {
+  var scoreKey = "masteringB2Score";
+  function getScore() {
+    var n = Number(localStorage.getItem(scoreKey));
+    return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+  }
+  function addScore(x) {
+    localStorage.setItem(scoreKey, String(getScore() + x));
+  }
+
+  var core = window.INTERIOR_DESIGN_VOCAB_CORE;
+  var ROUNDS = core && core.treasureHuntRounds ? core.treasureHuntRounds : [];
+  if (!ROUNDS.length) {
+    var e = document.getElementById("mountErr");
+    if (e) {
+      e.style.display = "block";
+      e.textContent = "Could not load Treasure Hunt data from interior-design-vocab-core.js.";
+    }
+    return;
+  }
+
+  var roundIndex = 0;
+  var itemIndex = 0;
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function wrapPhrases(passage, items) {
+    var pairs = items
+      .map(function (it, i) {
+        var idx = passage.indexOf(it.phrase);
+        return idx >= 0 ? { idx: idx, i: i, phrase: it.phrase } : null;
+      })
+      .filter(Boolean)
+      .sort(function (a, b) {
+        return a.idx - b.idx;
+      });
+    var out = "";
+    var cursor = 0;
+    pairs.forEach(function (p) {
+      out += escapeHtml(passage.slice(cursor, p.idx));
+      out +=
+        '<span class="pick" data-i="' +
+        p.i +
+        '" role="button" tabindex="0">' +
+        escapeHtml(p.phrase) +
+        "</span>";
+      cursor = p.idx + p.phrase.length;
+    });
+    out += escapeHtml(passage.slice(cursor));
+    return "<p>" + out.replace(/\n\n/g, "</p><p>") + "</p>";
+  }
+
+  function updateProgress() {
+    var r = ROUNDS[roundIndex];
+    var total = r.items.length;
+    var done = itemIndex >= total;
+    var cur = done ? total : itemIndex + 1;
+    var pct = total ? (cur / total) * 100 : 0;
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("itemCounter").textContent =
+      "Item " + (done ? total : cur) + " / " + total + " · Round " + (roundIndex + 1) + " / " + ROUNDS.length;
+  }
+
+  function bindPicks() {
+    document.querySelectorAll(".pick").forEach(function (el) {
+      el.replaceWith(el.cloneNode(true));
+    });
+    document.querySelectorAll(".pick").forEach(function (el) {
+      var i = Number(el.getAttribute("data-i"));
+      if (i < itemIndex) return;
+      function handler() {
+        onPick(i, el);
+      }
+      el.addEventListener("click", handler);
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handler();
+        }
+      });
+    });
+  }
+
+  function onPick(i, el) {
+    var r = ROUNDS[roundIndex];
+    if (itemIndex >= r.items.length || el.classList.contains("done")) return;
+    if (i > itemIndex) {
+      el.classList.add("wrong-flash");
+      setTimeout(function () {
+        el.classList.remove("wrong-flash");
+      }, 450);
+      return;
+    }
+    if (i < itemIndex) return;
+    addScore(1);
+    document.getElementById("totalScore").textContent = String(getScore());
+    if (itemIndex < r.items.length - 1) {
+      itemIndex += 1;
+      render();
+    } else {
+      itemIndex = r.items.length;
+      document.getElementById("paraphraseBox").textContent =
+        "Round complete — press Next round if there is another round.";
+      render();
+      if (roundIndex === ROUNDS.length - 1) {
+        document.getElementById("allDone").classList.add("show");
+      }
+    }
+  }
+
+  function render() {
+    document.getElementById("totalScore").textContent = String(getScore());
+    document.getElementById("chainNote").textContent =
+      "Single passage: interior design article — key lexis in reading order.";
+    var r = ROUNDS[roundIndex];
+    document.getElementById("speakerLabel").textContent = r.title;
+    document.getElementById("passageBox").innerHTML = wrapPhrases(r.passage, r.items);
+    if (itemIndex < r.items.length) {
+      document.getElementById("paraphraseBox").textContent = r.items[itemIndex].paraphrase;
+    }
+    var picks = document.querySelectorAll(".pick");
+    var roundDone = itemIndex >= r.items.length;
+    picks.forEach(function (el) {
+      var i = Number(el.getAttribute("data-i"));
+      el.classList.remove("wrong-flash");
+      if (i < itemIndex || roundDone) el.classList.add("done");
+      else el.classList.remove("done");
+    });
+    document.getElementById("btnPrevRound").disabled = roundIndex === 0;
+    document.getElementById("btnNextRound").disabled =
+      !roundDone || roundIndex === ROUNDS.length - 1;
+    updateProgress();
+    bindPicks();
+  }
+
+  document.getElementById("btnNextRound").addEventListener("click", function () {
+    if (roundIndex < ROUNDS.length - 1) {
+      roundIndex += 1;
+      itemIndex = 0;
+      document.getElementById("allDone").classList.remove("show");
+      render();
+    }
+  });
+  document.getElementById("btnPrevRound").addEventListener("click", function () {
+    if (roundIndex > 0) {
+      roundIndex -= 1;
+      itemIndex = 0;
+      document.getElementById("allDone").classList.remove("show");
+      render();
+    }
+  });
+
+  render();
+})();
+  </script>
+</body>
+</html>

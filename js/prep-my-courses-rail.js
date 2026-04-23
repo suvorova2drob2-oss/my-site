@@ -57,10 +57,11 @@
             return {
                 name: p.name || "",
                 liveRole: p.liveRole === "teacher" ? "teacher" : "student",
-                prepPlatformSwitch: !!p.prepPlatformSwitch
+                prepPlatformSwitch: !!p.prepPlatformSwitch,
+                prepAdmin: !!p.prepAdmin
             };
         } catch (e) {
-            return { name: "", liveRole: "student", prepPlatformSwitch: false };
+            return { name: "", liveRole: "student", prepPlatformSwitch: false, prepAdmin: false };
         }
     }
 
@@ -71,8 +72,8 @@
         var u = readCpeUser();
         if (!u.name) return false;
         if (screenId === "screen-login") return false;
-        /* Students use one course — no cross-course rail. Teachers keep it on CPE / EGE / FCE. */
-        return u.liveRole === "teacher";
+        /* “My courses” rail: site admin only (logged in with admin password on index). */
+        return u.prepAdmin === true;
     }
 
     function injectStylesOnce() {
@@ -195,8 +196,8 @@
 
         var uSwitch = readCpeUser();
         var root = siteRoot();
-        /* Teachers: jump straight to the other hub (no login screen). Everyone else: re-auth on index. */
-        if (uSwitch.liveRole === "teacher") {
+        /* Teachers / admin: jump straight to the other hub (no login screen). Everyone else: re-auth on index. */
+        if (uSwitch.prepAdmin || uSwitch.liveRole === "teacher") {
             var destT;
             try {
                 destT = new global.URL(targetFile, root).href;

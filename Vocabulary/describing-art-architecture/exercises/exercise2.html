@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercise 2 — Match statements — Art &amp; architecture</title>
+  <script src="../../../js/interior-design-vocab-core.js"></script>
+  <script src="../../../js/prep-course-progress.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --bad: #f43f5e;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: max(18px, env(safe-area-inset-top, 0px))
+        max(12px, env(safe-area-inset-right, 0px))
+        max(22px, env(safe-area-inset-bottom, 0px))
+        max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 920px; margin: 0 auto; }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .top a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      touch-action: manipulation;
+    }
+    .top a:hover { text-decoration: underline; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 22px;
+    }
+    h1 { font-size: 1.15rem; line-height: 1.3; margin-bottom: 8px; }
+    .instr {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .toolbar button:hover { border-color: var(--accent); color: #e0f2fe; }
+    .match-grid {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .match-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .col-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .sen-list,
+    .def-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sen,
+    .def {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0f172a;
+      padding: 12px 12px 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      border-left: 4px solid transparent;
+    }
+    .sen:hover,
+    .def:hover { border-color: #475569; }
+    .sen.selected {
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.55);
+      border-color: var(--accent);
+    }
+    .sen .num {
+      display: inline-block;
+      min-width: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .sen .txt { font-size: 14px; line-height: 1.55; color: #e2e8f0; }
+    .sen .badge {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ok);
+      min-height: 20px;
+    }
+    .sen .badge.empty { color: var(--muted); font-weight: 600; }
+    .sen .unpair {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(51, 65, 85, 0.9);
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+    .sen.matched .unpair { display: inline-flex; }
+    .sen .unpair:hover { color: var(--text); background: #475569; }
+    .def .letter {
+      display: inline-block;
+      font-weight: 800;
+      color: #a5b4fc;
+      margin-right: 8px;
+      min-width: 1.25rem;
+    }
+    .def .txt { font-size: 14px; line-height: 1.5; color: #cbd5e1; }
+    .def .badge {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+    .def.used { opacity: 0.92; }
+    .def.dim {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .actions { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .btn {
+      font: inherit;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-primary { background: var(--accent); color: #0c1222; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary { background: #334155; color: var(--text); }
+    .feedback {
+      margin-top: 12px;
+      font-size: 14px;
+      text-align: center;
+      min-height: 22px;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+    .focus-strip {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      line-height: 1.5;
+    }
+    .focus-strip strong { color: #cbd5e1; }
+    .next-ex {
+      display: none;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+    .next-ex a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0c1222;
+      background: linear-gradient(135deg, #34d399, var(--accent));
+      text-decoration: none;
+      padding: 14px 22px;
+      border-radius: 14px;
+      min-height: 52px;
+      touch-action: manipulation;
+    }
+    .next-ex p {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="index.html">&larr; Exercises</a>
+      <a href="exercise1.html">&larr; Exercise 1</a>
+      <a href="exercise3.html">Exercise 3 &rarr;</a>
+    </div>
+    <div class="card">
+      <h1 id="t2-title">Exercise 2</h1>
+      <p class="instr" id="t2-instr"></p>
+      <div class="toolbar">
+        <button type="button" id="btn-shuffle">Shuffle responses</button>
+        <button type="button" id="btn-clear">Clear all pairs</button>
+      </div>
+      <div class="match-grid">
+        <div>
+          <div class="col-title">Statements 1–5</div>
+          <div class="sen-list" id="sen-list" aria-label="Statements"></div>
+        </div>
+        <div>
+          <div class="col-title">Responses a–e</div>
+          <div class="def-list" id="def-list" aria-label="Responses"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btn-check" disabled>Check</button>
+        <button type="button" class="btn btn-secondary" id="btn-reveal" style="display:none;">Show solution</button>
+      </div>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+      <div class="next-ex" id="next-ex">
+        <a href="exercise3.html">Exercise 3 &rarr; Complete the definitions</a>
+        <p>All pairs correct. Or <a href="index.html" style="color:#bae6fd;font-weight:700;">back to exercises</a>.</p>
+      </div>
+      <p class="focus-strip" id="focus-strip"></p>
+    </div>
+  </div>
+  <script>
+(function () {
+  var core = window.INTERIOR_DESIGN_VOCAB_CORE;
+  var T = core && core.exercise2;
+  if (!T || !T.sentences || !T.definitions || !T.answerKey) {
+    document.getElementById("feedback").textContent = "Missing exercise2 in interior-design-vocab-core.js.";
+    document.getElementById("feedback").className = "feedback bad";
+    return;
+  }
+
+  var N = T.sentences.length;
+  if (T.definitions.length !== N) {
+    document.getElementById("feedback").textContent = "exercise2: sentences and responses count must match.";
+    document.getElementById("feedback").className = "feedback bad";
+    return;
+  }
+
+  var DEF_COLORS = ["#38bdf8", "#a78bfa", "#34d399", "#f472b6", "#fb923c", "#2dd4bf", "#818cf8", "#fbbf24"];
+  function colorForLetter(L) {
+    var s = String(L).toUpperCase();
+    var i = s.charCodeAt(0) - 65;
+    if (i < 0 || i > 7) return "#64748b";
+    return DEF_COLORS[i];
+  }
+
+  var defOrder = T.definitions.slice();
+  var matches = {};
+  var selectedSen = null;
+  var locked = false;
+
+  var elTitle = document.getElementById("t2-title");
+  var elInstr = document.getElementById("t2-instr");
+  var elSen = document.getElementById("sen-list");
+  var elDef = document.getElementById("def-list");
+  var elCheck = document.getElementById("btn-check");
+  var elReveal = document.getElementById("btn-reveal");
+  var elFb = document.getElementById("feedback");
+  var elFocus = document.getElementById("focus-strip");
+  var elNext = document.getElementById("next-ex");
+
+  elTitle.textContent = T.title;
+  elInstr.innerHTML = T.instruction;
+  if (T.focusPhrases && T.focusPhrases.length) {
+    elFocus.innerHTML =
+      "<strong>Key vocabulary:</strong> " +
+      T.focusPhrases
+        .map(function (p) {
+          return "<span>" + p + "</span>";
+        })
+        .join(" · ");
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function assign(senId, letter) {
+    var sid = Number(senId);
+    for (var k in matches) {
+      if (matches[k] === letter && Number(k) !== sid) delete matches[k];
+    }
+    matches[sid] = letter;
+  }
+
+  function pairCount() {
+    var n = 0;
+    for (var k in matches) {
+      if (matches[k]) n++;
+    }
+    return n;
+  }
+
+  function render() {
+    elSen.innerHTML = "";
+    elDef.innerHTML = "";
+
+    for (var si = 0; si < T.sentences.length; si++) {
+      var s = T.sentences[si];
+      var sid = s.id;
+      var letter = matches[sid];
+      var row = document.createElement("div");
+      row.className = "sen" + (selectedSen === sid ? " selected" : "") + (letter ? " matched" : "");
+      row.dataset.sen = String(sid);
+      if (letter) row.style.borderLeftColor = colorForLetter(letter);
+      row.innerHTML =
+        '<button type="button" class="unpair" title="Remove pair" data-sen="' +
+        sid +
+        '" aria-label="Remove pair">&times;</button>' +
+        '<span class="num">' +
+        sid +
+        '.</span><span class="txt"></span>' +
+        '<div class="badge' +
+        (letter ? "" : " empty") +
+        '">' +
+        (letter ? "\u2192 Response " + letter : "\u2014 pick a response") +
+        "</div>";
+      row.querySelector(".txt").textContent = s.text;
+      row.addEventListener(
+        "click",
+        (function (id) {
+          return function (e) {
+            if (locked) return;
+            if (e.target.closest(".unpair")) return;
+            selectedSen = selectedSen === id ? null : id;
+            render();
+          };
+        })(sid)
+      );
+      var un = row.querySelector(".unpair");
+      if (un) {
+        un.addEventListener(
+          "click",
+          (function (id) {
+            return function (e) {
+              e.stopPropagation();
+              if (locked) return;
+              delete matches[id];
+              if (selectedSen === id) selectedSen = null;
+              elFb.textContent = "";
+              elFb.className = "feedback";
+              elReveal.style.display = "none";
+              render();
+            };
+          })(sid)
+        );
+      }
+      elSen.appendChild(row);
+    }
+
+    for (var di = 0; di < defOrder.length; di++) {
+      var d = defOrder[di];
+      var usedBy = null;
+      for (var mk in matches) {
+        if (matches[mk] === d.id) usedBy = Number(mk);
+      }
+      var drow = document.createElement("div");
+      drow.className = "def" + (usedBy ? " used" : "");
+      drow.dataset.def = d.id;
+      if (usedBy) drow.style.borderLeftColor = colorForLetter(d.id);
+      drow.innerHTML =
+        '<span class="letter">' +
+        d.id +
+        '.</span><span class="txt"></span>' +
+        '<div class="badge">' +
+        (usedBy
+          ? "\u2190 Statement " + usedBy
+          : selectedSen
+            ? "Tap to link with " + selectedSen
+            : "Tap a statement first") +
+        "</div>";
+      drow.querySelector(".txt").textContent = d.text;
+      if (locked && !usedBy) drow.classList.add("dim");
+      drow.addEventListener(
+        "click",
+        (function (letter) {
+          return function () {
+            if (locked) return;
+            if (selectedSen == null) {
+              elFb.textContent = "Select a statement on the left, then tap a response.";
+              elFb.className = "feedback bad";
+              return;
+            }
+            assign(selectedSen, letter);
+            selectedSen = null;
+            elFb.textContent = "";
+            elFb.className = "feedback";
+            render();
+          };
+        })(d.id)
+      );
+      elDef.appendChild(drow);
+    }
+
+    elCheck.disabled = pairCount() !== N;
+    var sh = document.getElementById("btn-shuffle");
+    var cl = document.getElementById("btn-clear");
+    if (sh) sh.disabled = locked;
+    if (cl) cl.disabled = locked;
+
+    if (elNext) {
+      var allMatch = pairCount() === N;
+      if (allMatch) {
+        for (var vi = 0; vi < T.sentences.length; vi++) {
+          var vid = T.sentences[vi].id;
+          if (matches[vid] !== T.answerKey[vid]) {
+            allMatch = false;
+            break;
+          }
+        }
+      }
+      elNext.style.display = locked && allMatch ? "block" : "none";
+    }
+  }
+
+  document.getElementById("btn-shuffle").addEventListener("click", function () {
+    if (locked) return;
+    defOrder = shuffle(T.definitions);
+    elFb.textContent = "";
+    elFb.className = "feedback";
+    render();
+  });
+
+  document.getElementById("btn-clear").addEventListener("click", function () {
+    if (locked) return;
+    matches = {};
+    selectedSen = null;
+    elFb.textContent = "";
+    elFb.className = "feedback";
+    elReveal.style.display = "none";
+    render();
+  });
+
+  elCheck.addEventListener("click", function () {
+    if (pairCount() !== N) return;
+    var ok = 0;
+    var wrong = [];
+    for (var i = 0; i < T.sentences.length; i++) {
+      var sid = T.sentences[i].id;
+      var want = T.answerKey[sid];
+      var got = matches[sid];
+      if (got === want) ok++;
+      else wrong.push(sid);
+    }
+    if (ok === N) {
+      elFb.textContent = "Perfect — " + N + " / " + N + ".";
+      elFb.className = "feedback ok";
+      locked = true;
+      elReveal.style.display = "none";
+      var pts = T.pointsFirstPass != null ? T.pointsFirstPass : N;
+      if (window.prepProgressAward) {
+        var r = prepProgressAward(T.id, pts);
+        if (r.awarded) elFb.textContent += " +" + String(r.points) + " home score (first pass).";
+      }
+    } else {
+      elFb.textContent =
+        ok +
+        " / " +
+        N +
+        " correct. Check statement(s): " +
+        (wrong.length ? wrong.join(", ") : "") +
+        ".";
+      elFb.className = "feedback bad";
+      elReveal.style.display = "block";
+    }
+    render();
+  });
+
+  elReveal.addEventListener("click", function () {
+    for (var si = 0; si < T.sentences.length; si++) {
+      var sid = T.sentences[si].id;
+      matches[sid] = T.answerKey[sid];
+    }
+    selectedSen = null;
+    locked = true;
+    elFb.textContent = "Solution loaded from answer key.";
+    elFb.className = "feedback ok";
+    elReveal.style.display = "none";
+    var ptsb = T.pointsFirstPass != null ? T.pointsFirstPass : N;
+    if (window.prepProgressAward) {
+      var rb = prepProgressAward(T.id, ptsb);
+      if (rb.awarded) elFb.textContent += " +" + String(rb.points) + " home score (first pass).";
+    }
+    render();
+  });
+
+  render();
+})();
+  </script>
+</body>
+</html>

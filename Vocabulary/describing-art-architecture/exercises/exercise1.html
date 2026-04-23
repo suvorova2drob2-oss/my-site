@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercise 1 — Describing art &amp; architecture</title>
+  <script src="../../../js/interior-design-vocab-core.js"></script>
+  <script src="../../../js/prep-course-progress.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --bad: #f43f5e;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: max(20px, env(safe-area-inset-top, 0px))
+        max(14px, env(safe-area-inset-right, 0px))
+        max(24px, env(safe-area-inset-bottom, 0px))
+        max(14px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 640px; margin: 0 auto; }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .top a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      touch-action: manipulation;
+    }
+    .top a:hover { text-decoration: underline; }
+    .pill {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 18px 22px;
+    }
+    h1 { font-size: 1.15rem; line-height: 1.3; margin-bottom: 8px; }
+    .instr {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .word-bank {
+      font-size: 13px;
+      color: #e2e8f0;
+      margin: -8px 0 16px;
+      padding: 12px 14px;
+      background: #0f172a;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+    .word-bank code {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+    }
+    .dots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      justify-content: center;
+    }
+    .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dots span.done { background: var(--ok); }
+    .dots span.current {
+      background: var(--accent);
+      transform: scale(1.15);
+    }
+    .sentence {
+      font-size: clamp(15px, 3.8vw, 17px);
+      line-height: 1.65;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+      animation: sentIn 0.38s ease;
+    }
+    @keyframes sentIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hint-mini {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin: -6px 0 14px;
+      line-height: 1.45;
+    }
+    .gap {
+      display: inline-block;
+      min-width: 5.5rem;
+      padding: 2px 8px 4px;
+      margin: 0 2px;
+      border-bottom: 2px dashed var(--accent);
+      cursor: pointer;
+      text-align: center;
+      vertical-align: baseline;
+      color: var(--accent);
+      font-weight: 700;
+      border-radius: 4px 4px 0 0;
+      transition: background 0.15s, box-shadow 0.15s;
+      touch-action: manipulation;
+    }
+    .gap.filled { border-bottom-style: solid; color: #e0f2fe; }
+    .gap.focus {
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+    }
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .choices button {
+      font: inherit;
+      font-weight: 700;
+      padding: 12px 16px;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .choices button:hover { border-color: var(--accent); }
+    .choices button:active { transform: scale(0.98); }
+    .row-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      font: inherit;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-primary { background: var(--accent); color: #0c1222; }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: #334155;
+      color: var(--text);
+    }
+    .feedback {
+      min-height: 24px;
+      font-size: 14px;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+    .next-task {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      display: none;
+    }
+    .next-task.visible { display: block; }
+    .next-task a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0c1222;
+      background: linear-gradient(135deg, #34d399, var(--accent));
+      text-decoration: none;
+      padding: 14px 22px;
+      border-radius: 14px;
+      min-height: 52px;
+      touch-action: manipulation;
+    }
+    .next-task p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+      line-height: 1.45;
+    }
+    @media (max-width: 420px) {
+      .card { padding: 16px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="index.html">&larr; Exercises</a>
+      <span class="pill" id="step-pill">1 / 6</span>
+    </div>
+    <div class="card">
+      <h1 id="task-title">Exercise 1</h1>
+      <p class="instr" id="task-instr"></p>
+      <p class="word-bank" id="word-bank" hidden></p>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <p class="hint-mini">Tap a gap to select it, then a word. Two gaps: fill both, then <strong>Check</strong>.</p>
+      <div class="sentence" id="sentence" aria-live="polite"></div>
+      <div class="choices" id="choices"></div>
+      <div class="row-actions">
+        <button type="button" class="btn btn-primary" id="btn-check" disabled>Check</button>
+        <button type="button" class="btn btn-secondary" id="btn-next" style="display:none;">Next sentence &rarr;</button>
+      </div>
+      <p class="feedback" id="feedback" aria-live="assertive"></p>
+      <div class="next-task" id="next-task">
+        <a href="exercise2.html">Exercise 2 &rarr; Match statements</a>
+        <p>Exercise 1 complete. Or <a href="index.html" style="color:#bae6fd;font-weight:700;">back to exercises</a>.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+(function () {
+  var core = window.INTERIOR_DESIGN_VOCAB_CORE;
+  var T = core && core.exercise1;
+  if (!T || !T.items || !T.choices) {
+    document.getElementById("feedback").textContent = "Missing exercise1 in interior-design-vocab-core.js.";
+    document.getElementById("feedback").className = "feedback bad";
+    return;
+  }
+  var items = T.items;
+  var choices = T.choices;
+
+  var step = 0;
+  var gapEls = [];
+  var gapMeta = [];
+  var focusIdx = 0;
+  var locked = false;
+
+  var elTitle = document.getElementById("task-title");
+  var elInstr = document.getElementById("task-instr");
+  var elWordBank = document.getElementById("word-bank");
+  var elDots = document.getElementById("dots");
+  var elSent = document.getElementById("sentence");
+  var elChoices = document.getElementById("choices");
+  var elCheck = document.getElementById("btn-check");
+  var elNext = document.getElementById("btn-next");
+  var elFb = document.getElementById("feedback");
+  var elPill = document.getElementById("step-pill");
+  var elNextTask = document.getElementById("next-task");
+
+  elTitle.textContent = T.title;
+  elInstr.innerHTML = T.instruction;
+  elWordBank.hidden = false;
+  elWordBank.innerHTML =
+    "<strong>Word bank</strong> &middot; " +
+    choices
+      .map(function (w) {
+        return "<code>" + w + "</code>";
+      })
+      .join(" &middot; ");
+
+  function allGapsFilled() {
+    for (var i = 0; i < gapEls.length; i++) {
+      if (!gapEls[i].dataset.pick) return false;
+    }
+    return gapEls.length > 0;
+  }
+
+  function setFocus(i) {
+    focusIdx = i;
+    for (var g = 0; g < gapEls.length; g++) {
+      gapEls[g].classList.toggle("focus", g === i && !locked);
+    }
+  }
+
+  function firstEmptyGap() {
+    for (var i = 0; i < gapEls.length; i++) {
+      if (!gapEls[i].dataset.pick) return i;
+    }
+    return gapEls.length - 1;
+  }
+
+  function renderDots() {
+    elDots.innerHTML = "";
+    for (var i = 0; i < items.length; i++) {
+      var s = document.createElement("span");
+      if (i < step) s.className = "done";
+      else if (i === step) s.className = "current";
+      elDots.appendChild(s);
+    }
+  }
+
+  function renderSentence() {
+    gapEls = [];
+    gapMeta = [];
+    elSent.innerHTML = "";
+    elFb.textContent = "";
+    elFb.className = "feedback";
+    elNext.style.display = "none";
+    elNextTask.classList.remove("visible");
+    elCheck.disabled = true;
+    locked = false;
+
+    var parts = items[step].parts;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (typeof p === "string") {
+        elSent.appendChild(document.createTextNode(p));
+      } else if (p && p.gap) {
+        var span = document.createElement("span");
+        span.className = "gap";
+        span.textContent = "\u2014";
+        span.dataset.answer = p.answer;
+        span.dataset.key = p.key || String(gapEls.length);
+        span.setAttribute("role", "button");
+        span.setAttribute("tabindex", "0");
+        var idx = gapEls.length;
+        gapMeta.push(p);
+        gapEls.push(span);
+        span.addEventListener(
+          "click",
+          (function (ix) {
+            return function () {
+              if (locked) return;
+              setFocus(ix);
+            };
+          })(idx)
+        );
+        span.addEventListener(
+          "keydown",
+          (function (ix) {
+            return function (e) {
+              if (locked) return;
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setFocus(ix);
+              }
+            };
+          })(idx)
+        );
+        elSent.appendChild(span);
+      }
+    }
+
+    elPill.textContent = String(step + 1) + " / " + String(items.length);
+    renderDots();
+
+    focusIdx = 0;
+    if (gapEls.length > 1) {
+      setFocus(firstEmptyGap());
+    } else {
+      setFocus(0);
+    }
+  }
+
+  function renderChoices() {
+    elChoices.innerHTML = "";
+    for (var c = 0; c < choices.length; c++) {
+      var word = choices[c];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = word;
+      b.addEventListener(
+        "click",
+        (function (w) {
+          return function () {
+            if (locked) return;
+            if (!gapEls.length) return;
+            if (elFb.classList.contains("bad")) {
+              elFb.textContent = "";
+              elFb.className = "feedback";
+            }
+            var ix = focusIdx;
+            if (!gapEls[ix].dataset.pick) {
+              gapEls[ix].textContent = w;
+              gapEls[ix].dataset.pick = w;
+              gapEls[ix].classList.add("filled");
+            } else {
+              var next = firstEmptyGap();
+              if (gapEls[next] && !gapEls[next].dataset.pick) {
+                gapEls[next].textContent = w;
+                gapEls[next].dataset.pick = w;
+                gapEls[next].classList.add("filled");
+                setFocus(next);
+              } else {
+                gapEls[ix].textContent = w;
+                gapEls[ix].dataset.pick = w;
+              }
+            }
+            var fe = firstEmptyGap();
+            if (gapEls[fe] && !gapEls[fe].dataset.pick) setFocus(fe);
+            else setFocus(ix);
+            elCheck.disabled = !allGapsFilled();
+          };
+        })(word)
+      );
+      elChoices.appendChild(b);
+    }
+  }
+
+  elCheck.addEventListener("click", function () {
+    if (!allGapsFilled() || locked) return;
+    var ok = true;
+    for (var i = 0; i < gapEls.length; i++) {
+      var want = gapEls[i].dataset.answer;
+      var got = gapEls[i].dataset.pick;
+      if (got !== want) ok = false;
+    }
+    if (ok) {
+      elFb.textContent = "Correct — " + items[step].collocations.join(" · ") + ".";
+      elFb.className = "feedback ok";
+      locked = true;
+      for (var g = 0; g < gapEls.length; g++) gapEls[g].classList.remove("focus");
+      if (step < items.length - 1) {
+        elNext.style.display = "block";
+      } else {
+        elNextTask.classList.add("visible");
+        var pts1 = T.pointsFirstPass != null ? T.pointsFirstPass : 7;
+        if (window.prepProgressAward) {
+          var r1 = prepProgressAward(T.id, pts1);
+          if (r1.awarded) elFb.textContent += " +" + String(r1.points) + " home score (first pass).";
+        }
+      }
+    } else {
+      elFb.textContent = "Not quite — try another combination for the gaps.";
+      elFb.className = "feedback bad";
+    }
+  });
+
+  elNext.addEventListener("click", function () {
+    step++;
+    renderSentence();
+  });
+
+  renderChoices();
+  renderSentence();
+})();
+  </script>
+</body>
+</html>

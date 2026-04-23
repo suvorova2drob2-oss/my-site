@@ -1365,6 +1365,13 @@
             border-color: transparent;
             background: var(--hub-tile);
         }
+        a.folder.folder-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        a.folder.folder-link strong {
+            color: var(--text);
+        }
         .check-marks { color: var(--success); font-size: 14px; margin-top: 5px; letter-spacing: 2px; }
 
         #screen-unit9-activity-hub .u9-hub-lead,
@@ -5069,15 +5076,14 @@
             <button type="button" class="login-role-btn active" id="login-role-teacher">Teacher</button>
         </div>
         <label for="login-password-input" class="login-fld-label">Course password</label>
-        <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Required — see hint below" autocomplete="current-password" />
-        <p class="login-password-hint" id="login-password-hint">Password: suvorova2drob2</p>
+        <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Enter your password" autocomplete="current-password" />
+        <p class="login-password-hint" id="login-password-hint">Use the password your teacher gave you.</p>
         <details class="login-author-details">
-            <summary>Platform author — “My courses” on the right</summary>
-            <label for="login-author-pin" class="login-fld-label" style="margin-top: 10px;">Author PIN (optional)</label>
-            <input type="password" id="login-author-pin" class="hub-fld-input" placeholder="Unlocks course switcher after login" autocomplete="off" />
+            <summary>Advanced — author PIN (optional)</summary>
+            <label for="login-author-pin" class="login-fld-label" style="margin-top: 10px;">Author PIN</label>
+            <input type="password" id="login-author-pin" class="hub-fld-input" placeholder="Only if your setup uses PREP_PLATFORM_AUTHOR_PIN" autocomplete="off" />
             <p class="login-password-hint">
-                Set your PIN in the page script as <code style="font-size: 11px">PREP_PLATFORM_AUTHOR_PIN</code> (change the value in
-                <code style="font-size: 11px">index.html</code>).
+                For maintainers: set <code style="font-size: 11px">PREP_PLATFORM_AUTHOR_PIN</code> in <code style="font-size: 11px">index.html</code>.
             </p>
         </details>
         <label for="name-input" class="login-fld-label">Your name</label>
@@ -5259,7 +5265,7 @@
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-vocab" onclick="unitFolderRowNav(event,this,'href','Vocabulary/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Vocabulary/index.html')">
             <strong>Vocabulary</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Vocabulary/</code> &rarr; <code>idioms/</code> (micro + freer); <code>prepositional-phrases/</code> (<code>exercises/</code> tasks 1&ndash;5, <code>speaking-trainer/</code> like idioms, core + <code>prep-course-progress.js</code>). Typed gaps stay in the app Lexical trainer.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Vocabulary/</code> &rarr; <code>idioms/</code>; <code>prepositional-phrases/</code>; <code>describing-art-architecture/</code> (hub for art &amp; architecture lexis). List: <code>Vocabulary/disk-folders.js</code>. Typed gaps stay in the app Lexical trainer.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-lexgames" onclick="unitFolderRowNav(event,this,'fn','u9lexgames')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u9lexgames')">
@@ -5267,14 +5273,15 @@
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; Level 9 lexis.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
         </div>
-        <div class="folder folder-disabled">
-            <strong>Grammar</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Coming soon.</div>
-        </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-uoe" onclick="openUnit9UoeFolderHub(event)" onkeydown="if(event.key==='Enter')openUnit9UoeFolderHub(event)">
             <strong>Use of English</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 multiple-choice cloze &mdash; open the folder, then start the first task (more later).</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; tasks</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-grammar" onclick="unitFolderRowNav(event,this,'href','Grammar/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Grammar/index.html')">
+            <strong>Grammar</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Grammar/</code> &rarr; speaking drills, then written tasks in <code>Grammar/exercises/</code>. On-disk only; not in-app lexical games.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
         </div>
         <div id="unit9-add-strip" class="unit-add-strip" style="display:none;">
             <p class="unit-add-strip-hint">Add to this level (Edit mode)</p>
@@ -5297,19 +5304,148 @@
         <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
         <div class="user-stats" style="margin-top:0;">
             <span>Use of English</span>
-            <span style="color:var(--muted);font-size:13px;">Level 9 &middot; Part 1 multiple-choice cloze</span>
+            <span style="color:var(--muted);font-size:13px;">Level 9 &middot; CPE &middot; Part 1 &amp; Part 2</span>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Use of English</h2>
-        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">One folder for now: open the task below. More Part 1 folders or tasks can sit here later.</p>
-        <div class="folder" role="button" tabindex="0" data-uoe-task="interior-design" onclick="openPrepLegacyU9UoeFromHub(event)" onkeydown="if(event.key==='Enter')openPrepLegacyU9UoeFromHub(event)">
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5;">
+          <strong>Part 1</strong> &mdash; multiple-choice cloze (A&ndash;D). <strong>Part 2</strong> &mdash; open cloze (one word per gap). From the first Part 1 task you can move through the rest with <strong>Next task</strong> without returning here. <strong>Back</strong> in the exercise is one browser step. Submit to check; wrong answers show the key. The <strong>collocation sprint</strong> (hearts) closes the line after <em>Sounds about right</em> &mdash; same phrases from these tasks, embedded so it works offline too.
+        </p>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-p1-interior"
+          data-uoe-task="interior-design"
+          href="use-of-english/part1-mc-cloze/index.html?context=unit9-uoe&amp;src=published-unit9-interior-design.json&amp;back=..%2F..%2Findex.html&amp;backLabel=Level%209"
+        >
             <strong>Interior design: different strokes for different folks</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 &middot; 12 gaps &middot; same options as the classroom sheet (A&ndash;D in the engine).</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 &middot; 12 gaps &middot; CPE-style multiple choice.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
-        </div>
-        <div class="folder folder-disabled">
-            <strong>More Part 1 tasks</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Placeholder &mdash; additional folders or activities will go here.</div>
-        </div>
+        </a>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-p1-art"
+          data-uoe-task="artistic-talent"
+          href="use-of-english/part1-mc-cloze/index.html?context=unit9-uoe-artistic-talent&amp;src=published-unit9-artistic-talent.json&amp;back=..%2F..%2Findex.html&amp;backLabel=Level%209"
+        >
+            <strong>Is artistic talent innate?</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 &middot; example (0) + 8 gaps.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
+        </a>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-p1-pisa"
+          data-uoe-task="pisa-leaning"
+          href="use-of-english/part1-mc-cloze/index.html?context=unit9-uoe-pisa&amp;src=published-unit9-pisa-leaning-tower.json&amp;back=..%2F..%2Findex.html&amp;backLabel=Level%209"
+        >
+            <strong>Leaning Tower of Pisa</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 &middot; example (0) + 8 gaps &middot; Reading &amp; Use of English.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
+        </a>
+        <p style="margin:16px 0 10px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Part 2 &mdash; Open cloze</p>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-p2"
+          data-uoe-task="p2-upcycled"
+          href="use-of-english/part2-open-cloze/index.html?context=unit9-p2-upcycled&amp;src=published-unit9-p2-upcycled.json&amp;back=..%2F..%2Findex.html&amp;backLabel=Level%209"
+        >
+            <strong>The Upcycled Skyscraper</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 2 &middot; example (0) + 8 gaps &middot; sustainable architecture (Workbook).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
+        </a>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-p2-sounds"
+          data-uoe-task="p2-sounds-about-right"
+          href="use-of-english/part2-open-cloze/index.html?context=unit9-p2-sounds&amp;src=published-unit9-p2-sounds-about-right.json&amp;back=..%2F..%2Findex.html&amp;backLabel=Level%209"
+        >
+            <strong>Sounds about right</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 2 &middot; example (0) + 8 gaps &middot; restaurant design &amp; acoustics (Reading &amp; Use of English).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
+        </a>
+        <a
+          class="folder folder-link"
+          id="u9uoe-link-coll-drill"
+          href="use-of-english/unit9-uoe-collocation-drill/index.html"
+        >
+            <strong>Fixed phrases sprint · hearts</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Last in the line · collocations &amp; idioms from your Part 1 &amp; Part 2 texts · 8 per round · 3 lives.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open trainer &rarr;</div>
+        </a>
+        <script>
+        (function () {
+            var enc = encodeURIComponent;
+            var back = enc("../../index.html");
+            var bl = enc("Level 9");
+            var hubNext = enc("../../index.html?screen=unit9&u9_uoe=1");
+            var hubLabel = enc("Use of English · Level 9");
+            var p1 = "use-of-english/part1-mc-cloze/index.html";
+            var p2Base = "use-of-english/part2-open-cloze/index.html";
+            var drillBase = "use-of-english/unit9-uoe-collocation-drill/index.html";
+            var drillQ =
+                "back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                hubNext +
+                "&nextLabel=" +
+                hubLabel;
+            var part2SoundsQ =
+                "context=unit9-p2-sounds&src=published-unit9-p2-sounds-about-right.json&back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                enc(drillBase + "?" + drillQ) +
+                "&nextLabel=" +
+                enc("Collocation sprint · hearts");
+            var part2q =
+                "context=unit9-p2-upcycled&src=published-unit9-p2-upcycled.json&back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                enc(p2Base + "?" + part2SoundsQ) +
+                "&nextLabel=" +
+                enc("Part 2: Sounds about right");
+            var pisaq =
+                "context=unit9-uoe-pisa&src=published-unit9-pisa-leaning-tower.json&back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                enc(p2Base + "?" + part2q) +
+                "&nextLabel=" +
+                enc("Part 2: The Upcycled Skyscraper");
+            var artq =
+                "context=unit9-uoe-artistic-talent&src=published-unit9-artistic-talent.json&back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                enc("?" + pisaq) +
+                "&nextLabel=" +
+                enc("Leaning Tower of Pisa");
+            var intq =
+                "context=unit9-uoe&src=published-unit9-interior-design.json&back=" +
+                back +
+                "&backLabel=" +
+                bl +
+                "&next=" +
+                enc("?" + artq) +
+                "&nextLabel=" +
+                enc("Is artistic talent innate?");
+            function setHref(id, href) {
+                var el = document.getElementById(id);
+                if (el) el.setAttribute("href", href);
+            }
+            setHref("u9uoe-link-p1-interior", p1 + "?" + intq);
+            setHref("u9uoe-link-p1-art", p1 + "?" + artq);
+            setHref("u9uoe-link-p1-pisa", p1 + "?" + pisaq);
+            setHref("u9uoe-link-p2", p2Base + "?" + part2q);
+            setHref("u9uoe-link-p2-sounds", p2Base + "?" + part2SoundsQ);
+            setHref("u9uoe-link-coll-drill", drillBase + "?" + drillQ);
+        })();
+        </script>
     </div>
 
     <div id="screen-unit8" class="screen">
@@ -5764,15 +5900,15 @@
     <div id="screen-unit9-lexgames-hub" class="screen">
         <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical games</h2>
-        <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). Tick your <b>reading / idiom / listening / prepositional phrases</b> packs on the next screen.</p>
+        <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). Tick your <b>reading / idiom / listening / prepositional phrases / art &amp; architecture (disk)</b> packs on the next screen.</p>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9WordBank()" onkeydown="if(event.key==='Enter')openUnit9WordBank()">
             <strong>Word Bank (Memrise style)</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Four topic folders + progress + searchable bank.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Robots + Idioms + Listening + Prepositional phrases</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Topic packs + progress + searchable bank.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Robots + Idioms + Listening + Prepositional phrases + Art &amp; architecture</div>
         </div>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9ActivityHub('lexical', { fromLexGames: true })" onkeydown="if(event.key==='Enter')openUnit9ActivityHub('lexical', { fromLexGames: true })">
             <strong>Lexical trainer</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Typed-gap packs: Reading (robots), Idioms, Listening (Making a mark: transcript + Part 2 in one pack), Prepositional phrases (disk Word Bank).</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Typed-gap packs: Reading (robots), Idioms, Listening (Making a mark: transcript + Part 2 in one pack), Prepositional phrases (disk Word Bank), Art &amp; architecture article.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; choose pack</div>
         </div>
         <div class="folder" role="button" tabindex="0" onclick="openLexReadingPickNav('flip')" onkeydown="if(event.key==='Enter')openLexReadingPickNav('flip')">
@@ -5817,17 +5953,17 @@
         </div>
         <a class="folder" href="vocabulary-tic-tac-toe.html" style="text-decoration:none;color:inherit;">
             <strong>Vocabulary Tic-Tac-Toe</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Two teams <b>X</b> and <b>O</b> over Supabase: definition from the Word Bank &mdash; correct claims the cell, wrong passes the turn.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Two teams <b>X</b> and <b>O</b> over Supabase: definition from the Word Bank (Reading, Idioms, Listening, Prep, Art &amp; architecture) &mdash; correct claims the cell, wrong passes the turn.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Multiplayer &middot; DECIPHER THE CODE</div>
         </a>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9StickyGame()" onkeydown="if(event.key==='Enter')openUnit9StickyGame()">
             <strong>Sticky notes board</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">4 tasks: idioms, prepositions, robots key lexis, and making-a-mark lexis.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Six tasks: idioms, prepositions, prep phrases 2, robots, Making a mark, and Art &amp; architecture (disk).</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Missing-word sticky drills</div>
         </div>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9PrepEscapeRoom()" onkeydown="if(event.key==='Enter')openUnit9PrepEscapeRoom()">
             <strong>Prep vault (escape room)</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Pick <b>Reading / Idioms / Listening / Prep</b> or <b>Choose all</b> for a mixed bank. Six random phrases per run, <b>3:00</b> clock; <b>Get Hint</b> &minus;20s; <b>I don&rsquo;t know</b> reveals then swaps the line. <b>Digital lock</b> + door; <b>System Lockout</b> on timeout.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Pick <b>Reading / Idioms / Listening / Prep / Art &amp; architecture</b> or <b>Choose all</b> for a mixed bank. Six random phrases per run, <b>3:00</b> clock; <b>Get Hint</b> &minus;20s; <b>I don&rsquo;t know</b> reveals then swaps the line. <b>Digital lock</b> + door; <b>System Lockout</b> on timeout.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Timed &middot; pack picker</div>
         </div>
         <a class="folder" href="live-room-supabase-demo.html" style="text-decoration:none;color:inherit;">
@@ -5871,6 +6007,7 @@
                     <option value="prep2">Task 3: Prep phrases 2 only</option>
                     <option value="robots">Task 4: Robots (reading) key lexis only</option>
                     <option value="mark">Task 5: Making a mark only</option>
+                    <option value="interior">Task 6: Art &amp; architecture only</option>
                 </select>
             </div>
             <label class="prep-live-label" for="prep-live-share">Student link (copy after creating a room)</label>
@@ -5918,6 +6055,7 @@
                     <button type="button" class="prep-escape-pack-btn" data-pack="idioms">Idioms</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="listening">Listening</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="prep">Prep</button>
+                    <button type="button" class="prep-escape-pack-btn" data-pack="interior">Art &amp; arch.</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="all">Choose all</button>
                 </div>
             </div>
@@ -5977,12 +6115,13 @@
     <div id="screen-unit9-wordbank" class="screen">
         <button type="button" class="hub-back" onclick="openUnit9LexGamesHub()">&larr; Lexical games</button>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Word Bank (Memrise style)</h2>
-        <p class="u9-hub-lead" style="margin-bottom:12px;">Four topic folders, searchable list, and spaced repetition review status.</p>
+        <p class="u9-hub-lead" style="margin-bottom:12px;">Topic packs, searchable list, and spaced repetition review status.</p>
         <div class="wb-themes">
             <button type="button" class="wb-theme-btn active" data-cpe-wb-theme="robots">Reading: The robots are taking over</button>
             <button type="button" class="wb-theme-btn" data-cpe-wb-theme="idioms">Idioms: Art and creativity</button>
             <button type="button" class="wb-theme-btn" data-cpe-wb-theme="listening">Listening: Making a mark</button>
             <button type="button" class="wb-theme-btn" data-cpe-wb-theme="prep">Prepositional phrases</button>
+            <button type="button" class="wb-theme-btn" data-cpe-wb-theme="interior">Art &amp; architecture (disk)</button>
         </div>
         <div class="wb-repeat-bar">
             <button type="button" class="wb-repeat-btn active" data-cpe-wb-filter="all">All words</button>
@@ -6001,12 +6140,13 @@
         <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
         <h2 id="u9-lex-pick-title" style="margin:0 0 6px;font-size:1.2rem;">Choose reading</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
-        <p class="u9-hub-lead" style="margin-bottom:12px;">Tick <b>Reading 7</b>, <b>Idioms</b>, <b>Listening Part 2</b>, and/or <b>Prepositional phrases</b> &mdash; same gap / flip / drop mechanics; the trainer uses one pack at a time.</p>
+        <p class="u9-hub-lead" style="margin-bottom:12px;">Tick <b>Reading 7</b>, <b>Idioms</b>, <b>Listening Part 2</b>, <b>Prepositional phrases</b>, and/or <b>Art &amp; architecture (disk)</b> &mdash; same gap / flip / drop mechanics; the trainer uses one pack at a time.</p>
         <div class="u9-fall-pick-box">
             <label><input type="checkbox" id="u9-lex-reading-7" checked data-speakers="A Jack,B Valentina,C Phoebe,D Richard,E Kiki"> <strong>Reading 7</strong> &mdash; The robots are taking over</label>
             <label><input type="checkbox" id="u9-lex-reading-idioms" data-speakers="Idioms: Art and creativity"> <strong>Idioms: Art and creativity</strong> &mdash; fixed expressions (same gap games as the reading)</label>
             <label style="display:block;margin-top:10px;"><input type="checkbox" id="u9-lex-reading-listen" data-speakers="Listening: Making a mark"> <strong>Listening Part 2</strong> &mdash; <em>Making a mark</em> (high-yield chunks from the sentence-completion task)</label>
             <label style="display:block;margin-top:10px;"><input type="checkbox" id="u9-lex-reading-prep" data-speakers="Prepositional phrases"> <strong>Prepositional phrases</strong> &mdash; disk pack from <code>js/prepositional-phrases-core.js</code> (hints + gap lines)</label>
+            <label style="display:block;margin-top:10px;"><input type="checkbox" id="u9-lex-reading-interior" data-speakers="Interior design: Art & architecture"> <strong>Art &amp; architecture (disk)</strong> &mdash; <em>Different strokes for different folks</em> (article chunks in <code>js/interior-design-vocab-core.js</code>)</label>
         </div>
         <button type="button" class="btn" onclick="u9LexReadingPickContinue()">Continue</button>
     </div>
@@ -6274,17 +6414,18 @@
                 <span class="u9-lex-live-ico" aria-hidden="true">▼</span>
             </button>
             <div id="u9-lex-live-body-sticky" class="u9-lex-live-body" hidden>
-                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (e.g. idioms or Robots/reading), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
+                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (Tasks 1&ndash;6, including Art &amp; architecture), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
             </div>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Sticky notes board</h2>
-        <p class="lex-reading-tag">Level 9 &middot; Five sticky tasks</p>
+        <p class="lex-reading-tag">Level 9 &middot; Six sticky tasks</p>
         <div class="u9-sticky-tabs">
             <button type="button" id="u9-sticky-tab-idiom" class="u9-sticky-tab active" onclick="u9StickyShowTask('idiom')">Task 1: Idioms</button>
             <button type="button" id="u9-sticky-tab-prep" class="u9-sticky-tab" onclick="u9StickyShowTask('prep')">Task 2: at / in / on / under</button>
             <button type="button" id="u9-sticky-tab-prep2" class="u9-sticky-tab" onclick="u9StickyShowTask('prep2')">Task 3: Prep phrases 2 (core)</button>
             <button type="button" id="u9-sticky-tab-robots" class="u9-sticky-tab" onclick="u9StickyShowTask('robots')">Task 4: Robots key lexis</button>
             <button type="button" id="u9-sticky-tab-mark" class="u9-sticky-tab" onclick="u9StickyShowTask('mark')">Task 5: Making a mark</button>
+            <button type="button" id="u9-sticky-tab-interior" class="u9-sticky-tab" onclick="u9StickyShowTask('interior')">Task 6: Art &amp; architecture</button>
         </div>
         <p class="u9-sticky-global-hint" style="margin:10px 0 14px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--muted);background:rgba(0,0,0,.04);border-radius:8px;border-left:3px solid var(--accent, #3b82f6);"><strong>Task 2</strong> &mdash; <strong>at / in / on / under</strong>. <strong>Task 3</strong> &mdash; compact <code>____</code> cues; full lines under <strong>Context</strong>. <strong>Task 1</strong> is idioms only.</p>
 
@@ -6331,6 +6472,15 @@
                 <button type="button" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="u9MarkResetUI()">Reset making a mark</button>
             </div>
             <div id="u9-mark-board" class="u9-sticky-board"></div>
+        </div>
+
+        <div id="u9-sticky-task-interior" class="u9-sticky-task">
+            <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 6. Key chunks from <b>Different strokes for different folks</b> (<code style="font-size:11px;">interior-design-vocab-core.js</code>). One missing word per sticky.</p>
+            <div class="u9-sticky-hud">
+                <span>Done: <b id="u9-interior-done">0 / 0</b></span>
+                <button type="button" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="u9InteriorResetUI()">Reset art &amp; architecture</button>
+            </div>
+            <div id="u9-interior-board" class="u9-sticky-board"></div>
         </div>
     </div>
 
@@ -6678,6 +6828,7 @@
 <script src="js/prep-course-profile.js"></script>
 <script src="js/prep-my-courses-rail.js"></script>
 <script src="js/prep-site-content.js"></script>
+<script src="js/prep-boxed.js"></script>
 <script src="live-supabase-local.js"></script>
 <script src="js/prep-cloud-client.js"></script>
 <script>
@@ -6694,6 +6845,7 @@
 })();
 </script>
 <script src="js/prepositional-phrases-core.js"></script>
+<script src="js/interior-design-vocab-core.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/live-game-api.js"></script>
 <script src="js/live-game-api-supabase.js"></script>
@@ -6910,7 +7062,8 @@ function loadUserData() {
         lexFlipMarks: migrateLexFlipMarks(null),
         liveRole: 'teacher',
         cmsCreatorId: '',
-        prepPlatformSwitch: false
+        prepPlatformSwitch: false,
+        prepAdmin: false
     };
     try {
         var raw = localStorage.getItem(STORAGE_KEY);
@@ -6926,7 +7079,8 @@ function loadUserData() {
             lexFlipMarks: migrateLexFlipMarks(p.lexFlipMarks),
             liveRole: migrateLiveRole(p),
             cmsCreatorId: typeof p.cmsCreatorId === 'string' ? p.cmsCreatorId : '',
-            prepPlatformSwitch: !!p.prepPlatformSwitch
+            prepPlatformSwitch: !!p.prepPlatformSwitch,
+            prepAdmin: !!p.prepAdmin
         };
     } catch (e) {
         return empty;
@@ -7216,6 +7370,15 @@ var U9_PREP_APP_FROM_CORE =
         : { lexPrepPhraseData: [], speakPrepItems: [] };
 var LEX_PREP_PHRASE_DATA = U9_PREP_APP_FROM_CORE.lexPrepPhraseData || [];
 var U9_SPEAK_PREP_ITEMS = U9_PREP_APP_FROM_CORE.speakPrepItems || [];
+/** Interior design / art & architecture disk pack */
+var U9_SPEAK_INTERIOR_ITEMS =
+    typeof INTERIOR_DESIGN_VOCAB_CORE !== "undefined" && INTERIOR_DESIGN_VOCAB_CORE.speakItems
+        ? INTERIOR_DESIGN_VOCAB_CORE.speakItems
+        : [];
+var U9_SPEAK_FREER_INTERIOR =
+    typeof INTERIOR_DESIGN_VOCAB_CORE !== "undefined" && INTERIOR_DESIGN_VOCAB_CORE.freerQuestions
+        ? INTERIOR_DESIGN_VOCAB_CORE.freerQuestions.slice()
+        : [];
 /**
  * Sticky Task 3 — short skeleton (____) on the note; full sentence only under Context.
  * Keys = normalised {@link LEX_PREP_PHRASE_DATA} ans. `gap` = what the learner types; `fullAns` = whole chunk for accept + Show answer fallback.
@@ -7642,6 +7805,10 @@ var LEX_RETRY_MSG = [
 ];
 
 var lexTrainerPack = 'robots';
+/** Filled when opening Art &amp; architecture typed-gap pack (see {@link lexInteriorBuildTasks}). */
+var LEX_INTERIOR_TYPE_TASKS = [];
+var LEX_INTERIOR_HINTS = [];
+var LEX_INTERIOR_SECTION_STEPS = [];
 
 function lexTrainerIsUnit8EnvLex() {
     return lexTrainerPack === 'environment' || lexTrainerPack === 'environment2';
@@ -7651,6 +7818,7 @@ function lexTypeTasksNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_TYPE_TASKS;
     if (lexTrainerPack === 'listening') return LEX_LISTEN_TRAINER_TASKS;
     if (lexTrainerPack === 'prep') return LEX_PREP_TYPE_TASKS;
+    if (lexTrainerPack === 'interior') return LEX_INTERIOR_TYPE_TASKS;
     if (lexTrainerPack === 'environment') return LEX_ENV_TYPE_TASKS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_TYPE_TASKS;
     return LEX_ROBOTS_TYPE_TASKS;
@@ -7659,6 +7827,7 @@ function lexTypeHintsNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_HINTS;
     if (lexTrainerPack === 'listening') return LEX_LISTEN_TRAINER_HINTS;
     if (lexTrainerPack === 'prep') return LEX_PREP_HINTS;
+    if (lexTrainerPack === 'interior') return LEX_INTERIOR_HINTS;
     if (lexTrainerPack === 'environment') return LEX_ENV_HINTS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_HINTS;
     return LEX_ROBOTS_HINTS;
@@ -7667,6 +7836,7 @@ function lexSectionStepsNow() {
     if (lexTrainerPack === 'idioms') return LEX_IDIOM_SECTION_STEPS;
     if (lexTrainerPack === 'listening') return LEX_LISTEN_TRAINER_SECTION_STEPS;
     if (lexTrainerPack === 'prep') return LEX_PREP_SECTION_STEPS;
+    if (lexTrainerPack === 'interior') return LEX_INTERIOR_SECTION_STEPS;
     if (lexTrainerPack === 'environment') return LEX_ENV_SECTION_STEPS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_SECTION_STEPS;
     return LEX_ROBOTS_SECTION_STEPS;
@@ -7686,7 +7856,7 @@ function getU9ActivityHubConfig(mode) {
     var cfgs = {
         lexical: {
             title: 'Lexical trainer',
-            lead: 'Typed-gap packs: Reading (robots), Idioms, Listening (Making a mark: transcript + Part 2 in one run), and Prepositional phrases from the disk Word Bank. Three lives per speaker block or per listening section.',
+            lead: 'Typed-gap packs: Reading (robots), Idioms, Listening (Making a mark: transcript + Part 2 in one run), Prepositional phrases from the disk Word Bank, and Art & architecture (<em>Different strokes for different folks</em>). Three lives per speaker block, per listening section, or per single-block pack.',
             readings: [
                 {
                     title: 'Reading: The robots are taking over',
@@ -7715,6 +7885,14 @@ function getU9ActivityHubConfig(mode) {
                     line1: 'Chunks from <code>prepositional-phrases-core.js</code> \u00b7 hints + typed gaps \u00b7 3 lives for the pack',
                     action: function () {
                         openLexicalTrainerPrep();
+                    }
+                },
+                {
+                    title: 'Art & architecture (disk)',
+                    line1:
+                        'Article chunks from <code>interior-design-vocab-core.js</code> \u00b7 paraphrase hints + sentence gaps \u00b7 3 lives for the pack',
+                    action: function () {
+                        openLexicalTrainerInterior();
                     }
                 }
             ]
@@ -7798,6 +7976,11 @@ function u9DiskPrepositionalPhrasesHub() {
 function u9DiskIdiomsVocabularyHub() {
     u9SpeakingFlowClearUrlParam();
     location.href = 'Vocabulary/idioms/index.html';
+}
+
+function u9DiskInteriorArtHub() {
+    u9SpeakingFlowClearUrlParam();
+    location.href = 'Vocabulary/describing-art-architecture/index.html';
 }
 
 function u9ActivityHubBack() {
@@ -8590,7 +8773,7 @@ var U9_FALL_LIVES_START = 3;
 var u9FallSpeakerFilter = null;
 var U9_FALL_GAP_WORDS_MIN = 1;
 var U9_FALL_GAP_WORDS_MAX = 8;
-var U9_FALL_POOL_SCHEMA = 8;
+var U9_FALL_POOL_SCHEMA = 9;
 var u9FallPoolSchema = 0;
 
 function u9FallScrapePhrases(rootId, clickSel) {
@@ -8703,6 +8886,52 @@ function u9FallBuildGapLine(pRaw, ans, speaker) {
     var before = pRaw.slice(sentStart, idx).replace(/\s+/g, ' ').trim();
     var after = pRaw.slice(end, sentEnd).replace(/\s+/g, ' ').trim();
     return before + gapMark + after;
+}
+
+/**
+ * Build typed-gap tasks for the interior-design article (same order as Treasure Hunt items).
+ * Depends on {@link u9FallBuildGapLine}; run after that function is defined.
+ */
+function lexInteriorBuildTasks() {
+    LEX_INTERIOR_TYPE_TASKS = [];
+    LEX_INTERIOR_HINTS = [];
+    LEX_INTERIOR_SECTION_STEPS = [];
+    var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' ? INTERIOR_DESIGN_VOCAB_CORE : null;
+    var speaker =
+        C && C.lexicalGamesSpeaker ? C.lexicalGamesSpeaker : 'Interior design: Art & architecture';
+    var passageRaw = C && C.passageComplete ? C.passageComplete : '';
+    var items =
+        C && C.treasureHuntRounds && C.treasureHuntRounds[0] && C.treasureHuntRounds[0].items
+            ? C.treasureHuntRounds[0].items
+            : [];
+    var interiorPlain = passageRaw
+        ? passageRaw
+              .replace(/\r\n/g, '\n')
+              .replace(/\n\n+/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+        : '';
+    var tasks = [];
+    var hints = [];
+    var gapMark = ' ____ ';
+    for (var i = 0; i < items.length; i++) {
+        var phrase = items[i].phrase;
+        if (!phrase || !interiorPlain || interiorPlain.indexOf(phrase) === -1) continue;
+        var gapLine = u9FallBuildGapLine(interiorPlain, phrase, 'Interior');
+        var g = gapLine.indexOf(gapMark);
+        if (g === -1) continue;
+        tasks.push({
+            speaker: speaker,
+            before: gapLine.slice(0, g),
+            after: gapLine.slice(g + gapMark.length),
+            ans: phrase
+        });
+        hints.push(items[i].paraphrase || '');
+    }
+    LEX_INTERIOR_TYPE_TASKS = tasks;
+    LEX_INTERIOR_HINTS = hints;
+    LEX_INTERIOR_SECTION_STEPS =
+        tasks.length > 0 ? [{ label: speaker, start: 0, end: tasks.length - 1 }] : [];
 }
 
 function u9FallAnsWordCount(ans) {
@@ -8837,6 +9066,38 @@ function ensureU9FallPool() {
     var prepItems = (LEX_PREP_PHRASE_DATA || []).map(function (d) {
         return u9LexPrepPhraseToFallItem(d);
     });
+    var interiorSpeaker =
+        typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' && INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
+            ? INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
+            : 'Interior design: Art & architecture';
+    var interiorPassage =
+        typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' && INTERIOR_DESIGN_VOCAB_CORE.passageComplete
+            ? INTERIOR_DESIGN_VOCAB_CORE.passageComplete
+            : '';
+    var interiorThItems =
+        typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' &&
+        INTERIOR_DESIGN_VOCAB_CORE.treasureHuntRounds &&
+        INTERIOR_DESIGN_VOCAB_CORE.treasureHuntRounds[0] &&
+        INTERIOR_DESIGN_VOCAB_CORE.treasureHuntRounds[0].items
+            ? INTERIOR_DESIGN_VOCAB_CORE.treasureHuntRounds[0].items
+            : [];
+    var interiorPlain = interiorPassage
+        ? interiorPassage
+              .replace(/\r\n/g, '\n')
+              .replace(/\n\n+/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+        : '';
+    var interiorItems = interiorPlain
+        ? interiorThItems.map(function (d) {
+              return {
+                  syn: d.paraphrase,
+                  ans: d.phrase,
+                  speaker: interiorSpeaker,
+                  fallText: u9FallBuildGapLine(interiorPlain, d.phrase, 'Interior')
+              };
+          })
+        : [];
     u9FallPool = []
         .concat(u9FallZipTasksWithSpeaker(U9_PHRASE_TASKS, u9FallScrapePhrases('u9v-reading', '.u9v-click'), 'A Jack', pj))
         .concat(u9FallZipTasksWithSpeaker(U9_VAL_TASKS, u9FallScrapePhrases('u9val-reading', '.u9val-click'), 'B Valentina', pv))
@@ -8847,7 +9108,8 @@ function ensureU9FallPool() {
         .concat(listenItems)
         .concat(envItems)
         .concat(env2Items)
-        .concat(prepItems);
+        .concat(prepItems)
+        .concat(interiorItems);
 }
 
 function u9FallGetFilteredPool() {
@@ -9087,13 +9349,35 @@ function cpeWbBuildPrepItems() {
     });
 }
 
+function cpeWbBuildInteriorItems() {
+    var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' ? INTERIOR_DESIGN_VOCAB_CORE : null;
+    var sp = C && C.lexicalGamesSpeaker ? C.lexicalGamesSpeaker : 'Interior design: Art & architecture';
+    var items =
+        C && C.treasureHuntRounds && C.treasureHuntRounds[0] && C.treasureHuntRounds[0].items
+            ? C.treasureHuntRounds[0].items
+            : [];
+    return items.map(function (d, i) {
+        var hint = d.paraphrase || '';
+        if (d.paraphraseRu) {
+            hint = hint + ' \u2014 ' + d.paraphraseRu;
+        }
+        return {
+            id: 'interior::' + i + '::' + d.phrase,
+            phrase: d.phrase,
+            hint: hint,
+            speaker: sp
+        };
+    });
+}
+
 function cpeWbItems(theme) {
     if (!cpeWbCache) {
         cpeWbCache = {
             robots: cpeWbBuildRobotsItems(),
             idioms: cpeWbBuildIdiomsItems(),
             listening: cpeWbBuildListeningItems(),
-            prep: cpeWbBuildPrepItems()
+            prep: cpeWbBuildPrepItems(),
+            interior: cpeWbBuildInteriorItems()
         };
     }
     return (cpeWbCache[theme] || []).slice();
@@ -9142,7 +9426,12 @@ function cpeWordBankRender() {
               ? 'Listening: Making a mark'
               : cpeWbTheme === 'prep'
                 ? LEX_PREP_SPEAKER_LABEL
-                : 'Idioms: Art and creativity') +
+                : cpeWbTheme === 'interior'
+                  ? typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' &&
+                    INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
+                    ? INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
+                    : 'Interior design: Art & architecture'
+                  : 'Idioms: Art and creativity') +
         ' · Total: ' +
         filtered.length +
         ' · Due now: ' +
@@ -9288,6 +9577,11 @@ function openUnit9LexReadingPick(mode) {
     if (rpr) {
         rpr.checked = false;
         rpr.disabled = u9PendingLexGame === 'sticky';
+    }
+    var rint = document.getElementById('u9-lex-reading-interior');
+    if (rint) {
+        rint.checked = false;
+        rint.disabled = u9PendingLexGame === 'sticky';
     }
     showScreen('screen-unit9-lex-reading-pick');
 }
@@ -11180,6 +11474,7 @@ function openUnit9StickyGame() {
     u9Prep2RenderBoard();
     u9RobotsRenderBoard();
     u9MarkRenderBoard();
+    u9InteriorRenderBoard();
     showScreen('screen-unit9-lex-sticky');
     u9StickyShowTask('idiom');
 }
@@ -11594,7 +11889,7 @@ function prepEscapeApplyTimePenalty(sec) {
 
 function prepEscapeBuildUnifiedPool() {
     cpeWbItems('robots');
-    var themes = ['robots', 'idioms', 'listening', 'prep'];
+    var themes = ['robots', 'idioms', 'listening', 'prep', 'interior'];
     var seen = {};
     var pool = [];
     for (var t = 0; t < themes.length; t++) {
@@ -11780,6 +12075,27 @@ function prepEscapeEnrichFromRobotsLexRow(row) {
     return null;
 }
 
+function prepEscapeEnrichFromInteriorRow(row) {
+    lexInteriorBuildTasks();
+    var key = normalizeLexAns(row.ans);
+    if (!key || !LEX_INTERIOR_TYPE_TASKS || !LEX_INTERIOR_TYPE_TASKS.length) return null;
+    var tasks = LEX_INTERIOR_TYPE_TASKS;
+    for (var i = 0; i < tasks.length; i++) {
+        var t = tasks[i];
+        if (!t || !t.ans) continue;
+        if (normalizeLexAns(t.ans) !== key) continue;
+        return {
+            before: t.before,
+            after: t.after,
+            ans: t.ans,
+            hint: row.hint,
+            speaker: row.speaker,
+            wbId: row.wbId
+        };
+    }
+    return null;
+}
+
 function prepEscapeEnrichRowFull(row) {
     var r = prepEscapeEnrichFromPrepCore(row);
     if (prepEscapeRowHasSentenceFrame(r)) return r;
@@ -11787,6 +12103,11 @@ function prepEscapeEnrichRowFull(row) {
     var a;
     var b;
     var c;
+    if (sp.indexOf('interior design') !== -1 || sp.indexOf('art & architecture') !== -1) {
+        a = prepEscapeEnrichFromInteriorRow(row);
+        if (a) return a;
+        return r;
+    }
     if (sp.indexOf('idiom') !== -1) {
         a = prepEscapeEnrichFromIdiomListenRow(row);
         if (a) return a;
@@ -11809,14 +12130,43 @@ function prepEscapeEnrichRowFull(row) {
     return r;
 }
 
+/**
+ * Join gap-frame segments for Prep vault. {@link u9FallBuildGapLine} trims <code>before</code>/<code>after</code>,
+ * which strips the space next to the gap — naive concatenation produced <code>chooseimposing</code>, <code>goes,beauty</code>, etc.
+ */
+function prepEscapeJoinGapParts(before, ans, after) {
+    var b = String(before != null ? before : '');
+    var m = String(ans != null ? ans : '');
+    var a = String(after != null ? after : '');
+    var out = b;
+    if (m) {
+        if (out && !/\s$/.test(out) && !/^\s/.test(m)) out += ' ';
+        out += m;
+    }
+    if (a) {
+        if (out && !/\s$/.test(out) && !/^\s/.test(a)) out += ' ';
+        out += a;
+    }
+    return out;
+}
+
 function prepEscapeFullLine(row) {
-    return String((row && row.before) || '') + String((row && row.ans) || '') + String((row && row.after) || '');
+    if (!row) return '';
+    return prepEscapeJoinGapParts(row.before, row.ans, row.after);
 }
 
 function prepEscapeGapLine(row) {
     var full = prepEscapeFullLine(row);
     if (!String(full || '').trim()) full = String((row && row.ans) || '');
-    return u9PrepGapText(full, row.ans);
+    var ans = row && row.ans != null ? String(row.ans) : '';
+    var g = u9PrepGapText(full, ans);
+    if (ans && g.indexOf('____') === -1) {
+        var p = full.indexOf(ans);
+        if (p >= 0) {
+            g = full.slice(0, p) + '____' + full.slice(p + ans.length);
+        }
+    }
+    return g;
 }
 
 function prepEscapeLockGlyph(ans) {
@@ -12261,7 +12611,7 @@ var prepLiveBroadcastSb = null;
 var prepLiveBroadcastCh = null;
 var prepLiveBroadcastRoomBound = "";
 var prepLiveFlashTimer = null;
-var PREP_LIVE_STICKY_MODES = ["idiom", "prep", "prep2", "robots", "mark"];
+var PREP_LIVE_STICKY_MODES = ["idiom", "prep", "prep2", "robots", "mark", "interior"];
 
 function prepLiveActiveScreenId() {
     var s = document.querySelector(".screen.active");
@@ -12281,7 +12631,8 @@ function prepLiveSyncStickyLinkChrome(screenId) {
             prep: "u9-sticky-tab-prep",
             prep2: "u9-sticky-tab-prep2",
             robots: "u9-sticky-tab-robots",
-            mark: "u9-sticky-tab-mark"
+            mark: "u9-sticky-tab-mark",
+            interior: "u9-sticky-tab-interior"
         };
         var k;
         for (k in map) {
@@ -12809,6 +13160,7 @@ function prepLiveStickyGapCueForMistake(taskKey, item) {
         }
         if (taskKey === "robots") return u9RobotsGapText(item.text, item.gap);
         if (taskKey === "mark") return u9MarkGapText(item.text, item.gap);
+        if (taskKey === "interior") return u9RobotsGapText(item.text, item.gap);
     } catch (eG) {}
     return "";
 }
@@ -12834,6 +13186,8 @@ function prepLiveStickyActiveDeckLen() {
         if (id === "u9-sticky-task-prep2" && typeof u9Prep2Deck !== "undefined" && u9Prep2Deck) return u9Prep2Deck.length;
         if (id === "u9-sticky-task-robots" && typeof u9RobotsDeck !== "undefined" && u9RobotsDeck) return u9RobotsDeck.length;
         if (id === "u9-sticky-task-mark" && typeof u9MarkDeck !== "undefined" && u9MarkDeck) return u9MarkDeck.length;
+        if (id === "u9-sticky-task-interior" && typeof u9InteriorDeck !== "undefined" && u9InteriorDeck)
+            return u9InteriorDeck.length;
     } catch (eL) {}
     return 0;
 }
@@ -13788,6 +14142,179 @@ function u9MarkResetUI() {
     u9MarkRenderBoard();
 }
 
+var u9InteriorDeck = [];
+
+function u9InteriorBuildStickySource() {
+    lexInteriorBuildTasks();
+    var out = [];
+    var seen = {};
+    var tasks = LEX_INTERIOR_TYPE_TASKS || [];
+    for (var i = 0; i < tasks.length; i++) {
+        var t = tasks[i];
+        if (!t || !t.ans) continue;
+        var ans = String(t.ans).trim();
+        if (!ans) continue;
+        var key = normalizeLexAns(ans);
+        if (!key || seen[key]) continue;
+        seen[key] = true;
+        var ctx = (String(t.before || '') + ans + String(t.after || '')).replace(/\s+/g, ' ').trim();
+        out.push({ ans: ans, context: ctx });
+    }
+    return out;
+}
+
+function u9InteriorPickGap(phrase) {
+    return u9RobotsPickGap(phrase);
+}
+
+function u9InteriorGapText(text, gapWord) {
+    return u9RobotsGapText(text, gapWord);
+}
+
+function u9InteriorUpdateDone() {
+    var done = 0;
+    for (var i = 0; i < u9InteriorDeck.length; i++) {
+        if (u9InteriorDeck[i].ok) done++;
+    }
+    var el = document.getElementById('u9-interior-done');
+    if (el) el.textContent = done + ' / ' + u9InteriorDeck.length;
+}
+
+function u9InteriorCheck(idx) {
+    var item = u9InteriorDeck[idx];
+    if (!item) return;
+    var inp = document.getElementById('u9-interior-inp-' + idx);
+    var fb = document.getElementById('u9-interior-fb-' + idx);
+    var note = document.getElementById('u9-interior-note-' + idx);
+    if (!inp || !fb || !note) return;
+    if (lexAnsMatch(inp.value, item.gap)) {
+        item.ok = true;
+        note.classList.add('done');
+        fb.textContent = 'Correct';
+        fb.style.color = 'var(--success)';
+        inp.disabled = true;
+        prepLiveNotifyStickyItemSolved('interior', idx);
+    } else {
+        fb.textContent = 'Try again';
+        fb.style.color = 'var(--error)';
+        prepLiveNotifyStickyWrongAttempt('interior', idx, item, inp.value);
+    }
+    u9InteriorUpdateDone();
+}
+
+function u9InteriorShowAnswer(idx) {
+    var item = u9InteriorDeck[idx];
+    if (!item) return;
+    var inp = document.getElementById('u9-interior-inp-' + idx);
+    var fb = document.getElementById('u9-interior-fb-' + idx);
+    if (!inp || !fb) return;
+    inp.value = item.gap;
+    fb.textContent = 'Answer shown';
+    fb.style.color = 'var(--muted)';
+}
+
+function u9InteriorToggleContext(idx) {
+    var el = document.getElementById('u9-interior-ctx-' + idx);
+    if (!el) return;
+    el.classList.toggle('on');
+}
+
+function u9InteriorRenderBoard() {
+    var board = document.getElementById('u9-interior-board');
+    if (!board) return;
+    board.innerHTML = '';
+    var src = u9InteriorBuildStickySource();
+    u9InteriorDeck = u9FallShuffle(
+        src.map(function (row) {
+            return {
+                text: row.ans,
+                gap: u9InteriorPickGap(row.ans),
+                ok: false,
+                context: row.context || row.ans
+            };
+        })
+    ).filter(function (x) {
+        var g = u9InteriorGapText(x.text, x.gap)
+            .replace(/[^\w_]+/g, ' ')
+            .trim();
+        return g && g !== '____';
+    });
+    for (var i = 0; i < u9InteriorDeck.length; i++) {
+        var note = document.createElement('div');
+        note.className = 'u9-sticky-note ' + u9StickyColorClass(i);
+        note.id = 'u9-interior-note-' + i;
+        note.style.transform = 'rotate(' + String((Math.random() * 8 - 4).toFixed(2)) + 'deg)';
+        var item = u9InteriorDeck[i];
+        var gapLine = document.createElement('div');
+        gapLine.className = 'u9-sticky-gap';
+        gapLine.textContent = u9InteriorGapText(item.text, item.gap);
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = 'u9-interior-inp-' + i;
+        inp.className = 'u9-sticky-inp';
+        inp.placeholder = 'missing word';
+        inp.setAttribute('autocomplete', 'off');
+        inp.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter') {
+                ev.preventDefault();
+                var id = Number(String(this.id).replace('u9-interior-inp-', ''), 10);
+                u9InteriorCheck(id);
+            }
+        });
+        var ctrl = document.createElement('div');
+        ctrl.className = 'u9-sticky-ctrl';
+        var bCheck = document.createElement('button');
+        bCheck.type = 'button';
+        bCheck.className = 'u9-sticky-btn';
+        bCheck.textContent = 'Check';
+        (function (idx) {
+            bCheck.addEventListener('click', function () {
+                u9InteriorCheck(idx);
+            });
+        })(i);
+        var bShow = document.createElement('button');
+        bShow.type = 'button';
+        bShow.className = 'u9-sticky-btn';
+        bShow.textContent = 'Show answer';
+        (function (idx) {
+            bShow.addEventListener('click', function () {
+                u9InteriorShowAnswer(idx);
+            });
+        })(i);
+        var bCtx = document.createElement('button');
+        bCtx.type = 'button';
+        bCtx.className = 'u9-sticky-btn';
+        bCtx.textContent = 'Context';
+        (function (idx) {
+            bCtx.addEventListener('click', function () {
+                u9InteriorToggleContext(idx);
+            });
+        })(i);
+        ctrl.appendChild(bCheck);
+        ctrl.appendChild(bShow);
+        ctrl.appendChild(bCtx);
+        var fb = document.createElement('div');
+        fb.className = 'u9-sticky-fb';
+        fb.id = 'u9-interior-fb-' + i;
+        var ctx = document.createElement('div');
+        ctx.className = 'u9-sticky-context';
+        ctx.id = 'u9-interior-ctx-' + i;
+        ctx.textContent = item.context || item.text;
+        note.appendChild(gapLine);
+        note.appendChild(inp);
+        note.appendChild(ctrl);
+        note.appendChild(fb);
+        note.appendChild(ctx);
+        board.appendChild(note);
+    }
+    u9InteriorUpdateDone();
+    prepLiveStickyRefreshSlotsMeta();
+}
+
+function u9InteriorResetUI() {
+    u9InteriorRenderBoard();
+}
+
 function u9StickyShowTask(mode, opts) {
     opts = opts || {};
     var idiomTask = document.getElementById('u9-sticky-task-idiom');
@@ -13795,27 +14322,32 @@ function u9StickyShowTask(mode, opts) {
     var prep2Task = document.getElementById('u9-sticky-task-prep2');
     var robotsTask = document.getElementById('u9-sticky-task-robots');
     var markTask = document.getElementById('u9-sticky-task-mark');
+    var interiorTask = document.getElementById('u9-sticky-task-interior');
     var idiomTab = document.getElementById('u9-sticky-tab-idiom');
     var prepTab = document.getElementById('u9-sticky-tab-prep');
     var prep2Tab = document.getElementById('u9-sticky-tab-prep2');
     var robotsTab = document.getElementById('u9-sticky-tab-robots');
     var markTab = document.getElementById('u9-sticky-tab-mark');
+    var interiorTab = document.getElementById('u9-sticky-tab-interior');
     var showIdiom = mode === 'idiom';
     var showPrep = mode === 'prep';
     var showPrep2 = mode === 'prep2';
     var showRobots = mode === 'robots';
     var showMark = mode === 'mark';
-    if (!showIdiom && !showPrep && !showPrep2 && !showRobots && !showMark) showIdiom = true;
+    var showInterior = mode === 'interior';
+    if (!showIdiom && !showPrep && !showPrep2 && !showRobots && !showMark && !showInterior) showIdiom = true;
     if (idiomTask) idiomTask.classList.toggle('active', showIdiom);
     if (prepTask) prepTask.classList.toggle('active', showPrep);
     if (prep2Task) prep2Task.classList.toggle('active', showPrep2);
     if (robotsTask) robotsTask.classList.toggle('active', showRobots);
     if (markTask) markTask.classList.toggle('active', showMark);
+    if (interiorTask) interiorTask.classList.toggle('active', showInterior);
     if (idiomTab) idiomTab.classList.toggle('active', showIdiom);
     if (prepTab) prepTab.classList.toggle('active', showPrep);
     if (prep2Tab) prep2Tab.classList.toggle('active', showPrep2);
     if (robotsTab) robotsTab.classList.toggle('active', showRobots);
     if (markTab) markTab.classList.toggle('active', showMark);
+    if (interiorTab) interiorTab.classList.toggle('active', showInterior);
     var scopePick = document.getElementById("prep-live-sticky-scope");
     if (scopePick && PREP_LIVE_STICKY_MODES.indexOf(mode) >= 0 && !opts.fromLiveSnap) {
         scopePick.value = mode;
@@ -14270,11 +14802,13 @@ function updateLexLocalLine() {
                   : 'Block 1: lecture transcript chunks (Making a mark) \u2014 not the reading text.'
               : lexTrainerPack === 'prep'
                   ? 'Prepositional phrases only \u2014 disk Word Bank lines from prepositional-phrases-core.js.'
-                  : lexTrainerPack === 'environment'
-                    ? 'Environment collocations only \u2014 seven chunks in example sentences.'
-                    : lexTrainerPack === 'environment2'
-                      ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
-                      : 'You only see this speaker right now \u2014 not the full list of all texts.';
+                  : lexTrainerPack === 'interior'
+                    ? 'Art & architecture article only \u2014 chunks from interior-design-vocab-core.js (same list as Treasure Hunt).'
+                    : lexTrainerPack === 'environment'
+                      ? 'Environment collocations only \u2014 seven chunks in example sentences.'
+                      : lexTrainerPack === 'environment2'
+                        ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
+                        : 'You only see this speaker right now \u2014 not the full list of all texts.';
 }
 
 function updateLexHintDisplay() {
@@ -14399,6 +14933,15 @@ function lexTypeApplyScreenCopy() {
         if (winSub) winSub.textContent = 'Prepositional phrases';
         if (winBody) winBody.textContent = 'You cleared every gap in the prepositional phrases pack.';
         if (goFull) goFull.textContent = 'Restart prepositional phrases pack';
+    } else if (lexTrainerPack === 'interior') {
+        if (tag) tag.textContent = 'Art & architecture (disk)';
+        if (lead) {
+            lead.innerHTML =
+                'Use the <b>hint</b> (English paraphrase), then <b>type the exact chunk</b> from the article <em>Different strokes for different folks</em> (<code style="font-size:12px;">js/interior-design-vocab-core.js</code>). <b>Three hearts</b> for the whole pack; after a wrong check, the answer appears and you <b>must type it</b> to continue.';
+        }
+        if (winSub) winSub.textContent = 'Art & architecture (disk)';
+        if (winBody) winBody.textContent = 'You cleared every gap in the art & architecture pack.';
+        if (goFull) goFull.textContent = 'Restart art & architecture pack';
     } else if (lexTrainerPack === 'environment') {
         if (tag) tag.textContent = 'Environment collocations';
         if (lead) {
@@ -14437,6 +14980,8 @@ function lexTrainerRestartFull() {
         openLexicalTrainerListening();
     } else if (lexTrainerPack === 'prep') {
         openLexicalTrainerPrep();
+    } else if (lexTrainerPack === 'interior') {
+        openLexicalTrainerInterior();
     } else if (lexTrainerPack === 'environment') {
         openLexicalTrainerEnvironment();
     } else if (lexTrainerPack === 'environment2') {
@@ -14576,6 +15121,41 @@ function openLexicalTrainerListening() {
     renderLexicalTrainerItem();
 }
 
+function openLexicalTrainerInterior() {
+    lexInteriorBuildTasks();
+    if (!LEX_INTERIOR_TYPE_TASKS.length) {
+        alert(
+            'Could not load the Art & architecture pack. Check that js/interior-design-vocab-core.js is included and Treasure Hunt items are present.'
+        );
+        return;
+    }
+    lexTrainerFromUnit8 = false;
+    lexTrainerPack = 'interior';
+    lexTypeIdx = 0;
+    lexTypeLives = 3;
+    lexAwaitingRetype = false;
+    var rev = document.getElementById('lex-type-reveal');
+    if (rev) {
+        rev.style.display = 'none';
+        rev.innerHTML = '';
+    }
+    var ga = document.getElementById('lex-type-go-answer');
+    if (ga) {
+        ga.style.display = 'none';
+        ga.textContent = '';
+    }
+    var go = document.getElementById('lex-type-gameover');
+    var win = document.getElementById('lex-type-win');
+    var act = document.getElementById('lex-type-active');
+    if (go) go.classList.remove('active');
+    if (win) win.classList.remove('active');
+    if (act) act.style.display = '';
+    lexTypeApplyScreenCopy();
+    updateLexTypeLivesDisplay();
+    showScreen('screen-unit9-lexical-type');
+    renderLexicalTrainerItem();
+}
+
 function openLexicalTrainerPrep() {
     lexTrainerFromUnit8 = false;
     lexTrainerPack = 'prep';
@@ -14661,9 +15241,11 @@ function lexAdvanceAfterCorrect() {
                   ? 'Pack complete \u2014 transcript gaps and Part 2 sentence completion. Brilliant work!'
                   : lexTrainerPack === 'prep'
                     ? 'Pack complete \u2014 you\'ve finished every prepositional phrase gap. Brilliant work!'
-                    : lexTrainerIsUnit8EnvLex()
-                      ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
-                      : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
+                    : lexTrainerPack === 'interior'
+                      ? 'Pack complete \u2014 you\'ve finished every art & architecture gap. Brilliant work!'
+                      : lexTrainerIsUnit8EnvLex()
+                        ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
+                        : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
             'ok'
         );
     } else if (!crossedIntoNewSpeaker) {
@@ -14727,11 +15309,13 @@ function checkLexicalTrainer() {
                           ? 'Out of lives in this listening block. Retry from phrase 1 in this block, restart the whole listening pack, or go back to the menu.'
                           : lexTrainerPack === 'prep'
                             ? 'Out of lives in this prepositional phrases pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                            : lexTrainerIsUnit8EnvLex()
-                              ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                              : 'Out of lives in ' +
-                                (failSec ? failSec.label : 'this') +
-                                '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
+                            : lexTrainerPack === 'interior'
+                              ? 'Out of lives in this art & architecture pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                              : lexTrainerIsUnit8EnvLex()
+                                ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                                : 'Out of lives in ' +
+                                  (failSec ? failSec.label : 'this') +
+                                  '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
             }
             var ga = document.getElementById('lex-type-go-answer');
             if (ga) {
@@ -14920,6 +15504,22 @@ var SPEAKING_ROUNDS = [
     });
 })();
 
+(function () {
+    var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' ? INTERIOR_DESIGN_VOCAB_CORE : null;
+    if (!C || !C.passageComplete || !C.retellPhrases || !C.retellPhrases.length) return;
+    SPEAKING_ROUNDS.push({
+        title: C.retellTitle || C.title,
+        accent: C.retellAccent || '#38bdf8',
+        fullText: C.passageComplete,
+        phrases: C.retellPhrases.slice(),
+        prepRetellPack: 'interior',
+        retellKeyBanner:
+            'Key phrases from <b>Interior design: different strokes for different folks</b> &mdash; disk vocabulary hub.',
+        retellLead:
+            'Retell the passage in your own words. Use <b>as many of these chunks as you can</b>; you do not need every tag in one go.'
+    });
+})();
+
 /** 'unit9' = SPEAKING_ROUNDS; 'unit8' = UNITS[8].speakingTrainer.retellRounds */
 var speakTrainerPack = 'unit9';
 
@@ -14957,6 +15557,11 @@ function speakRetellRoundsNow() {
             return r.prepRetellPack === 'gallery';
         });
     }
+    if (speakRetellSubset === 'interior_gallery') {
+        return rounds.filter(function (r) {
+            return r.prepRetellPack === 'interior';
+        });
+    }
     return rounds;
 }
 
@@ -14969,6 +15574,10 @@ function speakingSetHubBackLabel() {
     }
     if (speakRetellSubset === 'prep_gallery') {
         b.textContent = '\u2190 Prepositional phrases';
+        return;
+    }
+    if (speakRetellSubset === 'interior_gallery') {
+        b.textContent = '\u2190 Art & architecture (disk)';
         return;
     }
     b.textContent = '\u2190 Level 9 menu';
@@ -15053,6 +15662,15 @@ function u9SpeakFreerApplyIntroCopy() {
         if (p2)
             p2.innerHTML =
                 'Each new run <b style="color:var(--text);">shuffles</b> the set. Weave in words like <em>legacy project</em>, <em>iconic</em>, or <em>mixed</em> where they fit naturally.';
+    } else if (u9SpeakFreerDeck === 'interior') {
+        if (pill) pill.textContent = 'Freer practice — Interior design vocabulary (disk)';
+        if (h2) h2.textContent = 'Discuss taste, décor, and style';
+        if (p1)
+            p1.innerHTML =
+                'Prompts match <b style="color:var(--text);">Interior design: different strokes for different folks</b>. You get <b style="color:var(--text);">one minute</b> per question. Speak out loud; the timer starts when the prompt appears.';
+        if (p2)
+            p2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the set. Use words like <em>minimalistic</em>, <em>ostentatious</em>, or <em>unassuming</em> where they fit.';
     } else {
         if (pill) pill.textContent = 'Freer practice (from reading The robots are taking over)';
         if (h2) h2.textContent = 'Answer the questions';
@@ -15065,9 +15683,10 @@ function u9SpeakFreerApplyIntroCopy() {
     }
 }
 
-/** @param {string} [deck] Pass <code>'listenSc'</code> for Making a mark keys; default Robots deck. */
+/** @param {string} [deck] <code>'listenSc'</code> | <code>'interior'</code> | default Robots reading deck. */
 function openSpeakFreerPractice(deck) {
-    u9SpeakFreerDeck = deck === 'listenSc' ? 'listenSc' : 'reading';
+    u9SpeakFreerDeck =
+        deck === 'listenSc' ? 'listenSc' : deck === 'interior' ? 'interior' : 'reading';
     u9SpeakIdiomStopTimer();
     u9SpeakFreerStopTimer();
     u9SpeakFreerShowIntro();
@@ -15075,45 +15694,91 @@ function openSpeakFreerPractice(deck) {
 }
 
 function u9SpeakPhrasePool() {
-    return u9SpeakPhraseDeck === 'prep' ? U9_SPEAK_PREP_ITEMS : U9_SPEAK_IDIOM_ITEMS;
+    if (u9SpeakPhraseDeck === 'prep') return U9_SPEAK_PREP_ITEMS;
+    if (u9SpeakPhraseDeck === 'interior') return U9_SPEAK_INTERIOR_ITEMS;
+    return U9_SPEAK_IDIOM_ITEMS;
 }
 
 function u9SpeakPhraseApplyIntroUi() {
     var prep = u9SpeakPhraseDeck === 'prep';
+    var interior = u9SpeakPhraseDeck === 'interior';
     var pill = document.getElementById('speak-phrase-pill');
-    if (pill) pill.textContent = prep ? 'Prepositional phrases' : 'Idioms: Art and creativity';
+    if (pill) {
+        pill.textContent = prep
+            ? 'Prepositional phrases'
+            : interior
+              ? 'Interior design lexis'
+              : 'Idioms: Art and creativity';
+    }
     var title = document.getElementById('speak-phrase-title');
-    if (title) title.textContent = prep ? 'Fixed chunks in context' : 'Creative process, influence & reactions';
+    if (title) {
+        title.textContent = prep
+            ? 'Fixed chunks in context'
+            : interior
+              ? 'Art, architecture & taste'
+              : 'Creative process, influence & reactions';
+    }
     var nPrep = U9_SPEAK_PREP_ITEMS.length;
+    var nInterior = U9_SPEAK_INTERIOR_ITEMS.length;
     var nIdiom = U9_SPEAK_IDIOM_ITEMS.length;
     var lead1 = document.getElementById('speak-phrase-lead1');
     if (lead1) {
-        lead1.innerHTML = prep
-            ? String(nPrep) +
-              ' prompts built around the same <b style="color:var(--text);">prepositional phrases</b> as the disk pack (<code style="color:var(--muted);font-size:12px;">js/prepositional-phrases-core.js</code>). You get <b style="color:var(--text);">60 seconds</b> per card. Speak out loud; the timer starts when the question appears. Use <b>Next question</b> to move on early, or wait for the ring &mdash; then the next prompt loads.'
-            : String(nIdiom) +
-              ' discussion prompts built around your idiom pack. You get <b style="color:var(--text);">60 seconds</b> per card. Speak out loud; the timer starts when the question appears. Use <b>Next question</b> to move on early, or wait for the ring &mdash; then the next prompt loads.';
+        if (prep) {
+            lead1.innerHTML =
+                String(nPrep) +
+                ' prompts built around the same <b style="color:var(--text);">prepositional phrases</b> as the disk pack (<code style="color:var(--muted);font-size:12px;">js/prepositional-phrases-core.js</code>). You get <b style="color:var(--text);">60 seconds</b> per card. Speak out loud; the timer starts when the question appears. Use <b>Next question</b> to move on early, or wait for the ring &mdash; then the next prompt loads.';
+        } else if (interior) {
+            lead1.innerHTML =
+                String(nInterior) +
+                ' prompts built from <b style="color:var(--text);">Interior design: different strokes for different folks</b> (<code style="color:var(--muted);font-size:12px;">js/interior-design-vocab-core.js</code>). You get <b style="color:var(--text);">60 seconds</b> per card.';
+        } else {
+            lead1.innerHTML =
+                String(nIdiom) +
+                ' discussion prompts built around your idiom pack. You get <b style="color:var(--text);">60 seconds</b> per card. Speak out loud; the timer starts when the question appears. Use <b>Next question</b> to move on early, or wait for the ring &mdash; then the next prompt loads.';
+        }
     }
     var lead2 = document.getElementById('speak-phrase-lead2');
     if (lead2) {
-        lead2.innerHTML = prep
-            ? 'Each new run <b style="color:var(--text);">shuffles</b> the order. Phrases align with <b style="color:var(--text);">disk exercises</b> (Tasks 1–2, Exercises 3–5, by / in / out of).'
-            : 'Each new run <b style="color:var(--text);">shuffles</b> the order. Themes on screen: <b>Creative process &amp; Results</b>, <b>Influence &amp; Originality</b>, <b>Reactions &amp; Feelings</b>.';
+        if (prep) {
+            lead2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the order. Phrases align with <b style="color:var(--text);">disk exercises</b> (Tasks 1–2, Exercises 3–5, by / in / out of).';
+        } else if (interior) {
+            lead2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the order. Work the target word or phrase into your answer naturally.';
+        } else {
+            lead2.innerHTML =
+                'Each new run <b style="color:var(--text);">shuffles</b> the order. Themes on screen: <b>Creative process &amp; Results</b>, <b>Influence &amp; Originality</b>, <b>Reactions &amp; Feelings</b>.';
+        }
     }
     var rh = document.getElementById('speak-phrase-ring-hint');
     if (rh) {
         rh.textContent = prep
             ? 'Work the prepositional phrase into your answer naturally — ideas and fluency count.'
-            : 'Use the idiom naturally in your answer — fluency and ideas count.';
+            : interior
+              ? 'Use the interior-design chunk naturally — ideas and fluency count.'
+              : 'Use the idiom naturally in your answer — fluency and ideas count.';
     }
     var dp = document.getElementById('speak-phrase-done-p');
     if (dp) {
-        dp.textContent = prep
-            ? 'You have worked through every prepositional-phrase prompt in this set. Shuffle again or tap \u2190 Prepositional phrases to return to the disk hub.'
-            : 'You have worked through every idiom prompt in this set. Shuffle again or tap \u2190 Idioms on disk when you are done.';
+        if (prep) {
+            dp.textContent =
+                'You have worked through every prepositional-phrase prompt in this set. Shuffle again or tap \u2190 Prepositional phrases to return to the disk hub.';
+        } else if (interior) {
+            dp.textContent =
+                'You have worked through every prompt in this set. Shuffle again or tap \u2190 Art & architecture (disk) to return.';
+        } else {
+            dp.textContent =
+                'You have worked through every idiom prompt in this set. Shuffle again or tap \u2190 Idioms on disk when you are done.';
+        }
     }
     var hb = document.getElementById('speak-phrase-hub-back');
-    if (hb) hb.textContent = prep ? '\u2190 Prepositional phrases' : '\u2190 Idioms on disk';
+    if (hb) {
+        hb.textContent = prep
+            ? '\u2190 Prepositional phrases'
+            : interior
+              ? '\u2190 Art & architecture (disk)'
+              : '\u2190 Idioms on disk';
+    }
 }
 
 function openSpeakPrepPractice() {
@@ -15129,15 +15794,36 @@ function openSpeakPrepPractice() {
     showScreen('screen-unit9-speak-idiom');
 }
 
+function openSpeakInteriorPhrasePractice() {
+    u9SpeakPhraseDeck = 'interior';
+    u9SpeakFreerStopTimer();
+    u9SpeakIdiomStopTimer();
+    u9SpeakIdiomShowIntro();
+    u9SpeakPhraseApplyIntroUi();
+    var sum = document.getElementById('speak-idiom-summary');
+    if (sum) {
+        sum.textContent = String(u9SpeakPhrasePool().length) + ' prompts in this deck.';
+    }
+    showScreen('screen-unit9-speak-idiom');
+}
+
 function u9SpeakFreerBack() {
     u9SpeakFreerStopTimer();
+    if (u9SpeakFreerDeck === 'interior') {
+        u9DiskInteriorArtHub();
+        return;
+    }
     u9Unit9MenuFromSpeaking();
 }
 
 function u9SpeakFreerStartSession() {
     u9SpeakFreerStopTimer();
     var pool =
-        u9SpeakFreerDeck === 'listenSc' ? U9_SPEAK_FREER_LISTEN_SC.slice() : U9_SPEAK_FREER_QUESTIONS.slice();
+        u9SpeakFreerDeck === 'listenSc'
+            ? U9_SPEAK_FREER_LISTEN_SC.slice()
+            : u9SpeakFreerDeck === 'interior'
+              ? U9_SPEAK_FREER_INTERIOR.slice()
+              : U9_SPEAK_FREER_QUESTIONS.slice();
     u9SpeakFreerOrder = u9FallShuffle(pool);
     u9SpeakFreerIdx = 0;
     var intro = document.getElementById('speak-freer-intro');
@@ -15325,6 +16011,10 @@ function u9SpeakIdiomBack() {
         u9DiskPrepositionalPhrasesHub();
         return;
     }
+    if (u9SpeakPhraseDeck === 'interior') {
+        u9DiskInteriorArtHub();
+        return;
+    }
     if (u9SpeakPhraseDeck === 'idioms') {
         u9DiskIdiomsVocabularyHub();
         return;
@@ -15477,6 +16167,16 @@ function u9MicroBuildDeck() {
             };
         });
     }
+    if (u9MicroTheme === 'interior') {
+        return U9_SPEAK_INTERIOR_ITEMS.map(function (it, i) {
+            return {
+                id: 'U9m::interior::' + i,
+                p: 'In about 15 seconds, say something natural that includes this chunk (interior design text).',
+                t: it.label,
+                wbTheme: 'interior'
+            };
+        });
+    }
     return U9_SPEAK_IDIOM_ITEMS.map(function (it, i) {
         return {
             id: 'U9m::idioms::' + i,
@@ -15585,6 +16285,7 @@ function u9MicroSetTheme(next) {
     var hb = document.getElementById('u9-micro-hub-back');
     if (hb) {
         if (u9MicroTheme === 'prep') hb.textContent = '\u2190 Prepositional phrases';
+        else if (u9MicroTheme === 'interior') hb.textContent = '\u2190 Art & architecture (disk)';
         else if (u9MicroTheme === 'idioms') hb.textContent = '\u2190 Idioms on disk';
         else hb.textContent = '\u2190 Level 9 menu';
     }
@@ -15642,13 +16343,19 @@ function u9MicroNextCard() {
     u9MicroRender();
 }
 
-/** @param {'robots'|'idioms'|'prep'|'listening'} [theme] Default <code>idioms</code> from the in-app hub; use <code>robots</code> for the disk Speaking trainer deep link. */
+/** @param {'robots'|'idioms'|'prep'|'listening'|'interior'} [theme] Default <code>idioms</code> from the in-app hub; disk deep links use <code>robots</code>, <code>prep</code>, <code>interior</code>, etc. */
 function openU9MicroSpeaking(theme) {
     u9SpeakFreerStopTimer();
     u9SpeakIdiomStopTimer();
     u9MicroStopTimer(true);
     var t =
-        theme === 'robots' || theme === 'listening' || theme === 'idioms' || theme === 'prep' ? theme : 'idioms';
+        theme === 'robots' ||
+        theme === 'listening' ||
+        theme === 'idioms' ||
+        theme === 'prep' ||
+        theme === 'interior'
+            ? theme
+            : 'idioms';
     u9MicroTheme = t;
     u9MicroIdx = 0;
     u9MicroSessionScore = 0;
@@ -15663,6 +16370,10 @@ function u9MicroBack() {
     u9MicroStopTimer(false);
     if (u9MicroTheme === 'prep') {
         u9DiskPrepositionalPhrasesHub();
+        return;
+    }
+    if (u9MicroTheme === 'interior') {
+        u9DiskInteriorArtHub();
         return;
     }
     if (u9MicroTheme === 'idioms') {
@@ -15936,7 +16647,7 @@ function speakingResetRoundUI() {
     if (stp) stp.style.display = 'none';
 }
 
-/** @param {'robots'|'mark'|'prep_gallery'} [retellPack] Robots (A\u2013E), Making a mark, or disk Exercise 5 gallery. */
+/** @param {'robots'|'mark'|'prep_gallery'|'interior_gallery'} [retellPack] Robots (A\u2013E), Making a mark, disk Exercise 5 gallery, or interior design article. */
 function openSpeakingTrainer(retellPack) {
     u9SpeakFreerStopTimer();
     u9SpeakIdiomStopTimer();
@@ -15948,7 +16659,9 @@ function openSpeakingTrainer(retellPack) {
               ? 'robots'
               : retellPack === 'prep_gallery'
                 ? 'prep_gallery'
-                : null;
+                : retellPack === 'interior_gallery'
+                  ? 'interior_gallery'
+                  : null;
     speakRoundIdx = 0;
     speakMicOn = false;
     var mic = document.getElementById('speak-btn-mic');
@@ -16003,6 +16716,8 @@ function backFromSpeakingTrainer() {
         openUnit8ActivityHub('speaking');
     } else if (speakRetellSubset === 'prep_gallery') {
         u9DiskPrepositionalPhrasesHub();
+    } else if (speakRetellSubset === 'interior_gallery') {
+        u9DiskInteriorArtHub();
     } else {
         u9Unit9MenuFromSpeaking();
     }
@@ -16095,6 +16810,8 @@ function speakingNextCharacter() {
             openUnit8ActivityHub('speaking');
         } else if (speakRetellSubset === 'prep_gallery') {
             u9DiskPrepositionalPhrasesHub();
+        } else if (speakRetellSubset === 'interior_gallery') {
+            u9DiskInteriorArtHub();
         } else {
             u9Unit9MenuFromSpeaking();
         }
@@ -19907,33 +20624,6 @@ function openUnit9UoeFolderHub(ev) {
     showScreen("screen-unit9-uoe");
 }
 
-/**
- * Level 9 — Use of English: открыть готовое Part 1 (JSON на диске), без папок PrepSiteContent / хаба.
- */
-function openPrepLegacyU9UoeFromHub(ev) {
-    if (ev) {
-        if (typeof ev.preventDefault === "function") ev.preventDefault();
-        if (typeof ev.stopPropagation === "function") ev.stopPropagation();
-    }
-    var back = "";
-    try {
-        back = encodeURIComponent(location.pathname + (location.search || ""));
-    } catch (eBk) {
-        back = encodeURIComponent("index.html");
-    }
-    var q =
-        "?context=" +
-        encodeURIComponent("unit9-uoe") +
-        "&src=" +
-        encodeURIComponent("published-unit9-interior-design.json") +
-        "&back=" +
-        back +
-        "&backLabel=" +
-        encodeURIComponent("Level 9");
-    // Всегда Preview: так сразу виден текст задания; Edit — вкладка на странице Part 1.
-    window.location.href = "use-of-english/part1-mc-cloze/index.html" + q;
-}
-
 function renderHubUnitTasksEsc(s) {
     return String(s || "")
         .replace(/&/g, "&amp;")
@@ -20150,7 +20840,7 @@ function hubInstallHubTaskOverflowMenu(tile, ctx, tk) {
 }
 
 var LEGACY_FOLDER_ORDER_DEFAULT = {
-    9: ["u9-reading-robots", "u9-listening-mark", "u9-vocab", "u9-lexgames", "u9-uoe"],
+    9: ["u9-reading-robots", "u9-listening-mark", "u9-vocab", "u9-lexgames", "u9-uoe", "u9-grammar"],
     8: ["u8-listening", "u8-lexgames", "u8-speak", "u8-uoe", "u8-treasure"]
 };
 var LEGACY_FOLDER_ORDER_KEY = "prep-legacy-folder-order-v1";
@@ -20175,8 +20865,13 @@ function legacySaveJson(key, obj) {
 function legacyGetOrder(unit) {
     var o = legacyLoadJson(LEGACY_FOLDER_ORDER_KEY, {});
     var arr = o[String(unit)];
-    if (Array.isArray(arr) && arr.length) return arr.slice();
-    return (LEGACY_FOLDER_ORDER_DEFAULT[unit] || []).slice();
+    var def = LEGACY_FOLDER_ORDER_DEFAULT[unit] || [];
+    if (!Array.isArray(arr) || !arr.length) return def.slice();
+    var out = arr.slice();
+    for (var i = 0; i < def.length; i++) {
+        if (out.indexOf(def[i]) === -1) out.push(def[i]);
+    }
+    return out;
 }
 
 function legacySetOrder(unit, arr) {
@@ -20902,7 +21597,10 @@ var PREP_PLATFORM_AUTHOR_PIN = "EMP-platform-2026";
 
 var loginCourseTrackPick = "cpe";
 /** Single login password for CPE / EGE / FCE / Creator on this screen. */
-var PREP_LOGIN_PASSWORD = "suvorova2drob2";
+/** Learners / class teachers — not shown in the UI. */
+var PREP_PUBLIC_LOGIN_PASSWORD = "suvorova2drob2";
+/** Site admin — full “My courses” rail; not shown in the UI. */
+var PREP_ADMIN_LOGIN_PASSWORD = "0608";
 
 function setLoginCourseTrack(track) {
     loginCourseTrackPick = track || "cpe";
@@ -20918,7 +21616,7 @@ function setLoginCourseTrack(track) {
     if (lbl) lbl.style.display = isCreator ? "none" : "";
     var hint = document.getElementById("login-password-hint");
     if (hint) {
-        hint.textContent = "Password: " + PREP_LOGIN_PASSWORD;
+        hint.textContent = "Use the password your teacher gave you.";
     }
 }
 
@@ -20971,30 +21669,42 @@ function registerUser() {
     var password = pwEl ? String(pwEl.value || '').trim() : '';
     var track = loginCourseTrackPick || 'cpe';
 
-    if (password !== PREP_LOGIN_PASSWORD) {
+    var isAdmin = password === PREP_ADMIN_LOGIN_PASSWORD;
+    var isPublic = password === PREP_PUBLIC_LOGIN_PASSWORD;
+    if (!isAdmin && !isPublic) {
         alert('Wrong password.');
         return;
     }
-    if (track === 'creator') {
+
+    userData.prepAdmin = !!isAdmin;
+    if (isAdmin) {
         userData.liveRole = 'teacher';
+        userData.prepPlatformSwitch = true;
     } else {
-        var bTe = document.getElementById('login-role-teacher');
-        var isTeacher = bTe && bTe.classList.contains('active');
-        userData.liveRole = isTeacher ? 'teacher' : 'student';
+        userData.prepPlatformSwitch = false;
+        if (track === 'creator') {
+            userData.liveRole = 'teacher';
+        } else {
+            var bTe = document.getElementById('login-role-teacher');
+            var isTeacher = bTe && bTe.classList.contains('active');
+            userData.liveRole = isTeacher ? 'teacher' : 'student';
+        }
     }
 
     userData.name = n;
     if (userData.liveRole === 'teacher' && !userData.cmsCreatorId) {
         userData.cmsCreatorId = 'u_' + Math.random().toString(36).slice(2, 11) + Math.random().toString(36).slice(2, 7);
     }
-    var pinEl = document.getElementById("login-author-pin");
-    var authorPin = pinEl ? String(pinEl.value || "").trim() : "";
-    if (authorPin === PREP_PLATFORM_AUTHOR_PIN) {
-        userData.prepPlatformSwitch = true;
-    } else if (authorPin) {
-        alert(
-            "Author PIN did not match PREP_PLATFORM_AUTHOR_PIN in index.html (optional field; you can ignore it)."
-        );
+    if (!isAdmin) {
+        var pinEl = document.getElementById("login-author-pin");
+        var authorPin = pinEl ? String(pinEl.value || "").trim() : "";
+        if (authorPin === PREP_PLATFORM_AUTHOR_PIN) {
+            userData.prepPlatformSwitch = true;
+        } else if (authorPin) {
+            alert(
+                "Author PIN did not match PREP_PLATFORM_AUTHOR_PIN in index.html (optional field; you can ignore it)."
+            );
+        }
     }
     saveData();
 
@@ -21427,8 +22137,12 @@ window.onload = function () {
                     showScreen('screen-unit9-reading-hub');
                 } else if (params.get('u9_lex_th') === 'mark') {
                     openUnit9MarkPhraseMatch();
-                } else if (params.get('u9_lex_games') === '1') {
+                } else                 if (params.get('u9_lex_games') === '1') {
                     openUnit9LexGamesHub();
+                }
+                if (params.get('u9_lex_type') === 'interior') {
+                    openLexicalTrainerInterior();
+                    return;
                 }
                 var u9sp = params.get('u9_speak');
                 if (u9sp === 'retell_robots') openSpeakingTrainer('robots');
@@ -21442,6 +22156,10 @@ window.onload = function () {
                 else if (u9sp === 'micro_prep') openU9MicroSpeaking('prep');
                 else if (u9sp === 'freer_prep') openSpeakPrepPractice();
                 else if (u9sp === 'retell_prep_gallery') openSpeakingTrainer('prep_gallery');
+                else if (u9sp === 'micro_interior') openU9MicroSpeaking('interior');
+                else if (u9sp === 'freer_interior') openSpeakFreerPractice('interior');
+                else if (u9sp === 'phrase_interior') openSpeakInteriorPhrasePractice();
+                else if (u9sp === 'retell_interior') openSpeakingTrainer('interior_gallery');
             });
         } else if (targetScreen === 'unit8') {
             showScreen('screen-unit8');

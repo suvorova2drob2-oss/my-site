@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passive &amp; causative — written exercises (Unit 9)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --bad: #f87171;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 640px; margin: 0 auto; }
+    .top h1 { font-size: 1.12rem; margin-bottom: 6px; }
+    .top .sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .tabs button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .tabs button[aria-selected="true"] {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    .book-ref {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .mcq-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+    .mcq-q {
+      font-size: 1.02rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .mcq-opts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mcq-opts label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      font-size: 14px;
+    }
+    .mcq-opts input { margin-top: 3px; accent-color: var(--accent); }
+    .mcq-row-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .mcq-row-actions button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: rgba(56, 189, 248, 0.2);
+      color: #7dd3fc;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .mcq-fb {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      display: none;
+    }
+    .mcq-fb.ok { display: block; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.4); color: #86efac; }
+    .mcq-fb.no { display: block; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.35); color: #fecaca; }
+    .mcq-fb.note { display: block; background: rgba(148, 163, 184, 0.1); border: 1px solid var(--line); color: var(--muted); }
+
+    .hud {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .hud strong { color: var(--accent); }
+
+    /* Flip cards (rewrite) */
+    .flip-scene {
+      perspective: 1100px;
+      max-width: 560px;
+      margin: 0 auto 8px;
+      cursor: pointer;
+      outline: none;
+    }
+    .flip-scene:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.45);
+      border-radius: 20px;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: min(280px, 44vh);
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+    }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .flip-front {
+      background: linear-gradient(160deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
+    }
+    .flip-back {
+      background: linear-gradient(160deg, rgba(56, 189, 248, 0.14), rgba(30, 41, 59, 0.96));
+      transform: rotateY(180deg);
+    }
+    .flip-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin-bottom: 10px;
+    }
+    .flip-q {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      max-width: 36rem;
+    }
+    .flip-bracket {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #7dd3fc;
+    }
+    .flip-a {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      color: #e0f2fe;
+      max-width: 36rem;
+    }
+    .flip-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 34rem;
+    }
+    .tap-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 8px 0 14px;
+    }
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .nav-row button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .nav-row button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .mark-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .mark-row button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .mark-know { background: linear-gradient(135deg, #15803d, #22c55e); color: #fff; }
+    .mark-learn { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+
+    .pair-line {
+      font-size: 0.98rem;
+      line-height: 1.5;
+      max-width: 36rem;
+      text-align: left;
+      align-self: stretch;
+    }
+    .pair-line + .pair-line { margin-top: 10px; }
+    .pair-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .ex4-first {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-align: left;
+      align-self: stretch;
+      max-width: 36rem;
+    }
+
+    .match-uses {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .match-uses h3 {
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+      color: #e2e8f0;
+    }
+    .match-uses ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      color: var(--muted);
+    }
+    .match-uses li { margin: 8px 0; }
+    .match-uses strong { color: #7dd3fc; }
+    .match-q {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .match-q strong { color: #7dd3fc; font-weight: 700; }
+    .match-opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+    }
+    .match-opts label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+    }
+    .match-opts input { accent-color: var(--accent); }
+
+    .back { margin-top: 20px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>9 &mdash; Passive and causative structures</h1>
+      <p class="sub">
+        Five tabs: gaps MCQ; rewrites; same/different; complete the line; <strong>quiz match</strong> (passive uses A&ndash;E). All in English.
+      </p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Exercises">
+      <button type="button" role="tab" id="tab-ex1" aria-selected="true" aria-controls="panel-ex1">1. Multiple choice</button>
+      <button type="button" role="tab" id="tab-ex2" aria-selected="false" aria-controls="panel-ex2">2. Rewrite</button>
+      <button type="button" role="tab" id="tab-ex3" aria-selected="false" aria-controls="panel-ex3">3. Same or different?</button>
+      <button type="button" role="tab" id="tab-ex4" aria-selected="false" aria-controls="panel-ex4">4. Complete the line</button>
+      <button type="button" role="tab" id="tab-ex5" aria-selected="false" aria-controls="panel-ex5">5. Quiz match</button>
+    </div>
+
+    <div id="panel-ex1" class="panel on" role="tabpanel" aria-labelledby="tab-ex1">
+      <p class="book-ref"><strong>Exercise 1.</strong> Decide which answer (A, B, C or D) best fits each gap.</p>
+      <div id="mcq-mount"></div>
+      <div class="mcq-row-actions">
+        <button type="button" id="mcq-check-all">Check all</button>
+      </div>
+    </div>
+
+    <div id="panel-ex2" class="panel" role="tabpanel" aria-labelledby="tab-ex2" hidden>
+      <p class="book-ref"><strong>Exercise 2.</strong> Rewrite with passive or causative structures using the word in brackets. Front of the card &mdash; original sentence and cue; back &mdash; a model answer (other versions may be fine).</p>
+      <p class="hud" id="rw-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="rw-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="rwFlip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rwFlip();}">
+        <div class="flip-inner" id="rw-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Your turn</span>
+            <p class="flip-q" id="rw-front-sent"></p>
+            <p class="flip-bracket" id="rw-front-bracket"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Model answer</span>
+            <p class="flip-a" id="rw-back-model"></p>
+            <p class="flip-note">Other correct wordings are often possible.</p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused to flip</p>
+      <div class="nav-row">
+        <button type="button" id="rw-prev" onclick="rwPrev()">&larr; Back</button>
+        <button type="button" id="rw-next" onclick="rwNext()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="rwMark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="rwMark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex3" class="panel" role="tabpanel" aria-labelledby="tab-ex3" hidden>
+      <p class="book-ref"><strong>Exercise 3.</strong> Do both sentences in the pair have a very similar meaning (<strong>SAME</strong>), or is there a significant difference (<strong>DIFFERENT</strong>)? Decide, then flip the card to check.</p>
+      <p class="hud" id="sd-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="sd-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="sdFlip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();sdFlip();}">
+        <div class="flip-inner" id="sd-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Compare the pair</span>
+            <div class="pair-line"><div class="pair-label">A</div><p id="sd-line-a"></p></div>
+            <div class="pair-line"><div class="pair-label">B</div><p id="sd-line-b"></p></div>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Key</span>
+            <p class="flip-a" id="sd-back-ans"></p>
+            <p class="flip-note" id="sd-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="sd-prev" onclick="sdPrev()">&larr; Back</button>
+        <button type="button" id="sd-next" onclick="sdNext()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="sdMark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="sdMark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex4" class="panel" role="tabpanel" aria-labelledby="tab-ex4" hidden>
+      <p class="book-ref"><strong>Exercise 4.</strong> Complete the second sentence so that it means the same as the first. Flip for a full model line.</p>
+      <p class="hud" id="cx-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="cx-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="cxFlip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cxFlip();}">
+        <div class="flip-inner" id="cx-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Complete the second line</span>
+            <p class="ex4-first" id="cx-first-sent"></p>
+            <p class="flip-q" id="cx-second-sent"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Model</span>
+            <p class="flip-a" id="cx-back-full"></p>
+            <p class="flip-note" id="cx-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="cx-prev" onclick="cxPrev()">&larr; Back</button>
+        <button type="button" id="cx-next" onclick="cxNext()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="cxMark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="cxMark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex5" class="panel" role="tabpanel" aria-labelledby="tab-ex5" hidden>
+      <p class="book-ref"><strong>Art &amp; design quiz match.</strong> Each question contains a passive or causative structure in <strong>bold</strong>. Match it to the correct use <strong>A&ndash;E</strong> (from the book).</p>
+      <div class="match-uses">
+        <h3>Uses A&ndash;E</h3>
+        <ul id="match-uses-list"></ul>
+      </div>
+      <div id="match-quiz-mount"></div>
+      <div class="mcq-row-actions">
+        <button type="button" class="sort-btn-primary" id="match-check">Check all</button>
+        <button type="button" id="match-key">Show key</button>
+        <button type="button" id="match-reset">Clear choices</button>
+      </div>
+      <div id="match-fb" class="mcq-fb"></div>
+    </div>
+
+    <p class="back">
+      <a href="../../unit9-passive-causative/index.html">&larr; Speaking drills (passive &amp; causative)</a>
+      &middot; <a href="../../index.html">Grammar hub</a>
+      &middot; <a href="../../../index.html?screen=unit9">Level 9</a>
+    </p>
+  </div>
+
+  <script>
+(function () {
+  var MCQ = [
+    {
+      q: 'Leave it to us. We __________ the catering organised for the event so you can get on with other things.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'will get' },
+        { id: 'b', letter: 'B', text: 'have been getting' },
+        { id: 'c', letter: 'C', text: 'have got' },
+        { id: 'd', letter: 'D', text: 'be getting' }
+      ],
+      correct: 'a',
+      note: '<strong>will get</strong> + object + past participle arranges for the result. (<em>Have got</em> + object + participle is also used in BrE for “we’ve arranged it”, but here the future delegation fits <em>will get</em> best.)'
+    },
+    {
+      q: 'The walls __________ and the floors laid, the room was ready for the new furniture.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'getting painted' },
+        { id: 'b', letter: 'B', text: 'having painted' },
+        { id: 'c', letter: 'C', text: 'got painted' },
+        { id: 'd', letter: 'D', text: 'having been painted' }
+      ],
+      correct: 'd',
+      note: 'Absolute construction: perfect passive participle <strong>having been painted</strong> matches completed passive background before the main clause.'
+    },
+    {
+      q: 'Have those pots __________ by the time I get back.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'cleaning' },
+        { id: 'b', letter: 'B', text: 'to clean' },
+        { id: 'c', letter: 'C', text: 'cleaned' },
+        { id: 'd', letter: 'D', text: 'been cleaned' }
+      ],
+      correct: 'c',
+      note: 'Imperative causative: <strong>Have</strong> + object + <strong>past participle</strong> (<em>Have those pots cleaned</em>).'
+    },
+    {
+      q: 'The manager __________ all new staff __________ on a health and safety training course.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'is having / go' },
+        { id: 'b', letter: 'B', text: 'have / to go' },
+        { id: 'c', letter: 'C', text: 'has / to go' },
+        { id: 'd', letter: 'D', text: 'is having / going' }
+      ],
+      correct: 'a',
+      note: '<strong>have + object + bare infinitive</strong>: <em>is having all new staff go</em> (arrange for them to attend).'
+    },
+    {
+      q: 'Georgia was proud of __________ to exhibit her work at the gallery.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'she had been asked' },
+        { id: 'b', letter: 'B', text: 'asking to have' },
+        { id: 'c', letter: 'C', text: 'having been asked' },
+        { id: 'd', letter: 'D', text: 'get asked' }
+      ],
+      correct: 'c',
+      note: 'After <em>proud of</em> use the gerund: <strong>having been asked</strong> (perfect passive gerund).'
+    },
+    {
+      q: 'We searched for the cat for hours yesterday until we noticed she\'d __________ under the garden shed.',
+      choices: [
+        { id: 'a', letter: 'A', text: 'had trapped' },
+        { id: 'b', letter: 'B', text: 'got trapped' },
+        { id: 'c', letter: 'C', text: 'been trapping' },
+        { id: 'd', letter: 'D', text: 'got trap' }
+      ],
+      correct: 'b',
+      note: '<strong>get + past participle</strong> for what happened to the subject: <em>got trapped</em>.'
+    }
+  ];
+
+  var REWRITE = [
+    {
+      original: 'They repaired and varnished the old door remaining faithful to the details of the period.',
+      bracket: 'was',
+      model: 'The old door was repaired and varnished (by them) in a way that remained faithful to the details of the period.'
+    },
+    {
+      original: 'A local artist was commissioned to do a series of murals in the town by the council.',
+      bracket: 'had',
+      model: 'The council had a local artist commissioned to do a series of murals in the town.'
+    },
+    {
+      original: 'I contacted the company about my order because they hadn\'t sent an email with the delivery details.',
+      bracket: 'due to',
+      model: 'I contacted the company about my order due to not having been sent an email with the delivery details.'
+    },
+    {
+      original: 'I want somebody to order the flowers for the wedding today to avoid delays.',
+      bracket: 'have',
+      model: 'I want to have the flowers for the wedding ordered today to avoid delays.'
+    },
+    {
+      original: 'I\'ll ensure that someone brings you the dessert menu in just a moment.',
+      bracket: 'get',
+      model: 'I\'ll get the dessert menu brought to you in just a moment.'
+    },
+    {
+      original: 'The caterers prepared the food and then we waited for the guests to arrive.',
+      bracket: 'having',
+      model: 'Having had the food prepared by the caterers, we waited for the guests to arrive.'
+    }
+  ];
+
+  var SAME_DIFF = [
+    {
+      a: 'We\'re going to get our engineers to improve the design.',
+      b: 'We\'re going to have our engineers improve the design.',
+      key: 'same',
+      note: 'Both are causatives: <em>get + object + to</em> + infinitive and <em>have + object</em> + bare infinitive arrange for the same kind of action.'
+    },
+    {
+      a: 'Clean up all this paint before I get back.',
+      b: 'Get all this paint cleaned up before I get back.',
+      key: 'same',
+      note: 'Same practical instruction (the paint must be dealt with). The second uses <em>get + object + past participle</em>.'
+    },
+    {
+      a: 'Having been paid to paint the CEO\'s portrait, I couldn\'t exactly criticise the company.',
+      b: 'After having been paid to paint the CEO\'s portrait, I couldn\'t exactly criticise the company.',
+      key: 'same',
+      note: '<em>After</em> only spells out the time link; the situation and meaning stay the same.'
+    },
+    {
+      a: 'We\'ve never had anybody complain about our designs.',
+      b: 'We\'ve never got anybody to complain about our designs.',
+      key: 'different',
+      note: 'First: no one has ever complained (positive for the firm). Second: we have never managed to make someone complain &mdash; a different (and odd) reading.'
+    }
+  ];
+
+  var COMPLETE_LINE = [
+    {
+      first: 'She\'s not embarrassed because she forged the paintings, but because they caught her.',
+      second: 'She\'s embarrassed about ___________________________, not about having forged the paintings.',
+      full: 'She\'s embarrassed about being caught, not about having forged the paintings.',
+      note: '<em>Being caught</em> matches “they caught her” (passive / gerund).'
+    },
+    {
+      first: 'One artist appears to have painted the portrait and another to have signed it!',
+      second: 'The portrait appears ___________________________ by two different artists.',
+      full: 'The portrait appears to have been painted and signed by two different artists.',
+      note: 'Reporting with <strong>appear + perfect infinitive passive</strong>: <em>to have been painted and signed</em>.'
+    },
+    {
+      first: 'We went to the cinema because they\'d cancelled the design exhibition.',
+      second: 'The design exhibition ___________________________, we went to the cinema.',
+      full: 'The design exhibition having been cancelled, we went to the cinema.',
+      note: 'Absolute construction: noun + <strong>having been + past participle</strong>.'
+    },
+    {
+      first: 'I\'ll make sure somebody sends the goods first thing tomorrow.',
+      second: 'I\'ll ___________________________ first thing tomorrow.',
+      full: 'I\'ll have the goods sent first thing tomorrow.',
+      note: '<strong>have + object + past participle</strong> to arrange that the goods are sent.'
+    }
+  ];
+
+  function buildMcq() {
+    var mount = document.getElementById('mcq-mount');
+    mount.innerHTML = '';
+    MCQ.forEach(function (item, idx) {
+      var card = document.createElement('div');
+      card.className = 'mcq-card';
+      card.dataset.idx = String(idx);
+
+      var q = document.createElement('p');
+      q.className = 'mcq-q';
+      q.textContent = (idx + 1) + '. ' + item.q;
+
+      var opts = document.createElement('div');
+      opts.className = 'mcq-opts';
+      var group = 'mcq-' + idx;
+
+      item.choices.forEach(function (ch) {
+        var lab = document.createElement('label');
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = group;
+        inp.value = ch.id;
+        var span = document.createElement('span');
+        span.textContent = ch.letter + '  ' + ch.text;
+        lab.appendChild(inp);
+        lab.appendChild(span);
+        opts.appendChild(lab);
+      });
+
+      var fb = document.createElement('div');
+      fb.className = 'mcq-fb';
+      fb.id = 'mcq-fb-' + idx;
+
+      var row = document.createElement('div');
+      row.className = 'mcq-row-actions';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = 'Check';
+      btn.onclick = function () {
+        var sel = opts.querySelector('input:checked');
+        var ok = sel && sel.value === item.correct;
+        fb.className = 'mcq-fb ' + (ok ? 'ok' : 'no');
+        fb.innerHTML = ok
+          ? '<strong>Correct.</strong> ' + item.note
+          : '<strong>Not quite.</strong> ' + item.note;
+      };
+      row.appendChild(btn);
+
+      card.appendChild(q);
+      card.appendChild(opts);
+      card.appendChild(row);
+      card.appendChild(fb);
+      mount.appendChild(card);
+    });
+  }
+
+  document.getElementById('mcq-check-all').onclick = function () {
+    MCQ.forEach(function (item, idx) {
+      var card = document.querySelector('.mcq-card[data-idx="' + idx + '"]');
+      if (!card) return;
+      var opts = card.querySelector('.mcq-opts');
+      var sel = opts.querySelector('input:checked');
+      var fb = document.getElementById('mcq-fb-' + idx);
+      var ok = sel && sel.value === item.correct;
+      fb.className = 'mcq-fb ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = ok
+        ? '<strong>Correct.</strong> ' + item.note
+        : '<strong>Not quite.</strong> ' + item.note;
+    });
+  };
+
+  var RW_KEY = 'u9passiveRewriteMarks';
+  var rwIndex = 0;
+  var rwFlipped = false;
+  var rwMarks = {};
+
+  function rwLoadMarks() {
+    try {
+      var raw = localStorage.getItem(RW_KEY);
+      rwMarks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      rwMarks = {};
+    }
+  }
+  function rwSaveMarks() {
+    try {
+      localStorage.setItem(RW_KEY, JSON.stringify(rwMarks));
+    } catch (e) {}
+  }
+  function rwStats() {
+    var know = 0, learn = 0, none = 0;
+    REWRITE.forEach(function (_, i) {
+      var m = rwMarks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function rwRender() {
+    var c = REWRITE[rwIndex];
+    document.getElementById('rw-front-sent').textContent =
+      (rwIndex + 1) + '. ' + c.original;
+    document.getElementById('rw-front-bracket').textContent = 'Use: (' + c.bracket + ')';
+    document.getElementById('rw-back-model').textContent = c.model;
+    document.getElementById('rw-inner').classList.toggle('flipped', rwFlipped);
+    var st = rwStats();
+    document.getElementById('rw-hud').innerHTML =
+      'Card <strong>' + (rwIndex + 1) + '</strong> / <strong>' + REWRITE.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('rw-prev').disabled = rwIndex <= 0;
+    document.getElementById('rw-next').disabled = rwIndex >= REWRITE.length - 1;
+  }
+  window.rwFlip = function () {
+    rwFlipped = !rwFlipped;
+    rwRender();
+  };
+  window.rwPrev = function () {
+    if (rwIndex <= 0) return;
+    rwIndex--;
+    rwFlipped = false;
+    rwRender();
+  };
+  window.rwNext = function () {
+    if (rwIndex >= REWRITE.length - 1) return;
+    rwIndex++;
+    rwFlipped = false;
+    rwRender();
+  };
+  window.rwMark = function (kind) {
+    rwMarks[String(rwIndex)] = kind;
+    rwSaveMarks();
+    rwRender();
+  };
+
+  var SD_KEY = 'u9passiveSameDiffMarks';
+  var sdIndex = 0;
+  var sdFlipped = false;
+  var sdMarks = {};
+  function sdLoadMarks() {
+    try {
+      var raw = localStorage.getItem(SD_KEY);
+      sdMarks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      sdMarks = {};
+    }
+  }
+  function sdSaveMarks() {
+    try {
+      localStorage.setItem(SD_KEY, JSON.stringify(sdMarks));
+    } catch (e) {}
+  }
+  function sdStats() {
+    var know = 0, learn = 0, none = 0;
+    SAME_DIFF.forEach(function (_, i) {
+      var m = sdMarks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function sdRender() {
+    var c = SAME_DIFF[sdIndex];
+    document.getElementById('sd-line-a').textContent = c.a;
+    document.getElementById('sd-line-b').textContent = c.b;
+    document.getElementById('sd-back-ans').innerHTML =
+      c.key === 'same' ? '<strong>SAME</strong> — very similar meaning.' : '<strong>DIFFERENT</strong> — the message is not the same.';
+    document.getElementById('sd-back-note').innerHTML = c.note;
+    document.getElementById('sd-inner').classList.toggle('flipped', sdFlipped);
+    var st = sdStats();
+    document.getElementById('sd-hud').innerHTML =
+      'Pair <strong>' + (sdIndex + 1) + '</strong> / <strong>' + SAME_DIFF.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('sd-prev').disabled = sdIndex <= 0;
+    document.getElementById('sd-next').disabled = sdIndex >= SAME_DIFF.length - 1;
+  }
+  window.sdFlip = function () {
+    sdFlipped = !sdFlipped;
+    sdRender();
+  };
+  window.sdPrev = function () {
+    if (sdIndex <= 0) return;
+    sdIndex--;
+    sdFlipped = false;
+    sdRender();
+  };
+  window.sdNext = function () {
+    if (sdIndex >= SAME_DIFF.length - 1) return;
+    sdIndex++;
+    sdFlipped = false;
+    sdRender();
+  };
+  window.sdMark = function (kind) {
+    sdMarks[String(sdIndex)] = kind;
+    sdSaveMarks();
+    sdRender();
+  };
+
+  var CX_KEY = 'u9passiveCompleteMarks';
+  var cxIndex = 0;
+  var cxFlipped = false;
+  var cxMarks = {};
+  function cxLoadMarks() {
+    try {
+      var raw = localStorage.getItem(CX_KEY);
+      cxMarks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      cxMarks = {};
+    }
+  }
+  function cxSaveMarks() {
+    try {
+      localStorage.setItem(CX_KEY, JSON.stringify(cxMarks));
+    } catch (e) {}
+  }
+  function cxStats() {
+    var know = 0, learn = 0, none = 0;
+    COMPLETE_LINE.forEach(function (_, i) {
+      var m = cxMarks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function cxRender() {
+    var c = COMPLETE_LINE[cxIndex];
+    document.getElementById('cx-first-sent').textContent = 'First sentence: ' + c.first;
+    document.getElementById('cx-second-sent').textContent = (cxIndex + 1) + '. ' + c.second;
+    document.getElementById('cx-back-full').innerHTML = c.full;
+    document.getElementById('cx-back-note').innerHTML = c.note;
+    document.getElementById('cx-inner').classList.toggle('flipped', cxFlipped);
+    var st = cxStats();
+    document.getElementById('cx-hud').innerHTML =
+      'Card <strong>' + (cxIndex + 1) + '</strong> / <strong>' + COMPLETE_LINE.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('cx-prev').disabled = cxIndex <= 0;
+    document.getElementById('cx-next').disabled = cxIndex >= COMPLETE_LINE.length - 1;
+  }
+  window.cxFlip = function () {
+    cxFlipped = !cxFlipped;
+    cxRender();
+  };
+  window.cxPrev = function () {
+    if (cxIndex <= 0) return;
+    cxIndex--;
+    cxFlipped = false;
+    cxRender();
+  };
+  window.cxNext = function () {
+    if (cxIndex >= COMPLETE_LINE.length - 1) return;
+    cxIndex++;
+    cxFlipped = false;
+    cxRender();
+  };
+  window.cxMark = function (kind) {
+    cxMarks[String(cxIndex)] = kind;
+    cxSaveMarks();
+    cxRender();
+  };
+
+  var MATCH_USES = [
+    { id: 'A', text: 'to avoid repeating the same passive auxiliary form in a sentence' },
+    { id: 'B', text: 'to give background information to help explain or clarify something in the past' },
+    { id: 'C', text: 'as a complement when following a preposition' },
+    { id: 'D', text: 'to describe making someone do something' },
+    { id: 'E', text: 'to focus on the victim of a negative or unwanted action or event' }
+  ];
+  var MATCH_QUIZ = [
+    {
+      html: '<strong>Having been born</strong> in Malaga, which famous Spanish artist moved to Barcelona and then Paris, where he spent the rest of his life?',
+      correct: 'B'
+    },
+    {
+      html: 'Which spectacular white building did an Indian emperor <strong>have his chief architect design</strong> to house the tomb of his wife?',
+      correct: 'D'
+    },
+    {
+      html: 'Which iron tower that was initially disliked and <strong>criticised</strong> by artists and intellectuals for its design went on to become one of the world&rsquo;s most recognisable and iconic landmarks?',
+      correct: 'A'
+    },
+    {
+      html: 'In spite of <strong>having been taught</strong> only reading, writing and basic mathematics, which artist from Florence became one of the world&rsquo;s greatest inventors?',
+      correct: 'C'
+    },
+    {
+      html: 'Which Dutch artist, whose paintings are some of the most valuable in the world, <strong>had their work ignored</strong> during their lifetime?',
+      correct: 'E'
+    }
+  ];
+
+  function buildMatchQuiz() {
+    var usesList = document.getElementById('match-uses-list');
+    MATCH_USES.forEach(function (u) {
+      var li = document.createElement('li');
+      li.innerHTML = '<strong>' + u.id + '</strong> &mdash; ' + u.text;
+      usesList.appendChild(li);
+    });
+    var mount = document.getElementById('match-quiz-mount');
+    MATCH_QUIZ.forEach(function (item, idx) {
+      var card = document.createElement('div');
+      card.className = 'mcq-card';
+      var q = document.createElement('p');
+      q.className = 'match-q';
+      q.innerHTML = (idx + 1) + '. ' + item.html;
+      var opts = document.createElement('div');
+      opts.className = 'match-opts';
+      MATCH_USES.forEach(function (u) {
+        var lab = document.createElement('label');
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = 'match-' + idx;
+        inp.value = u.id;
+        lab.appendChild(inp);
+        lab.appendChild(document.createTextNode(' ' + u.id));
+        opts.appendChild(lab);
+      });
+      card.appendChild(q);
+      card.appendChild(opts);
+      mount.appendChild(card);
+    });
+  }
+
+  function matchCheck() {
+    var fb = document.getElementById('match-fb');
+    var missing = [];
+    var wrong = [];
+    var ok = 0;
+    for (var i = 0; i < MATCH_QUIZ.length; i++) {
+      var sel = document.querySelector('input[name="match-' + i + '"]:checked');
+      if (!sel) {
+        missing.push(i + 1);
+        continue;
+      }
+      if (sel.value === MATCH_QUIZ[i].correct) ok++;
+      else wrong.push(i + 1);
+    }
+    if (missing.length) {
+      fb.className = 'mcq-fb no';
+      fb.innerHTML = 'Choose A&ndash;E for every question. Still open: <strong>' + missing.join(', ') + '</strong>.';
+      return;
+    }
+    if (wrong.length === 0) {
+      fb.className = 'mcq-fb ok';
+      fb.innerHTML = '<strong>All correct.</strong> 5 / 5.';
+      return;
+    }
+    fb.className = 'mcq-fb no';
+    fb.innerHTML = '<strong>' + ok + ' / 5 correct.</strong> Review: ' + wrong.join(', ') + '.';
+  }
+
+  function matchShowKey() {
+    for (var i = 0; i < MATCH_QUIZ.length; i++) {
+      var c = MATCH_QUIZ[i].correct;
+      var inp = document.querySelector('input[name="match-' + i + '"][value="' + c + '"]');
+      if (inp) inp.checked = true;
+    }
+    var fb = document.getElementById('match-fb');
+    fb.className = 'mcq-fb note';
+    fb.textContent = 'Key shown. Compare with your choices, then use Clear choices to practise again.';
+  }
+
+  function matchReset() {
+    for (var i = 0; i < MATCH_QUIZ.length; i++) {
+      var nodes = document.querySelectorAll('input[name="match-' + i + '"]');
+      for (var j = 0; j < nodes.length; j++) nodes[j].checked = false;
+    }
+    var fb = document.getElementById('match-fb');
+    fb.className = 'mcq-fb';
+    fb.innerHTML = '';
+  }
+
+  function goTab(n) {
+    for (var i = 1; i <= 5; i++) {
+      var on = i === n;
+      document.getElementById('tab-ex' + i).setAttribute('aria-selected', on ? 'true' : 'false');
+      var p = document.getElementById('panel-ex' + i);
+      p.classList.toggle('on', on);
+      p.hidden = !on;
+    }
+    if (n === 2) rwRender();
+    if (n === 3) sdRender();
+    if (n === 4) cxRender();
+  }
+  document.getElementById('tab-ex1').addEventListener('click', function () { goTab(1); });
+  document.getElementById('tab-ex2').addEventListener('click', function () { goTab(2); });
+  document.getElementById('tab-ex3').addEventListener('click', function () { goTab(3); });
+  document.getElementById('tab-ex4').addEventListener('click', function () { goTab(4); });
+  document.getElementById('tab-ex5').addEventListener('click', function () { goTab(5); });
+
+  document.getElementById('match-check').addEventListener('click', matchCheck);
+  document.getElementById('match-key').addEventListener('click', matchShowKey);
+  document.getElementById('match-reset').addEventListener('click', matchReset);
+
+  buildMcq();
+  buildMatchQuiz();
+  rwLoadMarks();
+  sdLoadMarks();
+  cxLoadMarks();
+  rwRender();
+  sdRender();
+  cxRender();
+})();
+  </script>
+</body>
+</html>

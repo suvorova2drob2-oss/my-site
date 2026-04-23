@@ -1,6 +1,6 @@
 /**
- * Unit 9 Word Bank — same four themes as index.html Word Bank (robots / idioms / listening / prep).
- * Phrases match the reading spans, LEX_IDIOM_DATA, listening packs, and PREP_PHRASES_CORE.buildAppLists().
+ * Unit 9 Word Bank — same themes as index.html Word Bank (robots / idioms / listening / prep / interior).
+ * Phrases match the reading spans, LEX_IDIOM_DATA, listening packs, PREP_PHRASES_CORE, and INTERIOR_DESIGN_VOCAB_CORE.
  */
 (function (W) {
   "use strict";
@@ -9,7 +9,8 @@
     { id: "robots", label: "Reading: The robots are taking over" },
     { id: "idioms", label: "Idioms: Art and creativity" },
     { id: "listening", label: "Listening: Making a mark (+ Part 2 gaps)" },
-    { id: "prep", label: "Prepositional phrases" }
+    { id: "prep", label: "Prepositional phrases" },
+    { id: "interior", label: "Art & architecture (disk)" }
   ];
 
   /** Synonyms from U9_*_TASKS in index — paired with exact clickable phrases from reading screens. */
@@ -280,6 +281,21 @@
     return prep;
   }
 
+  function buildInteriorWords() {
+    var out = [];
+    var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== "undefined" ? INTERIOR_DESIGN_VOCAB_CORE : null;
+    var items =
+      C && C.treasureHuntRounds && C.treasureHuntRounds[0] && C.treasureHuntRounds[0].items
+        ? C.treasureHuntRounds[0].items
+        : [];
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (!it || !it.phrase) continue;
+      out.push(rowToWord("interior", String(it.paraphrase || "").trim(), String(it.phrase).trim()));
+    }
+    return out;
+  }
+
   function buildAllWords() {
     var w = [];
     var i;
@@ -300,6 +316,7 @@
       w.push(rowToWord("listening", sc.hint, sc.phrase));
     }
     w = w.concat(buildPrepWords());
+    w = w.concat(buildInteriorWords());
     return w;
   }
 

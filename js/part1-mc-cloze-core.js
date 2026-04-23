@@ -3,6 +3,9 @@
  * Configure before load: window.PART1_MC_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle }
  * Or URL: ?context=slug&src=relative/path/to/published.json&back=unit3.html&backLabel=...
  * Edit mode: &prepView=edit (hub / track) and/or legacy &admin=1
+ * Student-only chrome: boot.studentOnly or &part1Student=1 — скрывает редактор и игнорирует edit в URL.
+ * Вшитые данные без сети: boot.embeddedOnly or &part1Embedded=1 — см. readEmbeddedExercisePayload().
+ * Коробка: window.__PREP_BOXED_SITE__ (js/prep-boxed.js) — без pull из облака, fetch published.json с cache default.
  */
 (function () {
   var boot = window.PART1_MC_BOOT || window.PART1_MC_CONFIG || {};
@@ -14,6 +17,30 @@
   }
   var isEditRoute = isEditModeParams(sp);
   var dataSrc = String(boot.dataSrc || sp.get("src") || "").trim();
+  /** Level 9 Workbook Part 1: вшитый JSON в part1-mc-cloze/index.html (без fetch / file://). */
+  var unit9InteriorHardwired =
+    String(contextId) === "unit9-uoe" ||
+    /published-unit9-interior-design\.json\s*$/i.test(dataSrc);
+  var unit9ArtisticTalentHardwired =
+    String(contextId) === "unit9-uoe-artistic-talent" ||
+    /published-unit9-artistic-talent\.json\s*$/i.test(dataSrc);
+  var unit9PisaHardwired =
+    String(contextId) === "unit9-uoe-pisa" ||
+    /published-unit9-pisa-leaning-tower\.json\s*$/i.test(dataSrc);
+  var unit9BundledPart1 =
+    unit9InteriorHardwired || unit9ArtisticTalentHardwired || unit9PisaHardwired;
+  var studentOnly =
+    boot.studentOnly === true ||
+    sp.get("part1Student") === "1" ||
+    unit9BundledPart1;
+  var useEmbeddedExercise =
+    boot.embeddedOnly === true ||
+    sp.get("part1Embedded") === "1" ||
+    unit9BundledPart1;
+  var boxedSite =
+    (typeof window !== "undefined" && window.__PREP_BOXED_SITE__ === true) ||
+    boot.boxedSite === true ||
+    sp.get("prepBoxed") === "1";
   var backHref = String(boot.backHref || sp.get("back") || "").trim();
   var backLabel = String(
     boot.backLabel || (sp.get("backLabel") ? decodeURIComponent(sp.get("backLabel")) : "") || "Назад"
@@ -31,6 +58,19 @@
 
   document.body.classList.add("part1-mc-body");
   document.title = docTitle;
+
+  function stripStudentOnlyAdminChrome() {
+    if (!studentOnly) return;
+    try {
+      document.querySelectorAll(".admin-only").forEach(function (n) {
+        if (n && n.parentNode) n.parentNode.removeChild(n);
+      });
+      var tg = document.querySelector(".part1-view-toggle");
+      if (tg && tg.parentNode) tg.parentNode.removeChild(tg);
+    } catch (eStrip) {}
+    document.body.classList.add("part1-mc-student-only");
+  }
+  stripStudentOnlyAdminChrome();
 
   function parseDefaultJson() {
     var el = document.getElementById("part1-mc-default-data");
@@ -68,6 +108,100 @@
       .replace(/"/g, "&quot;");
   }
 
+  /** Optional pedagogy: explainCorrect + explainIfChosen (keys "0".."3" = option slot). */
+  function attachExplainFields(target, source) {
+    if (!target || !source) return;
+    if (source.explainCorrect != null && String(source.explainCorrect).trim()) {
+      target.explainCorrect = String(source.explainCorrect).trim();
+    }
+    if (source.explainIfChosen && typeof source.explainIfChosen === "object") {
+      var ex = {};
+      Object.keys(source.explainIfChosen).forEach(function (k) {
+        var v = source.explainIfChosen[k];
+        if (v != null && String(v).trim()) ex[String(k)] = String(v).trim();
+      });
+      if (Object.keys(ex).length) target.explainIfChosen = ex;
+    }
+  }
+
+  function lookupExplainChosen(obj, pick) {
+    if (!obj || pick == null || pick === "") return "";
+    var k = String(pick);
+    if (obj[k]) return String(obj[k]);
+    var n = Number(pick);
+    if (!isNaN(n) && obj[n] != null) return String(obj[n]);
+    return "";
+  }
+
+  function displayLetterForSlot(qIndex, slotIndexStr) {
+    var si = Number(slotIndexStr);
+    var items = state.exercise && state.exercise.items;
+    var it = items ? items[qIndex] : null;
+    if (!it || !isFinite(si)) return "?";
+    var order = state.studentOptionOrder && state.studentOptionOrder[qIndex];
+    if (order && order.length) {
+      var pos = order.indexOf(si);
+      if (pos >= 0) return LETTERS_U[pos];
+    }
+    var filled = [];
+    for (var j0 = 0; j0 < 4; j0++) {
+      if (String(it.options[j0] || "").trim()) filled.push(j0);
+    }
+    var k = filled.indexOf(si);
+    return k >= 0 ? LETTERS_U[k] : "?";
+  }
+
+  function buildExplainHtml(data, userPicks) {
+    var items = data.items || [];
+    var docNums = questionNumsInDocumentOrder(data.passage || "");
+    var blocks = [];
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var pick = userPicks[i];
+      var correct = String(Number(it.correctIndex) || 0);
+      var wrong = pick !== correct;
+      if (!wrong) continue;
+      var ec = it.explainCorrect != null ? String(it.explainCorrect).trim() : "";
+      var eic = it.explainIfChosen || {};
+      var gapNum = docNums[i] != null ? docNums[i] : i + 1;
+      var ynote = lookupExplainChosen(eic, pick);
+      if (!ec && !ynote) continue;
+      var Lc = displayLetterForSlot(i, correct);
+      var Lp = pick ? displayLetterForSlot(i, pick) : "?";
+      var html =
+        '<div class="reveal-explain-block"><div class="reveal-explain-gap">Gap ' +
+        esc(String(gapNum)) +
+        "</div>";
+      if (ec) {
+        html +=
+          '<p class="reveal-explain-line"><span class="reveal-tag reveal-tag--ok">Why ' +
+          esc(Lc) +
+          "</span> " +
+          esc(ec) +
+          "</p>";
+      }
+      html +=
+        '<p class="reveal-explain-line"><span class="reveal-tag reveal-tag--bad">Why not ' +
+        esc(Lp) +
+        "</span> " +
+        esc(
+          ynote ||
+            "This option doesn't fit the meaning or usual collocation here — compare with " +
+              esc(Lc) +
+              "."
+        ) +
+        "</p>";
+      html += "</div>";
+      blocks.push(html);
+    }
+    if (!blocks.length) return "";
+    return (
+      '<div class="reveal-explain-wrap"><h3 class="reveal-explain-h3">Explanations</h3>' +
+      blocks.join("") +
+      "</div>"
+    );
+  }
+
   function publishedFetchUrl() {
     if (dataSrc) {
       try {
@@ -92,11 +226,61 @@
     return window.location.pathname + (q ? "?" + q : "") + window.location.hash;
   }
 
+  function resolveBackHref() {
+    var raw = String(backHref || "").trim();
+    if (!raw) {
+      try {
+        return new URL("../../index.html", window.location.href).href;
+      } catch (e) {
+        return "../../index.html";
+      }
+    }
+    try {
+      return new URL(raw, window.location.href).href;
+    } catch (e2) {
+      return raw;
+    }
+  }
+
+  function resolveChainNextHref(raw) {
+    var s = String(raw || "").trim();
+    if (!s) return "";
+    try {
+      return new URL(s, window.location.href).href;
+    } catch (e) {
+      return s;
+    }
+  }
+
+  function wirePart1ChainNext() {
+    var rawNext = sp.get("next");
+    if (!rawNext) return;
+    var strip = document.getElementById("part1McNextStrip");
+    var link = document.getElementById("part1McNextLink");
+    if (!strip || !link) return;
+    var nextLabelDecoded = sp.get("nextLabel")
+      ? decodeURIComponent(sp.get("nextLabel"))
+      : "Next task";
+    link.setAttribute("href", resolveChainNextHref(String(rawNext).trim()));
+    link.textContent = "\u2192 " + nextLabelDecoded;
+    strip.removeAttribute("hidden");
+  }
+
   function wireNav() {
     var back = document.getElementById("part1McBack");
     if (back) {
-      if (backHref) back.href = backHref;
-      if (backLabel) back.textContent = backLabel;
+      back.setAttribute("href", resolveBackHref());
+      var lb = String(backLabel || "Back").trim() || "Back";
+      if (lb.indexOf("\u2190") !== 0) {
+        lb = "\u2190 " + lb;
+      }
+      back.textContent = lb;
+      back.addEventListener("click", function (e) {
+        if (window.history.length > 1) {
+          e.preventDefault();
+          window.history.back();
+        }
+      });
     }
     var h1 = document.getElementById("part1McH1");
     if (h1) h1.textContent = pageTitle;
@@ -163,17 +347,20 @@
     sorted.forEach(function (g, si) {
       var it = arr[si];
       if (it) {
-        byNum[g] = {
+        var o = {
           options: (it.options || []).slice(0, 4),
           correctIndex: Number(it.correctIndex) || 0
         };
+        attachExplainFields(o, it);
+        byNum[g] = o;
       }
     });
     return doc.map(function (g) {
       var x = byNum[g];
-      return x
-        ? { options: x.options.slice(), correctIndex: x.correctIndex }
-        : { options: ["", "", "", ""], correctIndex: 0 };
+      if (!x) return { options: ["", "", "", ""], correctIndex: 0 };
+      var row = { options: x.options.slice(), correctIndex: x.correctIndex };
+      attachExplainFields(row, x);
+      return row;
     });
   }
 
@@ -185,17 +372,20 @@
     doc.forEach(function (g, di) {
       var it = arr[di];
       if (it) {
-        byNum[g] = {
+        var o = {
           options: (it.options || []).slice(0, 4),
           correctIndex: Number(it.correctIndex) || 0
         };
+        attachExplainFields(o, it);
+        byNum[g] = o;
       }
     });
     return sorted.map(function (g) {
       var x = byNum[g];
-      return x
-        ? { options: x.options.slice(), correctIndex: x.correctIndex }
-        : { options: ["", "", "", ""], correctIndex: 0 };
+      if (!x) return { options: ["", "", "", ""], correctIndex: 0 };
+      var row = { options: x.options.slice(), correctIndex: x.correctIndex };
+      attachExplainFields(row, x);
+      return row;
     });
   }
 
@@ -380,7 +570,7 @@
     return arr;
   }
 
-  var isAdmin = isEditModeParams(new URLSearchParams(window.location.search));
+  var isAdmin = !studentOnly && isEditModeParams(new URLSearchParams(window.location.search));
 
   var elTitle = document.getElementById("elTitle");
   var elSubtitle = document.getElementById("elSubtitle");
@@ -656,8 +846,12 @@
     });
   }
 
-  function openAnswerReveal(text) {
-    answerRevealBody.textContent = text;
+  function openAnswerReveal(keyText, explainHtml) {
+    var keyBlock =
+      '<div class="reveal-key-block">' +
+      esc(keyText).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>") +
+      "</div>";
+    answerRevealBody.innerHTML = keyBlock + (explainHtml || "");
     answerRevealLayer.classList.add("is-open");
     answerRevealLayer.style.display = "flex";
     answerRevealLayer.setAttribute("aria-hidden", "false");
@@ -727,6 +921,11 @@
     var wrong = n - score;
     feedback.className = "feedback";
     feedback.textContent = "";
+    var picks = [];
+    for (var pi = 0; pi < n; pi++) {
+      picks.push(getChoice(pi));
+    }
+    var explainHtml = buildExplainHtml(state.exercise, picks);
     afterAnswerReveal = function () {
       feedback.className = "feedback show";
       feedback.innerHTML =
@@ -737,7 +936,7 @@
         "</strong>. " +
         "Green = right letter; if you chose wrong, your choice is red. Press <strong>Submit</strong> again after changes.";
     };
-    openAnswerReveal(buildRevealLines(state.exercise));
+    openAnswerReveal(buildRevealLines(state.exercise), explainHtml);
   });
 
   btnReset.addEventListener("click", function () {
@@ -793,12 +992,16 @@
 
   function normalizeItemsForPassage(passage, itemsIn) {
     var qnums = questionNumsInDocumentOrder(passage);
-    var items = Array.isArray(itemsIn) ? itemsIn.map(function (x) {
-      return {
-        options: (x.options || []).slice(0, 4),
-        correctIndex: Number(x.correctIndex) || 0
-      };
-    }) : [];
+    var items = Array.isArray(itemsIn)
+      ? itemsIn.map(function (x) {
+          var o = {
+            options: (x.options || []).slice(0, 4),
+            correctIndex: Number(x.correctIndex) || 0
+          };
+          attachExplainFields(o, x);
+          return o;
+        })
+      : [];
     while (items.length < qnums.length) {
       items.push({ options: ["", "", "", ""], correctIndex: 0 });
     }
@@ -1197,10 +1400,12 @@
         ro[ri] = w;
         merged.push({ options: ro, correctIndex: ri });
       } else if (jDoc >= 0 && draft.items[jDoc]) {
-        merged.push({
+        var rowKeep = {
           options: draft.items[jDoc].options.slice(),
           correctIndex: draft.items[jDoc].correctIndex
-        });
+        };
+        attachExplainFields(rowKeep, draft.items[jDoc]);
+        merged.push(rowKeep);
       } else {
         merged.push({ options: ["", "", "", ""], correctIndex: 0 });
       }
@@ -1318,6 +1523,12 @@
       }
       data.items.push({ options: sortedSlots, correctIndex: ci });
     });
+    var prevItems = state.exercise && Array.isArray(state.exercise.items) ? state.exercise.items : [];
+    if (prevItems.length === data.items.length) {
+      for (var exi = 0; exi < data.items.length; exi++) {
+        attachExplainFields(data.items[exi], prevItems[exi]);
+      }
+    }
     return data;
   }
 
@@ -1526,30 +1737,71 @@
     return null;
   }
 
+  /** Встроенный JSON (например unit9 interior) или #id из boot.embeddedDataScriptId. */
+  function readEmbeddedExercisePayload() {
+    if (unit9InteriorHardwired) {
+      var elU9 = document.getElementById("part1-mc-bundled-unit9-interior");
+      if (elU9) {
+        try {
+          return JSON.parse(elU9.textContent.trim());
+        } catch (eU9) {
+          return null;
+        }
+      }
+    }
+    if (unit9ArtisticTalentHardwired) {
+      var elAt = document.getElementById("part1-mc-bundled-unit9-artistic-talent");
+      if (elAt) {
+        try {
+          return JSON.parse(elAt.textContent.trim());
+        } catch (eAt) {
+          return null;
+        }
+      }
+    }
+    if (unit9PisaHardwired) {
+      var elPi = document.getElementById("part1-mc-bundled-unit9-pisa");
+      if (elPi) {
+        try {
+          return JSON.parse(elPi.textContent.trim());
+        } catch (ePi) {
+          return null;
+        }
+      }
+    }
+    var bid = boot.embeddedDataScriptId;
+    if (bid) {
+      var elId = document.getElementById(String(bid));
+      if (elId) {
+        try {
+          return JSON.parse(elId.textContent.trim());
+        } catch (eId) {
+          return null;
+        }
+      }
+    }
+    return null;
+  }
+
   /** Встроенный в страницу JSON для context unit9-uoe, если fetch к файлу недоступен (file:// и т.д.). */
   function readBundledPublishedFallback() {
-    if (String(contextId) !== "unit9-uoe") return null;
-    var el = document.getElementById("part1-mc-bundled-unit9-interior");
-    if (!el) return null;
-    try {
-      return JSON.parse(el.textContent.trim());
-    } catch (eBund) {
-      return null;
-    }
+    return readEmbeddedExercisePayload();
   }
 
   function loadPublishedFileThenFallback() {
     var def = parseDefaultJson();
     var url = publishedFetchUrl();
-    var tryCloud =
-      typeof window.PrepCloudClient !== "undefined" && PrepCloudClient.pullExercise
+    var fetchCache = boxedSite ? "default" : "no-store";
+    var tryCloud = boxedSite
+      ? Promise.resolve(null)
+      : typeof window.PrepCloudClient !== "undefined" && PrepCloudClient.pullExercise
         ? PrepCloudClient.pullExercise(contextId).then(function (row) {
             return row && row.data ? row.data : null;
           })
         : Promise.resolve(null);
     return tryCloud.then(function (cloudData) {
       if (cloudData) return cloudData;
-      return fetch(url, { cache: "no-store" })
+      return fetch(url, { cache: fetchCache })
         .then(function (r) {
           if (!r.ok) throw new Error("no file");
           return r.json();
@@ -1568,6 +1820,11 @@
   function mergeLoadOrderStudent() {
     var sess = resolveSessionExercisePayload();
     if (sess) return Promise.resolve(sess);
+    if (useEmbeddedExercise) {
+      var emb = readEmbeddedExercisePayload();
+      if (emb) return Promise.resolve(emb);
+      return Promise.resolve(parseDefaultJson());
+    }
     return loadPublishedFileThenFallback();
   }
 
@@ -1594,7 +1851,9 @@
     } else {
       var forStudent = deepClone(data);
       forStudent.items = alignItemsToDocumentPassage(forStudent.passage || "", forStudent.items || []);
-      renderStudent(forStudent);
+      if (renderStudent(forStudent)) {
+        wirePart1ChainNext();
+      }
     }
   });
 

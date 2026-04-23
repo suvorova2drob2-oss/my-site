@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 — Passive &amp; causative (C2)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 720px; margin: 0 auto; }
+    .top { margin-bottom: 14px; }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; margin-bottom: 6px; }
+    .top .sub { color: var(--muted); font-size: 13px; }
+
+    .stepper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 16px;
+      align-items: center;
+    }
+    .stepper button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .stepper button:hover { border-color: var(--accent); }
+    .stepper button[aria-pressed="true"],
+    .stepper button[aria-selected="true"] {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+    .stepper .step-ref { flex: 1 1 100%; }
+    @media (min-width: 520px) {
+      .stepper .step-ref { flex: 0 1 auto; }
+    }
+
+    .panel { display: none; }
+    .panel.is-active { display: block; }
+
+    section.sheet {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      margin-bottom: 14px;
+    }
+    section.sheet h2 { font-size: 1.02rem; margin-bottom: 8px; }
+    section.sheet h3 { font-size: 0.95rem; margin: 14px 0 8px; color: #e2e8f0; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .must {
+      background: rgba(56, 189, 248, 0.12);
+      border-left: 3px solid var(--accent);
+      padding: 10px 12px;
+      margin: 10px 0 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13px;
+    }
+    .must strong { color: #7dd3fc; }
+    .book {
+      font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+      font-size: 13px;
+      background: #0f172a;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    hr.sep { border: none; border-top: 1px solid var(--line); margin: 14px 0; }
+
+    .drill-window {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      margin-bottom: 14px;
+    }
+    .drill-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .drill-head h2 { font-size: 1.02rem; flex: 1 1 200px; }
+    .drill-meta { font-size: 12px; color: var(--muted); }
+    .phase {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .phase-a { background: rgba(251, 191, 36, 0.2); color: var(--warn); }
+    .phase-b { background: rgba(52, 211, 153, 0.18); color: var(--ok); }
+
+    .prompt-block {
+      background: #0f172a;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .prompt-block .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 6px; }
+    .prompt-block .en { font-size: 1.05rem; line-height: 1.45; }
+    .prompt-block .ru { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+    .anchor {
+      font-size: 1rem;
+      color: #7dd3fc;
+      font-weight: 600;
+      margin: 12px 0 4px;
+      padding: 10px 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .anchor .lab { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+
+    .timer-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 14px;
+    }
+    .timer-display {
+      font-variant-numeric: tabular-nums;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--warn);
+      min-width: 5.2ch;
+    }
+    .timer-display.done { color: var(--ok); animation: pulse 0.6s ease; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .timer-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .timer-btns button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .timer-btns button.primary {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: #7dd3fc;
+    }
+    .timer-btns button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .card-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .card-nav button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .card-nav button:disabled { opacity: 0.35; cursor: not-allowed; color: var(--muted); }
+    .card-nav .count { font-size: 13px; color: var(--muted); }
+
+    .back { margin-top: 18px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+
+    .hint-ban { font-size: 12px; color: #fca5a5; margin-top: 8px; }
+
+    .examples-wrap {
+      margin: 14px 0 10px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .examples-wrap .examples-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a5b4fc;
+      margin-bottom: 6px;
+    }
+    .examples-wrap .examples-task {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .examples-wrap .examples-task strong { color: #c4b5fd; font-weight: 600; }
+    .examples-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .examples-body p + p { margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>Unit 9 &mdash; Passive &amp; causative structures</h1>
+      <p class="sub">
+        From the book: <strong>perfect passive</strong> in subordinate clauses, <strong>stacked passives</strong>, and <strong>causatives</strong> with <em>have / get</em>.
+        Same layout as the other topic: reference tab, five task windows, timers, model lines as a guide &mdash; you produce <strong>your own</strong> wording.
+      </p>
+      <p class="sub" style="margin-top:10px;">
+        <a href="../exercises/exercises%20passive%20and%20causative%20-%20unit%209/index.html" style="color:var(--accent);font-weight:700;text-decoration:none;">Written book exercises (multiple choice + rewrites) &rarr;</a>
+      </p>
+    </div>
+
+    <div class="stepper" role="tablist" aria-label="Sections">
+      <button type="button" class="step-ref" role="tab" id="tab-ref" aria-controls="panel-ref" aria-selected="true" data-panel="ref">Textbook reference</button>
+      <button type="button" role="tab" id="tab-0" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="0" title="Perfect passive">1 · Perfect passive</button>
+      <button type="button" role="tab" id="tab-1" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="1" title="Multiple passives">2 · Two or three passives</button>
+      <button type="button" role="tab" id="tab-2" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="2" title="Causative arrange">3 · Arrange (have / get)</button>
+      <button type="button" role="tab" id="tab-3" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="3" title="Promise / imperative">4 · Promise / command</button>
+      <button type="button" role="tab" id="tab-4" aria-controls="panel-drill" aria-selected="false" data-panel="drill" data-task="4" title="Experience">5 · Experience (have / get + V3)</button>
+    </div>
+
+    <div id="panel-ref" class="panel is-active" role="tabpanel" aria-labelledby="tab-ref">
+      <section class="sheet">
+        <h2>Textbook reference (Unit 9)</h2>
+        <p class="muted">Structures and examples from <strong>Passive and causative structures</strong>. In the task cards, use your own contexts (building site, retrofit, office) with the same patterns.</p>
+
+        <h3>1. Perfect passive in subordinate / adverbial clauses</h3>
+        <div class="book">Background: -ing form of the perfect passive.
+
+Having been trained at a top university, Nina managed to find a good job…
+
+Absolute construction (background):
+The kitchen having been cleaned and the clothes put away, it was now time to relax.
+
+After a preposition:
+They went… in spite of not having been invited by the mayor’s office.</div>
+
+        <h3>2. Several passives in a row</h3>
+        <div class="book">Two or more passive actions; the auxiliary is not repeated before each participle:
+
+The photos have been framed and hung on the wall.</div>
+
+        <h3>3. Causative: arrange for someone to do something</h3>
+        <div class="book">have + object + infinitive WITHOUT to
+We should have the decorators paint the ceilings.
+
+get + object + infinitive WITH to
+Let’s get the children to tidy their rooms.</div>
+
+        <h3>4. Causative: “experience” for the subject (have only)</h3>
+        <div class="book">The driving school hasn’t had anybody fail their test.</div>
+
+        <h3>5. Promise / result: get or have + object + past participle</h3>
+        <div class="book">I’ll have your complaint reviewed thoroughly…</div>
+
+        <h3>6. Imperative</h3>
+        <div class="book">Have / get + object + past participle
+Have that report written and on my desk by noon.</div>
+
+        <h3>7. Undergo / be affected (get + past participle)</h3>
+        <div class="book">Often: caught, involved, left, stuck, trapped
+
+We… got caught up in the congestion through the town centre.</div>
+
+        <hr class="sep" />
+        <h3>How to run the session</h3>
+        <ul class="muted" style="margin-left:1.1rem;">
+          <li style="margin:6px 0;">Read the reference first; then use windows 1&ndash;5 in order or pick topics.</li>
+          <li style="margin:6px 0;">Phase A, then B for each type. Treat on-screen examples as models &mdash; say your own line.</li>
+          <li style="margin:6px 0;">Feedback: perfect passive (-ing) shape, do not repeat <em>have been</em> unnecessarily in a passive chain, <em>get</em> + <em>to</em> vs bare infinitive after <em>have</em>.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div id="panel-drill" class="panel" role="tabpanel" aria-labelledby="tab-0" hidden>
+      <div class="drill-window">
+        <div class="drill-head">
+          <h2 id="drill-title"></h2>
+          <span class="drill-meta" id="drill-task-label"></span>
+        </div>
+        <div class="must" id="drill-must"></div>
+
+        <span class="phase" id="drill-phase"></span>
+        <div class="prompt-block">
+          <div class="label" id="prompt-label"></div>
+          <p class="en" id="prompt-en"></p>
+          <p class="ru muted" id="prompt-ru" hidden></p>
+        </div>
+        <div class="anchor">
+          <div class="lab">Target structure (use in your utterance)</div>
+          <div id="anchor-text"></div>
+        </div>
+        <div class="examples-wrap" id="drill-examples-wrap" hidden>
+          <div class="examples-title">Examples &mdash; how you could say it</div>
+          <p class="examples-task" id="drill-examples-intro"></p>
+          <div class="examples-body" id="drill-examples-body"></div>
+        </div>
+        <p class="muted" id="drill-hint"></p>
+        <p class="hint-ban" id="drill-ban" hidden></p>
+
+        <div class="timer-row">
+          <div class="timer-display" id="timer-display" aria-live="polite">—</div>
+          <div class="timer-btns">
+            <button type="button" class="primary" id="btn-start">Start</button>
+            <button type="button" id="btn-pause" disabled>Pause</button>
+            <button type="button" id="btn-reset">Reset</button>
+          </div>
+        </div>
+
+        <div class="card-nav">
+          <button type="button" id="btn-prev-card">&larr; Previous card</button>
+          <span class="count" id="card-count"></span>
+          <button type="button" id="btn-next-card">Next card &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="back"><a href="../index.html">&larr; Grammar hub</a> &middot; <a href="../../index.html?screen=unit9">Level 9</a></p>
+  </div>
+
+  <script>
+(function () {
+  var DEFAULT_EXAMPLES_INTRO = 'The lines below are models only. <strong>Say your own version</strong> with the same structure, in your own words.';
+
+  var DRILLS = [
+    {
+      title: '1. Perfect passive in subordinate and adverbial clauses',
+      must: '<strong>Required:</strong> one of three patterns: sentence-initial <strong>Having been + V3</strong>; <strong>noun + having been + V3</strong> (absolute construction); after a preposition, <strong>not having been + V3</strong> (as in the reference). Topic: project, retrofit, approvals.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Open with Having been…', en: 'Context: you are describing an architect or restorer. Start with Having been… and finish the sentence (main clause: what they did / could do).', ru: 'Use perfect passive in <em>-ing</em>: <em>Having been …</em>', anchor: 'Having been + V3, + main clause', hint: 'One sentence.', examples: ['Having been shortlisted for the museum extension, the practice suddenly had leverage with the client.', 'Having been trained in conservation, she refused to sign off on the cementitious render.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'Absolute construction', en: 'Use a noun subject + having been + V3, comma, then the main clause (background is complete). Topic: site / flat ready for handover.', ru: 'Pattern: <em>The … having been …,</em> + main clause.', anchor: 'Noun + having been + V3, + main clause', hint: '', examples: ['The scaffolding having been struck and the snagging list signed off, the curator could finally hang the collection.', 'The services having been concealed in the soffit, the gallery looked calmer than in the renders.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 30, promptLabel: 'After a preposition', en: 'Begin with: They pressed ahead with the retrofit … — include in spite of not having been … or without having been …', ru: 'You need <em>not having been + V3</em> after the preposition.', anchor: 'prep + not having been + V3', hint: '', examples: ['They pressed ahead with the retrofit in spite of not having been consulted by the heritage officer.', 'The contractor mobilised on site without having been given written approval for the crane lift.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 35, promptLabel: 'Your own situation', en: 'A tricky renovation or public hearing. Use any ONE of the three patterns from this window (Having been… / Noun having been… / prep + not having been…).', ru: 'Pick a pattern, then say one complete sentence aloud.', anchor: '(one perfect passive -ing pattern)', hint: 'Do not mix two patterns on one card &mdash; one clear structure.', examples: ['Having been ridiculed in the press, the architect still defended the massing.', 'The stone having been cleaned too aggressively, the façade looked chalky for months.'] }
+      ]
+    },
+    {
+      title: '2. Stacked passives',
+      must: '<strong>Required:</strong> one <em>have / has / had been</em> (or one modal block) and <strong>two or three participles</strong> joined with <em>and</em>, without repeating the auxiliary before each V3 (as in the book: framed and hung).',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'Two participles', en: 'The shopfront glazing has been ___ and ___ (complete aloud with your own participles: e.g. measured, ordered…).', ru: 'One <em>has been</em>, two V3 forms.', anchor: 'has/have been + V3 and V3', hint: '', examples: ['The shopfront glazing has been measured and ordered from the German supplier.', 'The bespoke desks have been fabricated and delivered to the fifth floor.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 32, promptLabel: 'Three participles', en: 'The listed staircase has been ___, ___, and ___ (three stages of work).', ru: 'One <em>has been</em>, three V3 forms with commas and <em>and</em>.', anchor: 'has/have been + V3, V3, and V3', hint: '', examples: ['The listed staircase has been documented, propped, and carefully dismantled for repair.', 'The steel frame has been surveyed, reinforced, and repainted in a matte charcoal.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 38, promptLabel: 'On-site process', en: 'In one sentence, describe a building project moving forward (design, approval, or construction) using THREE passive participles after a single auxiliary.', ru: 'Free topic; pattern as in the book.', anchor: 'have/has been + multiple V3', hint: '', examples: ['The extension has been designed, costed, and submitted to planning.', 'The atrium glass has been procured, craned in, and sealed over a single weekend.'] }
+      ]
+    },
+    {
+      title: '3. Arrange an action: have + V / get + to V',
+      must: '<strong>Required:</strong> either <strong>have + object + bare infinitive</strong> or <strong>get + object + to + infinitive</strong> (see reference). Context: fit-out, office, contractors.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'have + object + bare inf', en: 'We should have the ___ ___ (someone does the work for you). Example roles: acoustician, electrician, joiner.', ru: 'No <em>to</em> before the infinitive after <em>have</em>.', anchor: 'have + someone + bare infinitive', hint: '', examples: ['We should have the acoustician tune the baffles before the client walkthrough.', 'We’ll have the joiner scribe the skirting to the uneven stone floor.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'get + object + to + inf', en: 'Let’s get the ___ to ___ (persuade / arrange). Topic: contractor, landlord, facilities.', ru: 'After <em>get</em>, use <em>to</em> before the infinitive.', anchor: 'get + someone + to + infinitive', hint: '', examples: ['Let’s get the contractor to re-benchmark the programme before we pay the milestone.', 'Let’s get facilities to reprogramme the access cards for the new wing.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 35, promptLabel: 'Fit-out briefing', en: 'You are briefing a colleague: one sentence with have + bare inf, one with get + to inf (say both aloud, or split between two speakers).', ru: 'Both patterns must appear in this round.', anchor: 'have + obj + V / get + obj + to V', hint: 'A short pause between the two sentences is fine.', examples: ['We should have the painters mist-coat the plaster tonight, and let’s get the PM to sign the variation tomorrow.', 'Have the cleaner strip the wax first; get security to hold the lift for the delivery.'] }
+      ]
+    },
+    {
+      title: '4. Promise and imperative: have/get + object + V3',
+      must: '<strong>Required:</strong> <strong>have</strong> or <strong>get</strong> + object + <strong>past participle</strong> (someone else carries out the result). The card states whether the tone is a promise or a command.',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'Promise (result)', en: 'I’ll have your ___ ___ (something will be done for the client / colleague). Topic: drawings, samples, warranty documents.', ru: 'Pattern: I’ll have + object + V3.', anchor: 'will have + object + past participle', hint: '', examples: ['I’ll have your mark-ups digitised and back to you by Thursday.', 'We’ll have the stone samples couriered to the studio before the design review.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 20, promptLabel: 'On-site imperative', en: 'Give a direct order: Have that ___ ___ by … (deadline). Use architecture / site vocabulary.', ru: 'Start with <em>Have</em> or <em>Get</em> + object + V3.', anchor: 'Have / Get + object + past participle (imperative)', hint: 'Short and businesslike, as in the book.', examples: ['Have that hoarding graphics installed and photographed by 6 p.m.', 'Get those acoustic panels remounted before the inspector arrives.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 20, promptLabel: 'Command mode', en: 'You are the lead on site. One sharp imperative: Have / Get + object + past participle. Deadline optional.', ru: 'Imperative pattern only; short timer like a real handover.', anchor: 'Have / Get + object + V3', hint: '', examples: ['Have the rubbish chute sheeted off by the end of shift.', 'Get the louvres adjusted so the glare drops on desk 14.'] }
+      ]
+    },
+    {
+      title: '5. Experience: have + object + bare inf / get + V3',
+      must: '<strong>Required:</strong> either <strong>have + object + bare infinitive</strong> in the “it happened / didn’t happen to us” sense (driving-school pattern), or <strong>get + past participle</strong> (caught, stuck, left, trapped, involved…).',
+      slides: [
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'have + object + V (experience)', en: 'The practice hasn’t had a client ___ at the worst moment. (bare infinitive after the object — as in the textbook: hasn’t had anybody fail.)', ru: 'Pattern: <em>have + object + bare inf</em>; the object is the logical “doer” of the infinitive.', anchor: 'have + object + bare infinitive (experience)', hint: '', examples: ['The practice hasn’t had a client walk away before signing the contract.', 'We haven’t had anyone pull out of the competition after shortlisting.'] },
+        { phase: 'A', phaseClass: 'phase-a', phaseLabel: 'Phase A — tight drill', seconds: 28, promptLabel: 'get + past participle', en: 'Describe something going wrong on the way to the site: We got ___ … (stuck / caught / delayed / trapped …).', ru: '<em>get + V3</em> only &mdash; not the causative “arrange”.', anchor: 'get + past participle', hint: '', examples: ['We got stuck behind a low-loader in the tunnel and missed the concrete pour.', 'We got caught in the rain on the roof inspection and had to abandon the drone flight.'] },
+        { phase: 'B', phaseClass: 'phase-b', phaseLabel: 'Phase B — guided fluency', seconds: 40, promptLabel: 'Bad site visit', en: 'Two short clauses aloud: (1) something that happened to you with get + V3; (2) something your team has or hasn’t had happen with have + object + V.', ru: 'Both structures in one turn.', anchor: 'get + V3 + have + object + V', hint: 'Order is up to you.', examples: ['We got left on the pavement when the site bus overbooked, and the contractor still hasn’t had anyone apologise properly.', 'I got trapped in the goods lift, and we’ve never had the fire alarm fail twice in one day before.'] }
+      ]
+    }
+  ];
+
+  var panelRef = document.getElementById('panel-ref');
+  var panelDrill = document.getElementById('panel-drill');
+  var tabRef = document.getElementById('tab-ref');
+  var tabsDrill = document.querySelectorAll('.stepper button[data-task]');
+
+  var taskIndex = 0;
+  var slideIndex = 0;
+  var timerId = null;
+  var remaining = 0;
+  var totalForSlide = 0;
+
+  var elTitle = document.getElementById('drill-title');
+  var elTaskLabel = document.getElementById('drill-task-label');
+  var elMust = document.getElementById('drill-must');
+  var elPhase = document.getElementById('drill-phase');
+  var elPromptLabel = document.getElementById('prompt-label');
+  var elPromptEn = document.getElementById('prompt-en');
+  var elPromptRu = document.getElementById('prompt-ru');
+  var elAnchor = document.getElementById('anchor-text');
+  var elHint = document.getElementById('drill-hint');
+  var elBan = document.getElementById('drill-ban');
+  var elExamplesWrap = document.getElementById('drill-examples-wrap');
+  var elExamplesIntro = document.getElementById('drill-examples-intro');
+  var elExamplesBody = document.getElementById('drill-examples-body');
+  var elDisplay = document.getElementById('timer-display');
+  var btnStart = document.getElementById('btn-start');
+  var btnPause = document.getElementById('btn-pause');
+  var btnReset = document.getElementById('btn-reset');
+  var btnPrev = document.getElementById('btn-prev-card');
+  var btnNext = document.getElementById('btn-next-card');
+  var elCardCount = document.getElementById('card-count');
+
+  function formatTime(s) {
+    if (s < 0) s = 0;
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function stopTimer() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    btnPause.disabled = true;
+    btnPause.textContent = 'Pause';
+  }
+
+  function tick() {
+    remaining--;
+    if (remaining <= 0) {
+      remaining = 0;
+      elDisplay.textContent = formatTime(0);
+      elDisplay.classList.add('done');
+      stopTimer();
+      btnStart.disabled = false;
+      return;
+    }
+    elDisplay.textContent = formatTime(remaining);
+  }
+
+  function resetTimerDisplay() {
+    stopTimer();
+    elDisplay.classList.remove('done');
+    var slide = DRILLS[taskIndex].slides[slideIndex];
+    totalForSlide = slide.seconds;
+    remaining = totalForSlide;
+    elDisplay.textContent = formatTime(remaining);
+    btnStart.disabled = false;
+  }
+
+  function renderSlide() {
+    var drill = DRILLS[taskIndex];
+    var slide = drill.slides[slideIndex];
+    elTitle.textContent = drill.title;
+    elTaskLabel.textContent = 'Task ' + (taskIndex + 1) + ' of 5';
+    elMust.innerHTML = drill.must;
+    elPhase.textContent = slide.phaseLabel;
+    elPhase.className = 'phase ' + slide.phaseClass;
+    elPromptLabel.textContent = slide.promptLabel;
+    elPromptEn.textContent = slide.en;
+    if (slide.ru) {
+      elPromptRu.innerHTML = slide.ru;
+      elPromptRu.hidden = false;
+    } else {
+      elPromptRu.textContent = '';
+      elPromptRu.hidden = true;
+    }
+    elAnchor.textContent = slide.anchor;
+    elExamplesIntro.innerHTML = slide.examplesIntro || DEFAULT_EXAMPLES_INTRO;
+    if (slide.examples && slide.examples.length) {
+      elExamplesWrap.hidden = false;
+      elExamplesBody.innerHTML = slide.examples.map(function (line) {
+        var safe = String(line).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        return '<p>' + safe + '</p>';
+      }).join('');
+    } else {
+      elExamplesWrap.hidden = true;
+      elExamplesBody.innerHTML = '';
+    }
+    elHint.textContent = slide.hint || '';
+    if (slide.ban) {
+      elBan.textContent = slide.ban;
+      elBan.hidden = false;
+    } else {
+      elBan.hidden = true;
+    }
+    elCardCount.textContent = 'Card ' + (slideIndex + 1) + ' of ' + drill.slides.length;
+    btnPrev.disabled = slideIndex === 0;
+    btnNext.disabled = slideIndex >= drill.slides.length - 1;
+    resetTimerDisplay();
+  }
+
+  function showPanel(which, taskIdx) {
+    stopTimer();
+    btnStart.disabled = false;
+    var isRef = which === 'ref';
+    panelRef.classList.toggle('is-active', isRef);
+    panelRef.hidden = !isRef;
+    panelDrill.classList.toggle('is-active', !isRef);
+    panelDrill.hidden = isRef;
+    tabRef.setAttribute('aria-selected', isRef ? 'true' : 'false');
+    tabsDrill.forEach(function (t) {
+      var ti = parseInt(t.getAttribute('data-task'), 10);
+      t.setAttribute('aria-selected', !isRef && ti === taskIdx ? 'true' : 'false');
+    });
+    if (!isRef) {
+      taskIndex = taskIdx;
+      if (slideIndex >= DRILLS[taskIndex].slides.length) slideIndex = 0;
+      renderSlide();
+    }
+  }
+
+  document.querySelectorAll('.stepper button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var panel = btn.getAttribute('data-panel');
+      if (panel === 'ref') {
+        showPanel('ref', taskIndex);
+        return;
+      }
+      var ti = parseInt(btn.getAttribute('data-task'), 10);
+      slideIndex = 0;
+      showPanel('drill', ti);
+    });
+  });
+
+  btnStart.addEventListener('click', function () {
+    if (remaining <= 0) remaining = totalForSlide;
+    elDisplay.classList.remove('done');
+    if (timerId) return;
+    timerId = setInterval(tick, 1000);
+    btnStart.disabled = true;
+    btnPause.disabled = false;
+    elDisplay.textContent = formatTime(remaining);
+  });
+
+  btnPause.addEventListener('click', function () {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+    }
+  });
+
+  btnReset.addEventListener('click', function () {
+    resetTimerDisplay();
+    btnStart.disabled = false;
+  });
+
+  btnPrev.addEventListener('click', function () {
+    if (slideIndex > 0) {
+      slideIndex--;
+      renderSlide();
+    }
+  });
+
+  btnNext.addEventListener('click', function () {
+    if (slideIndex < DRILLS[taskIndex].slides.length - 1) {
+      slideIndex++;
+      renderSlide();
+    }
+  });
+
+  showPanel('ref', 0);
+})();
+  </script>
+</body>
+</html>

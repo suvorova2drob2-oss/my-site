@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercises in grammar — Grammar Unit 9</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --bad: #f87171;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 640px; margin: 0 auto; }
+    .top h1 { font-size: 1.12rem; margin-bottom: 6px; }
+    .top .sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .tabs button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .tabs button[aria-selected="true"] {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    .hud {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .hud strong { color: var(--accent); }
+
+    /* Flip card (Memrise-style) */
+    .flip-scene {
+      perspective: 1100px;
+      max-width: 560px;
+      margin: 0 auto 8px;
+      cursor: pointer;
+      outline: none;
+    }
+    .flip-scene:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.45);
+      border-radius: 20px;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: min(300px, 48vh);
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+    }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .flip-front {
+      background: linear-gradient(160deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
+    }
+    .flip-back {
+      background: linear-gradient(160deg, rgba(56, 189, 248, 0.14), rgba(30, 41, 59, 0.96));
+      transform: rotateY(180deg);
+    }
+    .flip-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin-bottom: 10px;
+    }
+    .flip-q {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      max-width: 36rem;
+    }
+    .flip-a {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      color: #e0f2fe;
+      max-width: 36rem;
+    }
+    .flip-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 34rem;
+    }
+    .tap-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 8px 0 14px;
+    }
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .nav-row button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .nav-row button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .mark-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .mark-row button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .mark-know { background: linear-gradient(135deg, #15803d, #22c55e); color: #fff; }
+    .mark-learn { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+
+    /* Exercise 2 */
+    .ex2-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+    .ex2-sent {
+      font-size: 1.02rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .ex2-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .ex2-opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ex2-opt {
+      font: inherit;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+    .ex2-opt.crossed {
+      text-decoration: line-through;
+      opacity: 0.55;
+      border-color: var(--bad);
+      color: #fca5a5;
+    }
+    .ex2-check {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: rgba(56, 189, 248, 0.2);
+      color: #7dd3fc;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+    .ex2-fb {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      display: none;
+    }
+    .ex2-fb.ok { display: block; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.4); color: #86efac; }
+    .ex2-fb.no { display: block; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.35); color: #fecaca; }
+
+    .back { margin-top: 20px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back a:hover { text-decoration: underline; }
+
+    .book-ref {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .word-box {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #0f172a;
+      border: 1px dashed var(--line);
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+    .ex4-first {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-align: left;
+      align-self: stretch;
+      max-width: 36rem;
+    }
+
+    /* Tab 5 — column sort board */
+    .sort-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .sort-pool-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .sort-pool {
+      min-height: 52px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      background: #0f172a;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      transition: box-shadow 0.15s;
+    }
+    .sort-pool.drag-over {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+    .sort-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 620px) {
+      .sort-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .sort-col {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sort-col-head {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: lowercase;
+      text-align: center;
+      padding: 9px 8px;
+      background: rgba(56, 189, 248, 0.22);
+      color: #e2e8f0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .sort-drop {
+      flex: 1;
+      padding: 10px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+      align-items: flex-start;
+      min-height: 88px;
+      transition: box-shadow 0.15s;
+    }
+    .sort-drop.drag-over {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+    .sort-chip {
+      cursor: grab;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #0f172a;
+      border: 1px solid var(--accent);
+      color: #7dd3fc;
+      font-size: 13px;
+      font-weight: 600;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .sort-chip:active { cursor: grabbing; }
+    .sort-chip.selected {
+      box-shadow: 0 0 0 2px #f59e0b, 0 4px 12px rgba(0,0,0,0.25);
+      border-color: #f59e0b;
+    }
+    .sort-chip.wrong-pos {
+      border-color: var(--bad);
+      color: #fecaca;
+    }
+    .sort-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .sort-actions button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .sort-actions button.sort-btn-primary {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.2);
+    }
+    #ex5-fb { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>Exercises in grammar &mdash; Grammar Unit 9</h1>
+      <p class="sub">
+        <strong>Ready for Grammar</strong>, Unit 9 (concession, contrast, purpose, reason).
+        Includes <strong>Language focus</strong> (tabs 5&ndash;6): sort linkers + replace bold words. Personal completion stems are on the <strong>speaking drills</strong> page.
+      </p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Exercises">
+      <button type="button" role="tab" id="tab-ex1" aria-selected="true" aria-controls="panel-ex1">1. Insert the word</button>
+      <button type="button" role="tab" id="tab-ex2" aria-selected="false" aria-controls="panel-ex2">2. Cross out what cannot fit</button>
+      <button type="button" role="tab" id="tab-ex3" aria-selected="false" aria-controls="panel-ex3">3. One word from the box</button>
+      <button type="button" role="tab" id="tab-ex4" aria-selected="false" aria-controls="panel-ex4">4. Same meaning</button>
+      <button type="button" role="tab" id="tab-ex5" aria-selected="false" aria-controls="panel-ex5">5. Sort linkers</button>
+      <button type="button" role="tab" id="tab-ex6" aria-selected="false" aria-controls="panel-ex6">6. Replace (focus)</button>
+    </div>
+
+    <div id="panel-ex1" class="panel on" role="tabpanel" aria-labelledby="tab-ex1">
+      <p class="book-ref">Book task 1: <em>Add the missing word or phrase to the correct place in the sentence.</em> The front shows the broken line as in the book; flip the card for the full version.</p>
+      <p class="hud" id="ex1-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="ex1-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="ex1Flip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ex1Flip();}">
+        <div class="flip-inner" id="ex1-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Fix / complete</span>
+            <p class="flip-q" id="ex1-front"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Answer</span>
+            <p class="flip-a" id="ex1-back-sent"></p>
+            <p class="flip-note" id="ex1-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="ex1-prev" onclick="ex1Prev()">&larr; Back</button>
+        <button type="button" id="ex1-next" onclick="ex1Next()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="ex1Mark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="ex1Mark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex2" class="panel" role="tabpanel" aria-labelledby="tab-ex2" hidden>
+      <p class="book-ref">Book task 2: <em>Cross out the words which cannot be used to complete the sentence.</em> Tap the option(s) that <strong>cannot</strong> fit; then <strong>Check</strong>. Cross out exactly the items marked in the key.</p>
+      <div id="ex2-mount"></div>
+    </div>
+
+    <div id="panel-ex3" class="panel" role="tabpanel" aria-labelledby="tab-ex3" hidden>
+      <p class="book-ref"><strong>Exercise 3.</strong> Correct each sentence by adding <strong>one word</strong> from the box in a suitable place. Four words are extra (not used in any sentence). After you try all five: unused words are <strong>as, in, now, while</strong>.
+        <span class="word-box">as &nbsp;·&nbsp; in &nbsp;·&nbsp; may &nbsp;·&nbsp; now &nbsp;·&nbsp; since &nbsp;·&nbsp; so &nbsp;·&nbsp; that &nbsp;·&nbsp; they &nbsp;·&nbsp; while</span>
+      </p>
+      <p class="hud" id="ex3-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="ex3-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="ex3Flip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ex3Flip();}">
+        <div class="flip-inner" id="ex3-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Add one word</span>
+            <p class="flip-q" id="ex3-front"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Corrected line</span>
+            <p class="flip-a" id="ex3-back-sent"></p>
+            <p class="flip-note" id="ex3-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="ex3-prev" onclick="ex3Prev()">&larr; Back</button>
+        <button type="button" id="ex3-next" onclick="ex3Next()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="ex3Mark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="ex3Mark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex4" class="panel" role="tabpanel" aria-labelledby="tab-ex4" hidden>
+      <p class="book-ref"><strong>Exercise 4.</strong> Complete the second sentence so that it means the same as the first. Flip for a full model line.</p>
+      <p class="hud" id="ex4-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="ex4-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="ex4Flip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ex4Flip();}">
+        <div class="flip-inner" id="ex4-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Complete the second line</span>
+            <p class="ex4-first" id="ex4-first-sent"></p>
+            <p class="flip-q" id="ex4-front"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Model</span>
+            <p class="flip-a" id="ex4-back-sent"></p>
+            <p class="flip-note" id="ex4-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="ex4-prev" onclick="ex4Prev()">&larr; Back</button>
+        <button type="button" id="ex4-next" onclick="ex4Next()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="ex4Mark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="ex4Mark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <div id="panel-ex5" class="panel" role="tabpanel" aria-labelledby="tab-ex5" hidden>
+      <p class="book-ref"><strong>Language focus &mdash; Exercise A.</strong> Drag each linker into the right column, or <strong>tap a chip</strong> then <strong>tap a column</strong> (or the pool) to move it. Then <strong>Check</strong>.
+        <span class="word-box">as &nbsp;·&nbsp; however &nbsp;·&nbsp; in that &nbsp;·&nbsp; now that &nbsp;·&nbsp; since &nbsp;·&nbsp; so as to &nbsp;·&nbsp; whereas</span>
+      </p>
+      <p class="hud" id="ex5-hud" aria-live="polite"></p>
+      <p class="sort-hint">Tip: tap the same chip again to deselect. <strong>Show key</strong> fills the table like the book; <strong>Reset board</strong> clears everything.</p>
+      <div class="sort-pool-label">To sort (pool)</div>
+      <div class="sort-pool" id="ex5-pool" aria-label="Linker pool"></div>
+      <div class="sort-grid" id="ex5-grid"></div>
+      <div class="sort-actions">
+        <button type="button" class="sort-btn-primary" id="ex5-check">Check</button>
+        <button type="button" id="ex5-show-key">Show key</button>
+        <button type="button" id="ex5-reset">Reset board</button>
+      </div>
+      <div id="ex5-fb" class="mcq-fb"></div>
+    </div>
+
+    <div id="panel-ex6" class="panel" role="tabpanel" aria-labelledby="tab-ex6" hidden>
+      <p class="book-ref"><strong>Language focus &mdash; Exercise B.</strong> Rewrite each line using a linker from the Language focus list (tab 5), replacing the bold word(s). Flip for a model; other correct linkers may work.</p>
+      <p class="hud" id="ex6-hud" aria-live="polite"></p>
+      <div class="flip-scene" id="ex6-scene" role="button" tabindex="0" aria-label="Flip card"
+        onclick="ex6Flip()"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ex6Flip();}">
+        <div class="flip-inner" id="ex6-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-kicker">Rewrite</span>
+            <p class="flip-q" id="ex6-front"></p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-kicker">Model</span>
+            <p class="flip-a" id="ex6-back-sent"></p>
+            <p class="flip-note" id="ex6-back-note"></p>
+          </div>
+        </div>
+      </div>
+      <p class="tap-hint">Tap the card or press Space when it is focused</p>
+      <div class="nav-row">
+        <button type="button" id="ex6-prev" onclick="ex6Prev()">&larr; Back</button>
+        <button type="button" id="ex6-next" onclick="ex6Next()">Next &rarr;</button>
+      </div>
+      <div class="mark-row">
+        <button type="button" class="mark-know" onclick="ex6Mark('know')">I know this</button>
+        <button type="button" class="mark-learn" onclick="ex6Mark('learn')">Still learning</button>
+      </div>
+    </div>
+
+    <p class="back">
+      <a href="../../unit9-concession-contrast-purpose-reason/index.html">&larr; Speaking drills (concession…)</a>
+      &middot; <a href="../../index.html">Grammar hub</a>
+      &middot; <a href="../../../index.html?screen=unit9">Level 9</a>
+    </p>
+  </div>
+
+  <script>
+(function () {
+  var EX1_KEY = 'u9gramEx1Marks';
+  var EX1_CARDS = [
+    {
+      front: 'Our sales techniques always get results, however unorthodox may seem.',
+      answer: 'Our sales techniques always get results, however unorthodox they may seem.',
+      note: 'After however + adjective you need a subject: <em>they</em> (sales techniques).'
+    },
+    {
+      front: 'As myself, I\'m drawn to urban life with all its cosmopolitan sights and sounds.',
+      answer: 'As for myself, I\'m drawn to urban life with all its cosmopolitan sights and sounds.',
+      note: 'Fixed discourse marker: <em>As for myself,</em> (personal stance).'
+    },
+    {
+      front: 'I hadn\'t downloaded the app on my phone I couldn\'t access the details.',
+      answer: 'I hadn\'t downloaded the app on my phone, so I couldn\'t access the details.',
+      note: 'Link two main clauses for cause–result: <em>so</em> (or full stop + <em>So</em>).'
+    },
+    {
+      front: 'My strength is visibly improving that I\'ve got a personal trainer.',
+      answer: 'My strength is visibly improving now that I\'ve got a personal trainer.',
+      note: '<em>Now that</em> — “now that” (present result).'
+    },
+    {
+      front: 'The restaurant isn\'t appropriate for gluten intolerant people. Nor it that great for vegetarians.',
+      answer: 'The restaurant isn\'t appropriate for gluten intolerant people. Nor is it that great for vegetarians.',
+      note: 'Inversion after <em>Nor</em>: <em>Nor is it …</em>'
+    },
+    {
+      front: 'We tiptoed softly around the house as not to wake the children.',
+      answer: 'We tiptoed softly around the house so as not to wake the children.',
+      note: 'Negative purpose: <em>so as not to</em> (or <em>in order not to</em>).'
+    },
+    {
+      front: 'Her sculpture invokes the true spirit of her homeland that she uses locally sourced stone.',
+      answer: 'Her sculpture invokes the true spirit of her homeland in that she uses locally sourced stone.',
+      note: 'Formal explanation: <em>in that</em> — “in the sense that…”'
+    },
+    {
+      front: 'We should fetch the heavy boxes from upstairs there\'s two of us here.',
+      answer: 'We should fetch the heavy boxes from upstairs now that there\'s two of us here.',
+      note: '<em>Now that</em> introduces “given that / now that”.'
+    }
+  ];
+
+  var EX2_ITEMS = [
+    {
+      sent: 'We\'ve decided to delay the refurbishment … the quotations we got were out of budget.',
+      options: [
+        { id: 'w', label: 'while', strike: true },
+        { id: 's', label: 'since', strike: false },
+        { id: 'a', label: 'as', strike: false }
+      ],
+      explain: 'Cause “because / since”: <em>Since</em> or <em>As</em>. <em>While</em> does not introduce cause here.'
+    },
+    {
+      sent: 'The images cannot be used for commercial purposes, …',
+      options: [
+        { id: 'a', label: 'whatever they may be', strike: false },
+        { id: 'b', label: 'whatever they may seem', strike: true },
+        { id: 'c', label: 'whatever these may be', strike: true }
+      ],
+      explain: 'Natural choice: <em>whatever they may be</em>. “May seem” and “these” sound odd in this pattern.'
+    },
+    {
+      sent: '… we\'ve agreed on the colour scheme, we should choose some fabrics.',
+      options: [
+        { id: 's', label: 'Since', strike: false },
+        { id: 'n', label: 'Now that', strike: false },
+        { id: 'o', label: 'In order to', strike: true }
+      ],
+      explain: '<em>In order to</em> + purpose infinitive, not a finite clause. <em>Since</em> / <em>Now that</em> fit here.'
+    },
+    {
+      sent: '… we\'re all together, why don\'t we go over the plans for the loft extension?',
+      options: [
+        { id: 'w', label: 'While', strike: false },
+        { id: 'a', label: 'As', strike: false },
+        { id: 'i', label: 'In that', strike: true }
+      ],
+      explain: '<em>While</em> / <em>As</em> (“given that / while we’re all here”). <em>In that</em> does not fit.'
+    },
+    {
+      sent: 'The construction workers are working round the clock … complete the stadium on time.',
+      options: [
+        { id: 's', label: 'so as to', strike: false },
+        { id: 'i', label: 'in that', strike: true },
+        { id: 'o', label: 'in order to', strike: false }
+      ],
+      explain: 'Purpose: <em>so as to</em> / <em>in order to</em>. <em>In that</em> is not purpose.'
+    },
+    {
+      sent: 'I can\'t see them refunding the cost of their error. … look like you\'ll get an apology.',
+      options: [
+        { id: 'n', label: 'Nor does it', strike: false },
+        { id: 'e', label: 'Neither does it', strike: true },
+        { id: 'i', label: 'Nor is it', strike: true }
+      ],
+      explain: 'After negation: <em>Nor does it look …</em> (with <em>do</em>). <em>Neither</em> does not pair with <em>nor</em> like this; <em>Nor is it</em> does not go with <em>look</em>.'
+    },
+    {
+      sent: 'I enjoyed the intricate plot of the book … it kept me guessing until the very end.',
+      options: [
+        { id: 'b', label: 'because', strike: false },
+        { id: 'i', label: 'in that', strike: false },
+        { id: 'n', label: 'now that', strike: true }
+      ],
+      explain: 'Reason from experience: <em>because</em> / formally <em>in that</em>. <em>Now that</em> means “now that”, so it does not fit.'
+    }
+  ];
+
+  var EX3_KEY = 'u9gramEx3Marks';
+  var EX3_CARDS = [
+    {
+      front: 'It\'s easy to see what the picture shows that you\'ve pointed it out to me.',
+      answer: 'It\'s easy to see what the picture shows since you\'ve pointed it out to me.',
+      note: 'Add <strong>since</strong> before the reason clause (you can read a slight pause after <em>shows</em>).'
+    },
+    {
+      front: 'Her designs aren\'t innovative in any way. To be honest, neither are especially attractive.',
+      answer: 'Her designs aren\'t innovative in any way. To be honest, neither are they especially attractive.',
+      note: 'After <strong>neither</strong>, invert: <em>neither are they …</em>'
+    },
+    {
+      front: 'The architect had such a great reputation, we hired her to design our new house.',
+      answer: 'The architect had such a great reputation that we hired her to design our new house.',
+      note: '<strong>Such … that</strong> for degree + result.'
+    },
+    {
+      front: 'To be a professional artist, you need to have sold your work to at least one person, whoever it be.',
+      answer: 'To be a professional artist, you need to have sold your work to at least one person, whoever it may be.',
+      note: 'Fixed phrase: <strong>whoever it may be</strong>.'
+    },
+    {
+      front: 'Their designs are considered groundbreaking that they contain recycled materials.',
+      answer: 'Their designs are considered so groundbreaking that they contain recycled materials.',
+      note: '<strong>So … that</strong> for degree + result.'
+    }
+  ];
+
+  var EX4_KEY = 'u9gramEx4Marks';
+  var EX4_CARDS = [
+    {
+      first: 'Take off your shoes! Otherwise you\'ll get mud all over the place!',
+      second: 'Can you take your shoes off ____ as ____ trample mud everywhere?',
+      answer: 'Can you take your shoes off so as not to trample mud everywhere?',
+      note: '<strong>so as not to</strong> + verb &mdash; negative purpose (polite request).'
+    },
+    {
+      first: 'I know it sounds unbelievable, but she was eight when she painted this masterpiece.',
+      second: 'She was eight when she painted this masterpiece, ____ unbelievable ____ sound.',
+      answer: 'She was eight when she painted this masterpiece, as unbelievable as it may sound.',
+      note: '<strong>As … as it may sound</strong> &mdash; concession; keeps the meaning of “I know it sounds …”.'
+    },
+    {
+      first: 'I find portraits of cuddly animals really cheesy, but I know many people love them.',
+      second: 'Many people love portraits of cuddly animals, but ____ myself, they\'re rather too cheesy.',
+      answer: 'Many people love portraits of cuddly animals, but as for myself, they\'re rather too cheesy.',
+      note: 'Stance: <strong>as for myself</strong>.'
+    },
+    {
+      first: 'Jake hasn\'t ever been to a gallery, and he doesn\'t intend to go to one either.',
+      second: 'Jake has never been to a gallery in his life, nor ____ to go in the future.',
+      answer: 'Jake has never been to a gallery in his life, nor does he intend to go in the future.',
+      note: 'After <strong>nor</strong>, auxiliary + subject + verb: <em>nor does he intend …</em>'
+    }
+  ];
+
+  var ex1Index = 0;
+  var ex1Flipped = false;
+  var ex1Marks = {};
+
+  function ex1LoadMarks() {
+    try {
+      var raw = localStorage.getItem(EX1_KEY);
+      ex1Marks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      ex1Marks = {};
+    }
+  }
+  function ex1SaveMarks() {
+    try {
+      localStorage.setItem(EX1_KEY, JSON.stringify(ex1Marks));
+    } catch (e) {}
+  }
+
+  function ex1Stats() {
+    var know = 0, learn = 0, none = 0;
+    EX1_CARDS.forEach(function (_, i) {
+      var m = ex1Marks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+
+  function ex1Render() {
+    var c = EX1_CARDS[ex1Index];
+    document.getElementById('ex1-front').textContent = c.front;
+    document.getElementById('ex1-back-sent').innerHTML = c.answer;
+    document.getElementById('ex1-back-note').innerHTML = c.note;
+    var inner = document.getElementById('ex1-inner');
+    inner.classList.toggle('flipped', ex1Flipped);
+    var st = ex1Stats();
+    document.getElementById('ex1-hud').innerHTML =
+      'Card <strong>' + (ex1Index + 1) + '</strong> / <strong>' + EX1_CARDS.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('ex1-prev').disabled = ex1Index <= 0;
+    document.getElementById('ex1-next').disabled = ex1Index >= EX1_CARDS.length - 1;
+  }
+
+  window.ex1Flip = function () {
+    ex1Flipped = !ex1Flipped;
+    ex1Render();
+  };
+  window.ex1Prev = function () {
+    if (ex1Index <= 0) return;
+    ex1Index--;
+    ex1Flipped = false;
+    ex1Render();
+  };
+  window.ex1Next = function () {
+    if (ex1Index >= EX1_CARDS.length - 1) return;
+    ex1Index++;
+    ex1Flipped = false;
+    ex1Render();
+  };
+  window.ex1Mark = function (kind) {
+    ex1Marks[String(ex1Index)] = kind;
+    ex1SaveMarks();
+    ex1Render();
+  };
+
+  var ex3Index = 0;
+  var ex3Flipped = false;
+  var ex3Marks = {};
+  function ex3LoadMarks() {
+    try {
+      var raw = localStorage.getItem(EX3_KEY);
+      ex3Marks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      ex3Marks = {};
+    }
+  }
+  function ex3SaveMarks() {
+    try {
+      localStorage.setItem(EX3_KEY, JSON.stringify(ex3Marks));
+    } catch (e) {}
+  }
+  function ex3Stats() {
+    var know = 0, learn = 0, none = 0;
+    EX3_CARDS.forEach(function (_, i) {
+      var m = ex3Marks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function ex3Render() {
+    var c = EX3_CARDS[ex3Index];
+    document.getElementById('ex3-front').textContent = (ex3Index + 1) + '. ' + c.front;
+    document.getElementById('ex3-back-sent').innerHTML = c.answer;
+    document.getElementById('ex3-back-note').innerHTML = c.note;
+    document.getElementById('ex3-inner').classList.toggle('flipped', ex3Flipped);
+    var st = ex3Stats();
+    document.getElementById('ex3-hud').innerHTML =
+      'Card <strong>' + (ex3Index + 1) + '</strong> / <strong>' + EX3_CARDS.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('ex3-prev').disabled = ex3Index <= 0;
+    document.getElementById('ex3-next').disabled = ex3Index >= EX3_CARDS.length - 1;
+  }
+  window.ex3Flip = function () {
+    ex3Flipped = !ex3Flipped;
+    ex3Render();
+  };
+  window.ex3Prev = function () {
+    if (ex3Index <= 0) return;
+    ex3Index--;
+    ex3Flipped = false;
+    ex3Render();
+  };
+  window.ex3Next = function () {
+    if (ex3Index >= EX3_CARDS.length - 1) return;
+    ex3Index++;
+    ex3Flipped = false;
+    ex3Render();
+  };
+  window.ex3Mark = function (kind) {
+    ex3Marks[String(ex3Index)] = kind;
+    ex3SaveMarks();
+    ex3Render();
+  };
+
+  var ex4Index = 0;
+  var ex4Flipped = false;
+  var ex4Marks = {};
+  function ex4LoadMarks() {
+    try {
+      var raw = localStorage.getItem(EX4_KEY);
+      ex4Marks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      ex4Marks = {};
+    }
+  }
+  function ex4SaveMarks() {
+    try {
+      localStorage.setItem(EX4_KEY, JSON.stringify(ex4Marks));
+    } catch (e) {}
+  }
+  function ex4Stats() {
+    var know = 0, learn = 0, none = 0;
+    EX4_CARDS.forEach(function (_, i) {
+      var m = ex4Marks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function ex4Render() {
+    var c = EX4_CARDS[ex4Index];
+    document.getElementById('ex4-first-sent').textContent = 'First sentence: ' + c.first;
+    document.getElementById('ex4-front').textContent = (ex4Index + 1) + '. ' + c.second;
+    document.getElementById('ex4-back-sent').innerHTML = c.answer;
+    document.getElementById('ex4-back-note').innerHTML = c.note;
+    document.getElementById('ex4-inner').classList.toggle('flipped', ex4Flipped);
+    var st = ex4Stats();
+    document.getElementById('ex4-hud').innerHTML =
+      'Card <strong>' + (ex4Index + 1) + '</strong> / <strong>' + EX4_CARDS.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('ex4-prev').disabled = ex4Index <= 0;
+    document.getElementById('ex4-next').disabled = ex4Index >= EX4_CARDS.length - 1;
+  }
+  window.ex4Flip = function () {
+    ex4Flipped = !ex4Flipped;
+    ex4Render();
+  };
+  window.ex4Prev = function () {
+    if (ex4Index <= 0) return;
+    ex4Index--;
+    ex4Flipped = false;
+    ex4Render();
+  };
+  window.ex4Next = function () {
+    if (ex4Index >= EX4_CARDS.length - 1) return;
+    ex4Index++;
+    ex4Flipped = false;
+    ex4Render();
+  };
+  window.ex4Mark = function (kind) {
+    ex4Marks[String(ex4Index)] = kind;
+    ex4SaveMarks();
+    ex4Render();
+  };
+
+  var LF_SORT_ITEMS = [
+    { id: 'however', text: 'however', correct: 'concession' },
+    { id: 'whereas', text: 'whereas', correct: 'contrast' },
+    { id: 'soasto', text: 'so as to', correct: 'purpose' },
+    { id: 'since', text: 'since', correct: 'reason' },
+    { id: 'nowthat', text: 'now that', correct: 'reason' },
+    { id: 'as', text: 'as', correct: 'reason' },
+    { id: 'inthat', text: 'in that', correct: 'reason' }
+  ];
+
+  function ex5DefaultPlacement() {
+    var o = {};
+    LF_SORT_ITEMS.forEach(function (it) {
+      o[it.id] = 'pool';
+    });
+    return o;
+  }
+
+  var ex5Placement = ex5DefaultPlacement();
+  var ex5SelectedId = null;
+  var ex5LastCheckWrong = null;
+  var ex5BoardBuilt = false;
+
+  function ex5UpdateHud() {
+    var n = 0;
+    LF_SORT_ITEMS.forEach(function (it) {
+      if (ex5Placement[it.id] && ex5Placement[it.id] !== 'pool') n++;
+    });
+    document.getElementById('ex5-hud').innerHTML =
+      'Placed <strong>' + n + '</strong> / <strong>' + LF_SORT_ITEMS.length + '</strong> in columns · Pool holds the rest.';
+  }
+
+  function ex5PlaceChip(wordId, destCat) {
+    ex5Placement[wordId] = destCat;
+    ex5SelectedId = null;
+    ex5LastCheckWrong = null;
+    var fb = document.getElementById('ex5-fb');
+    fb.className = 'mcq-fb';
+    fb.innerHTML = '';
+    ex5RenderBoard();
+  }
+
+  function ex5ChipTap(wordId, ev) {
+    if (ev) ev.stopPropagation();
+    ex5SelectedId = ex5SelectedId === wordId ? null : wordId;
+    ex5RenderBoard();
+  }
+
+  function ex5ColumnTap(cat) {
+    if (!ex5SelectedId) return;
+    ex5PlaceChip(ex5SelectedId, cat);
+  }
+
+  function ex5PoolTap() {
+    if (!ex5SelectedId) return;
+    ex5PlaceChip(ex5SelectedId, 'pool');
+  }
+
+  function ex5RenderBoard() {
+    var pool = document.getElementById('ex5-pool');
+    pool.innerHTML = '';
+    document.querySelectorAll('#ex5-grid .sort-drop').forEach(function (z) {
+      z.innerHTML = '';
+    });
+
+    LF_SORT_ITEMS.forEach(function (it) {
+      var where = ex5Placement[it.id] || 'pool';
+      var chip = document.createElement('span');
+      chip.className = 'sort-chip';
+      chip.setAttribute('role', 'button');
+      chip.setAttribute('tabindex', '0');
+      chip.draggable = true;
+      chip.dataset.wordId = it.id;
+      chip.textContent = it.text;
+      if (ex5SelectedId === it.id) chip.classList.add('selected');
+      if (ex5LastCheckWrong && ex5LastCheckWrong[it.id]) chip.classList.add('wrong-pos');
+
+      chip.addEventListener('click', function (e) {
+        e.stopPropagation();
+        ex5ChipTap(it.id, e);
+      });
+      chip.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          ex5ChipTap(it.id, e);
+        }
+      });
+      chip.addEventListener('dragstart', function (e) {
+        e.dataTransfer.setData('text/plain', it.id);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      var target = where === 'pool'
+        ? pool
+        : document.querySelector('#ex5-grid .sort-drop[data-cat="' + where + '"]');
+      if (target) target.appendChild(chip);
+    });
+    ex5UpdateHud();
+  }
+
+  function ex5BuildBoard() {
+    if (ex5BoardBuilt) return;
+    var grid = document.getElementById('ex5-grid');
+    grid.innerHTML = '';
+    ['concession', 'contrast', 'purpose', 'reason'].forEach(function (cat) {
+      var col = document.createElement('div');
+      col.className = 'sort-col';
+      var head = document.createElement('div');
+      head.className = 'sort-col-head';
+      head.textContent = cat;
+      head.addEventListener('click', function () {
+        ex5ColumnTap(cat);
+      });
+      var drop = document.createElement('div');
+      drop.className = 'sort-drop';
+      drop.dataset.cat = cat;
+      drop.addEventListener('click', function () {
+        ex5ColumnTap(cat);
+      });
+      drop.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        drop.classList.add('drag-over');
+      });
+      drop.addEventListener('dragleave', function () {
+        drop.classList.remove('drag-over');
+      });
+      drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.classList.remove('drag-over');
+        var id = e.dataTransfer.getData('text/plain');
+        if (id) ex5PlaceChip(id, cat);
+      });
+      col.appendChild(head);
+      col.appendChild(drop);
+      grid.appendChild(col);
+    });
+
+    var pool = document.getElementById('ex5-pool');
+    pool.addEventListener('click', function (e) {
+      if (e.target === pool) ex5PoolTap();
+    });
+    pool.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      pool.classList.add('drag-over');
+    });
+    pool.addEventListener('dragleave', function () {
+      pool.classList.remove('drag-over');
+    });
+    pool.addEventListener('drop', function (e) {
+      e.preventDefault();
+      pool.classList.remove('drag-over');
+      var id = e.dataTransfer.getData('text/plain');
+      if (id) ex5PlaceChip(id, 'pool');
+    });
+
+    document.getElementById('ex5-check').addEventListener('click', function () {
+      var wrong = {};
+      var ok = true;
+      LF_SORT_ITEMS.forEach(function (it) {
+        if (ex5Placement[it.id] !== it.correct) {
+          ok = false;
+          wrong[it.id] = true;
+        }
+      });
+      ex5LastCheckWrong = ok ? null : wrong;
+      var fb = document.getElementById('ex5-fb');
+      if (ok) {
+        fb.className = 'mcq-fb ok';
+        fb.innerHTML = '<strong>All correct.</strong> Concession: however · Contrast: whereas · Purpose: so as to · Reason: as, in that, now that, since.';
+      } else {
+        fb.className = 'mcq-fb no';
+        fb.innerHTML = 'Some linkers are in the wrong column (red outline). Move them or use <strong>Show key</strong>.';
+      }
+      ex5RenderBoard();
+    });
+    document.getElementById('ex5-show-key').addEventListener('click', function () {
+      LF_SORT_ITEMS.forEach(function (it) {
+        ex5Placement[it.id] = it.correct;
+      });
+      ex5SelectedId = null;
+      ex5LastCheckWrong = null;
+      var fb = document.getElementById('ex5-fb');
+      fb.className = 'mcq-fb ok';
+      fb.innerHTML = '<strong>Key applied.</strong> Use <strong>Reset board</strong> to practise again from scratch.';
+      ex5RenderBoard();
+    });
+    document.getElementById('ex5-reset').addEventListener('click', function () {
+      ex5Placement = ex5DefaultPlacement();
+      ex5SelectedId = null;
+      ex5LastCheckWrong = null;
+      var fb = document.getElementById('ex5-fb');
+      fb.className = 'mcq-fb';
+      fb.innerHTML = '';
+      ex5RenderBoard();
+    });
+
+    ex5BoardBuilt = true;
+  }
+
+  var EX6_KEY = 'u9gramLfReplaceMarks';
+  var EX6_CARDS = [
+    {
+      frontHtml: 'I\'m extremely fortunate <strong>because</strong> I had the financial means to support myself through university.',
+      answer: 'I\'m extremely fortunate as I had the financial means to support myself through university.',
+      note: 'Also natural: <em>Since I had the financial means…</em>'
+    },
+    {
+      frontHtml: 'My children have flown the nest, <strong>so</strong> I\'ll be able to recycle some of their old clothes.',
+      answer: 'Now that my children have flown the nest, I\'ll be able to recycle some of their old clothes.',
+      note: '<em>Now that</em> states the new situation; the result clause can stay as in the original.'
+    },
+    {
+      frontHtml: 'Lia loves Van Gogh <strong>but</strong> Tom prefers modern art.',
+      answer: 'Lia loves Van Gogh, whereas Tom prefers modern art.',
+      note: '<em>Whereas</em> makes the contrast between two people explicit.'
+    },
+    {
+      frontHtml: 'This painting was drawn by a computer, <strong>even though</strong> that sounds far-fetched.',
+      answer: 'Far-fetched as it may sound, this painting was drawn by a computer.',
+      note: 'Concessive <em>as</em>: <em>Adj + as + subject + may + verb,</em> + main clause — parallel to “even though it may sound far-fetched …”.'
+    },
+    {
+      frontHtml: 'We went out of our way to see the piece <strong>because</strong> it\'s moving to a private collection.',
+      answer: 'We went out of our way to see the piece since it\'s moving to a private collection.',
+      note: 'Also fine: <em>… as it\'s moving…</em> or <em>… given that it\'s moving…</em> (not in the focus list).'
+    }
+  ];
+
+  var ex6Index = 0;
+  var ex6Flipped = false;
+  var ex6Marks = {};
+  function ex6LoadMarks() {
+    try {
+      var raw = localStorage.getItem(EX6_KEY);
+      ex6Marks = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      ex6Marks = {};
+    }
+  }
+  function ex6SaveMarks() {
+    try {
+      localStorage.setItem(EX6_KEY, JSON.stringify(ex6Marks));
+    } catch (e) {}
+  }
+  function ex6Stats() {
+    var know = 0, learn = 0, none = 0;
+    EX6_CARDS.forEach(function (_, i) {
+      var m = ex6Marks[String(i)];
+      if (m === 'know') know++;
+      else if (m === 'learn') learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+  function ex6Render() {
+    var c = EX6_CARDS[ex6Index];
+    document.getElementById('ex6-front').innerHTML = (ex6Index + 1) + '. ' + c.frontHtml;
+    document.getElementById('ex6-back-sent').innerHTML = c.answer;
+    document.getElementById('ex6-back-note').innerHTML = c.note;
+    document.getElementById('ex6-inner').classList.toggle('flipped', ex6Flipped);
+    var st = ex6Stats();
+    document.getElementById('ex6-hud').innerHTML =
+      'Card <strong>' + (ex6Index + 1) + '</strong> / <strong>' + EX6_CARDS.length +
+      '</strong> · I know: <strong>' + st.know + '</strong> · Still learning: <strong>' + st.learn +
+      '</strong> · Unmarked: <strong>' + st.none + '</strong>';
+    document.getElementById('ex6-prev').disabled = ex6Index <= 0;
+    document.getElementById('ex6-next').disabled = ex6Index >= EX6_CARDS.length - 1;
+  }
+  window.ex6Flip = function () {
+    ex6Flipped = !ex6Flipped;
+    ex6Render();
+  };
+  window.ex6Prev = function () {
+    if (ex6Index <= 0) return;
+    ex6Index--;
+    ex6Flipped = false;
+    ex6Render();
+  };
+  window.ex6Next = function () {
+    if (ex6Index >= EX6_CARDS.length - 1) return;
+    ex6Index++;
+    ex6Flipped = false;
+    ex6Render();
+  };
+  window.ex6Mark = function (kind) {
+    ex6Marks[String(ex6Index)] = kind;
+    ex6SaveMarks();
+    ex6Render();
+  };
+
+  function buildEx2() {
+    var mount = document.getElementById('ex2-mount');
+    mount.innerHTML = '';
+    EX2_ITEMS.forEach(function (item, idx) {
+      var box = document.createElement('div');
+      box.className = 'ex2-card';
+      box.dataset.idx = String(idx);
+
+      var sent = document.createElement('p');
+      sent.className = 'ex2-sent';
+      sent.textContent = (idx + 1) + '. ' + item.sent;
+
+      var hint = document.createElement('p');
+      hint.className = 'ex2-hint';
+      hint.innerHTML = 'Cross out the option(s) that <strong>cannot</strong> be used.';
+
+      var opts = document.createElement('div');
+      opts.className = 'ex2-opts';
+
+      var crossed = {};
+
+      item.options.forEach(function (opt) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ex2-opt';
+        b.textContent = opt.label;
+        b.dataset.id = opt.id;
+        b.onclick = function () {
+          crossed[opt.id] = !crossed[opt.id];
+          b.classList.toggle('crossed', crossed[opt.id]);
+        };
+        opts.appendChild(b);
+      });
+
+      var check = document.createElement('button');
+      check.type = 'button';
+      check.className = 'ex2-check';
+      check.textContent = 'Check';
+
+      var fb = document.createElement('div');
+      fb.className = 'ex2-fb';
+
+      check.onclick = function () {
+        var need = {};
+        item.options.forEach(function (o) {
+          if (o.strike) need[o.id] = true;
+        });
+        var ok = true;
+        item.options.forEach(function (o) {
+          var shouldCross = !!o.strike;
+          var isCrossed = !!crossed[o.id];
+          if (shouldCross !== isCrossed) ok = false;
+        });
+        fb.className = 'ex2-fb ' + (ok ? 'ok' : 'no');
+        fb.innerHTML = ok
+          ? 'Correct. ' + item.explain
+          : 'Does not match the key. ' + item.explain;
+      };
+
+      box.appendChild(sent);
+      box.appendChild(hint);
+      box.appendChild(opts);
+      box.appendChild(check);
+      box.appendChild(fb);
+      mount.appendChild(box);
+    });
+  }
+
+  function goTab(n) {
+    for (var i = 1; i <= 6; i++) {
+      var on = i === n;
+      document.getElementById('tab-ex' + i).setAttribute('aria-selected', on ? 'true' : 'false');
+      var p = document.getElementById('panel-ex' + i);
+      p.classList.toggle('on', on);
+      p.hidden = !on;
+    }
+    if (n === 1) ex1Render();
+    if (n === 3) ex3Render();
+    if (n === 4) ex4Render();
+    if (n === 5) {
+      ex5BuildBoard();
+      ex5RenderBoard();
+    }
+    if (n === 6) ex6Render();
+  }
+  document.getElementById('tab-ex1').addEventListener('click', function () { goTab(1); });
+  document.getElementById('tab-ex2').addEventListener('click', function () { goTab(2); });
+  document.getElementById('tab-ex3').addEventListener('click', function () { goTab(3); });
+  document.getElementById('tab-ex4').addEventListener('click', function () { goTab(4); });
+  document.getElementById('tab-ex5').addEventListener('click', function () { goTab(5); });
+  document.getElementById('tab-ex6').addEventListener('click', function () { goTab(6); });
+
+  ex1LoadMarks();
+  ex3LoadMarks();
+  ex4LoadMarks();
+  ex6LoadMarks();
+  ex1Render();
+  ex3Render();
+  ex4Render();
+  ex5BuildBoard();
+  ex5RenderBoard();
+  ex6Render();
+  buildEx2();
+})();
+  </script>
+</body>
+</html>
