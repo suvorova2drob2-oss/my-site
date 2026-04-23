@@ -4998,6 +4998,7 @@
     </style>
 </head>
 <body>
+<script src="js/prep-player-name-bridge.js"></script>
 
 <div id="prep-global-hub-vm" class="prep-global-hub-vm" hidden>
     <div class="hub-vm-stack">
@@ -22381,6 +22382,20 @@ document.addEventListener('keydown', function (e) {
     else if (document.getElementById('screen-login') && document.getElementById('screen-login').classList.contains('active')) {
         registerUser();
     }
+});
+
+window.addEventListener('pageshow', function (ev) {
+    if (!ev.persisted) return;
+    try {
+        userData = loadUserData();
+    } catch (ePs) {}
+    if (!String(userData.name || '').trim()) return;
+    try {
+        var loginEl = document.getElementById('screen-login');
+        if (loginEl && loginEl.classList.contains('active')) {
+            showHub();
+        }
+    } catch (eSh) {}
 });
 </script>
 <div

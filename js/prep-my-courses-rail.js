@@ -30,6 +30,27 @@
         }
     }
 
+    /**
+     * Три отдельных сайта Netlify = три origin; без этого ссылки остаются относительными и имя не «едет» между доменами.
+     * Задайте один раз (например, через Netlify Inject snippets / первый script на странице):
+     *   window.__PREP_PEER_ORIGINS__ = { cpe: "https://cpe-….netlify.app/", ege: "https://ege-….netlify.app/", fce: "https://fce-….netlify.app/" };
+     */
+    function peerOriginForTrack(track) {
+        try {
+            var o = global.__PREP_PEER_ORIGINS__;
+            if (!o || typeof o !== "object") return null;
+            var norm = function (u) {
+                var s = String(u || "").trim();
+                if (!s) return null;
+                return s.replace(/\/?$/, "/");
+            };
+            if (track === "ege") return norm(o.ege);
+            if (track === "fce") return norm(o.fce);
+            if (track === "cpe" || track === "creator") return norm(o.cpe);
+        } catch (eP) {}
+        return null;
+    }
+
     function currentLeafFile() {
         var p = String(global.location.pathname || "").replace(/\\/g, "/");
         var leaf = p.split("/").pop() || "";
@@ -205,16 +226,27 @@
         }
 
         var root = siteRoot();
-        var destPath = targetFile;
-        /* Netlify EGE/FCE builds redirect bare index.html → ege/fce; keep CPE hub loadable. */
-        if (targetFile === "index.html") destPath = "index.html?prep_stay=1";
-        var destT;
+        var peer = peerOriginForTrack(track);
+        if (peer) root = peer;
+        var destU;
         try {
-            destT = new global.URL(destPath, root).href;
-        } catch (eT) {
-            destT = root + destPath;
+            destU = new global.URL(targetFile, root);
+        } catch (eU0) {
+            destU = null;
         }
-        global.location.replace(destT);
+        if (!destU) {
+            var fallback = targetFile === "index.html" ? "index.html?prep_stay=1" : targetFile;
+            global.location.replace(root + fallback);
+            return;
+        }
+        if (targetFile === "index.html") {
+            destU.searchParams.set("prep_stay", "1");
+        }
+        try {
+            var nmCarry = String(readCpeUser().name || "").trim().slice(0, 60);
+            if (nmCarry) destU.searchParams.set("prep_carry_name", nmCarry);
+        } catch (eNm) {}
+        global.location.replace(destU.href);
     }
 
     function wireOnce() {

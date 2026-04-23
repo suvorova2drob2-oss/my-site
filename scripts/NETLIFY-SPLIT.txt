@@ -40,6 +40,26 @@ Passwords
 Unchanged in code. On a single-track site students only see one course on the
 welcome screen if you deep-link or brand that site for one exam.
 
-Cross-links between sites use relative URLs in HTML; for a clean jump from the
-ЕГЭ Netlify URL to the CPE URL, edit ege.html / fce.html course-switch links
-to absolute URLs once you know all three domains.
+Cross-links between sites: each Netlify URL has its own localStorage, so a name
+typed on the CPE site does not exist on the EGE site until it is copied over.
+
+What the code does:
+  • js/prep-player-name-bridge.js — reads ?prep_carry_name= on load and saves to
+    english_mastery_perfect + prep-player-display-name-v1 (include on index, ege, fce).
+  • My courses adds prep_carry_name when navigating (and prep_stay=1 for index).
+
+If you use THREE separate Netlify sites (different *.netlify.app domains), set peer
+origins once per browser context (Netlify “Snippet” or inline before rail):
+
+  window.__PREP_PEER_ORIGINS__ = {
+    cpe: "https://YOUR-CPE-SITE.netlify.app/",
+    ege: "https://YOUR-EGE-SITE.netlify.app/",
+    fce: "https://YOUR-FCE-SITE.netlify.app/"
+  };
+
+Without this object, course links stay same-origin (relative) and only work fully
+on a single deploy that ships all HTML files together.
+
+You can still use absolute URLs in ege.html / fce.html course-switch nav; add
+&prep_carry_name=… only if you build those links in JS — the rail handles carry
+automatically when __PREP_PEER_ORIGINS__ is set.
