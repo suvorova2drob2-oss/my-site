@@ -21543,6 +21543,16 @@ function refreshUserBar() {
 }
 
 function showHub() {
+    try {
+        userData = loadUserData();
+    } catch (eHubLd) {}
+    if (!userData || !String(userData.name || "").trim()) {
+        showScreen("screen-login");
+        try {
+            setLoginLiveRole(userData && userData.liveRole === "teacher" ? "teacher" : "student");
+        } catch (eHubLr) {}
+        return;
+    }
     hubWorkspace = { kind: "unit", unit: 1 };
     showScreen("screen-hub");
     refreshUserBar();
@@ -22048,12 +22058,23 @@ window.onload = function () {
     var bootParams = new URLSearchParams(window.location.search);
     if (bootParams.get("prep_reauth") === "1") {
         /**
-         * Course-switch links use ?prep_reauth=1 (see js/prep-my-courses-rail.js, ege.html).
-         * Students must re-enter name + password. Teachers / site admin already authenticated:
-         * clearing name here made every such link a full logout — felt like random "kicks" to Welcome.
+         * ?prep_reauth=1 is used by js/prep-my-courses-rail.js (students switching CPE/EGE/FCE) and ege.html → CPE links.
+         * Only the rail path sets prep_course_switch_track right before navigation — that is the one case where a plain
+         * student should sign in again. All other ?prep_reauth visits must not wipe english_mastery_perfect (random “back to Welcome”).
          */
-        var keepSessionAfterReauth =
-            !!(userData.name && (userData.prepAdmin === true || userData.liveRole === "teacher"));
+        var hadStudentCourseRailSwitch = false;
+        try {
+            var _swRail = sessionStorage.getItem("prep_course_switch_track");
+            hadStudentCourseRailSwitch = !!(_swRail && /^(cpe|ege|fce|creator)$/.test(_swRail));
+        } catch (eSwRail) {}
+        var isPrivilegedSession =
+            userData.prepAdmin === true ||
+            userData.liveRole === "teacher" ||
+            userData.prepPlatformSwitch === true;
+        var shouldForceLoginAfterReauth =
+            !!String(userData.name || "").trim() &&
+            hadStudentCourseRailSwitch &&
+            !isPrivilegedSession;
         try {
             var trQ = bootParams.get("prep_track");
             if (trQ && /^(cpe|ege|fce)$/.test(trQ)) {
@@ -22079,7 +22100,7 @@ window.onload = function () {
         try {
             history.replaceState({}, "", window.location.pathname || "/");
         } catch (eRs) {}
-        if (!keepSessionAfterReauth) {
+        if (shouldForceLoginAfterReauth) {
             userData.name = "";
             try {
                 saveData();
