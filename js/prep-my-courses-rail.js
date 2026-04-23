@@ -104,6 +104,10 @@
         var u = readCpeUser();
         if (!String(u.name || "").trim()) return false;
         if (screenId === "screen-login") return false;
+        /* One course per Netlify site: hide cross-course rail for learners. Maintainers: log in with admin quick link (prep_link + prep_pass) so prepAdmin is true. */
+        if (d === "cpe" || d === "ege" || d === "fce") {
+            if (!u.prepAdmin) return false;
+        }
         return true;
     }
 

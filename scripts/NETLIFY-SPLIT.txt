@@ -1,65 +1,54 @@
-Separate Netlify sites (same repo, lighter entry per course)
-=============================================================
+Three Netlify sites = three domains (recommended setup)
+=======================================================
 
-Why
----
-- One huge index.html + auto-redirects between CPE / EGE / FCE can feel slow and
-  "kick you" between login and hubs. Netlify is fine; splitting reduces noise.
+Goal
+----
+- Learners get **one URL** (only the site for their exam: CPE, EGE, or FCE).
+- **Name once per domain** — stored in the browser for that site only (localStorage + cookie backup). Not in Supabase.
+- **English** UI for the name gate on CPE (`index.html`). EGE hub header chrome is English; unit copy may stay bilingual.
 
-This repo builds three folders:
-  publish-cpe   — home "/" → index.html (English Mastery Pro only on this site)
-  publish-ege   — home "/" → ege.html
-  publish-fce   — home "/" → fce.html
+Build outputs (from repo root)
+------------------------------
+  publish-cpe   →  "/" serves index.html  (meta prep-deploy-track: cpe)
+  publish-ege   →  "/" serves ege.html    (meta: ege)
+  publish-fce   →  "/" serves fce.html    (meta: fce)
 
-Each folder gets a _redirects file and index.html meta prep-deploy-track so the
-app does not auto-send CPE users to ЕГЭ/FCE on a CPE-only deploy.
+Create **three** Netlify sites from the **same** Git repo, with different build settings:
 
-Default site (main branch)
---------------------------
-netlify.toml runs:  node scripts/build-netlify-track.mjs cpe
-publish directory:  publish-cpe
+  Site A (CPE):  Build:  node scripts/build-netlify-track.mjs cpe
+                 Publish: publish-cpe
 
-Second site (ЕГЭ)
------------------
-Netlify → Build settings:
-  Build command:   node scripts/build-netlify-track.mjs ege
-  Publish directory: publish-ege
+  Site B (EGE):  Build:  node scripts/build-netlify-track.mjs ege
+                 Publish: publish-ege
 
-Third site (FCE)
-----------------
-  Build command:   node scripts/build-netlify-track.mjs fce
-  Publish directory: publish-fce
+  Site C (FCE):  Build:  node scripts/build-netlify-track.mjs fce
+                 Publish: publish-fce
+
+This repo’s netlify.toml defaults to CPE only; override build + publish in the Netlify UI for sites B and C.
+
+“My courses” rail
+------------------
+On single-track deploys (cpe / ege / fce meta), the right-hand **My courses** rail is **hidden** for everyone except users with **prepAdmin** (set via the existing quick-login URL with your admin password).
+
+Learners never see cross-course switching. You (maintainer) can open once:
+
+  https://YOUR-CPE-SITE/index.html?prep_link=1&prep_pass=YOUR_ADMIN_PASSWORD&prep_name=YourName&prep_track=cpe
+
+(Use the same pattern on EGE/FCE sites with prep_track=ege|fce.) Strip sensitive params from bookmarks after use.
+
+Optional: cross-site jumps for **you** only — set in a snippet **before** prep-my-courses-rail.js:
+
+  window.__PREP_PEER_ORIGINS__ = {
+    cpe: "https://YOUR-CPE.netlify.app/",
+    ege: "https://YOUR-EGE.netlify.app/",
+    fce: "https://YOUR-FCE.netlify.app/"
+  };
+
+Name across domains
+-------------------
+Different domains = different browser storage. Students on the CPE domain only enter a name on that domain once. If you need the same display name on another domain, use a quick link with prep_name or the prep_carry_name flow (see js/prep-player-name-bridge.js).
 
 Local check
 -----------
   node scripts/build-netlify-track.mjs ege
   npx serve publish-ege
-
-Passwords
----------
-Unchanged in code. On a single-track site students only see one course on the
-welcome screen if you deep-link or brand that site for one exam.
-
-Cross-links between sites: each Netlify URL has its own localStorage, so a name
-typed on the CPE site does not exist on the EGE site until it is copied over.
-
-What the code does:
-  • js/prep-player-name-bridge.js — reads ?prep_carry_name= on load and saves to
-    english_mastery_perfect + prep-player-display-name-v1 (include on index, ege, fce).
-  • My courses adds prep_carry_name when navigating (and prep_stay=1 for index).
-
-If you use THREE separate Netlify sites (different *.netlify.app domains), set peer
-origins once per browser context (Netlify “Snippet” or inline before rail):
-
-  window.__PREP_PEER_ORIGINS__ = {
-    cpe: "https://YOUR-CPE-SITE.netlify.app/",
-    ege: "https://YOUR-EGE-SITE.netlify.app/",
-    fce: "https://YOUR-FCE-SITE.netlify.app/"
-  };
-
-Without this object, course links stay same-origin (relative) and only work fully
-on a single deploy that ships all HTML files together.
-
-You can still use absolute URLs in ege.html / fce.html course-switch nav; add
-&prep_carry_name=… only if you build those links in JS — the rail handles carry
-automatically when __PREP_PEER_ORIGINS__ is set.
