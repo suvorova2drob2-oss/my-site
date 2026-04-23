@@ -3,6 +3,7 @@
  */
 (function (global) {
     var STORAGE_CPE = "english_mastery_perfect";
+    var PLAYER_NAME_FALLBACK = "prep-player-display-name-v1";
 
     function siteRoot() {
         var scripts = document.getElementsByTagName("script");
@@ -54,13 +55,23 @@
     function readCpeUser() {
         try {
             var p = JSON.parse(global.localStorage.getItem(STORAGE_CPE) || "{}");
+            var nm = String(p.name || "").trim();
+            if (!nm) {
+                try {
+                    nm = String(global.localStorage.getItem(PLAYER_NAME_FALLBACK) || "").trim();
+                } catch (eF) {}
+            }
             return {
-                name: p.name || "",
+                name: nm,
                 liveRole: p.liveRole === "teacher" ? "teacher" : "student",
                 prepPlatformSwitch: !!p.prepPlatformSwitch,
                 prepAdmin: !!p.prepAdmin
             };
         } catch (e) {
+            try {
+                var fb = String(global.localStorage.getItem(PLAYER_NAME_FALLBACK) || "").trim();
+                if (fb) return { name: fb, liveRole: "student", prepPlatformSwitch: false, prepAdmin: false };
+            } catch (e2) {}
             return { name: "", liveRole: "student", prepPlatformSwitch: false, prepAdmin: false };
         }
     }
@@ -194,11 +205,14 @@
         }
 
         var root = siteRoot();
+        var destPath = targetFile;
+        /* Netlify EGE/FCE builds redirect bare index.html → ege/fce; keep CPE hub loadable. */
+        if (targetFile === "index.html") destPath = "index.html?prep_stay=1";
         var destT;
         try {
-            destT = new global.URL(targetFile, root).href;
+            destT = new global.URL(destPath, root).href;
         } catch (eT) {
-            destT = root + targetFile;
+            destT = root + destPath;
         }
         global.location.replace(destT);
     }

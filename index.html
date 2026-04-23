@@ -5079,8 +5079,15 @@
         var has = false;
         try {
             var r = localStorage.getItem("english_mastery_perfect");
-            if (r && String(JSON.parse(r).name || "").trim()) has = true;
-        } catch (e) {}
+            var nm = "";
+            if (r) nm = String(JSON.parse(r).name || "").trim();
+            if (!nm) nm = String(localStorage.getItem("prep-player-display-name-v1") || "").trim();
+            has = !!nm;
+        } catch (e) {
+            try {
+                has = !!String(localStorage.getItem("prep-player-display-name-v1") || "").trim();
+            } catch (e2) {}
+        }
         var login = document.getElementById("screen-login");
         var hub = document.getElementById("screen-hub");
         if (login && hub) {
@@ -6851,6 +6858,8 @@
 <script src="js/prep-content-tools-gate.js"></script>
 <script>
 var STORAGE_KEY = 'english_mastery_perfect';
+/** Stable copy of display name — survives partial JSON corruption; do not clear elsewhere. */
+var PREP_PLAYER_NAME_KEY = 'prep-player-display-name-v1';
 
 var PACK_KEYWORD = [
     { orig: "Without the appropriate training, puppies can become difficult to manage around other dogs.", key: "HAND", b: "It's necessary to train puppies to prevent their behaviour ", a: " around other dogs.", ans: "from getting out of hand" },
@@ -7064,12 +7073,36 @@ function loadUserData() {
         prepPlatformSwitch: false,
         prepAdmin: false
     };
+    var canon = '';
+    try {
+        canon = String(localStorage.getItem(PREP_PLAYER_NAME_KEY) || '').trim().slice(0, 60);
+    } catch (eC) {}
     try {
         var raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return empty;
+        if (!raw) {
+            if (canon) {
+                empty.name = canon;
+                return empty;
+            }
+            return empty;
+        }
         var p = JSON.parse(raw);
+        if (!p || typeof p !== 'object') p = {};
+        var nm = String(p.name || '').trim();
+        if (!nm && canon) {
+            nm = canon;
+            p.name = canon;
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+            } catch (eFix) {}
+        }
+        if (nm) {
+            try {
+                localStorage.setItem(PREP_PLAYER_NAME_KEY, nm.slice(0, 60));
+            } catch (eMir) {}
+        }
         return {
-            name: p.name || '',
+            name: nm || '',
             score: Number(p.score) || 0,
             wins: migrateWins(p.wins),
             totalErrors: Number(p.totalErrors) || 0,
@@ -7082,6 +7115,10 @@ function loadUserData() {
             prepAdmin: !!p.prepAdmin
         };
     } catch (e) {
+        if (canon) {
+            empty.name = canon;
+            return empty;
+        }
         return empty;
     }
 }
@@ -17705,6 +17742,10 @@ function showScreen(id) {
 
 function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+    try {
+        var n = String(userData.name || '').trim().slice(0, 60);
+        if (n) localStorage.setItem(PREP_PLAYER_NAME_KEY, n);
+    } catch (eNm) {}
 }
 
 var HUB_UNIT_TASKS_KEY = "prep-hub-unit-tasks-v1";
@@ -22074,6 +22115,9 @@ function openStats() {
 function resetAll() {
     if (confirm(HUB_I18N.confirmResetProgress)) {
         localStorage.removeItem(STORAGE_KEY);
+        try {
+            localStorage.removeItem(PREP_PLAYER_NAME_KEY);
+        } catch (eR) {}
         location.reload();
     }
 }
