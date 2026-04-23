@@ -20,6 +20,8 @@
             qs.indexOf("prep_stay=1") >= 0 ||
             qs.indexOf("stay=1") >= 0 ||
             qs.indexOf("live_prep=1") >= 0 ||
+            qs.indexOf("prep_link=1") >= 0 ||
+            qs.indexOf("prep_quick=1") >= 0 ||
             /(?:[?&])screen=unit9\b/.test(qs) ||
             /(?:[?&])screen=unit8\b/.test(qs);
         if (stay) return;
@@ -5089,6 +5091,11 @@
         <label for="name-input" class="login-fld-label">Your name</label>
         <input type="text" id="name-input" placeholder="Your name..." autocomplete="name">
         <button type="button" class="btn" onclick="registerUser()">Start</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.45;max-width:28rem;">
+            <strong>Direct links (optional):</strong> open a URL with <code style="font-size:10px">prep_link=1</code>,
+            <code style="font-size:10px">prep_pass</code> (class or admin password),
+            <code style="font-size:10px">prep_name</code>, and e.g. <code style="font-size:10px">screen=unit9</code> — the app logs in and removes the password from the address bar. Extra per-group passwords: set <code style="font-size:10px">PREP_LINK_CLASS_PASSWORDS</code> + <code style="font-size:10px">prep_class=</code> in <code style="font-size:10px">index.html</code>.
+        </p>
     </div>
 
     <div id="screen-hub" class="screen">
@@ -21612,6 +21619,118 @@ var PREP_PUBLIC_LOGIN_PASSWORD = "suvorova2drob2";
 /** Site admin — full “My courses” rail; not shown in the UI. */
 var PREP_ADMIN_LOGIN_PASSWORD = "0608";
 
+/**
+ * Optional extra passwords for “class links” (prep_class=slug in URL). If slug is set, prep_pass must match
+ * public, admin, OR this table. Leave values empty to only use PREP_PUBLIC_LOGIN_PASSWORD.
+ * Example link (Level 9, learner): index.html?prep_link=1&prep_pass=PUBLIC&prep_name=Anna&prep_track=cpe&screen=unit9
+ * Teacher / full access: same with PREP_ADMIN_LOGIN_PASSWORD and prep_role=teacher
+ */
+var PREP_LINK_CLASS_PASSWORDS = {
+    "9": "",
+    "8": "",
+    "u9": "",
+    "u8": ""
+};
+
+function prepQuickLinkPasswordOk(password, classSlug) {
+    var p = String(password || "").trim();
+    if (p === PREP_ADMIN_LOGIN_PASSWORD) return { admin: true };
+    if (p === PREP_PUBLIC_LOGIN_PASSWORD) return { admin: false };
+    var slug = String(classSlug || "").trim();
+    if (slug && Object.prototype.hasOwnProperty.call(PREP_LINK_CLASS_PASSWORDS, slug)) {
+        var need = PREP_LINK_CLASS_PASSWORDS[slug];
+        if (need && String(need) === p) return { admin: false };
+    }
+    return null;
+}
+
+/** Returns "skip" | "ok" | "badpass". */
+function prepApplyLoginFromQuickParams(params) {
+    if (params.get("prep_link") !== "1" && params.get("prep_quick") !== "1") return "skip";
+    var password = String(params.get("prep_pass") || "").trim();
+    var classSlug = String(params.get("prep_class") || "").trim();
+    var gate = prepQuickLinkPasswordOk(password, classSlug);
+    if (!gate) return "badpass";
+    var name = String(params.get("prep_name") || "").trim();
+    if (!name) name = "Guest";
+    name = name.slice(0, 60);
+    var track = params.get("prep_track") || params.get("prep_exam") || "cpe";
+    if (!/^(cpe|ege|fce|creator)$/.test(track)) track = "cpe";
+    var roleParam = params.get("prep_role");
+    var wantTeacher = gate.admin === true || roleParam === "teacher" || track === "creator";
+
+    userData.prepAdmin = !!gate.admin;
+    if (gate.admin) {
+        userData.liveRole = "teacher";
+        userData.prepPlatformSwitch = true;
+    } else {
+        userData.prepPlatformSwitch = false;
+        if (track === "creator") userData.liveRole = "teacher";
+        else userData.liveRole = wantTeacher ? "teacher" : "student";
+    }
+    userData.name = name;
+    if (userData.liveRole === "teacher" && !userData.cmsCreatorId) {
+        userData.cmsCreatorId = "u_" + Math.random().toString(36).slice(2, 11) + Math.random().toString(36).slice(2, 7);
+    }
+    try {
+        saveData();
+    } catch (eSv) {}
+    try {
+        if (window.setLoginCourseTrack) setLoginCourseTrack(track);
+    } catch (eTr) {}
+    prepSyncProfileAfterLogin(track);
+    return "ok";
+}
+
+function prepStripQuickLoginParamsFromUrl() {
+    try {
+        var u = new URL(window.location.href);
+        [
+            "prep_link",
+            "prep_quick",
+            "prep_pass",
+            "prep_name",
+            "prep_track",
+            "prep_exam",
+            "prep_role",
+            "prep_class"
+        ].forEach(function (k) {
+            u.searchParams.delete(k);
+        });
+        var qs = u.searchParams.toString();
+        history.replaceState({}, "", u.pathname + (qs ? "?" + qs : "") + (u.hash || ""));
+    } catch (eSt) {}
+}
+
+function prepSyncProfileAfterLogin(track) {
+    try {
+        if (typeof prepCourseProfile === "undefined" || !prepCourseProfile.save) return;
+        if (track === "creator") {
+            var curP = prepCourseProfile.load();
+            var courses = Array.isArray(curP.creatorCourses) ? curP.creatorCourses : [];
+            if (!courses.length) {
+                prepCourseProfile.addCreatorCourse({ name: "My course", theme: "dark" });
+            } else {
+                var activeId = curP.courseId;
+                if (!courses.some(function (c) { return c.id === activeId; })) activeId = courses[0].id;
+                prepCourseProfile.save({
+                    courseTrack: "creator",
+                    prepRole: "creator",
+                    courseId: activeId,
+                    wizardCompleted: true
+                });
+            }
+        } else {
+            prepCourseProfile.save({
+                courseTrack: track,
+                prepRole: userData.liveRole === "teacher" ? "teacher" : "student",
+                wizardCompleted: true
+            });
+        }
+        prepCourseProfile.applyDom();
+    } catch (eProf) {}
+}
+
 function setLoginCourseTrack(track) {
     loginCourseTrackPick = track || "cpe";
     var buttons = document.querySelectorAll("[data-login-course]");
@@ -21718,33 +21837,7 @@ function registerUser() {
     }
     saveData();
 
-    try {
-        if (typeof prepCourseProfile !== 'undefined' && prepCourseProfile.save) {
-            if (track === 'creator') {
-                var curP = prepCourseProfile.load();
-                var courses = Array.isArray(curP.creatorCourses) ? curP.creatorCourses : [];
-                if (!courses.length) {
-                    prepCourseProfile.addCreatorCourse({ name: 'My course', theme: 'dark' });
-                } else {
-                    var activeId = curP.courseId;
-                    if (!courses.some(function (c) { return c.id === activeId; })) activeId = courses[0].id;
-                    prepCourseProfile.save({
-                        courseTrack: 'creator',
-                        prepRole: 'creator',
-                        courseId: activeId,
-                        wizardCompleted: true
-                    });
-                }
-            } else {
-                prepCourseProfile.save({
-                    courseTrack: track,
-                    prepRole: userData.liveRole === 'teacher' ? 'teacher' : 'student',
-                    wizardCompleted: true
-                });
-            }
-            prepCourseProfile.applyDom();
-        }
-    } catch (eProf) {}
+    prepSyncProfileAfterLogin(track);
     var pend = null;
     try {
         pend = sessionStorage.getItem('prep_live_deeplink');
@@ -22056,6 +22149,21 @@ window.onload = function () {
         });
     }
     var bootParams = new URLSearchParams(window.location.search);
+    try {
+        var _qLogin = prepApplyLoginFromQuickParams(bootParams);
+        if (_qLogin === "ok") {
+            prepStripQuickLoginParamsFromUrl();
+            bootParams = new URLSearchParams(window.location.search);
+        } else if (_qLogin === "badpass") {
+            try {
+                if (!String(userData.name || "").trim()) {
+                    alert("Wrong link password (prep_pass). Ask your teacher for an updated link.");
+                }
+            } catch (eBad) {}
+            prepStripQuickLoginParamsFromUrl();
+            bootParams = new URLSearchParams(window.location.search);
+        }
+    } catch (eQuickBoot) {}
     if (bootParams.get("prep_reauth") === "1") {
         /**
          * ?prep_reauth=1 is used by js/prep-my-courses-rail.js (students switching CPE/EGE/FCE) and ege.html → CPE links.
