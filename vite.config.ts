@@ -78,6 +78,93 @@ function viteIgnoreClassicScripts(): Plugin {
   };
 }
 
+/**
+ * Classic scripts and co-located JSON are referenced by URL (?src=published-….json, ../../js/…)
+ * but not imported into the Rollup graph. With publicDir: false they would be missing from dist/.
+ */
+function copyLegacyStaticAssets(): Plugin {
+  let outDir = path.join(root, "dist");
+  return {
+    name: "prep-copy-legacy-static",
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      const jsSrc = path.join(root, "js");
+      const jsDest = path.join(outDir, "js");
+      if (fs.existsSync(jsSrc)) {
+        fs.cpSync(jsSrc, jsDest, { recursive: true });
+      }
+
+      const liveReal = path.join(root, "live-supabase-local.js");
+      const liveEx = path.join(root, "live-supabase-local.example.js");
+      const liveDest = path.join(outDir, "live-supabase-local.js");
+      if (fs.existsSync(liveReal)) {
+        fs.copyFileSync(liveReal, liveDest);
+      } else if (fs.existsSync(liveEx)) {
+        fs.copyFileSync(liveEx, liveDest);
+      }
+
+      const uoe = path.join(root, "use-of-english");
+      if (fs.existsSync(uoe)) {
+        function walkJson(dir: string) {
+          for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+            const full = path.join(dir, ent.name);
+            if (ent.isDirectory()) {
+              walkJson(full);
+            } else if (ent.isFile() && ent.name.endsWith(".json")) {
+              const rel = path.relative(root, full);
+              const dest = path.join(outDir, rel.split(path.sep).join("/"));
+              fs.mkdirSync(path.dirname(dest), { recursive: true });
+              fs.copyFileSync(full, dest);
+            }
+          }
+        }
+        walkJson(uoe);
+      }
+
+      /** Co-located classic scripts (e.g. exam trainer/*.js) are vite-ignore and not emitted by Rollup. */
+      function copyViteIgnoredScriptsFromBuiltHtml(dir: string) {
+        for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, ent.name);
+          if (ent.isDirectory()) {
+            copyViteIgnoredScriptsFromBuiltHtml(full);
+            continue;
+          }
+          if (!ent.isFile() || !ent.name.endsWith(".html")) continue;
+
+          const html = fs.readFileSync(full, "utf8");
+          const dirInOut = path.dirname(full);
+          const relHtml = path.relative(outDir, full);
+          const sourceHtmlPath = path.join(root, relHtml);
+
+          for (const m of html.matchAll(/<script\s+[^>]*?>/gi)) {
+            const tag = m[0];
+            if (!/\bvite-ignore\b/i.test(tag)) continue;
+            const sm = /\bsrc\s*=\s*["']([^"']+)["']/i.exec(tag);
+            if (!sm) continue;
+            const src = sm[1].trim();
+            if (
+              !src ||
+              /^(?:https?:)?\/\//i.test(src) ||
+              src.startsWith("/") ||
+              src.startsWith("data:")
+            ) {
+              continue;
+            }
+            const destFile = path.resolve(dirInOut, src);
+            const sourceFile = path.resolve(path.dirname(sourceHtmlPath), src);
+            if (!fs.existsSync(sourceFile)) continue;
+            fs.mkdirSync(path.dirname(destFile), { recursive: true });
+            fs.copyFileSync(sourceFile, destFile);
+          }
+        }
+      }
+      copyViteIgnoredScriptsFromBuiltHtml(outDir);
+    },
+  };
+}
+
 const input: Record<string, string> = {};
 for (const rel of walkHtmlFiles(root)) {
   input[rollupInputKey(rel)] = path.resolve(root, rel);
@@ -86,7 +173,7 @@ for (const rel of walkHtmlFiles(root)) {
 export default defineConfig({
   root,
   publicDir: false,
-  plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts()],
+  plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets()],
   appType: "mpa",
   build: {
     outDir: "dist",

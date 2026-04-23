@@ -71,7 +71,31 @@
       : "Next";
     var href = String(raw).trim();
     try {
-      link.setAttribute("href", new URL(href, window.location.href).href);
+      var pathPart = href.split(/[?#]/)[0] || "";
+      var resolved;
+      if (/^https?:\/\//i.test(href)) {
+        resolved = href;
+      } else if (/^use-of-english\//.test(pathPart)) {
+        var proto = window.location.protocol;
+        if (proto === "http:" || proto === "https:") {
+          resolved = new URL("/" + href.replace(/^\//, ""), window.location.origin).href;
+        } else if (proto === "file:") {
+          var cur = window.location.href.split(/[?#]/)[0].replace(/\\/g, "/");
+          var key = "/use-of-english/";
+          var pos = cur.toLowerCase().indexOf(key);
+          if (pos !== -1) {
+            var baseDir = cur.slice(0, pos).replace(/\/?$/, "") + "/";
+            resolved = new URL(href, baseDir).href;
+          } else {
+            resolved = new URL(href, window.location.href).href;
+          }
+        } else {
+          resolved = new URL("/" + href.replace(/^\//, ""), window.location.origin).href;
+        }
+      } else {
+        resolved = new URL(href, window.location.href).href;
+      }
+      link.setAttribute("href", resolved);
     } catch (e1) {
       link.setAttribute("href", href);
     }

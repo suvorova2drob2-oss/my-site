@@ -59,6 +59,25 @@
     var s = String(raw || "").trim();
     if (!s) return "";
     try {
+      if (/^https?:\/\//i.test(s)) return s;
+      var pathPart = s.split(/[?#]/)[0] || "";
+      // Hub passes site-root paths without a leading "/" (e.g. use-of-english/…). Resolving
+      // against the current file would nest under part2-open-cloze/ and break (http + file).
+      if (/^use-of-english\//.test(pathPart)) {
+        var proto = window.location.protocol;
+        if (proto === "http:" || proto === "https:") {
+          return new URL("/" + s.replace(/^\//, ""), window.location.origin).href;
+        }
+        if (proto === "file:") {
+          var cur = window.location.href.split(/[?#]/)[0].replace(/\\/g, "/");
+          var key = "/use-of-english/";
+          var pos = cur.toLowerCase().indexOf(key);
+          if (pos !== -1) {
+            var baseDir = cur.slice(0, pos).replace(/\/?$/, "") + "/";
+            return new URL(s, baseDir).href;
+          }
+        }
+      }
       return new URL(s, window.location.href).href;
     } catch (e) {
       return s;
