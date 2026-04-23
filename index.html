@@ -22047,6 +22047,13 @@ window.onload = function () {
     }
     var bootParams = new URLSearchParams(window.location.search);
     if (bootParams.get("prep_reauth") === "1") {
+        /**
+         * Course-switch links use ?prep_reauth=1 (see js/prep-my-courses-rail.js, ege.html).
+         * Students must re-enter name + password. Teachers / site admin already authenticated:
+         * clearing name here made every such link a full logout — felt like random "kicks" to Welcome.
+         */
+        var keepSessionAfterReauth =
+            !!(userData.name && (userData.prepAdmin === true || userData.liveRole === "teacher"));
         try {
             var trQ = bootParams.get("prep_track");
             if (trQ && /^(cpe|ege|fce)$/.test(trQ)) {
@@ -22072,19 +22079,24 @@ window.onload = function () {
         try {
             history.replaceState({}, "", window.location.pathname || "/");
         } catch (eRs) {}
-        userData.name = "";
+        if (!keepSessionAfterReauth) {
+            userData.name = "";
+            try {
+                saveData();
+            } catch (eSd) {}
+            var _ni = document.getElementById("name-input");
+            if (_ni) _ni.value = "";
+            var _pi = document.getElementById("login-password-input");
+            if (_pi) _pi.value = "";
+            try {
+                setLoginLiveRole(userData.liveRole === "teacher" ? "teacher" : "student");
+            } catch (eLr) {}
+            showScreen("screen-login");
+            return;
+        }
         try {
-            saveData();
-        } catch (eSd) {}
-        var _ni = document.getElementById("name-input");
-        if (_ni) _ni.value = "";
-        var _pi = document.getElementById("login-password-input");
-        if (_pi) _pi.value = "";
-        try {
-            setLoginLiveRole(userData.liveRole === "teacher" ? "teacher" : "student");
-        } catch (eLr) {}
-        showScreen("screen-login");
-        return;
+            if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.applyDom) prepCourseProfile.applyDom();
+        } catch (eApply) {}
     }
     if (userData.name) {
         var params = bootParams;
