@@ -1,0 +1,32 @@
+---
+description: Prep course CMS (folders → sections → exercises), shared browser store with main hub.
+---
+
+# Prep Course CMS (`course-cms/`)
+
+## Единое хранилище
+
+- Данные курса: `js/prep-site-content.js` → `localStorage` (ключ с учётом `courseId`), синхронизация вкладок через `BroadcastChannel` / событие `prep-site-content-save`.
+- **Сохранение структуры:** в `course-cms/cms-app.js` правки дерева (папки, секции, добавление упражнения) помечают `courseDirty`; запись в хранилище только по кнопке **Save course**. Кнопка **Save exercise** в редакторе карточки вызывает полный flush в то же хранилище. Режим **Student** после загрузки из `config.json` один раз пишет в localStorage, чтобы плитки на хабе работали без админской кнопки.
+- **Главная** (`index.html`): блок «Course units» / «Your units» читает те же папки; переключатель **Preview / Edit** на хабе. В **Edit** — плитка **+** и удаление папок; в **Preview** — как у ученика (без плюса и крестиков).
+- Плитка папки открывает `course-cms/index.html?folder=<id>&mode=admin|student` (режим зависит от переключателя на хабе). Внутри CMS те же **Админ / Студент** на одной странице.
+- На главном хабе карточка **Use of English / Part 1 activity** может содержать вложенные папки и активности: в Edit — **⋯ → Manage contents…** или **Shift+клик** по плитке; порядок плиток на уровне — как порядок записей в `PrepSiteContent` (новые по умолчанию внизу списка).
+
+## Облако (сценарий «нажали Сохранить — все видят по ссылке»)
+
+- **`infra/supabase/PREP-CLOUD.md`**: SQL, Edge Function `prep-cloud`, секрет `PREP_CLOUD_WRITE_SECRET` / `__PREP_CLOUD_WRITE_SECRET__`. После настройки `PrepSiteContent.save` поднимает курс в Supabase; Part 1 пишет упражнение по `contextId`.
+
+## Деплой
+
+- Без облака: **git push** с `course-cms/config.json` и при необходимости `published.json` у страниц.
+- С облаком: файлы опциональны; источник правды — Supabase (см. PREP-CLOUD.md). На **публичном** сайте у учеников не отдавай `__PREP_CLOUD_WRITE_SECRET__` (только URL + anon key).
+
+## Движки заданий
+
+- **Part 1 MC Cloze (общий для всех курсов):** см. правило `prep-part1-mc-cloze-engine.mdc` — URL, `context`, `sessionKey`, `prepActivitySkill`, `PrepSiteContent` по `courseId`.
+- В CMS: `ENGINES` в `cms-app.js`, открытие в `playItem`. Новые типы — расширять список `engine` и ветку «Открыть», **не** дублировать HTML плеера по юнитам.
+- Плитки активности на **EGE/FCE** (`js/prep-track-edit-strip.js`): навыки Listening / Reading / Use of English / Speaking; сейчас играет только UoE (`part1-mc-cloze`), остальные — заглушка до подключения движков.
+
+## Не удалять
+
+- Старые ссылки с `unit*.html`, общий `js/part1-mc-cloze-core.js` и страницы юнитов **не удалять** без явного запроса; CMS — дополнительный слой.

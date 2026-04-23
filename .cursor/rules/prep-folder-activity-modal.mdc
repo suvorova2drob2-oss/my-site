@@ -1,0 +1,16 @@
+---
+description: Consistent Folder / Activity creation UX (PrepSiteContent, hub, disk)
+alwaysApply: false
+---
+
+# Prep folder & activity creation
+
+When the user asks for **+ Folder** / **+ Activity**, **nested folders**, or **creating course content** in the prep hub / disk course pages:
+
+1. **Do not use** browser `prompt()` / `confirm()` for collecting **title, subtitle, goal** (folder) or **activity title** (and optional description). Use the **same structured UI as `index.html`**: the `#hub-create-modal` pattern (Title optional, Subtitle required, Unit goal optional) and `#hub-task-modal` for Part 1 cloze activities.
+
+2. **In `index.html`**, new prep flows must reuse **`hubCreateModalOpen` / `hubCreateSave`** and **`hubTaskModalOpen` / `hubTaskSave`** (or extend them with explicit `opts` / `hubWorkspace.kind`), not parallel ad-hoc dialogs.
+
+3. **Disk-only pages** (`prep-disk-hub-strip.js`): use an **in-page modal** that mirrors the hub fields and labels (English copy like the hub modal), not `prompt()`. In **Edit** mode, each user-created disk tile must include **Delete** (and keep the **activity engine** line + engine summary in the activity modal) so behaviour matches the main hub linked-folder row.
+
+4. **Activity hub screens** (e.g. Unit 8/9 `screen-unit8-activity-hub`, `screen-unit9-activity-hub`): always expose the **same + Folder / + Activity strip** in Edit mode as the main hub workspace; scope new items with `prepPageKey` = `u{unit}-activity-{mode}` so they list **only** in that hub and not in generic unit linked lists (`isActivityHubScopedPrep`).

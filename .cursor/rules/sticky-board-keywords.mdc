@@ -1,0 +1,30 @@
+---
+description: Sticky Board / lexical gap games — one word per gap, anchored in a collocation.
+globs: "**/*sticky*/**,**/js/*blocks*.js,**/js/live-game-api.js,**/*treasure*.html,**/*sticky-board*.html,**/*sticky-live*.html"
+alwaysApply: false
+---
+
+# Sticky Board — one word, inside a collocation
+
+When authoring **sticky notes**, **gap-fill targets**, or any “type the missing bit” task tied to a phrase list:
+
+## Typed answer
+
+- **Exactly one word** from the passage (`stickyAnswer` must be a single token: no spaces).
+- That word must be the **lexical hook inside a fixed phrase** — surround it with `stickyBefore` / `stickyAfter` so the learner sees a real collocation or idiom around `____` (e.g. *sound ____ advice*, *put his mind at ____*, *threw in the ____*, *work out what ____ for you*).
+
+## Do not use as the answer
+
+- Stand-alone **pronouns** (`my`, `her`, `their`, `it`, …), **articles**, **auxiliaries**, or **generic prepositions alone** — if the natural hole falls on one of these, **move the gap** to the content word in the same phrase (e.g. *how to ____ my parents* → `reassure`, not `my`).
+
+## Copy for UI hints
+
+- Prefer: “Type **one word** — the missing piece of the **collocation** (same wording as in the passage).”
+- Avoid implying multi-word chunks or that any random word in the sentence is fair game.
+
+## Reference implementation
+
+- Shared UI + match logic: `js/sticky-board-core.js` (include on every `sticky-board/index.html` before `*-blocks.js`).
+- Going vegan data: `js/unit12-vegan-reading-blocks.js` (policy comment at top of file).
+- Listening 12.1 / Naomi data: `js/unit12-l121-blocks.js`, `js/unit12-naomi-blocks.js`.
+- Future live classroom sessions (Supabase / Yandex / custom): **`js/live-game-api.js`** — register a driver; UI calls `LiveGameApi.createClient` only (see `reading-going-vegan/sticky-live-demo.html`).

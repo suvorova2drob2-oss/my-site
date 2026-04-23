@@ -1,0 +1,36 @@
+---
+description: Mandatory performance & scale rules — Vite-first, no monolith growth, lazy loading
+alwaysApply: true
+---
+
+# Performance & scale (mandatory)
+
+The CPE hub must stay fast as the project grows. Treat these as **non‑negotiable** unless the user explicitly overrides for a one-off.
+
+## Chosen format (project direction)
+
+- **Build:** **Vite** (vanilla **TypeScript** preferred; JavaScript acceptable). Use `npm run build`, publish optimized output (e.g. `dist/`) to hosting.
+- **Why:** automatic **code splitting**, minification, cache-friendly hashed assets, `import()` for lazy chunks, sane structure for a very large app.
+- **Migration stance:** legacy **monolithic `index.html`** stays until migrated; **do not add new large features inside it**. New work lives in `src/` (or clearly separated modules/pages) and is bundled by Vite. Shrink the monolith over time when touching related areas.
+
+## Hard rules when adding or changing code
+
+1. **Do not inflate `index.html`** with new screens, big data arrays, or long script blocks. Prefer:
+   - a **new page** (`*.html` at repo root or under Vite `public/`), or  
+   - a **new module** under `src/` imported from a small entry.
+2. **Split by route / feature:** major areas (units, Live, editors, games) should be **separate deployable HTML entries** or lazy Vite chunks—not one page that contains everything in the DOM.
+3. **Lazy-load heavy paths:** Live / Supabase client wiring, big editors, rare admin tools—load **on first use** (`import()`, dynamic `<script>`, or Vite `import(/* webpackIgnore */ ...)` patterns), not on the name/login shell.
+4. **Light first paint:** if implementing or refactoring the entry flow, target a **small shell** (name + continue) that **does not** parse the full hub; navigate to a **second page** or lazy‑mount the hub after consent/save.
+5. **Data vs markup:** large static datasets belong in **`src/data/` or `js/data/`** (or JSON loaded on demand), not embedded as giant literals in HTML.
+6. **Third-party scripts:** avoid **render-blocking** CDN for anything on the critical path. **Self-host** UMD/ESM bundles under `js/vendor/` (or Vite-bundled deps) so one origin (e.g. Netlify) serves them.
+7. **No surprise UI weight:** do not reintroduce heavy global widgets (e.g. a full-screen side rail syncing on every keystroke) unless the user explicitly asks.
+
+## AI / agent checklist before finishing a task
+
+- If the change **adds bytes or sync work to initial load**, justify it or move it behind lazy/async.
+- Prefer **one new file** over **+500 lines** in an existing monster file.
+- When introducing a new build step, update **`netlify.toml`** / **`scripts/NETLIFY-SPLIT.txt`** (or the active deploy docs) so CI matches `vite build` + correct `publish` directory.
+
+## Wording for the user
+
+When suggesting architecture, default to: **Vite + route/feature split + lazy heavy deps + self-hosted vendor JS**. Explain tradeoffs in simple language if the user is a beginner.

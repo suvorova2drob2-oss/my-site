@@ -1,0 +1,42 @@
+---
+description: Use of English Part 2 Open Cloze — always use part2-open-cloze-core.js + JSON; no one-off HTML tasks.
+---
+
+# Part 2 Open Cloze — единый способ в этом репозитории
+
+**Всегда** добавляй новые задания Part 2 только через общий движок, а не отдельные страницы с копипастой скриптов (legacy: `unit12-use-of-english-part2-open-cloze.html` не использовать как шаблон для новых текстов).
+
+## Файлы
+
+- **Движок:** `js/part2-open-cloze-core.js`
+- **Стили:** `css/part2-open-cloze.css`
+- **Плеер:** `use-of-english/part2-open-cloze/index.html`
+- **Данные:** `use-of-english/part2-open-cloze/published-<slug>.json` (рядом с плеером; в URL задаётся `?src=`)
+
+## Формат JSON (обязательно)
+
+- **`title`** — заголовок текста (заголовок страницы / H1).
+- **`subtitle`** — инструкция (одно предложение: один слово, пример (0) и т.д.).
+- **`passage`** — полный текст; пропуски только маркерами **`[[1]]` … `[[N]]`** (порядок первого появления = порядок заданий). Абзацы через **двойной перевод строки** `\n\n`.
+- Пример **(0)** вписывается **обычным текстом** в `passage` (не `[[0]]`). Опционально **`exampleHighlight`**: строка буквально как в тексте, например `"(0) REACHED"` — оборачивается в `<span class="p2-example">` для визуала «как в учебнике».
+- **`answers`** — объект `"1"`, `"2"`, …: значение **массив** допустимых форм после нормализации (`trim` + lower case) или одна строка. Несколько синонимов/вариантов — несколько элементов массива.
+
+Нельзя: дыры в номерах пропусков (должны идти **1…N подряд**).
+
+## URL и встраивание (Level 9 / хаб)
+
+- Параметры **`back`** и **`backLabel`** обязательны для хаба: кнопка «← …» вызывает **`history.back()`**, если в стеке есть предыдущая страница, иначе переход по `back` (см. `js/part2-open-cloze-core.js`).
+- Опционально **`next`** / **`nextLabel`** — полоса «→ …» внизу (`#part2OpenNextStrip`), например возврат на `index.html?screen=unit9&u9_uoe=1` после последнего задания цепочки.
+- Ссылка с корня сайта:  
+  `use-of-english/part2-open-cloze/index.html?context=<id>&src=published-<slug>.json&back=..%2F..%2Findex.html&backLabel=Level%209`
+- **`context`** должен совпадать с зарегистрированным «bundled» контекстом в `part2-open-cloze-core.js`, если нужен **вшитый** JSON без `fetch` (офлайн / `file://`): добавь флаг вида `unit9-p2-upcycled` и блок `<script type="application/json" id="part2-open-bundled-…">` в `index.html` плеера (как Part 1).
+
+## Поведение (как Unit 12)
+
+- **Submit** — проверка; неверные поля подсвечиваются; полноэкранный слой с ключом; **Reset** очищает.
+
+## Новое задание — чеклист
+
+1. Создать `published-….json` в `use-of-english/part2-open-cloze/`.
+2. При необходимости bundling: дописать контекст в `js/part2-open-cloze-core.js` + встроить JSON в `part2-open-cloze/index.html`.
+3. Добавить карточку в хаб (например `index.html` → `screen-unit9-uoe`).

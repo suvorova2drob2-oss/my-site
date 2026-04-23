@@ -1,0 +1,67 @@
+---
+description: How to plug any classroom game into LiveGameApi (stub → Supabase / Yandex) — rooms, scores, leaderboard, host vs student links.
+globs: "**/js/live-game-api.js,**/js/live-game-api-yandex.js,**/infra/**/live-game/**,**/*live-demo*.html,**/*sticky-live*.html"
+alwaysApply: false
+---
+
+# Live classroom games — reuse one API for many games
+
+Backend contract lives in **`js/live-game-api.js`**. Every real driver **must** implement the same seven methods: `createRoom`, `joinRoom`, `submitAnswer`, `subscribeRoom`, `getSnapshot`, `setPhase`, `advanceCard`. Register with `LiveGameApi.registerDriver("name", impl)`; games use **`LiveGameApi.createClient({ driver: "…" })`** only — never scatter raw Supabase/Fetch across pages.
+
+## Step 1 — Decide what “one unit of progress” is per game
+
+Map your game to the generic model (room, players, score, optional `cardIndex` / phase):
+
+| Game idea | `deckId` | When to call `submitAnswer` | How to interpret `score` |
+|-----------|----------|-----------------------------|----------------------------|
+| Sticky / cards in sequence | pack id | each checked gap (correct/wrong) | cumulative points |
+| Prep vault / escape | `prep-vault` | on **vault cleared** (all 6) or optionally per channel | e.g. 1 per completed vault, or time bonus |
+| Quiz / MCQ | topic id | each question | +10 correct, etc. |
+
+Reuse **`cardIndex`** only if the session is literally “card N of M”. For vault, you can keep `cardIndex` at `0` or repurpose in the driver’s `state_json` / extra columns — but the **client** should still call the same methods so swapping drivers stays easy.
+
+## Step 2 — Student vs teacher URLs
+
+- **Students**: `…?room=ABCDE` (+ optional name in UI). They only need `joinRoom` + `subscribeRoom` (and `submitAnswer` when they finish a scoring action).
+- **Teacher**: same room + **secret `host_token`** (returned from `createRoom`, never in student link). Teacher uses `setPhase`, `advanceCard`, and reads full snapshot / leaderboard.
+
+Store `host_token` only in teacher bookmark, localStorage, or teacher-only Supabase row — not in the public query string if avoidable.
+
+## Step 3 — Implement a new driver (Supabase or HTTP to Yandex)
+
+1. Copy the **stub** behaviour in `live-game-api.js` as a behavioural spec (Promises, shapes of `LiveRoomSnapshot`).
+2. Persist: **rooms** (code, host_token, deck_id, phase, card_index, optional `state_json`), **players** (room, id, display_name, score), optional **events** for audit.
+3. **`subscribeRoom`**: Supabase = Realtime channel or polling `getSnapshot`; Yandex = poll or SSE if you add it.
+4. **`submitAnswer`**: update that player’s `score` (and optionally append an event). Params already include `cardId`, `correct`, `latencyMs` — use what fits; omit irrelevant fields with sensible defaults.
+
+Register once at app bootstrap (e.g. before creating the client):
+
+`LiveGameApi.registerDriver("supabase", supabaseDriver);`
+
+## Step 4 — Wire one game page (pattern)
+
+1. Parse `room` from `location.search`; if missing, show “enter code” or “create room” (teacher).
+2. After `joinRoom`, keep `playerId` in `sessionStorage` for that tab.
+3. `unsub = api.subscribeRoom(roomCode, render)` — `render` updates leaderboard UI from snapshot.
+4. On game win / correct batch: `api.submitAnswer({ roomCode, playerId, cardId, text, correct, latencyMs })`.
+5. On unload: call `unsub()`.
+
+Reference: **`reading-going-vegan/sticky-live-demo.html`** (and any `*live-demo*.html`) for join + subscribe flow.
+
+## Step 5 — Security (production)
+
+- **RLS** on all tables if using Supabase `anon` key in the browser.
+- Rules: students can insert/select only rows for their `room_code`; only host (validated server-side or via signed token) mutates phase / deletes room.
+- Treat **client score as soft** unless an Edge Function verifies outcomes.
+
+## Step 6 — Adding another game later
+
+1. New `deckId` string constant for that game.
+2. Same room flow; only change **when** you call `submitAnswer` and how you derive `correct` / `score`.
+3. Optional: extend snapshot `payload` in the driver if you need game-specific fields — keep **backward compatibility** for older UIs.
+
+## Existing artefacts
+
+- **Abstraction**: `js/live-game-api.js`
+- **Yandex reference**: `infra/yandex/functions/live-game/index.js` (YDB, `op` JSON, CORS)
+- **Optional bridge**: `js/live-game-api-yandex.js` if present for HTTP invoke

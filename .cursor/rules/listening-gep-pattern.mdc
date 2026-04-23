@@ -1,0 +1,44 @@
+---
+description: Reusable "GEP" Detective Lab pattern for listening / matching pages (segmented passage + MCQ chain + score).
+globs: "**/unit*-listening*.html"
+alwaysApply: false
+---
+
+# GEP — Guided Evidence Passage (Detective Lab)
+
+**Name to use in chat:** `GEP` or **Guided Evidence Passage (Detective Lab)**.
+
+## What it is
+
+A three-layer drill for Part 3–style matching:
+
+1. **MCQ chain** — one screen per speaker: short extract + 4 options; only the key answer earns a task point (1 pt × N speakers).
+2. **Guided lab** — same story split into `segments`: `plain` (not clickable), `evidence` (3 taps → green), `distractor` (2 taps → red + `[! Letter]` badge).
+3. **Score** — task points + lab rounds (1 pt per speaker when evidence + both distractors are done) → show **total / (2N)** and a short congrats line.
+
+## Data you must author per speaker
+
+- `segments[]`: `{ kind: "plain" | "evidence" | "distractor", text, id? | key? }`
+- `evidenceIds` (3), `distractorKeys` (2 option letters)
+- `hints` for steps 1 and 2
+- `evidenceLine`, `distractorLine`, `wrongEvidenceToast`
+- One **MCQ** object: `passage`, `correct`, `choices[]`, `okHtml`, `badTail`
+
+## UI/CSS conventions
+
+- Plain: `click-chunk--static` + `pointer-events: none`
+- Targets: `click-chunk--target` + dashed underline; `.is-green` / `.is-red` / `.is-disabled-hit`
+- Distractor badges: `.trainer-distr-wrap`, `.trainer-badge`
+- Click handler: `ev.target.closest(".click-chunk--target")` only
+
+## Reference implementation
+
+`unit12-listening-12-1-matching.html` — search for `LAB_SPEAKERS`, `DETECTIVE_MCQS`, `data-detective-pattern="GEP"`.
+
+## Quick reuse checklist
+
+- [ ] Set `CORRECT` / options for the exam row
+- [ ] Fill `DETECTIVE_MCQS` and `LAB_SPEAKERS` (same order)
+- [ ] Wire unlock → `__detectiveOnFirstUnlock` (MCQ reset + `renderDetectiveTask`)
+- [ ] Lab: `initTrainer` resets **lab** score only; keep **MCQ** score until page reload
+- [ ] Final panel: `detectiveMcqScore + detectiveLabScore`, max `2 * speakerCount`

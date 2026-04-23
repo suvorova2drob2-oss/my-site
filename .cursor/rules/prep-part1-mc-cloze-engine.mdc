@@ -1,0 +1,63 @@
+---
+description: Part 1 multiple-choice cloze engine (part1-mc-cloze-core.js) — load order, publish layer, CMS, deploy.
+---
+
+# Part 1 MC Cloze — движок (`js/part1-mc-cloze-core.js`)
+
+Один общий скрипт для всех страниц с этим типом задания (юниты, prep-hub, CMS). Поведение задаётся **boot** и **URL**.
+
+## Конфигурация
+
+- **`window.PART1_MC_BOOT`** (или `PART1_MC_CONFIG`): `contextId`, `dataSrc`, `backHref`, `backLabel`, `pageTitle`, `documentTitle`, опционально `saveAlsoDownloadsPublishedJson`.
+- **Назад:** «← …» в шапке — **`history.back()`** при `history.length > 1`, иначе переход по **`backHref`** / `?back=` (`resolveBackHref` в `part1-mc-cloze-core.js`).
+- **Следующее задание (цепочка Level 9):** опционально **`next`** (целевой URL: относительный `?context=…&src=…`, `../…`, или полный путь от текущей страницы) и **`nextLabel`** — внизу показывается кнопка «→ …» (`#part1McNextStrip`). См. `screen-unit9-uoe` в `index.html` (скрипт собирает вложенные `next`).
+- **Query:** `?context=slug&src=path/to/published.json&back=...&prepView=edit&admin=1&sessionKey=...`
+- **Режим редактирования:** `prepView=edit` и/или `admin=1` → `isAdmin` + форма админки (если в разметке есть нужные элементы).
+
+## Идентификатор и ключи хранилища
+
+- **`contextId`** (из boot или `?context=`) — изолирует данные разных заданий.
+- **`part1-mc-published-v1:<contextId>`** — опубликованная версия: только после успешной валидации и **«Сохранить»** / «Проверить как ученик» (тот же слой); то же, что кладут в `published.json`. Отдельного автосейва черновика в localStorage **нет** — несохранённые правки в форме при перезагрузке не подхватываются.
+- **`part1-mc-opts-pct:<contextId>`** — доли показа вариантов (shuffle UI).
+- Для старого контекста `unit12-part1-sedentary` читается легаси-ключ `unit12-part1-mc-published-v1`.
+
+## Порядок загрузки данных
+
+**Ученик / предпросмотр без редактора и редактор (`mergeLoadOrderStudent` / `mergeLoadOrderAdmin`):** одна и та же цепочка после `sessionKey`:
+
+1. `?sessionKey=` → `sessionStorage` (передача из CMS и т.п.)
+2. иначе при настроенном **`PrepCloudClient`** — строка **`prep_exercise_published`** в Supabase по `contextId`
+3. иначе **HTTP** `fetch` на URL упражнения: `dataSrc` или по умолчанию **`published.json`** рядом с HTML
+4. если файла нет → **`part1-mc-published-v1`** в localStorage
+5. иначе встроенный JSON из `#part1-mc-default-data` / демо
+
+В режиме Edit **нет** отдельного слоя «черновик в localStorage» — только форма в памяти до **«Сохранить»**.
+
+## «Сохранить» и ученики
+
+- **«Сохранить»:** `validateExercise` → **`publishExercise`**: пишет **published** в localStorage; при `saveAlsoDownloadsPublishedJson` или контексте `prep-hub-*` автоматически скачивается **`published.json`**.
+- **Ученики в интернете** видят задание только если на сервере лежит актуальный **`published.json`** (или другой путь в `src=`) в репозитории после деплоя. localStorage **не общий** между устройствами и браузерами.
+- **«Проверить как ученик»:** валидирует, пишет published, редирект на URL без режима редактирования.
+
+## Формат в файле / storage (`exerciseForStorage`)
+
+- В DOM/редакторе порядок `items` идёт **по порядку пропусков в тексте** (document order).
+- В JSON для хранения `items` приводятся к порядку **номеров вопросов** `[[1]],[[2]],…` через `itemsDocumentToSortedStorage`, чтобы порядок в файле был стабильным при перестановке абзацев.
+
+### Пояснения после Submit (опционально)
+
+У каждого элемента `items[i]` можно добавить:
+
+- **`explainCorrect`** — строка: коротко, почему верный вариант (буква показывается как у ученика после shuffle).
+- **`explainIfChosen`** — объект: ключи **`"0"` … `"3"`** = **индекс слота варианта** (как в `options` / `correctIndex`), значение — почему этот вариант не подходит, если ученик его выбрал.
+
+Если полей нет, модалка с ключом работает как раньше. Блок «Explanations» строится только для **ошибочных** пропусков и только если есть хотя бы `explainCorrect` или текст для выбранного неверного слота (иначе — общий fallback для «Why not …»). В админке пояснения **не редактируются полями формы**; при сохранении из редактора они **подмешиваются** из текущего `state.exercise.items` (той же длины), чтобы JSON с пояснениями не обнулялись при правке слов. Для надёжного задания пояснений в контенте правьте `published.json` / встроенный JSON напрямую.
+
+## Prep hub / блокировка
+
+- Если `contextId` вида `prep-hub-<folderId>` и в `PrepSiteContent` у папки `studentLocked === true`, не-редактирующий заход может редиректить назад (см. начало IIFE в core).
+
+## Где править
+
+- Логика загрузки, кнопки — **`js/part1-mc-cloze-core.js`**.
+- Новые «плееры» по юнитам — тонкие HTML-обёртки с своим `PART1_MC_BOOT` / query, **не** копировать движок.
