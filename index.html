@@ -5077,9 +5077,9 @@
             <button type="button" class="login-role-btn" id="login-role-student">Student</button>
             <button type="button" class="login-role-btn active" id="login-role-teacher">Teacher</button>
         </div>
-        <label for="login-password-input" class="login-fld-label">Course password</label>
-        <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Enter your password" autocomplete="current-password" />
-        <p class="login-password-hint" id="login-password-hint">Use the password your teacher gave you.</p>
+        <label for="login-password-input" class="login-fld-label">Course password <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
+        <input type="password" id="login-password-input" class="hub-fld-input" placeholder="Leave empty for open beta, or enter class / admin password" autocomplete="current-password" />
+        <p class="login-password-hint" id="login-password-hint">While <code style="font-size:10px">PREP_ALLOW_PASSWORDLESS_LOGIN</code> is on, you only need your name and <strong>Start</strong>. Turn it off in <code style="font-size:10px">index.html</code> before a public launch.</p>
         <details class="login-author-details">
             <summary>Advanced — author PIN (optional)</summary>
             <label for="login-author-pin" class="login-fld-label" style="margin-top: 10px;">Author PIN</label>
@@ -5093,7 +5093,7 @@
         <button type="button" class="btn" onclick="registerUser()">Start</button>
         <p style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.45;max-width:28rem;">
             <strong>Direct links (optional):</strong> open a URL with <code style="font-size:10px">prep_link=1</code>,
-            <code style="font-size:10px">prep_pass</code> (class or admin password),
+            <code style="font-size:10px">prep_pass</code> (optional if open beta; else class or admin password),
             <code style="font-size:10px">prep_name</code>, and e.g. <code style="font-size:10px">screen=unit9</code> — the app logs in and removes the password from the address bar. Extra per-group passwords: set <code style="font-size:10px">PREP_LINK_CLASS_PASSWORDS</code> + <code style="font-size:10px">prep_class=</code> in <code style="font-size:10px">index.html</code>.
         </p>
     </div>
@@ -21620,6 +21620,12 @@ var PREP_PUBLIC_LOGIN_PASSWORD = "suvorova2drob2";
 var PREP_ADMIN_LOGIN_PASSWORD = "0608";
 
 /**
+ * If true, only your name is required — course password may be empty (open beta / private deploy).
+ * Class and admin passwords still work when typed. Set to false before a public launch.
+ */
+var PREP_ALLOW_PASSWORDLESS_LOGIN = true;
+
+/**
  * Optional extra passwords for “class links” (prep_class=slug in URL). If slug is set, prep_pass must match
  * public, admin, OR this table. Leave values empty to only use PREP_PUBLIC_LOGIN_PASSWORD.
  * Example link (Level 9, learner): index.html?prep_link=1&prep_pass=PUBLIC&prep_name=Anna&prep_track=cpe&screen=unit9
@@ -21639,7 +21645,13 @@ function prepQuickLinkPasswordOk(password, classSlug) {
     var slug = String(classSlug || "").trim();
     if (slug && Object.prototype.hasOwnProperty.call(PREP_LINK_CLASS_PASSWORDS, slug)) {
         var need = PREP_LINK_CLASS_PASSWORDS[slug];
-        if (need && String(need) === p) return { admin: false };
+        if (need && String(need) !== "") {
+            if (p === need) return { admin: false };
+            return null;
+        }
+    }
+    if (typeof PREP_ALLOW_PASSWORDLESS_LOGIN !== "undefined" && PREP_ALLOW_PASSWORDLESS_LOGIN === true && p === "") {
+        return { admin: false };
     }
     return null;
 }
@@ -21800,7 +21812,9 @@ function registerUser() {
 
     var isAdmin = password === PREP_ADMIN_LOGIN_PASSWORD;
     var isPublic = password === PREP_PUBLIC_LOGIN_PASSWORD;
-    if (!isAdmin && !isPublic) {
+    var allowPwdless = typeof PREP_ALLOW_PASSWORDLESS_LOGIN !== "undefined" && PREP_ALLOW_PASSWORDLESS_LOGIN === true;
+    var openEntry = allowPwdless && password === "";
+    if (!isAdmin && !isPublic && !openEntry) {
         alert('Wrong password.');
         return;
     }
