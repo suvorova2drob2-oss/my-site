@@ -15,18 +15,23 @@ Build outputs (from repo root)
 
 Each site only contains its own exam hub HTML at the repo root; students cannot open the other hubs on the wrong domain even by guessing the filename.
 
-Create **three** Netlify sites from the **same** Git repo, with different build settings:
+Create **three** Netlify sites from the **same** Git repo, with different build settings.
 
-  Site A (CPE):  Build:  node scripts/build-netlify-track.mjs cpe
+  **All sites:** the static tree is produced by **Vite** (`npm run vite:build` → `dist/`), then split into `publish-*`.
+
+  Site A (CPE):  Build:  npm ci && npm run build
                  Publish: publish-cpe
+                 (same as repo `netlify.toml`)
 
-  Site B (EGE):  Build:  node scripts/build-netlify-track.mjs ege
+  Site B (EGE):  Build:  npm ci && npm run build:ege
                  Publish: publish-ege
 
-  Site C (FCE):  Build:  node scripts/build-netlify-track.mjs fce
+  Site C (FCE):  Build:  npm ci && npm run build:fce
                  Publish: publish-fce
 
 This repo’s netlify.toml defaults to CPE only; override build + publish in the Netlify UI for sites B and C.
+
+Local preview: `npm install` then `npm run dev` (Vite dev server). Full publish tree: `npm run build:cpe` then serve `publish-cpe` (e.g. `npx serve publish-cpe`).
 
 Quick login (prepAdmin / teacher tools)
 ---------------------------------------

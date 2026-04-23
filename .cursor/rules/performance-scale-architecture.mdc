@@ -9,7 +9,7 @@ The CPE hub must stay fast as the project grows. Treat these as **non‑negotiab
 
 ## Chosen format (project direction)
 
-- **Build:** **Vite** (vanilla **TypeScript** preferred; JavaScript acceptable). Use `npm run build`, publish optimized output (e.g. `dist/`) to hosting.
+- **Build:** **Vite** (vanilla **TypeScript** preferred; JavaScript acceptable). Repo flow: `npm run vite:build` → `dist/`, then `node scripts/build-netlify-track.mjs <track>` copies `dist/` → `publish-*`. Shortcut: `npm run build` / `build:cpe` / `build:ege` / `build:fce`. Local dev: `npm run dev`.
 - **Why:** automatic **code splitting**, minification, cache-friendly hashed assets, `import()` for lazy chunks, sane structure for a very large app.
 - **Migration stance:** legacy **monolithic `index.html`** stays until migrated; **do not add new large features inside it**. New work lives in `src/` (or clearly separated modules/pages) and is bundled by Vite. Shrink the monolith over time when touching related areas.
 

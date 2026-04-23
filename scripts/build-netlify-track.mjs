@@ -1,5 +1,6 @@
 /**
- * One static tree → publish-cpe | publish-ege | publish-fce for separate Netlify sites.
+ * Vite output (dist/) → publish-cpe | publish-ege | publish-fce for separate Netlify sites.
+ * Run `npm run vite:build` first (dist/ must exist).
  * Usage: node scripts/build-netlify-track.mjs cpe|ege|fce
  *
  * - CPE publish: full index.html; removes ege.html & fce.html.
@@ -22,6 +23,7 @@ if (!["cpe", "ege", "fce"].includes(TRACK)) {
 }
 
 const OUT = path.join(ROOT, `publish-${TRACK}`);
+const DIST = path.join(ROOT, "dist");
 
 /** Top-level hub HTML removed per track so each Netlify site only ships its own home (+ shared content). */
 const DROP_TOP_HTML = {
@@ -30,36 +32,13 @@ const DROP_TOP_HTML = {
   fce: ["ege.html"],
 };
 
-const IGNORE_TOP = new Set([
-  "node_modules",
-  ".git",
-  "publish-cpe",
-  "publish-ege",
-  "publish-fce",
-  ".cursor",
-  ".DS_Store",
-]);
-
-function shouldCopyTopLevel(name) {
-  if (IGNORE_TOP.has(name)) return false;
-  /* Course CMS not shipped on student-facing Netlify builds (sources stay in repo). */
-  if (name === "course-cms") return false;
-  return true;
-}
-
 function copyTree() {
-  fs.rmSync(OUT, { recursive: true, force: true });
-  fs.mkdirSync(OUT, { recursive: true });
-  for (const ent of fs.readdirSync(ROOT, { withFileTypes: true })) {
-    const name = ent.name;
-    if (ent.isFile()) {
-      fs.copyFileSync(path.join(ROOT, name), path.join(OUT, name));
-      continue;
-    }
-    if (!ent.isDirectory()) continue;
-    if (!shouldCopyTopLevel(name)) continue;
-    fs.cpSync(path.join(ROOT, name), path.join(OUT, name), { recursive: true });
+  if (!fs.existsSync(DIST)) {
+    console.error("Missing dist/. Run: npm run vite:build");
+    process.exit(1);
   }
+  fs.rmSync(OUT, { recursive: true, force: true });
+  fs.cpSync(DIST, OUT, { recursive: true });
 }
 
 const REDIRECT_LINES = {
