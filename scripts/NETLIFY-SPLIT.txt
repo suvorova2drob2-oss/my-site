@@ -9,9 +9,11 @@ Goal
 
 Build outputs (from repo root)
 ------------------------------
-  publish-cpe   →  "/" serves index.html  (meta prep-deploy-track: cpe)
-  publish-ege   →  "/" serves ege.html    (meta: ege)
-  publish-fce   →  "/" serves fce.html    (meta: fce)
+  publish-cpe   →  "/" serves the full CPE app (index.html). Top-level ege.html and fce.html are **not** published.
+  publish-ege   →  "/" serves ege.html; fce.html is omitted; root index.html is a **tiny redirect** to ege.html (no full CPE hub on this origin).
+  publish-fce   →  "/" serves fce.html; ege.html is omitted; root index.html is a **tiny redirect** to fce.html.
+
+Each site only contains its own exam hub HTML at the repo root; students cannot open the other hubs on the wrong domain even by guessing the filename.
 
 Create **three** Netlify sites from the **same** Git repo, with different build settings:
 

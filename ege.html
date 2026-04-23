@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ЕГЭ по английскому</title>
+  <meta name="prep-deploy-track" content="__PREP_META_TRACK__" />
+  <script>
+    (function () {
+      var m = document.querySelector('meta[name="prep-deploy-track"]');
+      var raw = m && m.getAttribute("content");
+      var t = raw && raw !== "__PREP_META_TRACK__" ? String(raw).trim().toLowerCase() : "";
+      if (t !== "cpe" && t !== "ege" && t !== "fce") t = "";
+      window.__PREP_DEPLOY_TRACK__ = t || null;
+    })();
+  </script>
   <style>
     :root {
       --page-bg: #071432;
@@ -207,11 +217,19 @@
           Pick a section to practise formats and build your own routine for the Russian national English exam (EGE).
         </p>
       </div>
-      <nav class="course-switch" aria-label="Other exam tracks (maintainers)">
+      <nav class="course-switch" id="prep-ege-cross-course-nav" aria-label="Other exam tracks (maintainers)">
         <a href="index.html?prep_track=cpe&amp;prep_stay=1">CPE — English Mastery Pro</a>
         <a href="index.html?prep_track=fce&amp;prep_stay=1">FCE — Mastering B2</a>
-        <span class="course-switch-hint">On unified deploys, staff can use the My courses tab on the right. On a dedicated EGE site, learners only need this page.</span>
+        <span class="course-switch-hint">Maintainers: use My courses (admin link) or set peer site URLs. On a dedicated EGE domain this bar is hidden — open CPE/FCE on their own sites.</span>
       </nav>
+      <script>
+        (function () {
+          if (window.__PREP_DEPLOY_TRACK__ === "ege") {
+            var el = document.getElementById("prep-ege-cross-course-nav");
+            if (el) el.style.display = "none";
+          }
+        })();
+      </script>
     </header>
 
     <p class="section-title">Choose a section</p>

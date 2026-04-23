@@ -342,7 +342,7 @@
         if (note) {
             note.textContent = isIndexApp()
                 ? "Each track opens its own home: CPE hub here, EGE and FCE on their pages. Creator stays in this app."
-                : "Open the real course home for each exam. FCE and EGE are separate sites in this folder.";
+                : "On split Netlify deploys each exam is its own domain. Set window.__PREP_PEER_ORIGINS__ so these buttons jump to the right site.";
         }
         if (!global.prepCourseProfile || !global.prepCourseProfile.load) return;
         var prof = global.prepCourseProfile.load();
