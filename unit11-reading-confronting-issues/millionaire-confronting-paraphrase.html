@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кто хочет стать миллионером? (парафраз) &mdash; Confronting issues</title>
+  <style>
+    :root {
+      --bg-deep: #030712; --bg-panel: #0c1929; --bg-answer: #132a4a; --bg-answer-hover: #1a3a64;
+      --gold: #e8c040; --gold-dim: #9a7b24; --ink: #f1f5f9; --muted: #8ba3c4; --safe: #22c55e; --ladder-cur: #1e3a5f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-deep); color: var(--ink);
+      min-height: 100dvh;
+      background-image: radial-gradient(ellipse 120% 80% at 50% 0%, #152b52 0%, transparent 55%),
+        linear-gradient(180deg, #060d18 0%, var(--bg-deep) 100%);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .header { text-align: center; padding: 12px 8px 20px; border-bottom: 2px solid var(--gold-dim); margin-bottom: 18px; }
+    .header h1 { font-size: clamp(1.1rem, 3.2vw, 1.45rem); font-weight: 800; letter-spacing: 0.02em; text-shadow: 0 0 20px rgba(232, 192, 64, 0.25); }
+    .header .en { color: var(--muted); font-size: 0.88rem; margin-top: 6px; }
+    .varnav { font-size: 0.78rem; margin-top: 10px; }
+    .varnav a { color: var(--gold); font-weight: 600; margin: 0 6px; }
+    .source { color: #94a3b8; font-size: 0.8rem; margin-top: 8px; }
+    .header a { color: var(--gold); }
+    .layout { display: grid; grid-template-columns: 1fr 180px; gap: 16px; align-items: start; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .ladder { order: -1; } }
+    .ladder { background: var(--bg-panel); border: 2px solid var(--gold-dim); border-radius: 12px; padding: 8px 0; text-align: center; }
+    .ladder h2 { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; }
+    .ladder ol { list-style: none; font-size: 0.8rem; }
+    .ladder li { padding: 5px 10px; color: #cbd5e1; display: flex; justify-content: space-between; border-left: 3px solid transparent; }
+    .ladder li.current { background: var(--ladder-cur); color: #fff; font-weight: 700; border-left-color: var(--gold); }
+    .ladder li.safe { color: #86efac; }
+    .ladder li.safe::after { content: "⛑"; font-size: 0.65rem; }
+    .play { background: var(--bg-panel); border: 2px solid #2d4a6f; border-radius: 16px; padding: 16px 18px 20px; }
+    .q-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+    .q-label { font-size: 0.75rem; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .q-text { font-size: clamp(0.95rem, 2.1vw, 1.05rem); line-height: 1.6; margin-bottom: 10px; color: #e2e8f0; border-left: 3px solid #a78bfa; padding: 10px 12px; background: rgba(167, 139, 250, 0.08); border-radius: 0 8px 8px 0; }
+    .q-text .q-quote { font-style: italic; color: #f1f5f9; }
+    .q-prompt { font-size: 0.88rem; color: #94a3b8; margin-bottom: 14px; }
+    .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .answers { grid-template-columns: 1fr; } }
+    .ans {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: linear-gradient(180deg, #1a3358 0%, var(--bg-answer) 100%);
+      border: 2px solid #3d5a80; border-radius: 10px; padding: 10px 12px; cursor: pointer; text-align: left; color: #e8f0ff; font-size: 0.88rem; line-height: 1.45;
+    }
+    .ans:hover:not(:disabled) { border-color: var(--gold); background: var(--bg-answer-hover); }
+    .ans:disabled { cursor: default; }
+    .ans .badge { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 2px solid #64748b; color: var(--gold); font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+    .ans .ans-body { min-width: 0; }
+    .ans.correct { border-color: var(--safe) !important; background: #14532d !important; }
+    .ans.wrong-pick { border-color: #ef4444 !important; }
+    .ans.burnt { opacity: 0.15; filter: grayscale(0.4) blur(0.3px); pointer-events: none; }
+    @keyframes burnIn { 0% { opacity: 1; filter: none; } 20% { filter: brightness(1.6) sepia(0.3); } 100% { opacity: 0.12; filter: grayscale(0.5); } }
+    .ans.burning { animation: burnIn 0.6s ease forwards; pointer-events: none; }
+    .lifelines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #334e78; }
+    .ll { font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border-radius: 8px; cursor: pointer; border: 2px solid #475569; background: #1e293b; color: #e2e8f0; flex: 1; min-width: 120px; }
+    .ll:hover:not(:disabled) { border-color: var(--gold); }
+    .ll:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn { background: #1e3a5f; color: #fff; border: 1px solid #3b5f8f; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn:hover { border-color: var(--gold); }
+    .panel-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .modal { position: fixed; inset: 0; background: rgba(3,7,20,0.88); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+    .modal.open { display: flex; }
+    .modal-in { max-width: 400px; background: #0f172a; border: 2px solid var(--gold); border-radius: 16px; padding: 24px; text-align: center; }
+    .modal-in h3 { color: var(--gold); margin-bottom: 10px; }
+    .modal-in p { color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
+    .modal-hint { z-index: 90; }
+    .hint-panel { width: min(920px, 100%); max-height: min(92vh, 900px); margin: auto; background: #0f172a; border: 2px solid var(--gold); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .hint-panel-hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #334155; }
+    .hint-panel-hd h3 { color: var(--gold); font-size: 0.95rem; margin: 0; }
+    .hint-sub { color: #94a3b8; font-size: 0.75rem; margin-top: 4px; }
+    .hint-close { flex-shrink: 0; background: #1e293b; border: 1px solid #475569; color: #e2e8f0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
+    .hint-close:hover { border-color: var(--gold); color: var(--gold); }
+    .hint-frame-wrap iframe { display: block; width: 100%; height: min(72vh, 720px); border: 0; background: #0f172a; }
+    .hint-foot { padding: 8px 14px 12px; font-size: 0.72rem; color: #64748b; border-top: 1px solid #1e293b; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1>Кто хочет стать миллионером? (парафраз)</h1>
+      <p class="en">Paraphrase &mdash; read the <strong>bit from the text</strong>, then pick the option that is <strong>closest in meaning</strong> (A&ndash;D). All options are in English.</p>
+      <p class="varnav">
+        <a href="millionaire-confronting.html">факты</a> &middot;
+        <a href="millionaire-confronting-gaps.html">пропуски</a>
+      </p>
+      <p class="source"><a href="index.html">Confronting issues (hub)</a> &middot; <a href="../unit11.html">Unit 11</a></p>
+    </header>
+    <div class="layout">
+      <div class="play" id="play">
+        <div class="q-meta">
+          <span id="qNum">Вопрос 1 из 15</span>
+          <span id="qTopic" style="color:#7dd3fc">A: Land reclamation</span>
+        </div>
+        <p class="q-label">Фрагмент из текста</p>
+        <p class="q-text" id="qText"></p>
+        <p class="q-prompt" id="qPrompt">Which option is the best paraphrase of the bold idea?</p>
+        <div class="answers" id="answers"></div>
+        <div class="lifelines">
+          <button type="button" class="ll" id="ll50">50:50</button>
+          <button type="button" class="ll" id="llHint">Подсказка: текст</button>
+        </div>
+        <p style="color:#8ba3c4;font-size:0.8rem;margin-top:10px;line-height:1.5">Несгораемые: после 5-го (1&nbsp;000) и 10-го (32&nbsp;000). 50:50 &mdash; раз за игру.</p>
+        <div class="panel-actions"><button type="button" class="btn" id="btnNew">Новая игра</button></div>
+      </div>
+      <aside class="ladder" aria-label="Ступень денег">
+        <h2>Фонд</h2>
+        <ol id="ladderList"></ol>
+      </aside>
+    </div>
+  </div>
+
+  <div class="modal modal-hint" id="hintModal" role="dialog" aria-modal="true" aria-labelledby="hintTitle">
+    <div class="hint-panel">
+      <div class="hint-panel-hd">
+        <div>
+          <h3 id="hintTitle">Текст</h3>
+          <p class="hint-sub">Сверьтесь с оригиналом и глоссарием. Закрыть: &times;, фон, Esc.</p>
+        </div>
+        <button type="button" class="hint-close" id="hintClose" aria-label="Закрыть">&times;</button>
+      </div>
+      <div class="hint-frame-wrap">
+        <iframe id="hintFrame" title="Исходный текст"></iframe>
+      </div>
+      <p class="hint-foot">Пусто при <code>file://</code>? Используйте локальный http.</p>
+    </div>
+  </div>
+  <div class="modal" id="endModal" role="dialog" style="z-index:100">
+    <div class="modal-in">
+      <h3 id="endTitle">Игра окончена</h3>
+      <p id="endMsg"></p>
+      <button type="button" class="btn" id="endOk">OK</button>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  var LADDER = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+  var SAFE_IDX = { 4: true, 9: true };
+
+  var QUESTIONS = [
+    {
+      topic: "A: Land reclamation",
+      quote: "… one way for a country to increase the amount of land available for housing is to <strong>reclaim it from the sea</strong>.",
+      focus: "reclaim it from the sea",
+      prompt: "Which paraphrase best captures the meaning of the part in bold?",
+      opts: [
+        "To buy coastal land that already exists.",
+        "To make new dry land by filling in or taking it back from the sea.",
+        "To protect the sea from building too close to the water.",
+        "To move the population away from the coastline."
+      ],
+      correct: 1
+    },
+    {
+      topic: "A: Land reclamation",
+      quote: "… the last few years have seen a <strong>huge explosion in the number of</strong> land reclamation projects.",
+      focus: "huge explosion in the number of",
+      prompt: "The phrase in bold is closest in meaning to:",
+      opts: [
+        "a serious accident at building sites",
+        "a very sharp increase in how many there are",
+        "a complete ban on new projects",
+        "a long-term decrease in public interest"
+      ],
+      correct: 1
+    },
+    {
+      topic: "A: Land reclamation",
+      quote: "There <strong>may be a price to pay</strong>, though.",
+      focus: "There may be a price to pay",
+      prompt: "The writer means that:",
+      opts: [
+        "the work will be completely free of cost",
+        "you may have to accept negative costs or consequences too",
+        "only rich countries can afford the project",
+        "people will have to pay an official fee to visit the new land"
+      ],
+      correct: 1
+    },
+    {
+      topic: "A: Land reclamation",
+      quote: "… <strong>putting the livelihoods of local fishermen at risk</strong>.",
+      focus: "putting the livelihoods of local fishermen at risk",
+      prompt: "In other words, local fishermen’s ability to make a living is:",
+      opts: [
+        "guaranteed by the government for ten years",
+        "made safer and more profitable",
+        "not affected at all",
+        "in danger; their way of earning a living is threatened"
+      ],
+      correct: 3
+    },
+    {
+      topic: "B: Cloud seeding",
+      quote: "… cloud seeding is receiving an <strong>increasing amount of press attention</strong>.",
+      focus: "increasing amount of press attention",
+      prompt: "The situation is: cloud seeding is getting more:",
+      opts: [
+        "pressure from the weather service",
+        "sunlight in desert regions",
+        "attention and coverage in the media",
+        "money from private investors only"
+      ],
+      correct: 2
+    },
+    {
+      topic: "B: Cloud seeding",
+      quote: "Whether it works or not is still <strong>open to debate</strong>.",
+      focus: "open to debate",
+      prompt: "“Open to debate” here means that people still:",
+      opts: [
+        "agree on one simple answer",
+        "have not reached a final agreement; it remains argued about",
+        "refuse to talk about the topic in public",
+        "hold an official vote every year"
+      ],
+      correct: 1
+    },
+    {
+      topic: "B: Cloud seeding",
+      quote: "<strong>as yet</strong>, there is no definitive scientific evidence that it does",
+      focus: "as yet",
+      prompt: "“As yet” is closest in meaning to:",
+      opts: [
+        "for certain; definitely",
+        "by next year; very soon",
+        "so far; up to the present (but that could change later)",
+        "in the same way as before"
+      ],
+      correct: 2
+    },
+    {
+      topic: "B: Cloud seeding",
+      quote: "On the <strong>downside</strong>, it’s thought to have been the cause of serious flooding in some of the countries where it’s been used.",
+      focus: "On the downside",
+      prompt: "The writer is introducing:",
+      opts: [
+        "a new advantage of the technology",
+        "a different country from the one mentioned earlier",
+        "a negative side or disadvantage of cloud seeding",
+        "a joke for the reader to relax"
+      ],
+      correct: 2
+    },
+    {
+      topic: "C: Underwater farming",
+      quote: "Growing vegetables under the sea may seem like <strong>something out of a science fiction novel</strong>…",
+      focus: "something out of a science fiction novel",
+      prompt: "The idea of underwater farming is described as something that seems:",
+      opts: [
+        "old-fashioned and boring",
+        "impressive but unreal or fantastic, not everyday reality",
+        "proven in every major lab since 2000",
+        "illegal in most countries"
+      ],
+      correct: 1
+    },
+    {
+      topic: "C: Underwater farming",
+      quote: "… is <strong>very much a reality</strong>, producing anything from lettuce and tomatoes to peas…",
+      focus: "very much a reality",
+      prompt: "The contrast is: the project is not only an idea; it is:",
+      opts: [
+        "still only on paper, not built",
+        "something that actually exists in real life, not a fantasy",
+        "a plan that was cancelled in 2012",
+        "a model only for very rich companies"
+      ],
+      correct: 1
+    },
+    {
+      topic: "C: Underwater farming",
+      quote: "Sergio Gamberini … <strong>came up with the concept</strong> whilst on a diving holiday in the area in 2012.",
+      focus: "came up with the concept",
+      prompt: "“Came up with the concept” means he:",
+      opts: [
+        "copied a design he saw in a shop window",
+        "thought of and started the original idea for the project",
+        "bought the rights from a university",
+        "rejected the idea of underwater farming at first"
+      ],
+      correct: 1
+    },
+    {
+      topic: "C: Underwater farming",
+      quote: "… a possible <strong>solution to the shortage of farmland</strong>.",
+      focus: "solution to the shortage of farmland",
+      prompt: "The text links this kind of agriculture to a problem, namely:",
+      opts: [
+        "too many tourists in rural areas",
+        "not enough suitable land to farm on",
+        "too much rain in northern Europe",
+        "a lack of people who want to work in offices"
+      ],
+      correct: 1
+    },
+    {
+      topic: "D: Recycling dog waste",
+      quote: "… it should <strong>serve to teach people</strong> how waste can be useful.",
+      focus: "serve to teach people",
+      prompt: "The lamp is also meant to:",
+      opts: [
+        "replace school lessons about chemistry",
+        "be sold only to professional teachers",
+        "raise awareness and help people understand an idea in practice",
+        "punish people who do not clean up after dogs"
+      ],
+      correct: 2
+    },
+    {
+      topic: "D: Recycling dog waste",
+      quote: "… <strong>won’t put an end to the world’s energy crisis</strong> …",
+      focus: "won’t put an end to the world’s energy crisis",
+      prompt: "The tone of this part of the sentence is: the project",
+      opts: [
+        "will single-handedly solve the global energy problem",
+        "does not claim to solve the whole world energy problem; that would be too big a claim",
+        "has already ended all oil use in the UK",
+        "will cause a new world energy crisis"
+      ],
+      correct: 1
+    },
+    {
+      topic: "D: Recycling dog waste",
+      quote: "Schemes … are <strong>being adopted in a number of other countries, from Canada to India</strong>.",
+      focus: "being adopted in a number of other countries, from Canada to India",
+      prompt: "“Being adopted” here suggests that other places are:",
+      opts: [
+        "refusing the idea for political reasons",
+        "copying a law from Canada",
+        "taking up and using similar ideas or programmes in their own context",
+        "closing all streetlamps in cities"
+      ],
+      correct: 2
+    }
+  ];
+
+  var state = { i: 0, used50: false, locked: false };
+
+  function moneyAt(i) { return LADDER[i] || 0; }
+  function lastSafe(beforeIndex) {
+    for (var s = beforeIndex - 1; s >= 0; s--) {
+      if (SAFE_IDX[s]) return moneyAt(s);
+    }
+    return 0;
+  }
+  function renderLadder() {
+    var ol = document.getElementById("ladderList");
+    ol.innerHTML = "";
+    for (var j = LADDER.length - 1; j >= 0; j--) {
+      var li = document.createElement("li");
+      li.textContent = (j + 1) + " — " + LADDER[j].toLocaleString("en-GB");
+      if (SAFE_IDX[j]) li.className = "safe";
+      if (j === state.i) li.className = (li.className ? li.className + " " : "") + "current";
+      ol.appendChild(li);
+    }
+  }
+  function closeHintModal() { document.getElementById("hintModal").classList.remove("open"); }
+  function showEnd(won) {
+    closeHintModal();
+    var m = lastSafe(state.i);
+    var msg = won
+      ? "Поздравляем! 1&nbsp;000&nbsp;000 (виртуально)."
+      : "Конец. Выигрыш: <strong>" + m.toLocaleString("en-GB") + "</strong>." + (m === 0 ? " Пока без несгораемой." : " Сработала несгораемая.");
+    document.getElementById("endTitle").textContent = won ? "Победа!" : "Конец игры";
+    document.getElementById("endMsg").innerHTML = msg;
+    document.getElementById("endModal").classList.add("open");
+  }
+
+  function showQuestion() {
+    state.locked = false;
+    var qu = QUESTIONS[state.i];
+    document.getElementById("qNum").textContent = "Вопрос " + (state.i + 1) + " из 15";
+    document.getElementById("qTopic").textContent = qu.topic;
+    document.getElementById("qText").innerHTML = "<span class=\"q-quote\">" + qu.quote + "</span>";
+    document.getElementById("qPrompt").textContent = (qu.prompt || "Which paraphrase is best?") + " (focus: " + qu.focus + ")";
+    var box = document.getElementById("answers");
+    box.innerHTML = "";
+    var letters = ["A", "B", "C", "D"];
+    for (var k = 0; k < 4; k++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ans";
+      b.setAttribute("data-idx", k);
+      b.innerHTML = "<span class=\"badge\">" + letters[k] + "</span><span class=\"ans-body\">" + qu.opts[k] + "</span>";
+      b.addEventListener("click", onPick);
+      box.appendChild(b);
+    }
+    document.getElementById("ll50").disabled = state.used50;
+    renderLadder();
+  }
+
+  function onPick(e) {
+    if (state.locked) return;
+    var el = e.currentTarget;
+    var idx = parseInt(el.getAttribute("data-idx"), 10);
+    var qu = QUESTIONS[state.i];
+    if (el.classList.contains("burnt")) return;
+    state.locked = true;
+    var buttons = document.querySelectorAll("#answers .ans");
+    if (idx === qu.correct) {
+      el.classList.add("correct");
+      setTimeout(function () {
+        if (state.i === QUESTIONS.length - 1) { showEnd(true); return; }
+        state.i++;
+        showQuestion();
+      }, 650);
+    } else {
+      el.classList.add("wrong-pick");
+      [].forEach.call(buttons, function (b) {
+        if (parseInt(b.getAttribute("data-idx"), 10) === qu.correct) b.classList.add("correct");
+      });
+      setTimeout(function () { showEnd(false); }, 1200);
+    }
+  }
+
+  function applyFifty() {
+    if (state.used50 || state.locked) return;
+    var qu = QUESTIONS[state.i];
+    var wrong = [0, 1, 2, 3].filter(function (x) { return x !== qu.correct; });
+    for (var n = wrong.length - 1; n > 0; n--) { var t = Math.floor(Math.random() * (n + 1)); var u = wrong[t]; wrong[t] = wrong[n]; wrong[n] = u; }
+    state.used50 = true;
+    document.getElementById("ll50").disabled = true;
+    var remove = [wrong[0], wrong[1]];
+    [].forEach.call(document.querySelectorAll("#answers .ans"), function (b) {
+      var i = parseInt(b.getAttribute("data-idx"), 10);
+      if (remove.indexOf(i) === -1) return;
+      b.classList.add("burning");
+      setTimeout(function () {
+        b.classList.add("burnt");
+        b.classList.remove("burning");
+        b.removeEventListener("click", onPick);
+      }, 500);
+    });
+  }
+
+  function sourceFileForTopic(topic) {
+    if (/^A:/i.test(topic)) return "text-01.html";
+    if (/^B:/i.test(topic)) return "text-02.html";
+    if (/^C:/i.test(topic)) return "text-03.html";
+    if (/^D:/i.test(topic)) return "text-04.html";
+    return "text-01.html";
+  }
+  function openTextHint() {
+    var qu = QUESTIONS[state.i];
+    var file = sourceFileForTopic(qu.topic);
+    document.getElementById("hintTitle").textContent = "Исходник: " + qu.topic;
+    var frame = document.getElementById("hintFrame");
+    if (frame.dataset.loadedFile !== file) {
+      frame.src = file + "?embed=1";
+      frame.dataset.loadedFile = file;
+    }
+    document.getElementById("hintModal").classList.add("open");
+  }
+  function newGame() {
+    state = { i: 0, used50: false, locked: false };
+    document.getElementById("endModal").classList.remove("open");
+    closeHintModal();
+    var frame = document.getElementById("hintFrame");
+    frame.removeAttribute("src");
+    delete frame.dataset.loadedFile;
+    showQuestion();
+  }
+
+  document.getElementById("ll50").addEventListener("click", applyFifty);
+  document.getElementById("llHint").addEventListener("click", openTextHint);
+  document.getElementById("btnNew").addEventListener("click", newGame);
+  document.getElementById("endOk").addEventListener("click", function () { document.getElementById("endModal").classList.remove("open"); });
+  document.getElementById("hintClose").addEventListener("click", closeHintModal);
+  document.getElementById("hintModal").addEventListener("click", function (e) { if (e.target.id === "hintModal") closeHintModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && document.getElementById("hintModal").classList.contains("open")) { e.preventDefault(); closeHintModal(); }
+  });
+
+  showQuestion();
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glass bridge (Squid Game style) &mdash; Confronting issues</title>
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --panel: #12121a;
+      --line: #2a1f2e;
+      --ink: #f4f4f5;
+      --muted: #9ca3af;
+      --glass: rgba(200, 230, 255, 0.12);
+      --glass-b: rgba(100, 180, 255, 0.25);
+      --pink: #e879a8;
+      --ok: #4ade80;
+      --bad: #fb7185;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100dvh;
+      background-image:
+        radial-gradient(ellipse 100% 60% at 50% 0%, #1a1020 0%, transparent 50%),
+        linear-gradient(180deg, #0d0d12 0%, var(--bg) 100%);
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .head { text-align: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #3f3f46; }
+    .head h1 { font-size: 1.2rem; font-weight: 800; color: #fff; text-shadow: 0 0 20px rgba(232, 121, 168, 0.35); }
+    .head .lead { color: var(--muted); font-size: 0.86rem; line-height: 1.5; margin-top: 8px; max-width: 40rem; margin-left: auto; margin-right: auto; }
+    .nav { text-align: center; font-size: 0.8rem; margin-bottom: 16px; }
+    .nav a { color: var(--pink); text-decoration: none; font-weight: 600; }
+    .nav a:hover { text-decoration: underline; }
+    .track { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+    .track .dot {
+      width: 10px; height: 10px; border-radius: 50%; background: #27272a; border: 1px solid #3f3f46;
+    }
+    .track .dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); border-color: #166534; }
+    .track .dot.cur { box-shadow: 0 0 0 2px var(--pink); }
+    .step-label { text-align: center; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+    .qline { text-align: center; font-size: 0.9rem; color: #d4d4d8; margin-bottom: 14px; min-height: 2.4em; padding: 0 6px; }
+    .glasses {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
+    }
+    @media (max-width: 500px) { .glasses { grid-template-columns: 1fr; } }
+    .g {
+      min-height: 120px; border-radius: 16px; cursor: pointer; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px 12px;
+      font-size: clamp(0.9rem, 2.4vw, 1.05rem); font-weight: 700; line-height: 1.35;
+      border: 2px solid var(--glass-b);
+      background: linear-gradient(165deg, var(--glass) 0%, rgba(0,0,0,0.4) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 24px rgba(0,0,0,0.45);
+      transition: transform 0.15s, border-color 0.15s, opacity 0.2s;
+      color: #fafafa;
+    }
+    .g::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.07) 45%, transparent 50%);
+      pointer-events: none;
+    }
+    .g:hover:not(:disabled) { transform: scale(1.02); border-color: rgba(200, 230, 255, 0.55); }
+    .g:disabled { cursor: not-allowed; }
+    .g.bad-end { animation: fall 0.5s ease forwards; }
+    @keyframes fall {
+      0% { transform: scale(1); opacity: 1; }
+      40% { transform: translateY(20px) rotate(3deg); opacity: 0.5; }
+      100% { transform: translateY(100px); opacity: 0; }
+    }
+    .g.good-flash { border-color: var(--ok) !important; background: rgba(34, 197, 94, 0.15) !important; }
+    .bar { text-align: center; margin-top: 10px; }
+    .btn {
+      display: inline-block; padding: 9px 16px; border-radius: 10px; font-weight: 700; font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; border: 1px solid #52525b;
+      background: #27272a; color: #e4e4e7; margin: 3px;
+    }
+    .btn:hover { border-color: var(--pink); color: #fff; }
+    .msg { text-align: center; font-size: 0.95rem; min-height: 1.4em; margin: 8px 0; color: #d4d4d8; }
+    .msg.win { color: var(--ok); }
+    .msg.lose { color: var(--bad); }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 20; align-items: center; justify-content: center; padding: 20px; }
+    .overlay.open { display: flex; }
+    .card {
+      max-width: 360px; background: #18181b; border: 2px solid #3f3f46; border-radius: 16px; padding: 24px; text-align: center;
+    }
+    .card h2 { color: #fff; font-size: 1.1rem; margin-bottom: 10px; }
+    .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 15; display: none; align-items: center; justify-content: center; padding: 12px; }
+    .modal.open { display: flex; }
+    .m-in { max-width: 92vw; width: 880px; background: #0f172a; border: 2px solid var(--pink); border-radius: 12px; overflow: hidden; }
+    .m-hd { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #334155; }
+    .m-hd span { color: #f472b6; font-size: 0.85rem; }
+    .m-close { background: #27272a; border: 1px solid #52525b; color: #fff; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; }
+    .m-in iframe { display: block; width: 100%; height: min(65vh, 640px); border: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <h1>Glass bridge</h1>
+      <p class="lead"><em>Squid Game</em> style: at each step there are two &ldquo;glass&rdquo; panels. <strong>One</strong> is safe: the word or phrase is right for <strong>Texts A&ndash;D</strong> (Confronting issues). <strong>The other</strong> is a trap. Left/right are <strong>random</strong> each time. A wrong step &rarr; you fall and restart from step 1. Cross <strong>9</strong> steps to finish.</p>
+    </header>
+    <p class="nav">
+      <a href="index.html">&larr; Confronting issues (hub)</a> &middot; <a href="hundred-to-one-confronting.html">100 to 1</a> &middot; <a href="../unit11.html">Unit 11</a>
+    </p>
+    <div class="track" id="track" aria-hidden="true"></div>
+    <p class="step-label" id="stepLabel">Step 1 of 9</p>
+    <p class="qline" id="qline"></p>
+    <div class="glasses" id="glasses"></div>
+    <p class="msg" id="msg"></p>
+    <div class="bar">
+      <button type="button" class="btn" id="btnHint">Hint: open text</button>
+      <button type="button" class="btn" id="btnRetry">From the start</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="ovWin">
+    <div class="card">
+      <h2>Finish</h2>
+      <p>You made it across. Every step matched Texts A&ndash;D.</p>
+      <p style="margin-top: 12px;"><button type="button" class="btn" id="btnAgain">Play again</button></p>
+    </div>
+  </div>
+  <div class="overlay" id="ovLose">
+    <div class="card">
+      <h2>Glass breaks</h2>
+      <p>Wrong pick. You start over from step 1.</p>
+      <p style="margin-top: 12px;"><button type="button" class="btn" id="btnRetryOv">OK</button></p>
+    </div>
+  </div>
+  <div class="modal" id="mHint">
+    <div class="m-in">
+      <div class="m-hd"><span id="mHintT">—</span><button type="button" class="m-close" id="mClose" title="Close" aria-label="Close">&times;</button></div>
+      <iframe id="fHint" title="Source text"></iframe>
+      <p style="font-size:0.7rem;color:#64748b;padding:6px 12px;">Empty under <code>file://</code>? Use a local web server.</p>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  /* Pairs: good = from the texts; bad = decoy (wrong text, false fact, etc.) */
+  var STEPS = [
+    { text: "Text A: the verb for getting new dry land from the sea in the opening idea", good: "reclaim", bad: "borrow", source: "text-01.html" },
+    { text: "Text B: word meaning &lsquo;by which&rsquo; (chemicals into clouds&hellip;)", good: "whereby", bad: "whereas", source: "text-02.html" },
+    { text: "Text B: % of the world&rsquo;s population with water shortage by 2030 (per UN, in the text)", good: "40 per cent", bad: "20 per cent", source: "text-02.html" },
+    { text: "Text C: town on the Italian Riviera (Nemo&rsquo;s Garden)", good: "Noli", bad: "Naples", source: "text-03.html" },
+    { text: "Text A: something marine that can be &lsquo;drastically reduced&rsquo;", good: "fish stocks", bad: "cruise routes", source: "text-01.html" },
+    { text: "Text D: where dog &lsquo;mess&rsquo; is processed", good: "a biodigester", bad: "a bin store", source: "text-04.html" },
+    { text: "Text A: the brand-new city on China&rsquo;s coast, built partly on reclaimed land", good: "Nanhui", bad: "Ningbo", source: "text-01.html" },
+    { text: "Text C: year the idea was born on a diving holiday (Gamberini)", good: "2012", bad: "2015", source: "text-03.html" },
+    { text: "Text D: the inventor&rsquo;s first name (streetlamp, UK)", good: "Brian", bad: "Bryan", source: "text-04.html" }
+  ];
+
+  var s = { i: 0, busy: false };
+
+  function el(id) { return document.getElementById(id); }
+
+  function makeStepRow(step, i) {
+    var okLeft = Math.random() < 0.5;
+    return {
+      q: step,
+      left:  { t: okLeft ? step.good : step.bad, isGood: okLeft },
+      right: { t: okLeft ? step.bad : step.good, isGood: !okLeft }
+    };
+  }
+
+  var current = null;
+
+  function buildTrack() {
+    var t = el("track");
+    t.innerHTML = "";
+    for (var n = 0; n < STEPS.length; n++) {
+      var d = document.createElement("span");
+      d.className = "dot" + (n < s.i ? " on" : "") + (n === s.i ? " cur" : "");
+      t.appendChild(d);
+    }
+  }
+
+  function render() {
+    if (s.i >= STEPS.length) { showWin(); return; }
+    current = makeStepRow(STEPS[s.i], s.i);
+    el("stepLabel").textContent = "Step " + (s.i + 1) + " of " + STEPS.length;
+    el("qline").innerHTML = current.q.text;
+    el("msg").textContent = "";
+    buildTrack();
+
+    var g = el("glasses");
+    g.innerHTML = "";
+    function card(side, data) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "g";
+      b.textContent = data.t;
+      b.addEventListener("click", function () { onPick(b, data.isGood); });
+      return b;
+    }
+    g.appendChild(card("L", current.left));
+    g.appendChild(card("R", current.right));
+  }
+
+  function onPick(btn, isGood) {
+    if (s.busy) return;
+    s.busy = true;
+    if (isGood) {
+      btn.classList.add("good-flash");
+      el("msg").textContent = "Safe! Next row of glass.";
+      el("msg").className = "msg win";
+      setTimeout(function () {
+        s.i++;
+        s.busy = false;
+        if (s.i >= STEPS.length) showWin();
+        else render();
+      }, 420);
+    } else {
+      btn.classList.add("bad-end");
+      el("msg").textContent = "";
+      setTimeout(function () {
+        s.busy = false;
+        el("ovLose").classList.add("open");
+      }, 480);
+    }
+  }
+
+  function showWin() { el("ovWin").classList.add("open"); s.busy = true; }
+  function hideOverlays() { el("ovWin").classList.remove("open"); el("ovLose").classList.remove("open"); }
+
+  function fullReset() {
+    s = { i: 0, busy: false };
+    hideOverlays();
+    el("msg").className = "msg";
+    render();
+  }
+
+  el("btnRetry").addEventListener("click", fullReset);
+  el("btnAgain").addEventListener("click", function () { el("ovWin").classList.remove("open"); s.busy = false; fullReset(); });
+  el("btnRetryOv").addEventListener("click", function () { el("ovLose").classList.remove("open"); fullReset(); });
+
+  el("btnHint").addEventListener("click", function () {
+    if (s.i >= STEPS.length) return;
+    var href = STEPS[s.i].source;
+    el("mHintT").textContent = href;
+    el("fHint").src = href + (/\?/.test(href) ? "&" : "?") + "embed=1";
+    el("mHint").classList.add("open");
+  });
+  el("mClose").addEventListener("click", function () { el("mHint").classList.remove("open"); });
+  el("mHint").addEventListener("click", function (e) { if (e.target.id === "mHint") el("mHint").classList.remove("open"); });
+
+  render();
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

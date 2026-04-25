@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stage 4 &mdash; The Weakest Link (Confronting issues)</title>
+  <style>
+    :root {
+      --wl-bg: #050508;
+      --wl-panel: #101018;
+      --wl-line: #2a2a3a;
+      --wl-silver: #9ca3af;
+      --wl-ice: #e8eef7;
+      --wl-bank-ok: #4ade80;
+      --wl-danger: #e11d48;
+      --wl-gold: #d4a012;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--wl-bg);
+      color: var(--wl-ice);
+      min-height: 100dvh;
+      background-image:
+        radial-gradient(ellipse 90% 60% at 50% 0%, #1a1a2e 0%, transparent 55%),
+        linear-gradient(180deg, #0a0a12 0%, #050508 100%);
+    }
+    .app { max-width: 1000px; margin: 0 auto; padding: 14px; }
+    .logo {
+      text-align: center; padding: 10px 8px 16px; border-bottom: 1px solid #333;
+      font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+      color: var(--wl-silver);
+    }
+    .logo span { color: #fff; }
+    .logo .ru { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; color: #6b7280; margin-top: 4px; }
+    .nav-back { text-align: center; margin: 8px 0 12px; }
+    .nav-back a { color: var(--wl-gold); font-size: 0.8rem; text-decoration: none; }
+    .nav-back a:hover { text-decoration: underline; }
+    .setup {
+      max-width: 480px; margin: 0 auto; background: var(--wl-panel);
+      border: 1px solid var(--wl-line); border-radius: 12px; padding: 18px 20px;
+    }
+    .setup h2 { font-size: 0.9rem; color: var(--wl-silver); margin-bottom: 4px; }
+    .setup .sub { color: #6b7280; font-size: 0.8rem; line-height: 1.5; margin-bottom: 16px; }
+    .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 500px) { .name-grid { grid-template-columns: 1fr; } }
+    .name-grid input {
+      width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #3f3f4f; background: #0c0c10; color: #f3f4f6; font-size: 0.9rem;
+    }
+    .name-grid input::placeholder { color: #4b5563; }
+    .err { color: #fb7185; font-size: 0.8rem; min-height: 1.2em; margin-bottom: 8px; }
+    .btn-start {
+      width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.75rem;
+      cursor: pointer; background: linear-gradient(180deg, #3f3f46 0%, #27272a 100%); color: #fff; border: 1px solid #52525b;
+    }
+    .btn-start:hover { filter: brightness(1.1); }
+    .game { display: none; }
+    .game.is-on { display: block; }
+    .hud {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-bottom: 12px;
+      padding: 10px 12px; background: #0a0a10; border: 1px solid var(--wl-line); border-radius: 10px; flex-wrap: wrap;
+    }
+    @media (max-width: 700px) { .hud { grid-template-columns: 1fr; text-align: center; } }
+    #hudOne.hud-2t { grid-template-columns: 1fr 1fr; }
+    #hudOne.hud-2t .bank-big { display: none; }
+    .hud .round { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; }
+    .hud .bank-big { text-align: center; }
+    .hud .bank-big .l { font-size: 0.65rem; color: #6b7280; letter-spacing: 0.15em; }
+    .hud .bank-big .v { font-size: 1.6rem; font-weight: 800; color: var(--wl-bank-ok); }
+    .hud .chain { text-align: right; }
+    .hud .chain .l { font-size: 0.65rem; color: #6b7280; }
+    .hud .chain .v { font-size: 1.15rem; font-weight: 700; color: #fde047; }
+    .players { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; min-height: 48px; }
+    .p-tag {
+      padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700;
+      background: #1f1f2e; border: 1px solid #3f3f4f; color: #9ca3af; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .p-tag.current { border-color: var(--wl-gold); color: #fff; box-shadow: 0 0 0 1px var(--wl-gold); }
+    .p-tag.out { opacity: 0.28; text-decoration: line-through; }
+    .turn-banner {
+      text-align: center; padding: 8px; margin-bottom: 10px; background: linear-gradient(90deg, transparent, #1e1b2e, transparent);
+      font-size: 0.9rem; font-weight: 800; color: #c4b5fd;
+    }
+    .q-box {
+      background: #12121a; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .q-topic { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .q-text { font-size: 0.95rem; line-height: 1.5; color: #e5e7eb; }
+    .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    @media (max-width: 600px) { .opts { grid-template-columns: 1fr; } }
+    .opt {
+      text-align: left; padding: 10px 12px; border-radius: 6px; border: 1px solid #3f3f4f; background: #1a1a24; color: #d1d5db; font-size: 0.86rem; cursor: pointer; transition: 0.15s;
+    }
+    .opt:hover { border-color: #71717a; }
+    .opt:disabled { cursor: default; }
+    .opt .lt { color: #fbbf24; font-weight: 800; margin-right: 6px; }
+    .opt.correct-ans { background: #14532d; border-color: #22c55e; }
+    .opt.wrong-ans { background: #7f1d1d; border-color: #f87171; }
+    .ctl-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+    .btn {
+      padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; border: 1px solid #4b5563; background: #27272a; color: #e5e7eb;
+    }
+    .btn:hover:not(:disabled) { border-color: #9ca3af; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-bank { border-color: #16a34a; color: #4ade80; }
+    .btn-bank:disabled { opacity: 0.3; }
+    .help { color: #6b7280; font-size: 0.72rem; margin-top: 10px; line-height: 1.45; text-align: center; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 200; }
+    .modal.open { display: flex; }
+    .modal-in { max-width: 420px; text-align: center; padding: 32px 24px; }
+    .modal-in.goodbye h2 { font-size: 1.1rem; color: #fff; line-height: 1.4; margin-bottom: 8px; }
+    .modal-in.goodbye p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 20px; }
+    .el-list { max-width: 400px; margin: 0 auto; text-align: left; }
+    .el-list button { width: 100%; margin-bottom: 8px; padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f1f2e; color: #e5e7eb; cursor: pointer; text-align: left; font-size: 0.88rem; }
+    .el-list button:hover { border-color: var(--wl-danger); }
+    .el-list .st { display: block; font-size: 0.7rem; color: #6b7280; margin-top: 2px; }
+    .win { max-width: 400px; text-align: center; }
+    .win h2 { color: #fde047; font-size: 1.3rem; margin-bottom: 8px; }
+    .team-mode { margin-bottom: 12px; padding: 10px 12px; background: #0c0c12; border: 1px solid #2a2a3a; border-radius: 8px; font-size: 0.82rem; color: #c4c4d4; }
+    .team-mode label { display: block; margin: 4px 0; cursor: pointer; }
+    .team-mode input { margin-right: 6px; }
+    .name-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .name-row .n-in { flex: 1; min-width: 140px; }
+    .team-sel { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #9ca3af; flex-shrink: 0; }
+    .name-rows.hide-teams .team-sel { display: none; }
+    .team-sel span { text-transform: uppercase; letter-spacing: 0.06em; }
+    .p-tag.team-0 { border-left: 3px solid #38bdf8; }
+    .p-tag.team-1 { border-left: 3px solid #f97316; }
+    .hud-teams2 {
+      display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; padding: 8px; background: #0a0a10; border: 1px solid var(--wl-line); border-radius: 8px; font-size: 0.8rem; text-align: center;
+    }
+    .hud-teams2.is-on { display: grid; }
+    .hud-teams2 .b1 { color: #7dd3fc; }
+    .hud-teams2 .b2 { color: #fdba74; }
+    .hud-teams2 .sum { grid-column: 1 / -1; font-size: 0.7rem; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="logo">THE <span>WEAKEST</span> LINK &nbsp;|&nbsp; Confronting issues / Unit 11
+      <span class="ru">одно устройство, без сети &mdash; 2&ndash;8 имён; при желании: один банк или <strong>две команды</strong> (два банка)</span>
+    </div>
+    <p class="nav-back"><a href="index.html">&larr; Hub</a> &middot; <a href="stage2-retell.html">Stage 2</a> &middot; <a href="stage5-tic-tac-toe-gaps.html">Stage 5: Tic-tac-toe (gaps)</a> &middot; <a href="../unit11.html">Unit 11</a></p>
+
+    <section class="setup" id="screenSetup">
+      <h2>Игроки (впишите имена, 2&ndash;8 человек)</h2>
+      <p class="sub">Пустые поля не считаются. Порядок = порядок хода по кругу. Это не мультиплеер: один экран, вы отмечаете ответы и в конце раунда выбираете, кого &laquo;выгнать&raquo;.</p>
+      <div class="team-mode" id="teamModeBox">
+        <label><input type="radio" name="teamMode" value="0" checked /> <strong>Один общий банк</strong> (как в классике, все в одной &laquo;команде&raquo;)</label>
+        <label><input type="radio" name="teamMode" value="1" /> <strong>Две команды</strong> &mdash; у каждого имя: К1 или К2; кнопка &laquo;Банк!&raquo; кладёт деньги в банк <em>текущей</em> команды</label>
+      </div>
+      <div class="name-rows hide-teams" id="nameRows">
+        <div class="name-row" data-i="0"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 1" autocomplete="name" /><div class="team-sel"><span>К</span><label><input type="radio" name="p0" value="0" checked />1</label><label><input type="radio" name="p0" value="1" />2</label></div></div>
+        <div class="name-row" data-i="1"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 2" /><div class="team-sel"><span>К</span><label><input type="radio" name="p1" value="0" />1</label><label><input type="radio" name="p1" value="1" checked />2</label></div></div>
+        <div class="name-row" data-i="2"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 3" /><div class="team-sel"><span>К</span><label><input type="radio" name="p2" value="0" checked />1</label><label><input type="radio" name="p2" value="1" />2</label></div></div>
+        <div class="name-row" data-i="3"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 4" /><div class="team-sel"><span>К</span><label><input type="radio" name="p3" value="0" />1</label><label><input type="radio" name="p3" value="1" checked />2</label></div></div>
+        <div class="name-row" data-i="4"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 5" /><div class="team-sel"><span>К</span><label><input type="radio" name="p4" value="0" checked />1</label><label><input type="radio" name="p4" value="1" />2</label></div></div>
+        <div class="name-row" data-i="5"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 6" /><div class="team-sel"><span>К</span><label><input type="radio" name="p5" value="0" />1</label><label><input type="radio" name="p5" value="1" checked />2</label></div></div>
+        <div class="name-row" data-i="6"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 7" /><div class="team-sel"><span>К</span><label><input type="radio" name="p6" value="0" checked />1</label><label><input type="radio" name="p6" value="1" />2</label></div></div>
+        <div class="name-row" data-i="7"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 8" /><div class="team-sel"><span>К</span><label><input type="radio" name="p7" value="0" />1</label><label><input type="radio" name="p7" value="1" checked />2</label></div></div>
+      </div>
+      <p class="err" id="setupErr"></p>
+      <button type="button" class="btn-start" id="btnStart">Начать игру</button>
+    </section>
+
+    <section class="game" id="screenGame" aria-hidden="true">
+      <div class="hud-teams2" id="hudTeams2">
+        <div class="b1">Команда 1: <span id="hB0">&pound;0</span></div>
+        <div class="b2">Команда 2: <span id="hB1">&pound;0</span></div>
+        <div class="sum" id="hSum2">всего в банке: <span id="hSum2v">&pound;0</span></div>
+      </div>
+      <div class="hud" id="hudOne">
+        <div>
+          <div class="round">Раунд <span id="hRound">1</span> &middot; вопрос <span id="hQn">1</span></div>
+        </div>
+        <div class="bank-big">
+          <div class="l" id="hBankL">В банке (команда)</div>
+          <div class="v" id="hBanked">&pound;0</div>
+        </div>
+        <div class="chain">
+          <div class="l">Цепь (on the line)</div>
+          <div class="v" id="hChain">&pound;0</div>
+        </div>
+      </div>
+      <div class="players" id="playerRow"></div>
+      <div class="turn-banner" id="turnBanner">Сейчас: &mdash;</div>
+      <div class="q-box">
+        <div class="q-topic" id="qTopic">Topic</div>
+        <p class="q-text" id="qText"></p>
+        <div class="opts" id="opts"></div>
+        <div class="ctl-row">
+          <button type="button" class="btn btn-bank" id="btnBank" disabled>Банк!</button>
+          <button type="button" class="btn" id="btnNextQ" style="display:none">След. вопрос</button>
+        </div>
+        <p class="help" id="qHelp">Игроку задаётся вопрос. Нажмите вариант, который был назван. Банк! — в банк идут фунты с цепи (только при цепи &gt;0); в режиме двух команд &mdash; в банк команды игрока, который сейчас ходит.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="mGoodbye" role="dialog" aria-modal="true">
+    <div class="modal-in goodbye" id="goodbyeIn"></div>
+  </div>
+  <div class="modal" id="mElim" role="dialog" aria-modal="true">
+    <div class="modal-in">
+      <h2 style="color:#e5e7eb;font-size:1rem;margin-bottom:8px">Конец раунда: кого выгоняем?</h2>
+      <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Статистика за раунд (верно / неверно). Ведущий нажимает &laquo;слабого&raquo; &mdash; как ведущий шоу, без голосов за экраном.</p>
+      <div class="el-list" id="elimList"></div>
+      <p style="color:#4b5563;font-size:0.75rem;margin-top:8px">Один раунд = по одному вопросу на каждого оставшегося игрока.</p>
+    </div>
+  </div>
+  <div class="modal" id="mWin" role="dialog" aria-modal="true">
+    <div class="modal-in win" id="winIn"></div>
+  </div>
+
+  <script>
+(function () {
+  var CHAIN = [0, 20, 50, 100, 200, 300, 450, 600, 800, 1000];
+  var POOL = [
+    { t: "A", q: "Singapore’s land area has expanded by this percentage (two centuries):", o: ["15%", "25%", "40%", "50%"], a: 1 },
+    { t: "A", q: "Roughly what share of Nanhui’s 133 km² is reclaimed from the sea?", o: ["A third", "Almost a half", "Three quarters", "All of it"], a: 1 },
+    { t: "A", q: "China’s coastline length given in the text (km) is about:", o: ["4,500", "8,000", "14,500", "24,000"], a: 2 },
+    { t: "A", q: "Land reclamation is said to have reduced:", o: ["air traffic", "fish stocks", "sand prices", "ship fuel use"], a: 1 },
+    { t: "B", q: "Cloud seeding responds to increasing:", o: ["tourism", "water scarcity", "oil output", "sea level drop"], a: 1 },
+    { t: "B", q: "UN: water shortages by 2030 for this share of the world’s population:", o: ["20%", "30%", "40%", "60%"], a: 2 },
+    { t: "B", q: "Wyoming study (2013): precipitation can increase by about:", o: ["0–2%", "5–15%", "25% plus", "over 30%"], a: 1 },
+    { t: "B", q: "Cloud seeding has been used in:", o: ["fewer than 10 countries", "about 25", "over 50", "14 only"], a: 2 },
+    { t: "C", q: "Nemo’s Garden is off the coast of:", o: ["Marseille", "Noli (Italy)", "Barcelona", "Athens"], a: 1 },
+    { t: "C", q: "Gamberini’s idea in:", o: ["2010", "2012", "2014", "2018"], a: 1 },
+    { t: "C", q: "Miniature biosphere (litres):", o: ["200", "2,000", "5,000", "20,000"], a: 1 },
+    { t: "C", q: "First crop in the miniature biosphere:", o: ["Lettuce", "Basil", "Beans", "Flowers"], a: 1 },
+    { t: "D", q: "Brian Harper (inventor) is from:", o: ["Canada", "US", "UK", "India"], a: 2 },
+    { t: "D", q: "Trials on the lamp lasted (before 2017 full use):", o: ["&lt;1 year", "1 year", "over 2 years", "5+ years"], a: 2 },
+    { t: "D", q: "Ten bags of waste power the light for:", o: ["30 min", "1 h", "2 h", "8 h"], a: 2 },
+    { t: "B", q: "Chemicals used in cloud seeding include: silver iodide and:", o: ["helium", "dry ice", "nitrogen", "sugar"], a: 1 },
+    { t: "C", q: "Inside biospheres, sea water: evaporates, condenses, then as ___ feeds plants:", o: ["salt water", "fresh water", "steam only", "ice"], a: 1 },
+    { t: "D", q: "In the biodigester, the waste is broken down to produce:", o: ["oxygen", "methane", "helium", "sulphur only"], a: 1 }
+  ];
+
+  var game = {
+    twoTeams: false,
+    names: [],
+    pl: [],
+    out: {},
+    order: [],
+    turnI: 0,
+    qOrder: [],
+    qIdx: 0,
+    step: 0,
+    banked: 0,
+    banked0: 0,
+    banked1: 0,
+    round: 1,
+    inRound: 0,
+    locked: false,
+    roundQ: 0
+  };
+
+  function el(id) { return document.getElementById(id); }
+
+  function readNames() {
+    var rows = el("nameRows").querySelectorAll(".name-row");
+    var n = [];
+    var teams = [];
+    for (var r = 0; r < rows.length; r++) {
+      var inp = rows[r].querySelector(".n-in");
+      var v = (inp && inp.value || "").trim();
+      if (!v) continue;
+      var tcell = rows[r].querySelector(".team-sel");
+      var tr = 0;
+      if (tcell) {
+        var trd = tcell.querySelector("input[name=\"p" + r + "\"]:checked");
+        tr = trd ? parseInt(trd.value, 10) : 0;
+      }
+      n.push(v);
+      teams.push(tr);
+    }
+    if (n.length < 2) { el("setupErr").textContent = "Нужно минимум 2 непустых имени."; return null; }
+    if (n.length > 8) { el("setupErr").textContent = "Максимум 8 игроков."; return null; }
+    for (var a = 0; a < n.length; a++) {
+      for (var b = a + 1; b < n.length; b++) {
+        if (n[a].toLowerCase() === n[b].toLowerCase()) {
+          el("setupErr").textContent = "Имена не должны повторяться: «" + n[a] + "»";
+          return null;
+        }
+      }
+    }
+    var two = document.querySelector("input[name=\"teamMode\"]:checked") && document.querySelector("input[name=\"teamMode\"]:checked").value === "1";
+    if (two) {
+      var c0 = 0, c1 = 0; for (var c = 0; c < teams.length; c++) { if (teams[c] === 0) c0++; else c1++; }
+      if (c0 < 1 || c1 < 1) { el("setupErr").textContent = "В двух командах нужен хотя бы один участник в К1 и один в К2."; return null; }
+    }
+    el("setupErr").textContent = "";
+    return { names: n, teams: teams, twoTeams: two };
+  }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  }
+
+  function buildPool() {
+    var x = [];
+    for (var c = 0; c < POOL.length; c++) x.push(c);
+    shuffle(x);
+    game.qOrder = x;
+    game.qIdx = 0;
+  }
+
+  function nextQuestionFromPool() {
+    if (game.qIdx >= game.qOrder.length) { buildPool(); }
+    return POOL[game.qOrder[game.qIdx++]];
+  }
+
+  function activeCount() {
+    var c = 0; for (var k = 0; k < game.pl.length; k++) if (!game.pl[k].out) c++;
+    return c;
+  }
+
+  function currentPid() { return game.order[game.turnI]; }
+  function currentName() { return game.pl[currentPid()].name; }
+
+  function renderPlayers() {
+    var row = el("playerRow");
+    row.innerHTML = "";
+    var cur = currentPid();
+    for (var i = 0; i < game.pl.length; i++) {
+      var p = game.pl[i];
+      var d = document.createElement("div");
+      var tc = (game.twoTeams && typeof p.team === "number" ? " team-" + p.team : "");
+      d.className = "p-tag" + (p.out ? " out" : "") + (i === cur && !p.out ? " current" : "") + tc;
+      d.textContent = p.name;
+      d.title = game.twoTeams ? p.name + " (команда " + (p.team === 0 ? "1" : "2") + ")" : p.name;
+      row.appendChild(d);
+    }
+  }
+
+  function updateHud() {
+    var line = game.step > 0 ? CHAIN[game.step] : 0;
+    el("hChain").textContent = "\u00A3" + line;
+    if (game.twoTeams) {
+      el("hB0").textContent = "\u00A3" + game.banked0;
+      el("hB1").textContent = "\u00A3" + game.banked1;
+      el("hSum2v").textContent = "\u00A3" + (game.banked0 + game.banked1);
+      if (el("hudTeams2")) el("hudTeams2").classList.add("is-on");
+      if (el("hudOne")) { el("hudOne").classList.add("hud-2t"); el("hBankL").textContent = "\u00a0"; }
+    } else {
+      if (el("hudTeams2")) el("hudTeams2").classList.remove("is-on");
+      if (el("hudOne")) { el("hudOne").classList.remove("hud-2t"); el("hBankL").textContent = "В банке (общий)"; }
+      el("hBanked").textContent = "\u00A3" + game.banked;
+    }
+    el("hRound").textContent = String(game.round);
+    el("hQn").textContent = String(game.roundQ + 1);
+    el("btnBank").disabled = game.step <= 0 || game.locked;
+  }
+
+  function showQ() {
+    game.locked = false;
+    var q = nextQuestionFromPool();
+    el("qTopic").textContent = "Текст " + q.t;
+    el("qText").textContent = q.q;
+    var L = ["A", "B", "C", "D"];
+    var ob = el("opts");
+    ob.innerHTML = "";
+    for (var o = 0; o < 4; o++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opt";
+      b.setAttribute("data-a", o);
+      b.innerHTML = "<span class=\"lt\">" + L[o] + "</span>" + (q.o[o] || "");
+      b.addEventListener("click", onOpt);
+      ob.appendChild(b);
+    }
+    var pid = currentPid();
+    var tb = "Сейчас: " + currentName();
+    if (game.twoTeams && game.pl[pid] && typeof game.pl[pid].team === "number") {
+      tb += "  ·  Команда " + (game.pl[pid].team === 0 ? "1" : "2");
+    }
+    el("turnBanner").textContent = tb;
+    el("btnNextQ").style.display = "none";
+    renderPlayers();
+    updateHud();
+  }
+
+  function onOpt(e) {
+    if (game.locked) return;
+    var q = null;
+    game.locked = true;
+    var idx = game.qIdx - 1;
+    var qu = POOL[game.qOrder[idx]];
+    var pick = parseInt(e.currentTarget.getAttribute("data-a"), 10);
+    var ok = pick === qu.a;
+    var ob = el("opts").querySelectorAll(".opt");
+    for (var i = 0; i < ob.length; i++) {
+      ob[i].disabled = true;
+      if (i === qu.a) ob[i].classList.add("correct-ans");
+      if (i === pick && !ok) ob[i].classList.add("wrong-ans");
+    }
+    var pid = currentPid();
+    if (ok) {
+      game.pl[pid].cR++;
+      game.pl[pid].cTot++;
+      game.step = game.step < 8 ? game.step + 1 : 8;
+    } else {
+      game.pl[pid].wR++;
+      game.pl[pid].wTot++;
+      game.step = 0;
+    }
+    game.inRound++;
+    game.roundQ++;
+    updateHud();
+    setTimeout(afterOneAnswer, 1100, ok, pid);
+  }
+
+  function afterOneAnswer() {
+    if (activeCount() <= 1) { checkWinner(); return; }
+    if (activeCount() > 1 && game.inRound >= activeCount()) {
+      openElim();
+      return;
+    }
+    nextTurn();
+    showQ();
+  }
+
+  function nextTurn() {
+    var n = game.order.length;
+    if (n === 0) return;
+    game.turnI = (game.turnI + 1) % n;
+  }
+
+  function rebuildOrder() {
+    var o = [];
+    for (var i = 0; i < game.pl.length; i++) if (!game.pl[i].out) o.push(i);
+    game.order = o;
+    if (game.turnI >= game.order.length) game.turnI = 0;
+  }
+
+  function bank() {
+    if (game.step <= 0 || game.locked) return;
+    game.locked = true;
+    var line = CHAIN[game.step];
+    if (game.twoTeams) {
+      var pid0 = currentPid();
+      if (game.pl[pid0].team === 0) game.banked0 += line; else game.banked1 += line;
+    } else {
+      game.banked += line;
+    }
+    game.step = 0;
+    nextTurn();
+    game.inRound++;
+    game.roundQ++;
+    if (activeCount() <= 1) { checkWinner(); return; }
+    if (activeCount() > 1 && game.inRound >= activeCount()) { openElim(); return; }
+    showQ();
+  }
+
+  function openElim() {
+    game.locked = true;
+    var list = el("elimList");
+    list.innerHTML = "";
+    for (var i = 0; i < game.pl.length; i++) {
+      if (game.pl[i].out) continue;
+      var p = game.pl[i];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = p.name + (game.twoTeams && typeof p.team === "number" ? " <span style='color:#6b7280'>(К" + (p.team + 1) + ")</span>" : "") + "<span class=\"st\">в этом раунде: верно " + p.cR + " / неверно " + p.wR + "</span>";
+      b.setAttribute("data-pid", i);
+      b.addEventListener("click", doElim);
+      list.appendChild(b);
+    }
+    el("mElim").classList.add("open");
+  }
+
+  function doElim(e) {
+    var pid = parseInt(e.currentTarget.getAttribute("data-pid"), 10);
+    el("mElim").classList.remove("open");
+    game.pl[pid].out = true;
+    for (var i = 0; i < game.pl.length; i++) { game.pl[i].cR = 0; game.pl[i].wR = 0; }
+    game.inRound = 0;
+    game.roundQ = 0;
+    game.round++;
+    game.step = 0;
+    rebuildOrder();
+    if (activeCount() === 1) { showWinner(); return; }
+    if (game.order.length === 0) { return; }
+    game.turnI = 0;
+    el("mGoodbye").classList.add("open");
+    el("goodbyeIn").innerHTML = "<h2>Вы &mdash; <span style='color:#f87171'>слабое звено</span>.<br/>Прощайте.</h2><p><strong style='color:#e5e7eb'>" + game.pl[pid].name + "</strong><br/><span style='color:#6b7280;font-size:0.88rem'>(как в оригинальном шоу)</span></p><p style='color:#6b7280;font-size:0.88rem'>Осталось в игре: " + activeCount() + "</p><button type='button' class='btn' id='gOk' style='margin-top:8px'>Продолжить</button>";
+    setTimeout(function () {
+      var b = document.getElementById("gOk");
+      if (b) b.addEventListener("click", function () { el("mGoodbye").classList.remove("open"); showQ(); });
+    }, 0);
+  }
+
+  function checkWinner() { if (activeCount() === 1) showWinner(); }
+  function showWinner() {
+    for (var i = 0; i < game.pl.length; i++) if (!game.pl[i].out) {
+      el("mWin").classList.add("open");
+      var bankText = "Всего: \u00A3" + (game.twoTeams ? (game.banked0 + game.banked1) : game.banked);
+      var ex = game.twoTeams
+        ? ("<p style='color:#9ca3af'>К1: \u00A3" + game.banked0 + " · К2: \u00A3" + game.banked1 + "<br/>(итого: " + bankText + ")</p>")
+        : ("<p style='color:#9ca3af'>В банке: " + el("hBanked").textContent + "</p>");
+      el("winIn").innerHTML = "<h2>Победитель</h2><p style='font-size:1.2rem;color:#fef08a'>" + game.pl[i].name + (game.twoTeams && typeof game.pl[i].team === "number" ? " <span style='font-size:0.8rem;color:#9ca3af'>(команда " + (game.pl[i].team + 1) + ")</span>" : "") + "</p>" + ex + "<p style='margin-top:12px'><button type='button' class='btn' id='mWinNew'>С новыми именами</button></p>";
+      setTimeout(function () { var b = el("mWinNew"); if (b) b.addEventListener("click", function () { el("mWin").classList.remove("open"); location.reload(); }); }, 0);
+      return;
+    }
+  }
+
+  el("btnBank").addEventListener("click", bank);
+  document.querySelectorAll("input[name=\"teamMode\"]").forEach(function (r) {
+    r.addEventListener("change", function () {
+      var isTwo = document.querySelector("input[name=\"teamMode\"]:checked").value === "1";
+      el("nameRows").classList.toggle("hide-teams", !isTwo);
+    });
+  });
+
+  el("btnStart").addEventListener("click", function () {
+    var res = readNames();
+    if (!res) return;
+    game.twoTeams = res.twoTeams;
+    game.pl = res.names.map(function (name, j) { return { name: name, team: res.twoTeams ? res.teams[j] : 0, out: false, cR: 0, wR: 0, cTot: 0, wTot: 0 }; });
+    game.order = res.names.map(function (_, i) { return i; });
+    game.turnI = 0;
+    game.step = 0;
+    game.banked = 0;
+    game.banked0 = 0;
+    game.banked1 = 0;
+    game.round = 1;
+    game.inRound = 0;
+    game.roundQ = 0;
+    buildPool();
+    el("screenSetup").style.display = "none";
+    el("screenGame").classList.add("is-on");
+    el("screenGame").setAttribute("aria-hidden", "false");
+    showQ();
+  });
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

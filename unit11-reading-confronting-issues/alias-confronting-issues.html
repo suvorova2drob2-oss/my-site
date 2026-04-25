@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alias &mdash; Confronting issues (memorable phrases)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --alias-red: #c41e3a;
+      --alias-blue: #1e5a8c;
+      --alias-ink: #1a1a1a;
+      --panel: #f3f0e8;
+      --card: #fffef8;
+      --card-done: #e8e4dc;
+      --shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(165deg, #2a5a7a 0%, #1a3a50 50%, #0f2433 100%);
+      color: var(--alias-ink);
+      min-height: 100dvh;
+      padding: 16px;
+    }
+    .shell { max-width: 920px; margin: 0 auto; }
+    .board {
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.5);
+      padding: 20px 18px 24px;
+      border: 3px solid #d4cfc3;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px dashed #c4b8a8;
+    }
+    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #2c2418; }
+    .topbar .sub { font-size: 0.85rem; color: #5c5346; line-height: 1.4; max-width: 32rem; }
+    .nav { font-size: 0.8rem; }
+    .nav a { color: #1e5a8c; font-weight: 700; }
+    .setup { }
+    .setup textarea {
+      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 2px solid #b8a990;
+      font-size: 0.95rem; background: #fff; resize: vertical; font-family: inherit;
+    }
+    .setup .hint { font-size: 0.8rem; color: #5c5346; margin-bottom: 8px; }
+    .err { color: #b91c1c; font-size: 0.85rem; min-height: 1.2em; }
+    .btn {
+      display: inline-block; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .btn-go { background: var(--alias-red); color: #fff; }
+    .btn-go:hover { filter: brightness(1.08); }
+    .btn-sec { background: #3d4f5c; color: #fff; }
+    .btn-blue { background: var(--alias-blue); color: #fff; }
+    .hud {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px;
+    }
+    .turn-pill {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .turn-pill .label { font-size: 0.75rem; color: #5c5346; text-transform: uppercase; letter-spacing: 0.06em; }
+    .turn-pill .name {
+      background: #fff; border: 3px solid var(--alias-red); color: #8b1538; padding: 6px 14px; border-radius: 999px;
+      font-size: 1.05rem; font-weight: 900;
+    }
+    .turn-pill .name.b { border-color: var(--alias-blue); color: #134060; }
+    .timer {
+      font-variant-numeric: tabular-nums; font-size: 1.8rem; font-weight: 900; color: #1a1a1a;
+      min-width: 5ch; text-align: center; padding: 4px 12px; background: #fff; border-radius: 12px; border: 2px solid #b8a990;
+    }
+    .timer.warn { color: #b91c1c; border-color: #f87171; animation: pulse 0.8s ease infinite; }
+    @keyframes pulse { 50% { opacity: 0.75; } }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+    @media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 780px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+    .card {
+      min-height: 72px; padding: 8px 10px; border-radius: 10px; background: var(--card);
+      border: 2px solid #b8a990; box-shadow: 0 2px 0 #a89878;
+      font-size: 0.74rem; font-weight: 800; line-height: 1.3; text-align: center; cursor: pointer;
+      hyphens: auto;
+      display: flex; align-items: center; justify-content: center; color: #1a1a1a; transition: 0.12s;
+    }
+    .card:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.12); }
+    .card:disabled { cursor: default; background: var(--card-done); color: #7a7165; border-color: #c4b8a8; box-shadow: none; transform: none; }
+    .card .who { display: block; font-size: 0.65rem; font-weight: 700; color: #5c5346; margin-top: 4px; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+    .row-actions span { font-size: 0.8rem; color: #5c5346; }
+    .round-tag { background: #e0dccf; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; }
+    .lb { margin-top: 20px; }
+    .lb h3 { font-size: 0.9rem; color: #2c2418; margin-bottom: 8px; }
+    .lb ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
+    .ov {
+      position: fixed; inset: 0; background: rgba(15, 36, 51, 0.88); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
+    }
+    .ov.open { display: flex; }
+    .ov-in {
+      background: var(--panel); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; border: 3px solid #b8a990;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .ov-in h2 { color: #2c2418; margin-bottom: 8px; font-size: 1.1rem; }
+    .ov-in p { color: #5c5346; font-size: 0.9rem; }
+    .game { display: none; }
+    .game.on { display: block; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="board">
+      <div class="topbar">
+        <div>
+          <h1>Alias: Confronting issues</h1>
+          <p class="sub"><strong>23 memorable phrases</strong> from the four texts (vivid, easy to picture &mdash; not random place names). The host enters names and taps <strong>Start</strong>. The <strong>explainer</strong> uses the grid (or a phone with the list). The host <strong>taps a card</strong> when that chunk is guessed &mdash; it goes to the explainer&rsquo;s score. <strong>1:00</strong> per turn, then the next person. When the deck is empty &rarr; <strong>new round</strong> (same phrases, reshuffled). Open the <strong>leaderboard</strong> at the end.</p>
+        </div>
+        <p class="nav"><a href="index.html">&larr; Hub</a> &middot; <a href="../unit11.html">Unit 11</a></p>
+      </div>
+
+      <div id="setup" class="setup">
+        <p class="hint">Player names, <strong>one per line</strong> (at least 2). Order = turn order around the table.</p>
+        <textarea id="namesIn" placeholder="Alex&#10;Bo&#10;Cara" autocomplete="off"></textarea>
+        <p class="err" id="err"></p>
+        <button type="button" class="btn btn-go" id="btnGo">Start game</button>
+      </div>
+
+      <div id="game" class="game">
+        <div class="hud">
+          <div class="turn-pill">
+            <span class="label">Explaining</span>
+            <span class="name" id="curName" role="status">—</span>
+            <span class="round-tag">Round <span id="rn">1</span></span>
+          </div>
+          <div class="timer" id="timer">1:00</div>
+        </div>
+        <p style="font-size:0.8rem;color:#5c5346;margin-bottom:10px">Host: tap a card when that word is guessed (fair play: only correct guesses).</p>
+        <div class="grid" id="grid"></div>
+        <div class="row-actions">
+          <button type="button" class="btn btn-sec" id="btnEndTurn">End turn (before the timer)</button>
+          <button type="button" class="btn btn-blue" id="btnNextRound" style="display:none">Next round (full deck)</button>
+        </div>
+        <div class="lb" id="lb">
+          <h3>Score (cards to each explainer on their turns)</h3>
+          <ol id="lbList"></ol>
+        </div>
+        <p style="margin-top:12px">
+          <button type="button" class="btn btn-sec" id="btnFinal">Show leaderboard</button>
+          <button type="button" class="btn btn-sec" id="btnReset">New game</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovR">
+    <div class="ov-in">
+      <h2>Round complete</h2>
+      <p id="ovRMsg">The deck is empty. Next round: the same 23 phrases in a new order.</p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovRok">Next round</button></p>
+    </div>
+  </div>
+  <div class="ov" id="ovF">
+    <div class="ov-in">
+      <h2>Leaderboard</h2>
+      <p style="text-align:left" id="ovFList"></p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovFok">Close</button></p>
+    </div>
+  </div>
+
+  <script src="../js/u11-must-know-lexis.js"></script>
+  <script>
+(function () {
+  var DECK = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length)
+    ? U11_CONFRONTING_MUST_KNOW.slice()
+    : [];
+
+  var SEC = 60;
+  var names = [];
+  var scores = {};
+  var turn = 0;
+  var roundN = 1;
+  var pool = [];
+  var timer = null;
+  var left = 0;
+  function el(id) { return document.getElementById(id); }
+
+  function shuffle(a) {
+    var x = a.slice();
+    for (var i = x.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = x[i]; x[i] = x[j]; x[j] = t;
+    }
+    return x;
+  }
+
+  function renderLB() {
+    var arr = names.map(function (n) { return { n: n, s: scores[n] || 0 }; });
+    arr.sort(function (a, b) { return b.s - a.s; });
+    var ol = el("lbList");
+    ol.innerHTML = "";
+    arr.forEach(function (o, k) {
+      var li = document.createElement("li");
+      li.textContent = (k + 1) + ". " + o.n + " — " + o.s;
+      ol.appendChild(li);
+    });
+  }
+
+  function clearTimer() {
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  function tick() {
+    left--;
+    var t = el("timer");
+    var m = Math.floor(left / 60);
+    var s = left % 60;
+    t.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+    t.className = "timer" + (left <= 10 ? " warn" : "");
+    if (left <= 0) {
+      clearTimer();
+      nextExplainer();
+    }
+  }
+
+  function startTimer() {
+    clearTimer();
+    left = SEC;
+    tick();
+    timer = setInterval(tick, 1000);
+  }
+
+  function currentName() { return names[turn % names.length]; }
+
+  function showTurn() {
+    var n = currentName();
+    el("curName").textContent = n;
+    el("curName").className = "name " + (turn % 2 === 1 ? "b" : "");
+  }
+
+  function nextExplainer() {
+    clearTimer();
+    turn = (turn + 1) % names.length;
+    showTurn();
+    if (pool.length && pool.some(function (c) { return c.active; })) {
+      startTimer();
+    } else {
+      el("timer").textContent = "—:—";
+    }
+  }
+
+  function buildGrid() {
+    var g = el("grid");
+    g.innerHTML = "";
+    for (var i = 0; i < pool.length; i++) {
+      if (!pool[i].active) continue;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "card";
+      b.textContent = pool[i].t;
+      b.setAttribute("data-idx", String(i));
+      b.addEventListener("click", onCard);
+      g.appendChild(b);
+    }
+    el("btnNextRound").style.display = pool.some(function (c) { return c.active; }) ? "none" : "inline-block";
+  }
+
+  function onCard(e) {
+    var i = parseInt(e.currentTarget.getAttribute("data-idx"), 10);
+    var c = pool[i];
+    if (!c || !c.active) return;
+    c.active = false;
+    c.takenBy = currentName();
+    var who = currentName();
+    scores[who] = (scores[who] || 0) + 1;
+    renderLB();
+    buildGrid();
+    if (!pool.some(function (x) { return x.active; })) {
+      clearTimer();
+      el("timer").textContent = "0:00";
+      el("ovR").classList.add("open");
+    }
+  }
+
+  function startRound(reshuffle) {
+    if (reshuffle) {
+      roundN++;
+      turn = (turn + 1) % names.length;
+    }
+    el("rn").textContent = String(roundN);
+    pool = shuffle(DECK).map(function (t) { return { t: t, active: true }; });
+    buildGrid();
+    el("ovR").classList.remove("open");
+    showTurn();
+    startTimer();
+  }
+
+  function parseNames() {
+    el("err").textContent = "";
+    var lines = (el("namesIn").value || "").split(/\r?\n/);
+    var out = [];
+    for (var k = 0; k < lines.length; k++) {
+      var t = lines[k].trim();
+      if (t) out.push(t);
+    }
+    if (out.length < 2) { el("err").textContent = "Enter at least two names, one per line."; return null; }
+    return out;
+  }
+
+  el("btnGo").addEventListener("click", function () {
+    if (!DECK.length) {
+      el("err").textContent = "Word list failed to load. Check that js/u11-must-know-lexis.js is available.";
+      return;
+    }
+    var p = parseNames();
+    if (!p) return;
+    names = p;
+    scores = {};
+    p.forEach(function (n) { scores[n] = 0; });
+    turn = 0;
+    roundN = 1;
+    el("setup").style.display = "none";
+    el("game").classList.add("on");
+    el("rn").textContent = "1";
+    renderLB();
+    startRound(false);
+  });
+
+  el("btnEndTurn").addEventListener("click", function () { nextExplainer(); });
+
+  el("btnNextRound").addEventListener("click", function () { startRound(true); });
+  el("ovRok").addEventListener("click", function () { startRound(true); });
+
+  el("btnFinal").addEventListener("click", function () {
+    var arr = names.map(function (n) { return { n: n, s: scores[n] || 0 }; });
+    arr.sort(function (a, b) { return b.s - a.s; });
+    el("ovFList").innerHTML = arr.map(function (o, r) { return (r + 1) + ". " + o.n + " — " + o.s + " card(s)<br>"; }).join("");
+    el("ovF").classList.add("open");
+  });
+  el("ovFok").addEventListener("click", function () { el("ovF").classList.remove("open"); });
+
+  el("btnReset").addEventListener("click", function () {
+    clearTimer();
+    el("game").classList.remove("on");
+    el("setup").style.display = "block";
+    el("ovR").classList.remove("open");
+    el("ovF").classList.remove("open");
+  });
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

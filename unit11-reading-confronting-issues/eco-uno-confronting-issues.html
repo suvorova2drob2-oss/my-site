@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eco-Uno — Confronting issues (Unit 11)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #0b1020; --card: #131a2e; --line: #2a3555; --text: #e8ecff; --dim: #8b95b8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Manrope", system-ui, sans-serif; background: radial-gradient(1000px 500px at 50% 0%, #1a1033 0%, var(--bg) 50%); color: var(--text); min-height: 100dvh; padding: 14px; font-size: 0.95rem; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .bar a { color: #a78bfa; text-decoration: none; font-weight: 700; }
+    h1 { font-size: 1.2rem; font-weight: 800; }
+    .sub { color: var(--dim); font-size: 0.86rem; line-height: 1.4; margin: 6px 0 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+    .meta { font-size: 0.65rem; color: #a78bfa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    label { display: block; font-size: 0.78rem; font-weight: 700; color: #a78bfa; margin: 0 0 4px; }
+    textarea#namesIn { width: 100%; min-height: 4rem; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: #0a0f1d; color: var(--text); font: inherit; }
+    .g { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; font-size: 0.8rem; color: var(--dim); }
+    button {
+      font: 800 0.7rem/1.1 Manrope, sans-serif; text-transform: uppercase; letter-spacing: 0.03em; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer;
+      background: #2d3a5e; color: var(--text);
+    }
+    button.bm { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: #fff; }
+    .msg { min-height: 1.1em; color: #f43f5e; font-size: 0.85rem; margin: 4px 0; }
+    .msg.ok { color: #86efac; }
+    .topv { text-align: center; padding: 12px 14px; margin: 8px 0; background: #0a0f1d; border-radius: 10px; border: 1px solid var(--line); font-size: clamp(0.92rem, 2.4vw, 1.08rem); line-height: 1.45; font-weight: 500; }
+    .t1 { --c: #1d4ed8; } .t2 { --c: #0d9488; } .t3 { --c: #15803d; } .t4 { --c: #a16207; } .t0 { --c: #6366f1; }
+    .ct { display: inline-block; padding: 3px 7px; border-radius: 5px; background: var(--c); color: #fff; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.02em; vertical-align: middle; }
+    .hand { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 3rem; }
+    .cbtn {
+      width: 11rem; min-height: 6.25rem; padding: 8px 9px 10px; border-radius: 10px; border: 2px solid #3d3d55; background: #12101c; color: #e8ecff; text-align: left; cursor: pointer;
+      font-family: Manrope, system-ui, sans-serif; font-size: 0.72rem; line-height: 1.28; font-weight: 600;
+    }
+    .cbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .cbtn.v { border-color: #22c55e; box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25); }
+    .cbtn .tx { color: #e8edf4; margin-top: 6px; font-size: 0.86rem; font-weight: 600; line-height: 1.34; letter-spacing: 0.01em; }
+    .cbtn .theme-ico { font-size: 1rem; margin-left: 2px; vertical-align: middle; }
+    .c-textfrom { font-size: 0.64rem; font-weight: 800; color: #a5b4fc; letter-spacing: 0.08em; margin: 0 0 5px; text-align: left; line-height: 1.2; }
+    .c-textfrom.wild-lbl { color: #c4b5fd; letter-spacing: 0.04em; }
+    #topBox .text-ref { display: inline; font-size: 0.92em; font-weight: 800; color: #c7d2fe; margin-right: 4px; }
+    #topBox .text-sep { color: #64748b; font-weight: 500; margin: 0 2px; }
+    .hidden { display: none !important; }
+    .ov { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal { max-width: 400px; background: #131a2e; border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .modal h3 { font-size: 1rem; margin-bottom: 8px; }
+    .modal input { width: 100%; padding: 8px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--line); background: #0a0f1d; color: #fff; font: inherit; }
+    details.ru { font-size: 0.8rem; line-height: 1.4; color: #94a3b8; }
+    details.ru summary { cursor: pointer; color: #c4b5fd; font-weight: 700; }
+    #wildPick button { margin: 4px; }
+    .turn-hud {
+      text-align: center; padding: 16px 14px 18px; margin-bottom: 8px; border-radius: 16px;
+      background: linear-gradient(180deg, rgba(30, 27, 64, 0.95) 0%, rgba(8, 12, 24, 0.98) 100%);
+      border: 1px solid rgba(124, 58, 237, 0.45);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .turn-eyebrow { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #a78bfa; margin: 0 0 4px; }
+    .turn-hero { font-size: clamp(1.6rem, 5.5vw, 2.4rem); font-weight: 800; line-height: 1.15; color: #fff; margin: 0; letter-spacing: -0.02em; text-shadow: 0 2px 24px rgba(124, 58, 237, 0.45); }
+    .turn-extras { min-height: 1.1em; font-size: 0.78rem; color: #fbbf24; font-weight: 600; margin: 8px 0 0; }
+    .turn-row-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 0.78rem; color: var(--dim); }
+    .turn-row-meta strong { color: #c4b5fd; }
+    .turn-dot { opacity: 0.5; }
+    .turn-queue-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #64748b; margin: 14px 0 8px; }
+    .turn-queue { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 4px; }
+    .turn-chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; color: #94a3b8;
+      background: rgba(15, 23, 42, 0.85); border: 1px solid #334155;
+    }
+    .turn-chip.next { color: #cbd5e1; border-color: #475569; }
+    .turn-chip.active {
+      color: #fff; font-size: 0.9rem; padding: 8px 16px; border: none; background: linear-gradient(135deg, #5b21b6, #4f46e5);
+      box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.5), 0 6px 20px rgba(79, 70, 229, 0.45);
+    }
+    .turn-badge { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #fde68a; }
+    .turn-arrow { color: #64748b; font-size: 0.9rem; font-weight: 700; user-select: none; padding: 0 2px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>Eco-Uno (Unit 11)</h1>
+      <a href="index.html">&larr; Hub</a>
+    </div>
+    <p class="sub">Match the <strong>top discard</strong> by <strong>theme (colour)</strong> or, for phrase cards, by <strong>type</strong> (Problem / Solution / Action / Impact). Phrases are from <strong>Text A</strong>–<strong>Text D</strong> in the unit (each theme = one text / block). Special cards: see rules below. <strong>One play</strong> per turn (or draw) — then next player.</p>
+
+    <div class="card" id="setup">
+      <p class="meta">Setup</p>
+      <label for="namesIn">Player names (one per line, 2&ndash;5)</label>
+      <textarea id="namesIn">Alex&#10;Blair</textarea>
+      <p class="g">Deck: 48 phrase cards + 12 coloured specials + 4 wild. Deal 7 each.</p>
+      <p class="msg" id="setupErr"></p>
+      <button type="button" class="bm" id="btnStart">Start game</button>
+    </div>
+
+    <div class="card hidden" id="play">
+      <div class="turn-hud" id="turnHud" aria-live="polite">
+        <p class="turn-eyebrow" id="turnEyebrow">Current turn</p>
+        <p class="turn-hero" id="turnCurrentName">—</p>
+        <p class="turn-extras" id="turnUnoLine"></p>
+        <div class="turn-row-meta" id="turnRowMeta">
+          <span>Direction: <strong id="dirx">—</strong></span>
+          <span class="turn-dot" aria-hidden="true">|</span>
+          <span>Draw pile: <strong id="pileN">0</strong></span>
+        </div>
+        <p class="turn-queue-label" id="turnQueueLabel">Turn order (who is next)</p>
+        <div class="turn-queue" id="turnQueue" role="list"></div>
+      </div>
+      <p class="topv" id="topBox">—</p>
+      <p class="msg" id="msgLine"></p>
+      <p class="meta">Your hand (click a valid card — green outline)</p>
+      <div class="hand" id="handBox"></div>
+      <div class="g" style="margin-top:10px">
+        <button type="button" id="btnDrawP">Draw from pile</button>
+        <button type="button" id="btnNew">Reshuffle &amp; restart</button>
+        <button type="button" id="btnBack2">Back to names</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <details class="ru">
+        <summary>📜 Полная инструкция (RU)</summary>
+        <p style="margin-top:8px"><strong>Подготовка.</strong> Фразы привязаны к <strong>текстам A–D</strong> в юните (как в списке чтения). На каждой обычной карте: цвет темы (A–D) и тип (Problem, Solution, Action, Impact) + фраза. По 7 в руки. Старт — в сброс кладётся первая «обычная» карта с колоды.</p>
+        <p><strong>Ход.</strong> Обычные карты: совпадает <em>тема (цвет)</em> <strong>или</strong> <em>тип фразы</em> (Problem / Solution / …), если вверху <strong>не спецкарта</strong>. Когда вверху <strong>спецкарта</strong> (кроме wild): ходи картой <strong>той же темы (цвета)</strong> <strong>или</strong> тем же эффектом <strong>любого</strong> цвета, как в UNO (+2 на +2, reverse на reverse, skip на skip). Дикий (wild) всегда можно. После <strong>Global Innovation</strong> — выбери заново активную тему.</p>
+        <p><strong>Эффекты.</strong> <strong>Eco-Crisis (+2)</strong> — следующий тянет 2 и пропускает ход. <strong>Natural Disaster</strong> — следующий пропускает. <strong>Renewable Energy</strong> — разворот направления. <strong>Global Innovation</strong> — смена активной темы (цвет) на твой выбор.</p>
+        <p><strong>Победа.</strong> Когда в руке <strong>одна</strong> карта — скажи громко тему (A–D). <strong>Последний</strong> ход: введи <strong>грамотное</strong> предложение с фразой (настольный вариант). В веб-версии: короткое примерное поле; при 2+ слов &mdash; ок; иначе +2 в штраф (упрощённо).</p>
+      </details>
+    </div>
+  </div>
+
+  <div class="ov hidden" id="wildOv"><div class="modal" id="wildModal">
+    <h3>Global Innovation — choose active theme (colour):</h3>
+    <div id="wildPick"></div>
+  </div></div>
+  <div class="ov hidden" id="lastOv"><div class="modal" id="lastModal">
+    <h3>Last card — make a full sentence with your phrase (spoken English):</h3>
+    <p class="g" id="lastPhrase" style="color:#a78bfa"></p>
+    <input type="text" id="lastInput" placeholder="e.g. Due to pollution, fish stocks have been drastically reduced." />
+    <p class="g" style="font-size:0.75rem">At least 4 words, must sound relevant to the card (teacher judges IRL; here: length only).</p>
+    <div class="g"><button type="button" class="bm" id="lastOk">Play &amp; win</button></div>
+  </div></div>
+
+  <script src="../js/u11-eco-uno.js"></script>
+  <script>
+(function () {
+  var M = (typeof U11_ECO_UNO_META !== "undefined" && U11_ECO_UNO_META) || {};
+  var K = (typeof U11_ECO_UNO_KIND !== "undefined" && U11_ECO_UNO_KIND) || {};
+  var deckSrc = (typeof U11_ECO_UNO_CARDS !== "undefined" && U11_ECO_UNO_CARDS) ? U11_ECO_UNO_CARDS.slice() : [];
+  var pile = [];
+  var discard = [];
+  var hands = [];
+  var names = [];
+  var turnIdx = 0;
+  var dir = 1;
+  var activeColor = 1;
+  var pending = null;
+
+  function el(id) { return document.getElementById(id); }
+  function lab(t) { if (!t) return "·"; return (M[t] && M[t].key) || "?"; }
+  function kindLab(k) { return (K[k] && K[k].label) || (k && k.length ? k[0].toUpperCase() + k.slice(1) : "—"); }
+  function escAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
+  function themeSwatch(t) { if (!t || t < 1 || t > 4) return ""; return "<span class=\"ct t" + t + "\">" + (M[t] && M[t].emoji) + "</span> "; }
+  function textRefHtml(t) {
+    if (!t || t < 1 || t > 4) return "";
+    var meta = M[t];
+    if (!meta) return "";
+    return "<span class=\"text-ref\" title=\"" + escAttr(meta.name) + "\">Text " + meta.key + "</span><span class=\"text-sep\" aria-hidden=\"true\">·</span> ";
+  }
+  function handTextFrom(t, isWild) {
+    if (isWild) return "<div class=\"c-textfrom wild-lbl\" title=\"Global Innovation\">Wild</div>";
+    if (t >= 1 && t <= 4 && M[t]) return "<div class=\"c-textfrom\" title=\"" + escAttr(M[t].name) + "\">Text " + M[t].key + "</div>";
+    return "";
+  }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t0 = x[i]; x[i] = x[j]; x[j] = t0; } return x; }
+  function topC() { return discard.length ? discard[discard.length - 1] : null; }
+  function nP() { return names.length; }
+  function step(i, s) { s = s || 1; var t = i; for (var k = 0; k < s; k++) t = (t + dir + 1000 * nP()) % nP(); return t; }
+
+  function canPlay(c, top, act) {
+    if (c.special === "wild") return true;
+    if (!top) return true;
+    if (top.special === "wild") return c.t === act;
+    if (top.special && top.special !== "wild") {
+      if (c.t === top.t) return true;
+      if (c.special && c.special === top.special) return true;
+      return false;
+    }
+    if (!c.special) return c.t === top.t || c.kind === top.kind;
+    return c.t === top.t;
+  }
+
+  function refillPile() {
+    if (discard.length < 2) return;
+    var top = topC();
+    var rest = discard.slice(0, -1);
+    discard = [top];
+    pile = shuffle(rest);
+  }
+  function drawTo(p) { if (!pile.length) refillPile(); if (pile.length) hands[p].push(pile.pop()); }
+
+  function start() {
+    el("setupErr").textContent = "";
+    el("wildOv").classList.add("hidden");
+    el("lastOv").classList.add("hidden");
+    pending = null;
+    var raw = (el("namesIn").value || "").split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (raw.length < 2) { el("setupErr").textContent = "Enter at least 2 player names."; return; }
+    if (raw.length > 5) { el("setupErr").textContent = "At most 5 players (7 cards each)."; return; }
+    if (deckSrc.length < 3) { el("setupErr").textContent = "Missing u11-eco-uno.js"; return; }
+    names = raw;
+    var full = shuffle(deckSrc);
+    var starter = null;
+    for (var i = 0; i < full.length; i++) {
+      if (!full[i].special) { starter = full.splice(i, 1)[0]; break; }
+    }
+    if (!starter) starter = full.pop();
+    discard = [starter];
+    activeColor = starter.t || 1;
+    pile = full;
+    hands = names.map(function () { return []; });
+    for (var d = 0; d < 7 * nP() && pile.length; d++) { hands[d % nP()].push(pile.pop()); }
+    turnIdx = 0;
+    el("setup").classList.add("hidden");
+    el("play").classList.remove("hidden");
+    el("turnHud").classList.remove("game-over");
+    el("msgLine").className = "msg";
+    el("msgLine").textContent = "";
+    render(false);
+  }
+
+  function tryPlay(handIdx) {
+    el("msgLine").className = "msg";
+    el("msgLine").textContent = "";
+    var c = hands[turnIdx][handIdx];
+    var t = topC();
+    if (!canPlay(c, t, activeColor)) { el("msgLine").textContent = "Invalid play."; return; }
+    if (hands[turnIdx].length === 1) {
+      if (c.special === "wild") {
+        pending = { h: handIdx, c: c, afterWildLast: 1 };
+        openWild();
+        return;
+      }
+      el("lastPhrase").textContent = c.text;
+      el("lastInput").value = "";
+      el("lastOv").classList.remove("hidden");
+      pending = { h: handIdx, c: c, fin: 1 };
+      return;
+    }
+    if (c.special === "wild") {
+      pending = { h: handIdx, c: c };
+      openWild();
+      return;
+    }
+    applyPlay(handIdx, c, null);
+  }
+
+  function openWild() {
+    var w = el("wildPick");
+    w.innerHTML = "";
+    for (var T = 1; T <= 4; T++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "bm";
+      b.textContent = "Text " + (M[T] && M[T].key) + " — " + (M[T] && M[T].emoji) + " " + (M[T] && M[T].name);
+      (function (t) { b.addEventListener("click", function () { onWild(t); }); })(T);
+      w.appendChild(b);
+    }
+    el("wildOv").classList.remove("hidden");
+  }
+
+  function onWild(choice) {
+    el("wildOv").classList.add("hidden");
+    if (!pending) return;
+    var h = pending.h;
+    var c = pending.c;
+    var needLast = pending.afterWildLast;
+    pending = null;
+    if (c.special === "wild" && needLast) {
+      el("lastPhrase").textContent = c.text;
+      el("lastInput").value = "";
+      el("lastOv").classList.remove("hidden");
+      pending = { h: h, c: c, w: choice, fin: 1 };
+      return;
+    }
+    applyPlay(h, c, choice);
+  }
+
+  el("lastOk").addEventListener("click", function () {
+    if (!pending || !pending.fin) { el("lastOv").classList.add("hidden"); return; }
+    var s = (el("lastInput").value || "").trim();
+    if (s.split(/\s+/).filter(Boolean).length < 4) {
+      el("msgLine").className = "msg";
+      el("msgLine").textContent = "Too short. Two penalty cards drawn. Try again (your turn can continue, or add house rule: skip).";
+      drawTo(turnIdx); drawTo(turnIdx);
+      el("lastOv").classList.add("hidden");
+      pending = null;
+      render(false);
+      return;
+    }
+    el("lastOv").classList.add("hidden");
+    var h = pending.h;
+    var c = pending.c;
+    var w = pending.w;
+    pending = null;
+    applyPlay(h, c, w);
+  });
+
+  function applyPlay(handIdx, c, wildT) {
+    var cur = turnIdx;
+    hands[cur].splice(handIdx, 1);
+    discard.push(c);
+    if (c.special === "wild" && wildT) activeColor = wildT;
+    else if (c.t) activeColor = c.t;
+
+    if (hands[cur].length === 0) {
+      el("turnHud").classList.add("game-over");
+      el("turnEyebrow").textContent = "Game over";
+      el("turnCurrentName").textContent = (names[cur] || "Player") + " won";
+      el("turnUnoLine").textContent = "";
+      el("turnQueue").innerHTML = "";
+      el("turnQueueLabel").classList.add("hidden");
+      el("turnRowMeta").classList.add("hidden");
+      el("msgLine").className = "msg ok";
+      el("msgLine").textContent = (names[cur] || "Player") + " won.";
+      render(true);
+      return;
+    }
+    if (c.special === "draw2") {
+      var v = step(cur, 1);
+      drawTo(v); drawTo(v);
+      turnIdx = step(cur, 2);
+    } else if (c.special === "skip") {
+      turnIdx = step(cur, 2);
+    } else if (c.special === "reverse") {
+      dir = -dir;
+      if (nP() === 2) turnIdx = cur;
+      else turnIdx = step(cur, 1);
+    } else {
+      turnIdx = step(cur, 1);
+    }
+    render(false);
+  }
+
+  function render(gameOver) {
+    var t = topC();
+    if (t) {
+      if (t.special) {
+        if (t.special === "wild") {
+          el("topBox").innerHTML = "<strong>Discard top:</strong> " + themeSwatch(activeColor) + textRefHtml(activeColor) + t.text + " (active: " + lab(activeColor) + " " + (M[activeColor] && M[activeColor].name) + ")";
+        } else {
+          el("topBox").innerHTML = "<strong>Discard top:</strong> " + themeSwatch(t.t) + textRefHtml(t.t) + t.text;
+        }
+      } else {
+        el("topBox").innerHTML = "<strong>Discard top:</strong> " + themeSwatch(t.t) + textRefHtml(t.t) + kindLab(t.kind) + ": " + t.text;
+      }
+    } else { el("topBox").textContent = "—"; }
+    el("handBox").innerHTML = "";
+    if (gameOver) return;
+    el("turnHud").classList.remove("game-over");
+    el("turnEyebrow").textContent = "Current turn";
+    el("turnCurrentName").textContent = names[turnIdx];
+    el("turnUnoLine").textContent = hands[turnIdx] && hands[turnIdx].length === 1
+      ? "One card left: say the full theme (e.g. LAND RECLAMATION) before you play it."
+      : "";
+    el("dirx").textContent = dir > 0 ? "clockwise" : "counter-clockwise";
+    el("pileN").textContent = String(pile.length);
+    el("turnQueueLabel").classList.remove("hidden");
+    el("turnRowMeta").classList.remove("hidden");
+    var q = el("turnQueue");
+    q.innerHTML = "";
+    for (var kq = 0; kq < nP(); kq++) {
+      var idx = step(turnIdx, kq);
+      var chip = document.createElement("span");
+      chip.className = "turn-chip" + (kq === 0 ? " active" : (kq === 1 ? " next" : ""));
+      chip.setAttribute("role", "listitem");
+      if (kq === 0) {
+        var b = document.createElement("span");
+        b.className = "turn-badge";
+        b.textContent = "Now";
+        chip.appendChild(b);
+        chip.appendChild(document.createTextNode(" " + names[idx]));
+      } else {
+        chip.textContent = names[idx] + (kq === 1 ? " (next)" : "");
+      }
+      q.appendChild(chip);
+      if (kq < nP() - 1) {
+        var ar = document.createElement("span");
+        ar.className = "turn-arrow";
+        ar.textContent = "→";
+        ar.setAttribute("aria-hidden", "true");
+        ar.title = "then";
+        q.appendChild(ar);
+      }
+    }
+    for (var i = 0; i < hands[turnIdx].length; i++) {
+      (function (j) {
+        var c = hands[turnIdx][j];
+        var top = topC();
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cbtn" + (canPlay(c, top, activeColor) ? " v" : "");
+        var th = c.t || 0;
+        b.innerHTML = handTextFrom(c.t, c.special === "wild") + "<span class=\"ct t" + th + "\">" + (c.special && c.text ? (c.special === "draw2" ? "+2" : c.special === "skip" ? "⏸" : c.special === "reverse" ? "↺" : "wild") : kindLab(c.kind)) + "</span> <span class=\"theme-ico\">" + (c.t ? (M[c.t] && M[c.t].emoji) : "🃏") + "</span><div class=\"tx\">" + c.text + "</div>";
+        b.addEventListener("click", function () { tryPlay(j); });
+        el("handBox").appendChild(b);
+      })(i);
+    }
+  }
+
+  el("btnStart").addEventListener("click", start);
+  el("btnNew").addEventListener("click", start);
+  el("btnBack2").addEventListener("click", function () { el("play").classList.add("hidden"); el("setup").classList.remove("hidden"); el("lastOv").classList.add("hidden"); el("wildOv").classList.add("hidden"); pending = null; });
+  el("btnDrawP").addEventListener("click", function () {
+    drawTo(turnIdx);
+    el("msgLine").textContent = "Drew 1. Next player.";
+    turnIdx = step(turnIdx, 1);
+    render(false);
+  });
+})();
+  </script>

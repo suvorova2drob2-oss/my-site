@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100 to 1 &mdash; Confronting issues (four texts)</title>
+  <style>
+    :root {
+      --bg-deep: #030712; --bg-panel: #0c1929; --bg-answer: #132a4a; --bg-answer-h: #1a3a64;
+      --gold: #e8c040; --gold-dim: #9a7b24; --ink: #f1f5f9; --muted: #8ba3c4;
+      --a: #38bdf8; --b: #f472b6; --ok: #22c55e; --bad: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-deep); color: var(--ink); min-height: 100dvh;
+      background-image: radial-gradient(ellipse 120% 80% at 50% 0%, #1a1a2e 0%, transparent 50%),
+        linear-gradient(180deg, #060d18 0%, var(--bg-deep) 100%);
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 16px; }
+    .header { text-align: center; padding: 10px 8px 16px; border-bottom: 2px solid var(--gold-dim); margin-bottom: 16px; }
+    .header h1 {
+      font-size: clamp(1.05rem, 3vw, 1.4rem); font-weight: 800; color: #fff;
+      text-shadow: 0 0 18px rgba(232, 192, 64, 0.3); letter-spacing: 0.04em;
+    }
+    .header .tag { color: var(--gold); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 6px; }
+    .header .en { color: var(--muted); font-size: 0.86rem; line-height: 1.5; max-width: 56rem; margin: 0 auto; }
+    .header .en strong { color: #e2e8f0; }
+    .nav { text-align: center; font-size: 0.8rem; margin-bottom: 12px; }
+    .nav a { color: var(--gold); text-decoration: none; font-weight: 600; }
+    .nav a:hover { text-decoration: underline; }
+    .hud {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 12px; align-items: center;
+    }
+    .hud .team {
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; border: 2px solid #334e78; background: #0f172a; font-size: 0.9rem;
+    }
+    .hud .team.is-on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-dim); }
+    .hud .team .l { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; }
+    .hud .team .p { color: #fff; font-size: 1.25rem; font-weight: 800; }
+    .hud .team.t-a { border-color: rgba(56, 189, 248, 0.5); }
+    .hud .team.t-b { border-color: rgba(244, 114, 182, 0.5); }
+    .hud .round { font-size: 0.75rem; color: var(--muted); padding: 6px 12px; background: #111827; border-radius: 8px; border: 1px solid #334155; }
+    .qbox {
+      background: var(--bg-panel); border: 2px solid #2d4a6f; border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .qbox .q-topic { color: #7dd3fc; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .qbox .q-text { font-size: 1.02rem; line-height: 1.5; color: #e2e8f0; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+    .board {
+      background: linear-gradient(160deg, #1e3a5f 0%, #0d1825 100%);
+      border: 3px solid var(--gold-dim); border-radius: 12px; padding: 8px; box-shadow: inset 0 0 40px rgba(0,0,0,0.35);
+    }
+    .board h3 { text-align: center; font-size: 0.65rem; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+    .board-row {
+      display: grid; grid-template-columns: 2.2rem 1fr 2.5rem; align-items: center; gap: 6px;
+      margin-bottom: 4px; min-height: 2.2rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid #334e78; overflow: hidden;
+    }
+    .board-row .num { text-align: center; font-size: 0.75rem; color: #64748b; font-weight: 800; }
+    .board-row .ans { font-size: 0.82rem; padding: 6px 8px; text-align: center; color: #94a3b8; }
+    .board-row .ans.is-open { color: #fff; font-weight: 700; background: rgba(34, 197, 94, 0.12); }
+    .board-row .pt { text-align: center; font-size: 0.78rem; font-weight: 800; color: var(--gold); }
+    .board-row .ans.reveal { animation: pop 0.45s ease; }
+    @keyframes pop { from { transform: scale(0.92); opacity: 0.5; } to { transform: scale(1); opacity: 1; } }
+    .pool {
+      background: var(--bg-panel); border: 2px solid #2d4a6f; border-radius: 14px; padding: 12px 12px 14px;
+    }
+    .pool h3 { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .pool .hint2 { color: #94a3b8; font-size: 0.78rem; margin-bottom: 10px; line-height: 1.4; }
+    .pool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 500px) { .pool-grid { grid-template-columns: 1fr; } }
+    .pcard {
+      padding: 9px 10px; border-radius: 8px; border: 2px solid #3d5a80; background: linear-gradient(180deg, #1a3358 0%, var(--bg-answer) 100%);
+      color: #e8f0ff; font-size: 0.85rem; line-height: 1.3; cursor: pointer; text-align: left; transition: 0.12s;
+    }
+    .pcard:hover:not(:disabled) { border-color: var(--gold); background: var(--bg-answer-h); }
+    .pcard:disabled { cursor: default; opacity: 0.35; filter: grayscale(0.3); }
+    .pcard.bad { border-color: rgba(239, 68, 68, 0.4); }
+    .pcard.bad.shown { animation: shake 0.4s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+    .btn { background: #1e3a5f; color: #fff; border: 1px solid #3b5f8f; padding: 7px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.8rem; }
+    .btn:hover { border-color: var(--gold); }
+    .msg { min-height: 1.2em; font-size: 0.88rem; color: #cbd5e1; margin-top: 8px; }
+    .msg strong { color: #fff; }
+    .modal { position: fixed; inset: 0; background: rgba(3,7,20,0.88); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+    .modal.open { display: flex; }
+    .hint-panel { width: min(900px, 100%); max-height: min(90vh, 880px); background: #0f172a; border: 2px solid var(--gold); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .hint-panel-hd { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #334155; }
+    .hint-panel-hd h3 { color: var(--gold); font-size: 0.9rem; }
+    .hint-close { background: #1e293b; border: 1px solid #475569; color: #e2e8f0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; }
+    .hint-frame-wrap iframe { display: block; width: 100%; height: min(68vh, 700px); border: 0; }
+    .hint-foot { font-size: 0.7rem; color: #64748b; padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <span class="tag">Confronting issues / Unit 11</span>
+      <h1>100 to 1 (Family Feud style)</h1>
+      <p class="en">Like the TV show: <strong>five &ldquo;top&rdquo; answers</strong> (100 &rarr; 20 points) are based on the <strong>four reading texts</strong> &mdash; not a real survey. Below: a <strong>card pool</strong>; some options <strong>match the board</strong>, others are <strong>decoys</strong>. The <strong>highlighted</strong> team is up. A <strong>hit</strong> (on the board) scores and <strong>keeps the turn</strong>. A <strong>miss</strong> passes the turn. When <strong>all five</strong> are revealed, the round is over &rarr; use <strong>Next round</strong>.</p>
+    </header>
+    <p class="nav">
+      <a href="index.html">&larr; Hub (texts)</a> &middot;
+      <a href="millionaire-confronting-gaps.html">Millionaire (gaps)</a> &middot;
+      <a href="../unit11.html">Unit 11</a>
+    </p>
+
+    <div class="hud">
+      <div class="team t-a" id="teamA"><span class="l">Team A</span> <span class="p" id="scoreA">0</span></div>
+      <div class="team t-b" id="teamB"><span class="l">Team B</span> <span class="p" id="scoreB">0</span></div>
+      <span class="round" id="roundLbl">Round 1 / 4</span>
+    </div>
+
+    <div class="qbox">
+      <div class="q-topic" id="qTopic">&mdash;</div>
+      <p class="q-text" id="qText">&mdash;</p>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="board">
+          <h3>Board</h3>
+          <div id="boardRows"></div>
+        </div>
+        <p class="msg" id="lineMsg" style="margin-top:10px"></p>
+        <div class="bar">
+          <button type="button" class="btn" id="btnText">Hint: open source text</button>
+          <button type="button" class="btn" id="btnNext">Next round</button>
+          <button type="button" class="btn" id="btnReset">Reset all</button>
+        </div>
+      </div>
+      <div class="pool">
+        <h3>Pick a card</h3>
+        <p class="hint2" id="turnHint">&mdash;</p>
+        <div class="pool-grid" id="pool"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="hintModal" role="dialog" aria-modal="true">
+    <div class="hint-panel">
+      <div class="hint-panel-hd">
+        <h3 id="hintTitle">Text</h3>
+        <button type="button" class="hint-close" id="hintClose" title="Close" aria-label="Close">&times;</button>
+      </div>
+      <div class="hint-frame-wrap"><iframe id="hintFrame" title="Source text"></iframe></div>
+      <p class="hint-foot">If the frame is empty under <code>file://</code>, open the page through a local web server.</p>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  var ROUNDS = [
+    {
+      topic: "Text 1 (A) &mdash; Land reclamation",
+      q: "Name a negative effect or what land reclamation <strong>puts pressure on</strong> in Text A (what is threatened &mdash; not a single word only).",
+      hint: "text-01.html",
+      board: [
+        { t: "Fish stocks", pts: 100 },
+        { t: "Habitats (marine) / wild life", pts: 80 },
+        { t: "Pollution of the sea", pts: 60 },
+        { t: "Livelihoods of local fishermen", pts: 40 },
+        { t: "The environment in general", pts: 20 }
+      ],
+      decoys: [
+        "Silver iodide (other text! Cloud seeding)",
+        "Nanhui as &lsquo;rubbish&rsquo; (nonsense)",
+        "Singapore&rsquo;s GDP grew 25% (not the risk listed)",
+        "Seven emirates in the UAE (irrelevant)",
+        "Pesticides in rice paddies (wrong text)",
+        "Methane from dog waste (Text D)",
+        "Noli on the Italian Riviera (Text C)"
+      ]
+    },
+    {
+      topic: "Text 2 (B) &mdash; Cloud seeding",
+      q: "What is cloud seeding linked to in Text B? (scarcity, media, debate, how it is done&hellip;)",
+      hint: "text-02.html",
+      board: [
+        { t: "Water scarcity &amp; water shortages", pts: 100 },
+        { t: "Press / media attention", pts: 80 },
+        { t: "Still open to debate (no final proof yet)", pts: 60 },
+        { t: "Chemicals: silver iodide or dry ice into clouds", pts: 40 },
+        { t: "Wyoming project: +5&ndash;15% precipitation", pts: 20 }
+      ],
+      decoys: [
+        "133 km&sup2; of new land (Text A, Nanhui)",
+        "A biodigester (Text D)",
+        "Nemo&rsquo;s Garden biospheres (Text C)",
+        "Brian Harper (Text D)",
+        "Shortage of farmland (Text C)",
+        "Coastal fishery collapse only (A detail, not B)",
+        "Streetlamp from methane (Text D)"
+      ]
+    },
+    {
+      topic: "Text 3 (C) &mdash; Underwater farming",
+      q: "What matters / what does Nemo&rsquo;s Garden and underwater growing give you in Text C?",
+      hint: "text-03.html",
+      board: [
+        { t: "Noli, Italian Riviera (location)", pts: 100 },
+        { t: "Idea in 2012, basil in a test sphere", pts: 80 },
+        { t: "Stable temperature inside the biospheres", pts: 60 },
+        { t: "No pests &rarr; no need for pesticides", pts: 40 },
+        { t: "Seawater evaporates &rarr; condenses &rarr; fresh water for plants", pts: 20 }
+      ],
+      decoys: [
+        "15% growth figure (other context)",
+        "Silver into clouds (Text B)",
+        "Brian Harper (Text D)",
+        "A methane streetlamp (Text D)",
+        "Fish stocks at risk (Text A)",
+        "Wyoming weather project 2013 (Text B)",
+        "The brand-new city of Nanhui (Text A)"
+      ]
+    },
+    {
+      topic: "Text 4 (D) &mdash; Dog waste",
+      q: "What does the dog-waste scheme in Text D involve or result in?",
+      hint: "text-04.html",
+      board: [
+        { t: "Brian Harper (inventor, UK home)", pts: 100 },
+        { t: "Biodigester: microbes &rarr; methane", pts: 80 },
+        { t: "Bag &rarr; turn handle &rarr; waste into the digester", pts: 60 },
+        { t: "Full working operation: end of 2017", pts: 40 },
+        { t: "Similar schemes: Canada&ndash;India / worldwide adoption", pts: 20 }
+      ],
+      decoys: [
+        "A 2,000-litre biosphere (Text C, miniature)",
+        "Silver iodide in clouds (Text B)",
+        "Underwater Noli (Text C)",
+        "A six-year Wyoming project (Text B)",
+        "Fishers&rsquo; livelihoods (Text A)",
+        "Farmland shortage (Text C, different angle)",
+        "Nanhui, new city on reclaimed land (Text A)"
+      ]
+    }
+  ];
+
+  var state = {
+    round: 0,
+    scores: [0, 0],
+    current: 0,
+    found: null,
+    pool: []
+  };
+
+  function el(id) { return document.getElementById(id); }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function buildPool(r) {
+    var items = [];
+    for (var i = 0; i < r.board.length; i++) {
+      items.push({ good: true, slot: i, label: r.board[i].t });
+    }
+    for (var j = 0; j < r.decoys.length; j++) {
+      items.push({ good: false, label: r.decoys[j] });
+    }
+    return shuffle(items);
+  }
+
+  function updateHud() {
+    el("scoreA").textContent = state.scores[0];
+    el("scoreB").textContent = state.scores[1];
+    el("teamA").classList.toggle("is-on", state.current === 0);
+    el("teamB").classList.toggle("is-on", state.current === 1);
+    el("roundLbl").textContent = "Round " + (state.round + 1) + " / 4";
+    el("turnHint").textContent = "To play: Team " + (state.current === 0 ? "A" : "B") + ". Hit a board answer &rarr; same team again. Miss &rarr; other team&rsquo;s go.";
+  }
+
+  function renderBoard() {
+    var r = ROUNDS[state.round];
+    var br = el("boardRows");
+    br.innerHTML = "";
+    for (var i = 0; i < r.board.length; i++) {
+      var row = document.createElement("div");
+      row.className = "board-row";
+      var open = state.found && state.found[i];
+      var ans = (open) ? r.board[i].t : "???";
+      row.innerHTML = "<div class=\"num\">" + (i + 1) + "</div><div class=\"ans" + (open ? " is-open reveal" : "") + "\">" + ans + "</div><div class=\"pt\">" + r.board[i].pts + "</div>";
+      br.appendChild(row);
+    }
+  }
+
+  function roundDone() {
+    for (var i = 0; i < state.found.length; i++) { if (!state.found[i]) return false; }
+    return true;
+  }
+
+  function onCardClick(e) {
+    var index = parseInt(e.currentTarget.getAttribute("data-i"), 10);
+    var item = state.pool[index];
+    if (!item || item.used) return;
+    if (roundDone()) return;
+    if (item.good) {
+      item.used = true;
+      state.found[item.slot] = true;
+      state.scores[state.current] += ROUNDS[state.round].board[item.slot].pts;
+      renderBoard();
+      updateHud();
+      el("lineMsg").innerHTML = "On the board! <strong>+" + ROUNDS[state.round].board[item.slot].pts + "</strong> to Team " + (state.current === 0 ? "A" : "B") + ".";
+      if (roundDone()) {
+        el("lineMsg").innerHTML += " <strong>Round clear.</strong> Use &ldquo;Next round&rdquo;.";
+        for (var u = 0; u < state.pool.length; u++) { state.pool[u].used = true; }
+      }
+      renderPool();
+    } else {
+      item.used = true;
+      state.current = 1 - state.current;
+      updateHud();
+      el("lineMsg").textContent = "Miss! Team " + (state.current === 0 ? "A" : "B") + "\u2019s go.";
+      renderPool();
+    }
+  }
+
+  function renderPool() {
+    var p = el("pool");
+    p.innerHTML = "";
+    var done = roundDone();
+    for (var i = 0; i < state.pool.length; i++) {
+      var item = state.pool[i];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "pcard" + (item.good ? "" : " bad") + (item.used && !item.good ? " shown" : "");
+      b.innerHTML = item.used
+        ? (item.good ? "✓ " : "✕ ") + item.label
+        : item.label;
+      b.setAttribute("data-i", i);
+      b.disabled = item.used || done;
+      b.addEventListener("click", onCardClick);
+      p.appendChild(b);
+    }
+  }
+
+  function startRound(ri) {
+    state.round = ri;
+    state.found = [false, false, false, false, false];
+    var r = ROUNDS[state.round];
+    el("qTopic").textContent = r.topic;
+    el("qText").innerHTML = r.q;
+    state.pool = buildPool(r);
+    renderBoard();
+    renderPool();
+    updateHud();
+    el("lineMsg").textContent = "";
+  }
+
+  el("btnNext").addEventListener("click", function () {
+    if (state.round < 3) {
+      startRound(state.round + 1);
+      return;
+    }
+    el("lineMsg").innerHTML = "All four rounds are done. Score: Team A <strong>" + state.scores[0] + "</strong> &mdash; Team B <strong>" + state.scores[1] + "</strong>. &ldquo;Reset all&rdquo; for a new game.";
+  });
+
+  el("btnReset").addEventListener("click", function () {
+    state = { round: 0, scores: [0, 0], current: 0, found: null, pool: [] };
+    startRound(0);
+  });
+
+  el("btnText").addEventListener("click", function () {
+    var h = ROUNDS[state.round].hint;
+    el("hintTitle").textContent = h;
+    var f = el("hintFrame");
+    f.src = h + "?embed=1";
+    el("hintModal").classList.add("open");
+  });
+  el("hintClose").addEventListener("click", function () { el("hintModal").classList.remove("open"); });
+  el("hintModal").addEventListener("click", function (e) { if (e.target.id === "hintModal") el("hintModal").classList.remove("open"); });
+
+  startRound(0);
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

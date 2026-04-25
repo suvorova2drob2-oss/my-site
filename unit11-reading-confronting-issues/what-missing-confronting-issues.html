@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is missing? &mdash; Confronting issues</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #0b1020; --card: #131a2e; --line: #2a3555; --text: #e8ecff; --dim: #8b95b8; --acc: #7c3aed; --ok: #22c55e; --bad: #f43f5e; --glow: #a78bfa; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Manrope", system-ui, sans-serif; background: radial-gradient(900px 500px at 50% -20%, #1e1b4b 0%, var(--bg) 50%); color: var(--text); min-height: 100dvh; padding: 12px 12px 24px; display: flex; flex-direction: column; }
+    .wrap { max-width: 1100px; margin: 0 auto; width: 100%; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+    .bar a { color: var(--glow); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    h1 { font-size: 1.35rem; font-weight: 800; }
+    .sub { color: var(--dim); font-size: 0.9rem; line-height: 1.5; margin: 8px 0 14px; }
+    .card#playCard { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 16px 50px rgba(0,0,0,0.4); flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .phrase {
+      text-align: left; padding: 12px 14px; border-radius: 12px; background: #0a0f1d; border: 2px solid #2d3a5e;
+      flex: 1 1 auto; min-height: 10rem; max-height: min(60dvh, 720px); overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; scroll-behavior: smooth; overscroll-behavior: contain;
+    }
+    .phrase::-webkit-scrollbar { width: 8px; }
+    .phrase::-webkit-scrollbar-track { background: #0a0f1d; border-radius: 4px; }
+    .phrase::-webkit-scrollbar-thumb { background: #3d4d7a; border-radius: 4px; }
+    .phrase .canvas-ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.12em; }
+    @media (min-width: 720px) {
+      .phrase .canvas-ol { display: grid; grid-template-columns: 1fr 1fr; gap: 0.12em 1.25rem; align-content: start; }
+    }
+    .phrase .canvas-ol li {
+      display: flex; align-items: baseline; gap: 8px; min-width: 0;
+      font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+      font-weight: 800; line-height: 1.3; color: #f1f5ff; word-break: break-word;
+    }
+    .phrase .canvas-ol .lnum {
+      flex: 0 0 2.1em; text-align: right; font-variant-numeric: tabular-nums; color: #64748b; font-size: 0.8em; font-weight: 700; padding-top: 0.1em;
+    }
+    .phrase .canvas-ol .ltext { flex: 1; min-width: 0; }
+    .phrase .wcnt { font-size: 0.8rem; font-weight: 600; color: var(--glow); margin-top: 10px; text-align: center; }
+    .phase-tag { text-align: center; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--glow); font-weight: 800; margin-bottom: 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+    button {
+      font-family: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.75rem; border: none; border-radius: 12px; padding: 12px 18px; cursor: pointer;
+    }
+    .b-main { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: #fff; }
+    .b-sec { background: #2d3a5e; color: var(--text); }
+    .b-main:hover, .b-sec:hover { filter: brightness(1.1); }
+    .tims, .size-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: center; font-size: 0.8rem; color: var(--dim); margin: 6px 0; }
+    .tims label, .size-row label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    fieldset.size-row { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 0 0 8px; background: #0a0f1d55; }
+    fieldset.size-row:disabled, fieldset.size-row[disabled] { opacity: 0.55; }
+    .size-hint { width: 100%; text-align: center; font-size: 0.75rem; color: #64748b; margin: 0; }
+    .big { font-size: 3rem; font-weight: 800; color: var(--glow); text-align: center; font-variant-numeric: tabular-nums; }
+    .inwrap { margin-top: 12px; }
+    .inwrap input {
+      width: 100%; max-width: min(100%, 520px); display: block; margin: 0 auto; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #0a0f1d; color: var(--text);
+      font-size: clamp(1.05rem, 2.5vw, 1.2rem); font-weight: 600; font-family: inherit; text-align: center;
+    }
+    .inwrap .hint2 { text-align: center; font-size: 0.9rem; color: var(--dim); margin: 8px 0; line-height: 1.4; }
+    .msg { text-align: center; min-height: 2.4em; font-size: 0.95rem; font-weight: 600; margin: 10px 0; line-height: 1.4; }
+    .msg.ok { color: var(--ok); }
+    .msg.bad { color: var(--bad); }
+    .msg.mot { color: #c4b5fd; }
+    .lights { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; color: #444; font-size: 1.2rem; font-weight: 800; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>What is missing?</h1>
+      <a href="index.html">&larr; Hub</a>
+    </div>
+    <p class="sub" id="staticIntro">Перед стартом выбери, <strong>сколько фраз</strong> в сессии: <strong>5, 10 или 15</strong> (подмешаны случайно из банка). На полотне &mdash; только они; запоминай <strong>всё</strong> &rarr; «свет погас» &rarr; <strong>целиком исчезла одна строка</strong> &rarr; введи фразу по-английски. Тайминг: <strong>5 / 10 / 15</strong> c (по умол. 10). Ошибка &rarr; сессия <strong>с нуля</strong> (тот же размер, новый набор/порядок).</p>
+
+    <div class="card" id="playCard">
+      <p class="phase-tag" id="phaseName">—</p>
+      <fieldset class="size-row" id="sizeRow">
+        <span style="font-weight:800;color:var(--glow)">Сколько фраз в сессии</span>
+        <label><input type="radio" name="sz" value="5" /> 5</label>
+        <label><input type="radio" name="sz" value="10" checked /> 10</label>
+        <label><input type="radio" name="sz" value="15" /> 15</label>
+        <p class="size-hint" id="sizeHint">—</p>
+      </fieldset>
+      <div class="phrase" id="phraseBox" aria-live="polite"></div>
+      <div class="tims" id="tims">
+        <span>Запоминание</span>
+        <label><input type="radio" name="m" value="5" /> 5s</label>
+        <label><input type="radio" name="m" value="10" checked /> 10s</label>
+        <label><input type="radio" name="m" value="15" /> 15s</label>
+        <span>| Просмотр</span>
+        <label><input type="radio" name="l" value="5" /> 5s</label>
+        <label><input type="radio" name="l" value="10" checked /> 10s</label>
+        <label><input type="radio" name="l" value="15" /> 15s</label>
+      </div>
+      <p class="big" id="countNum"></p>
+      <div class="inwrap" id="inputArea">
+        <p class="hint2" id="typeHint">—</p>
+        <input type="text" id="ansIn" autocomplete="off" spellcheck="false" />
+      </div>
+      <p class="msg" id="msgLine"></p>
+      <div class="row" id="btnRow">
+        <button type="button" class="b-main" id="btnStart">Новая сессия &amp; старт</button>
+        <button type="button" class="b-sec hidden" id="btnCheck">Проверить</button>
+        <button type="button" class="b-sec" id="btnHow">Правила</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lights hidden" id="lightsOut">… lights out …</div>
+
+  <script src="../js/u11-must-know-lexis.js"></script>
+  <script>
+(function () {
+  var POOL = (typeof U11_KEY_PHRASES_MISSING !== "undefined" && U11_KEY_PHRASES_MISSING.length)
+    ? U11_KEY_PHRASES_MISSING.slice()
+    : (typeof U11_WHAT_MISSING_DECK !== "undefined" && U11_WHAT_MISSING_DECK.length) ? U11_WHAT_MISSING_DECK.slice() : (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" ? U11_CONFRONTING_MUST_KNOW.slice() : []);
+  var play = [];
+  var hideOrder = [];
+  var step = 0;
+  var phase = "idle";
+  var tmr = null;
+
+  var OK = [
+    "Верно! Какой именно пропал(а) — поймал(а).",
+    "Так точно! Следующая исчезнет другая — держи список в голове.",
+    "Bingo! The whole phrase, nailed.",
+    "Да! Целиком, как «fish stocks» — без разбивки на слова.",
+    "Отлично! Ещё одна волна — весь набор снова целиком."
+  ];
+  var FAIL = [
+    "Не та фраза. Сессия с нуля — другой порядок пропаданий.",
+    "Мимо. Снова запоминай весь список на полотне и лови «дыру» в номерах.",
+    "Not quite. Reset — the canvas goes full, then a different line will vanish.",
+    "Почти. Вся строка сразу, на английском как в оригинале."
+  ];
+  var WIN = [
+    "Все фразы на месте! Ты прошёл(ла) весь набор — новая сессия по кнопке.",
+    "Full canvas recovered. Every line accounted for. Legend.",
+    "Победа: какая пропадала, ты вспомнил(а) по очереди — чистый слот."
+  ];
+
+  function el(id) { return document.getElementById(id); }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+  function memSec() { return parseInt((document.querySelector("input[name=m]:checked") || {}).value || "10", 10) || 10; }
+  function lookSec() { return parseInt((document.querySelector("input[name=l]:checked") || {}).value || "10", 10) || 10; }
+  function getWantedSize() {
+    return parseInt((document.querySelector("input[name=sz]:checked") || {}).value || "10", 10) || 10;
+  }
+  function getSessionSize() {
+    if (!POOL.length) return 0;
+    return Math.min(POOL.length, getWantedSize());
+  }
+  function pickSessionDeck(n) {
+    return shuffle(POOL).slice(0, n);
+  }
+  function setSizeLock(locked) {
+    var fs = el("sizeRow");
+    if (fs) fs.disabled = locked;
+  }
+  function updateSizeHint() {
+    var h = el("sizeHint");
+    if (!h) return;
+    var L = POOL.length;
+    var w = getWantedSize();
+    var n = Math.min(w, L);
+    var t = "Банк: " + L + " фр.  ·  в сессии: " + n;
+    if (L < w) t += " (всё, что в банке; хотелось " + w + ")   ·  ";
+    else t += " (случайно из банка)  ·  ";
+    t += "другой размер — после «Победы» или до старта";
+    h.textContent = t;
+  }
+  document.querySelectorAll("input[name=sz]").forEach(function (r) { r.addEventListener("change", updateSizeHint); });
+
+  function norm(s) {
+    return String(s).trim().toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, " ").replace(/[^a-z0-9'\s]/g, "");
+  }
+
+  function clearTimers() { if (tmr) { clearInterval(tmr); tmr = null; } }
+
+  function setPhase(name, sub) {
+    phase = name;
+    el("phaseName").textContent = sub || name;
+  }
+
+  function renderCanvas(omitIndex) {
+    var box = el("phraseBox");
+    box.innerHTML = "";
+    var ol = document.createElement("ol");
+    ol.className = "canvas-ol";
+    var show = 0;
+    for (var j = 0; j < play.length; j++) {
+      if (typeof omitIndex === "number" && j === omitIndex) continue;
+      var li = document.createElement("li");
+      var num = document.createElement("span");
+      num.className = "lnum";
+      num.textContent = (j + 1) + ".";
+      var tx = document.createElement("span");
+      tx.className = "ltext";
+      tx.textContent = play[j];
+      li.appendChild(num);
+      li.appendChild(tx);
+      ol.appendChild(li);
+      show++;
+    }
+    box.appendChild(ol);
+    if (typeof omitIndex === "number") {
+      var wc = document.createElement("p");
+      wc.className = "wcnt";
+      wc.textContent = "Сейчас строк: " + show + "  ·  в сессии было: " + play.length + "  ·  исчезла одна";
+      box.appendChild(wc);
+    }
+  }
+
+  function newRound() {
+    if (!POOL.length) { el("msgLine").textContent = "Список фраз пуст. Подключи u11-must-know-lexis.js"; el("msgLine").className = "msg bad"; return; }
+    var n = getSessionSize();
+    if (n < 1) { el("msgLine").textContent = "В банке нет фраз."; el("msgLine").className = "msg bad"; return; }
+    clearTimers();
+    play = pickSessionDeck(n);
+    if (!play.length) { el("msgLine").textContent = "Нечего показывать."; el("msgLine").className = "msg bad"; return; }
+    setSizeLock(true);
+    hideOrder = shuffle(play.map(function (_, i) { return i; }));
+    step = 0;
+    el("ansIn").value = "";
+    el("inputArea").classList.add("hidden");
+    el("btnCheck").classList.add("hidden");
+    el("countNum").textContent = "";
+    el("msgLine").textContent = "";
+    el("msgLine").className = "msg";
+    runMemorize();
+  }
+
+  function runMemorize() {
+    clearTimers();
+    el("msgLine").textContent = "";
+    el("msgLine").className = "msg";
+    setPhase("MEMORIZE", "ЗАПОМНИ" + (step > 0 ? " снова все " + play.length + " фр." : ": " + play.length + " фр. на полотне"));
+    renderCanvas();
+    el("tims").classList.remove("hidden");
+    el("typeHint").textContent = "Скоро погаснет свет, потом целиком пропадёт одна строчка&hellip;";
+    el("phraseBox").scrollTop = 0;
+    var s = memSec();
+    el("countNum").textContent = String(s);
+    var left = s;
+    tmr = setInterval(function () {
+      left--;
+      el("countNum").textContent = String(Math.max(0, left));
+      if (left <= 0) {
+        clearTimers();
+        el("countNum").textContent = "";
+        doLights();
+      }
+    }, 1000);
+  }
+
+  function doLights() {
+    setPhase("LIGHTS", "свет");
+    el("tims").classList.add("hidden");
+    el("countNum").textContent = "";
+    var o = el("lightsOut");
+    o.classList.remove("hidden");
+    setTimeout(function () {
+      o.classList.add("hidden");
+      startLook();
+    }, 1100);
+  }
+
+  function startLook() {
+    setPhase("LOOK", "СМОТРИ — какой строки нет? (" + lookSec() + " с)");
+    var miss = hideOrder[step];
+    renderCanvas(miss);
+    el("phraseBox").scrollTop = 0;
+    var s = lookSec();
+    el("countNum").textContent = String(s);
+    var left = s;
+    tmr = setInterval(function () {
+      left--;
+      el("countNum").textContent = String(Math.max(0, left));
+      if (left <= 0) {
+        clearTimers();
+        el("countNum").textContent = "";
+        goType();
+      }
+    }, 1000);
+  }
+
+  function goType() {
+    setPhase("TYPE", "впиши пропавшую фразу целиком");
+    el("tims").classList.add("hidden");
+    el("typeHint").textContent = "Вся фраза по-английски, как в списке (например: fish stocks).";
+    el("ansIn").value = "";
+    el("inputArea").classList.remove("hidden");
+    el("btnCheck").classList.remove("hidden");
+    el("ansIn").focus();
+  }
+
+  function checkAns() {
+    var miss = hideOrder[step];
+    var need = norm(play[miss]);
+    var got = norm(el("ansIn").value);
+    if (!got) { el("msgLine").textContent = "Введи пропавшую фразу."; el("msgLine").className = "msg bad"; return; }
+    if (got === need) {
+      el("msgLine").textContent = OK[Math.floor(Math.random() * OK.length)];
+      el("msgLine").className = "msg ok mot";
+      step++;
+      if (step >= play.length) {
+        setPhase("WIN", "победа");
+        setSizeLock(false);
+        el("inputArea").classList.add("hidden");
+        el("btnCheck").classList.add("hidden");
+        renderCanvas();
+        el("phraseBox").scrollTop = 0;
+        el("msgLine").textContent = WIN[Math.floor(Math.random() * WIN.length)];
+        el("msgLine").className = "msg ok";
+        el("typeHint").textContent = "Готово. Можно сменить размер и снова — «Новая сессия & старт».";
+        return;
+      }
+      el("ansIn").value = "";
+      el("inputArea").classList.add("hidden");
+      el("btnCheck").classList.add("hidden");
+      setTimeout(function () { runMemorize(); }, 900);
+    } else {
+      el("msgLine").textContent = FAIL[Math.floor(Math.random() * FAIL.length)];
+      el("msgLine").className = "msg bad";
+      el("ansIn").value = "";
+      el("inputArea").classList.add("hidden");
+      el("btnCheck").classList.add("hidden");
+      step = 0;
+      play = pickSessionDeck(getSessionSize());
+      hideOrder = shuffle(play.map(function (_, i) { return i; }));
+      setTimeout(function () { runMemorize(); }, 2000);
+    }
+  }
+
+  el("btnStart").addEventListener("click", newRound);
+  el("btnCheck").addEventListener("click", checkAns);
+  el("ansIn").addEventListener("keydown", function (e) { if (e.key === "Enter") checkAns(); });
+  el("btnHow").addEventListener("click", function () {
+    alert("1) Выбери 5, 10 или 15 фраз в сессии (случайно из банка). На полотне — только они.\n2) Тайминг: 5 / 10 / 15 с (запоминание и просмотр) — по умолчанию 10+10.\n3) «Свет погас» — целиком пропала одна строка; номер «дырка» в списке.\n4) Впиши пропавшую фразу по-английски. Подряд n раз — победа, можно сменить размер.\n5) Ошибка — с нуля: тот же выбранный размер, новый набор и порядок пропаданий. Размер сессии меняй после победы или до старта.");
+  });
+  updateSizeHint();
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

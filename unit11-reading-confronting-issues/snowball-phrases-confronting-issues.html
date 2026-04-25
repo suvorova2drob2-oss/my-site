@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Снежный ком — ключевые фразы (Confronting issues)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #0b1020; --card: #131a2e; --line: #2a3555; --text: #e8ecff; --dim: #8b95b8; --glow: #a78bfa; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Manrope", system-ui, sans-serif; background: radial-gradient(900px 500px at 50% -20%, #1e1b4b 0%, var(--bg) 50%); color: var(--text); min-height: 100dvh; padding: 16px; }
+    .wrap { max-width: 800px; margin: 0 auto; }
+    .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .bar a { color: var(--glow); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    h1 { font-size: 1.25rem; font-weight: 800; }
+    .sub { color: var(--dim); font-size: 0.9rem; line-height: 1.5; margin: 6px 0 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; box-shadow: 0 16px 50px rgba(0,0,0,0.35); }
+    label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--glow); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    textarea#namesIn {
+      width: 100%; min-height: 8rem; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+      background: #0a0f1d; color: var(--text); font-family: inherit; font-size: 0.95rem; line-height: 1.4; resize: vertical;
+    }
+    .rowline { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 12px 0; font-size: 0.9rem; color: var(--dim); }
+    .rowline label { display: inline; margin: 0; text-transform: none; letter-spacing: 0; font-weight: 600; }
+    .rowline fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; display: flex; gap: 12px; }
+    .rowline fieldset label { text-transform: none; letter-spacing: 0; color: var(--text); }
+    button {
+      font-family: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.8rem;
+      border: none; border-radius: 12px; padding: 14px 22px; cursor: pointer;
+    }
+    .b-main { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: #fff; width: 100%; max-width: 100%; }
+    .b-sec { background: #2d3a5e; color: var(--text); }
+    .b-main:disabled, .b-sec:disabled { opacity: 0.45; cursor: not-allowed; }
+    .meta { text-align: center; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--glow); font-weight: 800; margin-bottom: 8px; }
+    .name-big { text-align: center; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; margin: 4px 0 14px; }
+    .phrase-big {
+      text-align: center; font-size: clamp(1.1rem, 2.6vw, 1.5rem); font-weight: 800; line-height: 1.4;
+      padding: 20px; border-radius: 14px; background: #0a0f1d; border: 2px solid #3d4d7a; color: #f1f5ff;
+    }
+    .inst { text-align: center; font-size: 0.88rem; color: var(--dim); line-height: 1.45; margin: 14px 0; max-width: 40em; margin-left: auto; margin-right: auto; }
+    .chain { font-size: 0.8rem; color: #8b9bc4; line-height: 1.4; max-height: 6.5em; overflow-y: auto; padding: 10px; border-radius: 8px; background: #0a0f1d88; border: 1px solid var(--line); }
+    .chain strong { color: #c4b5fd; }
+    .done { text-align: center; font-size: 1.1rem; color: #86efac; font-weight: 700; }
+    .hidden { display: none !important; }
+    .row-btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+    .row-btns button { width: auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>Снежный ком — фразы из текстов</h1>
+      <a href="index.html">&larr; Hub</a>
+    </div>
+    <p class="sub">Имена по одному в строке &rarr; выбери, <strong>сколько кругов</strong> (1&ndash;4). Потом <strong>«Дальше»</strong>: крупно &mdash; <strong>кто ходит</strong> и <strong>одна новая</strong> фраза из банка юнита. Фразы по порядку, как в `U11_KEY_PHRASES_MISSING`.</p>
+
+    <div class="card" id="setupCard">
+      <label for="namesIn">Имена (порядок = порядок хода, если не перемешать)</label>
+      <textarea id="namesIn" placeholder="Анна&#10;Борис&#10;…"></textarea>
+      <div class="rowline">
+        <span>Кругов (сама выбираешь, до 4):</span>
+        <label><input type="radio" name="rounds" value="1" /> 1</label>
+        <label><input type="radio" name="rounds" value="2" checked /> 2</label>
+        <label><input type="radio" name="rounds" value="3" /> 3</label>
+        <label><input type="radio" name="rounds" value="4" /> 4</label>
+      </div>
+      <div class="rowline">
+        <label><input type="checkbox" id="shuffleNames" /> Перемешать порядок имён (случайно)</label>
+      </div>
+      <p id="setupErr" class="inst" style="color:#f43f5e;min-height:1.2em"></p>
+      <button type="button" class="b-main" id="btnStart">Старт</button>
+    </div>
+
+    <div class="card hidden" id="playCard">
+      <p class="meta" id="turnMeta">—</p>
+      <p class="name-big" id="turnName">—</p>
+      <p class="phrase-big" id="turnPhrase">—</p>
+      <p class="inst" id="turnInst">—</p>
+      <p class="inst" id="turnChainHead" style="font-size:0.75rem;opacity:0.9">Уже сказанные в этой сессии (для смысла, не дословно):</p>
+      <div class="chain" id="chainList" style="min-height:2.5em"></div>
+      <div class="row-btns" style="margin-top:12px">
+        <button type="button" class="b-main" id="btnNext">Дальше</button>
+        <button type="button" class="b-sec" id="btnBack" title="На один шаг — если поправить задание">Назад</button>
+        <button type="button" class="b-sec" id="btnStop">Стоп — в начало</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="doneCard">
+      <p class="done" id="doneText">Круги закончились. Можно новый набор.</p>
+      <button type="button" class="b-main" id="btnAgain" style="width:100%;max-width:100%;margin-top:12px">Снова: имена и круги</button>
+    </div>
+  </div>
+
+  <script src="../js/u11-must-know-lexis.js"></script>
+  <script>
+(function () {
+  var PHRASES = (typeof U11_KEY_PHRASES_MISSING !== "undefined" && U11_KEY_PHRASES_MISSING.length)
+    ? U11_KEY_PHRASES_MISSING.slice()
+    : (typeof U11_WHAT_MISSING_DECK !== "undefined" && U11_WHAT_MISSING_DECK.length) ? U11_WHAT_MISSING_DECK.slice() : [];
+  var names = [];
+  var numRounds = 2;
+  var turn = 0;
+  var maxTurns = 0;
+
+  function el(id) { return document.getElementById(id); }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+
+  function show(id, on) { el(id).classList.toggle("hidden", !on); }
+
+  function parseNames() {
+    var t = (el("namesIn").value || "").split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+    return t;
+  }
+
+  function getNumRounds() {
+    var v = parseInt((document.querySelector("input[name=rounds]:checked") || {}).value || "2", 10) || 2;
+    if (v < 1) v = 1;
+    if (v > 4) v = 4;
+    return v;
+  }
+
+  function start() {
+    el("setupErr").textContent = "";
+    var n = parseNames();
+    if (!n.length) { el("setupErr").textContent = "Введи хотя бы одно имя."; return; }
+    if (!PHRASES.length) { el("setupErr").textContent = "Нет фраз (подключи u11-must-know-lexis.js)."; return; }
+    if (el("shuffleNames").checked) n = shuffle(n);
+    names = n;
+    numRounds = getNumRounds();
+    maxTurns = names.length * numRounds;
+    turn = 0;
+    show("setupCard", false);
+    show("playCard", true);
+    show("doneCard", false);
+    render();
+  }
+
+  function render() {
+    if (turn >= maxTurns) { finish(); return; }
+    var idx = turn;
+    var name = names[turn % names.length];
+    var phrase = PHRASES[turn % PHRASES.length];
+    var roundN = Math.floor(turn / names.length) + 1;
+    el("turnMeta").textContent = "Круг " + roundN + " / " + numRounds + "  ·  ход " + (1 + (turn % names.length)) + " / " + names.length + "  ·  шаг " + (turn + 1) + " / " + maxTurns;
+    el("turnName").textContent = name;
+    el("turnPhrase").textContent = "«" + phrase + "»";
+    if (turn === 0) {
+      el("turnInst").textContent = "Скажи одно предложение по-английски, естественно встроив фразу.";
+    } else {
+      el("turnInst").textContent = "Сначала кратко повтори смысл того, что сказали до тебя, затем — своё предложение с новой фразой ниже.";
+    }
+    var lines = [];
+    for (var t = 0; t < turn; t++) {
+      var nm = names[t % names.length];
+      var ph = PHRASES[t % PHRASES.length];
+      lines.push((t + 1) + ". " + nm + " — " + ph);
+    }
+    el("chainList").textContent = lines.length ? lines.join(" · ") : "—";
+    el("turnChainHead").classList.toggle("hidden", false);
+    el("btnBack").disabled = turn === 0;
+    el("btnNext").textContent = turn === maxTurns - 1 ? "Финиш" : "Дальше";
+  }
+
+  function next() {
+    turn++;
+    if (turn >= maxTurns) { finish(); return; }
+    render();
+  }
+
+  function back() {
+    if (turn < 1) return;
+    turn--;
+    render();
+  }
+
+  function finish() {
+    show("playCard", false);
+    show("doneCard", true);
+  }
+
+  function stopToSetup() {
+    show("playCard", false);
+    show("doneCard", false);
+    show("setupCard", true);
+  }
+
+  el("btnStart").addEventListener("click", start);
+  el("btnNext").addEventListener("click", next);
+  el("btnBack").addEventListener("click", back);
+  el("btnStop").addEventListener("click", stopToSetup);
+  el("btnAgain").addEventListener("click", function () { show("doneCard", false); show("setupCard", true); });
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

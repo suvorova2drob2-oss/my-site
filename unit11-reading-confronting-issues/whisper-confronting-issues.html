@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whisper chain (broken telephone) &mdash; Confronting issues</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f4f0e6; --ink: #1c1917; --muted: #57534e; --line: #a8a29e; --acc: #0d9488; --bub: #fff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "DM Sans", system-ui, sans-serif; background: linear-gradient(160deg, #ccfbf1 0%, var(--bg) 40%); color: var(--ink); min-height: 100dvh; padding: 18px; }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+    .top a { color: var(--acc); font-weight: 700; text-decoration: none; font-size: 0.88rem; }
+    .top a:hover { text-decoration: underline; }
+    h1 { font-size: 1.2rem; font-weight: 800; }
+    .lead { font-size: 0.88rem; color: var(--muted); line-height: 1.45; margin-top: 8px; }
+    .box {
+      background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 0 #d6d3d1;
+    }
+    .box h2 { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+    textarea, .inp {
+      width: 100%; min-height: 100px; padding: 10px; border-radius: 10px; border: 2px solid var(--line); font-size: 0.95rem; font-family: inherit; resize: vertical;
+    }
+    .secret {
+      font-size: 1.02rem; font-weight: 700; line-height: 1.35; padding: 12px; background: #fef3c7; border-radius: 10px; border: 2px dashed #b45309;
+    }
+    .bub { background: var(--bub); border: 1px solid #d6d3d1; border-radius: 14px; padding: 10px 12px; font-size: 0.9rem; line-height: 1.4; margin-bottom: 6px; }
+    .bub small { color: var(--muted); display: block; font-size: 0.7rem; margin-top: 4px; }
+    .err { color: #b91c1c; font-size: 0.85rem; min-height: 1.1em; }
+    button {
+      font-family: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.8rem; border: none; border-radius: 12px; padding: 12px 18px; cursor: pointer; background: var(--acc); color: #fff; margin-top: 8px; width: 100%;
+    }
+    button:hover { filter: brightness(1.05); }
+    .btn-sec { background: #44403c; }
+    .step-tag { display: inline-block; background: #0d9488; color: #fff; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; margin-bottom: 8px; }
+    .reveal h3 { font-size: 0.8rem; color: var(--muted); margin: 10px 0 6px; }
+    .reveal .orig { background: #ecfdf5; border: 2px solid #0d9488; padding: 10px; border-radius: 10px; font-weight: 700; }
+    .setup { }
+    .game { display: none; } .game.on { display: block; }
+    .opt-row { display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; font-size: 0.86rem; line-height: 1.4; color: var(--ink); }
+    .opt-row input { width: 1.15em; height: 1.15em; margin-top: 3px; flex-shrink: 0; }
+    .opt-row label { color: var(--muted); }
+    .peek {
+      background: #f0fdfa; border: 2px solid var(--acc); border-radius: 10px; padding: 12px; margin: 8px 0 12px;
+    }
+    .peek .masked { font-size: 0.9rem; color: #57534e; font-style: italic; word-break: break-word; }
+    .peek .shown { font-size: 1.02rem; font-weight: 700; line-height: 1.35; word-break: break-word; }
+    .btn-rev {
+      background: #0f766e; color: #fff; font-size: 0.75rem; padding: 10px 14px; margin-top: 0; width: auto; display: inline-block;
+    }
+    .peek-hint { font-size: 0.72rem; color: #78716c; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Whisper chain</h1>
+        <p class="lead"><strong>Best in the room:</strong> pass <strong>one phone</strong> so only one pair of eyes sees the line. <strong>If everyone watches the same screen</strong> (projector, Zoom share): the game is unfair unless others look away in the moment — use <strong>Shared screen mode</strong> below: the line is hidden until the current player taps <strong>Reveal (8s)</strong>, then it hides again. (Still not as good as a private phone, but it helps.) <strong>One account not needed</strong> — no multiplayer server. Chain order in names, secret phrase from the unit, type and pass. Optional: <strong>say</strong> the line aloud, next person <strong>types from hearing</strong>.</p>
+      </div>
+      <a href="index.html">&larr; Hub</a>
+    </div>
+
+    <div class="box setup" id="setup">
+      <h2>Names in order (one per line, &ge;2)</h2>
+      <textarea id="namesIn" placeholder="Ava&#10;Ben&#10;Cole" autocomplete="off"></textarea>
+      <div class="opt-row">
+        <input type="checkbox" id="cbShared" />
+        <label for="cbShared"><strong>Shared screen / Zoom / projector</strong> — hide &ldquo;secret&rdquo; and &ldquo;previous line&rdquo; until the current player taps <strong>Reveal (8s)</strong>. Everyone else: look away or turn your camera when someone reveals.</label>
+      </div>
+      <p class="err" id="err"></p>
+      <button type="button" id="btnGo">Start chain</button>
+    </div>
+
+    <div class="box game" id="stepView">
+      <p class="step-tag" id="stepFor">—</p>
+      <div id="stepBody"></div>
+      <p class="err" id="err2"></p>
+      <button type="button" id="btnNext">Next person</button>
+    </div>
+
+    <div class="box game" id="revealView" style="display:none">
+      <div class="reveal" id="revealBody"></div>
+      <button type="button" class="btn-sec" id="btnAgain">New chain</button>
+    </div>
+  </div>
+
+  <script src="../js/u11-must-know-lexis.js"></script>
+  <script>
+(function () {
+  var DECK = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length) ? U11_CONFRONTING_MUST_KNOW.slice() : [];
+  var names = [];
+  var secret = "";
+  var chain = [];
+  var step = 0;
+  var revealT = null;
+
+  function clearRevealT() {
+    if (revealT) { clearTimeout(revealT); revealT = null; }
+  }
+  function shared() {
+    return el("cbShared") && el("cbShared").checked;
+  }
+
+  /** Hides the line on stream until Reveal; 8s auto-hide. */
+  function addPeekBlock(body, value, forWho) {
+    var wrap = document.createElement("div");
+    wrap.className = "peek";
+    var slot = document.createElement("div");
+    slot.className = "masked";
+    slot.textContent = "Line hidden. Only " + forWho + " should tap Reveal and read the text (8 seconds).";
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-rev";
+    btn.textContent = "Reveal (8s)";
+    var hint = document.createElement("p");
+    hint.className = "peek-hint";
+    hint.textContent = "If you’re on a shared / Zoom screen: other people, look away for those 8 seconds (honour system).";
+    btn.addEventListener("click", function () {
+      clearRevealT();
+      slot.className = "shown";
+      slot.textContent = value;
+      revealT = setTimeout(function () {
+        slot.className = "masked";
+        slot.textContent = "Hidden again. Same person can tap Reveal to read again.";
+        revealT = null;
+      }, 8000);
+    });
+    wrap.appendChild(slot);
+    wrap.appendChild(btn);
+    wrap.appendChild(hint);
+    body.appendChild(wrap);
+  }
+
+  function el(id) { return document.getElementById(id); }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function parseNames() {
+    el("err").textContent = "";
+    var lines = (el("namesIn").value || "").split(/\r?\n/);
+    var out = [];
+    for (var i = 0; i < lines.length; i++) {
+      var t = lines[i].trim();
+      if (t) out.push(t);
+    }
+    if (out.length < 2) { el("err").textContent = "Add at least two names."; return null; }
+    return out;
+  }
+
+  function renderStep() {
+    clearRevealT();
+    el("err2").textContent = "";
+    var n = names[step];
+    el("stepFor").textContent = "Turn " + (step + 1) + " of " + names.length + " — for “" + n + "” only";
+    var body = el("stepBody");
+    body.innerHTML = "";
+    if (step === 0) {
+      if (shared()) {
+        addPeekBlock(body, "Secret phrase: " + secret, n);
+      } else {
+        var p = document.createElement("p");
+        p.className = "secret";
+        p.textContent = "Secret phrase: " + secret;
+        body.appendChild(p);
+      }
+      var h = document.createElement("h2");
+      h.textContent = "Type a shorter or paraphrased line to pass to the next person (do not hand them the device until you continue)";
+      h.style.fontSize = "0.7rem";
+      body.appendChild(h);
+      var ta = document.createElement("textarea");
+      ta.id = "taLine";
+      ta.setAttribute("placeholder", "Type what the next person will read…");
+      ta.setAttribute("autocomplete", "off");
+      body.appendChild(ta);
+    } else {
+      var prev = chain[step - 1] || "";
+      if (shared()) {
+        var hPr = document.createElement("h2");
+        hPr.textContent = "Previous line (use Reveal — 8s)";
+        hPr.style.fontSize = "0.65rem";
+        hPr.style.color = "var(--muted)";
+        hPr.style.marginBottom = "4px";
+        body.appendChild(hPr);
+        addPeekBlock(body, prev, n);
+      } else {
+        var b = document.createElement("div");
+        b.className = "bub";
+        b.innerHTML = "Previous line:<br><strong>" + esc(prev) + "</strong><small>Only this — you did not see the original secret</small>";
+        body.appendChild(b);
+      }
+      var h2 = document.createElement("h2");
+      h2.textContent = "Type the next line to pass (how you rephrase it after reading, or from memory if you use the speaking rule).";
+      h2.style.fontSize = "0.7rem";
+      h2.style.marginTop = "8px";
+      body.appendChild(h2);
+      var ta2 = document.createElement("textarea");
+      ta2.id = "taLine";
+      ta2.setAttribute("autocomplete", "off");
+      body.appendChild(ta2);
+    }
+  }
+
+  function showReveal() {
+    el("stepView").style.display = "none";
+    el("revealView").style.display = "block";
+    el("revealView").classList.add("on");
+    var out = el("revealBody");
+    out.innerHTML = "";
+    var h0 = document.createElement("h3");
+    h0.textContent = "Original (from the unit deck)";
+    out.appendChild(h0);
+    var o = document.createElement("p");
+    o.className = "orig";
+    o.textContent = secret;
+    out.appendChild(o);
+    h0 = document.createElement("h3");
+    h0.textContent = "Chain (each step)";
+    out.appendChild(h0);
+    for (var i = 0; i < chain.length; i++) {
+      var d = document.createElement("div");
+      d.className = "bub";
+      d.innerHTML = esc(names[i]) + " <small>passed</small><br><strong>" + esc(chain[i]) + "</strong>";
+      out.appendChild(d);
+    }
+    var last = chain.length ? chain[chain.length - 1] : "";
+    h0 = document.createElement("h3");
+    h0.textContent = "Last line vs original";
+    out.appendChild(h0);
+    var p = document.createElement("p");
+    p.style.fontSize = "0.9rem";
+    p.style.lineHeight = "1.5";
+    p.innerHTML = "How close is the <strong>last</strong> line to the original? (Laughs allowed.)<br>Last: " + (last ? "<em>" + esc(last) + "</em>" : "—");
+    out.appendChild(p);
+  }
+
+  el("btnGo").addEventListener("click", function () {
+    if (!DECK.length) { el("err").textContent = "Phrase list not loaded (u11-must-know-lexis.js)."; return; }
+    var p = parseNames();
+    if (!p) return;
+    names = p;
+    secret = shuffle(DECK.slice())[0];
+    chain = [];
+    step = 0;
+    el("setup").style.display = "none";
+    el("revealView").style.display = "none";
+    el("stepView").classList.add("on");
+    el("stepView").style.display = "block";
+    renderStep();
+  });
+
+  el("btnNext").addEventListener("click", function () {
+    clearRevealT();
+    el("err2").textContent = "";
+    var ta = document.getElementById("taLine");
+    if (!ta) return;
+    var t = (ta.value || "").trim();
+    if (!t) { el("err2").textContent = "Type a line to continue, or a single word if the chain is stuck."; return; }
+    chain[step] = t;
+    step++;
+    if (step >= names.length) {
+      showReveal();
+      return;
+    }
+    renderStep();
+  });
+
+  el("btnAgain").addEventListener("click", function () {
+    chain = [];
+    step = 0;
+    el("revealView").style.display = "none";
+    el("stepView").style.display = "none";
+    el("setup").style.display = "block";
+  });
+})();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>
