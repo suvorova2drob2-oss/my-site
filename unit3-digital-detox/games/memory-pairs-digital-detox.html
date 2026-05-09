@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory pairs — My digital detox (Unit 3)</title>
+  <style>
+    :root { --bg: #0a0f1d; --text: #e8ecff; --muted: #8b95b8; --ok: #22c55e; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif; background: linear-gradient(180deg, #070b14, #0a0f1d); color: var(--text);
+      min-height: 100dvh; display: flex; flex-direction: column; padding: 10px 12px 12px;
+    }
+    .wrap { width: 100%; max-width: 1100px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    h1 { font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; flex-shrink: 0; }
+    .sub { color: var(--muted); font-size: 0.86rem; line-height: 1.4; max-width: 48rem; margin-bottom: 8px; flex-shrink: 0; }
+    .sub a { color: #a78bfa; }
+    .bar {
+      display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 6px; font-size: 0.8rem; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .bar label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+    .bar select { background: #1a2332; color: #e2e8f0; border: 1px solid #3d3d55; border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; }
+    .bar button { background: #2d3a5e; color: #fff; border: 1px solid #4a6898; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer; font-size: 0.82rem; }
+    .bar button:hover { border-color: #7dd3fc; }
+    .stat { font-variant-numeric: tabular-nums; }
+    .round-info { width: 100%; font-size: 0.72rem; color: #64748b; line-height: 1.3; margin-bottom: 4px; flex-shrink: 0; }
+    .board {
+      flex: 1; min-height: 0; display: flex; flex-direction: column;
+    }
+    .grid {
+      flex: 1; min-height: 0;
+      display: grid;
+      gap: 5px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(6, minmax(0, 1fr));
+    }
+    @media (min-width: 520px) {
+      .grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .tile {
+      border-radius: 8px; border: 2px solid #3d3d55; cursor: pointer; min-width: 0; min-height: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      padding: 4px 5px; font-size: 0.68rem; line-height: 1.2; font-weight: 600; user-select: none;
+      background: #12101c; transition: border-color 0.12s, opacity 0.2s; color: #e2e8f0;
+    }
+    @media (min-width: 720px) {
+      .tile { padding: 5px 6px; font-size: 0.72rem; }
+    }
+    .tile:hover:not(:disabled) { border-color: #6b6b80; }
+    .tile:disabled { cursor: default; }
+    .tile .face {
+      width: 100%; flex: 1; display: flex; align-items: center; justify-content: center;
+      font-size: clamp(0.58rem, 1.5vw, 0.8rem); line-height: 1.25; overflow: hidden;
+    }
+    .tile .part { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #a78bfa; margin-top: 3px; flex-shrink: 0; }
+    .back-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; width: 100%; flex: 1; }
+    .back-num {
+      font-size: clamp(1.1rem, 3.2vw, 1.6rem); font-weight: 800; font-variant-numeric: tabular-nums;
+      color: #94a3b8; line-height: 1; letter-spacing: -0.02em;
+    }
+    .back-hint { font-size: 0.55rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .tile.is-up { background: #1a2332; border-color: #4f6b98; }
+    .tile.matched { opacity: 0.35; border-color: var(--ok); pointer-events: none; }
+    .win { text-align: center; font-size: 0.9rem; padding: 4px 0 2px; color: var(--ok); font-weight: 800; flex-shrink: 0; }
+    .t1 { --tc: #3b82f6; } .t2 { --tc: #14b8a6; } .t3 { --tc: #22c55e; } .t4 { --tc: #eab308; } .t5 { --tc: #a855f7; } .t6 { --tc: #f43f5e; }
+    .tile .part { border-top: 2px solid var(--tc, #64748b); padding-top: 2px; margin-top: auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Memory pairs</h1>
+    <p class="sub">
+      <strong>18 cards</strong> = 9 pairs. Each new round uses <strong>half the bank</strong> (the full data file has 18 pairs). Match phrase ↔ paraphrase. Numbers 1&ndash;18 help you call cards in class.
+      <a href="../data/u3-memory-pairs.js">u3-memory-pairs.js</a> ·
+      <a href="index.html">Games hub</a> ·
+      <a href="../index.html">Text hub</a> ·
+      <a href="../../unit3.html">Unit 3</a>
+    </p>
+    <div class="bar">
+      <label>Deck
+        <select id="deckMode" title="How to pick which 9 pairs to play">
+          <option value="random" selected>Random 9 of 18 (each new game)</option>
+          <option value="a">Set A only (pairs 1&ndash;9 in file order)</option>
+          <option value="b">Set B only (pairs 10&ndash;18 in file order)</option>
+        </select>
+      </label>
+      <span class="stat">Pairs left: <strong id="nLeft">0</strong></span>
+      <span class="stat">Tries: <strong id="nTries">0</strong></span>
+      <button type="button" id="btnNew">New game</button>
+    </div>
+    <p class="round-info" id="roundInfo" aria-live="polite"></p>
+    <p id="msg" class="win" style="min-height:1.1em" aria-live="polite"></p>
+    <div class="board">
+      <div class="grid" id="grid" role="list"></div>
+    </div>
+  </div>
+  <script src="../data/u3-memory-pairs.js"></script>
+  <script>
+(function () {
+  var ALL = (typeof U3_MEMORY_PAIR_ROWS !== "undefined" && U3_MEMORY_PAIR_ROWS.length) ? U3_MEMORY_PAIR_ROWS : [];
+  var PAIRS_PER_GAME = 9;
+  var grid = document.getElementById("grid");
+  var nLeft = document.getElementById("nLeft");
+  var nTries = document.getElementById("nTries");
+  var msg = document.getElementById("msg");
+  var roundInfo = document.getElementById("roundInfo");
+  var deckMode = document.getElementById("deckMode");
+  var deck = [];
+  var open = [];
+  var tries = 0;
+  var busy = false;
+  var left = 0;
+
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+
+  /** 0..ALL.length-1 -> pick 9 row indices for this game */
+  function pickIndices() {
+    var mode = deckMode ? deckMode.value : "random";
+    var n = ALL.length;
+    if (n <= PAIRS_PER_GAME) {
+      return ALL.map(function (_, i) { return i; });
+    }
+    if (mode === "a") {
+      var outA = [];
+      for (var k = 0; k < PAIRS_PER_GAME && k < n; k++) outA.push(k);
+      return outA;
+    }
+    if (mode === "b") {
+      var out = [];
+      var startB = n - PAIRS_PER_GAME;
+      if (startB < 0) startB = 0;
+      for (var b = 0; b < PAIRS_PER_GAME && startB + b < n; b++) out.push(startB + b);
+      return out;
+    }
+    var sh = shuffle(ALL.map(function (_, i) { return i; }));
+    return sh.slice(0, PAIRS_PER_GAME);
+  }
+
+  function build() {
+    if (!ALL.length) return;
+    var idxs = pickIndices();
+    if (idxs.length < PAIRS_PER_GAME) {
+      msg.textContent = "Not enough rows in the data file.";
+      return;
+    }
+    deck = [];
+    for (var j = 0; j < idxs.length; j++) {
+      var rowIndex = idxs[j];
+      var r = ALL[rowIndex];
+      var id = "P" + rowIndex;
+      deck.push({ id: id, side: "phrase", text: r.phrase, part: r.part, row: rowIndex });
+      deck.push({ id: id, side: "gloss", text: r.gloss, part: r.part, row: rowIndex });
+    }
+    deck = shuffle(deck);
+    left = idxs.length;
+    tries = 0;
+    open = [];
+    busy = false;
+    nTries.textContent = "0";
+    nLeft.textContent = String(left);
+    msg.textContent = "";
+    var mode = deckMode ? deckMode.value : "random";
+    var who = (mode === "a") ? "Set A (file #1&ndash;9)" : (mode === "b") ? "Set B (file #10&ndash;18)" : "9 random from 18: #" + idxs.map(function (x) { return x + 1; }).join(", ");
+    roundInfo.textContent = who;
+    render();
+  }
+
+  function render() {
+    grid.innerHTML = "";
+    for (var i = 0; i < deck.length; i++) {
+      (function (idx) {
+        var c = deck[idx];
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "tile t" + c.part;
+        if (c.matched) b.className += " matched";
+        else if (c.shown) b.className += " is-up";
+        b.disabled = !!c.matched;
+        var num = idx + 1;
+        if (c.matched || c.shown) {
+          b.innerHTML = "<span class=\"face\">" + esc(c.text) + "</span><span class=\"part\">P" + c.part + " · #" + num + "</span>";
+          b.setAttribute("aria-label", "Card " + num + ": " + (c.side === "phrase" ? "phrase" : "paraphrase") + ". " + c.text);
+        } else {
+          b.innerHTML = "<div class=\"back-wrap\"><span class=\"back-hint\">Card</span><span class=\"back-num\">" + num + "</span></div>";
+          b.setAttribute("aria-label", "Card " + num + ", face down");
+        }
+        b.title = "Card " + num;
+        b.addEventListener("click", function () { onTap(idx); });
+        grid.appendChild(b);
+      })(i);
+    }
+  }
+
+  function esc(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function onTap(i) {
+    if (busy) return;
+    var c = deck[i];
+    if (c.matched || c.shown) return;
+    if (open.length === 1 && open[0] === i) return;
+    c.shown = true;
+    open.push(i);
+    render();
+    if (open.length < 2) return;
+    busy = true;
+    tries++;
+    nTries.textContent = String(tries);
+    var a = deck[open[0]];
+    var b = deck[open[1]];
+    if (a.id === b.id) {
+      a.matched = b.matched = true;
+      left--;
+      nLeft.textContent = String(left);
+      open = [];
+      busy = false;
+      if (left === 0) msg.textContent = "All pairs matched. Tries: " + tries + ".";
+      render();
+    } else {
+      setTimeout(function () {
+        a.shown = b.shown = false;
+        open = [];
+        busy = false;
+        render();
+      }, 700);
+    }
+  }
+
+  document.getElementById("btnNew").addEventListener("click", build);
+  if (deckMode) deckMode.addEventListener("change", build);
+  if (ALL.length) build();
+  else {
+    msg.textContent = "No data. Load ../data/u3-memory-pairs.js";
+  }
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

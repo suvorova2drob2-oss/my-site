@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Vocabulary &mdash; Food and drink (matching)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.2rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .example-box {
+      padding: 14px 16px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .example-box strong { color: #fef08a; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .toolbar button:hover:not(:disabled) { border-color: var(--accent); color: #e0f2fe; }
+    .toolbar button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .match-grid {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .match-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .col-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .sen-list,
+    .def-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sen,
+    .def {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(8, 22, 48, 0.5);
+      padding: 12px 36px 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      border-left: 4px solid transparent;
+    }
+    .sen.sen-example,
+    .def.def-example {
+      cursor: default;
+      opacity: 0.92;
+      border-left-color: #64748b;
+    }
+    .sen.sen-example .badge { color: #fef08a; }
+    .sen:hover:not(.sen-example):not(.dim),
+    .def:hover:not(.def-example):not(.dim):not(.used) {
+      border-color: #4a6898;
+    }
+    .sen.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .sen.matched:not(.sen-example) { background: rgba(86, 204, 242, 0.08); }
+    .def.used { background: rgba(54, 211, 153, 0.12); }
+    .def.dim { opacity: 0.55; pointer-events: none; }
+    .sen .num,
+    .def .letter {
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 8px;
+    }
+    .sen .txt,
+    .def .txt { font-size: 0.92rem; line-height: 1.45; color: #e8f0ff; }
+    .badge {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge.empty { font-style: italic; }
+    .unpair {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .unpair:hover { border-color: var(--bad); color: #fecaca; }
+    .actions { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .actions .btn-primary {
+      padding: 11px 20px;
+      border-radius: 10px;
+      border: none;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .actions .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .actions .btn-secondary {
+      padding: 11px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .feedback {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      min-height: 22px;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Food and drink (matching)</h1>
+      <a class="back" href="../index.html">&larr; Unit 12 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 12 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong>Food and drink</strong> (Ex. 1)</span>
+    </nav>
+
+    <section class="task">
+      <h2>Exercise 1</h2>
+      <p class="instr">
+        Match each word (1&ndash;8) to its definition (a&ndash;h). There is an example at the beginning (0). Tap a word on the left, then tap a definition on the right. Use <strong>&times;</strong> to remove a pair. Definition <strong>i</strong> is only for the example; the right column shows <strong>a&ndash;h</strong>.
+      </p>
+
+      <div class="example-box">
+        <strong>Example:</strong> <strong>0</strong> <strong>gulp</strong> &rarr; <strong>i</strong> drink or eat quickly
+      </div>
+
+      <div class="toolbar">
+        <button type="button" id="btn-shuffle">Shuffle definitions</button>
+        <button type="button" id="btn-clear">Clear all pairs</button>
+      </div>
+
+      <div class="match-grid">
+        <div>
+          <div class="col-title">Words (0 example + 1&ndash;8)</div>
+          <div class="sen-list" id="sen-list" aria-label="Words"></div>
+        </div>
+        <div>
+          <div class="col-title">Definitions a&ndash;h</div>
+          <div class="def-list" id="def-list" aria-label="Definitions"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-primary" id="btn-check" disabled>Check</button>
+        <button type="button" class="btn-secondary" id="btn-reveal" style="display:none;">Show solution</button>
+      </div>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var WORDS = [
+    { id: 1, text: 'swallow' },
+    { id: 2, text: 'a snack' },
+    { id: 3, text: 'a sit-down meal' },
+    { id: 4, text: 'a soft drink' },
+    { id: 5, text: 'sip' },
+    { id: 6, text: 'a fizzy drink' },
+    { id: 7, text: 'chew' },
+    { id: 8, text: 'a three-course meal' }
+  ];
+
+  var DEFINITIONS = [
+    { id: 'a', text: 'non-alcoholic drink' },
+    { id: 'b', text: 'move from your mouth down your throat' },
+    { id: 'c', text: 'a meal eaten at a table' },
+    { id: 'd', text: 'drink slowly in small amounts' },
+    { id: 'e', text: 'a meal with a starter, main course and dessert' },
+    { id: 'f', text: 'a drink with bubbles' },
+    { id: 'g', text: 'bite and break down food in your mouth' },
+    { id: 'h', text: 'something small eaten between meals' }
+  ];
+
+  var ANSWER_KEY = {
+    1: 'b',
+    2: 'h',
+    3: 'c',
+    4: 'a',
+    5: 'd',
+    6: 'f',
+    7: 'g',
+    8: 'e'
+  };
+
+  var DEF_COLORS = [
+    '#56ccf2',
+    '#a78bfa',
+    '#36d399',
+    '#f472b6',
+    '#fbbf24',
+    '#2dd4bf',
+    '#818cf8',
+    '#fb923c'
+  ];
+
+  function colorForLetter(L) {
+    var i = String(L).toLowerCase().charCodeAt(0) - 97;
+    if (i < 0 || i > 7) return '#64748b';
+    return DEF_COLORS[i];
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  var defOrder = shuffle(DEFINITIONS);
+  var matches = {};
+  var selectedSen = null;
+  var locked = false;
+
+  var elSen = document.getElementById('sen-list');
+  var elDef = document.getElementById('def-list');
+  var elCheck = document.getElementById('btn-check');
+  var elReveal = document.getElementById('btn-reveal');
+  var elFb = document.getElementById('feedback');
+
+  function assign(senId, letter) {
+    var sid = Number(senId);
+    for (var k in matches) {
+      if (matches[k] === letter && Number(k) !== sid) delete matches[k];
+    }
+    matches[sid] = letter;
+  }
+
+  function pairCount() {
+    var n = 0;
+    for (var k in matches) {
+      if (matches[k]) n++;
+    }
+    return n;
+  }
+
+  function render() {
+    elSen.innerHTML = '';
+    elDef.innerHTML = '';
+
+    var exRow = document.createElement('div');
+    exRow.className = 'sen sen-example';
+    exRow.innerHTML =
+      '<span class="num">0.</span><span class="txt">gulp</span>' +
+      '<div class="badge">&rarr; Definition i (example)</div>';
+    elSen.appendChild(exRow);
+
+    for (var si = 0; si < WORDS.length; si++) {
+      var w = WORDS[si];
+      var sid = w.id;
+      var letter = matches[sid];
+      var row = document.createElement('div');
+      row.className =
+        'sen' +
+        (selectedSen === sid ? ' selected' : '') +
+        (letter ? ' matched' : '') +
+        (locked && letter && letter !== ANSWER_KEY[sid] ? ' dim' : '');
+      row.dataset.sen = String(sid);
+      if (letter) row.style.borderLeftColor = colorForLetter(letter);
+      row.innerHTML =
+        '<button type="button" class="unpair" title="Remove pair" data-sen="' +
+        sid +
+        '" aria-label="Remove pair">&times;</button>' +
+        '<span class="num">' +
+        sid +
+        '.</span><span class="txt"></span>' +
+        '<div class="badge' +
+        (letter ? '' : ' empty') +
+        '">' +
+        (letter ? '\u2192 Definition ' + letter : '\u2014 pick a definition') +
+        '</div>';
+      row.querySelector('.txt').textContent = w.text;
+      row.addEventListener('click', function (id) {
+        return function (e) {
+          if (locked) return;
+          if (e.target.closest('.unpair')) return;
+          selectedSen = selectedSen === id ? null : id;
+          render();
+        };
+      }(sid));
+      var un = row.querySelector('.unpair');
+      un.addEventListener('click', function (id) {
+        return function (e) {
+          e.stopPropagation();
+          if (locked) return;
+          delete matches[id];
+          if (selectedSen === id) selectedSen = null;
+          elFb.textContent = '';
+          elFb.className = 'feedback';
+          elReveal.style.display = 'none';
+          render();
+        };
+      }(sid));
+      elSen.appendChild(row);
+    }
+
+    for (var di = 0; di < defOrder.length; di++) {
+      var d = defOrder[di];
+      var usedBy = null;
+      for (var mk in matches) {
+        if (matches[mk] === d.id) usedBy = Number(mk);
+      }
+      var drow = document.createElement('div');
+      drow.className = 'def' + (usedBy ? ' used' : '');
+      drow.dataset.def = d.id;
+      if (usedBy) drow.style.borderLeftColor = colorForLetter(d.id);
+      if (locked && !usedBy) drow.classList.add('dim');
+      drow.innerHTML =
+        '<span class="letter">' +
+        d.id +
+        '.</span><span class="txt"></span>' +
+        '<div class="badge">' +
+        (usedBy
+          ? '\u2190 Word ' + usedBy
+          : selectedSen
+            ? 'Tap to link with ' + selectedSen
+            : 'Tap a word first') +
+        '</div>';
+      drow.querySelector('.txt').textContent = d.text;
+      drow.addEventListener('click', function (letter) {
+        return function () {
+          if (locked) return;
+          if (selectedSen == null) {
+            elFb.textContent = 'Select a word on the left, then tap a definition.';
+            elFb.className = 'feedback bad';
+            return;
+          }
+          assign(selectedSen, letter);
+          selectedSen = null;
+          elFb.textContent = '';
+          elFb.className = 'feedback';
+          render();
+        };
+      }(d.id));
+      elDef.appendChild(drow);
+    }
+
+    elCheck.disabled = pairCount() !== 8;
+    var sh = document.getElementById('btn-shuffle');
+    var cl = document.getElementById('btn-clear');
+    if (sh) sh.disabled = locked;
+    if (cl) cl.disabled = locked;
+  }
+
+  document.getElementById('btn-shuffle').addEventListener('click', function () {
+    if (locked) return;
+    defOrder = shuffle(DEFINITIONS);
+    elFb.textContent = '';
+    elFb.className = 'feedback';
+    render();
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    if (locked) return;
+    matches = {};
+    selectedSen = null;
+    elFb.textContent = '';
+    elFb.className = 'feedback';
+    elReveal.style.display = 'none';
+    render();
+  });
+
+  elCheck.addEventListener('click', function () {
+    if (pairCount() !== 8) return;
+    var ok = 0;
+    var wrong = [];
+    for (var i = 0; i < WORDS.length; i++) {
+      var sid = WORDS[i].id;
+      if (matches[sid] === ANSWER_KEY[sid]) ok++;
+      else wrong.push(sid);
+    }
+    if (ok === 8) {
+      elFb.textContent = 'Perfect \u2014 8 / 8. All pairs are correct.';
+      elFb.className = 'feedback ok';
+      locked = true;
+      elReveal.style.display = 'none';
+    } else {
+      elFb.textContent =
+        ok +
+        ' / 8 correct. Check words: ' +
+        (wrong.length ? wrong.join(', ') : '') +
+        '. Adjust pairs or clear and try again.';
+      elFb.className = 'feedback bad';
+      elReveal.style.display = 'block';
+    }
+    render();
+  });
+
+  elReveal.addEventListener('click', function () {
+    for (var si = 0; si < WORDS.length; si++) {
+      var sid = WORDS[si].id;
+      matches[sid] = ANSWER_KEY[sid];
+    }
+    selectedSen = null;
+    locked = true;
+    elFb.textContent = 'Solution shown.';
+    elFb.className = 'feedback ok';
+    elReveal.style.display = 'none';
+    render();
+  });
+
+  render();
+})();
+  </script>
+</body>
+</html>

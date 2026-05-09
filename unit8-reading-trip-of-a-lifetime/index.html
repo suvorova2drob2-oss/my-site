@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Reading &mdash; The trip of a lifetime</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.2rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .note-line {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    .layout {
+      display: grid;
+      gap: 20px;
+    }
+    @media (min-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr 380px;
+        align-items: start;
+      }
+    }
+
+    .passage-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 18px 18px 16px;
+      max-height: min(70vh, 640px);
+      overflow-y: auto;
+    }
+    .passage-wrap h2 {
+      font-size: 1.05rem;
+      color: #bae6fd;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .passage-wrap .byline {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .passage {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: #e8f0ff;
+    }
+    .passage p { margin-bottom: 12px; }
+    .passage p:last-child { margin-bottom: 0; }
+
+    .mcq-wrap h2 {
+      font-size: 1rem;
+      color: #bae6fd;
+      margin-bottom: 10px;
+    }
+    .q-block {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 12px 10px;
+      background: rgba(8, 22, 48, 0.35);
+      margin-bottom: 12px;
+    }
+    .q-stem {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      color: #e8f0ff;
+    }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .opt-line input { margin-top: 4px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; font-size: 0.86rem; line-height: 1.4; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.2em; }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.22);
+      border-color: #4ade80;
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #f87171;
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      min-height: 1.2em;
+    }
+
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Reading</span>
+        <h1>The trip of a lifetime</h1>
+      </div>
+      <a class="back" href="../unit8.html">&larr; Unit 8</a>
+    </header>
+    <p class="note-line">
+      Questions <strong>4</strong> and <strong>5</strong> mention line numbers from the <strong>printed Student&rsquo;s Book</strong>; on screen, search the <strong>quoted phrase</strong> in the text if the layout does not match.
+    </p>
+
+    <div class="layout">
+      <div class="passage-wrap">
+        <h2>The trip of a lifetime</h2>
+        <p class="byline">Rosie Casterton describes how she spent her gap year between school and university.</p>
+        <div class="passage">
+          <p>I felt slightly ashamed when my exam results came out, despite the loyal praise from my parents. The grades were more than respectable, but they weren&rsquo;t quite good enough for the university degree course I was hoping to do. I called the admissions office, asked them to reconsider, but the reply was unequivocal &ndash; I hadn&rsquo;t met the entry requirements, so I should make alternative plans. I slowly pulled myself together, gathered some perspective, began to feel proud of my achievements and vowed to turn disappointment into opportunity. I would take time out to travel, then reapply the following year for a different course.</p>
+          <p>It would be stretching the truth to say that I intended to broaden my horizons, develop as a person, discover my true self. Things may have turned out that way in the end, but at the time, I knew only that I had a year on my hands, and an extended trip abroad sounded like a worthwhile way to spend it. Or at least part of it &ndash; I&rsquo;d need to work first to fund myself, so I took a job as a receptionist at a local doctor&rsquo;s surgery. It was a tough six months; the patients were very demanding and I often got shouted at, but it gave me the opportunity to gain some work experience, develop some useful skills, and importantly, save money for the more enjoyable part of the year.</p>
+          <p>In the meantime, I managed to talk a friend from school into coming with me &ndash; Lowri, who also failed to get the grades she needed. After months of planning, we set off for Cuzco in Peru, where we&rsquo;d volunteered to work for two weeks in an orphanage. I&rsquo;m not sure what good we thought we could do there. We took gifts of toys and played with the children, but I don&rsquo;t think our presence was of much value. The owners didn&rsquo;t expect a great deal from us and seemed more interested in the money we&rsquo;d paid to be there, which went towards food, clothes and the upkeep of the building. Everything appeared unstructured and disorganised, but the children were full of life and clearly happy, so the orphanage was obviously doing something right.</p>
+          <p>The next six weeks we spent travelling around South America as part of a tour group. In Peru we went white water rafting, horse riding and then sandboarding on dunes by the desert oasis of Huacachina. In Bolivia, some courageous, if foolhardy members of the group cycled down the infamous Death Road. This no doubt <strong>earned them bragging rights</strong> for years to come, though personally, I&rsquo;m content with being able to tell everyone that I saw the incredible Uyuni Salt Flats, vast plains of white salt which stretch out as far as the eye can see. Then in Brazil we spent time exploring parts of the Amazon, before finishing the tour in Rio de Janeiro.</p>
+          <p>After Rio we flew to South Africa, where we stayed for two weeks with friends in Johannesburg and Cape Town, and relaxed mostly, before moving on to the third and final stage of our trip in Thailand, Vietnam and Laos; another continent, different cultures, new experiences. Unlike in South America, nothing was pre-planned. We booked all the transport and cultural trips ourselves using local tour companies in each country, <strong>which</strong> added an element of spontaneity, and gave us more freedom of choice and a greater sense of independence.</p>
+          <p>And yes, when it all came to an end, I did feel I&rsquo;d developed as a person. Travelling taught me so much. I learnt how to manage my money; I had to be organised and continually think ahead; I became more flexible and open-minded, readily adapting to a wide range of places, people and their cultures. Perhaps Lowri and I overdid things in this respect; maybe we should have heeded the old adage that &lsquo;less is more&rsquo;. We packed as many countries into the four months as possible, and in doing so, gained only a very general idea of life in each one. Still, I&rsquo;m sure I&rsquo;ll find time to go back to some of them in the future. Won&rsquo;t I?</p>
+        </div>
+      </div>
+
+      <div class="mcq-wrap">
+        <h2>Questions 1&ndash;6</h2>
+        <p class="note-line" style="margin-bottom: 10px;">Choose the best answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>).</p>
+        <div id="mcq-root" aria-live="polite"></div>
+        <div class="btn-row">
+          <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+          <button type="button" class="btn-reset" id="btnClear">Clear</button>
+        </div>
+        <p class="feedback" id="feedback"></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var CORRECT = ["D", "B", "B", "C", "D", "A"];
+
+  var MCQ = [
+    {
+      q: "How did Rosie react after she received her exam results?",
+      options: {
+        A: "She felt that her family could have been more supportive.",
+        B: "She realised the goals she&rsquo;d set herself had been unrealistic.",
+        C: "She thought her exams might have been marked incorrectly.",
+        D: "She gradually changed the way she felt about her grades."
+      }
+    },
+    {
+      q: "What does Rosie say was her reason for travelling?",
+      options: {
+        A: "It would be more fun than working.",
+        B: "It seemed like a good use of her time.",
+        C: "It was a chance for self-improvement.",
+        D: "It would help her university application."
+      }
+    },
+    {
+      q: "What does Rosie say about her experience in the Peruvian orphanage?",
+      options: {
+        A: "She thought the owners were not doing enough for the children.",
+        B: "She felt that her work was of little benefit to the orphanage.",
+        C: "She sensed that the children did not appreciate her gifts.",
+        D: "She had suspicions that the owners were corrupt."
+      }
+    },
+    {
+      q: "What does &lsquo;earned them bragging rights&rsquo; mean (in the Student&rsquo;s Book, ~line 43)?",
+      options: {
+        A: "entitled them to receive special treatment",
+        B: "made them feel fortunate to have survived",
+        C: "gave them the opportunity to impress people",
+        D: "helped them appreciate the beauty of the country"
+      }
+    },
+    {
+      q: "What does &lsquo;which&rsquo; refer to (~line 55 in the Student&rsquo;s Book)?",
+      options: {
+        A: "each country",
+        B: "local tour companies",
+        C: "transport and cultural trips",
+        D: "making our own bookings"
+      }
+    },
+    {
+      q: "In the final paragraph, Rosie suggests that she and her friend Lowri",
+      options: {
+        A: "might have benefited from visiting fewer places.",
+        B: "didn&rsquo;t leave themselves enough time to relax.",
+        C: "should have spent less time in each place.",
+        D: "took too many things with them."
+      }
+    }
+  ];
+
+  var root = document.getElementById("mcq-root");
+  var fb = document.getElementById("feedback");
+
+  function render() {
+    root.innerHTML = MCQ.map(function (item, qIdx) {
+      var keys = ["A", "B", "C", "D"];
+      var opts = keys.map(function (k) {
+        if (!item.options[k]) return "";
+        var id = "q" + qIdx + k;
+        return (
+          '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+          '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+          '<label for="' + id + '"><span class="letter">' + k + "</span> " + item.options[k] + "</label></li>"
+        );
+      }).join("");
+      return (
+        '<article class="q-block">' +
+        '<p class="q-stem"><strong>' +
+        (qIdx + 1) +
+        ".</strong> " +
+        item.q  +
+        "</p>" +
+        '<ul class="opts">' +
+        opts +
+        "</ul></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+        fb.textContent = "";
+      });
+    });
+  }
+
+  function clearMarks() {
+    root.querySelectorAll(".opt-line").forEach(function (line) {
+      line.classList.remove("ok", "bad-pick");
+    });
+  }
+
+  function getChoice(i) {
+    var el = root.querySelector('input[name="q' + i + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  render();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    clearMarks();
+    var n = MCQ.length;
+    for (var i = 0; i < n; i++) {
+      if (!getChoice(i)) {
+        fb.textContent = "Choose A, B, C or D for every question, then check again.";
+        return;
+      }
+    }
+    var score = 0;
+    for (var j = 0; j < n; j++) {
+      var pick = getChoice(j);
+      var keyLetter = CORRECT[j];
+      var ok = pick === keyLetter;
+      if (ok) score++;
+      var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
+      if (line) line.classList.add(ok ? "ok" : "bad-pick");
+      var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + keyLetter + '"]');
+      if (correctLine && !ok) correctLine.classList.add("ok");
+    }
+    fb.innerHTML =
+      score === n
+        ? "<strong>All " + n + " correct.</strong>"
+        : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct; red = your wrong answer.";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function () {
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.checked = false;
+    });
+    clearMarks();
+    fb.textContent = "";
+  });
+})();
+  </script>
+</body>
+</html>

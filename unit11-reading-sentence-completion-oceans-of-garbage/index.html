@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 &mdash; Reading: Sentence completion &mdash; Oceans of Garbage</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --header-bg: #7eb8e0;
+      --header-text: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); line-height: 1.55; margin-bottom: 12px; font-size: 0.95rem; }
+    .instr {
+      border: 1px solid var(--line);
+      background: rgba(26, 44, 73, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      color: #c5d4ef;
+    }
+    .mc-layout {
+      --mc-opts: 38%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 12px clamp(280px, var(--mc-opts), 48%);
+      gap: 0 16px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .mc-layout { grid-template-columns: 1fr; gap: 0; }
+      .mc-resizer { display: none; }
+      .mc-opts-col { margin-top: 20px; }
+    }
+    .mc-resizer {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: stretch;
+      min-height: 120px;
+      cursor: col-resize;
+      touch-action: none;
+      user-select: none;
+      border-radius: 6px;
+      background: var(--line);
+      position: relative;
+      margin: 8px 0;
+    }
+    .mc-resizer::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      transform: translateX(-50%);
+      border-radius: 2px;
+      background: var(--muted);
+      opacity: 0.55;
+    }
+    .banner {
+      background: linear-gradient(180deg, #8ecae6 0%, #6eb8dc 100%);
+      color: var(--header-text);
+      text-align: center;
+      padding: 18px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+    .passage-wrap {
+      border: 1px solid var(--line);
+      background: #fafcfe;
+      color: #1a1f2e;
+      border-radius: 12px;
+      padding: 18px 18px 22px;
+      line-height: 1.72;
+      font-size: 1.02rem;
+      font-family: Georgia, "Times New Roman", serif;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+    }
+    @media (max-width: 880px) {
+      .passage-wrap { max-height: none; }
+    }
+    .passage-wrap .intro-full {
+      column-span: all;
+      margin-bottom: 14px;
+    }
+    .columns {
+      column-count: 2;
+      column-gap: 28px;
+    }
+    @media (max-width: 640px) {
+      .columns { column-count: 1; }
+    }
+    .columns p {
+      margin-bottom: 0.9em;
+      break-inside: avoid;
+    }
+    .gap-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      vertical-align: middle;
+      margin: 0 3px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .gap-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 26px;
+      border: 2px solid #334155;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      font-family: "Segoe UI", sans-serif;
+      background: #fff;
+      color: #0f172a;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .gap-num.is-ok {
+      border-color: #15803d;
+      background: #dcfce7;
+      color: #14532d;
+    }
+    .gap-num.is-bad {
+      border-color: #b91c1c;
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+    .mc-opts-col {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(18, 38, 75, 0.55);
+      padding: 14px 12px;
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+    }
+    .bank-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #e0e8f8;
+    }
+    .bank-item {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .bank-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .bank-L {
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .gap-row {
+      margin-bottom: 14px;
+    }
+    .gap-row label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .gap-row select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .gap-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .gap-row-head label { margin-bottom: 0; }
+    .gap-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .gap-badge.ok {
+      background: rgba(34, 197, 94, 0.22);
+      color: #86efac;
+      border: 1px solid rgba(74, 222, 128, 0.45);
+    }
+    .gap-badge.bad {
+      background: rgba(248, 113, 113, 0.18);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+    }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      padding: 12px 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .fb-summary {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      color: #e8f0ff;
+    }
+    .fb-expl {
+      margin-bottom: 14px;
+      padding: 12px 12px 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 36, 68, 0.65);
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .fb-expl:last-child { margin-bottom: 0; }
+    .fb-expl.ok { border-left: 4px solid #22c55e; }
+    .fb-expl.bad { border-left: 4px solid #f87171; }
+    .fb-expl h4 {
+      margin: 0 0 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #e0e8f8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .fb-expl .fb-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .fb-expl .fb-meta strong { color: #bae6fd; }
+    .fb-expl p { margin: 0; color: #d5e2f8; }
+    .fb-expl p + p { margin-top: 8px; }
+    .fb-wrong-tip {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.35);
+      font-size: 0.84rem;
+      color: #fecaca;
+    }
+    .fb-extra {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1 style="font-size: 1.2rem; margin-bottom: 6px;">Reading &mdash; Sentence completion</h1>
+        <p class="subtitle">B2 / FCE-style &mdash; six gaps, seven sentences (one is not needed). Same layout idea as <strong>Reading Part 7 (vegan matching)</strong> in <code>reading/part1-vegan-matching.html</code> &mdash; passage + answer column.</p>
+      </div>
+      <a class="back" href="../unit11.html">&larr; Unit 11</a>
+    </header>
+
+    <p class="instr">
+      Read the article. Choose from sentences <strong>A&ndash;G</strong> the one which fits each gap (1&ndash;6). There is one extra sentence you do not need.
+      After <strong>Check answers</strong>, you will see whether each gap is right or wrong, the correct letter, and a short <strong>cohesion</strong> explanation. Wrong tries also show a note if your letter is a common distractor.
+    </p>
+
+    <div class="mc-layout" id="mc-layout">
+      <div class="mc-text-col">
+        <div class="banner">OCEANS OF GARBAGE</div>
+        <div class="passage-wrap">
+          <p class="intro-full">
+            The North Pacific Subtropical gyre is an area of twenty million square kilometres in the Pacific Ocean, in which a combination of four currents moves the water slowly round in a clockwise direction. The circular motion of the gyre pulls large quantities of marine debris, including plastics and other rubbish, into the centre, where it becomes trapped and builds up over time. This gyre is sometimes called the Trash Vortex or the Pacific Garbage Patch. Some plastics here will not break down in the lifetimes of the grandchildren of the people who threw them away.
+          </p>
+          <div class="columns">
+            <p>
+              More than 300 million tonnes of plastic are produced each year, and 8 million tonnes of this end up in the sea. If you look around on any beach anywhere in the world, you will invariably find an assortment of disposable plastic items such as shopping bags, food wrappers, bottles and bottle caps, drinking straws, lighters and pieces of fishing net.
+              <span class="gap-inline" data-gap="1"><span class="gap-num">1</span></span>
+            </p>
+            <p>
+              These larger objects are the visible signs of a much larger problem. They do not degrade like natural materials.
+              <span class="gap-inline" data-gap="2"><span class="gap-num">2</span></span>
+              A single one-litre bottle could separate into enough tiny pieces to put one on every mile of beach in the entire world.
+            </p>
+            <p>
+              <span class="gap-inline" data-gap="3"><span class="gap-num">3</span></span>
+              Unfortunately, however, many items are mistaken for food and swallowed by seabirds and other ocean-going creatures. A turtle found dead on one Pacific island had several hundred pieces of plastic in its stomach and intestines. It has been estimated that plastic kills over a million seabirds and one hundred thousand marine mammals and sea turtles each year.
+            </p>
+            <p>
+              <span class="gap-inline" data-gap="4"><span class="gap-num">4</span></span>
+              Absorbed by fish and shellfish, they quickly work their way up to the very top of the food chain. You may not be able to see the tiny fragments hanging in the water, but they are there, nonetheless, and they may one day end up on your plate.
+            </p>
+            <p>
+              <span class="gap-inline" data-gap="5"><span class="gap-num">5</span></span>
+              Ocean garbage patches, it seems, are just the tip of the iceberg and the vast majority of discarded plastic is broken down and sinks to the bottom. Here it is swept along by powerful currents and deposited in high concentrations in so-called microplastic hotspots. Researchers recently found as many as 1.9 million pieces of microplastic covering just one square metre of the ocean floor.
+            </p>
+            <p>
+              The issue of plastic waste is one that needs to be urgently addressed.
+              <span class="gap-inline" data-gap="6"><span class="gap-num">6</span></span>
+              Obviously though, there is a need to make those who earn a living from the sea, such as ship owners and fishing boat operators, more aware of the consequences of irresponsible disposal of plastic items.
+            </p>
+            <p>
+              With so many threats to the world oceans, including pollution, overfishing and climate change, we urgently need to rescue marine biodiversity in the most effective way possible.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="mc-resizer" id="mc-resizer" role="separator" aria-orientation="vertical" tabindex="0" title="Drag to resize columns"></div>
+      <div class="mc-opts-col">
+        <div class="bank-title">Sentences A&ndash;G</div>
+        <div id="sentence-bank"></div>
+        <div class="bank-title" style="margin-top: 18px;">Your answers</div>
+        <div id="gap-selectors"></div>
+        <div class="btn-row">
+          <button type="button" class="btn-check" id="btn-check">Check answers</button>
+          <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  var OPTIONS = [
+    { letter: "A", text: "At sea and on shore, under the influence of sunlight and the action of waves, they simply break down slowly into increasingly smaller particles." },
+    { letter: "B", text: "We can all contribute by avoiding plastics in the things we buy and by disposing of our waste responsibly." },
+    { letter: "C", text: "Microscopic particles of plastic, known as microplastics, are consumed by humans, too." },
+    { letter: "D", text: "But this is not the only threat to marine life." },
+    { letter: "E", text: "They have been casually thrown away on land and at sea and carried ashore by wind and tide." },
+    { letter: "F", text: "Of course, not all plastic floats." },
+    { letter: "G", text: "This perhaps wouldn't be too much of a problem if the plastic had no harmful effects." }
+  ];
+
+  /** Teaching key — verify against your coursebook if needed. Extra letter: B */
+  var KEY = { 1: "E", 2: "A", 3: "G", 4: "F", 5: "D", 6: "C" };
+
+  /** Short cohesion explanations (shown after Check for every gap). */
+  var EXPLAIN_CORRECT = {
+    1: [
+      "The writer has just listed typical plastic litter found on beaches (bags, caps, straws, nets). Sentence **E** uses «they» to refer to those items and explains how they were discarded and dispersed — it closes the «beach audit» before the next paragraph widens the argument («these larger objects…»)."
+    ],
+    2: [
+      "After «They do not degrade like natural materials», we need what plastics **do** do instead. **A** describes slow fragmentation into smaller and smaller particles — which leads naturally into the one-litre bottle example in the next sentence."
+    ],
+    3: [
+      "**G** floats a hopeful conditional («if plastic had no harmful effects»). The next sentence opens with **«Unfortunately, however»** and turns to animals swallowing plastic — rejecting that harmless fantasy."
+    ],
+    4: [
+      "The next clause begins «Absorbed by fish and shellfish, they…». **F** («not all plastic floats») reminds the reader that plastic pathways are not only on the surface, so movement through the food chain follows logically."
+    ],
+    5: [
+      "**D** signals that visible patches are **not** the whole crisis. The next sentence agrees: patches are «just the tip of the iceberg» while most plastic sinks — multiple threats and hiding places, not only what we see on the surface."
+    ],
+    6: [
+      "**C** states that microplastics reach **humans**, too — tightening the link between pollution and people. **Obviously though** then adds another layer: people who work at sea must also grasp how careless dumping spreads the problem."
+    ]
+  };
+
+  /**
+   * Optional: if the learner chose this letter at this gap, show why it is a typical trap.
+   * Keys: gap number + "|" + letter.
+   */
+  var WRONG_NOTE = {
+    "1|A": "A belongs after the «natural materials» contrast (gap 2): it is about fragmentation, not where litter came from.",
+    "1|B": "B is the **extra** sentence in this version of the task — consumer advice; nothing before it sets up that closing appeal.",
+    "1|C": "C mentions humans eating microplastics; that idea fits the shift toward regulation later (gap 6), not right after a list of floating objects.",
+    "1|D": "D contrasts «only one threat» with something broader — that logic matches gap 5, before «patches… tip of the iceberg».",
+    "1|F": "F prepares the reader for plastics below the surface — that sits better just before toxins in fish (gap 4).",
+    "1|G": "G introduces «harmful effects» right before «Unfortunately, however» — that pairing is gap 3.",
+
+    "2|E": "E traces rubbish back to careless disposal; that narrative fits gap 1 after the list of floating items.",
+    "2|B": "B is the unused sentence: generic advice, not a contrast with natural fibres.",
+    "2|D": "D is a pivot about multiple threats — used later at gap 5.",
+    "2|F": "F contrasts floating vs sinking plastics — reserved for gap 4.",
+    "2|G": "G pairs with «Unfortunately, however» at gap 3.",
+
+    "3|E": "E describes litter origins (gap 1). Gap 3 needs a conditional before «Unfortunately, however» about animals swallowing plastic.",
+    "3|A": "A describes physical breakdown — gap 2.",
+    "3|B": "B is the extra sentence (consumer tip), not a hypothesis about harmless plastic.",
+
+    "4|E": "E focuses on how rubbish reaches the sea; gap 4 precedes toxins moving through **fish** — **F** narrows the pathway first.",
+    "4|C": "C jumps straight to humans; the next sentence already develops toxins via fish — **F** sets up depth pathways more cleanly.",
+    "4|D": "D broadens to «not the only threat» — that matches gap 5, not the sentence before fish absorption.",
+
+    "5|E": "E belongs with source/path of litter (gap 1). Here you need a sentence that opens up **other** dangers besides patches.",
+    "5|F": "F belongs before toxins in fish (gap 4).",
+    "5|G": "G sets up the contrast at gap 3.",
+
+    "6|B": "B is the **extra** sentence: advice about what shoppers buy; this paragraph moves on to awareness among **ship owners and fishing operators**, not household recycling tips.",
+    "6|F": "F contrasts floating vs sinking material — gap 4.",
+    "6|D": "D signals multiple threats — gap 5.",
+    "6|A": "A describes fragmentation — gap 2.",
+    "6|E": "E describes litter discarded on land/at sea — gap 1."
+  };
+
+  function explainParagraphsHTML(gn) {
+    var parts = EXPLAIN_CORRECT[gn];
+    if (!parts || !parts.length) return "";
+    var html = "";
+    for (var p = 0; p < parts.length; p++) {
+      var raw = parts[p].replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      html += "<p>" + raw + "</p>";
+    }
+    return html;
+  }
+
+  function wrongNoteHTML(gn, letter) {
+    if (!letter) return "";
+    var note = WRONG_NOTE[gn + "|" + letter];
+    if (!note) return "";
+    var raw = note.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    return '<p class="fb-wrong-tip"><strong>Why not ' + esc(letter) + "?</strong> " + raw + "</p>";
+  }
+
+  var PLACEHOLDER = "\u2014 choose \u2014";
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  var bank = document.getElementById("sentence-bank");
+  OPTIONS.forEach(function (o) {
+    var div = document.createElement("div");
+    div.className = "bank-item";
+    div.innerHTML = '<span class="bank-L">' + esc(o.letter) + "</span>" + esc(o.text);
+    bank.appendChild(div);
+  });
+
+  function letterOpts() {
+    var opts = '<option value="">' + PLACEHOLDER + "</option>";
+    OPTIONS.forEach(function (o) {
+      opts += '<option value="' + esc(o.letter) + '">' + esc(o.letter) + "</option>";
+    });
+    return opts;
+  }
+
+  var selects = [];
+  for (var g = 1; g <= 6; g++) {
+    var wrap = document.createElement("div");
+    wrap.className = "gap-row";
+    var head = document.createElement("div");
+    head.className = "gap-row-head";
+    var lab = document.createElement("label");
+    lab.setAttribute("for", "gap-" + g);
+    lab.textContent = "Gap " + g;
+    var badge = document.createElement("span");
+    badge.className = "gap-badge";
+    badge.id = "gap-badge-" + g;
+    badge.hidden = true;
+    head.appendChild(lab);
+    head.appendChild(badge);
+    wrap.appendChild(head);
+    var sel = document.createElement("select");
+    sel.id = "gap-" + g;
+    sel.setAttribute("aria-label", "Gap " + g);
+    sel.innerHTML = letterOpts();
+    sel.dataset.gap = String(g);
+    wrap.appendChild(sel);
+    document.getElementById("gap-selectors").appendChild(wrap);
+    selects.push(sel);
+  }
+
+  function setPassageMarkers(state) {
+    for (var g = 1; g <= 6; g++) {
+      var host = document.querySelector('.gap-inline[data-gap="' + g + '"]');
+      if (!host) continue;
+      var num = host.querySelector(".gap-num");
+      if (!num) continue;
+      num.classList.remove("is-ok", "is-bad");
+      if (state === "check") {
+        var v = "";
+        for (var i = 0; i < selects.length; i++) {
+          if (Number(selects[i].dataset.gap) === g) {
+            v = String(selects[i].value || "").trim();
+            break;
+          }
+        }
+        var ok = v === KEY[g];
+        num.classList.add(ok ? "is-ok" : "is-bad");
+      }
+    }
+  }
+
+  function setGapBadges(show) {
+    for (var g = 1; g <= 6; g++) {
+      var badge = document.getElementById("gap-badge-" + g);
+      if (!badge) continue;
+      if (!show) {
+        badge.hidden = true;
+        badge.textContent = "";
+        badge.className = "gap-badge";
+        continue;
+      }
+      var v = "";
+      for (var i = 0; i < selects.length; i++) {
+        if (Number(selects[i].dataset.gap) === g) {
+          v = String(selects[i].value || "").trim();
+          break;
+        }
+      }
+      var ok = v === KEY[g];
+      badge.hidden = false;
+      badge.textContent = ok ? "Correct" : "Wrong";
+      badge.className = "gap-badge " + (ok ? "ok" : "bad");
+    }
+  }
+
+  var feedback = document.getElementById("feedback");
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    for (var i = 0; i < selects.length; i++) {
+      var sg = selects[i];
+      var gn = Number(sg.dataset.gap);
+      var v = String(sg.value || "").trim();
+      var ok = v === KEY[gn];
+      if (ok) correct++;
+      sg.style.borderColor = ok ? "#22c55e" : "#f87171";
+      sg.style.borderWidth = "2px";
+      sg.style.borderStyle = "solid";
+    }
+
+    setGapBadges(true);
+    setPassageMarkers("check");
+
+    var html =
+      '<div class="fb-summary">Result: <strong>' +
+      correct +
+      " / 6</strong> correct." +
+      (correct === 6
+        ? " All gaps match the key."
+        : " Read each block below — green borders = your correct gaps; red = review the cohesion notes.") +
+      "</div>";
+
+    for (var g = 1; g <= 6; g++) {
+      var user = "";
+      for (var j = 0; j < selects.length; j++) {
+        if (Number(selects[j].dataset.gap) === g) {
+          user = String(selects[j].value || "").trim();
+          break;
+        }
+      }
+      var isOk = user === KEY[g];
+      var icon = isOk ? "\u2713" : "\u2717";
+      html += '<div class="fb-expl ' + (isOk ? "ok" : "bad") + '">';
+      html += "<h4><span>" + icon + "</span> Gap " + g + "</h4>";
+      html +=
+        '<div class="fb-meta">Your answer: <strong>' +
+        (user ? esc(user) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        KEY[g] +
+        "</strong></div>";
+      html += explainParagraphsHTML(g);
+      if (!isOk && user) {
+        html += wrongNoteHTML(g, user);
+      } else if (!isOk && !user) {
+        html += "<p class=\"fb-wrong-tip\">No letter chosen — pick the sentence that best bridges the sentence before and after the gap.</p>";
+      }
+      html += "</div>";
+    }
+
+    html +=
+      '<div class="fb-extra">Unused sentence (extra option in this task): <strong>B</strong> — generic consumer advice («avoid plastics in what we buy»); no gap sets up that everyday shopping focus before the paragraph narrows to people earning a living from the sea.</div>';
+
+    feedback.innerHTML = html;
+    feedback.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    feedback.classList.remove("show");
+    feedback.innerHTML = "";
+    selects.forEach(function (sg) {
+      sg.value = "";
+      sg.style.borderColor = "";
+      sg.style.borderWidth = "";
+      sg.style.borderStyle = "";
+    });
+    setGapBadges(false);
+    setPassageMarkers("reset");
+  });
+
+  /* Column resizer (same behaviour as vegan matching page) */
+  var layout = document.getElementById("mc-layout");
+  var handle = document.getElementById("mc-resizer");
+  var dragging = false;
+  function pctFromEvent(e) {
+    var r = layout.getBoundingClientRect();
+    var x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    var p = (x / r.width) * 100;
+    return Math.max(38, Math.min(78, p));
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    layout.style.setProperty("--mc-opts", String(100 - pctFromEvent(e)) + "%");
+  }
+  function endDrag() {
+    dragging = false;
+    handle.classList.remove("is-dragging");
+    window.removeEventListener("mousemove", onMove);
+    window.removeEventListener("mouseup", endDrag);
+    window.removeEventListener("touchmove", onMove);
+    window.removeEventListener("touchend", endDrag);
+  }
+  handle.addEventListener("mousedown", function (e) {
+    dragging = true;
+    handle.classList.add("is-dragging");
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", endDrag);
+  });
+  handle.addEventListener("touchstart", function (e) {
+    dragging = true;
+    handle.classList.add("is-dragging");
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", endDrag);
+  });
+})();
+  </script>
+</body>
+</html>

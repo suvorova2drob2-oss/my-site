@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 4 &mdash; Civic Library (speaking)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --line: #334155; --accent: #38bdf8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #e2e8f0; min-height: 100dvh; padding: max(20px, 4vh) 16px 32px; }
+    .shell { max-width: 40rem; margin: 0 auto; }
+    .top { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; }
+    .top h1 { font-size: 1.05rem; line-height: 1.3; color: #f1f5f9; margin-bottom: 8px; }
+    .top p { color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+    .ru { color: #94a3b8; font-size: 12px; margin-top: 8px; line-height: 1.45; }
+    .box { background: #0f1f2a; border: 1px solid #1e3a5f; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+    .box h2 { font-size: 0.8rem; color: #7dd3fc; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .box ul { margin: 0 0 0 1.1rem; font-size: 14px; line-height: 1.55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .chips span { font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: #1e3a5f; color: #bae6fd; }
+    .timer { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; font-size: 14px; }
+    .timer output { font-variant-numeric: tabular-nums; font-weight: 800; color: #fde047; font-size: 1.4rem; }
+    .timer button { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #3b6fb8; background: #1c4c7c; color: #e0f2fe; cursor: pointer; }
+    .note { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+    .back { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 16px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1>Task 4 &mdash; Retell, then take a line (orally)</h1>
+      <p>
+        <strong>Speaking only on this page.</strong> In about two minutes: (1) Summarise the <strong>five moves</strong> of the text &mdash; what each paragraph does. (2) Say which criticism you <strong>sympathise with more</strong>: the space for work, the money, or the author&rsquo;s defence &mdash; and why, in a couple of clear sentences. Re-use signposts from
+        <a href="task2-useful-language.html" style="color:#7dd3fc;">Task 2</a> and chunks from
+        <a href="task3-collocations.html" style="color:#7dd3fc;">Task 3</a> if you can.
+      </p>
+      <p class="ru">
+        Сначала пересказ по абзацам, потом своё отношение. Писать ничего не надо. Английский, русский или смесь &mdash; как вам в группе договоритесь.
+      </p>
+    </div>
+    <div class="box">
+      <h2>Paragraph jobs (loose map)</h2>
+      <ul>
+        <li><strong>(1)</strong> Why the building mattered, how bad it had got, and that the project is now complete.</li>
+        <li><strong>(2)</strong> Aesthetic success inside + kids&rsquo; area; outside kept, new dome, mixed reactions.</li>
+        <li><strong>(3)</strong> The &ldquo;but&rdquo; on <strong>function</strong>: looks vs space for people who <strong>depend on the library to work</strong>.</li>
+        <li><strong>(4)</strong> The money fight + the author&rsquo;s rebuttal (libraries = vital, if intangibly).</li>
+        <li><strong>(5)</strong> A wider <strong>policy</strong> finish: if money were unlimited vs real constraints and <strong>stark choices</strong>.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Optional phrases to steal into speech</h2>
+      <div class="chips" aria-label="Chunks">
+        <span>invaluable community space</span>
+        <span>having been neglected</span>
+        <span>in terms of aesthetics</span>
+        <span>worked wonders on</span>
+        <span>nooks and crannies</span>
+        <span>the answer is more nuanced</span>
+        <span>stunning as … (inversion)</span>
+        <span>astronomical sums</span>
+        <span>miss the point that</span>
+        <span>albeit</span>
+        <span>money well spent</span>
+        <span>were money no object</span>
+        <span>in view of budgetary constraints</span>
+        <span>stark choice</span>
+        <span>crumbling infrastructure</span>
+        <span>infinitely superior</span>
+      </div>
+    </div>
+    <div class="box">
+      <h2>Optional timer</h2>
+      <div class="timer">
+        <output id="t-out">0:00</output>
+        <button type="button" id="t-btn">Start / stop</button>
+        <button type="button" id="t-reset">Reset</button>
+      </div>
+      <p class="note">~120 seconds is a solid target for summary + one opinion.</p>
+    </div>
+    <p class="back">
+      <a href="index.html">&larr; Task 1 (read + glossary)</a>
+      <a href="task3-collocations.html">Task 3 (collocations) &larr;</a>
+      <a href="../index.html">Writing (Level 9)</a>
+    </p>
+  </div>
+  <script>
+(function () {
+  var t0 = null, intv = null;
+  var out = document.getElementById("t-out");
+  document.getElementById("t-btn").addEventListener("click", function () {
+    if (t0 == null) { t0 = Date.now(); intv = setInterval(function () { out.textContent = (function (ms) { var s = (ms/1000)|0; var m = (s/60)|0; s = s%60; return m + ":" + (s<10?"0":"") + s; })(Date.now() - t0); }, 200); }
+    else { t0 = null; if (intv) { clearInterval(intv); intv = null; } }
+  });
+  document.getElementById("t-reset").addEventListener("click", function () { t0 = null; if (intv) { clearInterval(intv); intv = null; } out.textContent = "0:00"; });
+})();
+  </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 /**
  * Единое хранилище контента сайта (папки → разделы → задания).
- * localStorage + BroadcastChannel. Если подключён PrepCloudClient (см. infra/supabase/PREP-CLOUD.md),
- * при save() данные уходят в Supabase; при загрузке страницы вызывай PrepSiteContent.hydrateFromCloud().
+ * localStorage + BroadcastChannel. Если подключён PrepCloudClient,
+ * при save() данные уходят в облако; при загрузке страницы — PrepSiteContent.hydrateFromCloud().
  */
 (function (global) {
   var KEY = "prep-site-content-v1";
@@ -118,7 +118,7 @@
   }
 
   /**
-   * Pull course folders from Supabase when PrepCloudClient is loaded and URL/key are set.
+   * Pull course folders from the cloud when PrepCloudClient is loaded and URL/key are set.
    * Safe no-op (resolves false) when cloud is not configured.
    */
   function hydrateFromCloud() {
@@ -196,3 +196,86 @@
     defaultData: defaultData
   };
 })(typeof window !== "undefined" ? window : this);
+
+/**
+ * Mastering B2 (FCE) vs CPE: session flag + ?course=fce on in-page links.
+ * Runs wherever prep-site-content.js is included (unit hubs, games, Level pages).
+ */
+(function () {
+  var SS_KEY = "mb2FceSession";
+
+  function onReady(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  function syncSessionFromUrl() {
+    try {
+      var course = String(new URLSearchParams(location.search || "").get("course") || "").toLowerCase();
+      if (course === "fce") {
+        sessionStorage.setItem(SS_KEY, "1");
+      } else if (course === "cpe") {
+        sessionStorage.removeItem(SS_KEY);
+      }
+    } catch (e) {}
+  }
+
+  function isFceCourseMode() {
+    try {
+      var course = String(new URLSearchParams(location.search || "").get("course") || "").toLowerCase();
+      if (course === "cpe") return false;
+      if (course === "fce") return true;
+      return sessionStorage.getItem(SS_KEY) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function shouldSkipRewrite(absUrl, rawHref) {
+    if (/[?&]course=/i.test(rawHref)) return true;
+    try {
+      var path = absUrl.pathname || "";
+      var parts = path.split("/").filter(Boolean);
+      var last = parts.length ? parts[parts.length - 1] : "";
+      if (parts.length === 1 && /^index\.html$/i.test(last)) return true;
+    } catch (e) {}
+    return false;
+  }
+
+  function withCourseFceParam(rawHref) {
+    var hashIdx = rawHref.indexOf("#");
+    var base = hashIdx >= 0 ? rawHref.slice(0, hashIdx) : rawHref;
+    var hash = hashIdx >= 0 ? rawHref.slice(hashIdx) : "";
+    var sep = base.indexOf("?") >= 0 ? "&" : "?";
+    return base + sep + "course=fce" + hash;
+  }
+
+  onReady(function () {
+    syncSessionFromUrl();
+    if (!isFceCourseMode()) return;
+
+    var homeLink = document.getElementById("mb2-course-home-link");
+    if (homeLink) homeLink.setAttribute("href", "fce.html");
+
+    var nodes = document.querySelectorAll("a[href]");
+    for (var i = 0; i < nodes.length; i++) {
+      var a = nodes[i];
+      if (a === homeLink) continue;
+      var raw = a.getAttribute("href");
+      if (!raw || raw.charAt(0) === "#") continue;
+      if (/^(mailto|javascript):/i.test(raw)) continue;
+
+      var abs;
+      try {
+        abs = new URL(raw, location.href);
+      } catch (e) {
+        continue;
+      }
+
+      if (abs.origin !== location.origin) continue;
+      if (shouldSkipRewrite(abs, raw)) continue;
+
+      a.setAttribute("href", withCourseFceParam(raw));
+    }
+  });
+})();

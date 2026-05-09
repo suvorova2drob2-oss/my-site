@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 7 — Listening &middot; RfL Track 0.3 (jobs — what they liked most)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.35rem; line-height: 1.3; }
+    .top .file-tag { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      padding: 14px;
+      background: var(--panel-soft);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .instr strong { color: #cfe0ff; }
+    .note-box {
+      font-size: 0.88rem;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      background: rgba(15, 36, 68, 0.45);
+      line-height: 1.5;
+    }
+    .note-box code { color: #cfe0ff; font-size: 0.84rem; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 18px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .task-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 760px) {
+      .task-split { grid-template-columns: 1fr; }
+    }
+    .options,
+    .match-block {
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a4065;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .letter { font-weight: 800; color: var(--accent); }
+    .match-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a4065;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-row label {
+      font-weight: 600;
+      min-width: 6.5rem;
+      flex: 0 0 auto;
+    }
+    select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1rem;
+      width: 100%;
+      max-width: 160px;
+    }
+    select.correct { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok); }
+    select.wrong { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border: 1px solid var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback.partial {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid var(--bad);
+      color: #fecaca;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Listening &middot; RfB2 First — RfL Track 0.3</span>
+        <h1>Five people — what they liked most about the job</h1>
+        <p class="file-tag">Part 3 style · <code style="color: var(--muted);">RfB2First_SB_RfL_Track 0.3.mp3</code></p>
+      </div>
+      <a class="back" href="../unit7-listening/index.html">&larr; Unit 7 listening</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;5</strong>, choose from the list (<strong>A&ndash;H</strong>) what <strong>each speaker says they liked most about the job</strong>.
+      Use the letters <strong>only once</strong>. There are <strong>three extra</strong> letters which you do not need to use.
+    </p>
+
+    <p class="note-box">
+      <strong>Scoring:</strong> set <code>ANSWER_KEY</code> (five letters, speakers 1&rarr;5) when you have the publisher key.
+      While it is empty, <strong>Check</strong> only confirms five <strong>different</strong> letters from A&ndash;H.
+    </p>
+
+    <div class="audio-wrap">
+      <label for="track-audio">Audio (Yandex Object Storage)</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RfB2First_SB_RfL_Track%200.3.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <div class="task-split">
+      <section class="options" aria-labelledby="optHeading">
+        <h2 id="optHeading">Options A&ndash;H</h2>
+        <div id="optionsList"></div>
+      </section>
+
+      <section class="match-block" aria-labelledby="matchHeading">
+        <h2 id="matchHeading">Speakers 1&ndash;5</h2>
+        <div id="matchRows"></div>
+      </section>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear choices</button>
+    </div>
+    <div class="feedback" id="feedback" role="status"></div>
+  </main>
+
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+  <script>
+    /** Five letters for speakers 1→5. Example: ["D","B","F","H","A"] */
+    var ANSWER_KEY = [];
+
+    var OPTIONS = [
+      { letter: "A", text: "being appreciated for their work" },
+      { letter: "B", text: "practising a foreign language" },
+      { letter: "C", text: "having time to do tourism" },
+      { letter: "D", text: "being given responsibility" },
+      { letter: "E", text: "not working long hours" },
+      { letter: "F", text: "being able to develop a skill" },
+      { letter: "G", text: "earning good money" },
+      { letter: "H", text: "socialising during the breaks" }
+    ];
+
+    var optionsList = document.getElementById("optionsList");
+    var matchRows = document.getElementById("matchRows");
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var selects = [];
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    optionsList.innerHTML = OPTIONS.map(function (o) {
+      return (
+        '<div class="opt-row"><span class="letter">' +
+        escapeHtml(o.letter) +
+        '</span><span>' +
+        escapeHtml(o.text) +
+        "</span></div>"
+      );
+    }).join("");
+
+    function getValues() {
+      return selects.map(function (s) {
+        return s.value;
+      });
+    }
+
+    function rebuildSelects() {
+      var vals = getValues();
+      selects.forEach(function (sel, idx) {
+        var current = vals[idx];
+        var usedElsewhere = {};
+        vals.forEach(function (v, j) {
+          if (j !== idx && v) {
+            usedElsewhere[v] = true;
+          }
+        });
+        sel.innerHTML = "";
+        var opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "— choose —";
+        sel.appendChild(opt0);
+        OPTIONS.forEach(function (o) {
+          var L = o.letter;
+          if (!usedElsewhere[L] || L === current) {
+            var opt = document.createElement("option");
+            opt.value = L;
+            opt.textContent = L;
+            if (L === current) {
+              opt.selected = true;
+            }
+            sel.appendChild(opt);
+          }
+        });
+        if (current && !sel.value) {
+          sel.value = "";
+        }
+      });
+    }
+
+    for (var i = 0; i < 5; i += 1) {
+      var row = document.createElement("div");
+      row.className = "match-row";
+      var lab = document.createElement("label");
+      lab.setAttribute("for", "spk" + i);
+      lab.textContent = "Speaker " + (i + 1);
+      var sel = document.createElement("select");
+      sel.id = "spk" + i;
+      sel.setAttribute("aria-label", "Answer for speaker " + (i + 1));
+      sel.addEventListener("change", function (ev) {
+        var target = ev.target;
+        var newVal = target.value;
+        if (newVal) {
+          selects.forEach(function (other) {
+            if (other !== target && other.value === newVal) {
+              other.value = "";
+            }
+          });
+        }
+        clearResultStyles();
+        feedback.classList.remove("show");
+        rebuildSelects();
+      });
+      row.appendChild(lab);
+      row.appendChild(sel);
+      matchRows.appendChild(row);
+      selects.push(sel);
+    }
+    rebuildSelects();
+
+    function clearResultStyles() {
+      selects.forEach(function (s) {
+        s.classList.remove("correct", "wrong");
+      });
+    }
+
+    function keyReady() {
+      return Array.isArray(ANSWER_KEY) && ANSWER_KEY.length === 5 && ANSWER_KEY.every(function (x) {
+        return x && String(x).length === 1;
+      });
+    }
+
+    btnCheck.addEventListener("click", function () {
+      var vals = getValues();
+      var allFilled = vals.every(function (v) {
+        return v;
+      });
+      if (!allFilled) {
+        feedback.textContent = "Choose a letter for all five speakers before checking.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+      var dup = {};
+      var hasDup = false;
+      vals.forEach(function (v) {
+        if (dup[v]) {
+          hasDup = true;
+        }
+        dup[v] = true;
+      });
+      if (hasDup) {
+        feedback.textContent = "Each letter can only be used once. Fix duplicates.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+
+      clearResultStyles();
+
+      if (!keyReady()) {
+        feedback.innerHTML =
+          "<strong>Format OK:</strong> five different letters (A–H). Compare with your answer key. " +
+          "Set <code>ANSWER_KEY</code> in the script for auto-scoring.";
+        feedback.className = "feedback ok show";
+        return;
+      }
+
+      var ok = 0;
+      for (var j = 0; j < 5; j += 1) {
+        var want = String(ANSWER_KEY[j]).toUpperCase();
+        var got = vals[j].toUpperCase();
+        if (got === want) {
+          selects[j].classList.add("correct");
+          ok += 1;
+        } else {
+          selects[j].classList.add("wrong");
+        }
+      }
+
+      if (ok === 5) {
+        feedback.innerHTML =
+          "<strong>All correct.</strong> Speakers 1–5: " +
+          vals.map(function (v, k) {
+            return k + 1 + " → " + v;
+          }).join("; ") +
+          ".";
+        feedback.className = "feedback ok show";
+      } else {
+        feedback.innerHTML =
+          "You have <strong>" +
+          ok +
+          " / 5</strong> correct. Adjust choices and check again. (Three letters are extra.)";
+        feedback.className = "feedback partial show";
+      }
+    });
+
+    btnReset.addEventListener("click", function () {
+      selects.forEach(function (sel) {
+        sel.value = "";
+        sel.classList.remove("correct", "wrong");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      rebuildSelects();
+    });
+  </script>
+</body>
+</html>

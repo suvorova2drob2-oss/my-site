@@ -8,6 +8,10 @@
   <script src="live-supabase-local.js"></script>
   <script src="js/prepositional-phrases-core.js"></script>
   <script src="js/interior-design-vocab-core.js"></script>
+  <script src="js/art-restoration-listen-data.js"></script>
+  <script src="js/minds-eye-listen-data.js"></script>
+  <script src="js/u9-contemporary-art-reading-data.js"></script>
+  <script src="js/u9-must-know-lexis.js"></script>
   <script src="js/unit9-ttt-word-bank.js"></script>
   <style>
     :root {
@@ -274,7 +278,7 @@
     <strong>Обычный вход:</strong> создатель нажимает «Создать комнату» и делится <strong>ссылкой</strong> — остальные открывают её (код подставится), вводят имя и нажимают <strong>Войти</strong>.
     Карточки — <strong>тот же Word Bank Unit 9</strong>, что в лексических играх: четыре темы (Reading / Idioms / Listening / Prep). Набор фиксирует только <strong>создатель комнаты</strong>.
     По ссылке открывается режим <strong>только «Войти»</strong> (без создания комнаты). До <strong>8 участников</strong>: равномерно в команды X и O; внутри команды ход по очереди — отвечает следующий игрок.
-    Если в O никого нет, можно тренироваться <strong>одному за X</strong>. Нужны <code>live-supabase-local.js</code> и открытие по <strong>http(s)</strong>.
+    Если в O никого нет, можно тренироваться <strong>одному за X</strong>. Нужен настроенный <strong>live</strong>-бэкенд и открытие страницы по <strong>http(s)</strong> (из корня сайта, не <code>file://</code>).
     Клик по клетке — терминал с подсказкой из банка; верно — символ команды, неверно — клетка пустая, ход к другой команде.
   </p>
 
@@ -929,7 +933,7 @@
         var url = window.__LIVE_SUPABASE_URL__;
         var key = window.__LIVE_SUPABASE_KEY__;
         if (!url || !key || !window.supabase || typeof window.supabase.createClient !== "function") {
-          elNet.textContent = "Нет Supabase: добавьте live-supabase-local.js в корень сайта.";
+          elNet.textContent = "Нет подключения к live-сессии. Проверьте настройки бэкенда и что страница открыта с сервера (http/https).";
           return false;
         }
         var client = window.supabase.createClient(String(url).trim(), String(key).trim());
@@ -1098,7 +1102,7 @@
             : "Введите имя. Преподаватель: «Создать комнату» и темы Word Bank; остальные — код из ссылки и «Войти».";
         }
       } else {
-        elNet.textContent = "Скопируйте live-supabase-local.example.js → live-supabase-local.js и укажите URL и ключ.";
+        elNet.textContent = "Сессия в сети недоступна: согласуйте с настройщиком сайта конфигурацию live-бэкенда (URL и ключ) в корне проекта.";
       }
     })();
   </script>

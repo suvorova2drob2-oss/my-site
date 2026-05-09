@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam trainer — Listening Part 3 · Art restoration</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 10px;
+      margin-bottom: 14px;
+    }
+    audio { width: 100%; margin-top: 6px; }
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q {
+      margin-bottom: 14px;
+      border-bottom: 1px solid #34507d;
+      padding-bottom: 12px;
+    }
+    .q:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .q h3 {
+      font-size: 1rem;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .opts {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      color: #d5e2f8;
+      font-size: 0.95rem;
+    }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+    }
+    .opt-line input {
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+    .label {
+      color: var(--accent);
+      font-weight: 700;
+      display: inline-block;
+      width: 22px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background: var(--ok);
+      color: #05271a;
+    }
+    .btn-next {
+      background: var(--accent);
+      color: #062536;
+    }
+    .feedback {
+      margin-top: 10px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      line-height: 1.4;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.12);
+      color: #a7f3d0;
+    }
+    .feedback.bad {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.1);
+      color: #fecaca;
+    }
+    .trainer {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: none;
+    }
+    .trainer.show { display: block; }
+    .trainer-head {
+      margin-bottom: 10px;
+    }
+    .trainer-head h2 {
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+    }
+    .trainer-note {
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+    .progress {
+      color: #cde0ff;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .passage {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #1a2c49;
+      padding: 16px;
+      line-height: 1.8;
+      font-size: 1.03rem;
+      margin-bottom: 12px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .chunk-static {
+      color: #c8dcf5;
+    }
+    .chunk-target {
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0 1px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .chunk-target:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .chunk-target.ok {
+      background: rgba(34, 197, 94, 0.32);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+      border-bottom: none;
+      cursor: default;
+    }
+    .chunk-target.bad {
+      background: rgba(239, 68, 68, 0.32);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.4);
+      border-bottom: none;
+      cursor: default;
+    }
+    .chunk-target.locked { pointer-events: none; }
+    .explain-box {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1a2c49;
+      padding: 10px 12px;
+      line-height: 1.45;
+      font-size: 0.92rem;
+      color: #d2dff6;
+    }
+    .explain-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #dbe8ff;
+    }
+    .explain-row {
+      margin-top: 4px;
+    }
+    .explain-row.good { color: #a7f3d0; }
+    .explain-row.bad { color: #fecaca; }
+    .tag-mini {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 1px 6px;
+      margin-right: 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      vertical-align: 1px;
+    }
+    .tag-mini.good {
+      background: rgba(34, 197, 94, 0.25);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #a7f3d0;
+    }
+    .tag-mini.bad {
+      background: rgba(239, 68, 68, 0.25);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fecaca;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Listening Part 3 — Art restoration (Edward &amp; Olga)</h1>
+      <a class="back" href="../index.html">&larr; Back to course hub</a>
+    </header>
+
+    <p class="subtitle">You will hear a conversation between Edward, a reproduction artist, and Olga, an art conservator. For questions 1&ndash;5, choose the best answer (A, B, C or D).</p>
+
+    <section class="audio-wrap">
+      <strong>Audio: RF_C2_SB_Track 9.4</strong>
+      <audio controls preload="metadata" src="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%209.4.mp3"></audio>
+    </section>
+
+    <section class="questions" id="mcqHost"></section>
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnSubmit">Submit answers</button>
+    </div>
+    <div id="mcqFeedback" class="feedback"></div>
+
+    <section id="trainer" class="trainer">
+      <div class="trainer-head">
+        <h2>Stage 2 — Distractor hunt</h2>
+        <p class="trainer-note">For each task: <strong>find the phrase in the text that supports the correct answer</strong> (green), then <strong>find two phrases that match wrong options</strong> (red).</p>
+      </div>
+      <p id="trainerProgress" class="progress">Task 1 / 5</p>
+      <h3 id="trainerQuestion" style="margin-bottom: 10px;"></h3>
+      <div id="trainerPassage" class="passage"></div>
+      <div id="explainBox" class="explain-box"></div>
+      <div class="btn-row">
+        <button type="button" class="btn-next" id="btnNext" disabled>Next task &rarr;</button>
+      </div>
+      <div id="trainerFeedback" class="feedback"></div>
+    </section>
+  </main>
+
+  <script>
+    var MCQ = [
+      {
+        q: "1) What is Edward's assessment of his customers?",
+        options: {
+          A: "They lack an appreciation of quality.",
+          B: "Their tastes are varied and eclectic.",
+          C: "Their requests are often predictable.",
+          D: "They're impressed by his work ethic."
+        },
+        correct: "C"
+      },
+      {
+        q: "2) What do Edward and Olga agree on with regard to their jobs?",
+        options: {
+          A: "There is a lack of appreciation for what is involved.",
+          B: "Both of them use specialist equipment.",
+          C: "Some of the necessary skills cross over.",
+          D: "They invested a lot of time in their training."
+        },
+        correct: "A"
+      },
+      {
+        q: "3) What does Olga say about the time needed for restoration work?",
+        options: {
+          A: "Big projects are notorious for having lengthy delays.",
+          B: "The nature of the work makes planning impractical.",
+          C: "Experts are consulted about an appropriate timescale.",
+          D: "Time taken at the start of the project can upset the schedule."
+        },
+        correct: "B"
+      },
+      {
+        q: "4) Edward questions whether his paintings might be improved if he",
+        options: {
+          A: "made some adjustments to his environment.",
+          B: "focused on improving his concentration.",
+          C: "worked in short intervals instead of one long stint.",
+          D: "was able to receive feedback as he worked."
+        },
+        correct: "D"
+      },
+      {
+        q: "5) Olga and Edward both mention achieving certain outcomes by",
+        options: {
+          A: "the process of trial and error.",
+          B: "a tried and tested solution.",
+          C: "tending to minute details.",
+          D: "the use of certain tricks"
+        },
+        correct: "B"
+      }
+    ];
+
+    var TRAINER = [
+      {
+        question: MCQ[0].q,
+        correctLabel: "C",
+        distractorLabels: ["B", "D"],
+        segments: [
+          { kind: "plain", text: "E: At times you could say so, and while I know it does sound fantastically creative and a bit risqu\u00e9, it's driven by the tastes of my clients who mostly tend to commission " },
+          { kind: "correct", text: "typically populist things, which essentially can be quite dull" },
+          { kind: "plain", text: ". You know, those paintings which despite having been lauded by critics over the years are actually not that difficult to do \u2014 between you and me I can " },
+          { kind: "distractor", text: "knock out a Klimt or a Monet in no time", label: "D" },
+          { kind: "plain", text: ", but I'd far rather be presented with something that I could get my teeth into a bit more, something very technically demanding. " },
+          { kind: "distractor", text: "I'd far rather be presented with something that I could get my teeth into", label: "B" }
+        ]
+      },
+      {
+        question: MCQ[1].q,
+        correctLabel: "A",
+        distractorLabels: ["B", "C"],
+        segments: [
+          { kind: "plain", text: "O: It's hardly a ringing endorsement of my finely honed technical skills. What I really want is to have someone bring me something which entails getting out my " },
+          { kind: "distractor", text: "microscope and chemical testing kit", label: "B" },
+          { kind: "plain", text: ", not a tube of super glue.\n\nE: For me, the bottom line is people just want to look at a painted version of their favourite painting, because of the kudos of having an actual piece of art in the house, even if there were no way it could be an original. " },
+          { kind: "correct", text: "The whole technical prowess part of my job doesn't interest the average buyer either" },
+          { kind: "plain", text: ". Then it all becomes more of a chore than a pleasure since, like you, I don't feel like I'm being stretched \u2014 it's more like a paint by numbers gig and now and again I feel like telling them to get a print offline.\n\nO: I can imagine! My situation is slightly different in that I'm more embedded within large organisations. They can be pedantic in their requirements, but a technical challenge is almost always there. " },
+          { kind: "distractor", text: "Especially when working with pigments that have a complex, historical and lengthy production process", label: "C" }
+        ]
+      },
+      {
+        question: MCQ[2].q,
+        correctLabel: "B",
+        distractorLabels: ["C", "A"],
+        segments: [
+          { kind: "plain", text: "O: Well, often I'm part of a team working on a collection and at the outset " },
+          { kind: "distractor", text: "there'll be at least one art historian and a chemist or forensic art expert tasked with working this out", label: "C" },
+          { kind: "plain", text: ". Sometimes we work to deadlines, but " },
+          { kind: "correct", text: "more often than not it's contingent on the problems we uncover as we go along. Working out how to cope with something we hadn't foreseen can mean the deadline goes out the window" },
+          { kind: "plain", text: ". For large museums and country houses or palaces, getting it right is paramount so actually they're usually quite generous. " },
+          { kind: "distractor", text: "For large museums and country houses or palaces, getting it right is paramount", label: "A" }
+        ]
+      },
+      {
+        question: MCQ[3].q,
+        correctLabel: "D",
+        distractorLabels: ["B", "C"],
+        segments: [
+          { kind: "plain", text: "E: Mmm. I see. I'm not sure I'd be any good at heading up that kind of project, I wouldn't like to be constantly juggling so many bits and pieces, but the team aspect sounds nice. As it stands my job can be a bit solitary \u2014 you know, isolated up in the studio for hours on end, not that I'm complaining. I'm not sure I want someone around all the time, but " },
+          { kind: "correct", text: "I'd often quite like to be able to get someone to cast an eye over what I'm doing when I'm painting something like a Rembrandt" },
+          { kind: "plain", text: ". You have to painstakingly layer on the colours and gradually build it up \u2014 it's quite time-consuming and tiring and you can " },
+          { kind: "distractor", text: "lose focus if you're not careful", label: "B" },
+          { kind: "plain", text: ". Obviously, you have the option of going back and correcting what you've done but I find that disrupts my flow.\n\nO: Yes, I see what you mean. With what I do, there's " },
+          { kind: "distractor", text: "quite a lot of stop start since we're working on small parts of a painting rather than the whole thing at once", label: "C" }
+        ]
+      },
+      {
+        question: MCQ[4].q,
+        correctLabel: "B",
+        distractorLabels: ["D", "A"],
+        segments: [
+          { kind: "plain", text: "O: Yes, I see what you mean. With what I do, there's quite a lot of stop start since we're working on small parts of a painting rather than the whole thing at once. It's vital to regularly step away from the microscope to check what we're doing fits in with the work, and we haven't accidentally made a section look out of place. Anyway, going back to the time issue, what about your clients \u2014 do they have reasonable expectations as to what is achievable in their timeframe? How do you go about managing this?\n\nE: " },
+          { kind: "correct", text: "I have a fairly reliable approach actually, which always works, which is to meet with the customer and talk through timescales and prices" },
+          { kind: "plain", text: ", but I have an ace up my sleeve! I show them three examples of the same painting \u2014 one which took a couple of days to complete and the others which took a couple of weeks and a month respectively. They soon get the picture so to speak." },
+          { kind: "distractor", text: "but I have an ace up my sleeve", label: "D" },
+          { kind: "distractor", text: "I show them three examples of the same painting", label: "A" }
+        ]
+      }
+    ];
+
+    var mcqHost = document.getElementById("mcqHost");
+    var btnSubmit = document.getElementById("btnSubmit");
+    var mcqFeedback = document.getElementById("mcqFeedback");
+    var trainer = document.getElementById("trainer");
+    var trainerProgress = document.getElementById("trainerProgress");
+    var trainerQuestion = document.getElementById("trainerQuestion");
+    var trainerPassage = document.getElementById("trainerPassage");
+    var explainBox = document.getElementById("explainBox");
+    var btnNext = document.getElementById("btnNext");
+    var trainerFeedback = document.getElementById("trainerFeedback");
+
+    var currentStep = 0;
+    var hits = { correct: false, distractors: 0 };
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderMcq() {
+      mcqHost.innerHTML = MCQ.map(function (item, qIdx) {
+        var keys = ["A", "B", "C", "D"];
+        var optionsHtml = keys.map(function (k) {
+          if (!item.options[k]) return "";
+          return (
+            '<li class="opt-line"><input type="radio" name="q' + qIdx + '" value="' + k + '" id="q' + qIdx + k + '" />' +
+            '<label for="q' + qIdx + k + '"><span class="label">' + k + "</span>" + escapeHtml(item.options[k]) + "</label></li>"
+          );
+        }).join("");
+        return '<article class="q"><h3>' + escapeHtml(item.q) + "</h3><ul class=\"opts\">" + optionsHtml + "</ul></article>";
+      }).join("");
+    }
+
+    function getSelectedAnswers() {
+      return MCQ.map(function (_, i) {
+        var picked = document.querySelector('input[name="q' + i + '"]:checked');
+        return picked ? picked.value : "";
+      });
+    }
+
+    function renderTrainerStep() {
+      var step = TRAINER[currentStep];
+      var taskMcq = MCQ[currentStep];
+      hits = { correct: false, distractors: 0 };
+      btnNext.disabled = true;
+      trainerFeedback.className = "feedback";
+      trainerFeedback.textContent = "";
+      trainerProgress.textContent = "Task " + (currentStep + 1) + " / " + TRAINER.length;
+      trainerQuestion.textContent = step.question;
+      explainBox.innerHTML =
+        '<div class="explain-title">Task instruction</div>' +
+        '<div class="explain-row good"><span class="tag-mini good">Find correct</span>Find the phrase that proves the best answer in this question.</div>' +
+        '<div class="explain-row bad"><span class="tag-mini bad">Find distractor</span>Find two phrases that match wrong options by meaning.</div>' +
+        '<div class="explain-row good"><span class="tag-mini good">Target meaning</span>' + escapeHtml(taskMcq.options[step.correctLabel]) + "</div>" +
+        step.distractorLabels.map(function (label) {
+          return '<div class="explain-row bad"><span class="tag-mini bad">Distractor meaning</span>' + escapeHtml(taskMcq.options[label]) + "</div>";
+        }).join("");
+      trainerPassage.innerHTML = "";
+      step.segments.forEach(function (seg) {
+        var span = document.createElement("span");
+        span.textContent = seg.text;
+        if (seg.kind === "plain") {
+          span.className = "chunk-static";
+        } else {
+          span.className = "chunk-target";
+          span.setAttribute("data-kind", seg.kind);
+          if (seg.label) {
+            span.setAttribute("data-label", seg.label);
+            span.setAttribute("title", (seg.kind === "correct" ? "Correct option " : "Distractor option ") + seg.label);
+          }
+        }
+        trainerPassage.appendChild(span);
+      });
+    }
+
+    trainerPassage.addEventListener("click", function (event) {
+      var el = event.target.closest(".chunk-target");
+      if (!el || el.classList.contains("locked")) {
+        return;
+      }
+      var kind = el.getAttribute("data-kind");
+      el.classList.add("locked");
+      if (kind === "correct") {
+        el.classList.add("ok");
+        hits.correct = true;
+      } else {
+        el.classList.add("bad");
+        hits.distractors += 1;
+      }
+      if (hits.correct && hits.distractors >= 2) {
+        btnNext.disabled = false;
+        trainerFeedback.className = "feedback ok show";
+        trainerFeedback.textContent = "Good. Correct idea found (green) + two distractors found (red).";
+      }
+    });
+
+    btnSubmit.addEventListener("click", function () {
+      var answers = getSelectedAnswers();
+      var allFilled = answers.every(function (a) { return a; });
+      if (!allFilled) {
+        mcqFeedback.className = "feedback bad show";
+        mcqFeedback.textContent = "Choose one answer for all 5 questions before submitting.";
+        return;
+      }
+      var score = 0;
+      answers.forEach(function (value, i) {
+        if (value === MCQ[i].correct) {
+          score += 1;
+        }
+      });
+      mcqFeedback.className = "feedback ok show";
+      mcqFeedback.innerHTML =
+        "Submitted. Your score: <strong>" + score + "/5</strong>. " +
+        "Key: 1 C, 2 A, 3 B, 4 D, 5 B. " +
+        "Stage 2 is now unlocked.";
+      trainer.classList.add("show");
+      currentStep = 0;
+      renderTrainerStep();
+      trainer.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    btnNext.addEventListener("click", function () {
+      if (currentStep >= TRAINER.length - 1) {
+        btnNext.disabled = true;
+        trainerFeedback.className = "feedback ok show";
+        trainerFeedback.textContent = "Done. You finished all 5 distractor tasks.";
+        return;
+      }
+      currentStep += 1;
+      renderTrainerStep();
+    });
+
+    renderMcq();
+  </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 3 &mdash; Retell using key words</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --paper: #f8fafc;
+      --ink: #0f172a;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --line: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: #e2e8f0;
+      min-height: 100dvh;
+      padding: max(20px, env(safe-area-inset-top, 0px))
+        max(16px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px))
+        max(16px, env(safe-area-inset-left, 0px));
+    }
+    .shell { max-width: 42rem; margin: 0 auto; }
+    .top {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px 20px;
+      margin-bottom: 14px;
+    }
+    .top h1 { font-size: 1.05rem; line-height: 1.3; color: #f1f5f9; margin-bottom: 8px; }
+    .top .sub { color: #cbd5e1; font-size: 14px; line-height: 1.5; margin-bottom: 12px; }
+    .sheet {
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 20px 18px 20px;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 14px;
+    }
+    .sheet h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .key-flow {
+      list-style: none;
+      counter-reset: k;
+    }
+    .key-flow > li {
+      counter-increment: k;
+      position: relative;
+      padding: 8px 0 10px 2.1rem;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .key-flow > li:last-child { border-bottom: none; }
+    .key-flow > li::before {
+      content: counter(k) ".";
+      position: absolute;
+      left: 0;
+      font-weight: 800;
+      color: #0ea5e9;
+    }
+    .key-flow .kw {
+      display: block;
+      margin-top: 4px;
+      color: #334155;
+      font-size: 0.86rem;
+    }
+    .key-flow .kw code {
+      font-size: 0.78rem;
+      background: #e0f2fe;
+      color: #0c4a6e;
+      padding: 1px 6px 2px;
+      border-radius: 4px;
+      font-weight: 600;
+      margin: 0 2px 2px 0;
+      display: inline-block;
+    }
+    .ins-bt {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 11px;
+      color: #0369a1;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .ins-bt:hover { background: #e0f2fe; }
+    .write {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+    }
+    .write h2 { color: #f1f5f9; font-size: 0.85rem; margin-bottom: 8px; }
+    .write .hint { color: var(--muted); font-size: 12px; line-height: 1.45; margin-bottom: 10px; }
+    #retell {
+      width: 100%;
+      min-height: 200px;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #0f172a;
+      background: #fff;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      resize: vertical;
+    }
+    #retell:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .row button {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #1e293b;
+      color: #e2e8f0;
+      cursor: pointer;
+    }
+    .row button:hover { border-color: var(--accent); color: #fff; }
+    .saved { color: #4ade80; }
+    details.ref {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    details.ref summary { cursor: pointer; color: #94a3b8; }
+    .back-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+    .back-row a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back-row a:hover { text-decoration: underline; }
+    @media (max-width: 420px) {
+      .sheet { padding: 16px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1>Task 3 &mdash; Retell the text (key words)</h1>
+      <p class="sub">
+        Cover the same content as the model review, but in <strong>your own words</strong>. Use the numbered prompts below
+        for order and ideas. You do <strong>not</strong> need to use every word as a direct quote; they are
+        <strong>anchors</strong> so you do not miss a part of the story. Aim for about <strong>150&ndash;220 words</strong> (8&ndash;12 sentences)
+        in a neutral / slightly formal style, like a short spoken report.
+      </p>
+    </div>
+
+    <div class="sheet" aria-label="Key-word prompts in order of the review">
+      <h2>Key ideas (in story order)</h2>
+      <ol class="key-flow" id="key-list">
+        <li>
+          Opening of the show: venue, timing, the artist&rsquo;s name and status.
+          <span class="kw">
+            <code>Tate Modern</code> <code>long-awaited</code> <code>opened (last week)</code> <code>Yayoi Kusama</code> <code>one of the world&rsquo;s most celebrated artists</code>
+          </span>
+        </li>
+        <li>
+          How the exhibition was received in broad terms; the title and main themes of the work on display.
+          <span class="kw">
+            <code>great display</code> <code>big / nothing short of a success</code> <code>Infinity Mirror Rooms</code> <code>infinite space</code> <code>endless replication</code>
+          </span>
+        </li>
+        <li>
+          What visitors walk through, and how it connects to the artist&rsquo;s long career in New York and beyond.
+          <span class="kw">
+            <code>two immersive</code> <code>mirror room installations</code> <code>conceptual</code> <code>minimalist</code> <code>arrived onto the New York art scene</code> <code>1950s</code>
+          </span>
+        </li>
+        <li>
+          What the photographs add: studio, context, and how we read her as an artist.
+          <span class="kw">
+            <code>photographic works</code> <code>documenting</code> <code>sculptural work</code> <code>New York studio</code> <code>context</code> <code>interpret</code> <code>artistic force</code>
+          </span>
+        </li>
+        <li>
+          The emotional side of her move to the city: mood and a hard period in her life.
+          <span class="kw">
+            <code>emotional</code> <code>moving to New York</code> <code>alienation</code> <code>difficult period</code>
+          </span>
+        </li>
+        <li>
+          How the show is put together in the building.
+          <span class="kw">
+            <code>curation</code> <code>layout and flow</code> <code>throughout the gallery</code>
+          </span>
+        </li>
+        <li>
+          The &ldquo;main draw&rdquo; and the strongest visual effect: light, space, the whole of Tate.
+          <span class="kw">
+            <code>main draw</code> <code>installations</code> <code>suspended lights</code> <code>shining / radiating in all directions</code> <code>fill the (large) building</code> <code>beyond the confines of the rooms</code>
+          </span>
+        </li>
+        <li>
+          Who the exhibition is for, and a closing line on the artist&rsquo;s gift.
+          <span class="kw">
+            <code>well worth a visit</code> <code>fans</code> <code>installation art lovers</code> <code>capture the hearts</code> <code>talented</code> <code>famous</code>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="write">
+      <h2>Your retelling</h2>
+      <p class="hint">
+        <strong>Tip:</strong> First cover the list mentally in order; then write without looking, if you can. Use past tense
+        for events (&ldquo;opened&rdquo;, &ldquo;explored&rdquo;) and present for what is still on (&ldquo;The show offers…&rdquo;).
+        <span id="save-state" class="saved" style="display:none;" aria-live="polite">Draft saved in this browser.</span>
+      </p>
+      <label for="retell" class="visually" style="position:absolute;left:-99rem;">Your text</label>
+      <textarea id="retell" name="retell" rows="12" placeholder="Write your retelling here…" spellcheck="true"></textarea>
+      <div class="row">
+        <button type="button" id="ins-all">Insert: all key phrases (list)</button>
+        <button type="button" id="clear-draft">Clear draft</button>
+        <span id="wc" style="color:#94a3b8;">0 words</span>
+      </div>
+    </div>
+
+    <details class="ref">
+      <summary>Need the original review? (for checking only)</summary>
+      <p style="margin-top:8px;line-height:1.45;">
+        Open
+        <a href="index.html" style="color:var(--accent);">Task 1</a>
+        for the full text and glossary, or the model answer in
+        <a href="task2-paraphrase.html" style="color:var(--accent);">Task 2</a>.
+      </p>
+    </details>
+
+    <p class="back-row">
+      <a href="index.html">&larr; Task 1</a>
+      <a href="task2-paraphrase.html">Task 2</a>
+      <a href="../index.html">Writing (Level 9)</a>
+    </p>
+  </div>
+  <script>
+(function () {
+  var LS = "u9w-kusama-t3-retell";
+  var ta = document.getElementById("retell");
+  var state = document.getElementById("save-state");
+  var wc = document.getElementById("wc");
+  var allPhrases = [
+    "Tate Modern — long-awaited — opened (last week) — Yayoi Kusama — one of the world’s most celebrated artists",
+    "great display — big / nothing short of a success — Infinity Mirror Rooms — infinite space — endless replication",
+    "two immersive mirror room installations — conceptual — minimalist — arrived onto the New York art scene — 1950s",
+    "photographic works — documenting — sculptural work — New York studio — context — interpret — artistic force",
+    "emotional — moving to New York — alienation — difficult period",
+    "curation — layout and flow — throughout the gallery",
+    "main draw — installations — suspended lights — shining / radiating in all directions — fill the (large) building — beyond the confines of the rooms",
+    "well worth a visit — fans — installation art lovers — capture the hearts — talented — famous"
+  ];
+  function countWords(s) {
+    if (!s || !s.trim()) return 0;
+    return s.trim().split(/\s+/).length;
+  }
+  function updateWc() {
+    wc.textContent = countWords(ta.value) + " word" + (countWords(ta.value) === 1 ? "" : "s");
+  }
+  function save() {
+    try {
+      localStorage.setItem(LS, ta.value);
+      state.style.display = "inline";
+      state.textContent = "Draft saved in this browser.";
+    } catch (e) {}
+  }
+  var t;
+  function scheduleSave() {
+    clearTimeout(t);
+    t = setTimeout(save, 400);
+  }
+  try {
+    var prev = localStorage.getItem(LS);
+    if (prev) {
+      ta.value = prev;
+      state.style.display = "inline";
+      state.textContent = "Restored your last draft in this browser.";
+    }
+  } catch (e) {}
+  ta.addEventListener("input", function () {
+    updateWc();
+    scheduleSave();
+  });
+  updateWc();
+  document.getElementById("ins-all").addEventListener("click", function () {
+    var block = "KEY PHRASES (use as memory aid, not to paste verbatim):\n\n" + allPhrases.map(function (p, i) { return (i + 1) + ") " + p; }).join("\n\n");
+    var start = ta.selectionStart;
+    var end = ta.selectionEnd;
+    var v = ta.value;
+    var insert = (v && !v.endsWith("\n") && v.length ? "\n\n" : "") + block + (v && v.length ? "\n\n" : "\n");
+    ta.value = v.slice(0, start) + insert + v.slice(end);
+    ta.focus();
+    var pos = start + insert.length;
+    ta.selectionStart = ta.selectionEnd = pos;
+    updateWc();
+    save();
+  });
+  document.getElementById("clear-draft").addEventListener("click", function () {
+    if (!ta.value) return;
+    if (!confirm("Clear your retelling and the saved draft in this browser?")) return;
+    ta.value = "";
+    try {
+      localStorage.removeItem(LS);
+    } catch (e) {}
+    state.style.display = "inline";
+    state.textContent = "Draft cleared.";
+    updateWc();
+  });
+})();
+  </script>
+</body>
+</html>

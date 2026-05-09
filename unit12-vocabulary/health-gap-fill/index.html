@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Vocabulary &mdash; Health (gap-fill)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.2rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #c5d4ef;
+    }
+    .word-box strong { color: #bae6fd; display: block; margin-bottom: 10px; }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: center;
+    }
+    .bank-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.5);
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: #e8f0ff;
+    }
+    .bank-chip.bank-example {
+      text-decoration: line-through;
+      opacity: 0.72;
+      color: var(--muted);
+      border-style: dashed;
+    }
+    .bank-note { margin-top: 12px; font-size: 0.86rem; color: var(--muted); }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap0 {
+      color: #fef08a;
+      font-weight: 700;
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 9rem;
+      max-width: min(100%, 22rem);
+      width: 14rem;
+      margin: 0 4px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; color: #e0e8f8; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    @media (max-width: 600px) {
+      .gap-input { width: 100%; max-width: 100%; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Health (gap-fill)</h1>
+      <a class="back" href="../index.html">&larr; Unit 12 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 12 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <a href="../health-choose-words/index.html">Health (choose)</a>
+      <span>|</span>
+      <span><strong>Health</strong> (Ex. 2 gaps)</span>
+    </nav>
+
+    <section class="task">
+      <h2>Health</h2>
+      <p class="instr">
+        Complete the sentences with words from the box. Use each word <strong>once</strong> only. There is an example at the beginning (0).
+      </p>
+
+      <div class="word-box">
+        <strong>Word box</strong>
+        <div class="word-box-line" role="list">
+          <span class="bank-chip" role="listitem">bandage</span>
+          <span class="bank-chip" role="listitem">blister</span>
+          <span class="bank-chip" role="listitem">injection</span>
+          <span class="bank-chip bank-example" role="listitem">plaster (example 0)</span>
+          <span class="bank-chip" role="listitem">prescription</span>
+          <span class="bank-chip" role="listitem">scar</span>
+          <span class="bank-chip" role="listitem">stitches</span>
+          <span class="bank-chip" role="listitem">stomach</span>
+          <span class="bank-chip" role="listitem">throat</span>
+        </div>
+        <p class="bank-note">Type a single word in each gap (1&ndash;8). Use the eight words that are not in the example.</p>
+      </div>
+
+      <p class="gap-sent">
+        <strong>0.</strong> Ouch! I&rsquo;ve cut my finger. Do we have a <span class="gap0">plaster</span>?
+      </p>
+      <p class="gap-sent">
+        <strong>1.</strong> To get this medicine, you need a
+        <input type="text" class="gap-input" id="ans-1" data-n="1" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+        from your doctor.
+      </p>
+      <p class="gap-sent">
+        <strong>2.</strong> Ever since I ate those prawns, I&rsquo;ve had a
+        <input type="text" class="gap-input" id="ans-2" data-n="2" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+        ache.
+      </p>
+      <p class="gap-sent">
+        <strong>3.</strong> The
+        <input type="text" class="gap-input" id="ans-3" data-n="3" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+        on my wrist is so tight, I can hardly move my hand!
+      </p>
+      <p class="gap-sent">
+        <strong>4.</strong> I had to have an
+        <input type="text" class="gap-input" id="ans-4" data-n="4" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+        before I had the dental work.
+      </p>
+      <p class="gap-sent">
+        <strong>5.</strong> The cut on my head left a
+        <input type="text" class="gap-input" id="ans-5" data-n="5" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+        , which you can still see today.
+      </p>
+      <p class="gap-sent">
+        <strong>6.</strong> I knew those new shoes would rub and give me a
+        <input type="text" class="gap-input" id="ans-6" data-n="6" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+        .
+      </p>
+      <p class="gap-sent">
+        <strong>7.</strong> I&rsquo;m finding it hard to talk because I have a sore
+        <input type="text" class="gap-input" id="ans-7" data-n="7" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 7" />
+        .
+      </p>
+      <p class="gap-sent">
+        <strong>8.</strong> The child had to have
+        <input type="text" class="gap-input" id="ans-8" data-n="8" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 8" />
+        after falling off her bike.
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var DISPLAY = {
+    1: "prescription",
+    2: "stomach",
+    3: "bandage",
+    4: "injection",
+    5: "scar",
+    6: "blister",
+    7: "throat",
+    8: "stitches"
+  };
+
+  var ACCEPT = {
+    1: ["prescription"],
+    2: ["stomach"],
+    3: ["bandage"],
+    4: ["injection"],
+    5: ["scar"],
+    6: ["blister"],
+    7: ["throat"],
+    8: ["stitches"]
+  };
+
+  var EXPLAIN = {
+    1: "<strong>prescription</strong> &mdash; written permission from a doctor for medicine.",
+    2: "<strong>stomach</strong> ache &mdash; pain in the stomach (here after prawns).",
+    3: "<strong>bandage</strong> &mdash; material wrapped tightly around an injury.",
+    4: "<strong>injection</strong> &mdash; medicine put in with a needle (e.g. before dental work).",
+    5: "<strong>scar</strong> &mdash; mark on skin after a cut has healed.",
+    6: "<strong>blister</strong> &mdash; sore bubble on skin from rubbing (e.g. new shoes).",
+    7: "<strong>throat</strong> &mdash; sore throat makes talking uncomfortable.",
+    8: "<strong>stitches</strong> &mdash; special threads closing a deep cut."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("ans-" + n);
+  }
+
+  function matches(n, userRaw) {
+    var u = norm(userRaw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function bindInputClear() {
+    for (var n = 1; n <= 8; n++) {
+      getIn(n).addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    }
+  }
+
+  bindInputClear();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var el = getIn(n);
+      var raw = el.value;
+      var ok = matches(n, raw);
+      if (raw.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw.trim()) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && raw.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw.trim() ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw.trim() ? esc(raw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var filled = 0;
+    for (var i = 1; i <= 8; i++) {
+      if (getIn(i).value.trim()) filled++;
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8" +
+      (filled < 8 ? " &mdash; fill every gap for a full score." : "") +
+      '</p><p style="margin-bottom:14px;font-size:0.86rem;color:var(--muted);">Example used <strong>plaster</strong> from the box; the other eight words fit gaps 1&ndash;8 once each.</p>' +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= 8; n++) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

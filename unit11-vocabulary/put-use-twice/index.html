@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 Vocabulary &mdash; Put (use twice)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.2rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 12px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.86rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+    }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fef9c3;
+    }
+
+    .row {
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+    .row-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .row-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .gap-in {
+      width: 88px;
+      max-width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid #4d6fa1;
+      background: #12264b;
+      color: #fff;
+      font-size: 0.95rem;
+      text-align: center;
+      font-family: inherit;
+    }
+    .gap-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .gap-in.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.1); }
+    .gap-in.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+
+    .row-key {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #86efac;
+    }
+    .row-key.show { display: block; }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .score {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .score strong { color: #e8f0ff; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Vocabulary &mdash; <em style="font-style:italic;color:#bae6fd;">Put</em> (use twice)</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary hub</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Vocabulary tasks">
+      <a href="../index.html">Task 1</a>
+      <span>|</span>
+      <a href="../put-phrases/index.html">Task 2</a>
+      <span>|</span>
+      <a href="../put-phrasal-matching/index.html">Task 3</a>
+      <span>|</span>
+      <a href="../weather-sentence-matching/index.html">Task 4</a>
+      <span>|</span>
+      <span>Task 5 &mdash; Put (twice)</span>
+      <span>|</span>
+      <a href="../phrasal-down-choice/index.html">Task 6 &mdash; <em>Down</em></a>
+      <span>|</span>
+      <a href="../phrasal-down-gaps/index.html">Task 7</a>
+      <span>|</span>
+      <a href="../weather-collocations-choice/index.html">Task 8</a>
+      <span>|</span>
+      <a href="../put-phrases-choice/index.html">Task 9</a>
+    </nav>
+
+    <section class="task">
+      <h2>Task 5 &mdash; Vocabulary Put</h2>
+      <p class="instr">
+        <span class="instr-num">5</span>
+        Complete each of the gaps in sentences 1&ndash;6 with one of the words from the box. Use each word twice.
+      </p>
+      <p class="hint-bar">
+        Type <strong>off</strong>, <strong>on</strong>, or <strong>up</strong> in each gap. Press <strong>Check answers</strong> &mdash; if a gap is wrong, the key for that line appears at once.
+      </p>
+
+      <div class="word-box" aria-label="Words from the box">
+        <span>off</span>
+        <span>&middot;</span>
+        <span>on</span>
+        <span>&middot;</span>
+        <span>up</span>
+      </div>
+
+      <div class="row" data-i="0">
+        <div class="row-line">
+          <span class="row-num">1.</span>
+          Put your hand
+          <input type="text" class="gap-in" maxlength="8" data-i="0" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+          if you want to ask a question.
+        </div>
+        <div class="row-key" data-key-for="0"></div>
+      </div>
+      <div class="row" data-i="1">
+        <div class="row-line">
+          <span class="row-num">2.</span>
+          We&rsquo;re putting
+          <input type="text" class="gap-in" maxlength="8" data-i="1" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+          a concert to raise money for charity.
+        </div>
+        <div class="row-key" data-key-for="1"></div>
+      </div>
+      <div class="row" data-i="2">
+        <div class="row-line">
+          <span class="row-num">3.</span>
+          That job I had in the butcher&rsquo;s put me
+          <input type="text" class="gap-in" maxlength="8" data-i="2" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+          eating meat for life.
+        </div>
+        <div class="row-key" data-key-for="2"></div>
+      </div>
+      <div class="row" data-i="3">
+        <div class="row-line">
+          <span class="row-num">4.</span>
+          Could you put some music
+          <input type="text" class="gap-in" maxlength="8" data-i="3" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+          ? It&rsquo;s too quiet in here.
+        </div>
+        <div class="row-key" data-key-for="3"></div>
+      </div>
+      <div class="row" data-i="4">
+        <div class="row-line">
+          <span class="row-num">5.</span>
+          When I&rsquo;m next in London, could you put me
+          <input type="text" class="gap-in" maxlength="8" data-i="4" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+          for the night?
+        </div>
+        <div class="row-key" data-key-for="4"></div>
+      </div>
+      <div class="row" data-i="5">
+        <div class="row-line">
+          <span class="row-num">6.</span>
+          Never put
+          <input type="text" class="gap-in" maxlength="8" data-i="5" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+          until tomorrow what you can do today.
+        </div>
+        <div class="row-key" data-key-for="5"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+        <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      </div>
+      <p class="score" id="elScore" hidden>Correct: <strong id="elScoreN">0</strong> / 6</p>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var KEY = ["up", "on", "off", "on", "up", "off"];
+  var EXPLAIN = [
+    "<strong>Put your hand up</strong> — signal you want to speak.",
+    "<strong>Put on</strong> a concert — organise / stage an event.",
+    "<strong>Put someone off</strong> something — make them dislike it.",
+    "<strong>Put music on</strong> — play or switch on music.",
+    "<strong>Put someone up</strong> — give them a bed for the night.",
+    "<strong>Put off</strong> — postpone (here: don&rsquo;t postpone until tomorrow)."
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "");
+  }
+
+  function inp(i) {
+    return document.querySelector('.gap-in[data-i="' + i + '"]');
+  }
+
+  function keyBox(i) {
+    return document.querySelector('[data-key-for="' + i + '"]');
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    for (var i = 0; i < 6; i++) {
+      var v = norm(inp(i).value);
+      var good = v === KEY[i];
+      inp(i).classList.remove("is-ok", "is-bad");
+      inp(i).classList.add(good ? "is-ok" : "is-bad");
+      var kb = keyBox(i);
+      kb.classList.toggle("show", !good);
+      kb.innerHTML = good
+        ? ""
+        : "Key: <strong>" +
+          KEY[i] +
+          "</strong> &mdash; " +
+          EXPLAIN[i];
+      if (good) ok++;
+    }
+    var sc = document.getElementById("elScore");
+    var sn = document.getElementById("elScoreN");
+    sn.textContent = String(ok);
+    sc.hidden = false;
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    for (var i = 0; i < 6; i++) {
+      inp(i).value = "";
+      inp(i).classList.remove("is-ok", "is-bad");
+      keyBox(i).classList.remove("show");
+      keyBox(i).innerHTML = "";
+    }
+    document.getElementById("elScore").hidden = true;
+  });
+
+  document.querySelectorAll(".gap-in").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var i = el.getAttribute("data-i");
+      el.classList.remove("is-ok", "is-bad");
+      keyBox(i).classList.remove("show");
+      document.getElementById("elScore").hidden = true;
+    });
+  });
+})();
+  </script>
+</body>
+</html>

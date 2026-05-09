@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Part 3 Word formation (The Daily Mile)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --root: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .nav-back { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .back.dim { font-weight: 600; color: var(--muted); }
+    .subtitle { color: var(--muted); line-height: 1.5; margin-bottom: 14px; font-size: 0.96rem; }
+    .instr {
+      border: 1px solid var(--line);
+      background: rgba(26, 44, 73, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      color: #c5d4ef;
+      line-height: 1.5;
+    }
+    .title-wf {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      color: #b8d4f5;
+    }
+    .task {
+      border: 1px solid #c7d8ec;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #0f223f;
+      padding: 18px 16px;
+      line-height: 1.75;
+      font-size: 1.02rem;
+    }
+    .wf-line {
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 8px;
+    }
+    .wf-line:last-child { margin-bottom: 0; }
+    .wf-root {
+      font-weight: 800;
+      color: #1e3a5f;
+      letter-spacing: 0.03em;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .wf-gap {
+      min-width: 120px;
+      width: 140px;
+      max-width: 100%;
+      border: none;
+      border-bottom: 2px solid #7f98bb;
+      background: #f5f9ff;
+      color: #0f223f;
+      padding: 2px 6px;
+      font-size: 0.98rem;
+    }
+    .wf-gap:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
+    }
+    .wf-gap.ok { border-bottom-color: var(--ok); background: rgba(54, 211, 153, 0.12); }
+    .wf-gap.bad { border-bottom-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+    .example-0 {
+      font-weight: 700;
+      color: #2f598f;
+    }
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      padding: 10px 12px;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .answer-reveal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 28px 20px;
+      background: rgba(8, 11, 18, 0.97);
+    }
+    .answer-reveal-layer.is-open { display: flex !important; }
+    .answer-reveal-inner { width: min(620px, 100%); text-align: center; }
+    .answer-reveal-label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .answer-reveal-body {
+      color: #4ade80;
+      font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+      font-weight: 700;
+      white-space: pre-line;
+      line-height: 1.65;
+      margin-bottom: 22px;
+      padding: 22px 20px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.14);
+      text-align: left;
+    }
+    .answer-reveal-motivate {
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+    .answer-reveal-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #052030;
+    }
+    .answer-reveal-btn:hover { filter: brightness(1.08); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Part 3 — Word formation</h1>
+      <nav class="nav-back" aria-label="Back navigation">
+        <a class="back" href="../../unit12-use-of-english.html">Back to Use of English</a>
+        <a class="back dim" href="../index.html">Word formation folder</a>
+      </nav>
+    </header>
+
+    <p class="subtitle">
+      For questions 1–8, read the text. Use the word given in capitals at the end of the line to form a word that fits the gap in that line. There is an example at the beginning (0).
+    </p>
+    <p class="instr">
+      Press <strong>Submit</strong> when you want to check. Correct answers appear on a full screen only after Submit if something is wrong. Editing any gap clears the last check until you submit again.
+    </p>
+
+    <h2 class="title-wf">THE DAILY MILE</h2>
+
+    <section class="task">
+      <p class="wf-line">
+        The daily mile was introduced to primary school age children in 2012 as a way to combat their
+        <span class="example-0">(0) INCREASINGLY</span> inactive lifestyles.
+        <span class="wf-root">INCREASE</span>
+      </p>
+      <p class="wf-line">
+        Inactivity was found to be leading to a rise in
+        <input type="text" class="wf-gap" data-i="0" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+        obesity.
+        <span class="wf-root">CHILD</span>
+      </p>
+      <p class="wf-line">
+        The initiative gets children outside to jog, walk or run for 15 minutes a day. It&rsquo;s simple yet
+        <input type="text" class="wf-gap" data-i="1" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+        , which means any
+        <span class="wf-root">EFFECT</span>
+      </p>
+      <p class="wf-line">
+        <input type="text" class="wf-gap" data-i="2" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+        establishment can participate relatively easily.
+        <span class="wf-root">EDUCATION</span>
+      </p>
+      <p class="wf-line">
+        It is
+        <input type="text" class="wf-gap" data-i="3" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+        for them to have any specific equipment, and the fact that children wear school uniform means no
+        <span class="wf-root">NECESSARY</span>
+      </p>
+      <p class="wf-line">
+        <input type="text" class="wf-gap" data-i="4" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+        time is needed out of the school day.
+        <span class="wf-root">ADD</span>
+      </p>
+      <p class="wf-line">
+        It takes place outside and children can run around the playground or sports field. Teachers have the
+        <input type="text" class="wf-gap" data-i="5" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+        to decide a time that is
+        <span class="wf-root">FREE</span>
+      </p>
+      <p class="wf-line">
+        <input type="text" class="wf-gap" data-i="6" autocomplete="off" spellcheck="false" aria-label="Gap 7" />
+        according to their lesson plans.
+        <span class="wf-root">SUIT</span>
+      </p>
+      <p class="wf-line">
+        Staff at many schools have seen that the daily mile has been an
+        <input type="text" class="wf-gap" data-i="7" autocomplete="off" spellcheck="false" aria-label="Gap 8" />
+        positive move.
+        <span class="wf-root">INCREDIBLE</span>
+      </p>
+    </section>
+
+    <div class="btn-row">
+      <button type="button" id="btnCheck" class="btn-check">Submit</button>
+      <button type="button" id="btnReset" class="btn-reset">Reset</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+  </main>
+
+  <div
+    id="answerRevealLayer"
+    class="answer-reveal-layer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="answerRevealLabel"
+    aria-hidden="true"
+  >
+    <div class="answer-reveal-inner">
+      <p class="answer-reveal-label" id="answerRevealLabel">Правильные ответы</p>
+      <p id="answerRevealBody" class="answer-reveal-body"></p>
+      <p class="answer-reveal-motivate">Давай, ты справишься!</p>
+      <button type="button" id="answerRevealBtn" class="answer-reveal-btn">Продолжить</button>
+    </div>
+  </div>
+
+  <script>
+    var ANSWERS = [
+      "childhood",
+      "effective",
+      "educational",
+      "unnecessary",
+      "additional",
+      "freedom",
+      "suitable",
+      "incredibly"
+    ];
+
+    var REVEAL_LINES =
+      "0 — INCREASINGLY (example)\n" +
+      "1 — childhood\n" +
+      "2 — effective\n" +
+      "3 — educational\n" +
+      "4 — unnecessary\n" +
+      "5 — additional\n" +
+      "6 — freedom\n" +
+      "7 — suitable\n" +
+      "8 — incredibly";
+
+    var inputs = Array.prototype.slice.call(document.querySelectorAll(".wf-gap"));
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var answerRevealLayer = document.getElementById("answerRevealLayer");
+    var answerRevealBody = document.getElementById("answerRevealBody");
+    var answerRevealBtn = document.getElementById("answerRevealBtn");
+
+    document.body.appendChild(answerRevealLayer);
+
+    var afterAnswerReveal = null;
+
+    function normalize(v) {
+      return String(v || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function clearCheckState() {
+      inputs.forEach(function (inp) {
+        inp.classList.remove("ok", "bad");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+    }
+
+    function openAnswerReveal(text) {
+      answerRevealBody.textContent = text;
+      answerRevealLayer.classList.add("is-open");
+      answerRevealLayer.style.display = "flex";
+      answerRevealLayer.setAttribute("aria-hidden", "false");
+      answerRevealBtn.focus();
+    }
+
+    function closeAnswerReveal() {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
+
+    answerRevealBtn.addEventListener("click", function () {
+      closeAnswerReveal();
+      if (typeof afterAnswerReveal === "function") {
+        var fn = afterAnswerReveal;
+        afterAnswerReveal = null;
+        fn();
+      }
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var score = 0;
+      inputs.forEach(function (input, idx) {
+        var userNorm = normalize(input.value);
+        var ok = userNorm.length > 0 && userNorm === normalize(ANSWERS[idx]);
+        input.classList.remove("ok", "bad");
+        input.classList.add(ok ? "ok" : "bad");
+        if (ok) score += 1;
+      });
+
+      if (score === inputs.length) {
+        feedback.className = "feedback show";
+        feedback.innerHTML = "Excellent! All <strong>8</strong> gaps are correct.";
+        return;
+      }
+
+      var wrong = inputs.length - score;
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      afterAnswerReveal = function () {
+        feedback.className = "feedback show";
+        feedback.innerHTML =
+          "Correct: <strong>" + score + "</strong>, still to fix: <strong>" + wrong + "</strong>. " +
+          "Edit the gaps marked in red and press <strong>Submit</strong> again.";
+      };
+      openAnswerReveal(REVEAL_LINES);
+    });
+
+    inputs.forEach(function (input) {
+      input.addEventListener("input", function () {
+        clearCheckState();
+        afterAnswerReveal = null;
+      });
+    });
+
+    btnReset.addEventListener("click", function () {
+      afterAnswerReveal = null;
+      inputs.forEach(function (input) {
+        input.value = "";
+        input.classList.remove("ok", "bad");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      closeAnswerReveal();
+    });
+  </script>
+</body>
+</html>

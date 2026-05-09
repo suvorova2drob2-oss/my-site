@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 Reading &mdash; The British Weather</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .example-box {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.08);
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      color: #c5d4ef;
+    }
+    .example-box strong { color: #fef9c3; }
+
+    .passage {
+      font-size: 0.96rem;
+      line-height: 1.9;
+      color: #e8f0ff;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .passage h2 {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: #bae6fd;
+      margin-bottom: 14px;
+      letter-spacing: 0.03em;
+    }
+    .gap0 {
+      color: #fef08a;
+      font-weight: 700;
+    }
+
+    .mc-select {
+      display: inline-block;
+      vertical-align: baseline;
+      margin: 0 2px;
+      padding: 5px 8px;
+      max-width: 13.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .mc-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .mc-select.is-ok { border-color: #22c55e; }
+    .mc-select.is-bad { border-color: #f87171; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.87rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Reading &mdash; The British Weather</h1>
+      <a class="back" href="../unit11.html">&larr; Unit 11</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;8</strong>, read the text below and decide which answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) best fits each gap. There is an example at the beginning (0).
+    </p>
+
+    <div class="example-box">
+      <strong>Word bank (for all gaps)</strong><br />
+      <strong>0</strong> A on &nbsp; B off &nbsp; C or &nbsp; D that<br />
+      <strong>1</strong> A much &nbsp; B long &nbsp; C torrential &nbsp; D fast<br />
+      <strong>2</strong> A all &nbsp; B every &nbsp; C several &nbsp; D many<br />
+      <strong>3</strong> A crack &nbsp; B bounce &nbsp; C shake &nbsp; D bump<br />
+      <strong>4</strong> A Although &nbsp; B Despite &nbsp; C However &nbsp; D Nevertheless<br />
+      <strong>5</strong> A go &nbsp; B to go &nbsp; C gone &nbsp; D goes<br />
+      <strong>6</strong> A for &nbsp; B of &nbsp; C on &nbsp; D over<br />
+      <strong>7</strong> A number &nbsp; B quantity &nbsp; C amount &nbsp; D sum<br />
+      <strong>8</strong> A many &nbsp; B little &nbsp; C hardly &nbsp; D enough
+    </div>
+
+    <div class="passage">
+      <h2>THE BRITISH WEATHER</h2>
+      <p>
+        Many travellers to Britain comment (0) <span class="gap0">on</span> how changeable the weather is. More often than not, one minute it&rsquo;s (1)
+        <select class="mc-select" id="g-1" aria-label="Gap 1">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; much</option>
+          <option value="B">B &mdash; long</option>
+          <option value="C">C &mdash; torrential</option>
+          <option value="D">D &mdash; fast</option>
+        </select>
+        rain and the next it&rsquo;s clear skies.
+      </p>
+      <p>
+        The reason is because the region has air masses coming from (2)
+        <select class="mc-select" id="g-2" aria-label="Gap 2">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; all</option>
+          <option value="B">B &mdash; every</option>
+          <option value="C">C &mdash; several</option>
+          <option value="D">D &mdash; many</option>
+        </select>
+        direction: warm winds from the south, cold winds from the north, wet winds from the west and moderate winds from the east. And they all (3)
+        <select class="mc-select" id="g-3" aria-label="Gap 3">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; crack</option>
+          <option value="B">B &mdash; bounce</option>
+          <option value="C">C &mdash; shake</option>
+          <option value="D">D &mdash; bump</option>
+        </select>
+        into each other in the middle!
+      </p>
+      <p>
+        (4)
+        <select class="mc-select" id="g-4" aria-label="Gap 4">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; Although</option>
+          <option value="B">B &mdash; Despite</option>
+          <option value="C">C &mdash; However</option>
+          <option value="D">D &mdash; Nevertheless</option>
+        </select>
+        extreme weather is relatively rare, strange weather is the norm. Visitors soon realise that, even in the summer months, it&rsquo;s best (5)
+        <select class="mc-select" id="g-5" aria-label="Gap 5">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; go</option>
+          <option value="B">B &mdash; to go</option>
+          <option value="C">C &mdash; gone</option>
+          <option value="D">D &mdash; goes</option>
+        </select>
+        out with an umbrella as well as sunglasses. You can never take brilliant sunshine (6)
+        <select class="mc-select" id="g-6" aria-label="Gap 6">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; for</option>
+          <option value="B">B &mdash; of</option>
+          <option value="C">C &mdash; on</option>
+          <option value="D">D &mdash; over</option>
+        </select>
+        granted because it could change from one minute to the next.
+      </p>
+      <p>
+        And you have to feel a certain (7)
+        <select class="mc-select" id="g-7" aria-label="Gap 7">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; number</option>
+          <option value="B">B &mdash; quantity</option>
+          <option value="C">C &mdash; amount</option>
+          <option value="D">D &mdash; sum</option>
+        </select>
+        of sympathy for the weather forecasters on TV. How can they possibly tell us about what is going to happen in the next 24 hours in a matter of seconds? There&rsquo;s just not (8)
+        <select class="mc-select" id="g-8" aria-label="Gap 8">
+          <option value="">&mdash;</option>
+          <option value="A">A &mdash; many</option>
+          <option value="B">B &mdash; little</option>
+          <option value="C">C &mdash; hardly</option>
+          <option value="D">D &mdash; enough</option>
+        </select>
+        time!
+      </p>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var KEY = { 1: "C", 2: "B", 3: "D", 4: "A", 5: "B", 6: "A", 7: "C", 8: "D" };
+
+  var WORD = {
+    1: { C: "torrential", A: "much", B: "long", D: "fast" },
+    2: { B: "every", A: "all", C: "several", D: "many" },
+    3: { D: "bump", A: "crack", B: "bounce", C: "shake" },
+    4: { A: "Although", B: "Despite", C: "However", D: "Nevertheless" },
+    5: { B: "to go", A: "go", C: "gone", D: "goes" },
+    6: { A: "for", B: "of", C: "on", D: "over" },
+    7: { C: "amount", A: "number", B: "quantity", D: "sum" },
+    8: { D: "enough", A: "many", B: "little", C: "hardly" }
+  };
+
+  var EXPLAIN = {
+    1: "We need an adjective before <em>rain</em>: <strong>torrential rain</strong> is a fixed weather collocation.",
+    2: "The noun is singular (<em>direction</em>); <strong>every direction</strong> fits. <em>All / several / many</em> normally take plural <em>directions</em>.",
+    3: "Air masses meet: they <strong>bump into</strong> each other (simple metaphor). The other verbs do not collocate with <em>into each other</em> here.",
+    4: "<strong>Although</strong> + subject + verb introduces a contrast clause. <em>Despite</em> needs a noun phrase; <em>However / Nevertheless</em> do not open this structure the same way.",
+    5: "After <em>it&rsquo;s best</em> we use the <strong>to</strong>-infinitive: <strong>to go</strong>.",
+    6: "Fixed phrase: <strong>take &hellip; for granted</strong>.",
+    7: "<strong>Amount of sympathy</strong> &mdash; <em>sympathy</em> is uncountable; <em>number</em> and <em>sum</em> suit count nouns.",
+    8: "<strong>Not enough time</strong> &mdash; <em>time</em> here is uncountable; <em>many</em> does not fit; <em>not hardly</em> would be non-standard here."
+  };
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getEl(n) {
+    return document.getElementById("g-" + n);
+  }
+
+  for (var n = 1; n <= 8; n++) {
+    (function (num) {
+      getEl(num).addEventListener("change", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    })(n);
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+    var filled = 0;
+
+    for (var n = 1; n <= 8; n++) {
+      var el = getEl(n);
+      var letter = (el.value || "").trim();
+      if (letter) filled++;
+      var ok = letter === KEY[n];
+      if (letter && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!letter) el.classList.add("is-bad");
+      else el.classList.add(ok ? "is-ok" : "is-bad");
+
+      var w = letter && WORD[n][letter] ? WORD[n][letter] : "\u2014";
+      var wKey = WORD[n][KEY[n]];
+
+      html += '<div class="fb-item ' + (ok && letter ? "ok" : "bad") + '">';
+      html += "<h4>Gap " + n + (ok && letter ? " \u2713" : " \u2717") + "</h4>";
+      html +=
+        '<p class="fb-meta">Your choice: <strong>' +
+        (letter ? esc(letter + " (" + w + ")") : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(KEY[n] + " (" + wKey + ")") +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    html =
+      '<p style="margin-bottom:12px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8" +
+      (filled < 8 ? " &mdash; choose A\u2013D for every gap." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= 8; n++) {
+      var el = getEl(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

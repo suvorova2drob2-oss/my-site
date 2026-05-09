@@ -32,11 +32,7 @@
   };
 
   function getViewMode() {
-    try {
-      return localStorage.getItem(HUB_VM_KEY) === "preview" ? "preview" : "edit";
-    } catch (e) {
-      return "edit";
-    }
+    return "preview";
   }
 
   function pageLeaf() {

@@ -8,13 +8,19 @@
  *   passage: string with [[1]]…[[N]] markers (one word per gap). Example (0) stays plain in the passage text.
  *   exampleHighlight: optional "(0) REACHED" — wrapped in <span class="p2-example"> for workbook-style example.
  *   answers: { "1": ["at"], "2": ["foo","bar"], … } — compare after normalize (trim, lower case).
- *   explanations: optional { "1": "why this word fits", … } — shown in the reveal modal after Submit (always when present), including when all gaps are correct.
+ *   explanations: optional { "1": "why this word fits", … } — shown in the answer key panel after Submit (always when present), including when all gaps are correct.
  */
 (function () {
   var boot = window.PART2_OPEN_BOOT || {};
   var sp = new URLSearchParams(window.location.search);
   var contextId = String(boot.contextId || sp.get("context") || "default").trim() || "default";
   var dataSrc = String(boot.dataSrc || sp.get("src") || "").trim();
+  if (!dataSrc && contextId === "unit11-p2-zero-waste") {
+    dataSrc = "zero-waste-lifestyle/published.json";
+  }
+  if (!dataSrc && contextId === "p2-gigamansions") {
+    dataSrc = "published-gigamansions.json";
+  }
   var backHref = String(boot.backHref || sp.get("back") || "").trim();
   var backLabel = String(
     boot.backLabel || (sp.get("backLabel") ? decodeURIComponent(sp.get("backLabel")) : "") || "Back"
@@ -104,6 +110,15 @@
   var bundledUnit9Sounds =
     String(contextId) === "unit9-p2-sounds" ||
     /published-unit9-p2-sounds-about-right\.json\s*$/i.test(dataSrc);
+  var bundledUnit9Sporting =
+    String(contextId) === "unit9-p2-sporting-superstitions" ||
+    /published-unit9-p2-sporting-superstitions\.json\s*$/i.test(dataSrc);
+  var bundledUnit11ZeroWaste =
+    String(contextId) === "unit11-p2-zero-waste" ||
+    /zero-waste-lifestyle\/published\.json\s*$/i.test(dataSrc);
+  var bundledGigamansions =
+    String(contextId) === "p2-gigamansions" ||
+    /published-gigamansions\.json\s*$/i.test(dataSrc);
 
   function publishedFetchUrl() {
     if (dataSrc) {
@@ -144,6 +159,36 @@
         try {
           return JSON.parse(elSo.textContent.trim());
         } catch (e3) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit9Sporting) {
+      var elSp = document.getElementById("part2-open-bundled-unit9-sporting");
+      if (elSp) {
+        try {
+          return JSON.parse(elSp.textContent.trim());
+        } catch (eSport) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit11ZeroWaste) {
+      var elZw = document.getElementById("part2-open-bundled-unit11-zero-waste");
+      if (elZw) {
+        try {
+          return JSON.parse(elZw.textContent.trim());
+        } catch (e4) {
+          return null;
+        }
+      }
+    }
+    if (bundledGigamansions) {
+      var elGi = document.getElementById("part2-open-bundled-gigamansions");
+      if (elGi) {
+        try {
+          return JSON.parse(elGi.textContent.trim());
+        } catch (eGi) {
           return null;
         }
       }
@@ -190,6 +235,17 @@
       .trim()
       .toLowerCase()
       .replace(/\s+/g, " ");
+  }
+
+  /** One-line display of accepted key variants for tooltips (e.g. "although / though"). */
+  function acceptedAnswersDisplay(raw) {
+    var list = Array.isArray(raw) ? raw : raw != null ? [raw] : [];
+    var parts = [];
+    for (var ai = 0; ai < list.length; ai++) {
+      var s = String(list[ai] || "").trim();
+      if (s) parts.push(s);
+    }
+    return parts.join(" / ");
   }
 
   function gapNumsFromPassage(passage) {
@@ -265,45 +321,62 @@
     return lines.join("\n");
   }
 
-  function buildRevealInnerHtml(data, gapResults) {
-    var keyText = answersToRevealLines(data);
-    var keyBlock =
-      '<div class="reveal-key-block">' +
-      esc(keyText).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>") +
-      "</div>";
-    var expl = data.explanations || {};
+  /** Full key + per-gap blocks for the inline side/bottom panel (passage stays visible). */
+  function buildInlinePanelHtml(data, gapResults) {
     var nums = gapNumsFromPassage(data.passage);
+    var ans = data.answers || {};
+    var expl = data.explanations || {};
     var map = {};
     gapResults.forEach(function (g) {
       map[String(g.num)] = g;
     });
-    var explainBlocks = [];
     var genericWrong =
       "The accepted word in the key is the standard form for this gap — check grammar or a fixed phrase in context.";
 
+    var blocks = [];
     for (var j = 0; j < nums.length; j++) {
       var kn = String(nums[j]);
-      var note2 =
+      var raw = ans[kn] != null ? ans[kn] : ans[nums[j]];
+      var keyPretty = acceptedAnswersDisplay(raw);
+      var gr = map[kn];
+      var note =
         expl[kn] != null
           ? String(expl[kn]).trim()
           : expl[nums[j]] != null
             ? String(expl[nums[j]]).trim()
             : "";
-      var gr = map[kn];
-      if (gr && gr.ok && !note2) continue;
 
       var chunks = [];
-      if (gr && !gr.ok && gr.userDisplay) {
-        chunks.push(
-          '<p class="reveal-explain-line reveal-explain-line--yours"><span class="reveal-tag reveal-tag--bad">Your answer</span> ' +
-            esc(gr.userDisplay) +
-            "</p>"
-        );
+      chunks.push(
+        '<p class="reveal-explain-line reveal-explain-line--key"><span class="reveal-tag reveal-tag--key">Accepted</span> ' +
+          esc(keyPretty || "—") +
+          "</p>"
+      );
+      if (gr) {
+        if (!gr.ok && gr.userDisplay !== "") {
+          chunks.push(
+            '<p class="reveal-explain-line reveal-explain-line--yours"><span class="reveal-tag reveal-tag--bad">Your answer</span> ' +
+              esc(gr.userDisplay) +
+              "</p>"
+          );
+        } else if (gr.ok) {
+          chunks.push(
+            '<p class="reveal-explain-line"><span class="reveal-tag reveal-tag--good">Your answer</span> ' +
+              esc(gr.userDisplay || "") +
+              "</p>"
+          );
+        } else if (!gr.ok) {
+          chunks.push(
+            '<p class="reveal-explain-line reveal-explain-line--yours"><span class="reveal-tag reveal-tag--bad">Your answer</span> ' +
+              "(empty)" +
+              "</p>"
+          );
+        }
       }
-      if (note2) {
+      if (note) {
         chunks.push(
           '<p class="reveal-explain-line"><span class="reveal-tag reveal-tag--ok">Why it fits</span> ' +
-            esc(note2) +
+            esc(note) +
             "</p>"
         );
       } else if (gr && !gr.ok) {
@@ -314,9 +387,9 @@
         );
       }
 
-      if (!chunks.length) continue;
-      explainBlocks.push(
-        '<div class="reveal-explain-block"><div class="reveal-explain-gap">Gap ' +
+      blocks.push(
+        '<div class="reveal-explain-block">' +
+          '<div class="reveal-explain-gap">Gap ' +
           esc(kn) +
           "</div>" +
           chunks.join("") +
@@ -324,11 +397,19 @@
       );
     }
 
-    if (!explainBlocks.length) return keyBlock;
+    var keySummary = answersToRevealLines(data);
+    var keyBlock =
+      '<div class="reveal-key-block">' +
+      esc(keySummary).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>") +
+      "</div>";
+
     return (
+      '<div class="part2-inline-panel__inner">' +
+      '<p class="part2-inline-panel__title">Answer key & explanations</p>' +
       keyBlock +
-      '<div class="reveal-explain-wrap"><h3 class="reveal-explain-h3">Explanations</h3>' +
-      explainBlocks.join("") +
+      '<div class="reveal-explain-wrap">' +
+      blocks.join("") +
+      "</div>" +
       "</div>"
     );
   }
@@ -370,9 +451,8 @@
   var btnCheck = document.getElementById("part2BtnCheck");
   var btnReset = document.getElementById("part2BtnReset");
   var feedback = document.getElementById("part2Feedback");
-  var layer = document.getElementById("part2AnswerReveal");
-  var bodyReveal = document.getElementById("part2AnswerRevealBody");
-  var btnRevealClose = document.getElementById("part2AnswerRevealBtn");
+  var elInline = document.getElementById("part2InlineReveal");
+  var elSplit = document.getElementById("part2OpenSplit");
 
   if (elH1) elH1.textContent = pageTitle;
 
@@ -391,35 +471,20 @@
 
       var gaps = Array.prototype.slice.call(document.querySelectorAll(".gap"));
 
-      function openReveal(html) {
-        if (bodyReveal) bodyReveal.innerHTML = html;
-        if (layer) {
-          layer.classList.add("is-open");
-          layer.style.display = "flex";
-          layer.setAttribute("aria-hidden", "false");
+      function showInlinePanel(html) {
+        if (elInline) {
+          elInline.innerHTML = html;
+          elInline.removeAttribute("hidden");
         }
-        if (btnRevealClose) btnRevealClose.focus();
+        if (elSplit) elSplit.classList.add("part2-open-split--aside-visible");
       }
 
-      function closeReveal() {
-        if (layer) {
-          layer.classList.remove("is-open");
-          layer.style.display = "none";
-          layer.setAttribute("aria-hidden", "true");
+      function hideInlinePanel() {
+        if (elInline) {
+          elInline.innerHTML = "";
+          elInline.setAttribute("hidden", "");
         }
-      }
-
-      var afterReveal = null;
-
-      if (btnRevealClose) {
-        btnRevealClose.addEventListener("click", function () {
-          closeReveal();
-          if (typeof afterReveal === "function") {
-            var fn = afterReveal;
-            afterReveal = null;
-            fn();
-          }
-        });
+        if (elSplit) elSplit.classList.remove("part2-open-split--aside-visible");
       }
 
       if (btnCheck) {
@@ -441,6 +506,7 @@
             }
             input.classList.remove("ok", "bad");
             input.classList.add(ok ? "ok" : "bad");
+            input.removeAttribute("title");
             gapResults.push({
               num: idx,
               userDisplay: String(input.value).trim(),
@@ -449,56 +515,39 @@
             if (ok) score++;
           });
 
-          var revealHtml = buildRevealInnerHtml(data, gapResults);
+          var panelHtml = buildInlinePanelHtml(data, gapResults);
+          showInlinePanel(panelHtml);
 
-          if (score === gaps.length) {
-            if (feedback) {
-              feedback.className = "part2-feedback";
-              feedback.textContent = "";
-            }
-            afterReveal = function () {
-              if (feedback) {
-                feedback.className = "part2-feedback show";
-                feedback.innerHTML =
-                  "Excellent! All <strong>" + gaps.length + "</strong> gaps are correct.";
-              }
-            };
-            openReveal(revealHtml);
-            return;
-          }
-
-          var wrong = gaps.length - score;
           if (feedback) {
-            feedback.className = "part2-feedback";
-            feedback.textContent = "";
-          }
-          afterReveal = function () {
-            if (feedback) {
-              feedback.className = "part2-feedback show";
+            feedback.className = "part2-feedback show";
+            if (score === gaps.length) {
+              feedback.innerHTML =
+                "Excellent! All <strong>" + gaps.length + "</strong> gaps are correct.";
+            } else {
+              var wrong = gaps.length - score;
               feedback.innerHTML =
                 "Correct: <strong>" +
                 score +
                 "</strong>, incorrect: <strong>" +
                 wrong +
-                "</strong>. Fix the red gaps or use Reset.";
+                "</strong>. Fix the red gaps or use the answer key panel — or Reset.";
             }
-          };
-          openReveal(revealHtml);
+          }
         });
       }
 
       if (btnReset) {
         btnReset.addEventListener("click", function () {
-          afterReveal = null;
           gaps.forEach(function (input) {
             input.value = "";
             input.classList.remove("ok", "bad");
+            input.removeAttribute("title");
           });
+          hideInlinePanel();
           if (feedback) {
             feedback.className = "part2-feedback";
             feedback.textContent = "";
           }
-          closeReveal();
         });
       }
 
@@ -512,6 +561,8 @@
       });
     })
     .catch(function () {
-      if (elTask) elTask.innerHTML = "<p>Could not load exercise data.</p>";
+      if (elTask) elTask.innerHTML = "";
+      if (btnCheck) btnCheck.disabled = true;
+      if (btnReset) btnReset.disabled = true;
     });
 })();

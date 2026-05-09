@@ -1,34 +1,24 @@
 /**
- * Имя и прогресс CPE хранятся в браузере (localStorage + cookie), не в Supabase.
- * Supabase здесь только для Live-комнат и опционального облака курса (PrepSiteContent).
- * В index.html перед этим файлом подключается js/prep-remote-defaults.js — без этого
- * файла ключи пустые и облако выключено.
+ * Локальные URL и публичный ключ live-сессии + опции облака курса.
+ * Имя файла — историческое; в корне копия называется live-supabase-local.js (см. .gitignore).
+ * В index.html до этого подключается js/prep-remote-defaults.js — пока нет ключа, live и облако выключены.
  *
- * ПЕРВЫЙ ШАГ (сделайте один раз на своём компьютере)
+ * Скопируйте этот файл → live-supabase-local.js в корне проекта и подставьте значения
+ * от вашего бэкенда (текущий драйвер в коде; при переезде, например, на Yandex — новые
+ * endpoint и ключ, имена window.* можно заменит в одном месте вместе с драйвером).
  *
- * 1) В проводнике / в Cursor: скопируйте этот файл и назовите копию
- *    live-supabase-local.js
- *    Папка та же, что у live-room-supabase-demo.html — корень проекта my-site.
- *
- * 2) Откройте Supabase → ваш проект → шестерёнка Project Settings → раздел API:
- *    - поле "Project URL" → вставьте ниже вместо плейсхолдера в __LIVE_SUPABASE_URL__;
- *    - поле "anon" / "Publishable" (публичный ключ) → вместо плейсхолдера в __LIVE_SUPABASE_KEY__.
- *    Ключи сюда в чат не отправляйте; service_role в браузер не кладите.
- *
- * 3) Сохраните live-supabase-local.js. Он в .gitignore — в репозиторий не попадёт.
- *
- * 4) Дальше: запустите сайт локально из корня (не открывайте HTML двойным щелчком)
- *    и откройте live-room-supabase-demo.html через сервер.
+ * Не публикуйте service / write-секреты в открытом фронте; __PREP_CLOUD_WRITE_SECRET__ — только
+ * на машине, где публикуете курс, не в git.
  */
 
-window.__LIVE_SUPABASE_URL__ = "https://YOUR_REF.supabase.co";
-window.__LIVE_SUPABASE_KEY__ = "YOUR_PUBLISHABLE_OR_ANON_KEY";
+window.__LIVE_SUPABASE_URL__ = "https://YOUR_LIVE_BACKEND_BASE";
+window.__LIVE_SUPABASE_KEY__ = "YOUR_PUBLIC_ANON_LIKE_KEY";
 
-/** Секрет записи Prep Cloud (тот же, что secret PREP_CLOUD_WRITE_SECRET у Edge Function prep-cloud). Не публикуй и не коммить. */
+/** Секрет записи Prep Cloud (Edge / HTTP, как настроит разработчик). Не публикуй и не коммить. */
 window.__PREP_CLOUD_WRITE_SECRET__ = "YOUR_LONG_RANDOM_PREP_CLOUD_SECRET";
 
 /**
- * База для абсолютной ссылки ученику при открытии index через file:// (иначе будет только index.html?...).
- * По умолчанию совпадает с npm run start (порт 3000). Для Live Server укажите свой порт, например 5500.
+ * База для абсолютной ссылки ученику при открытии index через file:// (иначе только query в адресе).
+ * По умолчанию как npm run start (порт 3000). Подставьте свой порт, если отличается.
  */
 window.__PREP_LIVE_PUBLIC_ORIGIN__ = window.__PREP_LIVE_PUBLIC_ORIGIN__ || "http://localhost:3000";

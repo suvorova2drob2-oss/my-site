@@ -1,0 +1,41 @@
+---
+description: Separate CPE hub (index.html) from FCE/EGE course homes — do not cross-link or mix content between tracks
+alwaysApply: true
+---
+
+# Course tracks: `index.html` vs `fce.html` / `ege.html`
+
+The repo ships **multiple entry “courses”**. Treat them as **different products** unless the user explicitly asks to wire the same feature into every track.
+
+## What each file is for
+
+- **`index.html`** — main **CPE Prep** hub (Levels grid, Prep folders, large app shell). This is the primary “Levels hub” home for the CPE workflow.
+- **`fce.html`** — **FCE / Mastering B2** course home (player name, unit tiles, progress). Not the same IA as the full CPE hub.
+- **`ege.html`** — **EGE** track home (when used).
+
+Netlify **track builds** (`scripts/build-netlify-track.mjs`): on FCE/EGE publish, root `index.html` is replaced with a **stub** that redirects to `fce.html` or `ege.html`, so `/index.html` still resolves but is not the full CPE app on that site.
+
+## Hard rules for agents
+
+1. **Do not** add CPE-only or Prep-specific teaching content (e.g. seeded Level folders, big hub features) to **`fce.html`** unless the user asks for the FCE tile grid to show it.
+2. **Do not** link **from** the CPE hub / `index.html` surfaces **to** `fce.html` as “back” or “home” for standard navigation. Users on the CPE flow should return to **`index.html`** (Levels hub), not to the FCE sheet.
+3. **Shared unit menus** (`unit1.html` … `unit12.html`) live at repo root and are used by more than one surface. Their **“back / home” link must be `index.html`**, not hardcoded `fce.html`, so CPE users are not dropped into the FCE grid. On **FCE-only deploys**, stub `index.html` forwards to `fce.html` automatically.
+4. **`unit10-vocabulary/`** (and similar Prep-tied vocabulary menus under a Level) must **only** offer “home / back” to **`index.html`** (Levels hub), or in-page links inside the same folder. **Do not** add a second “Unit 10 menu” link to **`unit10.html`** — that is the Mastering B2/FCE unit sheet and confuses the CPE flow.
+5. **`index.html`** auto-redirect to `fce.html` happens only when **`window.__PREP_DEPLOY_TRACK__ === "fce"`** (or profile `courseTrack`), i.e. intentional for that build — do not duplicate that logic in random content pages.
+
+## Wording
+
+Reserve **“FCE”** for the **`fce.html`** / Mastering B2 sheet. Reserve **“Levels hub”** or **“CPE hub”** for **`index.html`**. Avoid copy that implies one is the other.
+
+## `?course=` parameter (Unit 10 vocabulary folder)
+
+Teaching HTML under **`unit10-vocabulary/`** use **`js/u10-vocab-course-context.js`**.
+
+- **`?course=cpe`** (default): Levels / home navigation targets **root `index.html`** (full CPE hub). Used when opening from **Levels hub Prep** (`hubAppendTaskTile` adds `course=cpe&back=…`).
+- **`?course=fce`**: home navigation targets **`fce.html`** (**`#u10-nav-levels`**, **`#nav-back`** on book pages); sibling links retain **`course=fce`**. Set when entering from **`unit10.html?…`** via **`unit10-vocabulary/index.html?course=fce`** (Mastering B2 tile).
+
+Do **not** use bare **`../index.html`** as “course home” inside this folder — on mixed deploys users confuse stub redirect with full CPE. The script binds the correct home per **`course`**.
+
+### Prep `back=` on `describing-books-*.html`
+
+When **`course=cpe`**, `?back=` may still override the temporary “Levels hub” left link — sanitize with **`isPrepSafeReturnHref`** (reject `fce.html`, `ege.html`, `unit10.html`). When **`course=fce`**, do **not** apply Prep `back=` overrides (stay on **`fce.html`** home / course-scoped crumbs).

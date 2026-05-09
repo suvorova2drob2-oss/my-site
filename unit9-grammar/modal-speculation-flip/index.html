@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Grammar &mdash; Modal speculation (flip cards)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; font-weight: 700; max-width: min(100%, 560px); line-height: 1.35; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+    }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .card-wrap { margin-bottom: 16px; }
+    .card-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front {
+      background: var(--front-bg);
+      color: #f1f5ff;
+    }
+    .flip-back {
+      background: var(--back-bg);
+      color: #e8f0ff;
+      transform: rotateY(180deg);
+    }
+
+    .situation-lead {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #7dd3fc;
+      margin-bottom: 10px;
+    }
+    .flip-back ul {
+      margin: 0;
+      padding-left: 1.15rem;
+    }
+    .flip-back li {
+      margin-bottom: 0.5em;
+    }
+    .flip-back li:last-child { margin-bottom: 0; }
+
+    .flip-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #86efac;
+      margin-bottom: 10px;
+    }
+    .tap-hint {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Language focus &mdash; modals for speculation about the past (flip)</h1>
+      <a class="back u9g-back-grammar-index" href="../index.html">&larr; Grammar hub</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 9 grammar">
+      <a class="u9g-nav-sibling" href="../index.html">Grammar hub</a>
+      <span>|</span>
+      <span><strong>Modal speculation</strong> (flip)</span>
+    </nav>
+
+    <p class="instr">
+      Exercise 3 style: <strong>speculate</strong> about what might have happened. On paper you&rsquo;d write at least two sentences per situation using structures such as
+      <strong>must have</strong>, <strong>might have</strong>, <strong>may have</strong>, <strong>could have</strong>, <strong>can&rsquo;t have</strong> + past participle.
+    </p>
+    <p class="hint">
+      Each <strong>front</strong> is only the situation (no spoilers). <strong>Click</strong> the card (or press Space / Enter when focused) to see <strong>sample sentences</strong> you can compare with your own.
+    </p>
+
+    <div class="card-wrap">
+      <div class="card-meta">Example (0)</div>
+      <button type="button" class="flip-card" aria-label="Example 0. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            Angela&rsquo;s crying.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>She <strong>could have</strong> just received some bad news.</li>
+              <li>She <strong>may have</strong> had an argument with a friend.</li>
+              <li>She <strong>might have</strong> been peeling onions.</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">1</div>
+      <button type="button" class="flip-card" aria-label="Card 1. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            Paul&rsquo;s face and hands are very dirty.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>He <strong>must have</strong> been doing something messy outdoors &mdash; for example gardening or fixing a bike.</li>
+              <li>He <strong>might have</strong> fallen over in mud while playing sport.</li>
+              <li>He <strong>could have</strong> been helping someone paint or move house.</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">2</div>
+      <button type="button" class="flip-card" aria-label="Card 2. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            The kitchen window is broken.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>A ball <strong>might have</strong> smashed through it while someone was playing outside.</li>
+              <li>It <strong>could have</strong> cracked in a storm if a branch hit the glass.</li>
+              <li>It <strong>can&rsquo;t have</strong> been broken for long if nobody heard a noise last night (depending on what we know).</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">3</div>
+      <button type="button" class="flip-card" aria-label="Card 3. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            There&rsquo;s a red mark on Steve&rsquo;s shirt collar.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>He <strong>may have</strong> spilled wine or sauce while he was eating.</li>
+              <li>It <strong>might have</strong> come from leaning against wet paint.</li>
+              <li>Someone <strong>could have</strong> hugged him and left lipstick there &mdash; but that&rsquo;s only one possibility.</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">4</div>
+      <button type="button" class="flip-card" aria-label="Card 4. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            Lucy was late for school.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>She <strong>might have</strong> missed the bus.</li>
+              <li>Her alarm <strong>might not have</strong> gone off in time.</li>
+              <li>She <strong>could have</strong> had to look after a younger brother or sister first.</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">5</div>
+      <button type="button" class="flip-card" aria-label="Card 5. Flip for sample answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="situation-lead">Situation</div>
+            Nobody in the class did their homework last night.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Sample speculations</div>
+            <ul>
+              <li>The teacher <strong>might have</strong> forgotten to set the task on the app.</li>
+              <li>There <strong>may have</strong> been a misunderstanding about the deadline.</li>
+              <li>They <strong>could all have</strong> lost access to the worksheet if the school server went down.</li>
+            </ul>
+          </div>
+        </div>
+      </button>
+    </div>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-grammar-course-context.js"></script>
+  <script>
+(function () {
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

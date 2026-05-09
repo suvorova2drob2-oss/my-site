@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 — Word formation · en- / -en (hearts)</title>
+  <style>
+    :root {
+      --bg: #181e28;
+      --bg-card: #1e2530;
+      --bg-inner: #252d3a;
+      --line: #3a4556;
+      --text: #f7f9fc;
+      --text-dim: #9eb0c8;
+      --pink: #f25176;
+      --pink-glow: rgba(242, 81, 118, 0.12);
+      --cyan: #4fbbf2;
+      --heart-off: #4a5568;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -20%, #243044 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .wrap { width: min(640px, 100%); }
+    .shell {
+      width: 100%;
+      background: linear-gradient(165deg, #252e3d 0%, var(--bg-card) 45%, #1a2029 100%);
+      border: 1px solid #3d4d63;
+      border-radius: 22px;
+      padding: 22px 22px 26px;
+      box-shadow:
+        0 4px 0 rgba(0, 0, 0, 0.22),
+        0 24px 56px rgba(0, 0, 0, 0.45);
+    }
+    .title {
+      font-size: clamp(0.95rem, 3vw, 1.15rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .blurb {
+      text-align: center;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px 18px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+    .home {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: color 0.15s, border-color 0.15s, transform 0.12s;
+      flex-shrink: 0;
+    }
+    .home:hover { color: var(--cyan); border-color: #55667d; }
+    .home:active { transform: scale(0.97); }
+    .home svg { width: 22px; height: 22px; }
+    .hearts {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+    }
+    .heart {
+      width: 28px;
+      height: 26px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .heart.on {
+      filter: drop-shadow(0 2px 1px rgba(180, 40, 80, 0.85)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+    }
+    .heart.off {
+      opacity: 0.38;
+      transform: scale(0.88);
+    }
+    .heart.off path { fill: var(--heart-off); }
+    .heart.on path { fill: url(#heartGrad); }
+    .counter {
+      font-weight: 700;
+      font-size: 1.02rem;
+      color: var(--text-dim);
+      min-width: 5.5rem;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .stage { text-align: center; }
+    .root-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .root {
+      display: inline-block;
+      min-width: min(100%, 280px);
+      text-align: center;
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--pink);
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 2px solid var(--pink);
+      background: var(--pink-glow);
+    }
+    .root-note {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 8px;
+      letter-spacing: 0.02em;
+    }
+    .sentence {
+      font-size: 0.98rem;
+      line-height: 1.65;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      text-align: left;
+      max-width: 36em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .gap-mark { color: #fde68a; font-weight: 700; }
+    .input-wrap { margin-bottom: 14px; }
+    .input-wrap input {
+      width: 100%;
+      padding: 15px 16px;
+      font-size: 1.05rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text);
+      outline: none;
+      text-align: center;
+    }
+    .input-wrap input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(79, 187, 242, 0.22);
+    }
+    .input-wrap input.shake {
+      animation: shake 0.45s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .feedback {
+      min-height: 1.45em;
+      font-size: 0.94rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .feedback.bad { color: #ff9aab; }
+    .feedback.ok { color: #5ee4a8; }
+    .check {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #2a8ab8, 0 8px 24px rgba(79, 187, 242, 0.25);
+    }
+    .check:hover { filter: brightness(1.05); }
+    .check:active { transform: translateY(2px); }
+    .check:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 22, 0.88);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 10;
+    }
+    .overlay.open { display: flex; }
+    .overlay.wrong-reveal {
+      z-index: 99999;
+      background: rgba(8, 11, 18, 0.97);
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    .overlay.wrong-reveal.open { display: flex !important; }
+    .wrong-reveal-box {
+      width: min(520px, 100%);
+      text-align: center;
+    }
+    .wrong-reveal-label {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .wrong-reveal-answer {
+      font-size: clamp(2rem, 9vw, 3rem);
+      font-weight: 800;
+      color: #4ade80;
+      line-height: 1.15;
+      margin-bottom: 28px;
+      padding: 22px 20px;
+      border-radius: 18px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.14);
+      word-break: break-word;
+    }
+    .wrong-reveal-next {
+      width: 100%;
+      max-width: 320px;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      cursor: pointer;
+    }
+    .modal {
+      background: var(--bg-inner);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 360px;
+      text-align: center;
+    }
+    .modal h2 { margin-bottom: 10px; font-size: 1.25rem; }
+    .modal p { color: var(--text-dim); margin-bottom: 18px; line-height: 1.45; }
+    .modal button {
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      background: var(--cyan);
+      color: #0a1628;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#ff7eb3" />
+        <stop offset="100%" style="stop-color:#e8487a" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <div class="wrap">
+    <p class="title">Word formation: <em>en-</em> prefix and <em>-en</em> suffix</p>
+    <p class="blurb">
+      <strong>Round 1:</strong> listening extracts. <strong>Round 2:</strong> discussion questions from the book. Add <strong>en-</strong> or <strong>-en</strong> and fix the grammar. Each round: three hearts; a wrong answer shows the key, then the next line.
+    </p>
+    <div class="shell">
+      <header class="bar">
+        <a class="home" id="homeLink" href="../unit5/index.html" aria-label="Back to Unit 5 Use of English">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5z" />
+          </svg>
+        </a>
+        <div class="hearts" id="hearts" aria-live="polite"></div>
+        <div class="counter" id="progress">R1 1/7</div>
+      </header>
+
+      <div id="game">
+        <div class="stage">
+          <div class="root-wrap">
+            <div>
+              <div class="root" id="rootWord">(sure)</div>
+              <p class="root-note" id="rootHint">Word in brackets</p>
+            </div>
+          </div>
+          <p class="sentence" id="sentence" lang="en" dir="ltr">Trying to <span class="gap-mark">_____</span> our teenage children do their fair share is no easy task. <span style="color:#64748b;font-size:0.88em;">(sure)</span></p>
+        </div>
+        <div class="input-wrap">
+          <input type="text" id="answer" lang="en" dir="ltr" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the verb form" />
+        </div>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <button type="button" class="check" id="checkBtn">Check</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay wrong-reveal" id="wrongRevealOverlay" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+    <div class="wrong-reveal-box">
+      <p class="wrong-reveal-label">Answer</p>
+      <p class="wrong-reveal-answer" id="wrongRevealAnswer">—</p>
+      <button type="button" class="wrong-reveal-next" id="wrongRevealNext">Next</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="round2Overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2 id="round2Title">Round 2</h2>
+      <p id="round2Msg">Discussion-style questions from your book. You get three hearts again.</p>
+      <button type="button" id="round2Continue">Continue</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2 id="winTitle">Well done!</h2>
+      <p id="winMsg">You completed both rounds — all 15 prompts.</p>
+      <button type="button" id="playAgain">Play again</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="loseOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2 id="loseTitle">Hearts gone</h2>
+      <p>You used all three hearts. This round restarts from the first line.</p>
+      <button type="button" id="restartBtn">OK</button>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  /** Round 1 — listening lines (order preserved). */
+  var ROUND_1_TASKS = [
+    {
+      root: "sure",
+      accept: ["ensure"],
+      displayAnswer: "ensure",
+      sentenceBefore: "Trying to ",
+      sentenceAfter: " our teenage children do their fair share is no easy task."
+    },
+    {
+      root: "courage",
+      accept: ["encourages"],
+      displayAnswer: "encourages",
+      sentenceBefore: "Knowing all this motivates and ",
+      sentenceAfter: " parents to see their goals through."
+    },
+    {
+      root: "threat",
+      accept: ["threatening"],
+      displayAnswer: "threatening",
+      sentenceBefore: "So you wouldn't consider ",
+      sentenceAfter: " them with punishments?"
+    },
+    {
+      root: "worse",
+      accept: ["worsen"],
+      displayAnswer: "worsen",
+      sentenceBefore: "Punishments tend to cause bad feeling and resentment and can ",
+      sentenceAfter: " the situation."
+    },
+    {
+      root: "strong",
+      accept: ["strengthen"],
+      displayAnswer: "strengthen",
+      sentenceBefore: "Consistent routines can ",
+      sentenceAfter: " the bond between you and your child."
+    },
+    {
+      root: "long",
+      accept: ["lengthen"],
+      displayAnswer: "lengthen",
+      sentenceBefore: "Don't ",
+      sentenceAfter: " the argument — take a break instead."
+    },
+    {
+      root: "high",
+      accept: ["heighten"],
+      displayAnswer: "heighten",
+      sentenceBefore: "That kind of criticism may only ",
+      sentenceAfter: " their anxiety."
+    }
+  ];
+
+  /** Round 2 — book discussion prompts (one gap per screen). */
+  var ROUND_2_TASKS = [
+    {
+      root: "broad",
+      accept: ["broadens"],
+      displayAnswer: "broadens",
+      sentenceBefore: "Do you agree that travel ",
+      sentenceAfter: " the mind and widen our horizons?"
+    },
+    {
+      root: "wide",
+      accept: ["widens"],
+      displayAnswer: "widens",
+      sentenceBefore: "Do you agree that travel broadens the mind and ",
+      sentenceAfter: " our horizons?"
+    },
+    {
+      root: "able",
+      accept: ["enable"],
+      displayAnswer: "enable",
+      sentenceBefore: "Some people say that zoos are important because they ",
+      sentenceAfter: " us to learn about animals, and also help to protect "
+    },
+    {
+      root: "danger",
+      accept: ["endangered"],
+      displayAnswer: "endangered",
+      sentenceBefore:
+        "Some people say that zoos are important because they enable us to learn about animals, and also help to protect ",
+      sentenceAfter:
+        " species, those animals which might otherwise become extinct. What do you think?"
+    },
+    {
+      root: "long",
+      accept: ["lengthen"],
+      displayAnswer: "lengthen",
+      sentenceBefore: "If you had to choose, would you ",
+      sentenceAfter:
+        " the working/school day and go to work/school one day fewer each week, or shorten it and go one day more? Why?"
+    },
+    {
+      root: "short",
+      accept: ["shorten"],
+      displayAnswer: "shorten",
+      sentenceBefore:
+        "If you had to choose, would you lengthen the working/school day and go to work/school one day fewer each week, or ",
+      sentenceAfter: " it and go one day more? Why?"
+    },
+    {
+      root: "large",
+      accept: ["enlarge"],
+      displayAnswer: "enlarge",
+      sentenceBefore: "What do you think is the best way to ",
+      sentenceAfter: " your English vocabulary?"
+    },
+    {
+      root: "worse",
+      accept: ["worsened"],
+      displayAnswer: "worsened",
+      sentenceBefore: "Which of the following problems have ",
+      sentenceAfter:
+        " in recent years in your country and which have improved? Is enough being done to solve them?"
+    }
+  ];
+
+  var roundIdx = 0;
+  var TASKS = ROUND_1_TASKS;
+  var ROUND = TASKS.length;
+  var MAX_LIVES = 3;
+
+  var index = 0;
+  var lives = MAX_LIVES;
+
+  var heartsEl = document.getElementById("hearts");
+  var progressEl = document.getElementById("progress");
+  var rootWordEl = document.getElementById("rootWord");
+  var sentenceEl = document.getElementById("sentence");
+  var answerEl = document.getElementById("answer");
+  var feedbackEl = document.getElementById("feedback");
+  var checkBtn = document.getElementById("checkBtn");
+  var winOverlay = document.getElementById("winOverlay");
+  var loseOverlay = document.getElementById("loseOverlay");
+  var wrongRevealOverlay = document.getElementById("wrongRevealOverlay");
+  var wrongRevealAnswer = document.getElementById("wrongRevealAnswer");
+  var wrongRevealNext = document.getElementById("wrongRevealNext");
+  var playAgain = document.getElementById("playAgain");
+  var restartBtn = document.getElementById("restartBtn");
+  var round2Overlay = document.getElementById("round2Overlay");
+  var round2Continue = document.getElementById("round2Continue");
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function heartSvg(className) {
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", className);
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    var path = document.createElementNS(ns, "path");
+    path.setAttribute(
+      "d",
+      "M12 21s-6.5-4.35-9-8.5C.5 9.5 2 6 5.5 6c2 0 3.5 2 3.5 2S10.5 6 13 6c3.5 0 5 3.5 3.5 6.5C14 16.65 12 21 12 21z"
+    );
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function renderHearts() {
+    heartsEl.innerHTML = "";
+    for (var i = 0; i < MAX_LIVES; i++) {
+      heartsEl.appendChild(heartSvg("heart " + (i < lives ? "on" : "off")));
+    }
+  }
+
+  function renderSentence(item) {
+    sentenceEl.innerHTML =
+      esc(item.sentenceBefore) +
+      '<span class="gap-mark">_____</span> ' +
+      esc(item.sentenceAfter) +
+      ' <span style="color:#64748b;font-size:0.88em;">(' +
+      esc(item.root) +
+      ")</span>";
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function showItem() {
+    var item = TASKS[index];
+    rootWordEl.textContent = "(" + item.root + ")";
+    renderSentence(item);
+    answerEl.value = "";
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+    progressEl.textContent = "R" + (roundIdx + 1) + " " + (index + 1) + "/" + ROUND;
+    answerEl.focus();
+  }
+
+  function beginRound2() {
+    roundIdx = 1;
+    TASKS = ROUND_2_TASKS;
+    ROUND = TASKS.length;
+    index = 0;
+    lives = MAX_LIVES;
+    renderHearts();
+    round2Overlay.classList.remove("open");
+    showItem();
+  }
+
+  function onRoundFinished() {
+    if (roundIdx === 0) {
+      round2Overlay.classList.add("open");
+      return;
+    }
+    winOverlay.classList.add("open");
+  }
+
+  function startGameFresh() {
+    roundIdx = 0;
+    TASKS = ROUND_1_TASKS;
+    ROUND = TASKS.length;
+    index = 0;
+    lives = MAX_LIVES;
+    renderHearts();
+    showItem();
+    winOverlay.classList.remove("open");
+    round2Overlay.classList.remove("open");
+    loseOverlay.classList.remove("open");
+    closeWrongReveal();
+  }
+
+  function openWrongReveal(answerText) {
+    wrongRevealAnswer.textContent = String(answerText);
+    wrongRevealOverlay.style.display = "flex";
+    wrongRevealOverlay.classList.add("open");
+    wrongRevealOverlay.removeAttribute("hidden");
+    wrongRevealOverlay.setAttribute("aria-hidden", "false");
+    wrongRevealNext.focus();
+  }
+
+  function closeWrongReveal() {
+    wrongRevealOverlay.classList.remove("open");
+    wrongRevealOverlay.style.display = "none";
+    wrongRevealOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  function restartSameRound() {
+    index = 0;
+    lives = MAX_LIVES;
+    renderHearts();
+    showItem();
+    loseOverlay.classList.remove("open");
+    closeWrongReveal();
+  }
+
+  function advanceAfterWrong() {
+    index += 1;
+    if (index >= ROUND) {
+      onRoundFinished();
+      return;
+    }
+    showItem();
+  }
+
+  function isAccepted(item, raw) {
+    var g = norm(raw);
+    if (!g) return false;
+    for (var i = 0; i < item.accept.length; i++) {
+      if (g === norm(item.accept[i])) return true;
+    }
+    return false;
+  }
+
+  function onCheck() {
+    var raw = answerEl.value;
+    if (!norm(raw)) {
+      feedbackEl.textContent = "Type an answer first.";
+      feedbackEl.className = "feedback bad";
+      return;
+    }
+
+    var item = TASKS[index];
+    var ok = isAccepted(item, raw);
+
+    if (ok) {
+      feedbackEl.textContent = "Correct!";
+      feedbackEl.className = "feedback ok";
+      index += 1;
+      if (index >= ROUND) {
+        onRoundFinished();
+        return;
+      }
+      setTimeout(function () {
+        showItem();
+      }, 450);
+      return;
+    }
+
+    feedbackEl.textContent = "";
+    answerEl.classList.add("shake");
+    setTimeout(function () {
+      answerEl.classList.remove("shake");
+    }, 500);
+
+    lives -= 1;
+    renderHearts();
+    openWrongReveal(item.displayAnswer);
+  }
+
+  wrongRevealNext.addEventListener("click", function () {
+    closeWrongReveal();
+    if (lives <= 0) {
+      loseOverlay.classList.add("open");
+      return;
+    }
+    advanceAfterWrong();
+  });
+
+  checkBtn.addEventListener("click", onCheck);
+  answerEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onCheck();
+    }
+  });
+
+  restartBtn.addEventListener("click", function () {
+    restartSameRound();
+  });
+
+  round2Continue.addEventListener("click", function () {
+    beginRound2();
+  });
+
+  playAgain.addEventListener("click", function () {
+    winOverlay.classList.remove("open");
+    startGameFresh();
+  });
+
+  var q = new URLSearchParams(window.location.search);
+  var hl = document.getElementById("homeLink");
+  if (q.get("back")) {
+    hl.href = q.get("back");
+  }
+
+  startGameFresh();
+})();
+  </script>
+</body>
+</html>

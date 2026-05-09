@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word bank &mdash; My digital detox (FCE, Unit 3)</title>
+  <style>
+    :root { --bg: #0f1b38; --panel: #1d2b4a; --line: #324a71; --text: #e8f0ff; --muted: #9bb0d3; --accent: #7dd3fc; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(180deg, #09122a 0%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 24px; }
+    .page { width: min(800px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+    .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; font-size: 0.9rem; }
+    .nav a { color: var(--accent); font-weight: 600; }
+    h1 { font-size: 1.2rem; margin-bottom: 8px; }
+    .meta { color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 18px; }
+    .meta code { color: #c9d8f0; font-size: 0.86em; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .toolbar button { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: #223657; color: var(--text); font-weight: 600; cursor: pointer; }
+    .toolbar button:hover { border-color: var(--accent); }
+    section { margin-bottom: 22px; page-break-inside: avoid; }
+    section h2 { font-size: 0.95rem; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    section ol { margin: 0; padding-left: 1.25rem; line-height: 1.6; }
+    section li { margin-bottom: 6px; }
+    .count { font-size: 0.88rem; color: #86efac; margin-top: 16px; }
+    @media print {
+      body { background: #fff; color: #111; padding: 0; }
+      .page { border: none; max-width: 100%; }
+      .nav, .toolbar, .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav no-print" aria-label="Context">
+      <a href="lexical-games-digital-detox.html">&larr; Lexical games (Unit 3)</a>
+      <a href="index.html">Text hub</a>
+      <a href="../unit3.html">Unit 3 (FCE)</a>
+    </nav>
+    <h1>Key phrases: <span id="topicTitle">My digital detox</span></h1>
+    <p class="meta">
+      FCE, Unit 3 &mdash; same list as in <code>data/u3-digital-detox-lexis.js</code> (<code>U3_DIGITAL_DETOX_BY_PART</code>).
+    </p>
+    <div class="toolbar no-print">
+      <button type="button" id="printBtn">Print / Save as PDF</button>
+    </div>
+    <div id="sections"></div>
+    <p class="count" id="totalCount"></p>
+  </main>
+  <script src="data/u3-digital-detox-lexis.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var M = (typeof U3_DIGITAL_DETOX_BY_PART === "object" && U3_DIGITAL_DETOX_BY_PART) ? U3_DIGITAL_DETOX_BY_PART : null;
+      if (document.getElementById("topicTitle") && typeof U3_DIGITAL_DETOX_SPEAKER === "string" && U3_DIGITAL_DETOX_SPEAKER) {
+        document.getElementById("topicTitle").textContent = U3_DIGITAL_DETOX_SPEAKER;
+      }
+      var el = document.getElementById("sections");
+      var countEl = document.getElementById("totalCount");
+      if (!M || !el) return;
+      var order = ["part1", "part2", "part3", "part4", "part5", "part6"];
+      var n = 0;
+      for (var i = 0; i < order.length; i++) {
+        var k = order[i];
+        if (!Object.prototype.hasOwnProperty.call(M, k) || !M[k] || !M[k].length) continue;
+        var sec = document.createElement("section");
+        var h2 = document.createElement("h2");
+        h2.textContent = "Part " + (i + 1);
+        sec.appendChild(h2);
+        var ol = document.createElement("ol");
+        for (var j = 0; j < M[k].length; j++) {
+          var li = document.createElement("li");
+          li.textContent = M[k][j];
+          ol.appendChild(li);
+          n++;
+        }
+        sec.appendChild(ol);
+        el.appendChild(sec);
+      }
+      if (countEl) countEl.textContent = "Total key phrases: " + n;
+      var b = document.getElementById("printBtn");
+      if (b) b.addEventListener("click", function () { window.print(); });
+    })();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

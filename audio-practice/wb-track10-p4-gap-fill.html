@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-prep-back-default="../index.html?prep_stay=1&prep_open_folder=prep_legacy_u10_listening_p4">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 10 — Gap Fill · Listening Part 4 · SB Track 10.1</title>
+  <style>
+    :root {
+      --bg: #0b1732;
+      --panel: #14264a;
+      --line: #345384;
+      --text: #eaf1ff;
+      --muted: #9cb2d8;
+      --accent: #56ccf2;
+      --ok: #4fcc97;
+      --bad: #ff7b8f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #060f22 0%, #0b1732 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .page {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 40px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .top h1 { font-size: 1.25rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(20, 38, 74, 0.96);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .transcript-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0e1d3f;
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .line {
+      margin-bottom: 9px;
+      line-height: 1.55;
+      color: #d8e5ff;
+      font-size: 0.98rem;
+    }
+    .gap {
+      width: 110px;
+      border: 1px solid #4d72a8;
+      border-radius: 7px;
+      background: #0b1734;
+      color: #fff;
+      padding: 2px 7px;
+      margin: 0 3px;
+      font-size: 0.92rem;
+    }
+    .gap.ok { border-color: var(--ok); background: #12392f; }
+    .gap.bad { border-color: var(--bad); background: #4b1e2c; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .actions button {
+      border: 1px solid #5278ae;
+      border-radius: 8px;
+      background: #1c3a69;
+      color: #fff;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    .score { color: #c8d8f6; font-size: 0.9rem; }
+    .answers-box {
+      border: 1px solid #4a628d;
+      border-radius: 10px;
+      background: #102346;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: #d6e3fa;
+      display: none;
+    }
+    .answers-box.show { display: block; }
+    .answers-box strong { color: #ffb8c1; }
+    .answer-row { margin-top: 5px; line-height: 1.4; }
+    .wrong-word { color: #ff8f9f; font-weight: 700; }
+    .right-word { color: #77e3ae; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Gap fill · Listening Part 4 · SB Track 10.1</h1>
+      <a class="back prep-link-back" href="../index.html?prep_stay=1&amp;prep_open_folder=prep_legacy_u10_listening_p4">&larr; Listening Part 4 tasks</a>
+    </header>
+
+    <section class="audio-wrap">
+      <p id="audioLabel" class="hint">SB Track 10.1 · five monologues · up to two keyword gaps per line</p>
+      <audio id="audio" controls preload="metadata"></audio>
+    </section>
+
+    <section id="answersBox" class="answers-box"></section>
+    <section id="transcriptBox" class="transcript-box"></section>
+
+    <section class="actions">
+      <button type="button" id="checkBtn">Check answers</button>
+      <button type="button" id="resetBtn">Reset inputs</button>
+      <button type="button" id="showBtn">Show answers</button>
+      <span id="score" class="score"></span>
+    </section>
+  </main>
+
+  <script src="wb-track10-p4-data.js"></script>
+  <script>
+    var audio = document.getElementById("audio");
+    var audioLabel = document.getElementById("audioLabel");
+    var transcriptBox = document.getElementById("transcriptBox");
+    var checkBtn = document.getElementById("checkBtn");
+    var resetBtn = document.getElementById("resetBtn");
+    var showBtn = document.getElementById("showBtn");
+    var score = document.getElementById("score");
+    var answersBox = document.getElementById("answersBox");
+
+    var DATA = window.CPE_WB10_P4_MULTIPLE_MATCHING;
+    if (!DATA) {
+      document.body.innerHTML = "<p>Missing wb-track10-p4-data.js</p>";
+      throw new Error("CPE_WB10_P4_MULTIPLE_MATCHING");
+    }
+
+    audio.src = DATA.audioSrc;
+    audioLabel.textContent = "SB Track 10.1 — " + DATA.title;
+
+    var gapItems = [];
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalize(word) {
+      return String(word || "")
+        .toLowerCase()
+        .replace(/[^a-z'-]/g, "");
+    }
+
+    function createGapFillLine(line, lineIndex, keywordSet) {
+      if (!line.trim()) {
+        return "<p class=\"line\"></p>";
+      }
+      var words = line.split(" ");
+      var html = "";
+      var gapsInLine = 0;
+      words.forEach(function (word, wordIndex) {
+        var clean = normalize(word);
+        var punctuation = word.replace(/[A-Za-z'-]/g, "");
+        var canGap = keywordSet.has(clean) && gapsInLine < 2;
+        if (canGap) {
+          var inputId = "gap-p4t10-" + String(lineIndex) + "-" + String(wordIndex);
+          gapItems.push({ id: inputId, answer: clean });
+          html += "<input class=\"gap\" id=\"" + inputId + "\" />";
+          gapsInLine += 1;
+          if (punctuation) {
+            html += escapeHtml(punctuation);
+          }
+        } else {
+          html += escapeHtml(word);
+        }
+        html += " ";
+      });
+      return "<p class=\"line\">" + html.trim() + "</p>";
+    }
+
+    function renderGapFill() {
+      gapItems = [];
+      var keywordSet = new Set(DATA.keywords.map(normalize));
+      var html = DATA.sentences
+        .map(function (line, lineIndex) {
+          return createGapFillLine(line, lineIndex, keywordSet);
+        })
+        .join("");
+      transcriptBox.innerHTML = html;
+      score.textContent = "";
+      answersBox.classList.remove("show");
+      answersBox.innerHTML = "";
+    }
+
+    function checkAnswers() {
+      var correct = 0;
+      var wrongAnswers = [];
+      gapItems.forEach(function (entry) {
+        var input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        var rawValue = input.value.trim();
+        var value = rawValue.toLowerCase();
+        var ok = normalize(rawValue) === entry.answer;
+        input.classList.toggle("ok", ok);
+        input.classList.toggle("bad", !ok);
+        if (ok) {
+          correct += 1;
+        } else {
+          wrongAnswers.push({
+            got: rawValue || "(empty)",
+            expected: entry.answer
+          });
+        }
+      });
+      score.textContent = "Correct: " + String(correct) + " / " + String(gapItems.length);
+      if (wrongAnswers.length > 0) {
+        var h = "<strong>Mistakes:</strong>";
+        wrongAnswers.forEach(function (item) {
+          h +=
+            "<div class=\"answer-row\">you wrote <span class=\"wrong-word\">" +
+            escapeHtml(item.got) +
+            "</span> -> correct: <span class=\"right-word\">" +
+            escapeHtml(item.expected) +
+            "</span></div>";
+        });
+        answersBox.innerHTML = h;
+        answersBox.classList.add("show");
+      } else {
+        answersBox.classList.remove("show");
+        answersBox.innerHTML = "";
+      }
+    }
+
+    function resetInputs() {
+      gapItems.forEach(function (entry) {
+        var input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        input.value = "";
+        input.classList.remove("ok", "bad");
+      });
+      score.textContent = "";
+      answersBox.classList.remove("show");
+      answersBox.innerHTML = "";
+    }
+
+    function showAnswers() {
+      gapItems.forEach(function (entry) {
+        var input = document.getElementById(entry.id);
+        if (!input) {
+          return;
+        }
+        input.value = entry.answer;
+        input.classList.remove("bad");
+        input.classList.add("ok");
+      });
+      score.textContent = "Answers shown.";
+    }
+
+    function focusNextGap(currentId) {
+      var currentIndex = gapItems.findIndex(function (entry) {
+        return entry.id === currentId;
+      });
+      if (currentIndex < 0) {
+        return;
+      }
+      for (var i = currentIndex + 1; i < gapItems.length; i += 1) {
+        var nextInput = document.getElementById(gapItems[i].id);
+        if (nextInput) {
+          nextInput.focus();
+          nextInput.select();
+          return;
+        }
+      }
+    }
+
+    transcriptBox.addEventListener("keydown", function (event) {
+      var target = event.target;
+      if (!(target instanceof HTMLInputElement) || !target.classList.contains("gap")) {
+        return;
+      }
+      if (event.key !== "Enter") {
+        return;
+      }
+      event.preventDefault();
+      focusNextGap(target.id);
+    });
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetInputs);
+    showBtn.addEventListener("click", showAnswers);
+
+    renderGapFill();
+  </script>
+  <script src="../js/prep-link-back.js"></script>
+</body>
+</html>

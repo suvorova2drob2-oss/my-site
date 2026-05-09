@@ -6,6 +6,7 @@
 (function (global) {
     var KEY = "prep-player-display-name-v1";
     var MAIN = "english_mastery_perfect";
+    var FCE = "masteringB2PlayerName";
 
     function apply() {
         try {
@@ -25,6 +26,9 @@
             try {
                 global.localStorage.setItem(KEY, name);
             } catch (eK) {}
+            try {
+                global.localStorage.setItem(FCE, name);
+            } catch (eK2) {}
             try {
                 global.document.cookie =
                     "prep_player_display=" +

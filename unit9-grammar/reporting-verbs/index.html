@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Grammar &mdash; Reporting verbs</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+    }
+    .match-hint {
+      font-size: 0.86rem;
+      color: #b8cce8;
+      margin: -8px 0 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.1);
+      border: 1px solid rgba(86, 204, 242, 0.35);
+    }
+    .match-hint-inner em { color: #86efac; font-style: normal; font-weight: 600; }
+
+    .example {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--accent);
+      background: rgba(8, 22, 48, 0.35);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .match-col-left {
+      padding-right: 12px;
+      border-right: 1px solid rgba(50, 74, 113, 0.7);
+    }
+    .match-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px 28px;
+      align-items: start;
+      margin-top: 4px;
+    }
+    .match-col {
+      min-width: 0;
+    }
+    @media (max-width: 720px) {
+      .match-col-left {
+        padding-right: 0;
+        border-right: none;
+        margin-bottom: 8px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(50, 74, 113, 0.7);
+      }
+      .match-layout {
+        grid-template-columns: 1fr;
+      }
+      .match-col-right .endings-box {
+        position: relative;
+        top: auto;
+        max-height: none;
+        overflow-y: visible;
+      }
+    }
+    .col-title {
+      font-size: 0.82rem;
+      color: #bae6fd;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .match-col-right .endings-box {
+      margin-bottom: 0;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+
+    .endings-box {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .endings-box h3 {
+      font-size: 0.82rem;
+      color: #bae6fd;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .ending-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      color: inherit;
+      font: inherit;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ending-item:last-child {
+      margin-bottom: 0;
+    }
+    .ending-item:hover {
+      border-color: #5a7ab0;
+    }
+    .ending-item.is-pick {
+      box-shadow: 0 0 0 2px var(--accent);
+      border-color: #56ccf2;
+    }
+    .end-key {
+      display: inline-block;
+      min-width: 1.25rem;
+      font-weight: 700;
+      color: #86efac;
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 8px 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .match-row:hover {
+      border-color: #5a7ab0;
+    }
+    .match-row.is-pick {
+      box-shadow: 0 0 0 2px var(--accent);
+      border-color: #56ccf2;
+    }
+    .match-row.is-bad-line {
+      border-color: #f87171;
+    }
+    @media (max-width: 600px) {
+      .match-row {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+      }
+      .match-row .num { align-self: start; padding-top: 2px; }
+      .match-row .begin { grid-column: 2; }
+      .match-row .prep-inp { grid-column: 2; }
+      .match-badge { grid-column: 2; justify-self: end; }
+    }
+    .match-row .num {
+      font-weight: 700;
+      color: #86efac;
+      flex: 0 0 auto;
+    }
+    .match-row .begin {
+      flex: 1 1 200px;
+      color: #e8f0ff;
+    }
+    .match-row .begin strong { color: #bae6fd; }
+    .prep-inp {
+      width: 5rem;
+      min-width: 4rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.88rem;
+      cursor: text;
+    }
+    .prep-inp:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .match-badge {
+      min-width: 2.75rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #86efac;
+      letter-spacing: 0.02em;
+    }
+    .pair-to {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .ending-item.is-linked {
+      border-color: rgba(34, 197, 94, 0.55);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 20px;
+      align-items: center;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Grammar &mdash; Reporting verbs &amp; prepositions</h1>
+      <a class="back u9g-back-grammar-index" href="../index.html">&larr; Grammar hub</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 9 grammar">
+      <a class="u9g-nav-sibling" href="../index.html">Grammar hub</a>
+      <span>|</span>
+      <span><strong>Reporting verbs</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Exercise 2 &mdash; Match + gaps</h2>
+      <p class="instr">
+        <strong>Two columns of text only:</strong> click a line on the left (1&ndash;10), then an ending on the right (a&ndash;j), or the other way round.
+        Each ending pairs with one line; you&rsquo;ll see <strong>&rarr; letter</strong> on the line and <strong>&rarr; number</strong> on the ending.
+        Then type each <strong>preposition</strong> in the gap.
+      </p>
+      <p id="match-hint" class="match-hint" aria-live="polite">
+        <span class="match-hint-inner">Choose a sentence <em>or</em> an ending to start pairing.</span>
+      </p>
+      <p class="example">
+        <strong>Example:</strong> 1 + <em>for</em> + c &mdash; Go and apologise to Amy <strong>for</strong> losing her book&hellip;
+      </p>
+
+      <div class="match-layout">
+        <div class="match-col match-col-left">
+          <div class="col-title">Beginnings 1 &ndash; 10</div>
+          <div id="match-rows">
+        <div class="match-row" data-line="1">
+          <span class="num">1.</span>
+          <span class="begin">Go and <strong>apologise</strong> to Amy</span>
+          <input type="text" class="prep-inp" id="prep-1" autocomplete="off" spellcheck="false" aria-label="Preposition gap 1"  />
+          <span class="match-badge" id="badge-1">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="2">
+          <span class="num">2.</span>
+          <span class="begin">The cyclist <strong>blamed</strong> me</span>
+          <input type="text" class="prep-inp" id="prep-2" autocomplete="off" spellcheck="false" aria-label="Preposition gap 2"  />
+          <span class="match-badge" id="badge-2">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="3">
+          <span class="num">3.</span>
+          <span class="begin">I forgot to <strong>thank</strong> Charlie</span>
+          <input type="text" class="prep-inp" id="prep-3" autocomplete="off" spellcheck="false" aria-label="Preposition gap 3"  />
+          <span class="match-badge" id="badge-3">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="4">
+          <span class="num">4.</span>
+          <span class="begin">I&rsquo;m often <strong>told off</strong> at school</span>
+          <input type="text" class="prep-inp" id="prep-4" autocomplete="off" spellcheck="false" aria-label="Preposition gap 4"  />
+          <span class="match-badge" id="badge-4">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="5">
+          <span class="num">5.</span>
+          <span class="begin">Politicians were <strong>criticised</strong></span>
+          <input type="text" class="prep-inp" id="prep-5" autocomplete="off" spellcheck="false" aria-label="Preposition gap 5"  />
+          <span class="match-badge" id="badge-5">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="6">
+          <span class="num">6.</span>
+          <span class="begin">My friend&rsquo;s mum <strong>insisted</strong></span>
+          <input type="text" class="prep-inp" id="prep-6" autocomplete="off" spellcheck="false" aria-label="Preposition gap 6"  />
+          <span class="match-badge" id="badge-6">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="7">
+          <span class="num">7.</span>
+          <span class="begin">We <strong>congratulated</strong> Harry</span>
+          <input type="text" class="prep-inp" id="prep-7" autocomplete="off" spellcheck="false" aria-label="Preposition gap 7"  />
+          <span class="match-badge" id="badge-7">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="8">
+          <span class="num">8.</span>
+          <span class="begin">Our employees <strong>complain</strong></span>
+          <input type="text" class="prep-inp" id="prep-8" autocomplete="off" spellcheck="false" aria-label="Preposition gap 8"  />
+          <span class="match-badge" id="badge-8">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="9">
+          <span class="num">9.</span>
+          <span class="begin">Signs at the lakeside <strong>warn</strong></span>
+          <input type="text" class="prep-inp" id="prep-9" autocomplete="off" spellcheck="false" aria-label="Preposition gap 9"  />
+          <span class="match-badge" id="badge-9">&mdash;</span>
+        </div>
+        <div class="match-row" data-line="10">
+          <span class="num">10.</span>
+          <span class="begin">The musician was <strong>accused</strong></span>
+          <input type="text" class="prep-inp" id="prep-10" autocomplete="off" spellcheck="false" aria-label="Preposition gap 10"  />
+          <span class="match-badge" id="badge-10">&mdash;</span>
+        </div>
+        </div>
+        </div>
+        <div class="match-col match-col-right">
+          <div class="col-title">Endings a &ndash; j</div>
+          <div class="endings-box" aria-label="Endings a to j">
+            <button type="button" class="ending-item" data-letter="a"><span class="end-key">a</span> helping me. He probably thinks I&rsquo;m ungrateful.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="b"><span class="end-key">b</span> driving me home. &lsquo;It&rsquo;s too cold to walk,&rsquo; she said.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="c"><span class="end-key">c</span> losing her book, and offer to buy her a new one.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="d"><span class="end-key">d</span> stealing the melody for his hit from another song.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="e"><span class="end-key">e</span> causing the accident, but it was his fault, not mine.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="f"><span class="end-key">f</span> working long hours, but we pay them really well.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="g"><span class="end-key">g</span> swimming there after periods of heavy rainfall.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="h"><span class="end-key">h</span> laughing in class. My teachers are far too serious.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="i"><span class="end-key">i</span> passing all his exams. He deserved to do well.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="j"><span class="end-key">j</span> being completely out of touch with public opinion.<span class="pair-to" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-grammar-course-context.js"></script>
+  <script>
+(function () {
+  var TOTAL = 10;
+  /** line number (1–10) → ending letter "a"…"j" */
+  var linked = Object.create(null);
+  var CORRECT_LETTER = { 1: "c", 2: "e", 3: "a", 4: "h", 5: "j", 6: "b", 7: "i", 8: "f", 9: "g", 10: "d" };
+  var PREP_DISPLAY = { 1: "for", 2: "for", 3: "for", 4: "for", 5: "for", 6: "on", 7: "on", 8: "about", 9: "against", 10: "of" };
+  var PREP_ACCEPT = {
+    1: ["for"],
+    2: ["for"],
+    3: ["for"],
+    4: ["for"],
+    5: ["for"],
+    6: ["on", "upon"],
+    7: ["on", "upon"],
+    8: ["about", "of"],
+    9: ["against"],
+    10: ["of"]
+  };
+
+  var NOTE = {
+    1: "Pattern: <strong>apologise to someone for</strong> + -ing.",
+    2: "<strong>blame someone for</strong> + -ing.",
+    3: "<strong>thank someone for</strong> + -ing.",
+    4: "<strong>tell someone off for</strong> (here passive: <em>told off</em> <strong>for</strong>).",
+    5: "<strong>criticise someone for</strong> + -ing (passive here).",
+    6: "<strong>insist on</strong> + -ing.",
+    7: "<strong>congratulate someone on</strong> + -ing.",
+    8: "<strong>complain about</strong> (or <em>of</em>) + -ing.",
+    9: "<strong>warn against</strong> + -ing (prohibition / danger).",
+    10: "<strong>accuse someone of</strong> + -ing (passive: <em>was accused of</em>)."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function prepOk(n, raw) {
+    var u = norm(raw);
+    if (!u) return false;
+    var list = PREP_ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function letterOk(n, v) {
+    return norm(v) === CORRECT_LETTER[n];
+  }
+
+  var pickLine = null;
+  var pickLetter = null;
+  var hintEl = document.querySelector("#match-hint .match-hint-inner");
+
+  function renderHint() {
+    if (!hintEl) return;
+    if (pickLine != null && pickLetter != null) {
+      hintEl.innerHTML = "Linking&hellip;";
+      return;
+    }
+    if (pickLine != null) {
+      hintEl.innerHTML =
+        'Sentence <strong>' +
+        pickLine +
+        '</strong> selected &mdash; now click an ending <strong>a&ndash;j</strong>.';
+      return;
+    }
+    if (pickLetter != null) {
+      hintEl.innerHTML =
+        'Ending <strong>' +
+        pickLetter +
+        '</strong> selected &mdash; now click a sentence <strong>1&ndash;10</strong>.';
+      return;
+    }
+    hintEl.innerHTML = 'Choose a sentence <em>or</em> an ending to start pairing.';
+  }
+
+  function clearPicks() {
+    pickLine = null;
+    pickLetter = null;
+    document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+      el.classList.remove("is-pick");
+    });
+    document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+      el.classList.remove("is-pick");
+    });
+    renderHint();
+  }
+
+  function syncVisual() {
+    for (var n = 1; n <= TOTAL; n++) {
+      var b = document.getElementById("badge-" + n);
+      if (b) {
+        b.textContent = linked[n] ? "\u2192 " + linked[n] : "\u2014";
+      }
+    }
+    document.querySelectorAll(".ending-item").forEach(function (btn) {
+      var letter = norm(btn.getAttribute("data-letter") || "");
+      var pairLine = null;
+      for (var i = 1; i <= TOTAL; i++) {
+        if (linked[i] === letter) {
+          pairLine = String(i);
+          break;
+        }
+      }
+      btn.classList.toggle("is-linked", pairLine !== null);
+      var tag = btn.querySelector(".pair-to");
+      if (tag) {
+        tag.textContent = pairLine ? " \u2192 " + pairLine : "";
+      }
+    });
+  }
+
+  function getLinkedLetter(lineNum) {
+    return linked[lineNum] ? norm(linked[lineNum]) : "";
+  }
+
+  function applyPair(lineNum, letter) {
+    letter = norm(letter);
+    if (!letter) return;
+
+    for (var i = 1; i <= TOTAL; i++) {
+      if (i !== lineNum && linked[i] === letter) {
+        delete linked[i];
+      }
+    }
+    linked[lineNum] = letter;
+    syncVisual();
+    clearFeedbackStyles();
+    clearPicks();
+  }
+
+  document.querySelectorAll("#match-rows .match-row").forEach(function (row) {
+    row.addEventListener("click", function (ev) {
+      if (ev.target.closest("input")) return;
+      var n = parseInt(row.getAttribute("data-line"), 10);
+      if (!n || n < 1 || n > TOTAL) return;
+
+      if (pickLetter != null) {
+        applyPair(n, pickLetter);
+        return;
+      }
+
+      if (pickLine === n) {
+        pickLine = null;
+        row.classList.remove("is-pick");
+        renderHint();
+        return;
+      }
+
+      pickLine = n;
+      pickLetter = null;
+      document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      row.classList.add("is-pick");
+      renderHint();
+    });
+  });
+
+  document.querySelectorAll(".ending-item").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var letter = norm(btn.getAttribute("data-letter") || "");
+      if (!letter) return;
+
+      if (pickLine != null) {
+        applyPair(pickLine, letter);
+        return;
+      }
+
+      if (pickLetter === letter) {
+        pickLetter = null;
+        btn.classList.remove("is-pick");
+        renderHint();
+        return;
+      }
+
+      pickLetter = letter;
+      pickLine = null;
+      document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      btn.classList.add("is-pick");
+      renderHint();
+    });
+  });
+
+  function clearFeedbackStyles() {
+    for (var i = 1; i <= TOTAL; i++) {
+      var p = document.getElementById("prep-" + i);
+      p.classList.remove("is-ok", "is-bad");
+      var row = document.querySelector('.match-row[data-line="' + i + '"]');
+      if (row) row.classList.remove("is-bad-line");
+    }
+    document.getElementById("feedback").classList.remove("show");
+  }
+
+  for (var n = 1; n <= TOTAL; n++) {
+    document.getElementById("prep-" + n).addEventListener("input", clearFeedbackStyles);
+  }
+
+  syncVisual();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    clearPicks();
+    var fb = document.getElementById("feedback");
+    var html = "";
+    var full = 0;
+    var correctBoth = 0;
+
+    for (var g = 1; g <= TOTAL; g++) {
+      var pin = document.getElementById("prep-" + g);
+      var pv = pin.value;
+      var lv = getLinkedLetter(g);
+      var po = prepOk(g, pv);
+      var lo = letterOk(g, lv);
+      var complete = pv.trim() && lv;
+
+      pin.classList.remove("is-ok", "is-bad");
+      var rowEl = document.querySelector('.match-row[data-line="' + g + '"]');
+      if (rowEl) rowEl.classList.remove("is-bad-line");
+
+      if (!pv.trim()) pin.classList.add("is-bad");
+      else pin.classList.add(po ? "is-ok" : "is-bad");
+      if (complete && !lo && rowEl) rowEl.classList.add("is-bad-line");
+
+      if (complete) full++;
+      if (complete && po && lo) correctBoth++;
+
+      var lineOk = complete && po && lo;
+      html += '<div class="fb-item ' + (lineOk ? "ok" : "bad") + '">';
+      html += "<h4>" + (lineOk ? "\u2713" : "\u2717") + " " + g + "</h4>";
+      html +=
+        '<p class="fb-meta">Preposition: <strong>' +
+        (pv.trim() ? esc(pv.trim()) : "\u2014") +
+        "</strong> (key: <strong>" +
+        esc(PREP_DISPLAY[g]) +
+        "</strong>) &middot; Ending: <strong>" +
+        (lv ? esc(lv) : "\u2014") +
+        "</strong> (key: <strong>" +
+        CORRECT_LETTER[g] +
+        "</strong>)</p>";
+      html += "<p>" + NOTE[g] + "</p>";
+      html += "</div>";
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Fully correct lines: ' +
+      correctBoth +
+      " / " +
+      TOTAL +
+      (full < TOTAL ? " &mdash; complete every line (preposition + ending)." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    clearPicks();
+    linked = Object.create(null);
+    syncVisual();
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var r = 1; r <= TOTAL; r++) {
+      document.getElementById("prep-" + r).value = "";
+      document.getElementById("prep-" + r).classList.remove("is-ok", "is-bad");
+      var rowEl = document.querySelector('.match-row[data-line="' + r + '"]');
+      if (rowEl) rowEl.classList.remove("is-bad-line");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

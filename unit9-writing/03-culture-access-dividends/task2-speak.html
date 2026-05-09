@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 2 &mdash; Culture texts (speaking)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --line: #334155; --accent: #38bdf8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #e2e8f0; min-height: 100dvh; padding: max(20px, 4vh) 16px 32px; }
+    .shell { max-width: 40rem; margin: 0 auto; }
+    .top { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; }
+    .top h1 { font-size: 1.05rem; line-height: 1.3; color: #f1f5f9; margin-bottom: 8px; }
+    .top p { color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+    .ru { color: #94a3b8; font-size: 12px; margin-top: 8px; line-height: 1.45; }
+    .box { background: #132337; border: 1px solid #1e3a5f; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+    .box h2 { font-size: 0.8rem; color: #7dd3fc; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .box ul { margin: 0 0 0 1.1rem; color: #e2e8f0; font-size: 14px; line-height: 1.55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .chips span { font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: #1e3a5f; color: #bae6fd; }
+    .timer { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; font-size: 14px; }
+    .timer output { font-variant-numeric: tabular-nums; font-weight: 800; color: #fde047; font-size: 1.4rem; }
+    .timer button { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #3b6fb8; background: #1c4c7c; color: #e0f2fe; cursor: pointer; }
+    .note { font-size: 12px; color: #94a3b8; line-height: 1.5; margin-top: 6px; }
+    .back { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 16px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1>Task 2 &mdash; Contrast the two pieces (orally)</h1>
+      <p>
+        <strong>No writing box on this page.</strong> In 1&ndash;2 minutes, explain how <strong>Text A</strong> and <strong>Text B</strong> fit together: one stresses
+        <strong>money and exclusion</strong>, the other the <strong>value of culture</strong> in society. You can use English, Russian, or mix them.
+      </p>
+      <p class="ru">
+        Устно: в чём &laquo;боль&raquo; первого фрагмента и в чём смысл второго. Необязательно писать &mdash; можно продиктовать в заметки на телефон, если удобно. Этого задания достаточно, чтобы
+        &laquo;прошла&raquo; структура: контраст + пара полезных выражений.
+      </p>
+    </div>
+    <div class="box">
+      <h2>Say at least (loosely)</h2>
+      <ul>
+        <li>one point about <strong>rising costs</strong> and who is <strong>priced out / bereft of</strong> experiences (Text A);</li>
+        <li>one point about <strong>why</strong> prices rise in the text (funding, production, <strong>passed on to end users</strong>);</li>
+        <li>one point about the <strong>difficulty of defining &ldquo;culture&rdquo;</strong> but the <strong>enormous benefits / enrichment / engagement</strong> (Text B);</li>
+        <li>one line to <strong>link</strong> the two: e.g. if access is a problem, does that reduce the <strong>benefits</strong> to society, or is that a different question?</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Phrases you may echo (if they fit your mouth)</h2>
+      <div class="chips" aria-label="Optional chunks">
+        <span>priced out of</span>
+        <span>the financially elite</span>
+        <span>skyrocketed</span>
+        <span>bereft of</span>
+        <span>passed on to end users</span>
+        <span>notoriously difficult to pin down</span>
+        <span>irrespective of</span>
+        <span>encompasses</span>
+        <span>enriched in a myriad of ways</span>
+        <span>engagement with the arts</span>
+        <span>interpreting the world around us</span>
+      </div>
+    </div>
+    <div class="box">
+      <h2>Optional timer (pace only; nothing is uploaded)</h2>
+      <div class="timer">
+        <output id="t-out">0:00</output>
+        <button type="button" id="t-btn">Start / stop</button>
+        <button type="button" id="t-reset">Reset</button>
+      </div>
+      <p class="note">Aim for ~90&ndash;120 seconds; if you go longer, you are probably already doing a mini-essay in speech, which is fine.</p>
+    </div>
+    <p class="back">
+      <a href="index.html">&larr; Task 1 (read + glossary)</a>
+      <a href="../index.html">Writing (Level 9)</a>
+    </p>
+  </div>
+  <script>
+(function () {
+  var t0 = null, intv = null;
+  var out = document.getElementById("t-out");
+  var btn = document.getElementById("t-btn");
+  document.getElementById("t-reset").addEventListener("click", function () {
+    t0 = null;
+    if (intv) { clearInterval(intv); intv = null; }
+    out.textContent = "0:00";
+  });
+  function tick() { if (t0) out.textContent = fmt(Date.now() - t0); }
+  function fmt(ms) { var s = (ms/1000)|0; var m = (s/60)|0; s = s%60; return m + ":" + (s<10?"0":"") + s; }
+  btn.addEventListener("click", function () {
+    if (t0 == null) { t0 = Date.now(); intv = setInterval(tick, 200); }
+    else { t0 = null; if (intv) { clearInterval(intv); intv = null; } }
+  });
+})();
+  </script>
+</body>
+</html>

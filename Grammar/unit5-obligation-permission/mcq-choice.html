@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 Grammar — Multiple choice (obligation &amp; permission)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --lf-green: #4ade80;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .title-block { flex: 1; min-width: 0; }
+    .lf {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--lf-green);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .ex-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .topic {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #f1f5ff;
+      line-height: 1.25;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; flex-shrink: 0; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 18px;
+      line-height: 1.55;
+    }
+
+    .q {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .stem {
+      font-size: 0.95rem;
+      color: #e8f0ff;
+      margin-bottom: 10px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .opts { list-style: none; display: grid; gap: 6px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+    }
+    .opt-line input { margin-top: 4px; accent-color: var(--accent); flex-shrink: 0; }
+    .opt-line label {
+      cursor: pointer;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      flex: 1;
+      min-width: 0;
+      font-style: italic;
+      color: #dbeafe;
+    }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.22);
+      border-color: #4ade80;
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #f87171;
+    }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div class="title-block">
+        <span class="lf">Language focus</span>
+        <p class="ex-label">Exercise 1</p>
+        <h1 class="topic">Multiple choice &mdash; obligation, necessity and permission</h1>
+      </div>
+      <a class="back" href="index.html">&larr; Grammar folder</a>
+    </header>
+
+    <p class="instr">
+      <strong>Underline the correct alternative</strong> to complete each sentence (choose one option below each line).
+    </p>
+
+    <div id="mcq-root" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var CORRECT = [
+    "needn't",
+    "ought",
+    "don't have",
+    "allowed",
+    "rather not",
+    "supposed",
+    "mustn't",
+    "had to"
+  ];
+
+  var MCQ = [
+    {
+      num: 1,
+      stem:
+        "We won't be busy tomorrow, so you \u2026 come in to work if you don't want to.",
+      options: [
+        { value: "mustn't", label: "mustn't" },
+        { value: "can't", label: "can't" },
+        { value: "needn't", label: "needn't" },
+        { value: "haven't", label: "haven't" }
+      ]
+    },
+    {
+      num: 2,
+      stem: "I think we \u2026 to phone Elisa and ask her if she wants to come.",
+      options: [
+        { value: "should", label: "should" },
+        { value: "ought", label: "ought" },
+        { value: "must", label: "must" },
+        { value: "could", label: "could" }
+      ]
+    },
+    {
+      num: 3,
+      stem:
+        "I love the fact that I don't start work until ten, so I \u2026 to get up early.",
+      options: [
+        { value: "shouldn't", label: "shouldn't" },
+        { value: "ought not", label: "ought not" },
+        { value: "don't have", label: "don't have" },
+        { value: "am not supposed", label: "am not supposed" }
+      ]
+    },
+    {
+      num: 4,
+      stem:
+        "On a &lsquo;Non-uniform Day&rsquo; we're \u2026 to wear casual clothes to school if we want.",
+      options: [
+        { value: "let", label: "let" },
+        { value: "made", label: "made" },
+        { value: "supposed", label: "supposed" },
+        { value: "allowed", label: "allowed" }
+      ]
+    },
+    {
+      num: 5,
+      stem:
+        "I'd prefer to walk to work today but I'd \u2026; I might get there late.",
+      options: [
+        { value: "better not", label: "better not" },
+        { value: "rather not", label: "rather not" },
+        { value: "ought not", label: "ought not" },
+        { value: "cannot", label: "cannot" }
+      ]
+    },
+    {
+      num: 6,
+      stem:
+        "Where have you been? You were \u2026 to be here half an hour ago!",
+      options: [
+        { value: "allowed", label: "allowed" },
+        { value: "agreed", label: "agreed" },
+        { value: "promised", label: "promised" },
+        { value: "supposed", label: "supposed" }
+      ]
+    },
+    {
+      num: 7,
+      stem:
+        "The rules are very clear. You know you \u2026 wear jewellery to school.",
+      options: [
+        { value: "don't have to", label: "don't have to" },
+        { value: "don't need to", label: "don't need to" },
+        { value: "needn't", label: "needn't" },
+        { value: "mustn't", label: "mustn't" }
+      ]
+    },
+    {
+      num: 8,
+      stem:
+        "I was ill last Thursday so I \u2026 to hand in my homework the next day.",
+      options: [
+        { value: "could", label: "could" },
+        { value: "had to", label: "had to" },
+        { value: "might", label: "might" },
+        { value: "ought", label: "ought" }
+      ]
+    }
+  ];
+
+  function escapeHtml(t) {
+    return String(t)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var root = document.getElementById("mcq-root");
+  var fb = document.getElementById("feedback");
+
+  function render() {
+    root.innerHTML = MCQ.map(function (item, idx) {
+      var opts = item.options
+        .map(function (o, oi) {
+          var id = "r-" + idx + "-" + oi;
+          return (
+            '<li class="opt-line" data-qidx="' +
+            idx +
+            '" data-val="' +
+            escapeHtml(o.value) +
+            '">' +
+            '<input type="radio" name="mq' +
+            idx +
+            '" value="' +
+            escapeHtml(o.value) +
+            '" id="' +
+            id +
+            '" />' +
+            '<label for="' +
+            id +
+            '">' +
+            escapeHtml(o.label) +
+            "</label></li>"
+          );
+        })
+        .join("");
+      return (
+        '<article class="q">' +
+        '<p class="stem"><strong>' +
+        item.num +
+        ".</strong> " +
+        item.stem +
+        "</p>" +
+        '<ul class="opts" role="radiogroup" aria-label="Question ' +
+        item.num +
+        '">' +
+        opts +
+        "</ul></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.addEventListener("change", function () {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+        fb.textContent = "";
+      });
+    });
+  }
+
+  function lineByValue(qidx, val) {
+    var lines = root.querySelectorAll('.opt-line[data-qidx="' + qidx + '"]');
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].getAttribute("data-val") === val) return lines[i];
+    }
+    return null;
+  }
+
+  function clearMarks() {
+    root.querySelectorAll(".opt-line").forEach(function (line) {
+      line.classList.remove("ok", "bad-pick");
+    });
+  }
+
+  function getPick(idx) {
+    var el = root.querySelector('input[name="mq' + idx + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  render();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    clearMarks();
+    var n = MCQ.length;
+    var missing = false;
+    for (var i = 0; i < n; i++) {
+      if (!getPick(i)) {
+        missing = true;
+        break;
+      }
+    }
+    if (missing) {
+      fb.textContent = "Choose one option for each sentence (1–8), then check again.";
+      return;
+    }
+    var score = 0;
+    for (var j = 0; j < n; j++) {
+      var pick = getPick(j);
+      var ok = pick === CORRECT[j];
+      if (ok) score++;
+      var pickLine = lineByValue(j, pick);
+      if (pickLine) pickLine.classList.add(ok ? "ok" : "bad-pick");
+      if (!ok) {
+        var okLine = lineByValue(j, CORRECT[j]);
+        if (okLine) okLine.classList.add("ok");
+      }
+    }
+    fb.innerHTML =
+      score === n
+        ? "<strong>All 8 correct.</strong>"
+        : "Score: <strong>" + score + "</strong> / 8. Green = correct; red = your choice (if wrong), green also shows the key.";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function () {
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.checked = false;
+    });
+    clearMarks();
+    fb.textContent = "";
+  });
+})();
+  </script>
+</body>
+</html>

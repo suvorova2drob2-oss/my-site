@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 3 &mdash; Retell aloud (The ONE Gallery)</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --paper: #f8fafc; --line: #334155; --accent: #38bdf8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #e2e8f0; min-height: 100dvh; padding: max(20px, 4vh) 16px 32px; }
+    .shell { max-width: 40rem; margin: 0 auto; }
+    .top { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; }
+    .top h1 { font-size: 1.08rem; line-height: 1.3; color: #f1f5f9; margin-bottom: 10px; }
+    .top p { color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+    .top .ru { color: #94a3b8; font-size: 12px; margin-top: 8px; line-height: 1.45; }
+    .box { background: #1a1525; border: 1px solid #3b2f4a; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+    .box h2 { font-size: 0.85rem; color: #c4b5fd; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .box ul { margin: 0 0 0 1.1rem; color: #e2e8f0; font-size: 14px; line-height: 1.55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .chips span { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: #312e81; color: #e0e7ff; }
+    .timer { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; font-size: 14px; }
+    .timer output { font-variant-numeric: tabular-nums; font-weight: 800; color: #fde047; font-size: 1.4rem; }
+    .timer button { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #6b7fd7; background: #3730a3; color: #e0e7ff; cursor: pointer; }
+    .timer button:hover { background: #4c1d95; }
+    .note { font-size: 12px; color: #94a3b8; line-height: 1.5; margin-top: 8px; }
+    .back { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 16px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1>Task 3 &mdash; Retell the review (speaking, not writing)</h1>
+      <p>
+        <strong>There is no text box for a written essay on this page.</strong> The idea is to
+        <strong>say</strong> the recap out loud, in <strong>English or Russian or mixed</strong> &mdash; as if you are explaining the review
+        to a friend, using your own words and (if you like) a few of the &ldquo;strong&rdquo; English phrases.
+      </p>
+      <p class="ru">
+        Задание: <strong>устно</strong> пересказать суть: что за выставка, в чём претензия к работам, к курации, к обещаниям в рекламе, куда вас посылают в конце. Писать
+        &laquo;по смыслу&raquo; через экран <em>не обязательно</em> &mdash; говорим вслух, можно записать голос в заметки в телефоне при желании.
+      </p>
+    </div>
+    <div class="box">
+      <h2>Cover these points in order (roughly)</h2>
+      <ul>
+        <li>where you were, what the opening was like, first impression (underwhelming?)</li>
+        <li>how you <strong>rate the works</strong> and what was wrong with <strong>technique / originality</strong></li>
+        <li>why the <strong>layout by artist</strong> broke any <strong>thematic</strong> story (curation issue)</li>
+        <li>what the <strong>promo</strong> promised (insight, heritage) vs what you <strong>actually felt</strong> when you left</li>
+        <li>where you send readers instead and on what <strong>terms</strong> (contrast: another gallery&rsquo;s standards)</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Phrases you may drop in (if they fit your speech)</h2>
+      <div class="chips" aria-label="Useful English chunks">
+        <span>immediately struck by</span>
+        <span>underwhelming</span>
+        <span>at best</span>
+        <span>technical prowess</span>
+        <span>glaring errors</span>
+        <span>nigh on impossible</span>
+        <span>overriding thematic connection</span>
+        <span>curation</span>
+        <span>give insight into</span>
+        <span>national heritage</span>
+        <span>disillusioned</span>
+        <span>in terms of professionalism</span>
+        <span>flawless (contrast)</span>
+      </div>
+    </div>
+    <div class="box">
+      <h2>Optional voice timer (about 1&ndash;2 minutes is plenty)</h2>
+      <div class="timer">
+        <output id="t-out" for="t-btn">0:00</output>
+        <button type="button" id="t-btn">Start / stop</button>
+        <button type="button" id="t-reset">Reset</button>
+      </div>
+      <p class="note">Timer runs in the browser; it is only to pace yourself, nothing is sent anywhere.</p>
+    </div>
+    <p class="back">
+      <a href="index.html">Task 1 (read)</a>
+      <a href="task2-gaps.html">Task 2 (gaps)</a>
+      <a href="../index.html">&larr; Writing (Level 9)</a>
+    </p>
+  </div>
+  <script>
+(function () {
+  var t0 = null;
+  var intv = null;
+  var out = document.getElementById("t-out");
+  var btn = document.getElementById("t-btn");
+  var reset = document.getElementById("t-reset");
+  function fmt(ms) {
+    var s = Math.floor(ms / 1000);
+    var m = Math.floor(s / 60);
+    s = s % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function tick() {
+    if (t0 == null) return;
+    out.textContent = fmt(Date.now() - t0);
+  }
+  btn.addEventListener("click", function () {
+    if (t0 == null) {
+      t0 = Date.now();
+      if (intv) clearInterval(intv);
+      intv = setInterval(tick, 200);
+    } else {
+      t0 = null;
+      if (intv) { clearInterval(intv); intv = null; }
+    }
+  });
+  reset.addEventListener("click", function () {
+    t0 = null;
+    if (intv) { clearInterval(intv); intv = null; }
+    out.textContent = "0:00";
+  });
+})();
+  </script>
+</body>
+</html>

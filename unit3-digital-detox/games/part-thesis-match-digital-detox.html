@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part → thesis — My digital detox (Unit 3)</title>
+  <style>
+    :root { --bg: #0f1b38; --panel: #1d2b4a; --line: #324a71; --text: #e8f0ff; --muted: #9bb0d3; --accent: #56ccf2; --ok: #22c55e; --bad: #f87171; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: linear-gradient(180deg, #09122a, #101d3c); color: var(--text); min-height: 100dvh; padding: 18px 16px 24px; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 17px; }
+    .page { max-width: 1180px; margin: 0 auto; }
+    h1 { font-size: clamp(1.35rem, 2.5vw, 1.65rem); font-weight: 800; margin-bottom: 10px; }
+    .sub { color: var(--muted); font-size: clamp(0.95rem, 1.5vw, 1.05rem); line-height: 1.5; margin-bottom: 16px; }
+    .sub a { color: #7dd3fc; }
+    .bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; font-size: 0.95rem; }
+    button { background: #2d3a5e; color: #fff; border: 1px solid #4a6898; border-radius: 10px; padding: 10px 18px; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+    button:hover { border-color: var(--accent); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3vw, 28px); align-items: start; }
+    @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+    .col h2 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7dd3fc; margin-bottom: 12px; line-height: 1.3; }
+    .part-slot {
+      border: 2px solid var(--line); border-radius: 12px; min-height: 4.25rem; padding: 12px 14px; margin-bottom: 12px; background: #152546;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: clamp(0.92rem, 1.4vw, 1.05rem); line-height: 1.4;
+    }
+    .part-slot .lab { font-size: 0.78rem; font-weight: 800; color: #a78bfa; margin-bottom: 6px; }
+    .part-slot .fill { color: #e2e8f0; }
+    .part-slot:empty .fill, .part-slot .fill:empty { color: #64748b; font-style: italic; }
+    .part-slot.empty { border-style: dashed; color: #64748b; }
+    .part-slot.locked { border-color: var(--ok); background: #0f1f1a; pointer-events: none; }
+    .part-slot.pulse { animation: p 0.4s ease; }
+    @keyframes p { 50% { border-color: var(--bad); } }
+    .thesis {
+      border: 2px solid #3b5f8f; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: #0c1629;
+      font-size: clamp(0.92rem, 1.4vw, 1.05rem); line-height: 1.42; min-height: 3.5rem;
+      cursor: pointer; user-select: none; transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .thesis:hover { border-color: #7dd3fc; }
+    .thesis.sel { box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.55); border-color: #a78bfa; }
+    .thesis.used { opacity: 0.25; pointer-events: none; }
+    .msg { min-height: 1.35em; font-size: clamp(0.95rem, 1.3vw, 1.05rem); color: #fde68a; margin-top: 10px; line-height: 1.4; }
+    .msg.ok { color: #86efac; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Match each part to its thesis</h1>
+    <p class="sub">
+      Six parts of <em>My digital detox</em>, six one-line summaries (structure, not a phrase-matching game like <a href="memory-pairs-digital-detox.html">Memory pairs</a>).
+      <strong>Click</strong> a summary on the right, then <strong>click</strong> the Part it belongs to on the left. Right match locks; wrong part flashes. Data: <a href="../data/u3-part-thesis-match.js">u3-part-thesis-match.js</a>.
+      <a href="index.html">Games</a> ·
+      <a href="../index.html">Text hub</a> ·
+      <a href="../../unit3.html">Unit 3</a>
+    </p>
+    <div class="bar">
+      <button type="button" id="btnReset">Reset board</button>
+      <button type="button" id="btnShuffle">Shuffle summaries</button>
+    </div>
+    <p class="msg" id="msg" aria-live="polite"></p>
+    <div class="row">
+      <div class="col" id="colParts">
+        <h2>Parts (drop ideas here)</h2>
+      </div>
+      <div class="col" id="colPool">
+        <h2>Shuffled theses (tap one, then a part)</h2>
+      </div>
+    </div>
+  </div>
+  <script src="../data/u3-part-thesis-match.js"></script>
+  <script>
+(function () {
+  var DATA = (typeof U3_PART_THESIS !== "undefined" && U3_PART_THESIS.length) ? U3_PART_THESIS.slice() : [];
+  var colParts = document.getElementById("colParts");
+  var colPool = document.getElementById("colPool");
+  var msg = document.getElementById("msg");
+  var selectedThesis = null;
+  var slots = [];
+  var poolOrder = [];
+
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+
+  function findItem(partNum) {
+    for (var i = 0; i < DATA.length; i++) { if (DATA[i].part === partNum) return DATA[i]; }
+    return null;
+  }
+
+  function buildParts() {
+    colParts.querySelectorAll(".part-slot").forEach(function (n) { n.remove(); });
+    slots = [];
+    for (var p = 1; p <= 6; p++) {
+      (function (part) {
+        var d = document.createElement("div");
+        d.className = "part-slot empty";
+        d.setAttribute("data-part", String(part));
+        d.innerHTML = "<div class=\"lab\">Part " + part + "</div><div class=\"fill\">— tap a thesis, then this row —</div>";
+        d.addEventListener("click", function () { onPartClick(part, d); });
+        colParts.appendChild(d);
+        slots.push({ part: part, el: d, locked: false });
+      })(p);
+    }
+  }
+
+  function buildPool() {
+    colPool.querySelectorAll(".thesis").forEach(function (n) { n.remove(); });
+    var items = poolOrder.map(function (part) { return findItem(part); }).filter(Boolean);
+    for (var i = 0; i < items.length; i++) {
+      (function (it) {
+        var t = document.createElement("div");
+        t.className = "thesis";
+        t.setAttribute("data-part", String(it.part));
+        t.textContent = it.thesis;
+        t.addEventListener("click", function () { onThesisClick(it.part, t); });
+        colPool.appendChild(t);
+      })(items[i]);
+    }
+    clearThesisSelect();
+  }
+
+  function clearThesisSelect() {
+    colPool.querySelectorAll(".thesis").forEach(function (n) { n.classList.remove("sel"); });
+    selectedThesis = null;
+  }
+
+  function onThesisClick(part, el) {
+    if (el.classList.contains("used")) return;
+    colPool.querySelectorAll(".thesis").forEach(function (n) { n.classList.remove("sel"); });
+    el.classList.add("sel");
+    selectedThesis = part;
+    msg.textContent = "Now tap the matching Part 1…6 on the left.";
+  }
+
+  function onPartClick(part, el) {
+    var s = null;
+    for (var i = 0; i < slots.length; i++) { if (slots[i].part === part) { s = slots[i]; break; } }
+    if (!s || s.locked) return;
+    if (selectedThesis == null) {
+      msg.textContent = "Select a summary on the right first.";
+      return;
+    }
+    if (selectedThesis === part) {
+      s.locked = true;
+      s.el.className = "part-slot locked";
+      s.el.innerHTML = "<div class=\"lab\">Part " + part + " ✓</div><div class=\"fill\">" + esc(findItem(part).thesis) + "</div>";
+      colPool.querySelectorAll(".thesis").forEach(function (n) {
+        if (parseInt(n.getAttribute("data-part"), 10) === part) n.classList.add("used");
+        n.classList.remove("sel");
+      });
+      selectedThesis = null;
+      var done = slots.every(function (x) { return x.locked; });
+      msg.className = "msg" + (done ? " ok" : "");
+      msg.textContent = done ? "All six matched. Reset clears the board (same order on the right). Shuffle randomises the six summaries and clears the board." : "Pair locked. Pick another summary.";
+    } else {
+      s.el.classList.add("pulse");
+      setTimeout(function () { s.el.classList.remove("pulse"); }, 400);
+      msg.textContent = "Not that part — that summary fits another number. Try a different Part.";
+    }
+  }
+
+  function esc(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function firstLayout() {
+    if (!DATA.length) {
+      msg.textContent = "No data. Load u3-part-thesis-match.js";
+      return;
+    }
+    poolOrder = shuffle([1, 2, 3, 4, 5, 6]);
+    buildParts();
+    buildPool();
+    msg.className = "msg";
+    msg.textContent = "Select a summary (right), then the matching Part 1–6 (left).";
+  }
+
+  function resetBoard() {
+    buildParts();
+    buildPool();
+    msg.className = "msg";
+    msg.textContent = "Board cleared. Summaries on the right keep the same order. Pick a thesis, then a Part.";
+  }
+
+  function shuffleTheses() {
+    if (!DATA.length) return;
+    poolOrder = shuffle([1, 2, 3, 4, 5, 6]);
+    buildParts();
+    buildPool();
+    msg.className = "msg";
+    msg.textContent = "Theses in a new random order. Match again from memory.";
+  }
+
+  document.getElementById("btnReset").addEventListener("click", resetBoard);
+  document.getElementById("btnShuffle").addEventListener("click", shuffleTheses);
+
+  firstLayout();
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

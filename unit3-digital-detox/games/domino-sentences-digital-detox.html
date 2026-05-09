@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentence dominoes — My digital detox (Parts 1–6)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #0b1020; --card: #131a2e; --line: #2a3555; --text: #e8ecff; --dim: #8b95b8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "Manrope", system-ui, sans-serif; background: radial-gradient(1200px 600px at 50% 0%, #1a1033 0%, var(--bg) 45%);
+      color: var(--text); min-height: 100dvh; padding: 10px; display: flex; flex-direction: column;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 6px; flex: 0 0 auto; }
+    .bar a { color: #c4b5fd; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    h1 { font-size: 1.35rem; font-weight: 800; }
+    .sub { color: var(--dim); font-size: 0.9rem; line-height: 1.4; margin: 4px 0 10px; flex: 0 0 auto; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.35); flex: 0 0 auto; }
+    .card.flex-grow { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .meta { font-size: 0.7rem; color: #a78bfa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    label.slab { display: block; font-size: 0.82rem; font-weight: 700; color: #a78bfa; margin: 0 0 6px; }
+    textarea#namesIn { width: 100%; min-height: 4.5rem; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: #0a0f1d; color: var(--text); font: inherit; font-size: 1rem; }
+    .stat { font-size: 0.85rem; color: var(--dim); margin-top: 6px; }
+    .play-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; flex: 0 0 auto; }
+    .ends-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin: 4px 0; flex: 0 0 auto; }
+    .endpill {
+      padding: 12px 22px; border-radius: 12px; font-weight: 800; font-size: 1.2rem; border: 2px solid rgba(255,255,255,0.2);
+      background: #0a0f1d; min-width: 3.2rem; text-align: center;
+    }
+    .endpill.t1 { color: #93c5fd; border-color: #2563eb; } .endpill.t2 { color: #5eead4; border-color: #0d9488; }
+    .endpill.t3 { color: #86efac; border-color: #16a34a; } .endpill.t4 { color: #fcd34d; border-color: #d97706; }
+    .endpill.t5 { color: #e9d5ff; border-color: #7c3aed; } .endpill.t6 { color: #fecaca; border-color: #dc2626; }
+    .endpill.t0 { color: #64748b; border-color: #334155; font-size: 1rem; }
+    .endpill small { display: block; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; margin-bottom: 2px; }
+    .chain-scroll { flex: 1; min-height: 12rem; max-height: min(40vh, 360px); overflow: auto; padding: 8px 4px; -webkit-overflow-scrolling: touch; }
+    @media (min-height: 800px) { .chain-scroll { max-height: min(44vh, 420px); } }
+    .chain-row { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; align-content: flex-start; gap: 4px; }
+    .linejoin { color: #475569; font-weight: 800; font-size: 1.35rem; padding: 0 3px; }
+    .dom {
+      position: relative; flex: 0 0 auto; width: min(280px, 42vw);
+      min-height: 118px; display: grid; grid-template-columns: 1fr 6px 1fr; background: #1e1b2e; border-radius: 10px; border: 1px solid #334;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .dom .midg { background: linear-gradient(90deg, #0f172a, #475569, #0f172a); min-height: 100%; }
+    .half { padding: 8px; display: flex; flex-direction: column; justify-content: center; gap: 5px; min-width: 0; }
+    .half .tx { font-size: 0.68rem; line-height: 1.3; color: #cbd5e1; }
+    @media (min-width: 640px) { .half .tx { font-size: 0.75rem; } }
+    .badge { display: inline-block; font: 800 0.7rem/1.1 Manrope, sans-serif; padding: 3px 7px; border-radius: 5px; color: #fff; width: min-content; }
+    .b1 { background: #1d4ed8; } .b2 { background: #0f766e; } .b3 { background: #15803d; } .b4 { background: #b45309; }
+    .b5 { background: #7c3aed; } .b6 { background: #b91c1c; }
+    .hand-block { flex: 0 1 auto; min-height: 0; max-height: min(38vh, 380px); overflow: auto; padding: 4px 0; }
+    .hand-scroll { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 4px; }
+    .hdom {
+      position: relative; width: min(240px, 90vw); min-height: 108px; display: grid; grid-template-columns: 1fr 6px 1fr; border-radius: 10px; border: 2px solid #3d3d55;
+      background: linear-gradient(165deg, #222136 0%, #12101c 100%); cursor: pointer; text-align: left; align-items: stretch;
+    }
+    .hdom .midg { grid-column: 2; background: linear-gradient(180deg, #0f172a, #94a3b8, #0f172a); min-height: 100%; }
+    .hdom:hover { border-color: #7c3aed; box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.3); }
+    .hdom.dim { opacity: 0.4; }
+    .hdom .hx { font-size: 0.7rem; line-height: 1.3; color: #a8b0c1; }
+    @media (min-width: 640px) { .hdom { width: 260px; min-height: 116px; } .hdom .hx { font-size: 0.75rem; } }
+    .pickbox { display: none; margin: 8px 0; padding: 10px; border: 1px dashed #7c3aed; border-radius: 10px; text-align: center; background: rgba(124, 58, 237, 0.12); }
+    .pickbox.on { display: block; }
+    .pickbox p { font-size: 0.9rem; color: #e9d5ff; margin-bottom: 6px; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 4px; }
+    button.ctl { font: 800 0.75rem/1.1 Manrope, sans-serif; text-transform: uppercase; letter-spacing: 0.04em; border: none; border-radius: 10px; padding: 10px 16px; cursor: pointer; background: #2d3a5e; color: var(--text); }
+    button.ctl.b-main { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: #fff; }
+    button.ctl.b-warn { background: #7c2d12; color: #ffedd5; }
+    .msg { font-size: 0.88rem; min-height: 1em; margin: 4px 0; color: #f43f5e; }
+    .msg.ok { color: #86efac; }
+    .turnb { font-size: 1.1rem; color: #f5f3ff; font-weight: 800; }
+    .one-go { font-size: 0.8rem; color: #a78bfa; font-weight: 700; }
+    .row-meta { font-size: 0.88rem; color: var(--dim); }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>Sentence dominoes (1–6)</h1>
+      <a href="../index.html">Text hub</a> &middot; <a href="index.html">Games</a> &middot; <a href="../../unit3.html">Unit 3</a>
+    </div>
+    <p class="sub">Each half is a <strong>part number</strong> (1–6) + a line from <em>My digital detox</em>. Match the part label to an open end. <strong>One tile per turn</strong>.</p>
+
+    <div class="card" id="setupCard">
+      <p class="meta">Setup</p>
+      <label class="slab" for="namesIn">Player names (one per line, 2&ndash;6 people; order = turn order)</label>
+      <textarea id="namesIn" placeholder="Alex&#10;Blair&#10;Casey&#10;Drew"></textarea>
+      <p class="stat"><span id="statDeck">—</span> double-ended tiles. Each player gets a fair share; the rest form the boneyard.</p>
+      <p class="msg" id="setupErr" style="min-height:0"></p>
+      <div class="btns"><button type="button" class="ctl b-main" id="btnStart">Start</button></div>
+    </div>
+
+    <div class="card flex-grow hidden" id="playCard">
+      <div class="play-header">
+        <p class="turnb" id="turnLine">—</p>
+        <p class="one-go" id="oneRule">—</p>
+      </div>
+      <div class="ends-row">
+        <div class="endpill t0" id="endL"><small>Open (left end)</small><span id="endLx">·</span></div>
+        <div class="endpill t0" id="endR"><small>Open (right end)</small><span id="endRx">·</span></div>
+      </div>
+
+      <p class="meta" style="margin-top:4px">Line</p>
+      <div class="chain-scroll" id="chainScroll">
+        <div class="chain-row" id="chainView"></div>
+      </div>
+
+      <p class="msg" id="msgLine"></p>
+      <p class="row-meta"><span id="pName">—</span> &middot; hand: <span id="handN">0</span> &middot; boneyard: <span id="pileN">0</span> &middot; line: <span id="lineN">0</span>/<span id="lineMax">0</span></p>
+      <div class="pickbox" id="pickbox">
+        <p id="pickHint">Which end?</p>
+        <div class="btns" id="pickBtns"></div>
+        <div class="btns"><button type="button" class="ctl" id="btnPickCancel">Cancel</button></div>
+      </div>
+      <p class="meta" style="margin-top:4px">Your hand</p>
+      <div class="hand-block">
+        <div class="hand-scroll" id="handView"></div>
+      </div>
+      <div class="btns" style="margin-top:8px">
+        <button type="button" class="ctl b-warn" id="btnPass" title="Skip your turn (if you are stuck)">Pass</button>
+        <button type="button" class="ctl" id="btnDraw" title="Draw one from the boneyard (you keep your turn)">Draw</button>
+        <button type="button" class="ctl" id="btnBack">Back to names</button>
+        <button type="button" class="ctl" id="btnNew">New shuffle</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../data/u3-domino-deck.js"></script>
+  <script>
+(function () {
+  var META = (typeof U3_SENTENCE_CARD_META !== "undefined" && U3_SENTENCE_CARD_META) || { 1: { key: "1" }, 2: { key: "2" }, 3: { key: "3" }, 4: { key: "4" }, 5: { key: "5" }, 6: { key: "6" } };
+  var line = [];
+  var players = [];
+  var turnIdx = 0;
+  var pile = [];
+  var pending = null;
+  var lineCap = 0;
+
+  function el(id) { return document.getElementById(id); }
+  function lab(t) { return (META[t] && META[t].key) || String(t); }
+  function eff(tile, f) { return f ? { L: tile.R, R: tile.L } : { L: tile.L, R: tile.R }; }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+
+  function openEnds() {
+    if (!line.length) return { L: null, R: null };
+    var a = eff(line[0].tile, line[0].flip);
+    var b = eff(line[line.length - 1].tile, line[line.length - 1].flip);
+    return { L: a.L.t, R: b.R.t };
+  }
+
+  function getMoves(til) {
+    var o = [];
+    for (var f = 0; f <= 1; f++) {
+      var e = eff(til, f);
+      if (!line.length) { o.push({ f: f, to: "S" }); continue; }
+      var x = openEnds();
+      if (e.L.t === x.R) o.push({ f: f, to: "R" });
+      if (e.R.t === x.L) o.push({ f: f, to: "L" });
+    }
+    var seen = {};
+    return o.filter(function (m) { var k = m.f + "|" + m.to; if (seen[k]) return false; seen[k] = 1; return true; });
+  }
+
+  function hasAnyPlay() {
+    var h = ch();
+    for (var i = 0; i < h.length; i++) if (getMoves(h[i]).length) return true;
+    return false;
+  }
+  function ch() { return players[turnIdx] ? players[turnIdx].hand : []; }
+
+  function applyMove(mv, handIdx) {
+    var t = ch()[handIdx];
+    ch().splice(handIdx, 1);
+    if (mv.to === "L") { line.unshift({ tile: t, flip: mv.f }); }
+    else { line.push({ tile: t, flip: mv.f }); }
+    turnIdx = (turnIdx + 1) % players.length;
+    if (lineCap && line.length === lineCap) { el("msgLine").textContent = "All tiles on the line — round complete."; el("msgLine").className = "msg ok"; }
+  }
+
+  function newGame(reshuffle) {
+    if (typeof U3_buildDoubleDominoDeck !== "function") { el("setupErr").textContent = "Missing U3_buildDoubleDominoDeck (u3-domino-deck.js)."; return; }
+    el("setupErr").textContent = "";
+    var raw = (el("namesIn").value || "").split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (raw.length < 1) { el("setupErr").textContent = "Enter at least one name (2&ndash;4 recommended)."; return; }
+    if (raw.length > 6) { el("setupErr").textContent = "At most 6 names."; return; }
+    var deck = shuffle(U3_buildDoubleDominoDeck());
+    if (deck.length < 2) { el("setupErr").textContent = "Empty deck."; return; }
+    lineCap = deck.length;
+    el("statDeck").textContent = String(lineCap);
+    el("lineMax").textContent = String(lineCap);
+    var N = raw.length;
+    var per = Math.min(6, Math.floor(deck.length / N));
+    if (per < 1) per = 1;
+    players = raw.map(function (n) { return { name: n, hand: [] }; });
+    for (var c = 0; c < per * N && deck.length; c++) { players[c % N].hand.push(deck.pop()); }
+    pile = deck;
+    line = [];
+    turnIdx = 0;
+    pending = null;
+    el("setupCard").classList.add("hidden");
+    el("playCard").classList.remove("hidden");
+    el("pickbox").classList.remove("on");
+    el("msgLine").className = "msg";
+    el("msgLine").textContent = "";
+    if (!reshuffle) window.scrollTo(0, 0);
+    render();
+  }
+
+  function tryPlayHandIndex(hi) {
+    el("msgLine").textContent = "";
+    el("msgLine").className = "msg";
+    el("pickbox").classList.remove("on");
+    var til = ch()[hi];
+    var m = getMoves(til);
+    if (!m.length) { el("msgLine").textContent = "That tile does not fit either open end now."; return; }
+    if (m.length === 1) { applyMove(m[0], hi); render(); return; }
+    pending = { idx: hi, moves: m };
+    el("pickbox").classList.add("on");
+    el("pickHint").textContent = "Connect to the left or the right of the line?";
+    var box = el("pickBtns");
+    box.innerHTML = "";
+    m.forEach(function (x) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ctl b-main";
+      b.textContent = (x.to === "R" ? "To the right end" : x.to === "L" ? "To the left end" : "First tile");
+      (function (mv) { b.addEventListener("click", function () { if (pending) { applyMove(mv, pending.idx); pending = null; el("pickbox").classList.remove("on"); render(); } }); })(x);
+      box.appendChild(b);
+    });
+  }
+
+  el("btnPickCancel").addEventListener("click", function () { pending = null; el("pickbox").classList.remove("on"); });
+
+  function render() {
+    var ends = openEnds();
+    if (line.length) {
+      el("endLx").textContent = lab(ends.L);
+      el("endL").className = "endpill t" + ends.L;
+      el("endRx").textContent = lab(ends.R);
+      el("endR").className = "endpill t" + ends.R;
+    } else {
+      el("endLx").textContent = "·";
+      el("endL").className = "endpill t0";
+      el("endRx").textContent = "·";
+      el("endR").className = "endpill t0";
+    }
+    el("turnLine").textContent = (players[turnIdx] && players[turnIdx].name) + " — your turn";
+    el("oneRule").textContent = "One tile, then the next player.";
+    el("pName").textContent = (players[turnIdx] && players[turnIdx].name) || "—";
+    el("lineN").textContent = String(line.length);
+    el("lineMax").textContent = String(lineCap || 0);
+    el("handN").textContent = String(ch().length);
+    el("pileN").textContent = String(pile.length);
+
+    var cv = el("chainView");
+    cv.innerHTML = "";
+    for (var i = 0; i < line.length; i++) {
+      if (i) { var jn = document.createElement("span"); jn.className = "linejoin"; jn.textContent = "═"; cv.appendChild(jn); }
+      cv.appendChild(domEl(line[i].tile, line[i].flip));
+    }
+    if (!line.length) { var em = document.createElement("p"); em.style.cssText = "color:#64748b;font-size:0.9rem;"; em.textContent = "No tiles yet — play any to start."; cv.appendChild(em); }
+
+    var hv = el("handView");
+    hv.innerHTML = "";
+    for (var h = 0; h < ch().length; h++) {
+      (function (j) {
+        var til = ch()[j];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "hdom" + (getMoves(til).length ? "" : " dim");
+        var L0 = eff(til, 0);
+        var left = makeHalfH(L0.L);
+        left.style.gridColumn = "1";
+        var mid = document.createElement("div");
+        mid.className = "midg";
+        var right = makeHalfH(L0.R);
+        right.style.gridColumn = "3";
+        btn.appendChild(left);
+        btn.appendChild(mid);
+        btn.appendChild(right);
+        btn.addEventListener("click", function () { tryPlayHandIndex(j); });
+        hv.appendChild(btn);
+      })(h);
+    }
+  }
+
+  function makeHalfH(face) {
+    var d = document.createElement("div");
+    d.className = "half";
+    var b = document.createElement("span");
+    b.className = "badge b" + face.t;
+    b.textContent = lab(face.t);
+    var tx = document.createElement("div");
+    tx.className = "hx";
+    tx.textContent = face.s.length > 100 ? face.s.slice(0, 98) + "…" : face.s;
+    d.appendChild(b);
+    d.appendChild(tx);
+    return d;
+  }
+  function domEl(tile, fl) {
+    var e = eff(tile, fl);
+    var w = document.createElement("div");
+    w.className = "dom";
+    var left = makeHalfD(e.L);
+    left.style.gridColumn = "1";
+    var mid = document.createElement("div");
+    mid.className = "midg";
+    var right = makeHalfD(e.R);
+    right.style.gridColumn = "3";
+    w.appendChild(left);
+    w.appendChild(mid);
+    w.appendChild(right);
+    return w;
+  }
+  function makeHalfD(f) {
+    var fr = document.createElement("div");
+    fr.className = "half";
+    var b = document.createElement("span");
+    b.className = "badge b" + f.t;
+    b.textContent = lab(f.t);
+    var t = document.createElement("div");
+    t.className = "tx";
+    t.textContent = f.s;
+    fr.appendChild(b);
+    fr.appendChild(t);
+    return fr;
+  }
+
+  el("btnStart").addEventListener("click", function () { newGame(false); });
+  el("btnNew").addEventListener("click", function () { newGame(true); });
+  el("btnBack").addEventListener("click", function () { el("playCard").classList.add("hidden"); el("setupCard").classList.remove("hidden"); });
+  el("btnDraw").addEventListener("click", function () {
+    el("msgLine").textContent = "";
+    if (!pile.length) { el("msgLine").textContent = "Boneyard is empty."; return; }
+    ch().push(pile.pop());
+    render();
+  });
+  el("btnPass").addEventListener("click", function () {
+    if (hasAnyPlay()) { if (!confirm("You still have a valid move. Pass anyway?")) return; }
+    el("msgLine").textContent = "";
+    turnIdx = (turnIdx + 1) % players.length;
+    render();
+  });
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

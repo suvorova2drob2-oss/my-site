@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lexical games &mdash; My digital detox (FCE Unit 3)</title>
+  <link rel="stylesheet" href="css/u3-lex-games.css" />
+</head>
+<body class="u3lg-app">
+  <div class="u3lg-wrap" id="u3lg-root">
+    <div id="u3lg-screen-hub" class="u3lg-screen is-active">
+      <button type="button" class="hub-back" data-u3lg-nav="backhub">← Unit 3 text hub</button>
+      <h2>Lexical games</h2>
+      <p class="u3lg-lexgames-lead">
+        <b>Reading: My digital detox</b> only. Data: <code>u3-digital-detox-lexis.js</code>, <code>u3-memory-pairs.js</code>, <code>u3-digital-detox-passage-plain.js</code>.
+      </p>
+      <button type="button" class="folder" data-u3lg-go="wb"><strong>Word Bank (Memrise style)</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Searchable list + Know / Learning + spaced labels.</div></button>
+      <button type="button" class="folder" data-u3lg-go="trainer"><strong>Lexical trainer</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Typed gap: line from the article with <b>____</b>.</div></button>
+      <button type="button" class="folder" data-u3lg-go="flip"><strong>Definition cards</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Front: paraphrase · flip: exact phrase + context.</div></button>
+      <button type="button" class="folder" data-u3lg-go="fall"><strong>Lexical drop</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Chunk falls; type before it hits the bottom.</div><span class="u3lg-lex-ticks" id="u3lg-tick-fall"></span></button>
+      <button type="button" class="folder" data-u3lg-go="mcq"><strong>Paraphrase pick</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Four English options — exact phrase from the text.</div><span class="u3lg-lex-ticks" id="u3lg-tick-mcq"></span></button>
+      <button type="button" class="folder" data-u3lg-go="express"><strong>60-second express</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Speak, then self-check (honour system).</div></button>
+      <button type="button" class="folder" data-u3lg-go="hear"><strong>Echo Run</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Listen (TTS) &amp; transcribe exact wording.</div><span class="u3lg-lex-ticks" id="u3lg-tick-hear"></span></button>
+      <button type="button" class="folder" data-u3lg-go="hearpar"><strong>Paraphrase Playback</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Hear the gloss; type the phrase from the text.</div><span class="u3lg-lex-ticks" id="u3lg-tick-hearPar"></span></button>
+      <button type="button" class="folder" data-u3lg-go="match"><strong>Pair Blitz</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Match paraphrase ↔ phrase · timer.</div><span class="u3lg-lex-ticks" id="u3lg-tick-match"></span></button>
+      <button type="button" class="folder" data-u3lg-go="sticky"><strong>Sticky notes board</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">Nine gap tasks on the board.</div></button>
+      <button type="button" class="folder" data-u3lg-go="prep"><strong>Prep vault (escape room)</strong><div style="color:var(--muted);font-size:12px;margin-top:6px;">6 channels · 3:00 · hints cost time.</div></button>
+    </div>
+
+    <div id="u3lg-screen-wb" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Word Bank</h2>
+      <p class="u3lg-lex-tag" id="u3lg-wb-tag"></p>
+      <input type="search" class="wb-search" id="u3lg-wb-search" placeholder="Search phrase or hint…" autocomplete="off" />
+      <div class="wb-stats" id="u3lg-wb-stats"></div>
+      <ul class="wb-list" id="u3lg-wb-list"></ul>
+    </div>
+
+    <div id="u3lg-screen-trainer" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Lexical trainer</h2>
+      <p class="u3lg-lex-tag" id="u3lg-tr-label"></p>
+      <p id="u3lg-tr-hint" class="u3lg-lex-tag"></p>
+      <div class="u3lg-lex-prog-wrap"><div class="u3lg-lex-prog-label" id="u3lg-tr-prog-l"></div><div class="u3lg-lex-prog-bar"><div class="u3lg-lex-prog-fill" id="u3lg-tr-prog-f"></div></div></div>
+      <p id="u3lg-tr-line" style="line-height:1.55;font-size:1rem;"></p>
+      <input type="text" class="game-input" id="u3lg-tr-inp" placeholder="Type the missing chunk…" autocomplete="off" />
+      <p style="margin-top:8px;"><button type="button" class="btn" id="u3lg-tr-check">Check</button></p>
+      <p id="u3lg-tr-fb" class="u3lg-lex-tag"></p>
+    </div>
+
+    <div id="u3lg-screen-flip" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Definition cards</h2>
+      <p class="u3lg-lex-tag" id="u3lg-flip-sum"></p>
+      <div id="u3lg-flip-intro">
+        <p class="u3lg-lex-tag">Open a shuffled deck. Tap the card to flip.</p>
+        <button type="button" class="btn" id="u3lg-flip-open">Open deck</button>
+      </div>
+      <div id="u3lg-flip-play" style="display:none;">
+        <p class="u3lg-flip-hud" id="u3lg-flip-hud"></p>
+        <div class="u3lg-flip-scene" id="u3lg-flip-scene" tabindex="0" role="button" aria-label="Flip card">
+          <div class="u3lg-flip-card-inner" id="u3lg-flip-card">
+            <div class="u3lg-flip-face u3lg-flip-front"><p class="u3lg-mcq-syn" id="u3lg-flip-def" style="margin:0;border:none;background:transparent;"></p></div>
+            <div class="u3lg-flip-face u3lg-flip-back">
+              <p id="u3lg-flip-ans" style="font-weight:700;font-size:1.05rem;margin:0 0 8px;"></p>
+              <p id="u3lg-flip-ctx" style="font-size:0.9rem;color:var(--muted);line-height:1.45;margin:0;"></p>
+            </div>
+          </div>
+        </div>
+        <p class="u3lg-flip-tap" style="margin:8px 0;">Tap or Space to flip</p>
+        <p><button type="button" class="btn btn-secondary" id="u3lg-flip-prev">Previous</button> <button type="button" class="btn btn-secondary" id="u3lg-flip-next">Next</button></p>
+        <p><button type="button" class="btn" id="u3lg-flip-know" style="background:linear-gradient(135deg,#15803d,#22c55e);border:none;">I know this</button> <button type="button" class="btn btn-secondary" id="u3lg-flip-learn">Still learning</button></p>
+        <button type="button" class="btn btn-secondary" id="u3lg-flip-reshuf" style="width:100%;margin-top:8px;">New shuffle</button>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-fall" class="u3lg-screen">
+      <div class="u3lg-fall-top" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+        <span class="u3lg-lex-tag" id="u3lg-fall-hud-mini"></span>
+      </div>
+      <h2>Lexical drop</h2>
+      <p class="u3lg-lex-tag">Reading: My digital detox</p>
+      <div class="u3lg-fall-intro" id="u3lg-fall-intro">
+        <p>Full sentence with <b>____</b> · type the short chunk · paraphrase hint below. Wrong or too slow: answer in large type; phrase comes back. Up to 10 per round; rounds get faster after the first four.</p>
+        <p><button type="button" class="btn" id="u3lg-fall-start">Start round</button></p>
+      </div>
+      <div class="u3lg-fall-play" id="u3lg-fall-play">
+        <p class="u3lg-lex-tag" id="u3lg-fall-hud"></p>
+        <div class="u3lg-lex-prog-wrap"><div class="u3lg-lex-prog-label" id="u3lg-fall-prog-l"></div><div class="u3lg-lex-prog-bar"><div class="u3lg-lex-prog-fill" id="u3lg-fall-prog-f"></div></div></div>
+        <div class="u3lg-fall-stage" id="u3lg-fall-stage"></div>
+        <div id="u3lg-fall-answrap" class="u3lg-fall-answer-big-wrap"><div style="font-size:11px;text-transform:uppercase;color:var(--success);">Correct wording from the text</div><div id="u3lg-fall-ansbig" class="u3lg-fall-answer-big"></div></div>
+        <div class="u3lg-fall-syn-block"><div style="font-size:11px;text-transform:uppercase;color:var(--primary);margin-bottom:6px;">Hint (paraphrase)</div><div id="u3lg-fall-syn"></div></div>
+        <input type="text" class="game-input" id="u3lg-fall-inp" placeholder="Short chunk from the text…" autocomplete="off" />
+        <p style="margin-top:8px;"><button type="button" class="btn" id="u3lg-fall-check">Check</button></p>
+        <p id="u3lg-fall-fb" class="u3lg-lex-tag"></p>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-mcq" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Paraphrase pick</h2>
+      <div id="u3lg-mcq-intro">
+        <p class="u3lg-lex-tag" id="u3lg-mcq-sum"></p>
+        <button type="button" class="btn" id="u3lg-mcq-start">Start round</button>
+      </div>
+      <div id="u3lg-mcq-play" style="display:none;">
+        <p class="u3lg-lex-tag" id="u3lg-mcq-prog"></p>
+        <div class="u3lg-lex-prog-wrap"><div class="u3lg-lex-prog-label" id="u3lg-mcq-prog-l"></div><div class="u3lg-lex-prog-bar"><div class="u3lg-lex-prog-fill" id="u3lg-mcq-prog-f"></div></div></div>
+        <p class="u3lg-lex-tag" style="text-transform:uppercase;font-size:12px;">Paraphrase</p>
+        <div id="u3lg-mcq-syn" class="u3lg-mcq-syn"></div>
+        <p class="u3lg-lex-tag">Which phrase from the reading matches?</p>
+        <div id="u3lg-mcq-opts" class="u3lg-mcq-opt-row"></div>
+        <p id="u3lg-mcq-fb" class="u3lg-lex-tag"></p>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-express" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>60-second express</h2>
+      <div id="u3lg-expr-intro">
+        <p class="u3lg-lex-tag">60 seconds · paraphrase or gap line · self-check.</p>
+        <button type="button" class="btn" id="u3lg-expr-go">Start 60 seconds</button>
+      </div>
+      <div id="u3lg-expr-run" style="display:none;">
+        <p>Time: <strong id="u3lg-expr-t">60</strong> s &nbsp;·&nbsp; I knew it: <strong id="u3lg-expr-n">0</strong></p>
+        <p class="u3lg-lex-tag" id="u3lg-expr-mode"></p>
+        <div class="u3lg-express-prompt" id="u3lg-expr-p"></div>
+        <div class="u3lg-express-answer" id="u3lg-expr-a" style="display:none;"></div>
+        <p>
+          <button type="button" class="btn" id="u3lg-expr-knew">I knew it</button>
+          <button type="button" class="btn btn-secondary" id="u3lg-expr-skip">Skip</button>
+          <button type="button" class="btn btn-secondary" id="u3lg-expr-show">Show answer</button>
+        </p>
+      </div>
+      <div id="u3lg-expr-end" style="display:none;text-align:center;">
+        <h3>Time’s up</h3>
+        <p id="u3lg-expr-res"></p>
+        <button type="button" class="btn" id="u3lg-expr-again">Again</button>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-hear" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Echo Run</h2>
+      <div id="u3lg-hear-intro">
+        <p class="u3lg-lex-tag" id="u3lg-hear-sum"></p>
+        <button type="button" class="btn" id="u3lg-hear-go">Start round</button>
+      </div>
+      <div id="u3lg-hear-run" style="display:none;">
+        <p class="u3lg-lex-tag" id="u3lg-hear-prog"></p>
+        <div class="u3lg-lex-prog-wrap"><div class="u3lg-lex-prog-label" id="u3lg-hear-prog-l"></div><div class="u3lg-lex-prog-bar"><div class="u3lg-lex-prog-fill" id="u3lg-hear-prog-f"></div></div></div>
+        <div id="u3lg-hear-hearts" class="u3lg-listen-hearts"></div>
+        <p><button type="button" class="btn" id="u3lg-hear-play">Play phrase</button></p>
+        <input class="game-input" id="u3lg-hear-inp" placeholder="Type what you heard…" />
+        <p style="margin-top:8px;"><button type="button" class="btn" id="u3lg-hear-chk">Check</button> <button type="button" class="btn btn-secondary" id="u3lg-hear-ansb">Show answer</button> <button type="button" class="btn btn-secondary" id="u3lg-hear-next" style="display:none;">Next phrase</button></p>
+        <p id="u3lg-hear-fb" class="u3lg-lex-tag"></p>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-hearpar" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Paraphrase Playback</h2>
+      <div id="u3lg-hp-intro">
+        <p class="u3lg-lex-tag" id="u3lg-hp-sum"></p>
+        <button type="button" class="btn" id="u3lg-hp-go">Start round</button>
+      </div>
+      <div id="u3lg-hp-run" style="display:none;">
+        <p class="u3lg-lex-tag" id="u3lg-hp-prog"></p>
+        <div class="u3lg-lex-prog-wrap"><div class="u3lg-lex-prog-label" id="u3lg-hp-prog-l"></div><div class="u3lg-lex-prog-bar"><div class="u3lg-lex-prog-fill" id="u3lg-hp-prog-f"></div></div></div>
+        <div id="u3lg-hp-hearts" class="u3lg-listen-hearts"></div>
+        <p><button type="button" class="btn" id="u3lg-hp-play">Play paraphrase</button></p>
+        <input class="game-input" id="u3lg-hp-inp" placeholder="Exact phrase from the text…" />
+        <p style="margin-top:8px;"><button type="button" class="btn" id="u3lg-hp-chk">Check</button> <button type="button" class="btn btn-secondary" id="u3lg-hp-ansb">Show answer</button> <button type="button" class="btn btn-secondary" id="u3lg-hp-next" style="display:none;">Next</button></p>
+        <p id="u3lg-hp-fb" class="u3lg-lex-tag"></p>
+      </div>
+    </div>
+
+    <div id="u3lg-screen-match" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Pair Blitz</h2>
+      <p class="u3lg-lex-tag" id="u3lg-match-hud"></p>
+      <p><button type="button" class="btn" id="u3lg-match-go">Start</button></p>
+      <div class="u3lg-match-grid" id="u3lg-match-grid"></div>
+    </div>
+
+    <div id="u3lg-screen-sticky" class="u3lg-screen">
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Sticky notes board</h2>
+      <p class="u3lg-lex-tag">Nine short gap tasks. Type the missing chunk for each card.</p>
+      <p><button type="button" class="btn" id="u3lg-sticky-go">New board</button></p>
+      <div class="u3lg-sticky-board" id="u3lg-sticky-board"></div>
+    </div>
+
+    <div id="u3lg-screen-prep" class="u3lg-screen" style="padding-bottom:80px;">
+      <div class="prep-escape-timer" id="u3lg-prep-timer">3:00</div>
+      <button type="button" class="hub-back" data-u3lg-go="hub">← Lexical games</button>
+      <h2>Prep vault — escape room</h2>
+      <p class="u3lg-lex-tag">6 channels · 3:00 · Get hint −20s · I don’t know → reveal, penalty, new line.</p>
+      <p><button type="button" class="btn" id="u3lg-prep-new">New run</button></p>
+      <div class="prep-escape-layout" id="u3lg-prep-tasks"></div>
+    </div>
+  </div>
+
+  <div class="u3lg-modal" id="u3lg-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="u3lg-modal-box">
+      <p id="u3lg-modal-t"></p>
+      <p><button type="button" class="btn" id="u3lg-modal-p1"></button></p>
+      <p><button type="button" class="btn btn-secondary" id="u3lg-modal-p2" style="margin-top:4px;width:100%;"></button></p>
+    </div>
+  </div>
+
+  <script src="data/u3-digital-detox-lexis.js"></script>
+  <script src="data/u3-memory-pairs.js"></script>
+  <script src="data/u3-digital-detox-passage-plain.js"></script>
+  <script src="js/u3-lex-games-data.js"></script>
+  <script src="js/u3-lex-games-app.js"></script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

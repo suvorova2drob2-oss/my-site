@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Vocabulary &mdash; Holiday types (multiple choice)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.1rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .voc-nav { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 16px; font-size: 0.9rem; }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+    .lead {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .lead a { color: var(--accent); font-weight: 600; }
+
+    .text-panel {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 16px 8px;
+      margin-bottom: 20px;
+    }
+    .text-panel h2 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .text-panel.a {
+      background: linear-gradient(135deg, rgba(249, 168, 212, 0.12) 0%, var(--panel-soft) 55%);
+      border-color: rgba(249, 168, 212, 0.35);
+    }
+    .text-panel.a h2 { color: #fbcfe8; }
+    .text-panel.b {
+      background: linear-gradient(135deg, rgba(125, 211, 252, 0.1) 0%, var(--panel-soft) 55%);
+      border-color: rgba(125, 211, 252, 0.35);
+    }
+    .text-panel.b h2 { color: #bae6fd; }
+    .text-panel.c {
+      background: linear-gradient(135deg, rgba(134, 239, 172, 0.1) 0%, var(--panel-soft) 55%);
+      border-color: rgba(134, 239, 172, 0.35);
+    }
+    .text-panel.c h2 { color: #bbf7d0; }
+
+    .mcq {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(8, 22, 48, 0.35);
+      border: 1px solid rgba(50, 74, 113, 0.6);
+    }
+    .mcq .stem {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+      margin-bottom: 10px;
+    }
+    .mcq .stem strong { color: #fde68a; }
+    .opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+    }
+    .opts label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      color: #d5e2f8;
+    }
+    .opts input { accent-color: var(--accent); }
+
+    .mcq.checked-ok { border-color: rgba(34, 197, 94, 0.55); }
+    .mcq.checked-bad { border-color: rgba(248, 113, 113, 0.55); }
+
+    .cottage {
+      margin: 12px 0 4px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      max-height: 220px;
+      object-fit: cover;
+      width: 100%;
+      display: block;
+    }
+    .cap { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; text-align: center; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .score {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+    .score.show { display: block; }
+    .score .ok { color: #86efac; font-weight: 700; }
+
+    @media (max-width: 520px) {
+      .opts { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Holiday brochures (MCQ)</h1>
+      <a class="back" href="../index.html">&larr; Unit 8 vocabulary</a>
+    </header>
+    <nav class="voc-nav" aria-label="Unit 8 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong>Holiday types</strong> (MCQ)</span>
+    </nav>
+
+    <p class="lead">
+      Choose the best word in each gap (coursebook-style). For <strong>phrasal verbs</strong> from the cycling listening, use
+      <a href="../listening-phrasal-verbs-1/index.html">Phrasal verbs 1 (gap-fill)</a>.
+    </p>
+
+    <section class="text-panel a" aria-labelledby="lab-a">
+      <h2 id="lab-a">Text A &mdash; camping holiday</h2>
+
+      <div class="mcq" data-n="1">
+        <p class="stem"><strong>1.</strong> ___ in an area of outstanding beauty, Langton Farm is an ideal location for getting away from it all.</p>
+        <div class="opts">
+          <label><input type="radio" name="q1" value="placed" /> Placed</label>
+          <label><input type="radio" name="q1" value="fixed" /> Fixed</label>
+          <label><input type="radio" name="q1" value="set" /> Set</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="2">
+        <p class="stem"><strong>2.</strong> We have over 300 spacious ___ for caravans and tents, as well as a number of bungalows &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q2" value="pitches" /> pitches</label>
+          <label><input type="radio" name="q2" value="parcels" /> parcels</label>
+          <label><input type="radio" name="q2" value="lands" /> lands</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="3">
+        <p class="stem"><strong>3.</strong> &hellip; bungalows which are ___ to rent.</p>
+        <div class="opts">
+          <label><input type="radio" name="q3" value="disposable" /> disposable</label>
+          <label><input type="radio" name="q3" value="obtainable" /> obtainable</label>
+          <label><input type="radio" name="q3" value="available" /> available</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="4">
+        <p class="stem"><strong>4.</strong> There&rsquo;s always ___ to do at Langton Farm.</p>
+        <div class="opts">
+          <label><input type="radio" name="q4" value="plenty" /> plenty</label>
+          <label><input type="radio" name="q4" value="variety" /> variety</label>
+          <label><input type="radio" name="q4" value="choice" /> choice</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="5">
+        <p class="stem"><strong>5.</strong> &hellip; we provide a ___ range of activities for all the family every day of the week.</p>
+        <div class="opts">
+          <label><input type="radio" name="q5" value="long" /> long</label>
+          <label><input type="radio" name="q5" value="wide" /> wide</label>
+          <label><input type="radio" name="q5" value="high" /> high</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="text-panel b" aria-labelledby="lab-b">
+      <h2 id="lab-b">Text B &mdash; seaside holiday</h2>
+
+      <div class="mcq" data-n="6">
+        <p class="stem"><strong>6.</strong> Book a relaxing ___ in one of the country&rsquo;s top holiday &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q6" value="accommodation" /> accommodation</label>
+          <label><input type="radio" name="q6" value="reserve" /> reserve</label>
+          <label><input type="radio" name="q6" value="stay" /> stay</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="7">
+        <p class="stem"><strong>7.</strong> &hellip; in one of the country&rsquo;s top holiday ___ and discover the stunning western shoreline.</p>
+        <div class="opts">
+          <label><input type="radio" name="q7" value="resorts" /> resorts</label>
+          <label><input type="radio" name="q7" value="stations" /> stations</label>
+          <label><input type="radio" name="q7" value="posts" /> posts</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="8">
+        <p class="stem"><strong>8.</strong> The four-star Blue Bay Hotel ___ breathtaking views of the ocean &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q8" value="poses" /> poses</label>
+          <label><input type="radio" name="q8" value="offers" /> offers</label>
+          <label><input type="radio" name="q8" value="stands" /> stands</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="9">
+        <p class="stem"><strong>9.</strong> &hellip; sandy beach is just a short walk ___ .</p>
+        <div class="opts">
+          <label><input type="radio" name="q9" value="afar" /> afar</label>
+          <label><input type="radio" name="q9" value="away" /> away</label>
+          <label><input type="radio" name="q9" value="aside" /> aside</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="10">
+        <p class="stem"><strong>10.</strong> &hellip; nightclubs is also within easy ___ , making this the perfect place &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q10" value="reach" /> reach</label>
+          <label><input type="radio" name="q10" value="stretch" /> stretch</label>
+          <label><input type="radio" name="q10" value="touch" /> touch</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="text-panel c" aria-labelledby="lab-c">
+      <h2 id="lab-c">Text C &mdash; self-catering holiday</h2>
+      <img class="cottage" src="assets/text-c-cottage.png" width="640" height="280" alt="Traditional thatched cottage with garden (coursebook illustration for self-catering text)" loading="lazy" decoding="async" />
+      <p class="cap">Illustration from the coursebook page (Text&nbsp;C).</p>
+
+      <div class="mcq" data-n="11">
+        <p class="stem"><strong>11.</strong> &hellip; or a city-centre flat with disabled ___ , we have something &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q11" value="facilities" /> facilities</label>
+          <label><input type="radio" name="q11" value="instalments" /> instalments</label>
+          <label><input type="radio" name="q11" value="elements" /> elements</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="12">
+        <p class="stem"><strong>12.</strong> &hellip; we have something to ___ your requirements.</p>
+        <div class="opts">
+          <label><input type="radio" name="q12" value="agree" /> agree</label>
+          <label><input type="radio" name="q12" value="suit" /> suit</label>
+          <label><input type="radio" name="q12" value="allow" /> allow</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="13">
+        <p class="stem"><strong>13.</strong> &hellip; perfect accommodation in a variety of popular holiday ___ .</p>
+        <div class="opts">
+          <label><input type="radio" name="q13" value="destinies" /> destinies</label>
+          <label><input type="radio" name="q13" value="destinations" /> destinations</label>
+          <label><input type="radio" name="q13" value="designations" /> designations</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="14">
+        <p class="stem"><strong>14.</strong> &hellip; if you&rsquo;re planning a last-minute ___ we offer special discounts &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q14" value="runaway" /> runaway</label>
+          <label><input type="radio" name="q14" value="breakaway" /> breakaway</label>
+          <label><input type="radio" name="q14" value="getaway" /> getaway</label>
+        </div>
+      </div>
+      <div class="mcq" data-n="15">
+        <p class="stem"><strong>15.</strong> All properties are ___ equipped with bed linen, towels and kitchen appliances &hellip;</p>
+        <div class="opts">
+          <label><input type="radio" name="q15" value="fully" /> fully</label>
+          <label><input type="radio" name="q15" value="greatly" /> greatly</label>
+          <label><input type="radio" name="q15" value="entirely" /> entirely</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Reset</button>
+    </div>
+    <div class="score" id="scorePanel" aria-live="polite"></div>
+  </main>
+
+  <script>
+(function () {
+  var KEY = {
+    1: "set",
+    2: "pitches",
+    3: "available",
+    4: "plenty",
+    5: "wide",
+    6: "stay",
+    7: "resorts",
+    8: "offers",
+    9: "away",
+    10: "reach",
+    11: "facilities",
+    12: "suit",
+    13: "destinations",
+    14: "getaway",
+    15: "fully"
+  };
+
+  var NOTE = {
+    1: "Brochure style: <strong>set</strong> in &hellip; = situated in (formal / promotional).",
+    2: "Campsites rent <strong>pitches</strong> (spaces for a tent or caravan).",
+    3: "Rooms / properties <strong>available</strong> to rent.",
+    4: "<strong>plenty</strong> to do &mdash; natural collocation (not &ldquo;variety to do&rdquo; here).",
+    5: "<strong>wide</strong> range &mdash; fixed collocation.",
+    6: "Book a relaxing <strong>stay</strong> &mdash; countable use (one visit).",
+    7: "<strong>Holiday resorts</strong> &mdash; seaside towns / areas for tourists.",
+    8: "A hotel <strong>offers</strong> a view (gives you that benefit).",
+    9: "A short walk <strong>away</strong>.",
+    10: "Within easy <strong>reach</strong> &mdash; near enough to get to easily.",
+    11: "Disabled <strong>facilities</strong> (lifts, access, etc.).",
+    12: "Something <strong>suits</strong> your requirements (&ldquo;agree&rdquo; + requirements is not idiomatic).",
+    13: "Holiday <strong>destinations</strong> (places people go; <em>destinies</em> is a false friend).",
+    14: "A last-minute <strong>getaway</strong> &mdash; short holiday / escape.",
+    15: "<strong>fully</strong> equipped &mdash; standard collocation for a flat / house."
+  };
+
+  function selectedValue(n) {
+    var r = document.querySelector('input[name="q' + n + '"]:checked');
+    return r ? r.value : "";
+  }
+
+  function clearMarks() {
+    document.querySelectorAll(".mcq").forEach(function (el) {
+      el.classList.remove("checked-ok", "checked-bad");
+    });
+  }
+
+  function onInput() {
+    clearMarks();
+    document.getElementById("scorePanel").classList.remove("show");
+  }
+
+  for (var n = 1; n <= 15; n++) {
+    document.querySelectorAll('input[name="q' + n + '"]').forEach(function (inp) {
+      inp.addEventListener("change", onInput);
+    });
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var correct = 0;
+    var answered = 0;
+    var html = "";
+
+    clearMarks();
+
+    for (var i = 1; i <= 15; i++) {
+      var val = selectedValue(i);
+      var box = document.querySelector('.mcq[data-n="' + i + '"]');
+      if (val) answered++;
+      var ok = val && val === KEY[i];
+      if (ok) correct++;
+
+      if (val) {
+        box.classList.add(ok ? "checked-ok" : "checked-bad");
+      }
+
+      html += "<p style=\"margin:0 0 10px;\"><strong>" + i + ".</strong> ";
+      if (!val) {
+        html += "No answer &mdash; key: <strong>" + KEY[i] + "</strong>.</p>";
+      } else if (ok) {
+        html += "<span class=\"ok\">\u2713 Correct.</span></p>";
+      } else {
+        html += "Key: <strong>" + KEY[i] + "</strong>. " + NOTE[i] + "</p>";
+      }
+    }
+
+    var panel = document.getElementById("scorePanel");
+    panel.innerHTML =
+      '<p style="margin-bottom:12px;font-weight:800;">Score: ' +
+      correct +
+      " / 15" +
+      (answered < 15 ? " &mdash; " + (15 - answered) + " gap(s) empty." : "") +
+      "</p>" +
+      html;
+    panel.classList.add("show");
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    for (var n = 1; n <= 15; n++) {
+      document.querySelectorAll('input[name="q' + n + '"]').forEach(function (inp) {
+        inp.checked = false;
+      });
+    }
+    clearMarks();
+    document.getElementById("scorePanel").classList.remove("show");
+    document.getElementById("scorePanel").innerHTML = "";
+  });
+})();
+  </script>
+</body>
+</html>

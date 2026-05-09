@@ -3,26 +3,532 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Listening — Changes at school (Unit 3)</title>
+  <title>Listening — Changes at school (Unit 3) · Track 3.2</title>
+  <link rel="stylesheet" href="changes-at-school-evidence.css" />
   <style>
-    :root { --panel: #1d2b4a; --line: #324a71; --text: #e8f0ff; --muted: #9bb0d3; --accent: #56ccf2; }
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --letter-bg: #172948;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: linear-gradient(180deg, #09122a 0%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 24px; }
-    .page { width: min(1100px, 100%); margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
-    .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-    .top h1 { font-size: 1.25rem; line-height: 1.3; max-width: 78%; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.55;
+    }
+    .page {
+      width: min(1040px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 {
+      font-size: 1.22rem;
+      line-height: 1.3;
+      max-width: min(100%, 680px);
+    }
+    .badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
     .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
     .back:hover { text-decoration: underline; }
-    .muted { color: var(--muted); line-height: 1.5; }
+
+    .instr {
+      font-size: 0.93rem;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+      max-width: 58rem;
+    }
+
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--letter-bg);
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+    .audio-wrap p { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+    audio { width: 100%; vertical-align: middle; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    @media (min-width: 880px) {
+      .layout { grid-template-columns: 1fr 320px; align-items: start; gap: 24px; }
+    }
+
+    .options {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 14px 16px;
+    }
+    .options h2 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+    ol.stmts {
+      list-style: none;
+      counter-reset: stmt;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    ol.stmts > li {
+      counter-increment: stmt;
+      position: relative;
+      padding-left: 2.35rem;
+      font-size: 0.93rem;
+    }
+    ol.stmts > li::before {
+      content: attr(data-letter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: 800;
+      color: #fde047;
+      width: 1.85rem;
+    }
+
+    .speakers-panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 14px 16px;
+    }
+    .speakers-panel h2 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .sp-row {
+      display: grid;
+      grid-template-columns: 1fr auto 2rem;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.93rem;
+    }
+    .sp-row:last-child { margin-bottom: 4px; }
+    .sp-label { font-weight: 700; }
+    .num { color: var(--muted); font-size: 0.86rem; }
+    select.ans {
+      min-width: 4.25rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid #4d6fa1;
+      background: #12264b;
+      color: #fff;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    select.ans:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    select.ans.ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); }
+    select.ans.bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+    select.ans.pending.match { border-color: rgba(253, 224, 71, 0.5); }
+    select.ans.dup-letter { box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.65); }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    button.check {
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #fff;
+    }
+    button.check:hover { filter: brightness(1.06); }
+    .score { font-size: 0.9rem; color: var(--muted); display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; }
+    .score strong { color: #bae6fd; }
+    .score-ok strong { color: var(--ok); }
+    .score-bad strong { color: var(--bad); }
+    .score-sep { color: #64748b; }
+    .check-panel {
+      margin-top: 20px;
+      padding: 16px 18px 18px;
+      border-radius: 16px;
+      border: 1px solid #324a71;
+      background: rgba(23, 41, 72, 0.85);
+    }
+    .check-panel > h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #56ccf2;
+      margin: 0 0 8px;
+    }
+    .check-lead {
+      font-size: 0.86rem;
+      color: #9bb0d3;
+      margin: 0 0 14px;
+      line-height: 1.45;
+      max-width: 40rem;
+    }
+    .check-panel .actions .score {
+      flex-basis: 100%;
+      margin-top: 6px;
+    }
+    .dup-warn {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      color: #fcd34d;
+      max-width: 36rem;
+      line-height: 1.45;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .note code { color: #e2e8f0; font-size: 0.9em; }
+
+    .key-box {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(34, 54, 87, 0.45);
+      max-width: 36rem;
+    }
+    .key-box label {
+      display: block;
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .key-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .key-input {
+      width: 100%;
+      max-width: 20rem;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid #4d6fa1;
+      background: #12264b;
+      color: #fff;
+      font-size: 1.05rem;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      letter-spacing: 0.08em;
+    }
+    .key-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.2);
+    }
+
+    .transcript-wrap {
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--letter-bg);
+      overflow: hidden;
+    }
+    .transcript-wrap summary {
+      cursor: pointer;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--accent);
+      list-style: none;
+      user-select: none;
+    }
+    .transcript-wrap summary::-webkit-details-marker { display: none; }
+    .transcript-wrap[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+    .transcript-body {
+      padding: 14px 16px 16px;
+      font-size: 0.9rem;
+      color: #d5e2f8;
+      max-height: min(70vh, 560px);
+      overflow-y: auto;
+      line-height: 1.58;
+    }
+    .sp-block { margin-bottom: 1.15em; }
+    .sp-block:last-child { margin-bottom: 0; }
+    .sp-block h3 {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #fde047;
+      margin: 0 0 0.4em;
+      letter-spacing: 0.02em;
+    }
+    .sp-block p { margin: 0; }
   </style>
 </head>
 <body>
   <main class="page">
     <header class="top">
-      <h1>Changes at school — Listening Part 3 · Multiple matching</h1>
-      <a class="back" href="../unit3.html">Back to Unit 3</a>
+      <div>
+        <h1>Changes at school &mdash; Listening Part 3 · Multiple matching</h1>
+        <span class="badge">Track 3.2 · Unit 3</span>
+      </div>
+      <a class="back" href="../unit3.html">&larr; Unit 3</a>
     </header>
-    <p class="muted">Placeholder — audio and matching tasks will be added step by step.</p>
+
+    <p class="instr">
+      Exercise <strong>2</strong>. For questions <strong>1&ndash;5</strong>, choose from the list (A&ndash;H) what each speaker says about the changes.
+      Use the letters <strong>only once</strong>. There are <strong>three extra</strong> letters you do not need to use.
+    </p>
+
+    <div class="audio-wrap">
+      <p>Student&rsquo;s Book audio (Yandex bucket)</p>
+      <audio controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RfB2First_SB_Track%203.2.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <details class="transcript-wrap">
+      <summary>Transcript (Track 3.2) — show / hide</summary>
+      <div class="transcript-body" id="transcript-32">
+        <div class="sp-block">
+          <h3>Speaker 1</h3>
+          <p>Next year we&rsquo;re starting lessons at 10, rather than 9 every day. The head says teenagers need more sleep than adults, and they&rsquo;ll be more receptive during class if they come in an hour later. It&rsquo;s a fairly radical idea and it&rsquo;s attracting a lot of attention from the press. I just think it&rsquo;s another one of the head&rsquo;s schemes to get publicity for herself. She clearly has her own interests at heart rather than those of the kids. Perhaps I should have spoken out at the consultation meeting, but she&rsquo;s got the support of the whole teaching staff, and they don&rsquo;t seem to care that her motives are all wrong.</p>
+        </div>
+        <div class="sp-block">
+          <h3>Speaker 2</h3>
+          <p>I&rsquo;m really fed up with our head of department. We all are. As well as having absolutely no interpersonal skills, he has a habit of making changes without bothering to find out what anyone else thinks first. He told us in a meeting last week that we&rsquo;re going to be using a different coursebook for Year 8 next term, and he&rsquo;s ordered three class sets already. I&rsquo;m not saying that a change wasn&rsquo;t necessary &mdash; I think we&rsquo;re all a bit tired of the book we&rsquo;re using at the moment &mdash; but I do think he could have let us have some say in the matter before going ahead. It&rsquo;s no way to run a department.</p>
+        </div>
+        <div class="sp-block">
+          <h3>Speaker 3</h3>
+          <p>Until now, a student&rsquo;s end-of-term report consisted of a mark for each subject, followed by a summarising comment from the tutor. With the new system, each subject teacher has to write a comment as well &ndash; and since I teach maths to as many as two hundred students every year, it&rsquo;ll take me absolutely ages. The head says the tutor&rsquo;s comment isn&rsquo;t enough to give parents a full picture of how their child&rsquo;s getting on, but I think it&rsquo;s fine as long as it&rsquo;s carefully written. Most parents won&rsquo;t read the comments anyway &ndash; they&rsquo;re just interested in the marks. It&rsquo;s a waste of time as far as I&rsquo;m concerned, and I know the majority of my colleagues feel the same.</p>
+        </div>
+        <div class="sp-block">
+          <h3>Speaker 4</h3>
+          <p>The situation in Year 10 is not much better than it was before. Mixing up the classes like that &ndash; splitting up the troublemakers &ndash; is a step in the right direction, but it doesn&rsquo;t go far enough. They&rsquo;re still there, and they&rsquo;re still causing disruption to lessons. The head should have asked the parents to come in and got the kids to make certain guarantees in front of them, made them promise to improve their behaviour and so on. Then if the promises aren&rsquo;t kept, expel them from the school. We told her that, but she said expelling them would just create problems for other schools. She needs to be much tougher.</p>
+        </div>
+        <div class="sp-block">
+          <h3>Speaker 5</h3>
+          <p>There&rsquo;s some building work going on outside the music room. The windows are double glazed, but they&rsquo;re not thick enough to keep out the noise, so I&rsquo;ve been moved to a room on the other side of the school. I&rsquo;ve changed rooms many times before, but never to one as bad as this. The ceiling&rsquo;s high and the acoustics are terrible for the piano. Plus I have to shout to make myself heard, so my throat is suffering. And then the sun streams in during the afternoon and sends the kids to sleep. I&rsquo;m telling you, as soon as the work&rsquo;s finished, I&rsquo;m moving straight back to my old room.</p>
+        </div>
+      </div>
+    </details>
+
+    <div class="layout">
+      <div class="options">
+        <h2>List of statements (A&ndash;H)</h2>
+        <ol class="stmts">
+          <li data-letter="A">The change has resulted in a number of new problems.</li>
+          <li data-letter="B">Too many changes have been introduced.</li>
+          <li data-letter="C">The change is insufficient to solve a problem.</li>
+          <li data-letter="D">We should have been consulted about the change.</li>
+          <li data-letter="E">The change is being made for selfish reasons.</li>
+          <li data-letter="F">Most parents support the change.</li>
+          <li data-letter="G">The change has brought unexpected benefits.</li>
+          <li data-letter="H">Most of the teachers feel the change is unnecessary.</li>
+        </ol>
+      </div>
+
+      <div class="speakers-panel">
+        <h2>Your answers</h2>
+        <div class="sp-row">
+          <span class="sp-label">Speaker 1</span>
+          <select class="ans" id="s1" aria-label="Answer for speaker 1">
+            <option value="">—</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+          </select>
+          <span class="num">1</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-label">Speaker 2</span>
+          <select class="ans" id="s2" aria-label="Answer for speaker 2">
+            <option value="">—</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+          </select>
+          <span class="num">2</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-label">Speaker 3</span>
+          <select class="ans" id="s3" aria-label="Answer for speaker 3">
+            <option value="">—</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+          </select>
+          <span class="num">3</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-label">Speaker 4</span>
+          <select class="ans" id="s4" aria-label="Answer for speaker 4">
+            <option value="">—</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+          </select>
+          <span class="num">4</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-label">Speaker 5</span>
+          <select class="ans" id="s5" aria-label="Answer for speaker 5">
+            <option value="">—</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+          </select>
+          <span class="num">5</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="check-panel" aria-labelledby="check-heading">
+      <h2 id="check-heading">Проверка ответов</h2>
+      <p class="check-lead">
+        Отметьте буквы для Speaker 1&ndash;5 и нажмите <strong>Check answers</strong> — появится <strong>сколько верно и сколько нет</strong>, а выпадающие поля подсветятся.
+        Ключ в свёрнутом блоке можно сменить, если у вас другое издание (иначе используется встроенный ключ страницы). После проверки листайте вниз к <strong>Evidence hunt</strong>.
+      </p>
+      <details class="key-box-collapsed">
+        <summary>Свой ключ A&ndash;H (если отличается от учебника на сайте)</summary>
+        <div class="key-box" style="margin-top:10px;border:none;padding-left:0;padding-right:0;">
+          <label for="keyInline">Пять букв для спикеров 1&rarr;5</label>
+          <p class="key-hint">
+            Пробелы или запятые можно. Если поле пустое, для проверки берётся ключ из кода страницы; иначе — то, что вы ввели (или <code>key.js</code>).
+          </p>
+          <input
+            type="text"
+            id="keyInline"
+            class="key-input"
+            maxlength="40"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="оставьте пустым — сработает встроенный ключ"
+          />
+        </div>
+      </details>
+
+      <div class="actions" style="margin-top:14px;">
+        <button type="button" class="check" id="btnCheck">Check answers</button>
+        <p class="score" id="scoreLine" hidden>
+          <span class="score-ok">Верно: <strong id="scoreNum">0</strong></span>
+          <span class="score-sep">·</span>
+          <span class="score-bad">Неверно: <strong id="scoreWrong">0</strong></span>
+          <span class="score-total">(из 5)</span>
+        </p>
+        <p class="dup-warn" id="dupWarn" hidden>
+          В экзамене каждая буква (A–H) среди пяти ответов — <strong>только один раз</strong>. Сейчас есть повтор (подсветка полей); счёт всё равно посчитан.
+        </p>
+      </div>
+
+      <p class="note" id="keyNote" hidden>
+        Укажите пять букв в блоке выше или в <code>key.js</code>.
+      </p>
+    </section>
+
+    <div class="evidence-hunt-wrap">
+      <h2>Evidence hunt — разбор в транскрипте (после проверки)</h2>
+      <p class="evidence-hunt-lead">
+        Когда уже знаете результаты по заданию, пройдите по <strong>Speaker 1&ndash;5</strong>: пунктир — кликабельные фрагменты.
+        <strong>Шаг 1:</strong> три фразы <strong style="color:#86efac">зелёные</strong> (опора для верного A&ndash;H).
+        <strong>Шаг 2:</strong> две фразы <strong style="color:#fca5a5">красные</strong> с меткой <strong>[! буква]</strong> (дистрактор из списка).
+      </p>
+      <div class="hunt-nav">
+        <button type="button" id="huntPrev" aria-label="Предыдущий спикер">&larr; Speaker</button>
+        <span id="huntSpeakerLabel">Speaker 1 / 5</span>
+        <button type="button" id="huntNext" aria-label="Следующий спикер">Speaker &rarr;</button>
+        <button type="button" id="huntResetRound">Сбросить шаги</button>
+      </div>
+      <div class="hunt-progress">
+        <span id="huntProg1">Шаг 1 · доказательства</span>
+        <span id="huntProg2">Шаг 2 · дистракторы</span>
+      </div>
+      <p id="huntTaskTitle" class="hunt-task-title"></p>
+      <p id="huntCounter" class="hunt-counter"></p>
+      <div id="huntPassageHost"></div>
+      <p id="huntToast" class="hunt-toast" role="status" aria-live="polite"></p>
+      <details class="hunt-reveal-box">
+        <summary>Показать букву A&ndash;H для этого спикера (после собственной попытки)</summary>
+        <div class="hunt-reveal-body" id="huntRevealBody"></div>
+      </details>
+    </div>
+
   </main>
+
+  <script src="key.js"></script>
+  <script src="changes-at-school-evidence-data.js"></script>
+  <script src="changes-at-school-evidence-hunt.js"></script>
+  <script src="changes-at-school-listening.js"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 /**
  * Единый облачный слой для Prep: курс (папки/активности) + опубликованные Part 1 по contextId.
- * Чтение — REST + anon key. Запись — Edge Function prep-cloud + секрет (не service_role в браузере).
+ * Чтение — REST + публичный ключ. Запись — HTTP/edge + write-секрет (не service role в браузере).
  *
- * Конфиг (в live-supabase-local.js, не в git):
+ * Конфиг (в live-supabase-local.js, не в git; имя файла историческое):
  *   window.__LIVE_SUPABASE_URL__, window.__LIVE_SUPABASE_KEY__
- *   window.__PREP_CLOUD_WRITE_SECRET__ — тот же секрет, что PREP_CLOUD_WRITE_SECRET в Supabase Functions.
+ *   window.__PREP_CLOUD_WRITE_SECRET__ — согласован с бэкендом публикации.
  */
 (function (global) {
   function baseUrl() {

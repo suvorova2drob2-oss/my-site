@@ -1,0 +1,36 @@
+# Listening Audio Material Pack («аудиопак»)
+
+**Короткое имя для запросов:** **«аудиопак»**, **listening audio pack**, или **CPE listening disk pack** — это весь стандартный набор вокруг *одного* аудиотекста (listening на диске): экран **Exam**, **Lexical** (только Treasure Hunt в хабе), **Speaking** (retell / micro / freer), **Audio practice** (тени, пропуски, исчезающий текст, speedy typing).
+
+Когда автор пишет, что делает **задания под аудиоматериал**, агент выкатывает тот же каркас, что у **Listening Part 4 · Level 10** (и эталонно — **Art restoration / Mind’s eye**): не смешивать с главным меню Levels и не подменять лексику «всеми играми», если в правилах темы сказано **только Treasure Hunt**.
+
+## Структура папки на диске
+
+| Экран | Содержание |
+|--------|------------|
+| **Exam trainer** | Экзаменационный режим (задание из Student’s Book / того же учебного пакета), тот же **MP3 SB Track 10.1**, что и везде ниже (не Workbook Track 10). |
+| **Lexical trainer** | Только **Treasure Hunt** в `index.html` → `?screen=unit9&u9_lex_th=…` + при необходимости ссылка на exam для Stage 2. Данные фраз — отдельный `js/*-listen-*.js` или тематический pack-файл. |
+| **Speaking trainer** | Три deep link на хаб: **retelling**, **micro-speaking**, **freer practice** (`u9_speak=…`) + опционально exam. В `index.html`: retell через `openSpeakingTrainer`, micro через `openU9MicroSpeaking`, freer через `openSpeakFreerPractice` + свой deck/pool в данных. |
+| **Audio trainer** | Хаб как `audio-practice/index-minds-eye.html`: сетка карточек — **Shadowing**, **Gap fill**, **Disappearing text**, **Speedy typing**, ссылка на exam. |
+
+## Аудио (один источник правды)
+
+- Для **Part 4 Unit 10** все дрили тянут `audioSrc` из **`audio-practice/wb-track10-p4-data.js`** (`CPE_WB10_P4_MULTIPLE_MATCHING`): файл **`RF_C2_SB_Track 10.1.mp3`**, как на **`Listening Part 4 …/exam trainer/p4-multiple-matching.html`** и в **Audio trainer** хабе.
+- **Не** путать с **Workbook** `RF_C2_WB_Track 10` (другая запись, напр. Part 2 sentence completion / другое задание): если в хостинге разные файлы — разные URL; комментарий в data-js обязателен.
+
+## Speedy typing при нескольких спикерах
+
+Если в аудио **несколько спикеров** (например Part 4 — пять монологов), **Speedy typing** делать с **отдельными «окнами» / листами по числу спикеров** (навигация «Speaker 1 / 5» …), общий плеер один.
+
+## Референсные файлы (Level 10 · Part 4)
+
+- Pack + Treasure + freer prompts: `js/listening-p4-wb10-pack.js`
+- Дрили: `audio-practice/wb-track10-p4-*.html`, данные `audio-practice/wb-track10-p4-data.js`
+- Папка: `Listening Part 4 Multiple matching/` (`Lexical`, `Speaking`, `Audio`, `exam trainer`)
+- Флаги Treasure Hunt: `u9_lex_th=listening_p4_wb10`
+- Speaking: `retell_listen_p4_wb10`, `micro_listen_p4_wb10`, `freer_listen_p4_wb10`
+
+## Эталон «как у Art restoration»
+
+- Лексика: `Listening Part 3 Multiple choice - Art restoration/Lexical trainer/index.html` (Treasure + опционально exam).
+- Speaking: тот же каталог / `Speaking trainer/index.html` (три режима + exam).

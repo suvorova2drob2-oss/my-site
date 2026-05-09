@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar &mdash; Language focus: Quantifiers</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.2rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .word-box > strong:first-child {
+      color: #bae6fd;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .bank-note strong {
+      display: inline;
+      font-weight: 700;
+      color: #e8f0ff;
+    }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: center;
+    }
+    button.bank-chip {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.5);
+      font-size: 0.86rem;
+      color: #e8f0ff;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.bank-chip:hover:not(:disabled):not(.is-used) {
+      border-color: #5a7ab0;
+      color: #fff;
+    }
+    button.bank-chip.is-picked {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.45);
+      color: #e9f7ff;
+    }
+    button.bank-chip.is-used {
+      opacity: 0.34;
+      cursor: default;
+      text-decoration: line-through;
+      pointer-events: none;
+    }
+    button.bank-chip.is-example {
+      opacity: 0.55;
+      cursor: default;
+      text-decoration: line-through;
+      border-style: dashed;
+      pointer-events: none;
+    }
+    .bank-note {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.88;
+      color: #e8f0ff;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .gap0 { color: #fef08a; font-weight: 700; }
+    .gap-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 6.8rem;
+      min-height: 2.35rem;
+      margin: 0 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      vertical-align: baseline;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease, color 0.12s ease;
+    }
+    .gap-slot:hover {
+      border-color: #4d6a9a;
+    }
+    .gap-slot:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-slot.is-empty {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .gap-slot.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-slot.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.87rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+
+    @media (max-width: 560px) {
+      .gap-slot { min-width: 5.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Grammar &mdash; Quantifiers</h1>
+        <p class="badge">Language focus &middot; Unit 12</p>
+      </div>
+      <a class="back" href="../../unit12.html">&larr; Unit 12</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Quantifiers exercises" style="margin-bottom:14px;font-size:0.9rem;color:var(--muted);">
+      <span style="font-weight:700;color:var(--text);">Exercise 1</span> — word box
+      <span> · </span>
+      <a href="exercise-2-options.html" style="color:var(--accent);font-weight:600;">Exercise 2 — multiple choice</a>
+      <span> · </span>
+      <a href="exercise-3-hypothetical.html" style="color:var(--accent);font-weight:600;">Exercise 3 — hypothetical situations</a>
+      <span> · </span>
+      <a href="exercise-4-prepositions-gerunds.html" style="color:var(--accent);font-weight:600;">Exercise 4 — prepositions + gerunds</a>
+    </nav>
+
+    <p class="instr">
+      <strong>1</strong> Choose words from the box to complete the sentences. Here is an example (<strong>0</strong>). Use each word from the box <strong>once</strong> (example uses one word; gaps <strong>1&ndash;8</strong> use the rest).
+    </p>
+
+    <div class="word-box">
+      <strong>Word box</strong>
+      <div class="word-box-line" id="bank-host" role="list">
+        <button type="button" class="bank-chip" role="listitem" data-word="amount">amount</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="couple">couple</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="every">every</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="few">few</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="little">little</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="most">most</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="none">none</button>
+        <button type="button" class="bank-chip" role="listitem" data-word="number">number</button>
+        <button type="button" class="bank-chip is-example" role="listitem" data-word="plenty" disabled>plenty</button>
+      </div>
+      <p class="bank-note"><strong>Tap</strong> a word, then <strong>tap</strong> a gap to place it. Tap a filled gap to remove the word. Sentences <strong>2</strong>, <strong>6</strong> and <strong>8</strong> use a capital letter at the start.</p>
+    </div>
+
+    <p class="gap-sent">
+      <strong>0.</strong> We still have <span class="gap0">plenty</span> of time before the film starts.
+    </p>
+    <p class="gap-sent">
+      <strong>1.</strong> Do you have a
+      <button type="button" class="gap-slot is-empty" id="slot-1" data-n="1" aria-label="Gap 1, empty">&mdash;</button>
+      of chairs? Yes, there are two over there.
+    </p>
+    <p class="gap-sent">
+      <strong>2.</strong>
+      <button type="button" class="gap-slot is-empty" id="slot-2" data-n="2" aria-label="Gap 2, empty">&mdash;</button>
+      person who comes to the caf&eacute; tomorrow receives a free drink.
+    </p>
+    <p class="gap-sent">
+      <strong>3.</strong> At the banquet, there were a huge
+      <button type="button" class="gap-slot is-empty" id="slot-3" data-n="3" aria-label="Gap 3, empty">&mdash;</button>
+      of dishes.
+    </p>
+    <p class="gap-sent">
+      <strong>4.</strong> We have
+      <button type="button" class="gap-slot is-empty" id="slot-4" data-n="4" aria-label="Gap 4, empty">&mdash;</button>
+      time to make it to the party.
+    </p>
+    <p class="gap-sent">
+      <strong>5.</strong> There were only a
+      <button type="button" class="gap-slot is-empty" id="slot-5" data-n="5" aria-label="Gap 5, empty">&mdash;</button>
+      people I knew at the wedding.
+    </p>
+    <p class="gap-sent">
+      <strong>6.</strong>
+      <button type="button" class="gap-slot is-empty" id="slot-6" data-n="6" aria-label="Gap 6, empty">&mdash;</button>
+      of the money made from the event went to charity.
+    </p>
+    <p class="gap-sent">
+      <strong>7.</strong> Who ordered this large
+      <button type="button" class="gap-slot is-empty" id="slot-7" data-n="7" aria-label="Gap 7, empty">&mdash;</button>
+      of food? We&rsquo;ll never eat it all!
+    </p>
+    <p class="gap-sent">
+      <strong>8.</strong>
+      <button type="button" class="gap-slot is-empty" id="slot-8" data-n="8" aria-label="Gap 8, empty">&mdash;</button>
+      of us ordered fish. We all had the chicken.
+    </p>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var DISPLAY = {
+    1: "couple",
+    2: "Every",
+    3: "number",
+    4: "little",
+    5: "few",
+    6: "Most",
+    7: "amount",
+    8: "None"
+  };
+
+  var ACCEPT = {
+    1: ["couple"],
+    2: ["every"],
+    3: ["number"],
+    4: ["little"],
+    5: ["few"],
+    6: ["most"],
+    7: ["amount"],
+    8: ["none"]
+  };
+
+  var EXPLAIN = {
+    1: "<strong>a couple of</strong> &mdash; two (or a few); here, two chairs.",
+    2: "<strong>Every</strong> &mdash; each single person; singular noun <em>person</em>.",
+    3: "<strong>a huge number of</strong> &mdash; many countable items (<em>dishes</em>).",
+    4: "<strong>little</strong> (+ uncountable) &mdash; not much time; note: <em>plenty</em> needs <em>of</em> before <em>time</em>.",
+    5: "<strong>a few</strong> &mdash; a small number of people; only the word <em>few</em> goes in the gap.",
+    6: "<strong>Most of the</strong> &mdash; the majority of the money (uncountable).",
+    7: "<strong>a large amount of</strong> &mdash; uncountable <em>food</em>.",
+    8: "<strong>None of us</strong> &mdash; not any of the group; contrasts with <em>all had chicken</em>."
+  };
+
+  var CAP_DISPLAY = { 2: true, 6: true, 8: true };
+
+  var selectedWord = null;
+  /** @type {Object<number, string|null>} */
+  var slotWords = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function chipEl(word) {
+    return document.querySelector('#bank-host button.bank-chip[data-word="' + word + '"]');
+  }
+
+  function formatSlotLabel(n, word) {
+    if (!word) {
+      return { text: "\u2014", aria: "Gap " + n + ", empty" };
+    }
+    var show = CAP_DISPLAY[n] ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase();
+    return { text: show, aria: "Gap " + n + ", " + show };
+  }
+
+  function syncChipUsage(word, inUse) {
+    var ch = chipEl(word);
+    if (!ch || ch.classList.contains("is-example")) return;
+    ch.classList.toggle("is-used", inUse);
+  }
+
+  function clearPick() {
+    selectedWord = null;
+    document.querySelectorAll("#bank-host button.bank-chip.is-picked").forEach(function (b) {
+      b.classList.remove("is-picked");
+    });
+  }
+
+  function renderSlot(n) {
+    var btn = document.getElementById("slot-" + n);
+    var word = slotWords[n];
+    var lbl = formatSlotLabel(n, word);
+    btn.textContent = lbl.text;
+    btn.setAttribute("aria-label", lbl.aria);
+    btn.classList.toggle("is-empty", !word);
+    btn.dataset.value = word || "";
+  }
+
+  function setSlot(n, word) {
+    if (slotWords[n]) {
+      syncChipUsage(slotWords[n], false);
+    }
+    slotWords[n] = word;
+    if (word) {
+      syncChipUsage(word, true);
+    }
+    renderSlot(n);
+  }
+
+  document.querySelectorAll("#bank-host button.bank-chip:not(.is-example)").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var w = this.getAttribute("data-word");
+      if (!w || this.classList.contains("is-used")) return;
+      document.getElementById("feedback").classList.remove("show");
+      document.querySelectorAll(".gap-slot").forEach(function (s) {
+        s.classList.remove("is-ok", "is-bad");
+      });
+
+      if (selectedWord === w) {
+        clearPick();
+        return;
+      }
+      clearPick();
+      selectedWord = w;
+      this.classList.add("is-picked");
+    });
+  });
+
+  function slotClick(n) {
+    document.getElementById("feedback").classList.remove("show");
+    document.querySelectorAll(".gap-slot").forEach(function (s) {
+      s.classList.remove("is-ok", "is-bad");
+    });
+
+    var cur = slotWords[n];
+    if (cur) {
+      syncChipUsage(cur, false);
+      slotWords[n] = null;
+      renderSlot(n);
+      clearPick();
+      return;
+    }
+    if (selectedWord) {
+      setSlot(n, selectedWord);
+      clearPick();
+    }
+  }
+
+  for (var sn = 1; sn <= 8; sn++) {
+    (function (n) {
+      document.getElementById("slot-" + n).addEventListener("click", function () {
+        slotClick(n);
+      });
+    })(sn);
+  }
+
+  function getRaw(n) {
+    return slotWords[n] || "";
+  }
+
+  function matches(n, raw) {
+    var u = norm(raw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var el = document.getElementById("slot-" + n);
+      var raw = getRaw(n);
+      var ok = matches(n, raw);
+      if (raw && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw) el.classList.add("is-bad");
+      else el.classList.add(ok ? "is-ok" : "is-bad");
+
+      html += '<div class="fb-item ' + (ok && raw ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw ? esc(formatSlotLabel(n, raw).text) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var filled = 0;
+    for (var i = 1; i <= 8; i++) {
+      if (getRaw(i)) filled++;
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8" +
+      (filled < 8 ? " &mdash; fill every gap." : "") +
+      '</p><p style="margin-bottom:14px;font-size:0.86rem;color:var(--muted);">Example (0): <strong>plenty</strong> (with <em>plenty of time</em>).</p>' +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    clearPick();
+    for (var n = 1; n <= 8; n++) {
+      if (slotWords[n]) {
+        syncChipUsage(slotWords[n], false);
+      }
+      slotWords[n] = null;
+      var el = document.getElementById("slot-" + n);
+      el.classList.remove("is-ok", "is-bad");
+      renderSlot(n);
+    }
+  });
+})();
+  </script>
+</body>
+</html>

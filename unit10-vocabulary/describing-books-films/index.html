@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 — Describing books and films</title>
+  <style>
+    :root {
+      --hdr: #0f766e;
+      --hdr-br: #115e59;
+      --page-bg: #fefce8;
+      --card: #ffffff;
+      --line: #ca8a04;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #0891b2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #0c4a6e 0%, #082f49 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--page-bg);
+      border-radius: 14px;
+      border: 4px solid var(--line);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+    .top-bar {
+      background: var(--hdr);
+      border-bottom: 3px solid var(--hdr-br);
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    .nav-fake {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+    }
+    .nav-fake span { opacity: 0.95; }
+    .nav-fake .hi { color: #facc15; }
+    .search-fake {
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    .inner { padding: 20px 18px 26px; }
+
+    .breadcrumb {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .title-block h1 {
+      font-size: 1.08rem;
+      color: #c026d3;
+      margin-bottom: 6px;
+    }
+    .title-block h2 {
+      font-size: 1.25rem;
+      color: #1e3a8a;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      background: #fce7f3;
+      border: 1px solid #f9a8d4;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #831843;
+      line-height: 1.4;
+    }
+
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .reviews { display: flex; flex-direction: column; gap: 14px; }
+
+    article.review {
+      position: relative;
+      background: var(--card);
+      border-radius: 8px;
+      padding: 16px 16px 16px 48px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+      font-size: 0.95rem;
+      line-height: 1.72;
+      color: #1e293b;
+    }
+    .review-badge {
+      position: absolute;
+      left: 10px;
+      top: 12px;
+      width: 30px;
+      height: 30px;
+      background: var(--hdr);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    select.gap {
+      vertical-align: baseline;
+      margin: 0 3px;
+      max-width: 100%;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 2px solid #94a3b8;
+      background: #fff;
+      color: var(--text);
+    }
+    select.gap.ok { border-color: #16a34a; background: #ecfdf5; }
+    select.gap.bad { border-color: #dc2626; background: #fef2f2; }
+
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn:hover { filter: brightness(1.06); }
+    .btn.secondary {
+      background: #475569;
+    }
+    #result {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      min-height: 1.5em;
+    }
+    #result.ok { color: #15803d; }
+    #result.bad { color: #b91c1c; }
+  </style>
+</head>
+<body class="u10-vocab-books">
+  <div class="page">
+    <div class="top-bar">
+      <div class="nav-fake">
+        <span class="hi">LATEST</span>
+        <span>BOOKS</span>
+        <span>FILMS</span>
+        <span>TV</span>
+        <span>STREAMING</span>
+      </div>
+      <div class="search-fake">SEARCH</div>
+    </div>
+
+    <div class="inner">
+      <div class="breadcrumb" style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:12px;">
+        <a id="nav-back" href="../../index.html">← Levels hub</a>
+        <span style="color:#94a3b8">&middot;</span>
+        <a id="u10-ex2-link" class="u10-nav-sibling" href="../describing-books-meanings/index.html" style="color:var(--accent);text-decoration:none;font-weight:600;">Exercise 2 (meanings) →</a>
+      </div>
+
+      <div class="title-block">
+        <h1>Vocabulary</h1>
+        <h2>Describing books and films</h2>
+      </div>
+
+      <div class="word-box" aria-label="Word bank">
+        <span>box office hit</span>
+        <span>critically acclaimed</span>
+        <span>cult classic</span>
+        <span>far-fetched</span>
+        <span>hard-hitting</span>
+        <span>heart-wrenching</span>
+        <span>long-awaited</span>
+        <span>page-turner</span>
+        <span>spellbinding</span>
+        <span>spine-tingling</span>
+        <span>star-studded</span>
+        <span>tearjerker</span>
+      </div>
+
+      <p class="instr"><span class="instr-num">1</span>Complete the book and film reviews with the words in the box.</p>
+
+      <div class="reviews">
+        <article class="review"><span class="review-badge">1</span>
+          <p>Set in 1930s Liverpool, this emotional story of a young orphan is a real 
+            <select class="gap" id="g1" aria-label="Gap 1"></select>
+            that will have you reaching for the tissues on more than one occasion. It&rsquo;s a sorrowful, 
+            <select class="gap" id="g2" aria-label="Gap 2"></select>
+            tale of a child&rsquo;s quest to belong but the author&rsquo;s writing style, just as much as the story, is what makes it such a 
+            <select class="gap" id="g3" aria-label="Gap 3"></select>
+            ; you just can&rsquo;t put down.</p>
+        </article>
+
+        <article class="review"><span class="review-badge">2</span>
+          <p>It&rsquo;s an odd and fairly 
+            <select class="gap" id="g4" aria-label="Gap 4"></select>
+            story that challenges the viewer&rsquo;s credibility; a black comedy that focuses on the friendship of 20-year-old Harold and Maude, who is 79. It is, however, without a doubt a 
+            <select class="gap" id="g5" aria-label="Gap 5"></select>
+            , its passionate aficionados defending it to the hilt at any and every criticism. Interestingly, it wasn&rsquo;t that well received initially, but on its second release it became a 
+            <select class="gap" id="g6" aria-label="Gap 6"></select>
+            .</p>
+        </article>
+
+        <article class="review"><span class="review-badge">3</span>
+          <p><em>Where are the Children Now</em> is the 
+            <select class="gap" id="g7" aria-label="Gap 7"></select>
+            follow-up novel to <em>Where are the Children</em> by Mary Higgins Clark, published in 1975. In keeping with her usual material, the story is a 
+            <select class="gap" id="g8" aria-label="Gap 8"></select>
+            thriller with twists and turns in the narrative, which are bound to keep you on the edge of your seat. The book explores motherhood, what it means to lose a child and be wrongfully convicted of a crime and is a 
+            <select class="gap" id="g9" aria-label="Gap 9"></select>
+            exploration of the failures of the justice system. While, not for the faint hearted, it is highly recommended.</p>
+        </article>
+
+        <article class="review"><span class="review-badge">4</span>
+          <p>Featuring a remarkable 
+            <select class="gap" id="g10" aria-label="Gap 10"></select>
+            cast of some of Hollywood&rsquo;s finest, the new film from director Christopher Nolan is nothing short of a masterpiece, with 
+            <select class="gap" id="g11" aria-label="Gap 11"></select>
+            performances from its main protagonists, some of whom are hotly tipped to be amongst this year&rsquo;s Oscar nominees. In particular, Cillian Murphy&rsquo;s portrayal of a physicist grappling with the devastating effects of science on the world is so utterly 
+            <select class="gap" id="g12" aria-label="Gap 12"></select>
+            that you&rsquo;ll be mesmerised throughout.</p>
+        </article>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="checkBtn">Check answers</button>
+        <button type="button" class="btn secondary" id="resetBtn">Clear choices</button>
+      </div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <script src="../../js/u10-vocab-course-context.js"></script>
+  <script>
+(function () {
+  var BANK = [
+    "box office hit",
+    "critically acclaimed",
+    "cult classic",
+    "far-fetched",
+    "hard-hitting",
+    "heart-wrenching",
+    "long-awaited",
+    "page-turner",
+    "spellbinding",
+    "spine-tingling",
+    "star-studded",
+    "tearjerker"
+  ];
+  var ANSWERS = [
+    "tearjerker",
+    "heart-wrenching",
+    "page-turner",
+    "far-fetched",
+    "cult classic",
+    "box office hit",
+    "long-awaited",
+    "spine-tingling",
+    "hard-hitting",
+    "star-studded",
+    "critically acclaimed",
+    "spellbinding"
+  ];
+
+  var params = new URLSearchParams(location.search);
+  var backRaw = params.get("back");
+  var navBack = document.getElementById("nav-back");
+  var crsFlow = window.U10_VOCAB_COURSE || "cpe";
+  /** Prep ?back=: only for CPE; never unsafe targets */
+  function isPrepSafeReturnHref(href) {
+    if (!href || typeof href !== "string") return false;
+    var s = href.trim().replace(/\\/g, "/").toLowerCase();
+    return !/(?:^|\/)(fce\.html|ege\.html|unit10\.html)(?:[?#]|$)/.test(s);
+  }
+  if (navBack && backRaw && crsFlow === "cpe") {
+    try {
+      var dec = decodeURIComponent(backRaw);
+      if (isPrepSafeReturnHref(dec)) {
+        navBack.href = dec;
+        navBack.textContent = "\u2190 Back";
+      }
+    } catch (eBack) {}
+  }
+
+  function fillSelects() {
+    var sorted = BANK.slice().sort(function (a, b) {
+      return a.localeCompare(b);
+    });
+    for (var i = 1; i <= 12; i++) {
+      var sel = document.getElementById("g" + i);
+      if (!sel) continue;
+      var opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "\u2014 choose \u2014";
+      sel.appendChild(opt0);
+      for (var j = 0; j < sorted.length; j++) {
+        var opt = document.createElement("option");
+        opt.value = sorted[j];
+        opt.textContent = sorted[j];
+        sel.appendChild(opt);
+      }
+    }
+  }
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function clearMarks() {
+    for (var i = 1; i <= 12; i++) {
+      var sel = document.getElementById("g" + i);
+      if (sel) {
+        sel.classList.remove("ok", "bad");
+      }
+    }
+  }
+
+  document.getElementById("checkBtn").addEventListener("click", function () {
+    var ok = 0;
+    clearMarks();
+    var resultEl = document.getElementById("result");
+    for (var n = 1; n <= 12; n++) {
+      var sel = document.getElementById("g" + n);
+      var want = norm(ANSWERS[n - 1]);
+      var got = norm(sel && sel.value);
+      if (!sel) continue;
+      if (got && got === want) {
+        sel.classList.add("ok");
+        ok++;
+      } else if (got) {
+        sel.classList.add("bad");
+      }
+    }
+    resultEl.className = ok === 12 ? "ok" : ok > 0 ? "bad" : "bad";
+    if (ok === 12) {
+      resultEl.textContent = "All 12 answers match the key.";
+    } else {
+      resultEl.textContent =
+        ok + " / 12 correct. Empty or wrong gaps are marked in red; correct ones in green.";
+    }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    for (var i = 1; i <= 12; i++) {
+      var sel = document.getElementById("g" + i);
+      if (sel) {
+        sel.value = "";
+        sel.classList.remove("ok", "bad");
+      }
+    }
+    var resultEl = document.getElementById("result");
+    resultEl.textContent = "";
+    resultEl.className = "";
+  });
+
+  fillSelects();
+})();
+  </script>
+</body>
+</html>

@@ -1,14 +1,17 @@
 /**
- * Unit 9 Word Bank — same themes as index.html Word Bank (robots / idioms / listening / prep / interior).
+ * Unit 9 Word Bank — same themes as index.html Word Bank (robots / contemporary_art / idioms / listening / prep / interior).
  * Phrases match the reading spans, LEX_IDIOM_DATA, listening packs, PREP_PHRASES_CORE, and INTERIOR_DESIGN_VOCAB_CORE.
  */
 (function (W) {
   "use strict";
 
   var U9_TTT_TOPIC_LIST = [
+    { id: "minds_eye", label: "Listening: Painting with the mind's eye (Track 10)" },
     { id: "robots", label: "Reading: The robots are taking over" },
+    { id: "contemporary_art", label: "Contemporary art" },
     { id: "idioms", label: "Idioms: Art and creativity" },
     { id: "listening", label: "Listening: Making a mark (+ Part 2 gaps)" },
+    { id: "art_restoration", label: "Listening: Art restoration (P3)" },
     { id: "prep", label: "Prepositional phrases" },
     { id: "interior", label: "Art & architecture (disk)" }
   ];
@@ -235,6 +238,89 @@
     { hint: "Judged an unjustified expenditure", phrase: "deemed a waste of money" }
   ];
 
+  /** P3 Art restoration — fallback if ART_REST_LISTEN_DATA is not on the page; keep hints free of the target phrasing. */
+  var U9_TTT_ART_REST_DATA = [
+    {
+      hint:
+        "Tackle a demanding job with real enthusiasm; commit fully, not a shallow or half-hearted try.",
+      phrase: "Get your teeth into (sth)"
+    },
+    {
+      hint:
+        "Do or finish something very quickly, often a bit carelessly or without polish — speed over refinement, like rattling the work off in no time.",
+      phrase: "Knock sth out"
+    },
+    {
+      hint: "The most important point; the upshot; what it really comes down to when the argument is stripped to essentials.",
+      phrase: "The bottom line"
+    },
+    {
+      hint:
+        "Stop applying; cease to be valid (e.g. rules, deadlines, plans) — as if a limit were discarded and no longer in force.",
+      phrase: "Go out the window"
+    },
+    {
+      hint: "Look at something quickly to check or assess it; read through or size up at a glance.",
+      phrase: "Cast an eye over (sth)"
+    },
+    {
+      hint: "A secret card to play; a hidden advantage you only reveal when you need it.",
+      phrase: "Have an ace up your sleeve"
+    },
+    {
+      hint:
+        "Understand what is really going on; see the point (in this interview there is a pun, because the topic is real pictures).",
+      phrase: "Get the picture"
+    },
+    {
+      hint: "Packed or crammed so full you can’t fit much more in (here: the studio is full of famous works in reproduction).",
+      phrase: "Chock full of"
+    },
+    {
+      hint: "The same monotonous routine, every single day — tedium or sheer long-run persistence.",
+      phrase: "Day in, day out"
+    },
+    {
+      hint:
+        "Glowing, full-throated public praise or support. In the script a negative line inverts the idea: weak, almost ironic praise, not a strong one.",
+      phrase: "Ringing endorsement"
+    },
+    {
+      hint: "Professional skills that have been polished to a very high, sharp standard (the script pairs with a technical register).",
+      phrase: "Finely honed skills"
+    },
+    {
+      hint: "In most cases; as a rule; the usual tendency, with the occasional exception.",
+      phrase: "More often than not"
+    },
+    {
+      hint: "Depending on; conditional on; a more formal, precise way of saying “depend on”.",
+      phrase: "Contingent on"
+    },
+    {
+      hint: "At the start of a process or project; in the first phase, not at a later mid-project stage.",
+      phrase: "At the outset"
+    },
+    {
+      hint: "For many unbroken hours; you keep at the same work in the studio in one long sitting.",
+      phrase: "Hours on end"
+    },
+    {
+      hint: "A mechanical, by-the-book job with no real creativity — numbered-area hobby kits, not true craft decisions.",
+      phrase: "Paint-by-numbers gig"
+    },
+    {
+      hint:
+        "The work is too easy and does not use your real level; you are not challenged in line with your ability.",
+      phrase: "Not be stretched (not being stretched)"
+    },
+    {
+      hint:
+        "The object’s treatment and labels must be defensible in light of what is known of the real past before it is shown in a serious public setting.",
+      phrase: "Historical accuracy"
+    }
+  ];
+
   var U9_TTT_LISTEN_SC_DATA = [
     {
       hint: "Two-word collocation after create a — lasting impact that will stand the test of time.",
@@ -281,6 +367,19 @@
     return prep;
   }
 
+  function buildContemporaryArtWbWords() {
+    var out = [];
+    if (typeof U9_MUST_KNOW_ITEMS === "undefined" || !U9_MUST_KNOW_ITEMS.length) {
+      return out;
+    }
+    for (var i = 0; i < U9_MUST_KNOW_ITEMS.length; i++) {
+      var it = U9_MUST_KNOW_ITEMS[i];
+      if (!it || !it.phrase) continue;
+      out.push(rowToWord("contemporary_art", String(it.hint || "").trim(), String(it.phrase).trim()));
+    }
+    return out;
+  }
+
   function buildInteriorWords() {
     var out = [];
     var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== "undefined" ? INTERIOR_DESIGN_VOCAB_CORE : null;
@@ -296,8 +395,26 @@
     return out;
   }
 
+  /** Track 10 — same list as app Word Bank (`U9_MINDS_EYE_WB_LEAD` only; not the full Treasure Hunt). */
+  function buildMindsEyeTttWords() {
+    var out = [];
+    var lead =
+      typeof U9_MINDS_EYE_WB_LEAD !== "undefined" && U9_MINDS_EYE_WB_LEAD && U9_MINDS_EYE_WB_LEAD.length
+        ? U9_MINDS_EYE_WB_LEAD
+        : [];
+    for (var l = 0; l < lead.length; l++) {
+      var L = lead[l];
+      if (!L || !L.phrase) continue;
+      var pEn = String(L.paraphrase != null ? L.paraphrase : L.hint || "").trim();
+      var gRu = String(L.glossRu != null ? L.glossRu : "").trim();
+      var tttHint = gRu ? pEn + " — " + gRu : pEn;
+      out.push(rowToWord("minds_eye", tttHint, String(L.phrase).trim()));
+    }
+    return out;
+  }
+
   function buildAllWords() {
-    var w = [];
+    var w = buildMindsEyeTttWords();
     var i;
     for (i = 0; i < U9_TTT_READING_ROWS.length; i++) {
       var r = U9_TTT_READING_ROWS[i];
@@ -311,12 +428,31 @@
       var li = U9_TTT_LISTEN_DATA[i];
       w.push(rowToWord("listening", li.hint, li.phrase));
     }
+    if (typeof ART_REST_LISTEN_DATA !== "undefined" && ART_REST_LISTEN_DATA.length) {
+      for (i = 0; i < ART_REST_LISTEN_DATA.length; i++) {
+        var ard = ART_REST_LISTEN_DATA[i];
+        if (!ard || !ard.keyword) continue;
+        w.push(
+          rowToWord(
+            "art_restoration",
+            String(ard.definition || ard.paraphrase || "").trim(),
+            String(ard.keyword).trim()
+          )
+        );
+      }
+    } else {
+      for (i = 0; i < U9_TTT_ART_REST_DATA.length; i++) {
+        var ar = U9_TTT_ART_REST_DATA[i];
+        w.push(rowToWord("art_restoration", ar.hint, ar.phrase));
+      }
+    }
     for (i = 0; i < U9_TTT_LISTEN_SC_DATA.length; i++) {
       var sc = U9_TTT_LISTEN_SC_DATA[i];
       w.push(rowToWord("listening", sc.hint, sc.phrase));
     }
     w = w.concat(buildPrepWords());
     w = w.concat(buildInteriorWords());
+    w = w.concat(buildContemporaryArtWbWords());
     return w;
   }
 

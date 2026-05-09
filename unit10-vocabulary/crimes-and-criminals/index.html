@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Vocabulary — Crimes and criminals (Exercise 2)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fef9c3;
+    }
+    .word-box-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 12px; color: #bae6fd; }
+
+    .row {
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+    .row.example-row {
+      border-color: rgba(86, 204, 242, 0.35);
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .row-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .row-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .gap-in {
+      width: min(220px, 100%);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid #4d6fa1;
+      background: #12264b;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .gap-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .gap-in.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.1); }
+    .gap-in.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+    .gap-example {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.4);
+      color: #86efac;
+      font-weight: 700;
+    }
+
+    .row-key {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #86efac;
+    }
+    .row-key.show { display: block; }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .score {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .score strong { color: #e8f0ff; }
+
+    .voc-next {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .voc-next a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .voc-next a:hover { text-decoration: underline; }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    .seq-note {
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+    .seq-note a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .seq-note a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Crimes and criminals</h1>
+      <a class="back u10-back-vocab-index" href="../index.html">&larr; Vocabulary hub</a>
+    </header>
+
+    <p class="seq-note">After <a class="u10-nav-sibling" href="../phrasal-out-exercise-2/index.html">Phrasal verbs — Exercise 2</a> (<em>up</em>) in this vocabulary folder.</p>
+
+    <p class="instr">
+      <span class="instr-num">2</span>
+      Match the crimes in the box with each of the people in sentences 1&ndash;8. The first one has been done for you.
+    </p>
+
+    <div class="word-box" aria-label="Crimes word bank — all eight terms">
+      <span>burglary</span><span>&middot;</span>
+      <span>drink-driving</span><span>&middot;</span>
+      <span>identity fraud</span><span>&middot;</span>
+      <span>internet piracy</span><span>&middot;</span>
+      <span>mugging</span><span>&middot;</span>
+      <span>shoplifting</span><span>&middot;</span>
+      <span>drug trafficking</span><span>&middot;</span>
+      <span>vandalism</span>
+    </div>
+    <p class="word-box-note">The same eight crimes appear in the box; sentence&nbsp;1 shows how to match one crime to a scenario.</p>
+
+    <section class="task">
+      <h2>Sentences</h2>
+      <p class="hint">Type the crime for sentences 2&ndash;8. Hyphens and spacing are ignored when checking (e.g. <em>drink-driving</em> or <em>drink driving</em>).</p>
+
+      <div class="row example-row">
+        <div class="row-line">
+          <span class="row-num">1.</span>
+          <span>A young man attacks another and robs him of his wallet.</span>
+          <span class="gap-example" aria-hidden="true">mugging</span>
+        </div>
+      </div>
+
+      <div class="row" data-i="0">
+        <div class="row-line">
+          <span class="row-num">2.</span>
+          <span>A 78-year-old woman steals a scarf from a department store.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="0" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 2" />
+        </div>
+        <div class="row-key" data-key-for="0"></div>
+      </div>
+
+      <div class="row" data-i="1">
+        <div class="row-line">
+          <span class="row-num">3.</span>
+          <span>A 14-year-old sets fire to litter bins and breaks car windows.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="1" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 3" />
+        </div>
+        <div class="row-key" data-key-for="1"></div>
+      </div>
+
+      <div class="row" data-i="2">
+        <div class="row-line">
+          <span class="row-num">4.</span>
+          <span>A driver stops to sleep in his car; he has had three glasses of wine.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="2" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 4" />
+        </div>
+        <div class="row-key" data-key-for="2"></div>
+      </div>
+
+      <div class="row" data-i="3">
+        <div class="row-line">
+          <span class="row-num">5.</span>
+          <span>A criminal gang earns millions from buying and selling narcotics.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="3" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 5" />
+        </div>
+        <div class="row-key" data-key-for="3"></div>
+      </div>
+
+      <div class="row" data-i="4">
+        <div class="row-line">
+          <span class="row-num">6.</span>
+          <span>A group of teenagers illegally distributes films online.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="4" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 6" />
+        </div>
+        <div class="row-key" data-key-for="4"></div>
+      </div>
+
+      <div class="row" data-i="5">
+        <div class="row-line">
+          <span class="row-num">7.</span>
+          <span>A man has tricked people into emailing him their bank details; he uses this information to take money from their accounts.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="5" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 7" />
+        </div>
+        <div class="row-key" data-key-for="5"></div>
+      </div>
+
+      <div class="row" data-i="6">
+        <div class="row-line">
+          <span class="row-num">8.</span>
+          <span>A journalist breaks into the town hall to steal documents that will prove the mayor is guilty of corruption.</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="6" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 8" />
+        </div>
+        <div class="row-key" data-key-for="6"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+        <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      </div>
+      <p class="score" id="elScore" hidden>Correct: <strong id="elScoreN">0</strong> / 7</p>
+    </section>
+
+    <p class="voc-next">
+      <a class="u10-nav-sibling" href="../criminal-titles-exercise-3/index.html">Next: Exercise 3 — criminals&rsquo; titles (<em>mugger</em>, <em>burglar</em>, …) →</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  var KEYS = [
+    "shoplifting",
+    "vandalism",
+    "drink-driving",
+    "drug trafficking",
+    "internet piracy",
+    "identity fraud",
+    "burglary"
+  ];
+  var KEY_DISPLAY = [
+    "<strong>shoplifting</strong>",
+    "<strong>vandalism</strong>",
+    "<strong>drink-driving</strong>",
+    "<strong>drug trafficking</strong>",
+    "<strong>internet piracy</strong>",
+    "<strong>identity fraud</strong>",
+    "<strong>burglary</strong>"
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[-\s]+/g, "");
+  }
+
+  function inp(i) {
+    return document.querySelector('.gap-in[data-i="' + i + '"]');
+  }
+  function kb(i) {
+    return document.querySelector('[data-key-for="' + i + '"]');
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    for (var i = 0; i < 7; i++) {
+      var el = inp(i);
+      var v = norm(el.value);
+      var good = v === norm(KEYS[i]);
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(good ? "is-ok" : "is-bad");
+      var box = kb(i);
+      box.classList.toggle("show", !good);
+      box.innerHTML = good ? "" : "Key: " + KEY_DISPLAY[i];
+      if (good) ok++;
+    }
+    document.getElementById("elScoreN").textContent = String(ok);
+    document.getElementById("elScore").hidden = false;
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    for (var i = 0; i < 7; i++) {
+      inp(i).value = "";
+      inp(i).classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      kb(i).innerHTML = "";
+    }
+    document.getElementById("elScore").hidden = true;
+  });
+
+  document.querySelectorAll(".gap-in").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var i = el.getAttribute("data-i");
+      el.classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      document.getElementById("elScore").hidden = true;
+    });
+  });
+})();
+  </script>
+  <script src="../../js/u10-vocab-course-context.js"></script>
+</body>
+</html>

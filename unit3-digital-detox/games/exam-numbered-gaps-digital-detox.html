@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Экзамен: пропуски 1–8 &mdash; My digital detox (Unit 3)</title>
+  <style>
+    :root {
+      --bg: #0b1224; --panel: #111d3a; --line: #2a4068; --text: #e8f0ff; --muted: #94a3b8;
+      --num: #facc15; --accent: #7dd3fc; --chip-bg: #1a2d52; --chip-bdr: #3d5a8a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #060a14 0%, var(--bg) 40%);
+      color: var(--text); min-height: 100dvh; padding: 20px 16px 32px; font-size: 17px; line-height: 1.55;
+    }
+    .page { max-width: 72rem; margin: 0 auto; }
+    .top {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px 18px; margin-bottom: 22px;
+    }
+    .top h1 { font-size: clamp(1.15rem, 2.4vw, 1.4rem); font-weight: 800; margin-bottom: 10px; }
+    .top .ins { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+    .top .ins strong { color: #fde68a; }
+    .nav { margin-top: 14px; font-size: 0.9rem; }
+    .nav a { color: var(--accent); font-weight: 600; }
+    .play-layout {
+      display: grid;
+      grid-template-columns: 1fr min(300px, 32vw);
+      gap: 20px 24px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .play-layout { grid-template-columns: 1fr; }
+      .word-bank-col { order: -1; }
+    }
+    .text-col { min-width: 0; }
+    .word-bank-col {
+      position: sticky; top: 12px; align-self: start;
+    }
+    .word-bank {
+      background: #0c1629; border: 1px solid var(--line); border-radius: 16px; padding: 14px 14px 16px;
+      min-height: 12rem; display: flex; flex-direction: column; gap: 10px;
+    }
+    .word-bank h2 {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); font-weight: 800; margin-bottom: 4px;
+    }
+    .word-bank .hint { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-bottom: 4px; }
+    #wordBank {
+      display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 8rem; padding: 4px; border-radius: 10px;
+      border: 2px dashed #334a78; background: rgba(0,0,0,0.2); transition: border-color 0.2s, background 0.2s;
+    }
+    #wordBank.drag-over { border-color: #7dd3fc; background: rgba(56, 189, 248, 0.1); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .toolbar button {
+      background: #1e3a5f; color: #e8f0ff; border: 1px solid #3b5f8f; border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    }
+    .toolbar button:hover { border-color: var(--accent); }
+    .msg-bar { min-height: 1.2em; font-size: 0.88rem; color: #fde68a; margin-top: 8px; }
+    .msg-bar.ok { color: #86efac; }
+    .msg-bar.bad { color: #fca5a5; }
+    .chip {
+      display: block; width: 100%;
+      background: var(--chip-bg); border: 2px solid var(--chip-bdr); border-radius: 10px; padding: 8px 10px; font-size: 0.82rem; line-height: 1.35;
+      color: #e8f0ff; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;
+    }
+    .chip:active { cursor: grabbing; }
+    .chip:focus { outline: 2px solid #a78bfa; outline-offset: 2px; }
+    .chip.pulse-select { box-shadow: 0 0 0 2px #a78bfa; border-color: #a78bfa; }
+    .block {
+      background: #0f1a32; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 20px; margin-bottom: 18px;
+    }
+    .block h2 {
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; font-weight: 800;
+    }
+    .block p { font-size: clamp(0.95rem, 1.5vw, 1.05rem); text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+    .g { color: #fef08a; font-weight: 800; font-size: 0.92em; white-space: nowrap; }
+    .drop-pair { display: inline; white-space: normal; }
+    .drop-zone {
+      display: inline-block; vertical-align: baseline; min-width: 2.2rem; min-height: 1.5em; margin: 0 0.08em 2px; padding: 2px 4px; max-width: 100%;
+      border: 2px dashed #64748b; border-radius: 8px; background: rgba(15, 23, 42, 0.65); line-height: 1.3;
+    }
+    .drop-zone.empty { min-width: min(6rem, 18vw); }
+    .drop-zone.has-chip { border-style: solid; border-color: #3d5a8a; padding: 0; min-width: 0; }
+    .drop-zone .chip { border-radius: 6px; margin: 0; width: 100%; max-width: 100%; font-size: 0.78rem; }
+    .write-lines {
+      margin-top: 20px; padding: 16px; border: 1px dashed var(--line); border-radius: 12px; background: #0a1428;
+    }
+    .write-lines h3 { font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; }
+    .write-lines ol { margin-left: 1.25rem; line-height: 2.1; }
+    .write-lines li { padding-left: 0.2em; }
+    details.key { margin-top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+    details.key summary { cursor: pointer; color: #86efac; font-weight: 700; }
+    details.key ol { margin: 12px 0 4px 1.25rem; line-height: 1.7; }
+    @media print {
+      body { background: #fff; color: #111; font-size: 12pt; padding: 12mm; }
+      .word-bank-col, .toolbar, .msg-bar { display: none !important; }
+      .play-layout { display: block; }
+      .top, .block, .write-lines, details.key { background: #fff; border-color: #ccc; color: #111; }
+      .block h2, .top .ins strong, .nav, .g { color: #1e3a5f !important; }
+      .g { color: #b45309 !important; }
+      .drop-zone { border-color: #999 !important; }
+      .chip { color: #111 !important; background: #f1f5f9 !important; border-color: #999 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <h1>Экзамен: вставьте пропуски (точные фразы из текста)</h1>
+      <p class="ins">
+        Слева &mdash; текст, справа &mdash; <strong>фрагменты</strong>. Перетащите (drag and drop) каждую фразу в нужный пропуск
+        <strong>(1)&ndash;(8)</strong> или: <strong>клик</strong> по фразе, затем <strong>клик</strong> по пустому пропуску. Вернуть в банк: перетяните в серую зону справа или снимите, кликнув по чипу, затем по банку.
+      </p>
+      <p class="nav">
+        <a href="index.html">Игры</a> &middot; <a href="../index.html">Хаб текстов</a> &middot; <a href="../../unit3.html">Unit 3</a>
+      </p>
+    </header>
+
+    <div class="play-layout">
+      <div class="text-col">
+        <section class="block" aria-labelledby="a1">
+          <h2 id="a1">Text A &mdash; Part 1 (Ofcom, первые меры)</h2>
+          <p>
+            According to a recent survey by Ofcom, people in the UK spend an average of two and a half hours each day on their smartphones, which they check every twelve minutes. Journalist Steven Rice reveals
+            <span class="drop-pair"><span class="g">(1)</span> <span class="drop-zone empty" data-gap="1" data-label="1" title="Пропуск 1"></span></span> to
+            <span class="drop-pair"><span class="g">(2)</span> <span class="drop-zone empty" data-gap="2" data-label="2" title="Пропуск 2"></span></span>.
+            Some weeks ago, I downloaded a screen time tracking app onto my phone, just one of a series of measures I adopted to
+            <span class="drop-pair"><span class="g">(3)</span> <span class="drop-zone empty" data-gap="3" data-label="3" title="Пропуск 3"></span></span>.
+            Looking back, I had been in obvious denial about how it was affecting my ability to concentrate, and the impact this was having on my work.
+          </p>
+        </section>
+
+        <section class="block" aria-labelledby="a2">
+          <h2 id="a2">Text B &mdash; Part 2 (статистика и утешение)</h2>
+          <p>
+            My newly installed app told me that
+            <span class="drop-pair"><span class="g">(4)</span> <span class="drop-zone empty" data-gap="4" data-label="4" title="Пропуск 4"></span></span>
+            over forty times each day and spending more than four hours online; not as much as some people, perhaps, but
+            <span class="drop-pair"><span class="g">(5)</span> <span class="drop-zone empty" data-gap="5" data-label="5" title="Пропуск 5"></span></span>.
+            It was still above the national average and no less cause for concern. We shouldn&rsquo;t, of course, go all out to demonise phones; they have become indispensable items&hellip;
+          </p>
+        </section>
+
+        <section class="block" aria-labelledby="a3">
+          <h2 id="a3">Text C &mdash; Part 3 (&laquo;тёмная сторона&raquo;)</h2>
+          <p>
+            But as we all know,
+            <span class="drop-pair"><span class="g">(6)</span> <span class="drop-zone empty" data-gap="6" data-label="6" title="Пропуск 6"></span></span>.
+            Our phone addiction, we are told,
+            <span class="drop-pair"><span class="g">(7)</span> <span class="drop-zone empty" data-gap="7" data-label="7" title="Пропуск 7"></span></span>.
+            Social media can cause young people, in particular, to feel less confident&hellip;
+          </p>
+        </section>
+
+        <section class="block" aria-labelledby="a4">
+          <h2 id="a4">Text D &mdash; Part 4 (книги и первый шаг)</h2>
+          <p>
+            The phone itself is not the problem, but how you use it, so the route to a healthier relationship with technology is to learn moderation and good habits. And since this can be quite daunting, it&rsquo;s better to ease yourself into it with a step-by-step rather than an all-at-once approach. My first step was to
+            <span class="drop-pair"><span class="g">(8)</span> <span class="drop-zone empty" data-gap="8" data-label="8" title="Пропуск 8"></span></span>
+            for all social media apps on my phone.
+          </p>
+        </section>
+
+        <div class="write-lines no-print">
+          <h3>Для печати: ответы в одной колонке</h3>
+          <ol>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+            <li>_________________________________________________</li>
+          </ol>
+        </div>
+
+        <details class="key">
+          <summary>Ключ (для преподавателя)</summary>
+          <ol>
+            <li>the steps he took</li>
+            <li>combat his own obsession</li>
+            <li>tackle my growing, and potentially unhealthy addiction to the device</li>
+            <li>I was picking up my phone</li>
+            <li>this was no consolation</li>
+            <li>there is another, darker side to it all</li>
+            <li>is making us more anxious and depressed</li>
+            <li>switch off notifications</li>
+          </ol>
+        </details>
+      </div>
+
+      <aside class="word-bank-col" aria-label="Банк фраз">
+        <div class="word-bank">
+          <h2>Фрагменты (перетащите в текст)</h2>
+          <p class="hint">8 фраз, порядок сверху &mdash; случайный. Сюда же можно сбрасывать лишние.</p>
+          <div id="wordBank" aria-live="polite" aria-dropeffect="move"></div>
+          <div class="toolbar">
+            <button type="button" id="btnShuffle">Перемешать банк</button>
+            <button type="button" id="btnReset">Сбросить всё</button>
+            <button type="button" id="btnCheck">Проверить</button>
+          </div>
+          <p class="msg-bar" id="msgBar" role="status"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script>
+(function () {
+  "use strict";
+  var ANSWERS = [
+    { n: 1, text: "the steps he took" },
+    { n: 2, text: "combat his own obsession" },
+    { n: 3, text: "tackle my growing, and potentially unhealthy addiction to the device" },
+    { n: 4, text: "I was picking up my phone" },
+    { n: 5, text: "this was no consolation" },
+    { n: 6, text: "there is another, darker side to it all" },
+    { n: 7, text: "is making us more anxious and depressed" },
+    { n: 8, text: "switch off notifications" }
+  ];
+  var bank = document.getElementById("wordBank");
+  var msgBar = document.getElementById("msgBar");
+  var selectedChip = null;
+
+  function makeChip(n, text) {
+    var b = document.createElement("div");
+    b.className = "chip";
+    b.setAttribute("draggable", "true");
+    b.setAttribute("data-n", String(n));
+    b.setAttribute("tabindex", "0");
+    b.textContent = text;
+    return b;
+  }
+
+  function shuffleChildren(el) {
+    var list = [].slice.call(el.children);
+    for (var i = list.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = list[i];
+      list[i] = list[j];
+      list[j] = t;
+    }
+    list.forEach(function (n) {
+      el.appendChild(n);
+    });
+  }
+
+  function allChips() {
+    return [].slice.call(document.querySelectorAll(".chip"));
+  }
+
+  function clearSelect() {
+    if (selectedChip) {
+      selectedChip.classList.remove("pulse-select");
+      selectedChip = null;
+    }
+  }
+
+  function fixEmptyZones() {
+    [].forEach.call(document.querySelectorAll(".drop-zone"), function (z) {
+      if (z.querySelector(".chip")) {
+        z.classList.remove("empty");
+        z.classList.add("has-chip");
+      } else {
+        z.classList.add("empty");
+        z.classList.remove("has-chip");
+      }
+    });
+  }
+
+  function placeChipInZone(chip, zone) {
+    if (!zone || !chip) return;
+    var prev = zone.querySelector(".chip");
+    if (prev && prev !== chip) {
+      bank.appendChild(prev);
+    }
+    zone.innerHTML = "";
+    zone.appendChild(chip);
+    fixEmptyZones();
+  }
+
+  function moveToBank(chip) {
+    if (!chip || !chip.classList.contains("chip")) return;
+    bank.appendChild(chip);
+    fixEmptyZones();
+  }
+
+  function hookChip(chip) {
+    chip.addEventListener("dragstart", function (e) {
+      clearSelect();
+      e.dataTransfer.setData("text/plain", chip.getAttribute("data-n") || "");
+      e.dataTransfer.effectAllowed = "move";
+      chip.setAttribute("data-drag", "1");
+    });
+    chip.addEventListener("dragend", function () {
+      chip.removeAttribute("data-drag");
+    });
+    chip.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (selectedChip === chip) {
+        clearSelect();
+        return;
+      }
+      clearSelect();
+      selectedChip = chip;
+      chip.classList.add("pulse-select");
+    });
+    chip.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        chip.click();
+      }
+    });
+  }
+
+  function buildBank() {
+    bank.innerHTML = "";
+    ANSWERS.forEach(function (a) {
+      var c = makeChip(a.n, a.text);
+      hookChip(c);
+      bank.appendChild(c);
+    });
+    shuffleChildren(bank);
+  }
+
+  [].forEach.call(document.querySelectorAll(".drop-zone"), function (zone) {
+    zone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    });
+    zone.addEventListener("dragleave", function () { });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      var id = e.dataTransfer.getData("text/plain");
+      var chip = [].find.call(allChips(), function (c) { return c.getAttribute("data-n") === id; });
+      if (!chip) return;
+      placeChipInZone(chip, zone);
+      clearSelect();
+      msgBar.textContent = "";
+      msgBar.className = "msg-bar";
+    });
+    zone.addEventListener("click", function () {
+      if (!selectedChip) return;
+      var prev = zone.querySelector(".chip");
+      if (prev && prev !== selectedChip) {
+        bank.appendChild(prev);
+      }
+      placeChipInZone(selectedChip, zone);
+      clearSelect();
+      msgBar.textContent = "";
+      msgBar.className = "msg-bar";
+    });
+  });
+
+  bank.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    bank.classList.add("drag-over");
+  });
+  bank.addEventListener("dragleave", function (e) {
+    if (e.target === bank) bank.classList.remove("drag-over");
+  });
+  bank.addEventListener("drop", function (e) {
+    e.preventDefault();
+    bank.classList.remove("drag-over");
+    var id = e.dataTransfer.getData("text/plain");
+    var chip = [].find.call(allChips(), function (c) { return c.getAttribute("data-n") === id; });
+    if (chip) {
+      moveToBank(chip);
+    }
+    clearSelect();
+  });
+  bank.addEventListener("dragleave", function (e) {
+    if (!bank.contains(e.relatedTarget)) bank.classList.remove("drag-over");
+  });
+  bank.addEventListener("click", function (e) {
+    if (e.target.classList && e.target.classList.contains("chip")) return;
+    if (selectedChip) {
+      moveToBank(selectedChip);
+      clearSelect();
+    }
+  });
+
+  document.getElementById("btnShuffle").addEventListener("click", function () {
+    var inBank = [].filter.call(bank.querySelectorAll(".chip"), function (c) { return c.parentNode === bank; });
+    inBank.forEach(function (c) { bank.appendChild(c); });
+    shuffleChildren(bank);
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    [].forEach.call(document.querySelectorAll(".drop-zone"), function (z) {
+      var c = z.querySelector(".chip");
+      if (c) bank.appendChild(c);
+      z.classList.add("empty");
+      z.classList.remove("has-chip");
+    });
+    buildBank();
+    msgBar.textContent = "Все фрагменты снова в банке.";
+    msgBar.className = "msg-bar";
+  });
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    var total = 8;
+    [].forEach.call(document.querySelectorAll(".drop-zone"), function (z) {
+      var c = z.querySelector(".chip");
+      var g = parseInt(z.getAttribute("data-gap") || "0", 10);
+      if (c && parseInt(c.getAttribute("data-n") || "0", 10) === g) ok += 1;
+    });
+    if (ok === total) {
+      msgBar.textContent = "Верно: все 8 пропусков.";
+      msgBar.className = "msg-bar ok";
+    } else {
+      msgBar.textContent = "Совпало: " + ok + " из 8. Подправьте варианты.";
+      msgBar.className = "msg-bar bad";
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".chip") || e.target.closest(".drop-zone") || e.target === bank || e.target.id === "wordBank") return;
+    clearSelect();
+  });
+
+  buildBank();
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

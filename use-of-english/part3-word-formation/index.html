@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 · Part 3 Word formation · World Days</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; font-weight: 700; }
+    .badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-title { font-weight: 800; color: #fef9c3; display: block; margin-bottom: 6px; }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    details.context {
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: rgba(34, 54, 87, 0.6);
+    }
+    details.context summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.88rem;
+    }
+    .passage-full {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #dbeafe;
+      line-height: 1.68;
+    }
+    .passage-full .ex-num { font-weight: 800; color: #fde047; }
+
+    .example-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.93rem;
+    }
+    .example-box .lab {
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .example-box strong { color: #fef08a; }
+    .root-cap {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .card-wrap { margin-bottom: 16px; }
+    .card-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front {
+      background: var(--front-bg);
+      color: #f1f5ff;
+    }
+    .flip-back {
+      background: var(--back-bg);
+      color: #e8f0ff;
+      transform: rotateY(180deg);
+    }
+
+    .gap {
+      border-bottom: 2px dashed rgba(148, 163, 184, 0.65);
+      padding: 0 3px 2px;
+      font-weight: 600;
+      color: #cbd5f5;
+    }
+    .root-word {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fcd34d;
+    }
+
+    .flip-back strong {
+      color: #86efac;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .flip-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+    .tap-hint {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hub-link {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+
+    .alt-spell { font-size: 0.88rem; color: var(--muted); font-weight: 400; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+        <p class="badge">World Days</p>
+      </div>
+      <a class="back" href="../../unit11.html">&larr; Unit 11</a>
+    </header>
+
+    <p class="instr">
+      <span class="instr-title">Instructions</span>
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+    </p>
+    <p class="hint">Each card shows one gap with the <strong>root word</strong> on the front. Click the card (or press Space / Enter) to flip and see the correct form.</p>
+
+    <details class="context">
+      <summary>Read the full text (context)</summary>
+      <div class="passage-full">
+        Certain days each year are used to draw attention to <span class="ex-num">(0)</span> <strong>GLOBAL</strong> issues which affect the health of our planet.
+        <strong>World Car Free Day</strong>, for example, on 22 September, aims to raise <span class="ex-num">(1)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> of the problems caused by our <span class="ex-num">(2)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> on private cars. Streets are closed to traffic and opened instead to street parties, theatre or bicycle demonstrations, hoping to encourage more <span class="ex-num">(3)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> friendly alternatives to the car.
+        <strong>8 June</strong> is <strong>World Oceans Day</strong>, when numerous events and <span class="ex-num">(4)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> are organised, urging people to respect the ocean and <span class="ex-num">(5)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> that it is healthy for future generations.
+        Similarly, <strong>World Ozone Day</strong> on 16 September emphasises that the <span class="ex-num">(6)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> to protect the ozone layer and the climate does not lie solely with governments.
+        We as individuals can do our part to <span class="ex-num">(7)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> energy consumption and emissions by sensible use and proper maintenance of air conditioners, refrigerators and other <span class="ex-num">(8)</span> <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> and appliances.
+      </div>
+    </details>
+
+    <div class="example-box">
+      <div class="lab">0 &mdash; Example (already done)</div>
+      <p>
+        Certain days each year are used to draw attention to <strong>GLOBAL</strong> issues which affect the health of our planet.
+      </p>
+      <p class="root-cap">GLOBE &rarr; one word for this gap: <strong>global</strong> (shown in capitals in the exam-style text above).</p>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 1</div>
+      <button type="button" class="flip-card" aria-label="Question 1. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <strong>World Car Free Day</strong>, for example, on 22 September, aims to raise <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> of the problems arising from our use of private cars.
+            <span class="root-word">AWARE</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>awareness</strong>
+            <p style="margin-top: 12px; font-size: 0.88rem; color: #bae6fd; line-height: 1.55;">
+              In full: &hellip; aims to raise <strong>awareness</strong> of the problems caused by our dependence on private cars.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 2</div>
+      <button type="button" class="flip-card" aria-label="Question 2. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            &hellip; problems caused by our <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> on private cars.
+            <span class="root-word">DEPEND</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>dependence</strong>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 3</div>
+      <button type="button" class="flip-card" aria-label="Question 3. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            Streets are closed to traffic and opened instead to street parties, theatre or bicycle demonstrations, hoping to encourage more <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> friendly alternatives to the car.
+            <span class="root-word">ENVIRONMENT</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>environmentally</strong> <span class="alt-spell">(adverb before &lsquo;friendly&rsquo;)</span>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 4</div>
+      <button type="button" class="flip-card" aria-label="Question 4. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            8 June is <strong>World Oceans Day</strong>, when numerous events and <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> are organised, urging people to respect the ocean &hellip;
+            <span class="root-word">ACTIVE</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>activities</strong>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 5</div>
+      <button type="button" class="flip-card" aria-label="Question 5. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            &hellip; urging people to respect the ocean and <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> that it is healthy for future generations.
+            <span class="root-word">SURE</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>ensure</strong>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 6</div>
+      <button type="button" class="flip-card" aria-label="Question 6. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            Similarly, <strong>World Ozone Day</strong> on 16 September emphasises that the <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> to protect the ozone layer and the climate does not lie solely with governments.
+            <span class="root-word">RESPONSIBLE</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>responsibility</strong>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 7</div>
+      <button type="button" class="flip-card" aria-label="Question 7. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            We as individuals can do our part to <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> energy consumption and emissions by sensible use &hellip;
+            <span class="root-word">MINIMUM</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>minimize</strong> <span class="alt-spell">or</span> <strong>minimise</strong>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">Question 8</div>
+      <button type="button" class="flip-card" aria-label="Question 8. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            &hellip; and proper maintenance of air conditioners, refrigerators and other <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> and appliances.
+            <span class="root-word">EQUIP</span>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            <strong>equipment</strong> <span class="alt-spell">(uncountable)</span>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <p class="hub-link">
+      <a href="../../unit11.html">&larr; Unit 11</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../index.html">Use of English hub</a>
+      &nbsp;&middot;&nbsp;
+      <a href="nouns-laptop-tech.html">Nouns (type gaps) &mdash; technology &amp; gifts</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

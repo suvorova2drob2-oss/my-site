@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Vocabulary &mdash; Make and do</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --example: #fde68a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .examples {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .examples strong { color: var(--example); }
+    .examples p { margin-bottom: 8px; }
+    .examples p:last-child { margin-bottom: 0; }
+
+    .item {
+      font-size: 0.96rem;
+      line-height: 1.95;
+      color: #e8f0ff;
+      margin-bottom: 16px;
+      padding: 14px 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .item-num {
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      width: 6.8rem;
+      min-width: 4.5rem;
+      max-width: 11rem;
+      margin: 0 4px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input.wide { width: 8.5rem; max-width: 12rem; }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; }
+    .gap-input.is-bad { border-color: #f87171; }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 4px; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary</span>
+        <h1>Make and do</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 8 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 8 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong>Make / do</strong></span>
+    </nav>
+
+    <p class="instr">
+      <strong>1</strong> Complete the gaps in <strong>1&ndash;6</strong> with the correct form of <strong>make</strong> or <strong>do</strong>. Write <strong>one or two words</strong> in each gap.
+    </p>
+    <div class="examples">
+      <p class="instr" style="margin-bottom: 10px;">Here are two examples from the reading.</p>
+      <p><strong>Ex 1</strong> &nbsp;My grades weren&rsquo;t good enough for the university degree course I was hoping to <strong>do</strong>.</p>
+      <p><strong>Ex 2</strong> &nbsp;I hadn&rsquo;t met the entry requirements, so I should <strong>make</strong> alternative plans.</p>
+    </div>
+
+    <section class="item">
+      <p>
+        <span class="item-num">1.</span>
+        I don&rsquo;t always
+        <input type="text" class="gap-input" id="g1" autocomplete="off" spellcheck="false" aria-label="Gap 1a" />
+        my homework; I know I should
+        <input type="text" class="gap-input" id="g2" autocomplete="off" spellcheck="false" aria-label="Gap 1b" />
+        more of an effort.
+      </p>
+    </section>
+
+    <section class="item">
+      <p>
+        <span class="item-num">2.</span>
+        I always
+        <input type="text" class="gap-input" id="g3" autocomplete="off" spellcheck="false" aria-label="Gap 2a" />
+        sure I
+        <input type="text" class="gap-input" id="g4" autocomplete="off" spellcheck="false" aria-label="Gap 2b" />
+        some form of physical exercise every day.
+      </p>
+    </section>
+
+    <section class="item">
+      <p>
+        <span class="item-num">3.</span>
+        I&rsquo;m not very good at
+        <input type="text" class="gap-input" id="g5" autocomplete="off" spellcheck="false" aria-label="Gap 3a" />
+        decisions; it takes me ages
+        <input type="text" class="gap-input wide" id="g6" autocomplete="off" spellcheck="false" aria-label="Gap 3b" />
+        up my mind.
+      </p>
+    </section>
+
+    <section class="item">
+      <p>
+        <span class="item-num">4.</span>
+        If I were asked
+        <input type="text" class="gap-input wide" id="g7" autocomplete="off" spellcheck="false" aria-label="Gap 4a" />
+        a speech in public, I&rsquo;d
+        <input type="text" class="gap-input" id="g8" autocomplete="off" spellcheck="false" aria-label="Gap 4b" />
+        my best, but I&rsquo;d be so nervous, I&rsquo;d probably
+        <input type="text" class="gap-input" id="g9" autocomplete="off" spellcheck="false" aria-label="Gap 4c" />
+        a mess of it.
+      </p>
+    </section>
+
+    <section class="item">
+      <p>
+        <span class="item-num">5.</span>
+        I&rsquo;ve been
+        <input type="text" class="gap-input" id="g10" autocomplete="off" spellcheck="false" aria-label="Gap 5a" />
+        nothing but study lately; it would
+        <input type="text" class="gap-input" id="g11" autocomplete="off" spellcheck="false" aria-label="Gap 5b" />
+        me good to go out more in the evenings. It certainly wouldn&rsquo;t
+        <input type="text" class="gap-input" id="g12" autocomplete="off" spellcheck="false" aria-label="Gap 5c" />
+        me any harm.
+      </p>
+    </section>
+
+    <section class="item">
+      <p>
+        <span class="item-num">6.</span>
+        I&rsquo;d love
+        <input type="text" class="gap-input wide" id="g13" autocomplete="off" spellcheck="false" aria-label="Gap 6a" />
+        a job that has something
+        <input type="text" class="gap-input wide" id="g14" autocomplete="off" spellcheck="false" aria-label="Gap 6b" />
+        with travel; it would be a great way
+        <input type="text" class="gap-input wide" id="g15" autocomplete="off" spellcheck="false" aria-label="Gap 6c" />
+        a living.
+      </p>
+    </section>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script>
+(function () {
+  var ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+  var DISPLAY = {
+    1: "do",
+    2: "make",
+    3: "make",
+    4: "do",
+    5: "making",
+    6: "to make",
+    7: "to make",
+    8: "do",
+    9: "make",
+    10: "doing",
+    11: "do",
+    12: "do",
+    13: "to do",
+    14: "to do",
+    15: "to make"
+  };
+  var ACCEPT = {
+    1: ["do"],
+    2: ["make"],
+    3: ["make"],
+    4: ["do"],
+    5: ["making"],
+    6: ["to make"],
+    7: ["to make"],
+    8: ["do"],
+    9: ["make"],
+    10: ["doing"],
+    11: ["do"],
+    12: ["do"],
+    13: ["to do"],
+    14: ["to do"],
+    15: ["to make"]
+  };
+  var LABEL = {
+    1: "1a",
+    2: "1b",
+    3: "2a",
+    4: "2b",
+    5: "3a",
+    6: "3b",
+    7: "4a",
+    8: "4b",
+    9: "4c",
+    10: "5a",
+    11: "5b",
+    12: "5c",
+    13: "6a",
+    14: "6b",
+    15: "6c"
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("g" + n);
+  }
+
+  function matches(n, userRaw) {
+    var u = norm(userRaw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function bindInputClear() {
+    ORDER.forEach(function (n) {
+      getIn(n).addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    });
+  }
+
+  bindInputClear();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var total = ORDER.length;
+    var correct = 0;
+    var html = "";
+
+    ORDER.forEach(function (n) {
+      var el = getIn(n);
+      var raw = el.value;
+      var ok = matches(n, raw);
+      if (raw.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw.trim()) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && raw.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw.trim() ? "\u2713" : "\u2717") + " " + LABEL[n] + "</h4>";
+      html +=
+        '<p class="fb-meta">Yours: <strong>' +
+        (raw.trim() ? esc(raw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p></div>";
+    });
+
+    var filled = 0;
+    ORDER.forEach(function (n) {
+      if (getIn(n).value.trim()) filled++;
+    });
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / " +
+      total +
+      (filled < total ? " &mdash; fill every gap." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    ORDER.forEach(function (n) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    });
+  });
+})();
+  </script>
+</body>
+</html>

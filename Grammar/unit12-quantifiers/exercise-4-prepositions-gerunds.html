@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Prepositions and gerunds · Exercise 4</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .gram-nav {
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .gram-nav a:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .word-box > strong:first-child {
+      color: #bae6fd;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: center;
+    }
+    .bank-chip {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.5);
+      font-size: 0.86rem;
+      color: #e8f0ff;
+    }
+    .bank-chip.is-example {
+      opacity: 0.55;
+      text-decoration: line-through;
+      border-style: dashed;
+    }
+    .bank-note {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .bank-note strong { display: inline; font-weight: 700; color: #e8f0ff; }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.88;
+      color: #e8f0ff;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .gap0 { color: #fef08a; font-weight: 700; }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 4.5rem;
+      width: 6.8rem;
+      max-width: 42%;
+      margin: 0 3px;
+      padding: 6px 9px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input.prep { width: 4.2rem; min-width: 3.5rem; }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.87rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Grammar &mdash; Prepositions and gerunds</h1>
+        <p class="badge">Exercise 4 &middot; Unit 12</p>
+      </div>
+      <a class="back" href="../../unit12.html">&larr; Unit 12</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Unit 12 grammar tasks">
+      <a href="index.html">Exercise 1</a> <span>·</span>
+      <a href="exercise-2-options.html">Exercise 2</a> <span>·</span>
+      <a href="exercise-3-hypothetical.html">Exercise 3</a> <span>·</span>
+      <span>Exercise 4</span>
+    </nav>
+
+    <p class="instr">
+      <strong>4</strong> Complete each sentence with a <strong>word from the box</strong> and a <strong>preposition</strong>. There is an example at the beginning (<strong>0</strong>). Use the remaining words <strong>once</strong> each.
+    </p>
+
+    <div class="word-box">
+      <strong>Word box</strong>
+      <div class="word-box-line" role="list">
+        <span class="bank-chip" role="listitem">carry</span>
+        <span class="bank-chip" role="listitem">difficulty</span>
+        <span class="bank-chip" role="listitem">get</span>
+        <span class="bank-chip" role="listitem">good</span>
+        <span class="bank-chip is-example" role="listitem">learnt</span>
+        <span class="bank-chip" role="listitem">looking</span>
+        <span class="bank-chip" role="listitem">take</span>
+        <span class="bank-chip" role="listitem">tired</span>
+        <span class="bank-chip" role="listitem">told</span>
+      </div>
+      <p class="bank-note"><strong>Example (0)</strong> uses <strong>learnt</strong> + <strong>from</strong>. Type the box word in the <strong>first</strong> gap and the preposition in the <strong>second</strong> (where there are two blanks).</p>
+    </div>
+
+    <p class="gap-sent">
+      <strong>0.</strong> She <span class="gap0">learnt</span> a lot <span class="gap0">from</span> growing up with her grandparents.
+    </p>
+
+    <p class="gap-sent">
+      <strong>1.</strong> I was always
+      <input type="text" class="gap-input" id="w1" autocomplete="off" spellcheck="false" aria-label="Sentence 1 word" />
+      off
+      <input type="text" class="gap-input prep" id="p1" autocomplete="off" spellcheck="false" aria-label="Sentence 1 preposition" />
+      talking when I was at school.
+    </p>
+    <p class="gap-sent">
+      <strong>2.</strong> Do you think you&rsquo;ll ever
+      <input type="text" class="gap-input" id="w2" autocomplete="off" spellcheck="false" aria-label="Sentence 2 word" />
+      <input type="text" class="gap-input prep" id="p2" autocomplete="off" spellcheck="false" aria-label="Sentence 2 preposition" />
+      this illness?
+    </p>
+    <p class="gap-sent">
+      <strong>3.</strong> It&rsquo;s sunny so there&rsquo;s a
+      <input type="text" class="gap-input" id="w3" autocomplete="off" spellcheck="false" aria-label="Sentence 3 word" />
+      chance
+      <input type="text" class="gap-input prep" id="p3" autocomplete="off" spellcheck="false" aria-label="Sentence 3 preposition" />
+      the match going ahead.
+    </p>
+    <p class="gap-sent">
+      <strong>4.</strong> Shall we
+      <input type="text" class="gap-input" id="w4" autocomplete="off" spellcheck="false" aria-label="Sentence 4 word" />
+      <input type="text" class="gap-input prep" id="p4" autocomplete="off" spellcheck="false" aria-label="Sentence 4 preposition" />
+      working until we finish this monthly report?
+    </p>
+    <p class="gap-sent">
+      <strong>5.</strong> Maria is
+      <input type="text" class="gap-input" id="w5" autocomplete="off" spellcheck="false" aria-label="Sentence 5 word" />
+      <input type="text" class="gap-input prep" id="p5" autocomplete="off" spellcheck="false" aria-label="Sentence 5 preposition" />
+      studying at weekends and needs some time off.
+    </p>
+    <p class="gap-sent">
+      <strong>6.</strong> Everyone is
+      <input type="text" class="gap-input" id="w6" autocomplete="off" spellcheck="false" aria-label="Sentence 6 word" />
+      forward
+      <input type="text" class="gap-input prep" id="p6" autocomplete="off" spellcheck="false" aria-label="Sentence 6 preposition" />
+      the next episode of the programme.
+    </p>
+    <p class="gap-sent">
+      <strong>7.</strong> I have great
+      <input type="text" class="gap-input" id="w7" autocomplete="off" spellcheck="false" aria-label="Sentence 7 word" />
+      <input type="text" class="gap-input prep" id="p7" autocomplete="off" spellcheck="false" aria-label="Sentence 7 preposition" />
+      remembering all my students&rsquo; names.
+    </p>
+    <p class="gap-sent">
+      <strong>8.</strong> Why do so many middle-aged men
+      <input type="text" class="gap-input" id="w8" autocomplete="off" spellcheck="false" aria-label="Sentence 8 word" />
+      <input type="text" class="gap-input prep" id="p8" autocomplete="off" spellcheck="false" aria-label="Sentence 8 preposition" />
+      playing golf?
+    </p>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var WORDS = {
+    1: ["told"],
+    2: ["get"],
+    3: ["good"],
+    4: ["carry"],
+    5: ["tired"],
+    6: ["looking"],
+    7: ["difficulty"],
+    8: ["take"]
+  };
+  var PREPS = {
+    1: ["for"],
+    2: ["over"],
+    3: ["of"],
+    4: ["on"],
+    5: ["of"],
+    6: ["to"],
+    7: ["in", "with"],
+    8: ["up"]
+  };
+  var DISPLAY = {
+    1: "told · for",
+    2: "get · over",
+    3: "good · of",
+    4: "carry · on",
+    5: "tired · of",
+    6: "looking · to",
+    7: "difficulty · in (or with)",
+    8: "take · up"
+  };
+  var EXPLAIN = {
+    1: "<strong>told off for</strong> &mdash; be criticised for doing something; passive <em>was told off for talking</em>.",
+    2: "<strong>get over</strong> &mdash; recover from an illness or difficulty.",
+    3: "<strong>good chance of</strong> &mdash; <em>of</em> + noun / gerund phrase.",
+    4: "<strong>carry on</strong> &mdash; continue (<em>carry on working</em>).",
+    5: "<strong>tired of</strong> &mdash; bored or fed up with something.",
+    6: "<strong>looking forward to</strong> &mdash; note <em>to</em> before noun or <strong>-ing</strong>.",
+    7: "<strong>difficulty in / with</strong> &mdash; both + <strong>-ing</strong> are common (<em>in remembering</em>).",
+    8: "<strong>take up</strong> &mdash; start a hobby (<em>take up playing golf</em>)."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function okList(val, list) {
+    var u = norm(val);
+    if (!u) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function bindClear(wId, pId) {
+    function clr() {
+      document.getElementById(wId).classList.remove("is-ok", "is-bad");
+      document.getElementById(pId).classList.remove("is-ok", "is-bad");
+      document.getElementById("feedback").classList.remove("show");
+    }
+    document.getElementById(wId).addEventListener("input", clr);
+    document.getElementById(pId).addEventListener("input", clr);
+  }
+
+  for (var i = 1; i <= 8; i++) {
+    bindClear("w" + i, "p" + i);
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var wel = document.getElementById("w" + n);
+      var pel = document.getElementById("p" + n);
+      var wv = wel.value;
+      var pv = pel.value;
+      var wOk = okList(wv, WORDS[n]);
+      var pOk = okList(pv, PREPS[n]);
+      var ok = wOk && pOk;
+      if (wv.trim() && pv.trim() && ok) correct++;
+
+      wel.classList.remove("is-ok", "is-bad");
+      pel.classList.remove("is-ok", "is-bad");
+      if (!wv.trim() || !pv.trim()) {
+        wel.classList.add("is-bad");
+        pel.classList.add("is-bad");
+      } else {
+        wel.classList.add(wOk ? "is-ok" : "is-bad");
+        pel.classList.add(pOk ? "is-ok" : "is-bad");
+      }
+
+      var pair =
+        (wv.trim() ? esc(wv.trim()) : "\u2014") + " + " + (pv.trim() ? esc(pv.trim()) : "\u2014");
+      html += '<div class="fb-item ' + (ok && wv.trim() && pv.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && wv.trim() && pv.trim() ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answers: <strong>' +
+        pair +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var filled = 0;
+    for (var j = 1; j <= 8; j++) {
+      if (document.getElementById("w" + j).value.trim() && document.getElementById("p" + j).value.trim()) {
+        filled++;
+      }
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8" +
+      (filled < 8 ? " &mdash; fill both parts for every sentence." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= 8; n++) {
+      document.getElementById("w" + n).value = "";
+      document.getElementById("p" + n).value = "";
+      document.getElementById("w" + n).classList.remove("is-ok", "is-bad");
+      document.getElementById("p" + n).classList.remove("is-ok", "is-bad");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

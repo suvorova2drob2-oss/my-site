@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Vocabulary &mdash; Listening verbs (gap-fill)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.2rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #c5d4ef;
+    }
+    .word-box strong { color: #bae6fd; display: block; margin-bottom: 10px; }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: center;
+    }
+    .bank-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.5);
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: #e8f0ff;
+    }
+    .bank-note { margin-top: 12px; font-size: 0.86rem; color: var(--muted); }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 6.5rem;
+      max-width: min(100%, 14rem);
+      width: 10rem;
+      margin: 0 4px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; color: #e0e8f8; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    @media (max-width: 600px) {
+      .gap-input { width: 100%; max-width: 100%; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Listening verbs (gap-fill)</h1>
+      <a class="back" href="../index.html">&larr; Unit 12 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 12 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong>Listening verbs</strong> (Ex. 2)</span>
+    </nav>
+
+    <section class="task">
+      <h2>Exercise 2</h2>
+      <p class="instr">
+        Complete each sentence with the <strong>correct form</strong> of a verb from the box. The same kinds of phrases appeared in the listening. Type <strong>one word</strong> per gap (the missing verb form only).
+      </p>
+
+      <div class="word-box">
+        <strong>Verb box</strong>
+        <div class="word-box-line" role="list">
+          <span class="bank-chip" role="listitem">get (&times;2)</span>
+          <span class="bank-chip" role="listitem">look</span>
+          <span class="bank-chip" role="listitem">make</span>
+          <span class="bank-chip" role="listitem">turn</span>
+          <span class="bank-chip" role="listitem">work</span>
+        </div>
+        <p class="bank-note">You need <strong>get</strong> twice, in two different forms. Each other base verb is used once.</p>
+      </div>
+
+      <p class="gap-sent">
+        <strong>1.</strong> It can be quite a shock when you leave home and have to start
+        <input type="text" class="gap-input" id="ans-1" data-n="1" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+        after yourself.
+      </p>
+      <p class="gap-sent">
+        <strong>2.</strong> I&rsquo;ve got a lot of emails to answer. I&rsquo;m
+        <input type="text" class="gap-input" id="ans-2" data-n="2" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+        my way through them quite quickly, but I won&rsquo;t be finished for another hour.
+      </p>
+      <p class="gap-sent">
+        <strong>3.</strong> I&rsquo;ve been playing this new computer game for hours, but I just can&rsquo;t
+        <input type="text" class="gap-input" id="ans-3" data-n="3" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+        the hang of it.
+      </p>
+      <p class="gap-sent">
+        <strong>4.</strong> I overslept this morning, but I
+        <input type="text" class="gap-input" id="ans-4" data-n="4" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+        up an excuse and told my boss that the trains were all delayed.
+      </p>
+      <p class="gap-sent">
+        <strong>5.</strong> I was quite worried about the project I did last week because I rushed it a bit, but luckily it
+        <input type="text" class="gap-input" id="ans-5" data-n="5" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+        out well. The teacher loved it.
+      </p>
+      <p class="gap-sent">
+        <strong>6.</strong> I
+        <input type="text" class="gap-input" id="ans-6" data-n="6" placeholder="&hellip;" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+        fed up with my diet, so I&rsquo;m back to eating normally now!
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var DISPLAY = {
+    1: "looking",
+    2: "working",
+    3: "get",
+    4: "made",
+    5: "turned",
+    6: "got"
+  };
+
+  var ACCEPT = {
+    1: ["looking"],
+    2: ["working"],
+    3: ["get"],
+    4: ["made"],
+    5: ["turned"],
+    6: ["got"]
+  };
+
+  var EXPLAIN = {
+    1: "<strong>look after yourself</strong> &mdash; take care of yourself when you live on your own.",
+    2: "<strong>work your way through</strong> &mdash; deal with a pile of things step by step.",
+    3: "<strong>get the hang of</strong> &mdash; learn how to do something.",
+    4: "<strong>make up an excuse</strong> &mdash; invent a reason that isn&rsquo;t true.",
+    5: "<strong>turn out well</strong> &mdash; have a good result in the end.",
+    6: "<strong>get fed up with</strong> &mdash; become annoyed or tired of something."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("ans-" + n);
+  }
+
+  function matches(n, userRaw) {
+    var u = norm(userRaw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function bindInputClear() {
+    for (var n = 1; n <= 6; n++) {
+      getIn(n).addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    }
+  }
+
+  bindInputClear();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 6; n++) {
+      var el = getIn(n);
+      var raw = el.value;
+      var ok = matches(n, raw);
+      if (raw.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw.trim()) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && raw.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw.trim() ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw.trim() ? esc(raw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var filled = 0;
+    for (var i = 1; i <= 6; i++) {
+      if (getIn(i).value.trim()) filled++;
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 6" +
+      (filled < 6 ? " &mdash; fill every gap for a full score." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= 6; n++) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

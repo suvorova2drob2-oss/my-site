@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Vocabulary — Criminals’ titles (Exercise 3)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .seq-note {
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+    .seq-note a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .seq-note a:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .example-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+    .example-box .lab {
+      font-weight: 800;
+      font-size: 0.76rem;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .example-box em { color: #bae6fd; }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 12px; color: #bae6fd; }
+
+    .row {
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+    .row.example-row {
+      border-color: rgba(86, 204, 242, 0.35);
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .row-num { font-weight: 800; color: var(--accent); margin-right: 8px; }
+    .crime-name {
+      font-weight: 700;
+      color: #fde68a;
+      margin-right: 8px;
+    }
+    .arrow { color: var(--muted); margin: 0 6px; }
+    .row-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .gap-in {
+      width: min(220px, 100%);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid #4d6fa1;
+      background: #12264b;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .gap-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .gap-in.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.1); }
+    .gap-in.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+    .gap-example {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.4);
+      color: #86efac;
+      font-weight: 700;
+    }
+
+    .row-key {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #86efac;
+    }
+    .row-key.show { display: block; }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .score {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .score strong { color: #e8f0ff; }
+
+    .voc-next {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .voc-next a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-next a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Criminals&rsquo; titles</h1>
+        <span class="badge">Exercise 3 · Agent nouns</span>
+      </div>
+      <a class="back u10-back-vocab-index" href="../index.html">&larr; Vocabulary hub</a>
+    </header>
+
+    <p class="seq-note">Uses the same crimes as <a href="../crimes-and-criminals/index.html">Crimes and criminals</a> (matching).</p>
+
+    <p class="instr">
+      <span class="instr-num">3</span>
+      What title would be given to each of the criminals in the matching exercise?
+      <span style="display:block;font-size:0.82rem;color:var(--muted);margin-top:8px;font-weight:400;">In the coursebook this is labelled Exercise&nbsp;1; here it is <strong>Crimes and criminals</strong> above.</span>
+    </p>
+    <p class="hint">The crime name is given; type the usual English word for the person who commits it (like <em>mugger</em> for <em>mugging</em>). Hyphens and spaces are ignored when checking.</p>
+
+    <div class="example-box">
+      <div class="lab">Example (from the coursebook)</div>
+      <p><em>1 mugging – mugger</em></p>
+    </div>
+
+    <section class="task">
+      <h2>Your answers</h2>
+
+      <div class="row example-row">
+        <div class="row-line">
+          <span class="row-num">1.</span>
+          <span class="crime-name">mugging</span>
+          <span class="arrow">&mdash;</span>
+          <span class="gap-example">mugger</span>
+        </div>
+      </div>
+
+      <div class="row" data-i="0">
+        <div class="row-line">
+          <span class="row-num">2.</span>
+          <span class="crime-name">shoplifting</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="40" data-i="0" autocomplete="off" spellcheck="false" aria-label="Agent noun for shoplifting" />
+        </div>
+        <div class="row-key" data-key-for="0"></div>
+      </div>
+
+      <div class="row" data-i="1">
+        <div class="row-line">
+          <span class="row-num">3.</span>
+          <span class="crime-name">vandalism</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="40" data-i="1" autocomplete="off" spellcheck="false" aria-label="Agent noun for vandalism" />
+        </div>
+        <div class="row-key" data-key-for="1"></div>
+      </div>
+
+      <div class="row" data-i="2">
+        <div class="row-line">
+          <span class="row-num">4.</span>
+          <span class="crime-name">drink-driving</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="40" data-i="2" autocomplete="off" spellcheck="false" aria-label="Agent noun for drink-driving" />
+        </div>
+        <div class="row-key" data-key-for="2"></div>
+      </div>
+
+      <div class="row" data-i="3">
+        <div class="row-line">
+          <span class="row-num">5.</span>
+          <span class="crime-name">drug trafficking</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="3" autocomplete="off" spellcheck="false" aria-label="Agent noun for drug trafficking" />
+        </div>
+        <div class="row-key" data-key-for="3"></div>
+      </div>
+
+      <div class="row" data-i="4">
+        <div class="row-line">
+          <span class="row-num">6.</span>
+          <span class="crime-name">internet piracy</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="40" data-i="4" autocomplete="off" spellcheck="false" aria-label="Agent noun for internet piracy" />
+        </div>
+        <div class="row-key" data-key-for="4"></div>
+      </div>
+
+      <div class="row" data-i="5">
+        <div class="row-line">
+          <span class="row-num">7.</span>
+          <span class="crime-name">identity fraud</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="48" data-i="5" autocomplete="off" spellcheck="false" aria-label="Agent noun for identity fraud" />
+        </div>
+        <div class="row-key" data-key-for="5"></div>
+      </div>
+
+      <div class="row" data-i="6">
+        <div class="row-line">
+          <span class="row-num">8.</span>
+          <span class="crime-name">burglary</span>
+          <span class="arrow">&mdash;</span>
+          <input type="text" class="gap-in" maxlength="40" data-i="6" autocomplete="off" spellcheck="false" aria-label="Agent noun for burglary" />
+        </div>
+        <div class="row-key" data-key-for="6"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+        <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      </div>
+      <p class="score" id="elScore" hidden>Correct: <strong id="elScoreN">0</strong> / 7</p>
+    </section>
+
+    <p class="voc-next"><a class="u10-back-vocab-index" href="../index.html">&larr; Back to Vocabulary — Unit 10</a></p>
+  </main>
+
+  <script>
+(function () {
+  /** Accept variants (normalized: lowercase, no spaces/hyphens) */
+  var KEYS = [
+    ["shoplifter"],
+    ["vandal"],
+    ["drink-driver", "drinkdriver", "drunk driver", "drunkdriver"],
+    ["drug trafficker", "drugtrafficker", "trafficker"],
+    ["pirate", "internet pirate", "internetpirate"],
+    ["fraudster", "identity thief", "identitythief"],
+    ["burglar"]
+  ];
+  var EXPLAIN = [
+    "Key: <strong>shoplifter</strong>",
+    "Key: <strong>vandal</strong>",
+    "Key: <strong>drink-driver</strong> (also acceptable: <strong>drunk driver</strong>)",
+    "Key: <strong>drug trafficker</strong> (or <strong>trafficker</strong>)",
+    "Key: <strong>pirate</strong> (software / internet pirate)",
+    "Key: <strong>fraudster</strong> (also: <strong>identity thief</strong>)",
+    "Key: <strong>burglar</strong>"
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[-\s]+/g, "");
+  }
+
+  function matches(v, variants) {
+    var nv = norm(v);
+    if (!nv) return false;
+    for (var i = 0; i < variants.length; i++) {
+      if (nv === norm(variants[i])) return true;
+    }
+    return false;
+  }
+
+  function inp(i) {
+    return document.querySelector('.gap-in[data-i="' + i + '"]');
+  }
+  function kb(i) {
+    return document.querySelector('[data-key-for="' + i + '"]');
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    for (var i = 0; i < 7; i++) {
+      var el = inp(i);
+      var good = matches(el.value, KEYS[i]);
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(good ? "is-ok" : "is-bad");
+      var box = kb(i);
+      box.classList.toggle("show", !good);
+      box.innerHTML = good ? "" : EXPLAIN[i];
+      if (good) ok++;
+    }
+    document.getElementById("elScoreN").textContent = String(ok);
+    document.getElementById("elScore").hidden = false;
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    for (var i = 0; i < 7; i++) {
+      inp(i).value = "";
+      inp(i).classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      kb(i).innerHTML = "";
+    }
+    document.getElementById("elScore").hidden = true;
+  });
+
+  document.querySelectorAll(".gap-in").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var i = el.getAttribute("data-i");
+      el.classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      document.getElementById("elScore").hidden = true;
+    });
+  });
+})();
+  </script>
+  <script src="../../js/u10-vocab-course-context.js"></script>
+</body>
+</html>

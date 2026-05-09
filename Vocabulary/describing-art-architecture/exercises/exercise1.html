@@ -136,6 +136,10 @@
       touch-action: manipulation;
     }
     .gap.filled { border-bottom-style: solid; color: #e0f2fe; }
+    .gap.revealed {
+      color: var(--ok);
+      border-bottom-color: var(--ok);
+    }
     .gap.focus {
       background: rgba(56, 189, 248, 0.12);
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
@@ -458,8 +462,26 @@
         }
       }
     } else {
-      elFb.textContent = "Not quite — try another combination for the gaps.";
+      for (var r = 0; r < gapEls.length; r++) {
+        var gs = gapEls[r];
+        var ans = gs.dataset.answer;
+        gs.textContent = ans;
+        gs.dataset.pick = ans;
+        gs.classList.add("filled", "revealed");
+      }
+      elFb.textContent =
+        "Not quite — the correct words are shown in the gaps. " +
+        items[step].collocations.join(" · ") +
+        ".";
       elFb.className = "feedback bad";
+      locked = true;
+      for (var h = 0; h < gapEls.length; h++) gapEls[h].classList.remove("focus");
+      elCheck.disabled = true;
+      if (step < items.length - 1) {
+        elNext.style.display = "block";
+      } else {
+        elNextTask.classList.add("visible");
+      }
     }
   });
 

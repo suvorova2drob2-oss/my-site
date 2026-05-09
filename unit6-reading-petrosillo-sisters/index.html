@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 6 Reading &mdash; Clara and Silvia Petrosillo</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.2rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .note-line {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    .layout {
+      display: grid;
+      gap: 20px;
+    }
+    @media (min-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr 380px;
+        align-items: start;
+      }
+    }
+
+    .passage-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 18px 18px 16px;
+      max-height: min(72vh, 680px);
+      overflow-y: auto;
+    }
+    .passage-wrap h2 {
+      font-size: 1.05rem;
+      color: #bae6fd;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .passage {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: #e8f0ff;
+    }
+    .passage p { margin-bottom: 12px; }
+    .passage p:last-child { margin-bottom: 0; }
+    .passage .this-mark {
+      background: rgba(250, 204, 21, 0.22);
+      padding: 0 4px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .mcq-wrap h2 {
+      font-size: 1rem;
+      color: #bae6fd;
+      margin-bottom: 10px;
+    }
+    .q-block {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 12px 10px;
+      background: rgba(8, 22, 48, 0.35);
+      margin-bottom: 12px;
+    }
+    .q-stem {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      color: #e8f0ff;
+    }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .opt-line input { margin-top: 4px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; font-size: 0.86rem; line-height: 1.4; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.2em; }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.22);
+      border-color: #4ade80;
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #f87171;
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Reading &middot; Unit 6</span>
+        <h1>Two sisters &mdash; Clara and Silvia Petrosillo</h1>
+      </div>
+      <a class="back" href="../unit6.html">&larr; Unit 6</a>
+    </header>
+    <p class="note-line">
+      For question <strong>5</strong>, <strong>this</strong> is highlighted in the passage (printed books: ~line&nbsp;36). If your key differs, edit the <code>CORRECT</code> array in this file&rsquo;s script.
+    </p>
+
+    <div class="layout">
+      <div class="passage-wrap">
+        <h2>Reading text</h2>
+        <div class="passage">
+          <p>Clara and Silvia Petrosillo were eight and six respectively when they moved into the house next door to ours one cold December morning. I watched from the warmth of our lounge as the sisters helped their parents carry a number of items into their new home from the family car. They worked in unison, each holding on to the same box or object, moving perfectly in step with one another towards the front door without ever exchanging a single word, like a well-rehearsed dance duo. They seemed at ease in each other&rsquo;s company and I imagined they must spend a great deal of time together. I wasn&rsquo;t wrong.</p>
+          <p>At first, I was reluctant to approach the sisters, whose expressionless faces and wild, unruly hair did not particularly invite friendly overtures. And anyway, they preferred to stay in the house most of the time, so I would only really see them when Mr Petrosillo bundled them into the car in the morning to take them to school. When the evenings grew lighter, they were persuaded to play outside, but to begin with, they seemed fearful of leaving the safety of their back garden, and shyly avoided eye contact with me as I watched them from my own.</p>
+          <p>Eventually, though, the sisters showed signs of coming out of their shells. They began to venture out into the park across the road, and I seized on the opportunity to speak to them. They allowed me to join in their games, but they would converse together in earnest whispers, which made me feel excluded, and they laughed very little. To be honest, the only time they looked truly happy was when they were on their roller-skates, sailing hand-in-hand down the road, with Clara, who seemed more confident, shouting at the younger Silvia to bend her knees or straighten her back. As for me, and despite my best efforts, the Petrosillo sisters never really allowed me to get close to them. They preferred to keep themselves to themselves and do everything together, alone.</p>
+          <p>Until, that is, Harry Reynolds appeared on the scene; Clara&rsquo;s scene. She was seventeen, and he was seven years older, with a car, and a well-paid job in a life assurance company. Silvia appeared untroubled by <span class="this-mark">this</span>. Her face, at least, gave nothing away; but then, it never did. Clearly, though, it was the beginning of a new reality, one which quickly drove the sisters apart, and when Clara went off to study law a year later, the distance between them grew. Silvia, who left school at sixteen, took a job as a gardener with the Council, had her head shaved and acquired a large tattoo on her back. She continued to live with her parents. Meanwhile, Clara graduated and moved to London, where she eventually became a partner in an international law firm. My parents told me that the sisters spent very little time together whenever Clara came to visit.</p>
+          <p>One day last summer, Clara turned up driving a two-seater convertible. The Petrosillos&rsquo; house was up for sale and she&rsquo;d come to clear her old things out. I was back home as well, visiting my parents, and happened to be looking out of the lounge window, from where I could see Silvia taking out the rubbish. When she saw her sister parking, Silvia paused as though she might go out into the street to greet her. But then she turned around and went quietly back into the house.</p>
+          <p>Then one afternoon, I saw the sisters sitting on the front doorstep in what looked like embarrassed silence, putting on their old roller-skates. They skated slowly around the driveway a few times before finally going out through the front gate. They exchanged an awkward glance, then moved off down the road, gradually gathering speed. At one point, Silvia wobbled, and it looked as if she was going to fall over. But Clara held out her hand, and Silvia, after a brief hesitation, took it. As they skated on, it was, for a moment, as though nothing had changed, and the sisters were who they had once been, before life came between them.</p>
+        </div>
+      </div>
+
+      <div class="mcq-wrap">
+        <h2>Questions 1&ndash;6</h2>
+        <p class="note-line" style="margin-bottom: 10px;">Choose the answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) which fits best according to the text.</p>
+        <div id="mcq-root" aria-live="polite"></div>
+        <div class="btn-row">
+          <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+          <button type="button" class="btn-reset" id="btnClear">Clear</button>
+        </div>
+        <p class="feedback" id="feedback"></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  /**
+   * Key inferred from the text (confirm with Teacher’s Book / SB Key if needed).
+   * Q5: “this” → the age gap (seven years older) is the salient detail Silvia might
+   * react to; if your edition keys D or B, change index 4 below.
+   */
+  var CORRECT = ["B", "C", "B", "C", "A", "A"];
+
+  var MCQ = [
+    {
+      q: "What point does the writer make about the sisters in the first paragraph?",
+      options: {
+        A: "They preferred not to speak to each other.",
+        B: "The closeness of their relationship was apparent.",
+        C: "They enjoyed doing the task they had been given.",
+        D: "This was not the first time they had moved house."
+      }
+    },
+    {
+      q: "In the second paragraph, the writer says that she",
+      options: {
+        A: "was discouraged by Mr Petrosillo from playing with the sisters.",
+        B: "was not allowed to go next door to the sisters&rsquo; house.",
+        C: "was initially put off by the appearance of the sisters.",
+        D: "was nervous about inviting the sisters into her garden."
+      }
+    },
+    {
+      q: "What is meant by &lsquo;the sisters showed signs of coming out of their shells&rsquo; (paragraph 3)?",
+      options: {
+        A: "They looked older and more mature.",
+        B: "They appeared to be growing in confidence.",
+        C: "They made it clear that they wanted to play.",
+        D: "They indicated that they were allowed to leave their house."
+      }
+    },
+    {
+      q: "In the third paragraph the writer says that the Petrosillo sisters",
+      options: {
+        A: "refused to let her go roller-skating with them.",
+        B: "said some unpleasant things about her to each other.",
+        C: "showed little interest in her attempts at friendship.",
+        D: "deliberately tried to make her feel unwelcome."
+      }
+    },
+    {
+      q: "What does &lsquo;this&rsquo; refer to (see highlighted word in the passage)?",
+      options: {
+        A: "the age difference between Harry and Clara",
+        B: "the fact that Harry was successful",
+        C: "the nature of Harry&rsquo;s work",
+        D: "the fact that Clara had a boyfriend"
+      }
+    },
+    {
+      q: "When Clara returned to her parents&rsquo; house last summer, the sisters",
+      options: {
+        A: "appeared uncomfortable in each other&rsquo;s company.",
+        B: "were noticeably less proficient at roller skating.",
+        C: "were no longer on speaking terms with each other.",
+        D: "had trouble throwing away their old possessions."
+      }
+    }
+  ];
+
+  var root = document.getElementById("mcq-root");
+  var fb = document.getElementById("feedback");
+
+  function render() {
+    root.innerHTML = MCQ.map(function (item, qIdx) {
+      var keys = ["A", "B", "C", "D"];
+      var opts = keys.map(function (k) {
+        if (!item.options[k]) return "";
+        var id = "q" + qIdx + k;
+        return (
+          '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+          '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+          '<label for="' + id + '"><span class="letter">' + k + "</span> " + item.options[k] + "</label></li>"
+        );
+      }).join("");
+      return (
+        '<article class="q-block">' +
+        '<p class="q-stem"><strong>' +
+        (qIdx + 1) +
+        ".</strong> " +
+        item.q  +
+        "</p>" +
+        '<ul class="opts">' +
+        opts +
+        "</ul></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+        fb.textContent = "";
+      });
+    });
+  }
+
+  function clearMarks() {
+    root.querySelectorAll(".opt-line").forEach(function (line) {
+      line.classList.remove("ok", "bad-pick");
+    });
+  }
+
+  function getChoice(i) {
+    var el = root.querySelector('input[name="q' + i + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  render();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    clearMarks();
+    var n = MCQ.length;
+    for (var i = 0; i < n; i++) {
+      if (!getChoice(i)) {
+        fb.textContent = "Choose A, B, C or D for every question, then check again.";
+        return;
+      }
+    }
+    var score = 0;
+    for (var j = 0; j < n; j++) {
+      var pick = getChoice(j);
+      var keyLetter = CORRECT[j];
+      var ok = pick === keyLetter;
+      if (ok) score++;
+      var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
+      if (line) line.classList.add(ok ? "ok" : "bad-pick");
+      var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + keyLetter + '"]');
+      if (correctLine && !ok) correctLine.classList.add("ok");
+    }
+    fb.innerHTML =
+      score === n
+        ? "<strong>All " + n + " correct.</strong>"
+        : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct; red = your wrong answer.";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function () {
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.checked = false;
+    });
+    clearMarks();
+    fb.textContent = "";
+  });
+})();
+  </script>
+</body>
+</html>

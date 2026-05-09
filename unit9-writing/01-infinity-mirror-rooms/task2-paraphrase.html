@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 2 &mdash; Persuasive paraphrases in the text</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --paper: #f8fafc;
+      --ink: #0f172a;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --line: #334155;
+      --ok: #16a34a;
+      --ok-bg: #dcfce7;
+      --err: #b91c1c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: #e2e8f0;
+      min-height: 100dvh;
+      padding: max(20px, env(safe-area-inset-top, 0px))
+        max(16px, env(safe-area-inset-right, 0px))
+        max(28px, env(safe-area-inset-bottom, 0px))
+        max(16px, env(safe-area-inset-left, 0px));
+    }
+    .shell { max-width: 42rem; margin: 0 auto; }
+    .top {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px 20px;
+      margin-bottom: 14px;
+    }
+    .top h1 { font-size: 1.05rem; line-height: 1.3; color: #f1f5f9; margin-bottom: 8px; }
+    .top .inst {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      margin: 0 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+    .word-bank li {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #94a3b8;
+    }
+    .word-bank li.is-current {
+      color: #f0f9ff;
+      border-color: var(--accent);
+      background: #0c4a6e;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+    }
+    .word-bank li.is-solved {
+      color: #86efac;
+      border-color: #166534;
+      background: #052e16;
+    }
+    .hud {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .hud .step { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .hud .cue {
+      display: inline-block;
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #fff;
+      padding: 10px 20px 12px;
+      background: linear-gradient(145deg, #1d4ed8, #7c3aed);
+      border-radius: 12px;
+      line-height: 1.2;
+    }
+    .hud .hint { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.4; }
+    .sheet {
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 22px 20px 24px;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
+      border: 1px solid #e2e8f0;
+    }
+    .sheet h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .sheet p { font-size: 0.98rem; line-height: 1.65; margin-bottom: 1em; }
+    .sheet p:last-child { margin-bottom: 0; }
+    .sheet em { font-style: italic; }
+    .lex-tip {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: #94a3b8;
+      text-underline-offset: 3px;
+    }
+    .key-slot {
+      display: inline;
+      margin: 0;
+      padding: 0 1px;
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      border-radius: 3px;
+      vertical-align: baseline;
+    }
+    .key-slot .key { font-weight: 700; color: #0f172a; }
+    .key-slot:hover:not(:disabled) .key,
+    .key-slot:focus-visible:not(:disabled) .key {
+      color: #1d4ed8;
+      outline: none;
+    }
+    .key-slot:hover:not(:disabled),
+    .key-slot:focus-visible:not(:disabled) {
+      background: rgba(29, 78, 216, 0.08);
+    }
+    .key-slot:disabled { cursor: default; }
+    .key-slot--done {
+      background: var(--ok-bg) !important;
+      border-radius: 4px;
+      padding: 0 3px;
+    }
+    .key-slot--done .key { color: #14532d; }
+    .key-slot--done::after {
+      content: " ← " attr(data-p);
+      font-size: 0.75em;
+      font-weight: 700;
+      color: var(--ok);
+      white-space: nowrap;
+    }
+    .key-slot--wrong-anim { animation: shake 0.45s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+    #t2-feedback { min-height: 1.4em; font-size: 13px; margin-top: 10px; text-align: center; }
+    #t2-feedback.err { color: #fca5a5; }
+    #t2-feedback.ok { color: #86efac; }
+    .done-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: #0f172a;
+      border: 1px solid #22c55e;
+      border-radius: 12px;
+      color: #e2e8f0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .done-panel.on { display: block; }
+    .done-panel h3 { font-size: 0.9rem; margin-bottom: 8px; color: #86efac; }
+    .done-panel table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .done-panel td { padding: 4px 6px; border-bottom: 1px solid #334155; }
+    .done-panel td:nth-child(2) { color: #a5b4fc; font-weight: 600; }
+    .back { margin-top: 16px; font-size: 14px; }
+    .back a, .back-row a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .back a:hover, .back-row a:hover { text-decoration: underline; }
+    .back-row { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 12px; font-size: 14px; }
+    @media (max-width: 420px) {
+      .hud .cue { font-size: 1.35rem; padding: 8px 14px; }
+      .sheet { padding: 18px 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top">
+      <h1>Task 2 &mdash; Find the neutral word in the text</h1>
+      <p class="inst">Look at the <strong>bold</strong> words in the model answer, which are neutral, and find which one you would replace with the persuasive word shown. The words are given one at a time &mdash; <strong>click the matching neutral phrase in the text</strong> to highlight it.</p>
+      <ol class="word-bank" id="t2-bank" aria-label="Persuasive word list"></ol>
+      <div class="hud">
+        <div class="step" id="t2-step">1 / 12</div>
+        <div class="cue" id="t2-cue" aria-live="polite">…</div>
+        <p class="hint" id="t2-hint">Click the neutral word or phrase in the review below.</p>
+      </div>
+      <p id="t2-feedback" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="sheet" role="article">
+      <h2>Model answer (review text)</h2>
+      <p>
+        A long-awaited new exhibition at The Tate Modern opened last week, <span class="lex-tip">billed as a</span>
+        <button type="button" class="key-slot" data-n="1" data-p="dazzling" aria-label="(1) great — click if this is the match"><span class="key">(1) great</span></button>
+        display of works from Yayoi Kusama, one of the world&rsquo;s most celebrated artists and as expected it was <span class="lex-tip">nothing short of a</span>
+        <button type="button" class="key-slot" data-n="2" data-p="triumph" aria-label="(2) big success — click if this is the match"><span class="key">(2) big success</span></button>.
+        Titled <em>Infinity Mirror Rooms</em>, the exhibition explores themes of infinite space and endless replication through two <span class="lex-tip">immersive mirror room installations</span>, reflecting her long career in <span class="lex-tip">conceptual and minimalist artwork</span> since she
+        <span class="lex-tip"><button type="button" class="key-slot" data-n="3" data-p="exploded" aria-label="(3) arrived — click if this is the match"><span class="key">(3) arrived</span></button> onto the New York art scene</span>
+        in the late 1950s.
+      </p>
+      <p>
+        The installations are accompanied by photographic works
+        <button type="button" class="key-slot" data-n="4" data-p="meticulously" aria-label="(4) carefully — click if this is the match"><span class="key">(4) carefully</span></button>
+        documenting the artist&rsquo;s early sculptural work as well as images of her working in her New York studio, giving the viewer context so as to interpret the artist&rsquo;s work more deeply and see her as the
+        <button type="button" class="key-slot" data-n="5" data-p="powerful" aria-label="(5) strong — click if this is the match"><span class="key">(5) strong</span></button>
+        artistic force that she is. Some images explore the
+        <button type="button" class="key-slot" data-n="6" data-p="poignant" aria-label="(6) emotional — click if this is the match"><span class="key">(6) emotional</span></button>
+        experience of moving to New York, where <span class="lex-tip">feelings of alienation</span> hint at this having been a
+        <button type="button" class="key-slot" data-n="7" data-p="turbulent" aria-label="(7) difficult — click if this is the match"><span class="key">(7) difficult</span></button>
+        period in her life.
+      </p>
+      <p>
+        The curation of the exhibition has been
+        <button type="button" class="key-slot" data-n="8" data-p="exquisitely" aria-label="(8) nicely — click if this is the match"><span class="key">(8) nicely</span></button>
+        done, with attention to detail in the <span class="lex-tip">layout and flow</span> throughout the gallery. The <span class="lex-tip">main draw</span> is without doubt the installations themselves in which tiny, suspended lights <span class="lex-tip">give the impression of</span>
+        <button type="button" class="key-slot" data-n="9" data-p="radiating" aria-label="(9) shining out — click if this is the match"><span class="key">(9) shining out</span></button>
+        in all directions. It gives a sense that the light has filled the
+        <button type="button" class="key-slot" data-n="10" data-p="mighty" aria-label="(10) large — click if this is the match"><span class="key">(10) large</span></button>
+        Tate Modern building <span class="lex-tip">beyond the confines of</span> the installation rooms.
+      </p>
+      <p>
+        This exhibition would be <span class="lex-tip">well worth a visit</span> for
+        <button type="button" class="key-slot" data-n="11" data-p="enthusiasts" aria-label="(11) fans — click if this is the match"><span class="key">(11) fans</span></button>
+        of the artist herself, but additionally it could easily <span class="lex-tip">capture the hearts of</span> any installation art lovers as a fascinating way to experience a talented and
+        <button type="button" class="key-slot" data-n="12" data-p="renowned" aria-label="(12) famous — click if this is the match"><span class="key">(12) famous</span></button>
+        artist.
+      </p>
+    </div>
+
+    <div class="done-panel" id="t2-done" aria-hidden="true">
+      <h3>All 12 matches found</h3>
+      <table>
+        <tbody id="t2-summary"></tbody>
+      </table>
+    </div>
+
+    <p class="back-row">
+      <a href="index.html">&larr; Task 1 (read + glossary)</a>
+      <a href="task3-retell.html">Task 3 &mdash; retell &rarr;</a>
+      <a href="../index.html">Writing (Level 9)</a>
+    </p>
+  </div>
+  <script>
+(function () {
+  var PERSUASIVE = [
+    "dazzling", "enthusiasts", "exploded", "exquisitely", "meticulously", "mighty",
+    "poignant", "powerful", "radiating", "renowned", "triumph", "turbulent"
+  ];
+  var PAIRS = [
+    { n: 1, p: "dazzling" },
+    { n: 2, p: "triumph" },
+    { n: 3, p: "exploded" },
+    { n: 4, p: "meticulously" },
+    { n: 5, p: "powerful" },
+    { n: 6, p: "poignant" },
+    { n: 7, p: "turbulent" },
+    { n: 8, p: "exquisitely" },
+    { n: 9, p: "radiating" },
+    { n: 10, p: "mighty" },
+    { n: 11, p: "enthusiasts" },
+    { n: 12, p: "renowned" }
+  ];
+  var NEUTRAL = {
+    1: "great", 2: "big success", 3: "arrived", 4: "carefully", 5: "strong", 6: "emotional",
+    7: "difficult", 8: "nicely", 9: "shining out", 10: "large", 11: "fans", 12: "famous"
+  };
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+  var order = shuffle(PAIRS.map(function (_, i) { return i; }));
+  var step = 0;
+  var bankEl = document.getElementById("t2-bank");
+  var stepEl = document.getElementById("t2-step");
+  var cueEl = document.getElementById("t2-cue");
+  var feedback = document.getElementById("t2-feedback");
+  var doneEl = document.getElementById("t2-done");
+  var sumEl = document.getElementById("t2-summary");
+  PERSUASIVE.forEach(function (w) {
+    var li = document.createElement("li");
+    li.textContent = w;
+    li.setAttribute("data-pword", w);
+    bankEl.appendChild(li);
+  });
+  var bankByP = {};
+  Array.prototype.forEach.call(bankEl.querySelectorAll("li"), function (li) {
+    bankByP[li.getAttribute("data-pword")] = li;
+  });
+  function currentPair() {
+    if (step >= 12) return null;
+    return PAIRS[order[step]];
+  }
+  function updateBank() {
+    var cur = currentPair();
+    PERSUASIVE.forEach(function (w) {
+      var li = bankByP[w];
+      if (!li) return;
+      li.classList.remove("is-current", "is-solved");
+    });
+    if (step < 12 && cur) {
+      var active = bankByP[cur.p];
+      if (active) active.classList.add("is-current");
+    }
+    for (var s = 0; s < step; s++) {
+      var p = PAIRS[order[s]].p;
+      if (bankByP[p]) bankByP[p].classList.add("is-solved");
+    }
+  }
+  function showStep() {
+    if (step >= 12) {
+      stepEl.textContent = "12 / 12";
+      cueEl.textContent = "Done";
+      document.getElementById("t2-hint").textContent = "Every neutral item is matched.";
+      return;
+    }
+    var cur = currentPair();
+    stepEl.textContent = step + 1 + " / 12";
+    cueEl.textContent = cur.p;
+    feedback.textContent = "";
+    feedback.className = "";
+    updateBank();
+  }
+  var slots = document.querySelectorAll(".key-slot");
+  function markWrong(el) {
+    el.classList.add("key-slot--wrong-anim");
+    setTimeout(function () { el.classList.remove("key-slot--wrong-anim"); }, 500);
+  }
+  Array.prototype.forEach.call(slots, function (btn) {
+    btn.addEventListener("click", function () {
+      if (btn.disabled) return;
+      if (step >= 12) return;
+      var cur = currentPair();
+      var n = +btn.getAttribute("data-n");
+      if (n === cur.n) {
+        btn.disabled = true;
+        btn.classList.add("key-slot--done");
+        feedback.textContent = "Yes — ( " + n + " ) " + NEUTRAL[n] + " → " + cur.p;
+        feedback.className = "ok";
+        step++;
+        if (step >= 12) {
+          updateBank();
+          PERSUASIVE.forEach(function (w) {
+            if (bankByP[w]) bankByP[w].classList.add("is-solved");
+            if (bankByP[w]) bankByP[w].classList.remove("is-current");
+          });
+          showStep();
+          doneEl.classList.add("on");
+          doneEl.setAttribute("aria-hidden", "false");
+          var frag = document.createDocumentFragment();
+          for (var k = 1; k <= 12; k++) {
+            var tr = document.createElement("tr");
+            tr.innerHTML =
+              "<td>(" + k + ") " + NEUTRAL[k] + "</td><td>→ " + PAIRS[k - 1].p + "</td>";
+            frag.appendChild(tr);
+          }
+          sumEl.appendChild(frag);
+        } else {
+          showStep();
+        }
+      } else {
+        feedback.textContent = "Not the match for «" + cur.p + "». Try again.";
+        feedback.className = "err";
+        markWrong(btn);
+      }
+    });
+  });
+  showStep();
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 Grammar — Exercise 4 · Flip cards</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .example-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.93rem;
+    }
+    .example-box .lab {
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .example-box strong { color: #fef08a; }
+
+    .card-wrap {
+      margin-bottom: 16px;
+    }
+    .card-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front {
+      background: var(--front-bg);
+      color: #f1f5ff;
+    }
+    .flip-back {
+      background: var(--back-bg);
+      color: #e8f0ff;
+      transform: rotateY(180deg);
+    }
+
+    .gap {
+      border-bottom: 2px dashed rgba(148, 163, 184, 0.65);
+      padding: 0 4px 2px;
+      font-weight: 600;
+      color: #cbd5f5;
+    }
+    .hint-brackets {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .flip-back strong {
+      color: #86efac;
+      font-weight: 700;
+    }
+    .flip-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+    .tap-hint {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hub-link {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Grammar · Exercise 4 &mdash; Verb forms (flip cards)</h1>
+      <a class="back" href="index.html">&larr; Conditionals hub</a>
+    </header>
+
+    <p class="instr">
+      <span class="instr-num">4</span>
+      Complete each gap with an appropriate form of the verb in brackets. There is an example at the beginning (0).
+    </p>
+    <p class="hint">Each card shows the sentence with gaps on the front. <strong>Click</strong> the card (or press Space / Enter) to flip and see the correct forms.</p>
+
+    <div class="example-box">
+      <div class="lab">0 &mdash; Example (already done)</div>
+      <p>
+        If you <strong>flush</strong> (flush) all those wet wipes down the toilet, they <strong>will cause</strong> (cause) a blockage. Take them out now!
+      </p>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">1</div>
+      <button type="button" class="flip-card" aria-label="Card 1. Flip to see answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            If a wipe product <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(carry)</span> a &lsquo;Do not flush&rsquo; symbol, that <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(mean)</span> you should always throw it in the bin, not the toilet.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            If a wipe product <strong>carries</strong> a &lsquo;Do not flush&rsquo; symbol, that <strong>means</strong> you should always throw it in the bin, not the toilet.
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">2</div>
+      <button type="button" class="flip-card" aria-label="Card 2. Flip to see answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            Wet wipes <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(not/be)</span> such a big problem for our sewer systems if they <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(be)</span> biodegradable.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            Wet wipes <strong>wouldn&rsquo;t be</strong> such a big problem for our sewer systems if they <strong>were</strong> biodegradable.
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">3</div>
+      <button type="button" class="flip-card" aria-label="Card 3. Flip to see answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            Can you do me a favour? My hands are filthy. If you <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(open)</span> the packet of wipes, I <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(take)</span> one out.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            Can you do me a favour? My hands are filthy. If you <strong>open</strong> the packet of wipes, I <strong>will take</strong> one out.
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">4</div>
+      <button type="button" class="flip-card" aria-label="Card 4. Flip to see answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            Why did you buy these? If you <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(look)</span> at the packet while you were in the shop, you <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(see)</span> that they&rsquo;re non-flushable.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            Why did you buy these? If you <strong>had looked</strong> at the packet while you were in the shop, you <strong>would have seen</strong> that they&rsquo;re non-flushable.
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">5</div>
+      <button type="button" class="flip-card" aria-label="Card 5. Flip to see answers.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            We <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(not/have)</span> this problem now if wet wipes <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hint-brackets">(not invent)</span>.
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Answer</div>
+            We <strong>wouldn&rsquo;t have</strong> this problem now if wet wipes <strong>hadn&rsquo;t been invented</strong>.
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <p class="hub-link">
+      <a href="index.html">&larr; Back to textbook reference (conditionals)</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

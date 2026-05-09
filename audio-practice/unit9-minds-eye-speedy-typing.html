@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 CPE — Speedy Typing · Painting with the mind&rsquo;s eye</title>
+  <style>
+    :root {
+      --bg: #081127;
+      --panel: #121f3f;
+      --line: #304a75;
+      --text: #f3f6ff;
+      --muted: #9cb2d8;
+      --accent: #56ccf2;
+      --yellow: #ffd75a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #050c1d 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .page {
+      width: min(1300px, 100%);
+      margin: 0 auto;
+      padding: 18px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .top-player {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8, 17, 39, 0.96);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .top-row h1 { font-size: 1.2rem; line-height: 1.2; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+    audio { width: 100%; }
+    .board-area {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0d1a36;
+      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .live-board {
+      border: 1px solid #3a5788;
+      border-radius: 12px;
+      background: #0a1430;
+      padding: 14px;
+      overflow-y: auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      align-content: start;
+      flex: 1;
+      min-height: 280px;
+    }
+    .line {
+      line-height: 1.35;
+      color: var(--text);
+      word-break: break-word;
+      opacity: 0;
+      transform: scale(0.98);
+      animation: popFade 220ms ease forwards;
+      border: 1px solid #2e4772;
+      border-radius: 10px;
+      background: #102149;
+      padding: 8px 10px;
+      font-size: 1.35rem;
+      color: var(--yellow);
+      background: #0f2149;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sheet-nav { display: inline-flex; align-items: center; gap: 8px; }
+    .sheet-btn {
+      border: 1px solid #446696;
+      border-radius: 7px;
+      background: #1a315b;
+      color: var(--text);
+      width: 32px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .sheet-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .sheet-label {
+      font-size: 0.86rem;
+      color: #c5d3ee;
+      min-width: 92px;
+      text-align: center;
+    }
+    .controls {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #132446;
+      padding: 10px;
+    }
+    .main-input {
+      width: 100%;
+      border: 1px solid #49689b;
+      border-radius: 10px;
+      background: #0a1732;
+      color: var(--text);
+      font-size: 1.05rem;
+      padding: 12px;
+    }
+    .main-input::placeholder { color: #88a0ca; }
+    .main-input:focus {
+      outline: 2px solid #7fb5ea;
+      outline-offset: 1px;
+    }
+    @keyframes popFade {
+      from { opacity: 0; transform: translateY(4px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="top-player">
+      <div class="top-row">
+        <h1>Speedy Typing · Painting with the mind&rsquo;s eye</h1>
+        <a class="back" href="index-minds-eye.html">Back to Audio practice (Track 10)</a>
+      </div>
+      <p id="audioLabel" class="hint">Track 10 · one live board (lecture monologue)</p>
+      <audio id="mainAudio" controls preload="metadata"></audio>
+    </section>
+
+    <section class="board-area">
+      <div class="hint-row">
+        <p class="hint" id="boardHint">Type a phrase you caught from the audio and press Enter to drop it on the board.</p>
+        <div class="sheet-nav" aria-label="Sheet navigation">
+          <button type="button" id="sheetPrev" class="sheet-btn" aria-label="Previous sheet">←</button>
+          <span id="sheetLabel" class="sheet-label">Sheet 1 / 1</span>
+          <button type="button" id="sheetNext" class="sheet-btn" aria-label="Next sheet">→</button>
+        </div>
+      </div>
+      <div id="liveBoard" class="live-board" aria-label="Live board"></div>
+    </section>
+
+    <section class="controls">
+      <input
+        id="mainInput"
+        class="main-input"
+        type="text"
+        autocomplete="off"
+        placeholder="Type the phrase and press Enter..."
+        aria-label="Speedy typing input"
+      />
+    </section>
+  </main>
+
+  <script src="minds-eye-data.js"></script>
+  <script>
+    var DATA = window.CPE_MINDS_EYE;
+    if (!DATA) {
+      document.body.innerHTML = "<p>Missing minds-eye-data.js</p>";
+      throw new Error("CPE_MINDS_EYE");
+    }
+
+    var mainAudio = document.getElementById("mainAudio");
+    mainAudio.src = DATA.audioSrc;
+
+    var liveBoard = document.getElementById("liveBoard");
+    var mainInput = document.getElementById("mainInput");
+    var sheetPrev = document.getElementById("sheetPrev");
+    var sheetNext = document.getElementById("sheetNext");
+    var sheetLabel = document.getElementById("sheetLabel");
+
+    var maxSheets = 10;
+    var maxLinesPerSheet = 28;
+    var sheets = [[]];
+    var currentIndex = 0;
+
+    function createLine(text) {
+      var line = document.createElement("p");
+      line.className = "line";
+      line.textContent = text;
+      return line;
+    }
+
+    function pushNewSheet() {
+      sheets.push([]);
+      if (sheets.length > maxSheets) {
+        sheets.shift();
+      }
+      currentIndex = sheets.length - 1;
+    }
+
+    function addLineToCurrentSheet(text) {
+      currentIndex = sheets.length - 1;
+      var currentSheet = sheets[currentIndex];
+      currentSheet.push(text);
+      if (currentSheet.length >= maxLinesPerSheet) {
+        pushNewSheet();
+      }
+    }
+
+    function renderCurrentSheet() {
+      liveBoard.innerHTML = "";
+      var lines = sheets[currentIndex];
+      lines.forEach(function (text) {
+        liveBoard.appendChild(createLine(text));
+      });
+      liveBoard.scrollTop = liveBoard.scrollHeight;
+    }
+
+    function updateSheetControls() {
+      var current = currentIndex + 1;
+      var total = sheets.length;
+      sheetLabel.textContent = "Sheet " + String(current) + " / " + String(total);
+      sheetPrev.disabled = currentIndex <= 0;
+      sheetNext.disabled = currentIndex >= total - 1;
+    }
+
+    sheetPrev.addEventListener("click", function () {
+      if (currentIndex <= 0) {
+        return;
+      }
+      currentIndex -= 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    sheetNext.addEventListener("click", function () {
+      if (currentIndex >= sheets.length - 1) {
+        return;
+      }
+      currentIndex += 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    mainInput.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      event.preventDefault();
+      var text = mainInput.value.trim();
+      if (!text) {
+        return;
+      }
+      addLineToCurrentSheet(text);
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.value = "";
+    });
+
+    renderCurrentSheet();
+    updateSheetControls();
+    mainInput.focus();
+  </script>
+</body>
+</html>

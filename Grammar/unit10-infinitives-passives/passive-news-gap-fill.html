@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Grammar — Passive (news texts A–E)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --hl: #fef08a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; font-weight: 700; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .gram-nav {
+      margin-bottom: 14px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .gram-nav a:hover { text-decoration: underline; }
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+    .news-box {
+      font-size: 0.94rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .news-box h2 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .news-box ul {
+      margin: 10px 0 0 1.25rem;
+      padding: 0;
+    }
+    .news-box li { margin: 6px 0; }
+    .hl { font-weight: 700; color: var(--hl); }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 5rem;
+      width: 10rem;
+      max-width: 52%;
+      margin: 0 4px;
+      padding: 6px 9px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.87rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Grammar &mdash; The passive (news-style texts)</h1>
+        <p class="badge">Practice · Unit 10</p>
+      </div>
+      <a class="back" href="index.html">&larr; Unit 10 grammar hub</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Unit 10 grammar">
+      <a href="index.html">Language focus</a>
+      <span> · </span>
+      <a href="infinitives-passives-flip.html">Flip cards</a>
+      <span> · </span>
+      <span>Passive &mdash; gap fill</span>
+    </nav>
+
+    <p class="instr">
+      Complete each gap with the correct <strong>passive</strong> form of the verb in brackets. Time expressions in <span class="hl">yellow</span> help you choose the tense.
+      There is an example in <strong>A</strong> (<em>is defined</em>).
+    </p>
+
+    <article class="news-box" aria-labelledby="box-a">
+      <h2 id="box-a">A &mdash; Antisocial behaviour</h2>
+      <p>
+        <strong>Antisocial behaviour</strong> <em>is defined</em> (<strong>define</strong>) as conduct that causes or is likely to cause alarm or distress to other people.
+        Different types of antisocial behaviour <strong>may</strong>
+        <input type="text" class="gap-input" id="a1" autocomplete="off" spellcheck="false" aria-label="A gap 1" />
+        <span class="hint">(categorise)</span>
+        as follows:
+      </p>
+      <ul>
+        <li>nuisance behaviour that affects a community, e.g. noisy neighbours</li>
+        <li>acts that target individuals or groups, e.g. threatening behaviour</li>
+        <li>environmental antisocial behaviour, e.g. vandalism and graffiti.</li>
+      </ul>
+    </article>
+
+    <article class="news-box" aria-labelledby="box-b">
+      <h2 id="box-b">B &mdash; CCTV on buses</h2>
+      <p>
+        Closed Circuit Television Cameras
+        <input type="text" class="gap-input" id="b1" autocomplete="off" spellcheck="false" aria-label="B gap 1" />
+        <span class="hint">(install)</span>
+        on buses in four major cities <strong class="hl">next month</strong>. A spokesman for the government, which
+        <input type="text" class="gap-input" id="b2" autocomplete="off" spellcheck="false" aria-label="B gap 2" />
+        <span class="hint">(criticise)</span>
+        <strong class="hl">in recent weeks</strong> for being &lsquo;too soft on crime&rsquo;, said the CCTV cameras would improve passenger safety and help reduce antisocial behaviour such as vandalism.
+      </p>
+    </article>
+
+    <article class="news-box" aria-labelledby="box-c">
+      <h2 id="box-c">C &mdash; Police patrols</h2>
+      <p>
+        <strong class="hl">Last month</strong>, police patrols
+        <input type="text" class="gap-input" id="c1" autocomplete="off" spellcheck="false" aria-label="C gap 1" />
+        <span class="hint">(increase)</span>
+        in the town&rsquo;s parks and open spaces. Their aim <strong>is</strong> not necessarily to arrest young people who
+        <input type="text" class="gap-input" id="c2" autocomplete="off" spellcheck="false" aria-label="C gap 2" />
+        <span class="hint">(find)</span>
+        drinking in public places. In most cases <strong class="hl">so far</strong>, parents
+        <input type="text" class="gap-input" id="c3" autocomplete="off" spellcheck="false" aria-label="C gap 3" />
+        <span class="hint">(contact)</span>
+        and asked to come and take their child home. &lsquo;Parents <strong>need</strong>
+        <input type="text" class="gap-input" id="c4" autocomplete="off" spellcheck="false" aria-label="C gap 4" />
+        <span class="hint">(make)</span>
+        aware of their responsibilities,&rsquo; said a police spokesperson. &lsquo;We emphasise to them the importance of knowing where their children go and what they do there.&rsquo;
+      </p>
+    </article>
+
+    <article class="news-box" aria-labelledby="box-d">
+      <h2 id="box-d">D &mdash; Noisy neighbours</h2>
+      <p>
+        Noisy neighbours who consistently played loud music in their town-centre flat
+        <input type="text" class="gap-input" id="d1" autocomplete="off" spellcheck="false" aria-label="D gap 1" />
+        <span class="hint">(fine)</span>
+        &pound;300 <strong class="hl">yesterday</strong> and ordered to pay &pound;250 court costs. The court
+        <input type="text" class="gap-input" id="d2" autocomplete="off" spellcheck="false" aria-label="D gap 2" />
+        <span class="hint">(tell)</span>
+        that students Joe Cave and Irene Burstall
+        <input type="text" class="gap-input" id="d3" autocomplete="off" spellcheck="false" aria-label="D gap 3" />
+        <span class="hint">(warn)</span>
+        on several occasions <strong class="hl">previously</strong> that legal action
+        <input type="text" class="gap-input" id="d4" autocomplete="off" spellcheck="false" aria-label="D gap 4" />
+        <span class="hint">(take)</span>
+        if the music
+        <input type="text" class="gap-input" id="d5" autocomplete="off" spellcheck="false" aria-label="D gap 5" />
+        <span class="hint">(not / turn)</span>
+        down. Both now have criminal records.
+      </p>
+    </article>
+
+    <article class="news-box" aria-labelledby="box-e">
+      <h2 id="box-e">E &mdash; Mrs Slade</h2>
+      <p>
+        &lsquo;<strong class="hl">When I got there</strong>, the little one
+        <input type="text" class="gap-input" id="e1" autocomplete="off" spellcheck="false" aria-label="E gap 1" />
+        <span class="hint">(push)</span>
+        around by the four older boys,&rsquo; said 70-year-old Mrs Slade. &lsquo;<strong class="hl">They were pushing him quite hard.</strong> I was worried he <strong>might</strong>
+        <input type="text" class="gap-input" id="e2" autocomplete="off" spellcheck="false" aria-label="E gap 2" />
+        <span class="hint">(attack)</span>
+        more seriously, so I started hitting them with my umbrella. Then I fell over and they ran off.&rsquo;
+        <strong class="hl">After</strong>
+        <input type="text" class="gap-input" id="e3" autocomplete="off" spellcheck="false" aria-label="E gap 3" />
+        <span class="hint">(treat)</span>
+        in hospital for minor cuts and bruises, Mrs Slade
+        <input type="text" class="gap-input" id="e4" autocomplete="off" spellcheck="false" aria-label="E gap 4" />
+        <span class="hint">(send)</span>
+        home <strong class="hl">last night</strong>.&rsquo;
+      </p>
+    </article>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script>
+(function () {
+  var ORDER = ["a1", "b1", "b2", "c1", "c2", "c3", "c4", "d1", "d2", "d3", "d4", "d5", "e1", "e2", "e3", "e4"];
+  var KEY = {
+    a1: ["be categorised", "be categorized"],
+    b1: ["will be installed"],
+    b2: ["has been criticised", "has been criticized", "had been criticised", "had been criticized"],
+    c1: ["were increased"],
+    c2: ["are found"],
+    c3: ["have been contacted"],
+    c4: ["to be made"],
+    d1: ["were fined"],
+    d2: ["was told"],
+    d3: ["had been warned"],
+    d4: ["would be taken"],
+    d5: ["wasn't turned", "was not turned", "weren't turned", "were not turned"],
+    e1: ["was being pushed"],
+    e2: ["be attacked"],
+    e3: ["being treated"],
+    e4: ["was sent"]
+  };
+  var DISPLAY = {
+    a1: "be categorised",
+    b1: "will be installed",
+    b2: "has been criticised",
+    c1: "were increased",
+    c2: "are found",
+    c3: "have been contacted",
+    c4: "to be made",
+    d1: "were fined",
+    d2: "was told",
+    d3: "had been warned",
+    d4: "would be taken",
+    d5: "wasn't turned",
+    e1: "was being pushed",
+    e2: "be attacked",
+    e3: "being treated",
+    e4: "was sent"
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function okList(val, list) {
+    var u = norm(val);
+    if (!u) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  ORDER.forEach(function (id) {
+    document.getElementById(id).addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      document.getElementById("feedback").classList.remove("show");
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    ORDER.forEach(function (id, i) {
+      var n = i + 1;
+      var el = document.getElementById(id);
+      var v = el.value;
+      var ok = okList(v, KEY[id]);
+      if (v.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!v.trim()) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && v.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && v.trim() ? "\u2713" : "\u2717") + " Gap " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Yours: <strong>' +
+        (v.trim() ? esc(v.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[id]) +
+        "</strong></p></div>";
+    });
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 16</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    ORDER.forEach(function (id) {
+      var el = document.getElementById(id);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    });
+  });
+})();
+  </script>
+</body>
+</html>

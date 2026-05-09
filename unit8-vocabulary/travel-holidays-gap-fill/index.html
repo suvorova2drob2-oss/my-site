@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Vocabulary &mdash; Travel and holidays (click to fill)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .word-box-label {
+      width: 100%;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #bae6fd;
+      margin-bottom: 4px;
+    }
+    .bank-chip {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(86, 204, 242, 0.14);
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bank-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .bank-note {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-sent strong { color: #fde68a; font-weight: 700; }
+
+    .slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      min-width: 6rem;
+      min-height: 38px;
+      padding: 4px 10px;
+      margin: 2px 4px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .slot:hover { border-color: #5a7ab0; }
+    .slot.is-focused {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .slot.is-empty { color: var(--muted); }
+    .slot.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .slot.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.slot { border: 2px solid var(--line); }
+    .btn-row .btn-check, .btn-row .btn-reset {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; color: #e0e8f8; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    @media (max-width: 640px) {
+      .slot { min-width: 5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Travel and holidays</h1>
+      <a class="back" href="../index.html">&larr; Unit 8 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 8 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong>Travel and holidays</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Exercise 1</h2>
+      <p class="instr">
+        Complete each of the gaps 1&ndash;6 with <strong>one word</strong> from the box. Each word is used once.
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> click a gap in the sentence, then click a word in the box below (no typing).
+      </p>
+
+      <div class="word-box" id="word-bank" aria-label="Pick a word after selecting a gap">
+        <span class="word-box-label">Word box</span>
+        <button type="button" class="bank-chip" data-word="cruise">cruise</button>
+        <button type="button" class="bank-chip" data-word="flight">flight</button>
+        <button type="button" class="bank-chip" data-word="journey">journey</button>
+        <button type="button" class="bank-chip" data-word="tour">tour</button>
+        <button type="button" class="bank-chip" data-word="travel">travel</button>
+        <button type="button" class="bank-chip" data-word="trip">trip</button>
+        <p class="bank-note">Putting the same word in a new gap moves it there and empties the old gap.</p>
+      </div>
+      <p id="bank-hint" class="sr-only" aria-live="polite"></p>
+
+      <p class="gap-sent">
+        <strong>1.</strong> When there&rsquo;s a public holiday, I often <strong>go on a day</strong>
+        <button type="button" class="slot is-empty" id="ans-1" data-n="1" aria-label="Gap 1"><span class="slot-inner">&mdash;</span></button>
+        to the coast or to the mountains with my family.
+      </p>
+      <p class="gap-sent">
+        <strong>2.</strong> I&rsquo;ve never <strong>been on a long-haul</strong>
+        <button type="button" class="slot is-empty" id="ans-2" data-n="2" aria-label="Gap 2"><span class="slot-inner">&mdash;</span></button>
+        ; the furthest I&rsquo;ve flown is from London to Berlin.
+      </p>
+      <p class="gap-sent">
+        <strong>3.</strong> I&rsquo;m a huge fan of <strong>rail</strong>
+        <button type="button" class="slot is-empty" id="ans-3" data-n="3" aria-label="Gap 3"><span class="slot-inner">&mdash;</span></button>
+        ; I&rsquo;d love to take the Trans-Siberian railway or go from one coast of the United States to the other by train.
+      </p>
+      <p class="gap-sent">
+        <strong>4.</strong> I wouldn&rsquo;t like to <strong>go on a Caribbean</strong>
+        <button type="button" class="slot is-empty" id="ans-4" data-n="4" aria-label="Gap 4"><span class="slot-inner">&mdash;</span></button>
+        : I&rsquo;d probably be seasick and I&rsquo;d rather get to know one island well than visit lots of different ones.
+      </p>
+      <p class="gap-sent">
+        <strong>5.</strong> I think the best way to see the sights in a city is to <strong>go on a guided</strong>
+        <button type="button" class="slot is-empty" id="ans-5" data-n="5" aria-label="Gap 5"><span class="slot-inner">&mdash;</span></button>
+        .
+      </p>
+      <p class="gap-sent">
+        <strong>6.</strong> I sometimes read when I <strong>go on a long car</strong>
+        <button type="button" class="slot is-empty" id="ans-6" data-n="6" aria-label="Gap 6"><span class="slot-inner">&mdash;</span></button>
+        , and I sleep a lot, too.
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var TOTAL = 6;
+
+  var KEY = {
+    1: "trip",
+    2: "flight",
+    3: "travel",
+    4: "cruise",
+    5: "tour",
+    6: "journey"
+  };
+
+  var EXPLAIN = {
+    1: "<strong>day trip</strong> &mdash; there and back in one day (no overnight stay).",
+    2: "<strong>long-haul flight</strong> &mdash; flying a very long distance.",
+    3: "<strong>rail travel</strong> &mdash; travelling by train (uncountable <em>travel</em> here, not &ldquo;a travel&rdquo;).",
+    4: "<strong>Caribbean cruise</strong> &mdash; holiday on a ship, visiting different ports.",
+    5: "<strong>guided tour</strong> &mdash; somebody shows the group around and explains the sights.",
+    6: "<strong>car journey</strong> &mdash; one particular drive from A to B (countable <em>journey</em>)."
+  };
+
+  var focusedSlotNum = null;
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getSlot(n) {
+    return document.getElementById("ans-" + n);
+  }
+
+  function getSlotValue(n) {
+    var el = getSlot(n);
+    var inner = el.querySelector(".slot-inner");
+    var t = inner ? inner.textContent.trim() : "";
+    if (!t || t === "\u2014" || t === "—") return "";
+    return t;
+  }
+
+  function setAriaSlot(el, n, word) {
+    el.setAttribute(
+      "aria-label",
+      word ? "Gap " + n + ": " + word : "Gap " + n + ", empty — pick a word from the box"
+    );
+  }
+
+  function clearSlot(el, n) {
+    el.querySelector(".slot-inner").textContent = "\u2014";
+    el.classList.add("is-empty");
+    setAriaSlot(el, n, "");
+  }
+
+  function applyWordToSlot(el, n, word) {
+    var nw = norm(word);
+    for (var i = 1; i <= TOTAL; i++) {
+      if (i !== n && norm(getSlotValue(i)) === nw) {
+        var other = getSlot(i);
+        clearSlot(other, i);
+        other.classList.remove("is-ok", "is-bad", "is-focused");
+      }
+    }
+    el.querySelector(".slot-inner").textContent = word;
+    el.classList.remove("is-empty");
+    setAriaSlot(el, n, word);
+  }
+
+  function clearFeedbackUI() {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= TOTAL; n++) {
+      getSlot(n).classList.remove("is-ok", "is-bad");
+    }
+  }
+
+  function setFocus(num) {
+    focusedSlotNum = num;
+    for (var i = 1; i <= TOTAL; i++) {
+      getSlot(i).classList.toggle("is-focused", i === num);
+    }
+  }
+
+  function announceBank(msg) {
+    var h = document.getElementById("bank-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  for (var sn = 1; sn <= TOTAL; sn++) {
+    (function (n) {
+      getSlot(n).addEventListener("click", function () {
+        clearFeedbackUI();
+        setFocus(n);
+        announceBank("");
+      });
+    })(sn);
+  }
+
+  document.querySelectorAll(".bank-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var word = chip.getAttribute("data-word");
+      if (!word) return;
+      if (focusedSlotNum == null) {
+        announceBank("First click a gap in a sentence, then click a word from the box.");
+        return;
+      }
+      clearFeedbackUI();
+      applyWordToSlot(getSlot(focusedSlotNum), focusedSlotNum, word);
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var filled = 0;
+    var html = "";
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var el = getSlot(n);
+      var raw = getSlotValue(n);
+      if (raw) filled++;
+      var ok = raw && norm(raw) === norm(KEY[n]);
+      if (ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad", "is-focused");
+      if (!raw) el.classList.add("is-bad");
+      else el.classList.add(ok ? "is-ok" : "is-bad");
+
+      html += '<div class="fb-item ' + (ok && raw ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw ? esc(raw) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(KEY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    focusedSlotNum = null;
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / " +
+      TOTAL +
+      (filled < TOTAL ? " &mdash; fill every gap for a full score." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    focusedSlotNum = null;
+    announceBank("");
+    for (var n = 1; n <= TOTAL; n++) {
+      var el = getSlot(n);
+      clearSlot(el, n);
+      el.classList.remove("is-ok", "is-bad", "is-focused");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

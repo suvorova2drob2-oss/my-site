@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Reading &mdash; The Natural Break</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 8px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+
+    .passage {
+      font-size: 0.96rem;
+      line-height: 1.88;
+      color: #e8f0ff;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .passage h2 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #bae6fd;
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
+    }
+    .passage p { margin-bottom: 12px; }
+    .passage p:last-child { margin-bottom: 0; }
+    .hl-phrase { border-bottom: 1px dashed rgba(86, 204, 242, 0.5); }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q { margin-bottom: 16px; border-bottom: 1px solid #34507d; padding-bottom: 14px; }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.98rem; line-height: 1.4; margin-bottom: 10px; color: #e8f0ff; }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    /* Strong feedback — outlines alone were too faint on dark panels */
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.28);
+      border-color: #4ade80;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.65);
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #f87171;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      line-height: 1.45;
+      min-height: 1.5em;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Reading &middot; Multiple choice</span>
+        <h1>The Natural Break</h1>
+        <p class="lead">Six questions (<strong>A&ndash;D</strong>). Read the article, then choose the best answer.</p>
+      </div>
+      <a class="back" href="../unit12.html">&larr; Unit 12</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;6</strong>, choose the answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) which you think fits best according to the text.
+    </p>
+    <noscript>
+      <p style="color: #fca5a5; margin-bottom: 12px; font-weight: 600;">Enable JavaScript in your browser to load the six A&ndash;D questions below the article.</p>
+    </noscript>
+
+    <div class="passage">
+      <h2>THE NATURAL BREAK</h2>
+      <p>
+        These days, people fill their days with work, socialising and family commitments. We have lunch and sometimes dinner on the go and have to grab some time for exercise. On top of this, many people are working well into their 60s and 70s. This can leave very little time to unwind, leading to an increase in health problems. In some instances, people medicate without really needing to. Wouldn&rsquo;t it be better for us to simply get back to nature?
+      </p>
+      <p>
+        In fact, this is why The Royal Horticultural Society (RHS) has decided to promote well-being in their new scheme, which encourages doctors to send patients to work on vegetable patches and herb gardens. It is thought that this would be helpful to all of us in time &ndash; the stressed city worker or the busy parent &ndash; but for now, the aim is to target people who are feeling the strain the most.
+      </p>
+      <p>
+        At one such garden in Highgate, North London, the local hospital has teamed up with the allotment association to create a garden for patients to enjoy, which attracts insects, bees and butterflies. Another project, in Barnsley, in the north of England, involves people who have been advised by their doctor to both increase their social interaction and do more light exercise. In these two initiatives, increasing happiness is at the top of the list. Additionally, a national garden festival is getting involved. A garden from the Chelsea Flower Show will be moved to a hospital for patients to walk around in and enjoy.
+      </p>
+      <p>
+        Gardening is good for the body as a whole. This is due to the amount and type of exercise done. Lifting pots will strengthen arms and using trowels involves movement of the wrists and hands. Then, there&rsquo;s the fresh air. Who doesn&rsquo;t feel the benefits of taking a deep breath in nature? Gardeners are known to have a reduced level of the hormone cortisol; having less of this hormone goes hand in hand with better sleep and lower stress levels. The activity doesn&rsquo;t really get any negative press.
+      </p>
+      <p>
+        And it doesn&rsquo;t stop at gardens. Doctors are also being instructed to encourage patients to <span class="hl-phrase">take up</span> hobbies. Art classes, ballroom dancing and jogging can all play a part in making someone feel happier, so that we depend less on medication to sort out our problems. The added bonus is that when people get moving they get fitter as well.
+      </p>
+      <p>
+        And let&rsquo;s not forget the social side of all of this. <span class="hl-phrase">Time to yourself</span> doesn&rsquo;t mean you have to be alone; rather, that you are actually deciding to take part in something you enjoy without a sense of necessity. Gardening and the like promote friendship and teamwork, which in turn lead to support.
+      </p>
+      <p>
+        When things get too hectic and your life is full of things you&rsquo;d rather not do, head for a garden, if only for a few minutes. It could change your day for the better!
+      </p>
+    </div>
+
+    <div id="mcq-root" class="questions" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear choices &amp; marks</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+
+  <script>
+    (function () {
+      /**
+       * Key aligned to the text (adjust if your printed answer key differs).
+       * 1 busy lives / little time for self-care
+       * 2 "all of us in time" → general public (patients = current focus)
+       * 3 "increasing happiness is at the top of the list"
+       * 4 "good for the body as a whole"
+       * 5 take up hobbies = start (phrasal verb)
+       * 6 "something you enjoy without a sense of necessity"
+       */
+      var CORRECT = ["B", "D", "D", "C", "C", "A"];
+
+      var MCQ = [
+        {
+          q: "What is the writer's analysis of modern life in the first paragraph?",
+          options: {
+            A: "There is very rarely a good reason for medication.",
+            B: "We don't save enough time to take care of ourselves.",
+            C: "If we work harder now, we won't have to retire so late.",
+            D: "Health conditions are often caused by unhealthy eating habits."
+          }
+        },
+        {
+          q: "Who could eventually benefit from the new RHS well-being scheme?",
+          options: {
+            A: "patients",
+            B: "city workers",
+            C: "mums and dads",
+            D: "the general public"
+          }
+        },
+        {
+          q: "What is true of the projects mentioned in paragraph 3?",
+          options: {
+            A: "The intention of both is to bring wildlife to the area.",
+            B: "The focus is on exercise and movement of patients.",
+            C: "The main aim of each is to encourage friendship.",
+            D: "The emphasis is on improving a sense of well-being."
+          }
+        },
+        {
+          q: "How can gardening help your physical well-being?",
+          options: {
+            A: "The more you do, the more cortisol is produced.",
+            B: "You are able to breathe more easily outside.",
+            C: "You are able to achieve all-round fitness.",
+            D: "Heavy lifting promotes general fitness."
+          }
+        },
+        {
+          q: "What does 'take up' mean (in the phrase about hobbies)?",
+          options: {
+            A: "to stop doing",
+            B: "to do more regularly",
+            C: "to begin doing something",
+            D: "to decrease the amount that you do"
+          }
+        },
+        {
+          q: "What does 'time to yourself' mean (according to the writer)?",
+          options: {
+            A: "taking time to pursue your own interests",
+            B: "being alone in a naturally peaceful environment",
+            C: "deciding to form new friendships with people",
+            D: "deciding against doing things that are required of you"
+          }
+        }
+      ];
+
+      var KEYS = ["A", "B", "C", "D"];
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      var root = document.getElementById("mcq-root");
+      var fb = document.getElementById("feedback");
+
+      function render() {
+        root.innerHTML = MCQ.map(function (item, qIdx) {
+          var opts = KEYS.map(function (k) {
+            if (!item.options[k]) return "";
+            var id = "q" + qIdx + k;
+            return (
+              '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+              '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+              '<label for="' + id + '"><span class="letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
+            );
+          }).join("");
+          return (
+            '<article class="q">' +
+            '<p class="stem"><strong>' + String(qIdx + 1) + ".</strong> " + escapeHtml(item.q) + "</p>" +
+            '<ul class="opts">' + opts + "</ul></article>"
+          );
+        }).join("");
+
+        root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            clearMarks();
+            fb.textContent = "";
+          });
+        });
+      }
+
+      function clearMarks() {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+      }
+
+      function getChoice(i) {
+        var el = root.querySelector('input[name="q' + i + '"]:checked');
+        return el ? el.value : "";
+      }
+
+      render();
+
+      document.getElementById("btnCheck").addEventListener("click", function () {
+        clearMarks();
+        var n = MCQ.length;
+        var missing = false;
+        for (var i = 0; i < n; i++) {
+          if (!getChoice(i)) {
+            missing = true;
+            break;
+          }
+        }
+        if (missing) {
+          fb.textContent = "Choose A, B, C or D for every question, then check again.";
+          return;
+        }
+        var score = 0;
+        for (var j = 0; j < n; j++) {
+          var pick = getChoice(j);
+          var ok = pick === CORRECT[j];
+          if (ok) score++;
+          var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
+          if (line) line.classList.add(ok ? "ok" : "bad-pick");
+          var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + CORRECT[j] + '"]');
+          if (correctLine && !ok) correctLine.classList.add("ok");
+        }
+        fb.innerHTML =
+          score === n
+            ? "<strong>All " + n + " correct.</strong>"
+            : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct option; your wrong pick is outlined in red where applicable.";
+      });
+
+      document.getElementById("btnClear").addEventListener("click", function () {
+        root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+          r.checked = false;
+        });
+        clearMarks();
+        fb.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Prep: «Назад» из дисковых страниц listening / reading trainers
+
+Когда страница открывается **из папки курса** в CPE hub (prep-link с `?course=cpe&back=…`), ссылка **Back / назад к заданиям** должна вести **в ту же папку** (список плиток), а не на общий экран Levels и не на промежуточный «мини-хаб», если пользователь этого не просил.
+
+## Как это уже сделано в коде
+
+- В **`index.html`** для задач **внутри папки** (`renderHubUnitTasksContent`, `hubWorkspace.kind === "folder"`) в prep-link подставляется  
+  `back = index.html?prep_stay=1&prep_open_folder=<folderId>` (через `encodeURIComponent` как часть параметра `back` целевой страницы).
+- При загрузке **`index.html`** с `prep_open_folder` открывается нужная папка (`openHubFolderWorkspace`), затем параметр убирается из адреса.
+
+- **Внутри уровня** (экран Level 8/9/10 и т.д. после входа в юнит) динамические папки и prep-задачи рендерятся **как полноширинные строки `.folder`**, в том же духе, что статические блоки в `#screen-unit9`: **`strong`**, при необходимости **`.hub-unit-folder-row__desc`**, снизу **`.hub-unit-folder-row__go`** (например «Folder → open» / «Open →»). Это **не** сетка **`hub-grid`** и **не** плитки **`unit-tile--hub-card`** главного меню Levels.
+- Контейнеры **`unit9-dynamic-folders`**, **`unit8-dynamic-folders`**, **`generic-unit-dynamic-folders`** — колонка **`.unit-dynamic-folders`**; список задач в папке — **`#hub-unit-tasks-grid.hub-unit-folder-list`**. Хелперы в **`index.html`**: `hubBuild_legacy_unitFolderRowHtml`, `hubPrepFolderLegacyDescription`, `hubPrepLinkedFolderFoot`.
+
+## Что делать на дисковых HTML
+
+1. На корневой `<html>` задать резерв для прямого захода (без `?back=`):  
+   `data-prep-back-default="../../index.html?prep_stay=1&prep_open_folder=…"`  
+   (глубина `../` зависит от папки страницы; для **`audio-practice/`** обычно один уровень: `../index.html?…`).
+2. Подключить **`js/prep-link-back.js`**.
+3. Ссылке «назад» дать класс **`prep-link-back`** и начальный `href`, совпадающий с `data-prep-back-default` (или разумный дефолт).
+
+Не подменяй **общий** «CPE Prep / Levels» там, где пользователь ждёт возврат к **списку четырёх тренажёров** в папке.

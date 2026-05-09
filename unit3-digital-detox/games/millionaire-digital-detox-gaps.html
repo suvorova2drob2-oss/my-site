@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кто хочет стать миллионером? (пропуски) &mdash; My digital detox (Unit 3)</title>
+  <style>
+    :root {
+      --bg-deep: #030712; --bg-panel: #0c1929; --bg-answer: #132a4a; --bg-answer-hover: #1a3a64;
+      --gold: #e8c040; --gold-dim: #9a7b24; --ink: #f1f5f9; --muted: #8ba3c4;
+      --safe: #22c55e; --ladder-cur: #1e3a5f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-deep); color: var(--ink);
+      min-height: 100dvh;
+      background-image: radial-gradient(ellipse 120% 80% at 50% 0%, #152b52 0%, transparent 55%),
+        linear-gradient(180deg, #060d18 0%, var(--bg-deep) 100%);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .header { text-align: center; padding: 12px 8px 20px; border-bottom: 2px solid var(--gold-dim); margin-bottom: 18px; }
+    .header h1 { font-size: clamp(1.1rem, 3.2vw, 1.45rem); font-weight: 800; letter-spacing: 0.02em; text-shadow: 0 0 20px rgba(232, 192, 64, 0.25); }
+    .header .en { color: var(--muted); font-size: 0.88rem; margin-top: 6px; }
+    .header .varnav { font-size: 0.8rem; margin-top: 10px; }
+    .header .varnav a { color: var(--gold); font-weight: 600; }
+    .header .source { color: #94a3b8; font-size: 0.8rem; margin-top: 8px; }
+    .header a { color: var(--gold); }
+    .layout { display: grid; grid-template-columns: 1fr 180px; gap: 16px; align-items: start; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .ladder { order: -1; } }
+    .ladder {
+      background: var(--bg-panel); border: 2px solid var(--gold-dim); border-radius: 12px; padding: 8px 0; text-align: center;
+    }
+    .ladder h2 { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; }
+    .ladder ol { list-style: none; font-size: 0.8rem; }
+    .ladder li { padding: 5px 10px; color: #cbd5e1; display: flex; justify-content: space-between; border-left: 3px solid transparent; }
+    .ladder li.current { background: var(--ladder-cur); color: #fff; font-weight: 700; border-left-color: var(--gold); }
+    .ladder li.safe { color: #86efac; }
+    .ladder li.safe::after { content: "⛑"; font-size: 0.65rem; }
+    .play { background: var(--bg-panel); border: 2px solid #2d4a6f; border-radius: 16px; padding: 16px 18px 20px; }
+    .q-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+    .q-label { font-size: 0.75rem; color: #7dd3fc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .q-text {
+      font-size: clamp(0.95rem, 2.1vw, 1.05rem); line-height: 1.6; margin-bottom: 16px; color: #e2e8f0;
+      white-space: pre-line; font-style: italic; border-left: 3px solid #38bdf8; padding: 10px 12px; background: rgba(56, 189, 248, 0.08); border-radius: 0 8px 8px 0;
+    }
+    .q-text .gap { color: var(--gold); font-style: normal; font-weight: 800; }
+    .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .answers { grid-template-columns: 1fr; } }
+    .ans {
+      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(180deg, #1a3358 0%, var(--bg-answer) 100%);
+      border: 2px solid #3d5a80; border-radius: 10px; padding: 10px 12px; cursor: pointer; text-align: left; color: #e8f0ff; font-size: 0.9rem; line-height: 1.4;
+    }
+    .ans:hover:not(:disabled) { border-color: var(--gold); background: var(--bg-answer-hover); }
+    .ans:disabled { cursor: default; }
+    .ans .badge {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 2px solid #64748b; color: var(--gold);
+      font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+    }
+    .ans.correct { border-color: var(--safe) !important; background: #14532d !important; }
+    .ans.wrong-pick { border-color: #ef4444 !important; }
+    .ans.burnt { opacity: 0.15; filter: grayscale(0.4) blur(0.3px); pointer-events: none; }
+    @keyframes burnIn { 0% { opacity: 1; filter: none; } 20% { filter: brightness(1.6) sepia(0.3); } 100% { opacity: 0.12; filter: grayscale(0.5); } }
+    .ans.burning { animation: burnIn 0.6s ease forwards; pointer-events: none; }
+    .lifelines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #334e78; }
+    .ll { font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border-radius: 8px; cursor: pointer; border: 2px solid #475569; background: #1e293b; color: #e2e8f0; flex: 1; min-width: 120px; }
+    .ll:hover:not(:disabled) { border-color: var(--gold); }
+    .ll:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn { background: #1e3a5f; color: #fff; border: 1px solid #3b5f8f; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn:hover { border-color: var(--gold); }
+    .panel-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .modal { position: fixed; inset: 0; background: rgba(3,7,20,0.88); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+    .modal.open { display: flex; }
+    .modal-in { max-width: 400px; background: #0f172a; border: 2px solid var(--gold); border-radius: 16px; padding: 24px; text-align: center; }
+    .modal-in h3 { color: var(--gold); margin-bottom: 10px; }
+    .modal-in p { color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
+    .modal-hint { z-index: 90; }
+    .hint-panel { width: min(920px, 100%); max-height: min(92vh, 900px); margin: auto; background: #0f172a; border: 2px solid var(--gold); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .hint-panel-hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #334155; }
+    .hint-panel-hd h3 { color: var(--gold); font-size: 0.95rem; margin: 0; }
+    .hint-sub { color: #94a3b8; font-size: 0.75rem; margin-top: 4px; }
+    .hint-close { flex-shrink: 0; background: #1e293b; border: 1px solid #475569; color: #e2e8f0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
+    .hint-close:hover { border-color: var(--gold); color: var(--gold); }
+    .hint-frame-wrap iframe { display: block; width: 100%; height: min(72vh, 720px); border: 0; background: #0f172a; }
+    .hint-foot { padding: 8px 14px 12px; font-size: 0.72rem; color: #64748b; border-top: 1px solid #1e293b; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1>Кто хочет стать миллионером? (пропуски)</h1>
+      <p class="en">Cloze / gap-fill &mdash; from <em>My digital detox</em> (six parts). <code>_______</code> = one missing chunk. Choose A&ndash;D.</p>
+      <p class="varnav">
+        <a href="millionaire-digital-detox.html">факты</a> &middot;
+        <a href="millionaire-digital-detox-paraphrase.html">парафраз</a>
+      </p>
+      <p class="source">
+        <a href="../index.html">Text hub</a> &middot; <a href="index.html">Games</a> &middot; <a href="../../unit3.html">Unit 3</a>
+      </p>
+    </header>
+    <div class="layout">
+      <div class="play" id="play">
+        <div class="q-meta">
+          <span id="qNum">Вопрос 1 из 15</span>
+          <span id="qTopic" style="color:#7dd3fc">P1: …</span>
+        </div>
+        <p class="q-label">Предложение из текста &mdash; вставьте подходящее слово/фрагмент:</p>
+        <p class="q-text" id="qText"></p>
+        <div class="answers" id="answers"></div>
+        <div class="lifelines">
+          <button type="button" class="ll" id="ll50" title="Убрать два неверных варианта">50:50</button>
+          <button type="button" class="ll" id="llHint" title="Показать исходный текст">Подсказка: текст</button>
+        </div>
+        <p style="color:#8ba3c4;font-size:0.8rem;margin-top:10px;line-height:1.5">Несгораемые: после 5-го (1&nbsp;000) и 10-го (32&nbsp;000). 50:50 &mdash; один раз за игру.</p>
+        <div class="panel-actions"><button type="button" class="btn" id="btnNew">Новая игра</button></div>
+      </div>
+      <aside class="ladder" aria-label="Ступень денег">
+        <h2>Фонд</h2>
+        <ol id="ladderList"></ol>
+      </aside>
+    </div>
+  </div>
+
+  <div class="modal modal-hint" id="hintModal" role="dialog" aria-modal="true" aria-labelledby="hintTitle">
+    <div class="hint-panel">
+      <div class="hint-panel-hd">
+        <div>
+          <h3 id="hintTitle">Текст</h3>
+          <p class="hint-sub" id="hintSub">Найдите пропущенный фрагмент в оригинале. Закрыть: крестик, клик снаружи, Esc.</p>
+        </div>
+        <button type="button" class="hint-close" id="hintClose" title="Закрыть" aria-label="Закрыть">&times;</button>
+      </div>
+      <div class="hint-frame-wrap">
+        <iframe id="hintFrame" title="Исходный текст"></iframe>
+      </div>
+      <p class="hint-foot">Пусто при <code>file://</code>? Откройте страницу через локальный веб-сервер.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="endModal" role="dialog" style="z-index:100">
+    <div class="modal-in">
+      <h3 id="endTitle">Игра окончена</h3>
+      <p id="endMsg"></p>
+      <button type="button" class="btn" id="endOk">OK</button>
+    </div>
+  </div>
+
+  <script src="../data/u3-games-content.js"></script>
+  <script>
+(function () {
+  var LADDER = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+  var SAFE_IDX = { 4: true, 9: true };
+
+  var QUESTIONS = (typeof U3_MILLIONAIRE_GAPS !== "undefined" && U3_MILLIONAIRE_GAPS.length) ? U3_MILLIONAIRE_GAPS : [];
+
+  var state = { i: 0, used50: false, locked: false };
+
+  function moneyAt(i) { return LADDER[i] || 0; }
+
+  function lastSafe(beforeIndex) {
+    for (var s = beforeIndex - 1; s >= 0; s--) {
+      if (SAFE_IDX[s]) return moneyAt(s);
+    }
+    return 0;
+  }
+
+  function renderLadder() {
+    var ol = document.getElementById("ladderList");
+    ol.innerHTML = "";
+    for (var j = LADDER.length - 1; j >= 0; j--) {
+      var li = document.createElement("li");
+      li.textContent = (j + 1) + " — " + LADDER[j].toLocaleString("en-GB");
+      if (SAFE_IDX[j]) li.className = "safe";
+      if (j === state.i) li.className = (li.className ? li.className + " " : "") + "current";
+      ol.appendChild(li);
+    }
+  }
+
+  function closeHintModal() {
+    document.getElementById("hintModal").classList.remove("open");
+  }
+
+  function showEnd(won) {
+    closeHintModal();
+    var msg;
+    if (won) {
+      msg = "Поздравляем! 1&nbsp;000&nbsp;000 (виртуально).";
+    } else {
+      var m = lastSafe(state.i);
+      msg = "Конец. Выигрыш: <strong>" + m.toLocaleString("en-GB") + "</strong>." +
+        (m === 0 ? " Пока без несгораемой." : " Сработала несгораемая.");
+    }
+    document.getElementById("endTitle").textContent = won ? "Победа!" : "Конец игры";
+    document.getElementById("endMsg").innerHTML = msg;
+    document.getElementById("endModal").classList.add("open");
+  }
+
+  function formatQuestionText(qu) {
+    var g = (qu.gap || "").replace("_______", '\n<span class="gap">· · ·</span>\n');
+    return (qu.lead ? qu.lead + "\n\n" : "") + g;
+  }
+
+  function showQuestion() {
+    if (!QUESTIONS.length) {
+      document.getElementById("qNum").textContent = "—";
+      document.getElementById("qTopic").textContent = "Нет вопросов";
+      document.getElementById("qText").textContent =
+        "Список пуст. Проверьте, что ../data/u3-games-content.js загружен и в нём задан U3_MILLIONAIRE_GAPS.";
+      document.getElementById("answers").innerHTML = "";
+      document.getElementById("ll50").disabled = true;
+      document.getElementById("llHint").disabled = true;
+      return;
+    }
+    state.locked = false;
+    var qu = QUESTIONS[state.i];
+    document.getElementById("qNum").textContent = "Вопрос " + (state.i + 1) + " из 15";
+    document.getElementById("qTopic").textContent = qu.topic;
+    document.getElementById("qText").innerHTML = formatQuestionText(qu);
+    var box = document.getElementById("answers");
+    box.innerHTML = "";
+    var letters = ["A", "B", "C", "D"];
+    for (var k = 0; k < 4; k++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ans";
+      b.setAttribute("data-idx", k);
+      b.innerHTML = "<span class=\"badge\">" + letters[k] + "</span><span>" + qu.opts[k] + "</span>";
+      b.addEventListener("click", onPick);
+      box.appendChild(b);
+    }
+    document.getElementById("ll50").disabled = state.used50;
+    renderLadder();
+  }
+
+  function onPick(e) {
+    if (state.locked) return;
+    var el = e.currentTarget;
+    var idx = parseInt(el.getAttribute("data-idx"), 10);
+    var qu = QUESTIONS[state.i];
+    if (el.classList.contains("burnt")) return;
+    state.locked = true;
+    var buttons = document.querySelectorAll("#answers .ans");
+    if (idx === qu.correct) {
+      el.classList.add("correct");
+      setTimeout(function () {
+        if (state.i === QUESTIONS.length - 1) { showEnd(true); return; }
+        state.i++;
+        showQuestion();
+      }, 650);
+    } else {
+      el.classList.add("wrong-pick");
+      buttons.forEach(function (b) {
+        if (parseInt(b.getAttribute("data-idx"), 10) === qu.correct) b.classList.add("correct");
+      });
+      setTimeout(function () { showEnd(false); }, 1200);
+    }
+  }
+
+  function applyFifty() {
+    if (state.used50 || state.locked) return;
+    var qu = QUESTIONS[state.i];
+    var wrong = [0, 1, 2, 3].filter(function (x) { return x !== qu.correct; });
+    for (var n = wrong.length - 1; n > 0; n--) {
+      var t = Math.floor(Math.random() * (n + 1));
+      var u = wrong[t]; wrong[t] = wrong[n]; wrong[n] = u;
+    }
+    var remove = [wrong[0], wrong[1]];
+    state.used50 = true;
+    document.getElementById("ll50").disabled = true;
+    var buttons = document.querySelectorAll("#answers .ans");
+    remove.forEach(function (ri) {
+      [].forEach.call(buttons, function (b) {
+        if (parseInt(b.getAttribute("data-idx"), 10) === ri) {
+          b.classList.add("burning");
+          setTimeout(function () {
+            b.classList.add("burnt");
+            b.classList.remove("burning");
+            b.removeEventListener("click", onPick);
+          }, 500);
+        }
+      });
+    });
+  }
+
+  function sourceFileForTopic(topic) {
+    return (typeof U3_sourceFileForTopic === "function") ? U3_sourceFileForTopic(topic) : "../text-01-digital-detox.html";
+  }
+
+  function openTextHint() {
+    var qu = QUESTIONS[state.i];
+    var file = sourceFileForTopic(qu.topic);
+    document.getElementById("hintTitle").textContent = "Исходник: " + qu.topic;
+    var frame = document.getElementById("hintFrame");
+    if (frame.dataset.loadedFile !== file) {
+      frame.src = file + "?embed=1";
+      frame.dataset.loadedFile = file;
+    }
+    document.getElementById("hintModal").classList.add("open");
+  }
+
+  function newGame() {
+    state = { i: 0, used50: false, locked: false };
+    document.getElementById("endModal").classList.remove("open");
+    closeHintModal();
+    var frame = document.getElementById("hintFrame");
+    frame.removeAttribute("src");
+    delete frame.dataset.loadedFile;
+    showQuestion();
+  }
+
+  document.getElementById("ll50").addEventListener("click", applyFifty);
+  document.getElementById("llHint").addEventListener("click", openTextHint);
+  document.getElementById("btnNew").addEventListener("click", newGame);
+  document.getElementById("endOk").addEventListener("click", function () { document.getElementById("endModal").classList.remove("open"); });
+  document.getElementById("hintClose").addEventListener("click", closeHintModal);
+  document.getElementById("hintModal").addEventListener("click", function (e) {
+    if (e.target.id === "hintModal") closeHintModal();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && document.getElementById("hintModal").classList.contains("open")) {
+      e.preventDefault();
+      closeHintModal();
+    }
+  });
+
+  showQuestion();
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

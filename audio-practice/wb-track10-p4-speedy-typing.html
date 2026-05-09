@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-prep-back-default="../index.html?prep_stay=1&prep_open_folder=prep_legacy_u10_listening_p4">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 10 — Speedy Typing · Listening Part 4 · SB Track 10.1</title>
+  <style>
+    :root {
+      --bg: #081127;
+      --panel: #121f3f;
+      --line: #304a75;
+      --text: #f3f6ff;
+      --muted: #9cb2d8;
+      --accent: #56ccf2;
+      --yellow: #ffd75a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #050c1d 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .page {
+      width: min(1300px, 100%);
+      margin: 0 auto;
+      padding: 18px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .top-player {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8, 17, 39, 0.96);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .top-row h1 { font-size: 1.2rem; line-height: 1.2; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+    audio { width: 100%; }
+    .board-area {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0d1a36;
+      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .live-board {
+      border: 1px solid #3a5788;
+      border-radius: 12px;
+      background: #0a1430;
+      padding: 14px;
+      overflow-y: auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      align-content: start;
+      flex: 1;
+      min-height: 280px;
+    }
+    .line {
+      line-height: 1.35;
+      color: var(--text);
+      word-break: break-word;
+      opacity: 0;
+      transform: scale(0.98);
+      animation: popFade 220ms ease forwards;
+      border: 1px solid #2e4772;
+      border-radius: 10px;
+      background: #102149;
+      padding: 8px 10px;
+      font-size: 1.35rem;
+      color: var(--yellow);
+      background: #0f2149;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sheet-nav { display: inline-flex; align-items: center; gap: 8px; }
+    .sheet-btn {
+      border: 1px solid #446696;
+      border-radius: 7px;
+      background: #1a315b;
+      color: var(--text);
+      width: 32px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .sheet-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .sheet-label {
+      font-size: 0.86rem;
+      color: #c5d3ee;
+      min-width: 92px;
+      text-align: center;
+    }
+    .controls {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #132446;
+      padding: 10px;
+    }
+    .main-input {
+      width: 100%;
+      border: 1px solid #49689b;
+      border-radius: 10px;
+      background: #0a1732;
+      color: var(--text);
+      font-size: 1.05rem;
+      padding: 12px;
+    }
+    .main-input::placeholder { color: #88a0ca; }
+    .main-input:focus {
+      outline: 2px solid #7fb5ea;
+      outline-offset: 1px;
+    }
+    @keyframes popFade {
+      from { opacity: 0; transform: translateY(4px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="top-player">
+      <div class="top-row">
+        <h1>Speedy typing · Listening Part 4 · SB Track 10.1</h1>
+        <a class="back prep-link-back" href="../index.html?prep_stay=1&amp;prep_open_folder=prep_legacy_u10_listening_p4">&larr; Listening Part 4 tasks</a>
+      </div>
+      <p id="audioLabel" class="hint">SB Track 10.1 · five monologues · pick a speaker sheet (1–5), then type what you hear</p>
+      <audio id="mainAudio" controls preload="metadata"></audio>
+    </section>
+
+    <section class="board-area">
+      <div class="hint-row">
+        <p class="hint" id="boardHint">Type a phrase you caught for this speaker and press Enter; use ← → to switch Speaker 1–5 (same audio).</p>
+        <div class="sheet-nav" aria-label="Speaker sheet (same audio for all)">
+          <button type="button" id="sheetPrev" class="sheet-btn" aria-label="Previous speaker">←</button>
+          <span id="sheetLabel" class="sheet-label">Speaker 1 / 5</span>
+          <button type="button" id="sheetNext" class="sheet-btn" aria-label="Next speaker">→</button>
+        </div>
+      </div>
+      <div id="liveBoard" class="live-board" aria-label="Live board"></div>
+    </section>
+
+    <section class="controls">
+      <input
+        id="mainInput"
+        class="main-input"
+        type="text"
+        autocomplete="off"
+        placeholder="Type the phrase and press Enter..."
+        aria-label="Speedy typing input"
+      />
+    </section>
+  </main>
+
+  <script src="wb-track10-p4-data.js"></script>
+  <script>
+    var DATA = window.CPE_WB10_P4_MULTIPLE_MATCHING;
+    if (!DATA) {
+      document.body.innerHTML = "<p>Missing wb-track10-p4-data.js</p>";
+      throw new Error("CPE_WB10_P4_MULTIPLE_MATCHING");
+    }
+
+    var mainAudio = document.getElementById("mainAudio");
+    mainAudio.src = DATA.audioSrc;
+
+    var liveBoard = document.getElementById("liveBoard");
+    var mainInput = document.getElementById("mainInput");
+    var sheetPrev = document.getElementById("sheetPrev");
+    var sheetNext = document.getElementById("sheetNext");
+    var sheetLabel = document.getElementById("sheetLabel");
+
+    var numSpeakers = 5;
+    var sheets = [[], [], [], [], []];
+    var currentIndex = 0;
+
+    function createLine(text) {
+      var line = document.createElement("p");
+      line.className = "line";
+      line.textContent = text;
+      return line;
+    }
+
+    function addLineToCurrentSheet(text) {
+      var currentSheet = sheets[currentIndex];
+      currentSheet.push(text);
+    }
+
+    function renderCurrentSheet() {
+      liveBoard.innerHTML = "";
+      var lines = sheets[currentIndex];
+      lines.forEach(function (text) {
+        liveBoard.appendChild(createLine(text));
+      });
+      liveBoard.scrollTop = liveBoard.scrollHeight;
+    }
+
+    function updateSheetControls() {
+      sheetLabel.textContent =
+        "Speaker " + String(currentIndex + 1) + " / " + String(numSpeakers);
+      sheetPrev.disabled = currentIndex <= 0;
+      sheetNext.disabled = currentIndex >= numSpeakers - 1;
+    }
+
+    sheetPrev.addEventListener("click", function () {
+      if (currentIndex <= 0) {
+        return;
+      }
+      currentIndex -= 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    sheetNext.addEventListener("click", function () {
+      if (currentIndex >= numSpeakers - 1) {
+        return;
+      }
+      currentIndex += 1;
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.focus();
+    });
+
+    mainInput.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      event.preventDefault();
+      var text = mainInput.value.trim();
+      if (!text) {
+        return;
+      }
+      addLineToCurrentSheet(text);
+      renderCurrentSheet();
+      updateSheetControls();
+      mainInput.value = "";
+    });
+
+    renderCurrentSheet();
+    updateSheetControls();
+    mainInput.focus();
+  </script>
+  <script src="../js/prep-link-back.js"></script>
+</body>
+</html>

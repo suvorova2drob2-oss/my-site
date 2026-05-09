@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Mode - Contemporary art Part 7</title>
+  <style>
+    :root {
+      --bg: #0c1633;
+      --panel: #1d2b4a;
+      --line: #334e7b;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #38d39f;
+      --bad: #ff8b8b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      padding: 22px;
+    }
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      padding: 18px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+    .btn {
+      border: 1px solid #4f739f;
+      border-radius: 10px;
+      background: #254067;
+      color: var(--text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn:hover { border-color: #6d93c2; }
+    .btn-primary { background: #1f5f95; border-color: #62b2e8; }
+    .btn-primary:hover { border-color: #8ad3ff; }
+    .btn-danger { background: #5a2c3d; border-color: #b26b7c; }
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #5a79ab;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #243a5f;
+      font-weight: 800;
+      margin: 8px 0 14px;
+    }
+    .skim-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      margin: 14px 0;
+    }
+    .mini {
+      border: 1px solid #3a5684;
+      border-radius: 12px;
+      background: #243a5f;
+      padding: 10px;
+      min-height: 120px;
+      cursor: pointer;
+    }
+    .mini h3 { margin-bottom: 6px; color: var(--accent); }
+    .mini p {
+      font-size: 0.88rem;
+      color: #d8e6ff;
+      line-height: 1.4;
+      max-height: 74px;
+      overflow: hidden;
+    }
+    .mini.expanded p { max-height: none; }
+    .stepbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .pill {
+      border: 1px solid #4a6b97;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      background: #23385e;
+    }
+    .statement {
+      border: 1px solid #4f739f;
+      background: #223d63;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 1.03rem;
+      line-height: 1.5;
+    }
+    .text-card {
+      border: 1px solid #3a5684;
+      border-radius: 12px;
+      background: #243a5f;
+      padding: 12px;
+    }
+    .text-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .letter {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid #6f9dcf;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--accent);
+      background: #1b3155;
+    }
+    .sentence {
+      display: inline;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 1px 2px;
+      transition: 0.12s ease;
+      line-height: 1.65;
+    }
+    .sentence:hover { background: #314f79; }
+    .sentence.active {
+      background: #3d6ea4;
+      color: #f5fbff;
+      box-shadow: 0 0 0 1px #8fc7ff inset;
+    }
+    .work-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .review-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .review-row {
+      border: 1px solid #3c5b88;
+      border-radius: 10px;
+      background: #253c62;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .review-row select, .review-row button {
+      min-height: 34px;
+    }
+    select {
+      border: 1px solid #5579a6;
+      border-radius: 8px;
+      background: #1d3354;
+      color: var(--text);
+      padding: 6px 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid #3c5b88;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .bad { color: var(--bad); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Exam Mode - Part 7 Multiple Matching</h1>
+      <a class="back" href="../index.html">&larr; Back</a>
+    </header>
+
+    <section id="screen-intro">
+      <p class="muted">Read this title and skim the texts first. Click a card to open the full text. Start the 5-minute timer when you are ready.</p>
+      <h2 style="margin:10px 0 4px;">Reading: Contemporary art</h2>
+      <div class="timer">Skim timer: <span id="timer">05:00</span></div>
+      <div class="skim-grid" id="skim-grid"></div>
+      <div class="work-actions">
+        <button type="button" class="btn" id="btn-start-timer">Start 5-minute skim timer</button>
+        <button type="button" class="btn btn-primary" id="btn-start-now">I am ready - start statements now</button>
+      </div>
+    </section>
+
+    <section id="screen-work" class="hidden">
+      <div class="stepbar">
+        <span class="pill" id="progress-pill">Statement 1 of 10</span>
+        <span class="pill" id="chosen-pill">Current answer: -</span>
+        <span class="pill" id="text-pill">Text A of 5</span>
+      </div>
+
+      <div class="statement" id="statement-box"></div>
+
+      <article class="text-card">
+        <div class="text-title">
+          <span class="letter" id="letter"></span>
+          <h3 id="speaker-name"></h3>
+        </div>
+        <p class="muted" style="margin-bottom:8px;">Click any sentence you think is evidence.</p>
+        <div id="text-body"></div>
+        <div class="work-actions">
+          <button type="button" class="btn btn-primary" id="btn-match">This text matches the statement</button>
+          <button type="button" class="btn" id="btn-next-text">No proof here - next text</button>
+          <button type="button" class="btn" id="btn-prev-text">Previous text</button>
+          <button type="button" class="btn btn-danger" id="btn-review">Go to review / finish</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="screen-review" class="hidden">
+      <h2 style="margin-bottom:6px;">Review and change answers</h2>
+      <p class="muted">Check all 10 statements. You can change any answer and jump back to any statement before submit.</p>
+      <div class="review-list" id="review-list"></div>
+      <div class="work-actions" style="margin-top:14px;">
+        <button type="button" class="btn btn-primary" id="btn-submit">Submit exam</button>
+        <button type="button" class="btn" id="btn-back-work">Back to statement view</button>
+      </div>
+    </section>
+
+    <section id="screen-results" class="hidden">
+      <h2>Results</h2>
+      <p id="score-line" style="margin:6px 0 10px;"></p>
+      <div id="results-table"></div>
+      <div class="work-actions">
+        <button type="button" class="btn" id="btn-new-run">Try again</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var STATEMENTS = [
+        { id: 1, text: "a suggestion that the majority of artists will fail to make a lasting impression" },
+        { id: 2, text: "the inherent impossibility of determining the definitive quality of artworks" },
+        { id: 3, text: "an admission that it is too late to end a controversial connection" },
+        { id: 4, text: "a reassurance that emotional responses are more valid than interpretation" },
+        { id: 5, text: "a hint that the quality of art can be judged by its originality" },
+        { id: 6, text: "an outdated assumption that art is essentially about still pictures" },
+        { id: 7, text: "a rebuttal of a claim about a decline in the aesthetic value of art" },
+        { id: 8, text: "the indirect benefits of an apparently ridiculous decision" },
+        { id: 9, text: "an arrogant assertion that is likely to reflect badly on the critic" },
+        { id: 10, text: "a rejection of criticisms of displaying work by a more diverse range of creators" }
+      ];
+
+      var PASSAGES = [
+        {
+          letter: "A",
+          name: "Myth: \u2018Contemporary\u2019 is new",
+          body:
+            "A MYTH: The idea of being \u2018contemporary\u2019 is new. Every era has called its own art \u2018contemporary\u2019, from the early impressionists to Picasso\u2019s experiments with Cubism, and the story of modern art is littered with innovations and provocations that once felt scandalous. To say that the label is a novelty is either screamingly obvious, or crass, or opportunistic. Walk into a serious gallery now and you meet a dizzying smorgasbord of photographs, paintings, sculptures, installation and video; the idea that \u2018art\u2019 is still a framed picture in a gilded frame, meanwhile, is hard to sustain when anyone can post still images in an instant. If you only want a feed of static pictures, you can scroll a screen, not a wall."
+        },
+        {
+          letter: "B",
+          name: "Myth: be impressed by all",
+          body:
+            "B MYTH: You\u2019re meant to be impressed by everything. One of the worst things someone can say at an art gallery is, \u2018My child could do that!\u2019 That\u2019s not because it\u2019s insulting to the artist. It\u2019s because you\u2019ve missed a trick. Get your child to do it, then! It would at the very least pay for their future astronomical student fees. If you will persist in viewing the art world as a joke, just be sure that it isn\u2019t at your expense. It\u2019s okay to dislike some contemporary art. You\u2019re not meant to like everything, or indeed \u2018get\u2019 it. Because that is the big fear: \u2018Do I get it?\u2019 This is, however, looking through the wrong end of the telescope. Sometimes, with art, there isn\u2019t much to get \u2013 it\u2019s just whether it touches you at a more instinctive, gut level. Other times, there is so much to get, so many potential readings, that you couldn\u2019t possibly get all of them anyway. Chances are, the artist hasn\u2019t either. Failure is a prerequisite, and must be forgiven. Not every work that is created and shown is a Raphael. Not every idea that seemed dazzling in the studio comes across as particularly deft in a museum. Remember: no artist sets out to be minor. Yet the sieving process of history will deem that most of them are."
+        },
+        {
+          letter: "C",
+          name: "Myth: no beautiful art left",
+          body:
+            "C MYTH: All the beautiful pictures have gone. The clich\u00e9 of contemporary work as so many piles of bricks and \u2018clouds of wasps\u2019 is a lazy caricature. In practice we have Gerhard Richter\u2019s mysterious blurry paintings, Warhol\u2019s multiple Marilyns, and a noticeable return of serious figurative painting in auction salerooms and in critical recognition. It is a strange time to claim that the human figure has been banished, when a major show at the Whitechapel Gallery, Radical Figures, can put painted bodies back at the centre of the conversation with an intensity that has not been seen for a generation."
+        },
+        {
+          letter: "D",
+          name: "Myth: vs Western tradition",
+          body:
+            "D MYTH: Artists want to thumb their noses at Western tradition. Okay, so you think that Western art is declining and decadent because the West is decadent and in decline. Fine. But note that contemporary art has very much opened itself up to other continents; these days, no self-respecting museum isn\u2019t scrambling to host work from Africa, Asia or South America. You could call it tokenism, you could call it vampirism, but you could also call it common sense. Fervid interest in the likes of the Nigerian Njideka Akunyili Crosby, or the Argentine-Swiss Vivian Suter (both contributors to London\u2019s Art on the Underground scheme) remind us that the art world isn\u2019t necessarily a closed circle; it is much, much larger than you think."
+        },
+        {
+          letter: "E",
+          name: "Myth: toys for the rich",
+          body:
+            "E MYTH: Artworks are just playthings for the ultra-rich. Art has always been a yardstick of power. It was like this when the Medici were covering Florence with their self-aggrandising commissions, and it\u2019s like this now when a billionaire funds a brand new wing at Tate Modern and gets their name plastered on it. To grumble about the relations between art and money is really to try to close the stable door once the horse has bolted. Everyone kvetches about how much modern art costs, but this is more to do with our grim fascination with money rather than any specific interest in the works. If a billionaire chooses to spend millions on a pile of bricks and rubber, at least they are supporting an artist and a gallery, indeed a whole ecosystem in which other, smaller artists can thrive. The general public, meanwhile, isn\u2019t asked to spend millions to enjoy the same stuff, thankfully."
+        }
+      ];
+
+      var KEY = { 1: "B", 2: "B", 3: "E", 4: "B", 5: "A", 6: "A", 7: "D", 8: "E", 9: "B", 10: "D" };
+
+      var state = {
+        statementIndex: 0,
+        textIndex: 0,
+        answers: {},
+        evidence: {}
+      };
+
+      var timerId = null;
+      var timerRunning = false;
+      var left = 300;
+
+      function splitSentences(text) {
+        return text.match(/[^.!?]+[.!?]?/g) || [text];
+      }
+
+      function show(screenId) {
+        ["screen-intro", "screen-work", "screen-review", "screen-results"].forEach(function (id) {
+          document.getElementById(id).classList.toggle("hidden", id !== screenId);
+        });
+      }
+
+      function renderIntroCards() {
+        var grid = document.getElementById("skim-grid");
+        grid.innerHTML = "";
+        PASSAGES.forEach(function (p) {
+          var box = document.createElement("article");
+          box.className = "mini";
+          box.innerHTML = "<h3>" + p.letter + " " + p.name + "</h3><p>" + p.body + "</p>";
+          box.addEventListener("click", function () {
+            box.classList.toggle("expanded");
+          });
+          grid.appendChild(box);
+        });
+      }
+
+      function renderTimer() {
+        var m = String(Math.floor(left / 60)).padStart(2, "0");
+        var s = String(left % 60).padStart(2, "0");
+        document.getElementById("timer").textContent = m + ":" + s;
+      }
+
+      function startTimer() {
+        if (timerRunning) return;
+        timerRunning = true;
+        renderTimer();
+        timerId = setInterval(function () {
+          left -= 1;
+          renderTimer();
+          if (left <= 0) {
+            clearInterval(timerId);
+            timerRunning = false;
+            openWork();
+          }
+        }, 1000);
+      }
+
+      function openWork() {
+        if (timerId) clearInterval(timerId);
+        timerRunning = false;
+        show("screen-work");
+        renderWork();
+      }
+
+      function currentStatement() {
+        return STATEMENTS[state.statementIndex];
+      }
+
+      function currentPassage() {
+        return PASSAGES[state.textIndex];
+      }
+
+      function evidenceKey(statementId, letter, index) {
+        return statementId + ":" + letter + ":" + index;
+      }
+
+      function renderWork() {
+        var s = currentStatement();
+        var p = currentPassage();
+        document.getElementById("progress-pill").textContent = "Statement " + (state.statementIndex + 1) + " of 10";
+        document.getElementById("text-pill").textContent = "Text " + p.letter + " of 5";
+        document.getElementById("chosen-pill").textContent = "Current answer: " + (state.answers[s.id] || "-");
+        document.getElementById("statement-box").innerHTML = "<strong>" + s.id + ".</strong> " + s.text;
+        document.getElementById("letter").textContent = p.letter;
+        document.getElementById("speaker-name").textContent = p.name;
+
+        var body = document.getElementById("text-body");
+        body.innerHTML = "";
+        splitSentences(p.body).forEach(function (line, idx) {
+          var span = document.createElement("span");
+          var key = evidenceKey(s.id, p.letter, idx);
+          span.className = "sentence" + (state.evidence[key] ? " active" : "");
+          span.textContent = line + " ";
+          span.addEventListener("click", function () {
+            state.evidence[key] = !state.evidence[key];
+            span.classList.toggle("active", !!state.evidence[key]);
+          });
+          body.appendChild(span);
+        });
+      }
+
+      function goNextStatement() {
+        if (state.statementIndex < STATEMENTS.length - 1) {
+          state.statementIndex += 1;
+          state.textIndex = 0;
+          renderWork();
+        } else {
+          openReview();
+        }
+      }
+
+      function openReview() {
+        show("screen-review");
+        renderReview();
+      }
+
+      function renderReview() {
+        var root = document.getElementById("review-list");
+        root.innerHTML = "";
+        STATEMENTS.forEach(function (s, idx) {
+          var row = document.createElement("div");
+          row.className = "review-row";
+
+          var leftCol = document.createElement("div");
+          leftCol.innerHTML = "<strong>" + s.id + ".</strong> " + s.text;
+          row.appendChild(leftCol);
+
+          var select = document.createElement("select");
+          select.dataset.sid = s.id;
+          var empty = document.createElement("option");
+          empty.value = "";
+          empty.textContent = "-";
+          select.appendChild(empty);
+          PASSAGES.forEach(function (p) {
+            var o = document.createElement("option");
+            o.value = p.letter;
+            o.textContent = p.letter + " - " + p.name;
+            select.appendChild(o);
+          });
+          select.value = state.answers[s.id] || "";
+          select.addEventListener("change", function () {
+            if (select.value) state.answers[s.id] = select.value;
+            else delete state.answers[s.id];
+          });
+          row.appendChild(select);
+
+          var jump = document.createElement("button");
+          jump.type = "button";
+          jump.className = "btn";
+          jump.textContent = "Open";
+          jump.addEventListener("click", function () {
+            state.statementIndex = idx;
+            state.textIndex = 0;
+            show("screen-work");
+            renderWork();
+          });
+          row.appendChild(jump);
+          root.appendChild(row);
+        });
+      }
+
+      function submitExam() {
+        var answered = Object.keys(state.answers).length;
+        if (answered < 10) {
+          alert("Please answer all 10 statements before submit.");
+          return;
+        }
+
+        var correct = 0;
+        var html = "<table><thead><tr><th>#</th><th>Statement</th><th>Your</th><th>Key</th><th>Result</th></tr></thead><tbody>";
+        STATEMENTS.forEach(function (s) {
+          var got = state.answers[s.id];
+          var need = KEY[s.id];
+          var ok = got === need;
+          if (ok) correct += 1;
+          html += "<tr><td>" + s.id + "</td><td>" + s.text + "</td><td>" + got + "</td><td>" + need + "</td><td class='" + (ok ? "ok" : "bad") + "'>" + (ok ? "Correct" : "Wrong") + "</td></tr>";
+        });
+        html += "</tbody></table>";
+
+        document.getElementById("score-line").innerHTML = "<strong>Score: " + correct + " / 10</strong>";
+        document.getElementById("results-table").innerHTML = html;
+        show("screen-results");
+      }
+
+      document.getElementById("btn-start-timer").addEventListener("click", startTimer);
+      document.getElementById("btn-start-now").addEventListener("click", openWork);
+      document.getElementById("btn-match").addEventListener("click", function () {
+        var s = currentStatement();
+        var p = currentPassage();
+        state.answers[s.id] = p.letter;
+        goNextStatement();
+      });
+      document.getElementById("btn-next-text").addEventListener("click", function () {
+        if (state.textIndex < PASSAGES.length - 1) {
+          state.textIndex += 1;
+          renderWork();
+          return;
+        }
+        openReview();
+      });
+      document.getElementById("btn-prev-text").addEventListener("click", function () {
+        if (state.textIndex > 0) {
+          state.textIndex -= 1;
+          renderWork();
+        }
+      });
+      document.getElementById("btn-review").addEventListener("click", openReview);
+      document.getElementById("btn-submit").addEventListener("click", submitExam);
+      document.getElementById("btn-back-work").addEventListener("click", function () {
+        show("screen-work");
+        renderWork();
+      });
+      document.getElementById("btn-new-run").addEventListener("click", function () {
+        state = { statementIndex: 0, textIndex: 0, answers: {}, evidence: {} };
+        left = 300;
+        timerRunning = false;
+        show("screen-intro");
+        renderIntroCards();
+        renderTimer();
+      });
+
+      renderIntroCards();
+      renderTimer();
+    })();
+  </script>
+</body>
+</html>

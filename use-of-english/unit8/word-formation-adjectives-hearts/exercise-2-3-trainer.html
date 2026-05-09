@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 &mdash; Word formation · Suffix table &amp; word bank (trainer)</title>
+  <style>
+    :root {
+      --bg: #181e28;
+      --bg-card: #1e2530;
+      --bg-inner: #252d3a;
+      --line: #3a4556;
+      --text: #f7f9fc;
+      --text-dim: #9eb0c8;
+      --pink: #f25176;
+      --pink-glow: rgba(242, 81, 118, 0.12);
+      --cyan: #4fbbf2;
+      --heart-off: #4a5568;
+      --green: #5ee4a8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -20%, #243044 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .wrap { width: min(920px, 100%); }
+    .shell {
+      width: 100%;
+      background: linear-gradient(165deg, #252e3d 0%, var(--bg-card) 45%, #1a2029 100%);
+      border: 1px solid #3d4d63;
+      border-radius: 22px;
+      padding: 22px 22px 26px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22), 0 24px 56px rgba(0, 0, 0, 0.45);
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px 16px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .home {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: color 0.15s, border-color 0.15s, transform 0.12s;
+      flex-shrink: 0;
+    }
+    .home:hover { color: var(--cyan); border-color: #55667d; }
+    .home:active { transform: scale(0.97); }
+    .home svg { width: 22px; height: 22px; }
+    h1 {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .sub {
+      text-align: center;
+      font-size: 0.86rem;
+      color: var(--text-dim);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tab {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text-dim);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .tab:hover { border-color: #55667d; color: var(--text); }
+    .tab.on {
+      border-color: rgba(79, 187, 242, 0.6);
+      color: var(--cyan);
+      background: rgba(79, 187, 242, 0.1);
+    }
+    .panel { display: none; }
+    .panel.open { display: block; }
+    .instruction {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: #a8b8cc;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(79, 187, 242, 0.25);
+      background: rgba(79, 187, 242, 0.06);
+    }
+
+    /* --- Exercise 2: sort --- */
+    .suffix-wrap {
+      overflow-x: auto;
+      margin-bottom: 16px;
+      padding-bottom: 6px;
+    }
+    .suffix-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(96px, 1fr));
+      gap: 8px;
+      min-width: 640px;
+    }
+    .suffix-col {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.15);
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .suffix-col.target { border-color: rgba(79, 187, 242, 0.55); box-shadow: 0 0 0 2px rgba(79, 187, 242, 0.2); }
+    .suffix-col h3 {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--cyan);
+      padding: 8px 6px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+      background: rgba(37, 45, 58, 0.6);
+      border-radius: 11px 11px 0 0;
+    }
+    .suffix-drop {
+      flex: 1;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: stretch;
+    }
+    .chip {
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #55667d;
+      background: var(--bg-inner);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      transition: transform 0.1s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .chip:hover { border-color: var(--cyan); }
+    .chip.selected {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 2px var(--pink-glow);
+      color: var(--pink);
+    }
+    .chip.wrong-flash {
+      animation: wrongPulse 0.6s ease;
+    }
+    @keyframes wrongPulse {
+      0%, 100% { border-color: #55667d; box-shadow: none; }
+      50% { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+    }
+    .pool-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin: 12px 0 8px;
+      font-weight: 700;
+    }
+    .chip-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px dashed #4a5568;
+      background: rgba(0, 0, 0, 0.12);
+    }
+    .chip-pool.target { border-color: rgba(79, 187, 242, 0.5); }
+    .ex2-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: none;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      box-shadow: 0 4px 0 #2a8ab8;
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost {
+      background: var(--bg-inner);
+      color: var(--text-dim);
+      border: 1px solid var(--line);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: #55667d; }
+    .ex2-feedback {
+      min-height: 1.4em;
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.94rem;
+    }
+    .ex2-feedback.ok { color: var(--green); }
+    .ex2-feedback.bad { color: #ff9aab; }
+
+    /* --- Exercise 3: hearts --- */
+    .hearts {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+    }
+    .heart {
+      width: 28px;
+      height: 26px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .heart.on {
+      filter: drop-shadow(0 2px 1px rgba(180, 40, 80, 0.85)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+    }
+    .heart.off {
+      opacity: 0.38;
+      transform: scale(0.88);
+    }
+    .heart.off path { fill: var(--heart-off); }
+    .heart.on path { fill: url(#heartGrad); }
+    .counter {
+      font-weight: 700;
+      font-size: 1.02rem;
+      color: var(--text-dim);
+      min-width: 5ch;
+      text-align: right;
+    }
+    .streak-badge {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #fcd34d;
+      letter-spacing: 0.04em;
+    }
+    .stage { text-align: center; }
+    .root-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+    .root {
+      display: inline-block;
+      font-size: clamp(1.35rem, 4vw, 1.75rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--pink);
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 2px solid var(--pink);
+      background: var(--pink-glow);
+    }
+    .suffix-hint {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .input-wrap { margin-bottom: 14px; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .input-wrap input {
+      width: 100%;
+      padding: 15px 16px;
+      font-size: 1.05rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text);
+      outline: none;
+      text-align: center;
+    }
+    .input-wrap input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(79, 187, 242, 0.22);
+    }
+    .feedback {
+      min-height: 1.45em;
+      font-size: 0.94rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .feedback.bad { color: #ff9aab; }
+    .feedback.ok { color: var(--green); }
+    .check {
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #2a8ab8;
+    }
+    .check:hover { filter: brightness(1.05); }
+    .check:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 99998;
+    }
+    .overlay.open { display: flex; }
+    .overlay.wrong-reveal {
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 20px;
+      background: rgba(8, 11, 18, 0.96);
+      z-index: 99999;
+    }
+    .wrong-reveal-box { width: min(520px, 100%); text-align: center; }
+    .wrong-reveal-label {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .wrong-reveal-answer {
+      font-size: clamp(1.5rem, 7vw, 2.2rem);
+      font-weight: 800;
+      color: #4ade80;
+      line-height: 1.2;
+      margin-bottom: 18px;
+      padding: 18px 16px;
+      border-radius: 18px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.14);
+      word-break: break-word;
+    }
+    .wrong-reveal-tip {
+      font-size: 0.94rem;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.45;
+      font-style: italic;
+    }
+    .wrong-reveal-next {
+      width: 100%;
+      max-width: 300px;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #2a8ab8;
+    }
+    .modal {
+      background: var(--bg-inner);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .modal h2 { margin-bottom: 10px; font-size: 1.25rem; }
+    .modal p { color: var(--text-dim); margin-bottom: 18px; line-height: 1.45; }
+    .modal button {
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      background: var(--cyan);
+      color: #0a1628;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true">
+    <defs>
+      <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff8fa8" />
+        <stop offset="55%" stop-color="#f25176" />
+        <stop offset="100%" stop-color="#d63d62" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="wrap">
+    <div class="shell">
+      <div class="bar">
+        <a class="home" id="homeLink" href="index.html" aria-label="Back to adjectives hearts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+      </div>
+      <h1>Suffix table &amp; word bank</h1>
+      <p class="sub">Exercise 2: sort the listening adjectives into columns. Exercise 3: form adjectives from the word bank (hearts + streak).</p>
+
+      <div class="tabs" role="tablist" aria-label="Exercise">
+        <button type="button" class="tab on" role="tab" aria-selected="true" data-panel="ex2" id="tabEx2">Exercise 2 &mdash; Sort</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-panel="ex3" id="tabEx3">Exercise 3 &mdash; Form</button>
+      </div>
+
+      <div class="panel open" id="panelEx2" role="tabpanel" aria-labelledby="tabEx2">
+        <p class="instruction">Tap a word, then tap a column (or the pool to return it)</p>
+        <p class="note">Uses the nine adjectives from Exercise 1 (hearts), plus the book example <strong>various</strong>. The <strong>-ent</strong> column stays empty here &mdash; it is for Exercise 3.</p>
+        <div class="suffix-wrap">
+          <div class="suffix-grid" id="suffixGrid"></div>
+        </div>
+        <div class="pool-label">Pool</div>
+        <div class="chip-pool" id="chipPool" tabindex="0" role="group" aria-label="Word pool"></div>
+        <div class="ex2-actions">
+          <button type="button" class="btn btn-ghost" id="ex2Reset">Shuffle pool</button>
+          <button type="button" class="btn btn-primary" id="ex2Check">Check table</button>
+        </div>
+        <p class="ex2-feedback" id="ex2Feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="panel" id="panelEx3" role="tabpanel" aria-labelledby="tabEx3" hidden>
+        <div class="bar" style="border: none; padding-top: 0; gap: 12px;">
+          <div class="hearts" id="heartsEx3">
+            <svg class="heart on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.716-4.5-9-8.5C.78 9.58 2.46 6 6 6c2.08 0 3.48 1.33 4 2 .52-.67 1.92-2 4-2 3.54 0 5.22 3.58 3 6.5-2.284 4-9 8.5-9 8.5z"/></svg>
+            <svg class="heart on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.716-4.5-9-8.5C.78 9.58 2.46 6 6 6c2.08 0 3.48 1.33 4 2 .52-.67 1.92-2 4-2 3.54 0 5.22 3.58 3 6.5-2.284 4-9 8.5-9 8.5z"/></svg>
+            <svg class="heart on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.716-4.5-9-8.5C.78 9.58 2.46 6 6 6c2.08 0 3.48 1.33 4 2 .52-.67 1.92-2 4-2 3.54 0 5.22 3.58 3 6.5-2.284 4-9 8.5-9 8.5z"/></svg>
+          </div>
+          <span class="counter" id="ex3Progress">1 / 21</span>
+          <span class="streak-badge" id="streakBadge" aria-live="polite"></span>
+        </div>
+        <p class="instruction">Type the adjective (British spelling where both exist)</p>
+        <p class="note">Answer key follows clear suffix patterns. If your coursebook groups words differently in the table, use this trainer for spelling practice &mdash; the column counts may differ from print.</p>
+        <div class="stage">
+          <div class="root-wrap"><span class="root" id="ex3Base">ignore</span></div>
+          <p class="suffix-hint" id="ex3SuffixHint"></p>
+          <div class="input-wrap">
+            <input type="text" id="ex3Answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the adjective&hellip;" />
+          </div>
+          <p class="feedback" id="ex3Feedback" aria-live="polite"></p>
+          <button type="button" class="check" id="ex3Check">Check</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay wrong-reveal" id="wrongRevealOverlay" aria-hidden="true">
+    <div class="wrong-reveal-box">
+      <p class="wrong-reveal-label">Correct answer</p>
+      <p class="wrong-reveal-answer" id="wrongRevealAnswer"></p>
+      <p class="wrong-reveal-tip" id="wrongRevealTip"></p>
+      <button type="button" class="wrong-reveal-next" id="wrongRevealNext">Continue</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay" aria-hidden="true">
+    <div class="modal">
+      <h2>Rally complete</h2>
+      <p>You formed every adjective in this round.</p>
+      <button type="button" id="playAgain">Play again</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="loseOverlay" aria-hidden="true">
+    <div class="modal">
+      <h2>Out of hearts</h2>
+      <p>The round stops when lives reach zero. Try a fresh order.</p>
+      <button type="button" id="restartBtn">OK</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="ex2WinOverlay" aria-hidden="true">
+    <div class="modal">
+      <h2>Perfect table</h2>
+      <p>Every suffix column matches the key.</p>
+      <button type="button" id="ex2WinOk">OK</button>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  var SUFFIX_ORDER = ["-ous", "-ful", "-y", "-al", "-ent", "-ant", "-ive"];
+
+  var EX2_CHIPS = [
+    { id: "c1", word: "various", col: "-ous" },
+    { id: "c2", word: "careful", col: "-ful" },
+    { id: "c3", word: "healthy", col: "-y" },
+    { id: "c4", word: "additional", col: "-al" },
+    { id: "c5", word: "dangerous", col: "-ous" },
+    { id: "c6", word: "impatient", col: "-ant" },
+    { id: "c7", word: "unpleasant", col: "-ant" },
+    { id: "c8", word: "attractive", col: "-ive" },
+    { id: "c9", word: "industrial", col: "-al" }
+  ];
+
+  var EX3_ITEMS = [
+    { base: "ignore", answers: ["ignorant"], col: "-ant", tip: "Drop the ending and think of someone who has not learnt / noticed." },
+    { base: "differ", answers: ["different"], col: "-ent", tip: "Same stem as the verb; the vowel before the suffix is not a simple -er." },
+    { base: "origin", answers: ["original"], col: "-al", tip: "First / source &mdash; adjective ending in two letters before -al." },
+    { base: "poison", answers: ["poisonous"], col: "-ous", tip: "Toxic &mdash; noun + full vowel + typical -ous." },
+    { base: "peace", answers: ["peaceful"], col: "-ful", tip: "Calm and safe &mdash; noun + adjective suffix for &ldquo;full of&rdquo;." },
+    { base: "protect", answers: ["protective"], col: "-ive", tip: "Shielding &mdash; verb stem + -ive (watch the consonant before -ive)." },
+    { base: "cloud", answers: ["cloudy"], col: "-y", tip: "Weather adjective from a short noun; spelling keeps the vowel team." },
+    { base: "beauty", answers: ["beautiful"], col: "-ful", tip: "Drop -y and double a consonant pattern from the coursebook family." },
+    { base: "hunger", answers: ["hungry"], col: "-y", tip: "Not hunger+y; the adjective has a shorter stem." },
+    { base: "appear", answers: ["apparent"], col: "-ant", tip: "Visible / obvious &mdash; vowel changes in the stress pattern." },
+    { base: "decide", answers: ["decisive"], col: "-ive", tip: "Able to decide &mdash; stem loses one letter you might expect from the verb." },
+    { base: "tolerate", answers: ["tolerant"], col: "-ant", tip: "Willing to accept &mdash; long verb bases often use this adjective ending." },
+    { base: "mystery", answers: ["mysterious"], col: "-ous", tip: "Strange and not fully explained &mdash; -y in the noun becomes a longer adjective." },
+    { base: "finance", answers: ["financial"], col: "-al", tip: "About money systems &mdash; adjective from the noun ending -e." },
+    { base: "fog", answers: ["foggy"], col: "-y", tip: "Double the last consonant before -y on a short vowel." },
+    { base: "humour", answers: ["humorous"], col: "-ous", tip: "Funny &mdash; drop the last letter of the noun (also <em>humor &rarr; humorous</em>)." },
+    { base: "destroy", answers: ["destructive"], col: "-ive", tip: "Not destroy+ive; the noun <em>destruction</em> points to the adjective stem." },
+    { base: "hesitate", answers: ["hesitant"], col: "-ant", tip: "Unsure, pausing &mdash; stress can trick spelling; compare the noun <em>hesitation</em>." },
+    { base: "benefit", answers: ["beneficial"], col: "-al", tip: "Helpful &mdash; loses final <em>t</em> before the adjective suffix." },
+    { base: "succeed", answers: ["successful"], col: "-ful", tip: "Think of the noun <em>success</em> first, then the hyphen-free adjective + suffix." },
+    { base: "obey", answers: ["obedient"], col: "-ent", tip: "Following rules &mdash; related to <em>obedience</em>, not obey + -ent directly." }
+  ];
+
+  function norm(s) {
+    if (!s) return "";
+    return String(s).trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  /* ---- Tabs ---- */
+  var tabEx2 = document.getElementById("tabEx2");
+  var tabEx3 = document.getElementById("tabEx3");
+  var panelEx2 = document.getElementById("panelEx2");
+  var panelEx3 = document.getElementById("panelEx3");
+
+  function activateTab(which) {
+    var ex3 = which === "ex3";
+    tabEx2.classList.toggle("on", !ex3);
+    tabEx3.classList.toggle("on", ex3);
+    tabEx2.setAttribute("aria-selected", !ex3 ? "true" : "false");
+    tabEx3.setAttribute("aria-selected", ex3 ? "true" : "false");
+    panelEx2.classList.toggle("open", !ex3);
+    panelEx3.classList.toggle("open", ex3);
+    panelEx3.hidden = !ex3;
+    if (ex3 && ex3Round.length === 0) startEx3Fresh();
+  }
+
+  tabEx2.addEventListener("click", function () { activateTab("ex2"); });
+  tabEx3.addEventListener("click", function () { activateTab("ex3"); });
+
+  /* ---- Exercise 2 ---- */
+  var suffixGrid = document.getElementById("suffixGrid");
+  var chipPool = document.getElementById("chipPool");
+  var ex2Feedback = document.getElementById("ex2Feedback");
+  var ex2SelectedId = null;
+  var placement = {};
+  var poolOrder = [];
+
+  function buildSuffixGrid() {
+    suffixGrid.innerHTML = "";
+    SUFFIX_ORDER.forEach(function (suf) {
+      var col = document.createElement("div");
+      col.className = "suffix-col";
+      col.dataset.suffix = suf;
+      var h = document.createElement("h3");
+      h.textContent = suf;
+      col.appendChild(h);
+      var drop = document.createElement("div");
+      drop.className = "suffix-drop";
+      drop.dataset.suffix = suf;
+      col.appendChild(drop);
+      col.addEventListener("click", function () { placeOnSuffix(suf); });
+      suffixGrid.appendChild(col);
+    });
+  }
+
+  function chipEl(chip) {
+    var el = document.createElement("button");
+    el.type = "button";
+    el.className = "chip";
+    el.textContent = chip.word;
+    el.dataset.id = chip.id;
+    el.addEventListener("click", function (e) {
+      e.stopPropagation();
+      selectChip(chip.id);
+    });
+    return el;
+  }
+
+  function selectChip(id) {
+    ex2SelectedId = ex2SelectedId === id ? null : id;
+    refreshEx2Dom();
+  }
+
+  function placeOnSuffix(suf) {
+    if (!ex2SelectedId) return;
+    placement[ex2SelectedId] = suf;
+    ex2SelectedId = null;
+    refreshEx2Dom();
+  }
+
+  function placeInPool() {
+    if (!ex2SelectedId) return;
+    delete placement[ex2SelectedId];
+    ex2SelectedId = null;
+    refreshEx2Dom();
+  }
+
+  function refreshEx2Dom() {
+    SUFFIX_ORDER.forEach(function (suf) {
+      var drop = suffixGrid.querySelector('.suffix-drop[data-suffix="' + suf + '"]');
+      if (!drop) return;
+      drop.innerHTML = "";
+    });
+    chipPool.innerHTML = "";
+    chipPool.classList.toggle("target", ex2SelectedId && !placement[ex2SelectedId]);
+
+    EX2_CHIPS.forEach(function (chip) {
+      var pos = placement[chip.id];
+      if (!pos) return;
+      var el = chipEl(chip);
+      if (ex2SelectedId === chip.id) el.classList.add("selected");
+      var drop = suffixGrid.querySelector('.suffix-drop[data-suffix="' + pos + '"]');
+      if (drop) drop.appendChild(el);
+    });
+
+    var inPool = EX2_CHIPS.filter(function (c) { return !placement[c.id]; });
+    inPool.sort(function (a, b) {
+      return poolOrder.indexOf(a.id) - poolOrder.indexOf(b.id);
+    });
+    inPool.forEach(function (chip) {
+      var el = chipEl(chip);
+      if (ex2SelectedId === chip.id) el.classList.add("selected");
+      chipPool.appendChild(el);
+    });
+
+    ex2Feedback.textContent = "";
+    ex2Feedback.className = "ex2-feedback";
+  }
+
+  function initEx2ShufflePoolOrder() {
+    poolOrder = shuffle(EX2_CHIPS.map(function (c) { return c.id; }));
+    placement = {};
+    ex2SelectedId = null;
+    refreshEx2Dom();
+  }
+
+  chipPool.addEventListener("click", function () { placeInPool(); });
+
+  document.getElementById("ex2Reset").addEventListener("click", function () {
+    initEx2ShufflePoolOrder();
+    ex2Feedback.textContent = "";
+  });
+
+  document.getElementById("ex2Check").addEventListener("click", function () {
+    var ok = true;
+    var missing = false;
+    EX2_CHIPS.forEach(function (chip) {
+      if (!placement[chip.id]) missing = true;
+      else if (placement[chip.id] !== chip.col) ok = false;
+    });
+    if (missing) {
+      ex2Feedback.textContent = "Place every word in a column before checking.";
+      ex2Feedback.className = "ex2-feedback bad";
+      return;
+    }
+    if (!ok) {
+      ex2Feedback.textContent = "Not quite &mdash; some columns need different words.";
+      ex2Feedback.className = "ex2-feedback bad";
+      EX2_CHIPS.forEach(function (chip) {
+        if (placement[chip.id] !== chip.col) {
+          var drop = suffixGrid.querySelector('.suffix-drop[data-suffix="' + placement[chip.id] + '"]');
+          if (drop) {
+            var wrongBtn = drop.querySelector('.chip[data-id="' + chip.id + '"]');
+            if (wrongBtn) {
+              wrongBtn.classList.add("wrong-flash");
+              setTimeout(function () { wrongBtn.classList.remove("wrong-flash"); }, 600);
+            }
+          }
+        }
+      });
+      return;
+    }
+    ex2Feedback.textContent = "All columns match the key.";
+    ex2Feedback.className = "ex2-feedback ok";
+    document.getElementById("ex2WinOverlay").classList.add("open");
+    document.getElementById("ex2WinOverlay").setAttribute("aria-hidden", "false");
+  });
+
+  document.getElementById("ex2WinOk").addEventListener("click", function () {
+    document.getElementById("ex2WinOverlay").classList.remove("open");
+    document.getElementById("ex2WinOverlay").setAttribute("aria-hidden", "true");
+  });
+
+  /* ---- Exercise 3 ---- */
+  var MAX_LIVES = 3;
+  var ex3Round = [];
+  var ex3Index = 0;
+  var ex3Lives = MAX_LIVES;
+  var ex3Streak = 0;
+  var streakBadge = document.getElementById("streakBadge");
+
+  var heartsEl = document.querySelectorAll("#heartsEx3 .heart");
+  var ex3Base = document.getElementById("ex3Base");
+  var ex3SuffixHint = document.getElementById("ex3SuffixHint");
+  var ex3Answer = document.getElementById("ex3Answer");
+  var ex3Feedback = document.getElementById("ex3Feedback");
+  var ex3Check = document.getElementById("ex3Check");
+  var wrongRevealOverlay = document.getElementById("wrongRevealOverlay");
+  var wrongRevealAnswer = document.getElementById("wrongRevealAnswer");
+  var wrongRevealTip = document.getElementById("wrongRevealTip");
+  var wrongRevealNext = document.getElementById("wrongRevealNext");
+  var winOverlay = document.getElementById("winOverlay");
+  var loseOverlay = document.getElementById("loseOverlay");
+  var ex3Progress = document.getElementById("ex3Progress");
+
+  function renderHearts3() {
+    for (var i = 0; i < heartsEl.length; i++) {
+      heartsEl[i].classList.toggle("on", i < ex3Lives);
+      heartsEl[i].classList.toggle("off", i >= ex3Lives);
+    }
+  }
+
+  function renderStreak() {
+    if (ex3Streak >= 2) {
+      streakBadge.textContent = "Streak " + ex3Streak;
+    } else {
+      streakBadge.textContent = "";
+    }
+  }
+
+  function showEx3Item() {
+    var item = ex3Round[ex3Index];
+    ex3Base.textContent = item.base;
+    ex3SuffixHint.textContent = "";
+    ex3Answer.value = "";
+    ex3Feedback.textContent = "";
+    ex3Feedback.className = "feedback";
+    ex3Progress.textContent = String(ex3Index + 1) + " / " + ex3Round.length;
+    ex3Answer.focus();
+  }
+
+  function startEx3Fresh() {
+    ex3Round = shuffle(EX3_ITEMS);
+    ex3Index = 0;
+    ex3Lives = MAX_LIVES;
+    ex3Streak = 0;
+    renderHearts3();
+    renderStreak();
+    showEx3Item();
+  }
+
+  function advanceEx3Correct() {
+    ex3Streak += 1;
+    renderStreak();
+    ex3Index += 1;
+    if (ex3Index >= ex3Round.length) {
+      winOverlay.classList.add("open");
+      winOverlay.setAttribute("aria-hidden", "false");
+      return;
+    }
+    showEx3Item();
+  }
+
+  function advanceAfterWrong() {
+    ex3Streak = 0;
+    renderStreak();
+    ex3Index += 1;
+    if (ex3Index >= ex3Round.length) {
+      winOverlay.classList.add("open");
+      winOverlay.setAttribute("aria-hidden", "false");
+      return;
+    }
+    showEx3Item();
+  }
+
+  function answersAccept(raw, item) {
+    var n = norm(raw);
+    for (var i = 0; i < item.answers.length; i++) {
+      if (n === norm(item.answers[i])) return true;
+    }
+    return false;
+  }
+
+  function openWrongReveal(item) {
+    wrongRevealAnswer.textContent = item.answers.join(" / ");
+    wrongRevealTip.innerHTML = item.tip + "<br><br><span style=\"opacity:0.85\">Suffix column in this key: <strong>" + item.col + "</strong></span>";
+    wrongRevealOverlay.classList.add("open");
+    wrongRevealOverlay.setAttribute("aria-hidden", "false");
+  }
+
+  function closeWrongReveal() {
+    wrongRevealOverlay.classList.remove("open");
+    wrongRevealOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  ex3Check.addEventListener("click", function () {
+    var item = ex3Round[ex3Index];
+    if (answersAccept(ex3Answer.value, item)) {
+      ex3Feedback.textContent = "Nice!";
+      ex3Feedback.className = "feedback ok";
+      setTimeout(function () {
+        advanceEx3Correct();
+      }, 320);
+      return;
+    }
+    ex3Feedback.className = "feedback bad";
+    ex3Feedback.textContent = "";
+    ex3Lives -= 1;
+    renderHearts3();
+    openWrongReveal(item);
+  });
+
+  wrongRevealNext.addEventListener("click", function () {
+    closeWrongReveal();
+    if (ex3Lives <= 0) {
+      loseOverlay.classList.add("open");
+      loseOverlay.setAttribute("aria-hidden", "false");
+      return;
+    }
+    advanceAfterWrong();
+  });
+
+  ex3Answer.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      ex3Check.click();
+    }
+  });
+
+  document.getElementById("playAgain").addEventListener("click", function () {
+    winOverlay.classList.remove("open");
+    winOverlay.setAttribute("aria-hidden", "true");
+    startEx3Fresh();
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", function () {
+    loseOverlay.classList.remove("open");
+    loseOverlay.setAttribute("aria-hidden", "true");
+    startEx3Fresh();
+  });
+
+  var q = new URLSearchParams(window.location.search);
+  if (q.get("back")) {
+    document.getElementById("homeLink").href = q.get("back");
+  }
+
+  buildSuffixGrid();
+  initEx2ShufflePoolOrder();
+})();
+  </script>
+</body>
+</html>

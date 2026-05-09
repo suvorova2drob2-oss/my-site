@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 Grammar — Green incentives (word bank)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; font-weight: 700; max-width: 32rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+    .hint-bar {
+      font-size: 0.84rem;
+      color: #bae6fd;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      background: rgba(86, 204, 242, 0.08);
+    }
+
+    .example-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.93rem;
+    }
+    .example-box .lab {
+      font-weight: 800;
+      font-size: 0.72rem;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .example-box strong { color: #fef08a; }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .bank-chip {
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.14);
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bank-chip:hover { border-color: var(--accent); background: rgba(86, 204, 242, 0.22); }
+    .bank-chip:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .bank-chip-example:disabled {
+      opacity: 0.55;
+      border-style: dashed;
+    }
+
+    .passage {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .passage h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fef9c3;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+    .slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      min-width: 5.5rem;
+      min-height: 34px;
+      padding: 4px 8px;
+      margin: 0 3px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .slot:hover { border-color: #5a7ab0; }
+    .slot.is-focused {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .slot.is-empty { color: var(--muted); font-weight: 500; }
+    .slot.is-ok { border-color: #22c55e; }
+    .slot.is-bad { border-color: #f87171; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    button.btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Green incentives &mdash; conditionals (word bank)</h1>
+      <a class="back" href="index.html">&larr; Conditionals hub</a>
+    </header>
+
+    <p class="instr">
+      <span class="instr-num">1</span>
+      Complete each gap with a word from the box. You can use each word <strong>only once</strong>. There is an example at the beginning (0).
+    </p>
+    <p class="hint-bar">
+      <strong>How:</strong> click a numbered gap (it highlights), then click a word in the box. Click a filled gap to change it. One word in the box is <strong>not</strong> needed.
+    </p>
+
+    <div class="example-box">
+      <div class="lab">Example (0)</div>
+      <p>If I <strong>didn&rsquo;t</strong> tell them to recycle the rubbish, they probably &hellip;</p>
+    </div>
+
+    <div class="word-box" id="word-bank" aria-label="Word bank">
+      <button type="button" class="bank-chip bank-chip-example" disabled title="Already used in example (0)" data-word="didn't">didn&rsquo;t</button>
+      <button type="button" class="bank-chip" data-word="had">had</button>
+      <button type="button" class="bank-chip" data-word="long">long</button>
+      <button type="button" class="bank-chip" data-word="might">might</button>
+      <button type="button" class="bank-chip" data-word="provided">provided</button>
+      <button type="button" class="bank-chip" data-word="take">take</button>
+      <button type="button" class="bank-chip" data-word="will">will</button>
+      <button type="button" class="bank-chip" data-word="clean">clean</button>
+      <button type="button" class="bank-chip" data-word="won't">won&rsquo;t</button>
+      <button type="button" class="bank-chip" data-word="wouldn't">wouldn&rsquo;t</button>
+    </div>
+
+    <div class="passage">
+      <h2>GREEN INCENTIVES</h2>
+      <p>
+        Everyone knows that we can do our bit to recycle. But the problem is people don&rsquo;t. I live in a house with friends and if I (0)
+        <strong>didn&rsquo;t</strong> tell them to recycle the rubbish, they probably (1)
+        <button type="button" class="slot is-empty" id="ans-1" data-n="1" aria-label="Gap 1"><span class="slot-inner">&mdash;</span></button>.
+        But companies are catching on and there are now more incentives for consumers.
+      </p>
+      <p>
+        If you go to the majority of supermarkets, you (2)
+        <button type="button" class="slot is-empty" id="ans-2" data-n="2" aria-label="Gap 2"><span class="slot-inner">&mdash;</span></button>
+        get free plastic bags; you have to pay for them. And some shops will give you a &pound;5 voucher if you (3)
+        <button type="button" class="slot is-empty" id="ans-3" data-n="3" aria-label="Gap 3"><span class="slot-inner">&mdash;</span></button>
+        unwanted clothes to charity shops. Then, there are the big high street coffee shops that have started to give you a discounted coffee as (4)
+        <button type="button" class="slot is-empty" id="ans-4" data-n="4" aria-label="Gap 4"><span class="slot-inner">&mdash;</span></button>
+        as you use your own recycled cups.
+      </p>
+      <p>
+        But more should be done. How can people be incentivised? It actually doesn&rsquo;t take much. If you (5)
+        <button type="button" class="slot is-empty" id="ans-5" data-n="5" aria-label="Gap 5"><span class="slot-inner">&mdash;</span></button>
+        a business and gave your staff even an hour off if they beat their recycling target, this (6)
+        <button type="button" class="slot is-empty" id="ans-6" data-n="6" aria-label="Gap 6"><span class="slot-inner">&mdash;</span></button>
+        work. Another idea would be for shops to give some money back to the consumer (7)
+        <button type="button" class="slot is-empty" id="ans-7" data-n="7" aria-label="Gap 7"><span class="slot-inner">&mdash;</span></button>
+        they brought back their glass bottles. It&rsquo;s really quite simple: if we have more ideas like this, we (8)
+        <button type="button" class="slot is-empty" id="ans-8" data-n="8" aria-label="Gap 8"><span class="slot-inner">&mdash;</span></button>
+        up the planet.
+      </p>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script>
+(function () {
+  var KEY = {
+    1: "wouldn't",
+    2: "won't",
+    3: "take",
+    4: "long",
+    5: "had",
+    6: "might",
+    7: "provided",
+    8: "clean"
+  };
+
+  var EXPLAIN = {
+    1: "Unreal present habit: without your reminder, they still would not recycle (<strong>wouldn&rsquo;t</strong>).",
+    2: "First conditional-style result: you <strong>won&rsquo;t</strong> get free bags (standard rule in supermarkets now).",
+    3: "Conditional: if you <strong>take</strong> clothes to charity, you get a voucher.",
+    4: "<strong>As long as</strong> you use your own cup &mdash; fixed phrase.",
+    5: "Second conditional: <strong>If you had</strong> a business &hellip;",
+    6: "<strong>Might</strong> work &mdash; possibility in the result clause.",
+    7: "<strong>Provided</strong> (that) they brought back bottles &mdash; conditional link (same idea as <em>if</em>).",
+    8: "<strong>Clean</strong> up the planet &mdash; phrasal verb; simple present/future in the result clause."
+  };
+
+  var UNUSED_DISTRACTOR = "will";
+
+  var focusedSlotNum = null;
+  var PH = "\u2014";
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function displayWord(w) {
+    if (w === "won't") return "won\u2019t";
+    if (w === "wouldn't") return "wouldn\u2019t";
+    if (w === "didn't") return "didn\u2019t";
+    return w;
+  }
+
+  function getSlot(n) {
+    return document.getElementById("ans-" + n);
+  }
+
+  function getSlotAnswer(n) {
+    var el = getSlot(n);
+    if (!el) return "";
+    return String(el.dataset.value || "").trim();
+  }
+
+  function setAriaSlot(el, n, word) {
+    var label = "Gap " + n;
+    if (word) {
+      el.setAttribute("aria-label", label + ": " + displayWord(word));
+    } else {
+      el.setAttribute("aria-label", label + ", empty \u2014 pick a word from the box");
+    }
+  }
+
+  function applyWordToSlot(el, n, word) {
+    el.querySelector(".slot-inner").textContent = displayWord(word);
+    el.classList.remove("is-empty");
+    el.dataset.value = word;
+    setAriaSlot(el, n, word);
+  }
+
+  function clearSlot(el, n) {
+    el.querySelector(".slot-inner").textContent = PH;
+    el.classList.add("is-empty");
+    delete el.dataset.value;
+    setAriaSlot(el, n, "");
+  }
+
+  function refreshBankDisabled() {
+    var used = {};
+    for (var n = 1; n <= 8; n++) {
+      var v = getSlotAnswer(n);
+      if (v) used[v] = true;
+    }
+    document.querySelectorAll(".bank-chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-word");
+      if (chip.classList.contains("bank-chip-example")) {
+        chip.disabled = true;
+        return;
+      }
+      chip.disabled = !!used[w];
+    });
+  }
+
+  function clearFeedbackUI() {
+    var fb = document.getElementById("feedback");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+    for (var n = 1; n <= 8; n++) {
+      var el = getSlot(n);
+      if (el) el.classList.remove("is-ok", "is-bad");
+    }
+  }
+
+  function setFocus(num) {
+    focusedSlotNum = num;
+    for (var i = 1; i <= 8; i++) {
+      var el = getSlot(i);
+      if (el) el.classList.toggle("is-focused", i === num);
+    }
+  }
+
+  for (var sn = 1; sn <= 8; sn++) {
+    (function (n) {
+      getSlot(n).addEventListener("click", function () {
+        clearFeedbackUI();
+        setFocus(n);
+      });
+    })(sn);
+  }
+
+  document.querySelectorAll(".bank-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var word = chip.getAttribute("data-word");
+      if (!word || chip.disabled) return;
+      if (focusedSlotNum == null) {
+        setFocus(1);
+      }
+      clearFeedbackUI();
+      var slot = getSlot(focusedSlotNum);
+      var prev = slot.dataset.value;
+      if (prev && prev !== word) {
+        /* allow re-pick */
+      }
+      applyWordToSlot(slot, focusedSlotNum, word);
+      refreshBankDisabled();
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var el = getSlot(n);
+      var raw = getSlotAnswer(n);
+      var key = KEY[n];
+      var ok = raw === key;
+      if (raw && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad", "is-focused");
+      if (!raw) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && raw ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw ? "\u2713" : "\u2717") + " Gap " + n + "</h4>";
+      html +=
+        "<p>Your answer: <strong>" +
+        (raw ? esc(displayWord(raw)) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(displayWord(key)) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var distractorNote =
+      "<p style=\"margin-top:12px;padding-top:12px;border-top:1px solid #324a71;\"><strong>Word not used in gaps 1\u20138:</strong> " +
+      esc(displayWord(UNUSED_DISTRACTOR)) +
+      ". (<em>Didn&rsquo;t</em> appears only in the example.)</p>";
+
+    html =
+      '<p style="margin-bottom:12px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8</p>" +
+      html +
+      distractorNote;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+    focusedSlotNum = null;
+    for (var j = 1; j <= 8; j++) {
+      var s = getSlot(j);
+      if (s) s.classList.remove("is-focused");
+    }
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    focusedSlotNum = null;
+    for (var n = 1; n <= 8; n++) {
+      var el = getSlot(n);
+      clearSlot(el, n);
+      el.classList.remove("is-ok", "is-bad", "is-focused");
+    }
+    refreshBankDisabled();
+  });
+
+  refreshBankDisabled();
+})();
+  </script>
+</body>
+</html>

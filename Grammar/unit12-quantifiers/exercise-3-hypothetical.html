@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Hypothetical situations · Exercise 3</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .gram-nav {
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .gram-nav a:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+    }
+
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.88;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .bracket-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 6px;
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 10rem;
+      max-width: min(100%, 18rem);
+      width: 14rem;
+      margin: 0 4px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.87rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.78rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+
+    @media (max-width: 560px) {
+      .gap-input { width: 100%; max-width: 100%; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Grammar &mdash; Hypothetical situations</h1>
+        <p class="badge">Exercise 3 &middot; Unit 12</p>
+      </div>
+      <a class="back" href="../../unit12.html">&larr; Unit 12</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Unit 12 grammar tasks">
+      <a href="index.html">Exercise 1 — quantifiers (word box)</a>
+      <span> · </span>
+      <a href="exercise-2-options.html">Exercise 2 — quantifiers (MCQ)</a>
+      <span> · </span>
+      <span>Exercise 3 — hypothetical situations</span>
+      <span> · </span>
+      <a href="exercise-4-prepositions-gerunds.html">Exercise 4 — prepositions + gerunds</a>
+    </nav>
+
+    <p class="instr">
+      Complete the sentences with the <strong>correct form</strong> of the verb in brackets. Use contracted forms (e.g. <em>didn&rsquo;t</em>, <em>I&rsquo;d</em>) where natural, or full forms &mdash; both are accepted where equivalent.
+    </p>
+
+    <p class="gap-sent">
+      <strong>1.</strong> I wish you
+      <input type="text" class="gap-input" id="ans-1" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+      with your mouth open. It&rsquo;s rude!
+      <span class="bracket-hint">(not eat)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>2.</strong> It&rsquo;s time we
+      <input type="text" class="gap-input" id="ans-2" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+      some regular exercise.
+      <span class="bracket-hint">(do)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>3.</strong> If only people
+      <input type="text" class="gap-input" id="ans-3" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+      to my advice. They never do!
+      <span class="bracket-hint">(listen)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>4.</strong> I&rsquo;d rather Max
+      <input type="text" class="gap-input" id="ans-4" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+      me when I am busy at work.
+      <span class="bracket-hint">(not call)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>5.</strong> Do you wish you
+      <input type="text" class="gap-input" id="ans-5" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+      to cycle in your childhood?
+      <span class="bracket-hint">(learn)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>6.</strong> If only I
+      <input type="text" class="gap-input" id="ans-6" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+      all that money! I&rsquo;ve got none left.
+      <span class="bracket-hint">(not spend)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>7.</strong> Does Sarah wish she
+      <input type="text" class="gap-input" id="ans-7" autocomplete="off" spellcheck="false" aria-label="Gap 7" />
+      to that amazing musical now?
+      <span class="bracket-hint">(go)</span>
+    </p>
+    <p class="gap-sent">
+      <strong>8.</strong> We&rsquo;d rather you
+      <input type="text" class="gap-input" id="ans-8" autocomplete="off" spellcheck="false" aria-label="Gap 8" />
+      this information private.
+      <span class="bracket-hint">(keep)</span>
+    </p>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var DISPLAY = {
+    1: "didn't eat / wouldn't eat",
+    2: "did",
+    3: "would listen / listened",
+    4: "didn't call",
+    5: "had learned",
+    6: "hadn't spent",
+    7: "were going",
+    8: "kept"
+  };
+
+  var ACCEPT = {
+    1: ["didn't eat", "did not eat", "wouldn't eat", "would not eat"],
+    2: ["did"],
+    3: ["would listen", "listened"],
+    4: ["didn't call", "did not call"],
+    5: ["had learned", "had learnt"],
+    6: ["hadn't spent", "had not spent"],
+    7: ["were going", "was going"],
+    8: ["kept"]
+  };
+
+  var EXPLAIN = {
+    1: "<strong>I wish you didn&rsquo;t / wouldn&rsquo;t eat</strong> &mdash; past simple or <em>wouldn&rsquo;t</em> for a present habit you want to change (annoying behaviour).",
+    2: "<strong>It&rsquo;s time we did</strong> &mdash; <em>It&rsquo;s time + subject + past simple</em>: something should happen already.",
+    3: "<strong>If only people would listen / listened</strong> &mdash; <em>would + verb</em> for others&rsquo; refusal to act; past simple also marks a present that isn&rsquo;t true.",
+    4: "<strong>I&rsquo;d rather Max didn&rsquo;t call</strong> &mdash; <em>would rather + person + past simple</em> for preference about someone else&rsquo;s action.",
+    5: "<strong>wish you had learned</strong> &mdash; <em>past perfect</em> for regret about the past (<em>in your childhood</em>).",
+    6: "<strong>If only I hadn&rsquo;t spent</strong> &mdash; past perfect for a past mistake you regret.",
+    7: "<strong>wish she were / was going</strong> &mdash; past continuous (or <em>was</em> in informal AmE) for a present situation that isn&rsquo;t true (<em>now</em>).",
+    8: "<strong>We&rsquo;d rather you kept</strong> &mdash; past simple after <em>would rather you</em> for what we want the other person to do."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("ans-" + n);
+  }
+
+  function matches(n, raw) {
+    var u = norm(raw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  for (var n = 1; n <= 8; n++) {
+    (function (num) {
+      getIn(num).addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    })(n);
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var el = getIn(n);
+      var raw = el.value;
+      var ok = matches(n, raw);
+      if (raw.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw.trim()) el.classList.add("is-bad");
+      else el.classList.add(ok ? "is-ok" : "is-bad");
+
+      html += '<div class="fb-item ' + (ok && raw.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw.trim() ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw.trim() ? esc(raw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    }
+
+    var filled = 0;
+    for (var i = 1; i <= 8; i++) {
+      if (getIn(i).value.trim()) filled++;
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 8" +
+      (filled < 8 ? " &mdash; fill every gap." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var n = 1; n <= 8; n++) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 — Part 4 Key word transformation · Flip cards</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; font-weight: 700; }
+    .badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-title { font-weight: 800; color: #fef9c3; display: block; margin-bottom: 6px; }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .example-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.93rem;
+    }
+    .example-box .lab {
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .example-box strong.ans { color: #86efac; }
+
+    .card-wrap { margin-bottom: 16px; }
+    .card-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front {
+      background: var(--front-bg);
+      color: #f1f5ff;
+    }
+    .flip-back {
+      background: var(--back-bg);
+      color: #e8f0ff;
+      transform: rotateY(180deg);
+    }
+
+    .kw-prompt {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(100, 116, 139, 0.35);
+    }
+    .gap {
+      border-bottom: 2px dashed rgba(148, 163, 184, 0.65);
+      padding: 0 3px 2px;
+      font-weight: 600;
+      color: #cbd5f5;
+    }
+    .root-word {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fcd34d;
+    }
+
+    .flip-back strong {
+      color: #86efac;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .flip-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+    .tap-hint {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .full-line {
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: #bae6fd;
+      line-height: 1.55;
+    }
+    .alt-note {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .hub-link {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Use of English &mdash; Part 4 Key word transformation</h1>
+        <p class="badge">Unit 12 &middot; Flip cards</p>
+      </div>
+      <a class="back" href="unit12-use-of-english.html">&larr; Use of English U12</a>
+    </header>
+
+    <p class="instr">
+      <span class="instr-title">Cambridge-style task</span>
+      Complete the second sentence so that it has a similar meaning to the first, using the word given.
+      Do not change the word given. Use between <strong>two and five words</strong>, including the word given.
+    </p>
+    <p class="hint">
+      Tap a card (or press Space / Enter when it is focused) to flip. The front shows the task; the back shows words for the gap and the full line.
+    </p>
+
+    <div class="example-box">
+      <div class="lab">0 &mdash; Example</div>
+      <p>There is a little milk in the fridge but not much.</p>
+      <p><span class="root-word" style="display:block;margin-top:8px;">DEAL</span></p>
+      <p style="margin-top:10px;">
+        There&rsquo;s not <strong class="ans">A GREAT DEAL OF</strong> milk in the fridge.
+      </p>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">1</div>
+      <button type="button" class="flip-card" aria-label="Question 1. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">Jack would rather not have to go to university today.</div>
+            <span class="root-word">WISHES</span>
+            <p style="margin-top:12px;">
+              Jack <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> have to go to university today.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>wishes he didn&rsquo;t</strong>
+            <p class="full-line">
+              Jack <strong>wishes he didn&rsquo;t</strong> have to go to university today.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">2</div>
+      <button type="button" class="flip-card" aria-label="Question 2. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">Personally, it&rsquo;s preferable to live on the coast.</div>
+            <span class="root-word">MY</span>
+            <p style="margin-top:12px;">
+              It&rsquo;s <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> to live by the sea.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>my preference</strong>
+            <p class="full-line">
+              It&rsquo;s <strong>my preference</strong> to live by the sea.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">3</div>
+      <button type="button" class="flip-card" aria-label="Question 3. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">The boy got into trouble when he didn&rsquo;t attend the match.</div>
+            <span class="root-word">OFF</span>
+            <p style="margin-top:12px;">
+              The boy <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> not attending the match.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>was told off for</strong>
+            <p class="full-line">
+              The boy <strong>was told off for</strong> not attending the match.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">4</div>
+      <button type="button" class="flip-card" aria-label="Question 4. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">Don&rsquo;t bother inviting them because they won&rsquo;t come.</div>
+            <span class="root-word">POINT</span>
+            <p style="margin-top:12px;">
+              There&rsquo;s <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> them because they won&rsquo;t come.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>no point in inviting</strong>
+            <p class="full-line">
+              There&rsquo;s <strong>no point in inviting</strong> them because they won&rsquo;t come.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">5</div>
+      <button type="button" class="flip-card" aria-label="Question 5. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">I need two more volunteers to help at the event.</div>
+            <span class="root-word">OF</span>
+            <p style="margin-top:12px;">
+              A <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> extra volunteers are needed for the event.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>couple of</strong>
+            <p class="full-line">
+              A <strong>couple of</strong> extra volunteers are needed for the event.
+            </p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card-meta">6</div>
+      <button type="button" class="flip-card" aria-label="Question 6. Flip to see answer.">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="kw-prompt">My son should get his hair cut as soon as possible.</div>
+            <span class="root-word">TIME</span>
+            <p style="margin-top:12px;">
+              It&rsquo;s <span class="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> his hair cut.
+            </p>
+            <div class="tap-hint">Tap to flip</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="flip-tag">Words for the gap</div>
+            <strong>high time my son got</strong>
+            <p class="full-line">
+              It&rsquo;s <strong>high time my son got</strong> his hair cut.
+            </p>
+            <p class="alt-note">If your official key uses a different past form after <em>high time</em>, align the card with the answer key in your book.</p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <p class="hub-link">
+      <a href="unit12-use-of-english-part4-key-word-transformation.html">Part 4 &mdash; type answers (exam style)</a>
+      &nbsp;&middot;&nbsp;
+      <a href="unit12-use-of-english.html">Use of English &mdash; Unit 12</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

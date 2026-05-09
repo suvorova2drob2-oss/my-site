@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live room — Supabase demo</title>
+  <title>Live room — demo</title>
   <style>
     :root { --bg: #0f172a; --panel: #1e293b; --line: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; --ok: #34d399; }
     * { box-sizing: border-box; }
@@ -36,10 +36,9 @@
   </style>
 </head>
 <body>
-  <h1>Комната + лидерборд (Supabase)</h1>
+  <h1>Комната + лидерборд</h1>
   <p class="muted" id="leadSetup">
-    Шаг 1: в Supabase выполните <code>infra/supabase/rpc-live-room-snapshot.sql</code>. Шаг 2: скопируйте
-    <code>live-supabase-local.example.js</code> в <strong>live-supabase-local.js</strong> и вставьте URL + ключ. Шаг 3: откройте эту страницу через локальный сервер (из корня сайта), чтобы подтянулся локальный JS.
+    Откройте страницу через локальный сервер из <strong>корня проекта</strong> (не <code>file://</code>), чтобы подтянулся общий live-конфиг. Для работы сессии на сервере должен быть настроен бэкенд, который ожидает приложение.
   </p>
   <p class="muted" id="leadHost" style="border-left:3px solid var(--accent);padding-left:12px;margin-bottom:16px;">
     <strong>Учителю:</strong> после «Создать комнату» скопируйте <strong>ссылку для учеников</strong> (ниже) и отправьте её в чат.
@@ -132,7 +131,7 @@
       function applyStudentLayout() {
         if (!isStudentView()) return;
         document.body.classList.add("student-view");
-        document.title = "Комната — ученик (Supabase)";
+        document.title = "Комната — ученик";
         var h1 = document.querySelector("h1");
         if (h1) h1.textContent = "Вход в комнату";
         var ls = $("leadStudent");
@@ -183,7 +182,7 @@
         var w = $("cfgWarn");
         if (!window.__LIVE_SUPABASE_URL__ || !window.__LIVE_SUPABASE_KEY__) {
           w.textContent =
-            "Нет window.__LIVE_SUPABASE_URL__ / __LIVE_SUPABASE_KEY__. Создайте live-supabase-local.js рядом с этим HTML (см. live-supabase-local.example.js).";
+            "Нет настроенного live-бэкенда: проверьте конфигурацию (URL и ключ) в корне проекта вместе с разработчиком.";
           return false;
         }
         w.textContent = "";

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pictionary &mdash; My digital detox (Unit 3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --p-red: #c41e3a;
+      --p-blue: #1e5a8c;
+      --p-ink: #1a1a1a;
+      --panel: #f3f0e8;
+      --shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(165deg, #2a5a7a 0%, #1a3a50 50%, #0f2433 100%);
+      color: var(--p-ink);
+      min-height: 100dvh;
+      padding: 16px;
+    }
+    .shell { max-width: 920px; margin: 0 auto; }
+    .board {
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.5);
+      padding: 20px 18px 24px;
+      border: 3px solid #d4cfc3;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px dashed #c4b8a8;
+    }
+    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #2c2418; }
+    .topbar .sub { font-size: 0.85rem; color: #5c5346; line-height: 1.4; max-width: 35rem; }
+    .nav { font-size: 0.8rem; }
+    .nav a { color: #1e5a8c; font-weight: 700; }
+    .setup textarea {
+      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 2px solid #b8a990;
+      font-size: 0.95rem; background: #fff; resize: vertical; font-family: inherit;
+    }
+    .setup .hint { font-size: 0.8rem; color: #5c5346; margin-bottom: 8px; }
+    .err { color: #b91c1c; font-size: 0.85rem; min-height: 1.2em; }
+    .btn {
+      display: inline-block; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .btn-go { background: var(--p-red); color: #fff; }
+    .btn-go:hover { filter: brightness(1.08); }
+    .btn-sec { background: #3d4f5c; color: #fff; }
+    .btn-blue { background: var(--p-blue); color: #fff; }
+    .btn-ok { background: #2d6a4f; color: #fff; }
+    .hud {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
+    }
+    .turn-pill { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .turn-pill .label { font-size: 0.75rem; color: #5c5346; text-transform: uppercase; letter-spacing: 0.06em; }
+    .turn-pill .name {
+      background: #fff; border: 3px solid var(--p-red); color: #8b1538; padding: 6px 14px; border-radius: 999px;
+      font-size: 1.05rem; font-weight: 900;
+    }
+    .turn-pill .name.b { border-color: var(--p-blue); color: #134060; }
+    .timer {
+      font-variant-numeric: tabular-nums; font-size: 1.8rem; font-weight: 900; color: #1a1a1a;
+      min-width: 5ch; text-align: center; padding: 4px 12px; background: #fff; border-radius: 12px; border: 2px solid #b8a990;
+    }
+    .timer.warn { color: #b91c1c; border-color: #f87171; animation: pulse 0.8s ease infinite; }
+    @keyframes pulse { 50% { opacity: 0.75; } }
+    .round-tag { background: #e0dccf; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; }
+    .p-text {
+      font-size: 0.95rem; font-weight: 800; line-height: 1.35; color: #1a1a1a; min-height: 2.6em;
+    }
+    .p-text.is-hidden { color: #9c9488; user-select: none; font-style: italic; }
+    .hide-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 0.78rem; color: #5c5346; }
+    .hide-row input { width: 1.1em; height: 1.1em; }
+    .draw-tools {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .draw-tools label { font-size: 0.75rem; color: #5c5346; }
+    .draw-tools input[type="color"] { width: 40px; height: 32px; border: none; border-radius: 6px; cursor: pointer; }
+    .draw-tools input[type="range"] { width: 100px; }
+    .canvas-wrap {
+      background: #fff; border: 3px solid #1a1a1a; border-radius: 12px; overflow: hidden;
+      touch-action: none;
+    }
+    .canvas-wrap canvas { display: block; width: 100%; height: min(48vh, 420px); cursor: crosshair; vertical-align: top; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+    .row-actions span { font-size: 0.8rem; color: #5c5346; }
+    .lb { margin-top: 18px; }
+    .lb h3 { font-size: 0.9rem; color: #2c2418; margin-bottom: 8px; }
+    .lb ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
+    .ov {
+      position: fixed; inset: 0; background: rgba(15, 36, 51, 0.88); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
+    }
+    .ov.open { display: flex; }
+    .ov-in {
+      background: var(--panel); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; border: 3px solid #b8a990;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .ov-in h2 { color: #2c2418; margin-bottom: 8px; font-size: 1.1rem; }
+    .ov-in p { color: #5c5346; font-size: 0.9rem; }
+    .game { display: none; }
+    .game.on { display: block; }
+    .host-pick h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5c5346; margin-bottom: 6px; }
+    .host-pick .host-hint { font-size: 0.78rem; color: #5c5346; line-height: 1.4; margin-bottom: 8px; }
+    .host-pick { background: #fff; border: 3px solid #1e5a8c; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+    .choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
+    .choice-btn {
+      min-height: 64px; padding: 8px 10px; border-radius: 10px; background: #fffef8;
+      border: 2px solid #b8a990; box-shadow: 0 2px 0 #a89878; cursor: pointer;
+      font-size: 0.68rem; font-weight: 800; line-height: 1.25; text-align: center; color: #1a1a1a;
+      font-family: inherit; transition: 0.12s;
+    }
+    .choice-btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
+    .choice-wrong { color: #b91c1c; font-size: 0.8rem; font-weight: 700; min-height: 1.3em; margin-top: 8px; }
+    .drawer-box { background: #fff; border: 3px solid #b8a990; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+    .drawer-box h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5c5346; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="board">
+      <div class="topbar">
+        <div>
+          <h1>Pictionary: My digital detox</h1>
+          <p class="sub">Same <strong>key-phrase pool</strong> as Alias (from <code>data/u3-digital-detox-lexis.js</code>). <strong>On top: several options</strong> (one is the real card + decoys) &mdash; you, the <strong>host</strong>, <strong>click the phrase the team just guessed</strong>. Right option &rarr; <strong>+1</strong> for the <strong>drawer</strong>, new card, clear canvas. Wrong option &rarr; no point, keep drawing. <strong>Drawer</strong> uses the line below the grid (or conceal it for the class). <strong>Pass</strong> = word to the back. <strong>Timer</strong> 1:30 per turn, then next drawer. <strong>Round</strong> ends when the queue is cleared by correct picks.</p>
+        </div>
+        <p class="nav"><a href="../index.html">Text hub</a> &middot; <a href="index.html">Games</a> &middot; <a href="alias-digital-detox.html">Alias</a> &middot; <a href="../../unit3.html">Unit 3</a></p>
+      </div>
+
+      <div id="setup" class="setup">
+        <p class="hint">Player names, <strong>one per line</strong> (at least 2 &mdash; one draws, the rest guess).</p>
+        <textarea id="namesIn" placeholder="Alex&#10;Bo&#10;Cara" autocomplete="off"></textarea>
+        <p class="err" id="err"></p>
+        <button type="button" class="btn btn-go" id="btnGo">Start game</button>
+      </div>
+
+      <div id="game" class="game">
+        <div class="hud">
+          <div class="turn-pill">
+            <span class="label">Drawing</span>
+            <span class="name" id="curName" role="status">—</span>
+            <span class="round-tag">Round <span id="rn">1</span> &middot; <span id="leftN">0</span> left</span>
+          </div>
+          <div class="timer" id="timer">1:30</div>
+        </div>
+
+        <div class="host-pick" id="hostPick">
+          <h2>Host: mark the guess</h2>
+          <p class="host-hint">The team shouts a phrase. Click the option that matches <strong>this turn&rsquo;s</strong> card. One button is the real prompt; the rest are decoys. Right = count a point. Wrong = no point, try again.</p>
+          <div class="choice-grid" id="choiceGrid" role="group" aria-label="Guessed phrase"></div>
+          <p class="choice-wrong" id="hostMsg" role="status"></p>
+        </div>
+
+        <div class="drawer-box">
+          <h2>Drawer: your phrase only</h2>
+          <p class="p-text" id="promptText" aria-live="polite">—</p>
+          <div class="hide-row">
+            <input type="checkbox" id="hidePrompt" />
+            <label for="hidePrompt">Conceal this line for the class (e.g. projector = canvas only)</label>
+          </div>
+        </div>
+
+        <div class="draw-tools">
+          <label>Pen</label>
+          <input type="color" id="penColor" value="#1a1a1a" title="Colour" />
+          <label>Size <span id="sizeLab">4</span></label>
+          <input type="range" id="penSize" min="2" max="12" value="4" />
+          <button type="button" class="btn btn-sec" id="btnClearCanvas">Clear drawing</button>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="draw" width="800" height="500" aria-label="Drawing area"></canvas>
+        </div>
+
+        <div class="row-actions">
+          <button type="button" class="btn btn-blue" id="btnPass">Pass (word to back of round)</button>
+          <button type="button" class="btn btn-sec" id="btnEndTurn">End turn (skip timer)</button>
+          <button type="button" class="btn btn-sec" id="btnNextRound" style="display:none">Next round (full deck)</button>
+        </div>
+
+        <div class="lb" id="lb">
+          <h3>Score (successful draws)</h3>
+          <ol id="lbList"></ol>
+        </div>
+        <p style="margin-top:12px">
+          <button type="button" class="btn btn-sec" id="btnFinal">Show leaderboard</button>
+          <button type="button" class="btn btn-sec" id="btnReset">New game</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovR">
+    <div class="ov-in">
+      <h2>Round complete</h2>
+      <p>All phrases in this round were guessed. Next round: same set, shuffled again.</p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovRok">Next round</button></p>
+    </div>
+  </div>
+  <div class="ov" id="ovF">
+    <div class="ov-in">
+      <h2>Leaderboard</h2>
+      <p style="text-align:left" id="ovFList"></p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovFok">Close</button></p>
+    </div>
+  </div>
+
+  <script src="../data/u3-digital-detox-lexis.js"></script>
+  <script>
+(function () {
+  var DECK = (typeof U3_DIGITAL_DETOX_PHRASES !== "undefined" && U3_DIGITAL_DETOX_PHRASES.length)
+    ? U3_DIGITAL_DETOX_PHRASES.slice()
+    : [];
+  var SEC = 90;
+  var names = [];
+  var scores = {};
+  var turn = 0;
+  var roundN = 1;
+  var queue = [];
+  var realPrompt = "";
+  var timer = null;
+  var left = 0;
+  var hostMsgTimer = null;
+
+  function el(id) { return document.getElementById(id); }
+
+  function shuffle(a) {
+    var x = a.slice();
+    for (var i = x.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = x[i]; x[i] = x[j]; x[j] = t;
+    }
+    return x;
+  }
+
+  function updateLeftN() { el("leftN").textContent = String(queue.length); }
+
+  function renderLB() {
+    var arr = names.map(function (n) { return { n: n, s: scores[n] || 0 }; });
+    arr.sort(function (a, b) { return b.s - a.s; });
+    var list = el("lbList");
+    list.innerHTML = "";
+    arr.forEach(function (o, k) {
+      var li = document.createElement("li");
+      li.textContent = (k + 1) + ". " + o.n + " — " + o.s;
+      list.appendChild(li);
+    });
+  }
+
+  function clearTimer() {
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  function tick() {
+    left--;
+    var t = el("timer");
+    var m = Math.floor(left / 60);
+    var s = left % 60;
+    t.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+    t.className = "timer" + (left <= 10 ? " warn" : "");
+    if (left <= 0) {
+      clearTimer();
+      onTimeUp();
+    }
+  }
+
+  function startTimer() {
+    clearTimer();
+    left = SEC;
+    tick();
+    timer = setInterval(tick, 1000);
+  }
+
+  function currentName() { return names[turn % names.length]; }
+
+  function showTurn() {
+    var n = currentName();
+    el("curName").textContent = n;
+    el("curName").className = "name " + (turn % 2 === 1 ? "b" : "");
+  }
+
+  function applyPromptDisplay() {
+    var pt = el("promptText");
+    var h = el("hidePrompt").checked;
+    if (!realPrompt) { pt.textContent = "—"; pt.className = "p-text"; return; }
+    if (h) { pt.textContent = "· · · · (hidden) · · · ·"; pt.className = "p-text is-hidden"; }
+    else { pt.textContent = realPrompt; pt.className = "p-text"; }
+  }
+
+  function buildHostChoices() {
+    var g = el("choiceGrid");
+    g.innerHTML = "";
+    el("hostMsg").textContent = "";
+    if (hostMsgTimer) { clearTimeout(hostMsgTimer); hostMsgTimer = null; }
+    if (!queue.length) return;
+    var target = queue[0];
+    var others = DECK.filter(function (x) { return x !== target; });
+    var decoys = shuffle(others);
+    var nDecoy = Math.min(4, decoys.length);
+    var opts = [target].concat(decoys.slice(0, nDecoy));
+    opts = shuffle(opts);
+    for (var i = 0; i < opts.length; i++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "choice-btn";
+      b.setAttribute("data-phrase", opts[i]);
+      b.textContent = opts[i];
+      b.addEventListener("click", onHostChoice);
+      g.appendChild(b);
+    }
+  }
+
+  function onHostChoice(e) {
+    if (!queue.length) return;
+    var clicked = e.currentTarget.getAttribute("data-phrase");
+    var target = queue[0];
+    if (clicked !== target) {
+      el("hostMsg").textContent = "Not this turn's card — no point. Keep going.";
+      if (hostMsgTimer) clearTimeout(hostMsgTimer);
+      hostMsgTimer = setTimeout(function () { el("hostMsg").textContent = ""; hostMsgTimer = null; }, 2500);
+      return;
+    }
+    el("hostMsg").textContent = "";
+    if (hostMsgTimer) { clearTimeout(hostMsgTimer); hostMsgTimer = null; }
+    var drawer = currentName();
+    scores[drawer] = (scores[drawer] || 0) + 1;
+    renderLB();
+    queue.shift();
+    clearCanvas();
+    if (!queue.length) {
+      clearTimer();
+      el("timer").textContent = "0:00";
+      el("ovR").classList.add("open");
+      realPrompt = "";
+      applyPromptDisplay();
+      updateLeftN();
+      buildHostChoices();
+      return;
+    }
+    showNextPrompt();
+  }
+
+  function showNextPrompt() {
+    realPrompt = queue.length ? queue[0] : "";
+    applyPromptDisplay();
+    updateLeftN();
+    buildHostChoices();
+    el("btnNextRound").style.display = queue.length ? "none" : "inline-block";
+  }
+
+  function clearCanvas() {
+    var c = el("draw");
+    var cctx = c.getContext("2d");
+    cctx.fillStyle = "#ffffff";
+    cctx.fillRect(0, 0, c.width, c.height);
+  }
+
+  function onTimeUp() {
+    if (!queue.length) {
+      clearTimer();
+      el("timer").textContent = "—:—";
+      return;
+    }
+    var w = queue.shift();
+    queue.push(w);
+    turn = (turn + 1) % names.length;
+    showTurn();
+    clearCanvas();
+    showNextPrompt();
+    if (queue.length) startTimer();
+    else { el("timer").textContent = "—:—"; el("ovR").classList.add("open"); }
+  }
+
+  function startRound(reshuffle) {
+    if (reshuffle) {
+      roundN++;
+      turn = (turn + 1) % names.length;
+    }
+    el("rn").textContent = String(roundN);
+    queue = shuffle(DECK.slice());
+    el("ovR").classList.remove("open");
+    showTurn();
+    fitCanvas();
+    showNextPrompt();
+    if (queue.length) startTimer();
+    else el("timer").textContent = "—:—";
+  }
+
+  el("penSize").addEventListener("input", function () { el("sizeLab").textContent = this.value; });
+  el("hidePrompt").addEventListener("change", applyPromptDisplay);
+
+  function parseNames() {
+    el("err").textContent = "";
+    var lines = (el("namesIn").value || "").split(/\r?\n/);
+    var out = [];
+    for (var k = 0; k < lines.length; k++) {
+      var t = lines[k].trim();
+      if (t) out.push(t);
+    }
+    if (out.length < 2) { el("err").textContent = "Enter at least two names, one per line."; return null; }
+    return out;
+  }
+
+  el("btnGo").addEventListener("click", function () {
+    if (!DECK.length) {
+      el("err").textContent = "Word list failed to load. Check that data/u3-digital-detox-lexis.js is available.";
+      return;
+    }
+    var p = parseNames();
+    if (!p) return;
+    names = p;
+    scores = {};
+    p.forEach(function (n) { scores[n] = 0; });
+    turn = 0;
+    roundN = 1;
+    el("setup").style.display = "none";
+    el("game").classList.add("on");
+    el("rn").textContent = "1";
+    el("hidePrompt").checked = false;
+    renderLB();
+    startRound(false);
+  });
+
+  el("btnPass").addEventListener("click", function () {
+    if (queue.length < 2) return;
+    var w = queue.shift();
+    queue.push(w);
+    clearCanvas();
+    showNextPrompt();
+  });
+
+  el("btnEndTurn").addEventListener("click", function () {
+    clearTimer();
+    if (queue.length) onTimeUp();
+  });
+
+  el("btnNextRound").addEventListener("click", function () { startRound(true); });
+  el("ovRok").addEventListener("click", function () { startRound(true); });
+
+  el("btnClearCanvas").addEventListener("click", clearCanvas);
+
+  el("btnFinal").addEventListener("click", function () {
+    var arr = names.map(function (n) { return { n: n, s: scores[n] || 0 }; });
+    arr.sort(function (a, b) { return b.s - a.s; });
+    el("ovFList").innerHTML = arr.map(function (o, r) { return (r + 1) + ". " + o.n + " — " + o.s + " point(s)<br>"; }).join("");
+    el("ovF").classList.add("open");
+  });
+  el("ovFok").addEventListener("click", function () { el("ovF").classList.remove("open"); });
+
+  el("btnReset").addEventListener("click", function () {
+    clearTimer();
+    el("game").classList.remove("on");
+    el("setup").style.display = "block";
+    el("ovR").classList.remove("open");
+    el("ovF").classList.remove("open");
+  });
+
+  /* ——— Canvas: mouse + touch (CSS-pixel canvas = stable coords) ——— */
+  var canvas = el("draw");
+  var ctx = canvas.getContext("2d");
+  var drawing = false;
+  var lastX = 0, lastY = 0;
+
+  function fitCanvas() {
+    var w = el("canvasWrap").clientWidth;
+    if (w < 2) w = 320;
+    var h = Math.min(420, Math.max(220, window.innerHeight * 0.42));
+    canvas.width = w;
+    canvas.height = h;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function lineStyle() {
+    ctx.strokeStyle = el("penColor").value;
+    ctx.lineWidth = parseInt(el("penSize").value, 10);
+  }
+
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    var cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    var cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+    return {
+      x: cx * (canvas.width / r.width),
+      y: cy * (canvas.height / r.height)
+    };
+  }
+
+  function startDraw(e) {
+    if (e.type === "touchstart") e.preventDefault();
+    drawing = true;
+    var p = pos(e);
+    lastX = p.x; lastY = p.y;
+    lineStyle();
+  }
+
+  function doDraw(e) {
+    if (!drawing) return;
+    if (e.type === "touchmove") e.preventDefault();
+    var p = pos(e);
+    lineStyle();
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+  }
+
+  function endDraw() { drawing = false; }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", doDraw);
+  canvas.addEventListener("mouseleave", endDraw);
+  canvas.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove", doDraw, { passive: false });
+  canvas.addEventListener("touchend", endDraw);
+
+  window.addEventListener("resize", function () {
+    if (el("game").classList.contains("on")) fitCanvas();
+  });
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

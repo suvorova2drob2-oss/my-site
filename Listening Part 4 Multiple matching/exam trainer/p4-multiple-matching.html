@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en" data-prep-back-default="../../index.html?prep_stay=1&prep_open_folder=prep_legacy_u10_listening_p4">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening Part 4 — Multiple matching</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #151f33;
+      --card-elev: #1a2740;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dim: rgba(56, 189, 248, 0.15);
+      --line: #2d3a52;
+      --ok: #34d399;
+      --ok-bg: rgba(52, 211, 153, 0.12);
+      --bad: #fb7185;
+      --bad-bg: rgba(251, 113, 133, 0.1);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, sans-serif; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(56, 189, 248, 0.08), transparent 50%), var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: max(24px, env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-right, 0px))
+        max(32px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+    }
+    .wrap { width: 100%; max-width: 920px; margin: 0 auto; }
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 22px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+    h1 { font-size: 1.2rem; line-height: 1.35; margin-bottom: 6px; font-weight: 750; letter-spacing: -0.02em; }
+    .lead { color: var(--muted); font-size: 13px; line-height: 1.55; margin-bottom: 14px; }
+    .lead strong { color: var(--text); }
+    .track-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    audio { width: 100%; margin-top: 4px; border-radius: 999px; height: 40px; }
+    details.banks {
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card-elev);
+      overflow: hidden;
+    }
+    details.banks summary {
+      cursor: pointer;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    details.banks summary::-webkit-details-marker { display: none; }
+    details.banks summary::before { content: "▸"; font-size: 10px; opacity: 0.8; transition: transform 0.15s; }
+    details.banks[open] summary::before { transform: rotate(90deg); }
+    details.banks .letter-bank {
+      list-style: none;
+      font-size: 12px;
+      line-height: 1.42;
+      padding: 0 14px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 20px;
+    }
+    @media (max-width: 640px) {
+      details.banks .letter-bank { grid-template-columns: 1fr; }
+    }
+    details.banks .letter-bank li { display: flex; gap: 8px; align-items: baseline; }
+    details.banks .ltr {
+      flex-shrink: 0;
+      min-width: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 12px;
+    }
+    .speaker-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .speaker-tabs button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--card-elev);
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    .speaker-tabs button:hover { border-color: rgba(56, 189, 248, 0.45); color: var(--text); }
+    .speaker-tabs button[aria-selected="true"] {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
+    }
+    .speaker-panel { display: none; animation: fadeIn 0.2s ease; }
+    .speaker-panel.is-active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .panel-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    @media (max-width: 720px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+    .task-card {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .task-card__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 12px;
+      margin-bottom: 2px;
+    }
+    .task-card__badge {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .task-card__title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .task-question {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text);
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent);
+    }
+    .task-question strong { color: var(--accent); font-weight: 700; }
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .choice-mount { margin-top: 2px; }
+    .choice-fieldset {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px;
+      margin: 0;
+      background: #0f172a;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .choice-fieldset.eval-ok { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok-bg); }
+    .choice-fieldset.eval-bad { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad-bg); }
+    .choice-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 9px 10px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .choice-row:last-child { margin-bottom: 0; }
+    .choice-row:hover { background: rgba(56, 189, 248, 0.06); }
+    .choice-row:has(input:checked) {
+      background: var(--accent-dim);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+    .choice-row input {
+      margin-top: 3px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .choice-row__text {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .choice-row__ltr {
+      display: inline-block;
+      min-width: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .task-card textarea {
+      width: 100%;
+      min-height: 88px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
+      resize: vertical;
+    }
+    .task-card textarea::placeholder { color: rgba(148, 163, 184, 0.55); }
+    .task-card textarea:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .reveal-line {
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 1.25em;
+      margin-top: -4px;
+    }
+    .reveal-line.is-wrong { color: var(--bad); font-weight: 600; }
+    .reveal-line.is-empty { color: var(--muted); }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .actions button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--card-elev);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .actions button:hover { border-color: var(--accent); }
+    .actions button.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+    .actions button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .choice-row.reveal-correct {
+      border-color: rgba(52, 211, 153, 0.65) !important;
+      background: var(--ok-bg) !important;
+      box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.25);
+    }
+    .choice-row.reveal-wrong-pick {
+      border-color: rgba(251, 113, 133, 0.75) !important;
+      background: var(--bad-bg) !important;
+      box-shadow: inset 0 0 0 1px rgba(251, 113, 133, 0.3);
+    }
+    .transcript-block {
+      margin-bottom: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card-elev);
+      overflow: hidden;
+    }
+    .transcript-block summary {
+      cursor: pointer;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      list-style: none;
+      user-select: none;
+    }
+    .transcript-block summary::-webkit-details-marker { display: none; }
+    .transcript-block summary::before {
+      content: "▸";
+      font-size: 10px;
+      margin-right: 8px;
+      opacity: 0.85;
+    }
+    .transcript-block[open] summary::before { content: "▾"; }
+    .transcript-text {
+      padding: 0 14px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text);
+      white-space: pre-wrap;
+      user-select: text;
+    }
+    .transcript-evidence-tools {
+      padding: 10px 14px 0;
+      margin-bottom: 8px;
+    }
+    .transcript-evidence-lead {
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+    .transcript-evidence-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .transcript-ev-btn {
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: var(--card-elev);
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .transcript-ev-btn:hover { border-color: var(--accent); }
+    .transcript-highlight-btn {
+      border-color: rgba(52, 211, 153, 0.45);
+      color: var(--ok);
+      background: var(--ok-bg);
+    }
+    .transcript-clear-btn {
+      border-color: rgba(148, 163, 184, 0.4);
+      color: var(--muted);
+    }
+    .transcript-evidence-mark {
+      background-color: rgba(34, 197, 94, 0.38);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+      color: inherit;
+      border-radius: 3px;
+      padding: 0 2px;
+      text-decoration: underline;
+      text-decoration-color: rgba(34, 197, 94, 0.95);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .p4-hunt-wrap {
+      margin-top: 22px;
+      padding: 18px 16px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.65);
+    }
+    .p4-hunt-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      margin: 0 0 8px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .p4-hunt-lead {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+      margin: 0 0 14px;
+      max-width: 52rem;
+    }
+    .p4-hunt-meta {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+    }
+    .p4-hunt-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .p4-hunt-nav button {
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: var(--card-elev);
+      color: var(--text);
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+    .p4-hunt-nav button:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .p4-hunt-nav button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .p4-hunt-speaker-label {
+      font-weight: 800;
+      font-size: 14px;
+      color: #fde047;
+    }
+    .p4-hunt-progress {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    .p4-hunt-progress span {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .p4-hunt-progress span.is-current {
+      border-color: var(--accent);
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.12);
+    }
+    .p4-hunt-progress span.is-done {
+      border-color: var(--ok);
+      color: #86efac;
+    }
+    .p4-hunt-task {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.45;
+      margin: 0 0 6px;
+      font-weight: 600;
+      min-height: 2.6em;
+    }
+    .p4-hunt-counter {
+      font-size: 12px;
+      font-weight: 800;
+      color: #7dd3fc;
+      margin: 0 0 10px;
+    }
+    .p4-hunt-passage {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #c8dcf5;
+      padding: 14px;
+      background: #0f172a;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+    .p4-clickable-passage .p4-click-chunk--static {
+      pointer-events: none;
+      user-select: text;
+      cursor: text;
+    }
+    .p4-clickable-passage .p4-click-chunk--target {
+      cursor: pointer;
+      border-radius: 4px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.45);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .p4-clickable-passage .p4-click-chunk--target:hover:not(.is-disabled-hit):not(.is-green):not(.is-red) {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .p4-clickable-passage .p4-click-chunk--target.is-green {
+      background-color: rgba(34, 197, 94, 0.32);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+      cursor: default;
+      border-bottom-color: transparent;
+    }
+    .p4-clickable-passage .p4-click-chunk--target.is-red {
+      background-color: rgba(239, 68, 68, 0.28);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.45);
+      cursor: default;
+    }
+    .p4-clickable-passage .p4-click-chunk--target.is-disabled-hit {
+      pointer-events: none;
+    }
+    .p4-trainer-distr-wrap {
+      display: inline;
+      white-space: normal;
+    }
+    .p4-trainer-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      margin-left: 6px;
+      margin-top: 2px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      vertical-align: middle;
+      border-radius: 6px;
+      background: #3d1a1a;
+      color: #fecaca;
+      border: 1px solid #f87171;
+      max-width: min(300px, 92vw);
+      white-space: normal;
+      line-height: 1.25;
+    }
+    .p4-trainer-badge-line { font-weight: 800; }
+    .p4-trainer-badge-option {
+      font-weight: 600;
+      font-size: 1.02em;
+      color: #fde8e8;
+    }
+    .p4-hunt-toast {
+      min-height: 0;
+      padding: 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fecaca;
+      line-height: 1.45;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .p4-hunt-toast.is-visible {
+      opacity: 1;
+      padding: 8px;
+      min-height: 1.5rem;
+    }
+    .p4-hunt-reset-btn {
+      margin-top: 8px;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #8b6914;
+      background: rgba(62, 46, 26, 0.6);
+      color: #fde68a;
+    }
+    .p4-hunt-reset-btn:hover {
+      filter: brightness(1.08);
+    }
+    .check-summary {
+      margin-top: 20px;
+      margin-bottom: 4px;
+      padding: 16px 16px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(26, 39, 64, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
+    }
+    .check-summary[hidden] { display: none !important; }
+    .check-summary__title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .check-summary__score {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .check-summary__rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .check-summary__row {
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      gap: 10px 12px;
+      align-items: start;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      line-height: 1.45;
+      background: #0f172a;
+    }
+    .check-summary__row.is-ok {
+      border-color: rgba(52, 211, 153, 0.45);
+      background: var(--ok-bg);
+    }
+    .check-summary__row.is-bad {
+      border-color: rgba(251, 113, 133, 0.45);
+      background: var(--bad-bg);
+    }
+    .check-summary__row.is-empty {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: rgba(148, 163, 184, 0.06);
+    }
+    .check-summary__q {
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .check-summary__mark { font-size: 14px; line-height: 1.2; }
+    .check-summary__row.is-ok .check-summary__mark { color: var(--ok); }
+    .check-summary__row.is-bad .check-summary__mark { color: var(--bad); }
+    .check-summary__row.is-empty .check-summary__mark { color: var(--muted); }
+    .check-summary__detail { color: var(--text); }
+    .check-summary__detail .dim { color: var(--muted); font-size: 11px; display: block; margin-top: 4px; }
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      border-left: 3px solid var(--accent);
+      background: rgba(15, 23, 42, 0.55);
+      border-radius: 0 10px 10px 0;
+    }
+    .back { margin-top: 18px; font-size: 14px; }
+    .back a { color: var(--accent); font-weight: 600; text-decoration: none; display: inline-block; padding: 10px 8px 10px 0; }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="box">
+      <h1>Listening Part 4 &middot; Multiple matching</h1>
+      <p class="lead">
+        <strong>Student&apos;s Book</strong> class audio (RF_C2_SB Track 10.1). <strong>While you listen you must complete both tasks.</strong> Five extracts, two questions per speaker.
+        Choose <strong>one letter (A&ndash;H)</strong> for each gap; three letters are not used in each task.
+      </p>
+      <p class="track-label">Audio — RF_C2_SB Track 10.1 (Student&apos;s Book — Part 4)</p>
+      <audio id="main-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3" type="audio/mpeg" />
+        <a href="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3">Download MP3</a>
+      </audio>
+    </div>
+
+    <div class="box">
+      <details class="banks">
+        <summary>Task 1 &mdash; all options (A&ndash;H) &middot; reason for the issue</summary>
+        <ul class="letter-bank">
+          <li><span class="ltr">A</span> ignoring expert advice</li>
+          <li><span class="ltr">B</span> choosing an easy option</li>
+          <li><span class="ltr">C</span> a quarrel between those involved</li>
+          <li><span class="ltr">D</span> poor leadership</li>
+          <li><span class="ltr">E</span> targeting the wrong market</li>
+          <li><span class="ltr">F</span> failing to include significant details</li>
+          <li><span class="ltr">G</span> financial difficulties</li>
+          <li><span class="ltr">H</span> a lack of resources</li>
+        </ul>
+      </details>
+      <details class="banks">
+        <summary>Task 2 &mdash; all options (A&ndash;H) &middot; what they learnt</summary>
+        <ul class="letter-bank">
+          <li><span class="ltr">A</span> the advantage of keeping a process simple</li>
+          <li><span class="ltr">B</span> the benefit of investing in equipment</li>
+          <li><span class="ltr">C</span> the importance of giving clear instructions</li>
+          <li><span class="ltr">D</span> the benefit of having structure</li>
+          <li><span class="ltr">E</span> the need for professionals</li>
+          <li><span class="ltr">F</span> the importance of managing stress</li>
+          <li><span class="ltr">G</span> the value of resisting pressure to change</li>
+          <li><span class="ltr">H</span> the merits of saying no</li>
+        </ul>
+      </details>
+
+      <p class="panel-hint">Focus on <strong>one speaker at a time</strong>: two columns are both about the same person &mdash; Task 1 (reason) and Task 2 (lesson). Jot <strong>evidence</strong> from the track to support each letter.</p>
+
+      <div class="speaker-tabs" role="tablist" aria-label="Choose speaker">
+        <button type="button" role="tab" id="tab-spk-1" aria-selected="true" aria-controls="panel-spk-1" data-spk="1">Speaker 1</button>
+        <button type="button" role="tab" id="tab-spk-2" aria-selected="false" aria-controls="panel-spk-2" data-spk="2">Speaker 2</button>
+        <button type="button" role="tab" id="tab-spk-3" aria-selected="false" aria-controls="panel-spk-3" data-spk="3">Speaker 3</button>
+        <button type="button" role="tab" id="tab-spk-4" aria-selected="false" aria-controls="panel-spk-4" data-spk="4">Speaker 4</button>
+        <button type="button" role="tab" id="tab-spk-5" aria-selected="false" aria-controls="panel-spk-5" data-spk="5">Speaker 5</button>
+      </div>
+
+      <!-- Speaker 1: Q1 + Q6 -->
+      <div class="speaker-panel is-active" id="panel-spk-1" role="tabpanel" aria-labelledby="tab-spk-1" data-spk="1">
+        <div class="transcript-mount" data-spk="1"></div>
+        <div class="two-col">
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 1</span>
+              <span class="task-card__title">Speaker 1 &middot; Question 1</span>
+            </div>
+            <p class="task-question"><strong>Task ONE</strong> &mdash; For questions 1&ndash;5 you will hear five short extracts. For <strong>question 1</strong>, choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q1" data-task="1"></div>
+            <p class="reveal-line" data-reveal-for="q1" aria-live="polite"></p>
+            <label class="field-label" for="ev1">Evidence / proof</label>
+            <textarea id="ev1" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 2</span>
+              <span class="task-card__title">Speaker 1 &middot; Question 6</span>
+            </div>
+            <p class="task-question"><strong>Task TWO</strong> &mdash; For questions 6&ndash;10 choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong>. While you listen you must complete both tasks. For <strong>question 6</strong> (same speaker as question 1), choose one letter.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q6" data-task="2"></div>
+            <p class="reveal-line" data-reveal-for="q6" aria-live="polite"></p>
+            <label class="field-label" for="ev6">Evidence / proof</label>
+            <textarea id="ev6" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-panel" id="panel-spk-2" role="tabpanel" aria-labelledby="tab-spk-2" hidden data-spk="2">
+        <div class="transcript-mount" data-spk="2"></div>
+        <div class="two-col">
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 1</span>
+              <span class="task-card__title">Speaker 2 &middot; Question 2</span>
+            </div>
+            <p class="task-question"><strong>Task ONE</strong> &mdash; For <strong>question 2</strong>, choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q2" data-task="1"></div>
+            <p class="reveal-line" data-reveal-for="q2" aria-live="polite"></p>
+            <label class="field-label" for="ev2">Evidence / proof</label>
+            <textarea id="ev2" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 2</span>
+              <span class="task-card__title">Speaker 2 &middot; Question 7</span>
+            </div>
+            <p class="task-question"><strong>Task TWO</strong> &mdash; For <strong>question 7</strong>, choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong> (same speaker).</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q7" data-task="2"></div>
+            <p class="reveal-line" data-reveal-for="q7" aria-live="polite"></p>
+            <label class="field-label" for="ev7">Evidence / proof</label>
+            <textarea id="ev7" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-panel" id="panel-spk-3" role="tabpanel" aria-labelledby="tab-spk-3" hidden data-spk="3">
+        <div class="transcript-mount" data-spk="3"></div>
+        <div class="two-col">
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 1</span>
+              <span class="task-card__title">Speaker 3 &middot; Question 3</span>
+            </div>
+            <p class="task-question"><strong>Task ONE</strong> &mdash; For <strong>question 3</strong>, choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q3" data-task="1"></div>
+            <p class="reveal-line" data-reveal-for="q3" aria-live="polite"></p>
+            <label class="field-label" for="ev3">Evidence / proof</label>
+            <textarea id="ev3" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 2</span>
+              <span class="task-card__title">Speaker 3 &middot; Question 8</span>
+            </div>
+            <p class="task-question"><strong>Task TWO</strong> &mdash; For <strong>question 8</strong>, choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong> (same speaker).</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q8" data-task="2"></div>
+            <p class="reveal-line" data-reveal-for="q8" aria-live="polite"></p>
+            <label class="field-label" for="ev8">Evidence / proof</label>
+            <textarea id="ev8" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-panel" id="panel-spk-4" role="tabpanel" aria-labelledby="tab-spk-4" hidden data-spk="4">
+        <div class="transcript-mount" data-spk="4"></div>
+        <div class="two-col">
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 1</span>
+              <span class="task-card__title">Speaker 4 &middot; Question 4</span>
+            </div>
+            <p class="task-question"><strong>Task ONE</strong> &mdash; For <strong>question 4</strong>, choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q4" data-task="1"></div>
+            <p class="reveal-line" data-reveal-for="q4" aria-live="polite"></p>
+            <label class="field-label" for="ev4">Evidence / proof</label>
+            <textarea id="ev4" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 2</span>
+              <span class="task-card__title">Speaker 4 &middot; Question 9</span>
+            </div>
+            <p class="task-question"><strong>Task TWO</strong> &mdash; For <strong>question 9</strong>, choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong> (same speaker).</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q9" data-task="2"></div>
+            <p class="reveal-line" data-reveal-for="q9" aria-live="polite"></p>
+            <label class="field-label" for="ev9">Evidence / proof</label>
+            <textarea id="ev9" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-panel" id="panel-spk-5" role="tabpanel" aria-labelledby="tab-spk-5" hidden data-spk="5">
+        <div class="transcript-mount" data-spk="5"></div>
+        <div class="two-col">
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 1</span>
+              <span class="task-card__title">Speaker 5 &middot; Question 5</span>
+            </div>
+            <p class="task-question"><strong>Task ONE</strong> &mdash; For <strong>question 5</strong>, choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q5" data-task="1"></div>
+            <p class="reveal-line" data-reveal-for="q5" aria-live="polite"></p>
+            <label class="field-label" for="ev5">Evidence / proof</label>
+            <textarea id="ev5" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+          <div class="task-card">
+            <div class="task-card__head">
+              <span class="task-card__badge">Task 2</span>
+              <span class="task-card__title">Speaker 5 &middot; Question 10</span>
+            </div>
+            <p class="task-question"><strong>Task TWO</strong> &mdash; For <strong>question 10</strong>, choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong> (same speaker).</p>
+            <label class="field-label">Options A&ndash;H (tap one)</label>
+            <div class="choice-mount" data-q="q10" data-task="2"></div>
+            <p class="reveal-line" data-reveal-for="q10" aria-live="polite"></p>
+            <label class="field-label" for="ev10">Evidence / proof</label>
+            <textarea id="ev10" placeholder="Short quote or paraphrase from the audio that supports your letter…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="p4-hunt-root" class="p4-hunt-wrap">
+        <h2 class="p4-hunt-title">Stage 2 &mdash; Evidence &amp; distractor hunt</h2>
+        <p class="p4-hunt-lead">
+          Same pattern as <strong>Changes at school</strong>: <strong>Step 1</strong> &mdash; three phrases turn <strong style="color:#86efac">green</strong> (supporting lines for this speaker&rsquo;s answers).
+          <strong>Step 2</strong> &mdash; two phrases turn <strong style="color:#fca5a5">red</strong> with a badge <strong>[! letter]</strong> (distractor wording).
+          Use <strong>Previous / Next</strong> here or the Speaker tabs above &mdash; they stay in sync.
+        </p>
+        <div class="p4-hunt-meta">
+          <div class="p4-hunt-nav">
+            <button type="button" id="p4-huntPrev" aria-label="Previous speaker">&larr; Previous</button>
+            <span id="p4-huntSpeakerLabel" class="p4-hunt-speaker-label">Speaker 1 / 5</span>
+            <button type="button" id="p4-huntNext" aria-label="Next speaker">Next &rarr;</button>
+          </div>
+        </div>
+        <div class="p4-hunt-progress">
+          <span id="p4-huntProg1">Step 1 &middot; evidence</span>
+          <span id="p4-huntProg2">Step 2 &middot; distractors</span>
+        </div>
+        <p id="p4-huntTask" class="p4-hunt-task"></p>
+        <p id="p4-huntCounter" class="p4-hunt-counter"></p>
+        <div id="p4-huntPassage"></div>
+        <p id="p4-huntToast" class="p4-hunt-toast" role="status" aria-live="polite"></p>
+        <button type="button" id="p4-huntReset" class="p4-hunt-reset-btn">Reset this speaker&rsquo;s hunt</button>
+      </div>
+
+      <div id="check-summary" class="check-summary" hidden aria-live="polite"></div>
+
+      <div class="actions">
+        <button type="button" id="btn-back-one-step" aria-label="Previous speaker">&larr; Back one step</button>
+        <button type="button" class="primary" id="btn-check-speaker">Check this speaker</button>
+        <button type="button" id="btn-check-all">Check all 10</button>
+        <button type="button" id="btn-clear-marks">Clear check colours</button>
+      </div>
+      <p class="note">Lists A&ndash;H differ between Task 1 and Task 2. Checking compares your answers with the workbook key. <strong>Stage 2</strong> uses the same evidence-then-distractor hunt pattern as <em>Changes at school</em> and follows the Speaker tab.</p>
+    </div>
+
+    <p class="back">
+      <a class="prep-link-back" href="../../index.html?prep_stay=1&amp;prep_open_folder=prep_legacy_u10_listening_p4">&larr; Listening Part 4 tasks</a>
+      &middot; <a href="../../index.html">CPE Prep hub</a>
+    </p>
+  </div>
+
+  <script src="../../js/prep-link-back.js"></script>
+  <script src="../listening-p4-hunt-data.js"></script>
+  <script src="../listening-p4-hunt.js"></script>
+  <script>
+    (function () {
+      var ANSWER_KEY = { q1: "C", q2: "G", q3: "B", q4: "F", q5: "D", q6: "A", q7: "H", q8: "E", q9: "G", q10: "C" };
+
+      var TASK1_OPTS = [
+        ["A", "ignoring expert advice"],
+        ["B", "choosing an easy option"],
+        ["C", "a quarrel between those involved"],
+        ["D", "poor leadership"],
+        ["E", "targeting the wrong market"],
+        ["F", "failing to include significant details"],
+        ["G", "financial difficulties"],
+        ["H", "a lack of resources"]
+      ];
+      var TASK2_OPTS = [
+        ["A", "the advantage of keeping a process simple"],
+        ["B", "the benefit of investing in equipment"],
+        ["C", "the importance of giving clear instructions"],
+        ["D", "the benefit of having structure"],
+        ["E", "the need for professionals"],
+        ["F", "the importance of managing stress"],
+        ["G", "the value of resisting pressure to change"],
+        ["H", "the merits of saying no"]
+      ];
+
+      var SPEAKER_TRANSCRIPTS = {
+        1: "The recording should have been straightforward since we'd contracted an experienced freelancer, so we only had the studio for two days. The author, some up-and-coming novelist who was on the radar of the literary magazines, decided she wanted to come to the recording, which I thought would be a nice touch. Well, it was an utter disaster; she kept interrupting the voice artist to explain how she wanted certain lines delivered. This obviously didn't go down well, and they went back and forth bickering about it for hours. At the end of day one, we'd barely even finished the first chapter. I had no one to blame except myself though and next time I won't get carried away with any notions of bringing people together to collaborate on an audiobook and will just get it done.",
+
+        2: "I had reservations at the outset to be honest. The network had gotten itself all worked up about a movie version of Gina Lee's latest novel and asked me to write the screenplay. I suppose I was flattered even though it was a daunting task to say the least. Anyway, one day, all of a sudden, production halted, and we were all sent home. Only later did I discover that they'd gone way over budget on the CGI and the investors had pulled out so, the whole thing was shelved. But at least I now know that, were I to ever get asked to be involved in something similar, I should just walk away – it's not worth the stress regardless of any promises of potential box office fortunes.",
+
+        3: "Had I known how it would end up, I would have definitely approached things differently. It turns out that subtitling is actually really technical, but we wanted to avoid having to hire a load of dubbing actors. With all the characters in the film, it would have taken forever and been incompatible with our schedules. And the production team was pretty bilingual, so we went with subtitling instead, thinking it would be way less effort. But it soon became apparent that there's much more to it than meets the eye. Subtitling is all about where you split the sentences to fit logical sections on to the screen so that people can follow what's going on, but with these never-ending monologues from some of the characters\u2026 it was a nightmare and we had to get some actual closed caption specialists in to review everything at the last minute, which was unimaginably stressful.",
+
+        4: "Never have I been involved in such a disastrous film adaptation of a book. As the lead scriptwriter I should have been more outspoken and dismissed their suggestions out of hand. I know that there's a place for artistic licence, but I should have stood my ground. I tried to warn the production team not to cast an actor with blond hair if they didn't want to alienate the legions of fans loyal to the book. For them the protagonist's flaming red hair is fundamental to his character. Then, inexplicably, they decided to omit the part where he abandons his homeland, the very part that drives most of the narrative. Instead, they gave the film a romantic slant for reasons best known to themselves. It's not surprising it bombed spectacularly at the box office.",
+
+        5: "We wanted to stimulate good discussions amongst professionals in order to get the most accurate translation, so we had our translators work in mini groups of three for each language. We expected them to self-manage and were pretty hands off at the beginning. What we did not predict however, was such vastly different team dynamics and so our schedule went out the window as some teams got on with it while others went round in circles. Anyway, we acted fast and got two of our in-house project managers to step in and impose some kind of order. No sooner had they started coordinating the discussions than the production schedule got back on track, and we managed to publish the translations simultaneously in China, Brazil, Germany and Turkey."
+      };
+
+      function optionLabel(qid, letter) {
+        var n = Number(String(qid).replace(/^q/, ""));
+        var opts = n >= 1 && n <= 5 ? TASK1_OPTS : TASK2_OPTS;
+        for (var i = 0; i < opts.length; i++) {
+          if (opts[i][0] === letter) return opts[i][1];
+        }
+        return "";
+      }
+
+      function mountTranscripts() {
+        document.querySelectorAll(".transcript-mount").forEach(function (el) {
+          var n = el.getAttribute("data-spk");
+          var text = SPEAKER_TRANSCRIPTS[Number(n)];
+          if (!text) return;
+          var det = document.createElement("details");
+          det.className = "transcript-block";
+          det.open = false;
+          var sum = document.createElement("summary");
+          sum.textContent = "Speaker " + n + " \u2014 Stage 1 transcript (free green highlight; optional)";
+
+          var tools = document.createElement("div");
+          tools.className = "transcript-evidence-tools";
+          var lead = document.createElement("p");
+          lead.className = "transcript-evidence-lead";
+          lead.textContent =
+            "Stage 1 (optional): select a phrase in the transcript, then tap Highlight. Tip: press the button without lifting the mouse from the selection \u2014 otherwise the browser may clear it before highlighting.";
+
+          var row = document.createElement("div");
+          row.className = "transcript-evidence-btns";
+          var btnHi = document.createElement("button");
+          btnHi.type = "button";
+          btnHi.className = "transcript-ev-btn transcript-highlight-btn";
+          btnHi.textContent = "Highlight selection (green)";
+          var btnClr = document.createElement("button");
+          btnClr.type = "button";
+          btnClr.className = "transcript-ev-btn transcript-clear-btn";
+          btnClr.textContent = "Clear highlights";
+          btnHi.addEventListener("mousedown", function (e) {
+            e.preventDefault();
+          });
+          btnClr.addEventListener("mousedown", function (e) {
+            e.preventDefault();
+          });
+          row.appendChild(btnHi);
+          row.appendChild(btnClr);
+          tools.appendChild(lead);
+          tools.appendChild(row);
+
+          var body = document.createElement("div");
+          body.className = "transcript-text";
+          body.textContent = text;
+          det.appendChild(sum);
+          det.appendChild(tools);
+          det.appendChild(body);
+
+          function unwrapMark(mark) {
+            var parent = mark.parentNode;
+            if (!parent) return;
+            while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+            parent.removeChild(mark);
+          }
+
+          function clearHighlights() {
+            body.querySelectorAll("mark.transcript-evidence-mark").forEach(unwrapMark);
+            try {
+              body.normalize();
+            } catch (eNormClr) {}
+          }
+
+          btnHi.addEventListener("click", function () {
+            var sel = window.getSelection();
+            if (!sel || !sel.rangeCount) return;
+            var range = sel.getRangeAt(0);
+            if (range.collapsed) return;
+            if (!body.contains(range.commonAncestorContainer)) return;
+            var str = range.toString();
+            if (!str || !str.trim()) return;
+            var mark = document.createElement("mark");
+            mark.className = "transcript-evidence-mark";
+            try {
+              range.surroundContents(mark);
+            } catch (eSur) {
+              try {
+                var contents = range.extractContents();
+                mark.appendChild(contents);
+                range.insertNode(mark);
+              } catch (eIns) {
+                return;
+              }
+            }
+            sel.removeAllRanges();
+          });
+
+          btnClr.addEventListener("click", clearHighlights);
+
+          el.replaceWith(det);
+        });
+      }
+
+      function mountChoiceLists() {
+        document.querySelectorAll(".choice-mount").forEach(function (mount) {
+          var qId = mount.getAttribute("data-q");
+          var task = Number(mount.getAttribute("data-task"));
+          var opts = task === 1 ? TASK1_OPTS : TASK2_OPTS;
+          var fs = document.createElement("fieldset");
+          fs.className = "choice-fieldset";
+          fs.setAttribute("data-qn", qId);
+          opts.forEach(function (row) {
+            var L = row[0];
+            var T = row[1];
+            var id = qId + "_" + L;
+            var lab = document.createElement("label");
+            lab.className = "choice-row";
+            lab.setAttribute("for", id);
+            var inp = document.createElement("input");
+            inp.type = "radio";
+            inp.name = qId;
+            inp.value = L;
+            inp.id = id;
+            var span = document.createElement("span");
+            span.className = "choice-row__text";
+            var ltr = document.createElement("span");
+            ltr.className = "choice-row__ltr";
+            ltr.textContent = L;
+            span.appendChild(ltr);
+            span.appendChild(document.createTextNode(" \u2014 " + T));
+            lab.appendChild(inp);
+            lab.appendChild(span);
+            fs.appendChild(lab);
+          });
+          mount.appendChild(fs);
+        });
+      }
+
+      var tabs = document.querySelectorAll(".speaker-tabs [role='tab']");
+      var panels = document.querySelectorAll(".speaker-panel");
+
+      function setActiveTab(spk) {
+        spk = String(spk);
+        tabs.forEach(function (btn) {
+          var on = String(btn.getAttribute("data-spk")) === spk;
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        panels.forEach(function (panel) {
+          var match = String(panel.getAttribute("data-spk")) === spk;
+          panel.classList.toggle("is-active", match);
+          panel.hidden = !match;
+        });
+        if (typeof window.__p4HuntSetSpeaker === "function") {
+          window.__p4HuntSetSpeaker(Number(spk));
+        }
+        syncBackOneStepButton();
+      }
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          setActiveTab(btn.getAttribute("data-spk"));
+        });
+      });
+
+      function currentSpeakerNum() {
+        var active = document.querySelector('.speaker-tabs [role="tab"][aria-selected="true"]');
+        return active ? String(active.getAttribute("data-spk")) : "1";
+      }
+
+      function syncBackOneStepButton() {
+        var btn = document.getElementById("btn-back-one-step");
+        if (!btn) return;
+        btn.disabled = Number(currentSpeakerNum()) <= 1;
+      }
+
+      function qIdsForSpeaker(spk) {
+        spk = Number(spk);
+        return ["q" + spk, "q" + (spk + 5)];
+      }
+
+      function getAnswerValue(qid) {
+        var r = document.querySelector('input[name="' + qid + '"]:checked');
+        return r ? String(r.value) : "";
+      }
+
+      function clearRowHighlights() {
+        document.querySelectorAll(".choice-row.reveal-correct, .choice-row.reveal-wrong-pick").forEach(function (el) {
+          el.classList.remove("reveal-correct", "reveal-wrong-pick");
+        });
+      }
+
+      function highlightKeyRow(fs, keyLetter) {
+        if (!fs || !keyLetter) return;
+        var inp = fs.querySelector('input[value="' + keyLetter + '"]');
+        var row = inp && inp.closest ? inp.closest(".choice-row") : null;
+        if (row) row.classList.add("reveal-correct");
+      }
+
+      function highlightWrongPick(fs) {
+        var inp = fs.querySelector("input:checked");
+        var row = inp && inp.closest ? inp.closest(".choice-row") : null;
+        if (row) row.classList.add("reveal-wrong-pick");
+      }
+
+      function clearSummaryPanel() {
+        var sum = document.getElementById("check-summary");
+        sum.hidden = true;
+        sum.innerHTML = "";
+      }
+
+      function renderCheckSummary(ids, correctCount) {
+        var sumEl = document.getElementById("check-summary");
+        sumEl.innerHTML = "";
+        sumEl.hidden = false;
+
+        var h = document.createElement("h3");
+        h.className = "check-summary__title";
+        h.textContent = ids.length >= 10 ? "Results \u2014 all 10 questions" : "Results \u2014 this speaker (2 questions)";
+        sumEl.appendChild(h);
+
+        var score = document.createElement("p");
+        score.className = "check-summary__score";
+        score.textContent = correctCount + " / " + ids.length + " correct";
+        sumEl.appendChild(score);
+
+        var rowsHost = document.createElement("div");
+        rowsHost.className = "check-summary__rows";
+
+        ids.forEach(function (qid) {
+          var n = Number(qid.replace(/^q/, ""));
+          var key = ANSWER_KEY[qid];
+          var v = getAnswerValue(qid).trim().toUpperCase();
+          var keyLabel = optionLabel(qid, key);
+          var row = document.createElement("div");
+          row.className = "check-summary__row";
+
+          var qSpan = document.createElement("span");
+          qSpan.className = "check-summary__q";
+          qSpan.textContent = "Q" + n;
+
+          var mark = document.createElement("span");
+          mark.className = "check-summary__mark";
+
+          var detail = document.createElement("div");
+          detail.className = "check-summary__detail";
+
+          var dim = document.createElement("span");
+          dim.className = "dim";
+
+          if (!v) {
+            row.classList.add("is-empty");
+            mark.textContent = "\u2014";
+            detail.textContent = "No answer. Key: " + key + ".";
+            dim.textContent = key + " \u2014 " + keyLabel;
+            detail.appendChild(dim);
+          } else if (v === key) {
+            row.classList.add("is-ok");
+            mark.textContent = "\u2713";
+            detail.textContent = "Correct: " + v + ".";
+            dim.textContent = v + " \u2014 " + keyLabel;
+            detail.appendChild(dim);
+          } else {
+            row.classList.add("is-bad");
+            mark.textContent = "\u2717";
+            detail.textContent = "Your " + v + " \u2192 key " + key + ".";
+            dim.textContent = "Key: " + key + " \u2014 " + keyLabel + " (yours was " + v + " \u2014 " + optionLabel(qid, v) + ")";
+            detail.appendChild(dim);
+          }
+
+          row.appendChild(qSpan);
+          row.appendChild(mark);
+          row.appendChild(detail);
+          rowsHost.appendChild(row);
+        });
+
+        sumEl.appendChild(rowsHost);
+      }
+
+      function clearMarks() {
+        clearRowHighlights();
+        document.querySelectorAll(".choice-fieldset").forEach(function (fs) {
+          fs.classList.remove("eval-ok", "eval-bad");
+        });
+        document.querySelectorAll(".reveal-line").forEach(function (el) {
+          el.textContent = "";
+          el.className = "reveal-line";
+        });
+        clearSummaryPanel();
+      }
+
+      function checkQuestions(ids, scrollToSummary) {
+        clearRowHighlights();
+        var correctCount = 0;
+        ids.forEach(function (qid) {
+          var fs = document.querySelector('.choice-fieldset[data-qn="' + qid + '"]');
+          var reveal = document.querySelector('.reveal-line[data-reveal-for="' + qid + '"]');
+          if (!fs || !reveal) return;
+          var key = ANSWER_KEY[qid];
+          var v = getAnswerValue(qid).trim().toUpperCase();
+          var keyPhrase = optionLabel(qid, key);
+
+          fs.classList.remove("eval-ok", "eval-bad");
+          reveal.className = "reveal-line";
+          reveal.textContent = "";
+
+          highlightKeyRow(fs, key);
+
+          if (!v) {
+            fs.classList.add("eval-bad");
+            reveal.textContent = "Key: " + key + " \u2014 " + keyPhrase;
+            reveal.classList.add("is-empty");
+            return;
+          }
+          if (v === key) {
+            fs.classList.add("eval-ok");
+            correctCount++;
+            reveal.textContent = "Correct (" + key + " \u2014 " + keyPhrase + ").";
+          } else {
+            fs.classList.add("eval-bad");
+            highlightWrongPick(fs);
+            reveal.textContent =
+              "Your " + v + " \u2014 key " + key + ": " + keyPhrase;
+            reveal.classList.add("is-wrong");
+          }
+        });
+
+        renderCheckSummary(ids, correctCount);
+
+        if (scrollToSummary) {
+          document.getElementById("check-summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      document.getElementById("btn-back-one-step").addEventListener("click", function () {
+        if (typeof window.__p4HuntGoPrevSpeaker === "function") {
+          window.__p4HuntGoPrevSpeaker();
+        } else {
+          var spk = Number(currentSpeakerNum());
+          if (spk > 1) {
+            var prevTab = document.querySelector('.speaker-tabs [role="tab"][data-spk="' + String(spk - 1) + '"]');
+            if (prevTab) prevTab.click();
+          }
+        }
+      });
+
+      document.getElementById("btn-check-speaker").addEventListener("click", function () {
+        checkQuestions(qIdsForSpeaker(currentSpeakerNum()), true);
+      });
+
+      document.getElementById("btn-check-all").addEventListener("click", function () {
+        checkQuestions(["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10"], true);
+      });
+
+      document.getElementById("btn-clear-marks").addEventListener("click", clearMarks);
+
+      document.addEventListener("change", function (ev) {
+        var t = ev.target;
+        if (!t || t.type !== "radio" || !t.name || !/^q\d+$/.test(t.name)) return;
+        var qid = t.name;
+        var fs = document.querySelector('.choice-fieldset[data-qn="' + qid + '"]');
+        if (fs) {
+          fs.classList.remove("eval-ok", "eval-bad");
+          fs.querySelectorAll(".choice-row").forEach(function (r) {
+            r.classList.remove("reveal-correct", "reveal-wrong-pick");
+          });
+        }
+        var reveal = document.querySelector('.reveal-line[data-reveal-for="' + qid + '"]');
+        if (reveal) {
+          reveal.textContent = "";
+          reveal.className = "reveal-line";
+        }
+        clearSummaryPanel();
+      });
+
+      mountTranscripts();
+      mountChoiceLists();
+      setActiveTab("1");
+    })();
+  </script>
+</body>
+</html>

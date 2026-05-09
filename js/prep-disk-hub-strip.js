@@ -26,11 +26,7 @@
     var HUB_VM_KEY = "prep-hub-view-mode-v1";
 
     function isEditMode() {
-        try {
-            return localStorage.getItem(HUB_VM_KEY) !== "preview";
-        } catch (e) {
-            return true;
-        }
+        return false;
     }
 
     function siteRootHref() {

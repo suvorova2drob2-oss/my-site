@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 CPE — Shadowing · Art restoration</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { font-size: 1.35rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .shadowing-wrap {
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .shadowing-wrap > h2 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .mode-switch {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .mode-switch button {
+      border: none;
+      background: #1b2e4d;
+      color: var(--text);
+      padding: 9px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .mode-switch button + button { border-left: 1px solid var(--line); }
+    .mode-switch button.active { background: #2a4267; color: #fff; }
+    .mode { display: none; margin-top: 4px; }
+    .mode.active { display: block; }
+    .mode p.hint {
+      color: var(--muted);
+      margin-bottom: 8px;
+      line-height: 1.35;
+      font-size: 0.92rem;
+    }
+    audio { width: 100%; margin: 8px 0 10px; }
+    .karaoke-box {
+      border: 1px solid #44608c;
+      border-radius: 10px;
+      padding: 12px;
+      background: #1a2c49;
+      max-height: min(480px, 58vh);
+      overflow-y: auto;
+    }
+    .sentence {
+      margin-bottom: 10px;
+      color: #c6d5ef;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+    .done-btn {
+      margin-top: 8px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 700;
+      padding: 9px 12px;
+      cursor: pointer;
+      display: none;
+    }
+    .done-btn.show { display: inline-block; }
+    .stats {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #3a537d;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .marks { display: flex; gap: 6px; align-items: center; font-size: 1.1rem; }
+    .mark {
+      width: 22px;
+      height: 22px;
+      border: 1px solid #4d6b99;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4d6b99;
+      font-size: 0.8rem;
+    }
+    .mark.done { border-color: var(--ok); color: var(--ok); }
+    .trophy { display: none; color: #ffd166; font-weight: 700; }
+    .trophy.show { display: inline; }
+    .message {
+      color: #89a0c6;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      white-space: pre-line;
+      max-width: 52rem;
+    }
+    .message-strong { color: #c8dcf5; }
+    .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .start-btn {
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #062536;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 11px 22px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    .start-btn:hover { filter: brightness(1.08); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Listening Part 3 · Art restoration</h1>
+      <a class="back" href="../Listening Part 3 Multiple choice - Art restoration/Audio trainer/index.html">&larr; Back to Art restoration audio hub</a>
+    </header>
+
+    <section class="shadowing-wrap">
+      <h2>How do you want to practise?</h2>
+      <div class="mode-switch" role="tablist" aria-label="Practice mode">
+        <button type="button" class="active" data-mode="withText" role="tab" aria-selected="true">With text</button>
+        <button type="button" data-mode="withoutText" role="tab" aria-selected="false">By ear</button>
+      </div>
+
+      <div id="withText" class="mode active" role="tabpanel">
+        <p class="hint">Full script from Track 9.4 (Edward &amp; Olga). Click <strong>Start</strong> to play from the beginning.</p>
+        <div class="start-row">
+          <button type="button" class="start-btn" id="startWithText">Start</button>
+        </div>
+        <audio id="audioWithText" controls preload="metadata"></audio>
+        <div id="karaokeBox" class="karaoke-box"></div>
+      </div>
+
+      <div id="withoutText" class="mode" role="tabpanel">
+        <p class="hint">Click <strong>Start</strong> to play from the beginning. No transcript. When the track ends, tap <strong>I am done</strong> to save this session.</p>
+        <div class="start-row">
+          <button type="button" class="start-btn" id="startNoText">Start</button>
+        </div>
+        <audio id="audioNoText" controls preload="metadata"></audio>
+        <button type="button" id="doneNoText" class="done-btn">I am done</button>
+      </div>
+
+      <div class="stats">
+        <div class="marks" id="marks" aria-label="Shadowing completions"></div>
+        <div>
+          <span id="trophy" class="trophy">🏆 Shadowing trophy earned</span>
+          <span id="message" class="message"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="art-restoration-data.js"></script>
+  <script>
+    var packKey = "english_mastery_perfect";
+    var listenCountKey = "masteringCpeUnit9ArtRest_shadowing";
+    var targetCount = 5;
+    var reward = 3;
+
+    var completionMessage =
+      "Ваш результат засчитан, ты молодец, ушло в статистику, приходите завтра и прослушивайте, будут шикарные результаты. Regular practice is important.";
+
+    var defaultHintMessage =
+      "Click Start to begin. After each full listen that we count, you will see a short message here. Five listens earn the trophy and +3 points each on your home score.";
+
+    var DATA = window.CPE_ART_RESTORATION;
+    if (!DATA) {
+      document.body.innerHTML = "<p>Missing art-restoration-data.js</p>";
+      throw new Error("CPE_ART_RESTORATION");
+    }
+
+    var transcript = DATA.sentences;
+
+    var switchButtons = document.querySelectorAll(".mode-switch button");
+    var modes = document.querySelectorAll(".mode");
+    var marksEl = document.getElementById("marks");
+    var trophyEl = document.getElementById("trophy");
+    var messageEl = document.getElementById("message");
+    var audioWithText = document.getElementById("audioWithText");
+    var audioNoText = document.getElementById("audioNoText");
+    var doneNoText = document.getElementById("doneNoText");
+    var karaokeBox = document.getElementById("karaokeBox");
+    var startWithText = document.getElementById("startWithText");
+    var startNoText = document.getElementById("startNoText");
+
+    audioWithText.src = DATA.audioSrc;
+    audioNoText.src = DATA.audioSrc;
+
+    var withTextCanReward = false;
+    var noTextCanReward = false;
+
+    function getListenCountRaw() {
+      var raw = localStorage.getItem(listenCountKey);
+      var num = Number(raw);
+      return Number.isFinite(num) && num >= 0 ? Math.floor(num) : 0;
+    }
+
+    function saveListenCount(value) {
+      localStorage.setItem(listenCountKey, String(Math.min(value, targetCount)));
+    }
+
+    function getListeningCount() {
+      return Math.min(getListenCountRaw(), targetCount);
+    }
+
+    function loadPack() {
+      try {
+        var raw = localStorage.getItem(packKey);
+        var data = raw ? JSON.parse(raw) : {};
+        if (!data || typeof data !== "object") {
+          data = {};
+        }
+        return data;
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function savePack(data) {
+      localStorage.setItem(packKey, JSON.stringify(data));
+    }
+
+    function getScore() {
+      var d = loadPack();
+      return Number.isFinite(Number(d.score)) ? Math.floor(Number(d.score)) : 0;
+    }
+
+    function setScore(value) {
+      var d = loadPack();
+      d.score = value;
+      savePack(d);
+    }
+
+    function renderMarks() {
+      var count = getListeningCount();
+      marksEl.innerHTML = "";
+      for (var i = 0; i < targetCount; i += 1) {
+        var mark = document.createElement("span");
+        mark.className = "mark" + (i < count ? " done" : "");
+        mark.textContent = i < count ? "✓" : "";
+        marksEl.appendChild(mark);
+      }
+      trophyEl.classList.toggle("show", count >= targetCount);
+    }
+
+    function addScore(points) {
+      setScore(getScore() + points);
+    }
+
+    function rewardIfPossible() {
+      var count = getListeningCount();
+      if (count >= targetCount) {
+        messageEl.classList.add("message-strong");
+        messageEl.textContent =
+          completionMessage +
+          "\n\n(All 5 sessions are already in your statistics. Trophy unlocked — see above.)";
+        renderMarks();
+        return;
+      }
+      saveListenCount(count + 1);
+      addScore(reward);
+      var left = targetCount - getListeningCount();
+      messageEl.classList.add("message-strong");
+      messageEl.textContent =
+        completionMessage +
+        "\n\n+3 points on your home score." +
+        (left > 0 ? " Listens until trophy: " + left + "." : " Trophy unlocked!");
+      renderMarks();
+    }
+
+    function resetFeedbackMessage() {
+      messageEl.classList.remove("message-strong");
+      messageEl.textContent = defaultHintMessage;
+    }
+
+    function startAudio(audio) {
+      resetFeedbackMessage();
+      audio.currentTime = 0;
+      audio.play().catch(function () {});
+    }
+
+    startWithText.addEventListener("click", function () {
+      startAudio(audioWithText);
+    });
+
+    startNoText.addEventListener("click", function () {
+      startAudio(audioNoText);
+    });
+
+    function renderStaticTranscript() {
+      karaokeBox.innerHTML = "";
+      transcript.forEach(function (line) {
+        var p = document.createElement("p");
+        p.className = "sentence";
+        p.textContent = line;
+        karaokeBox.appendChild(p);
+      });
+    }
+
+    switchButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var modeId = button.getAttribute("data-mode");
+        switchButtons.forEach(function (b) {
+          var on = b === button;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        modes.forEach(function (m) {
+          m.classList.toggle("active", m.id === modeId);
+        });
+      });
+    });
+
+    audioWithText.addEventListener("play", function () {
+      withTextCanReward = false;
+    });
+
+    audioWithText.addEventListener("ended", function () {
+      withTextCanReward = true;
+      if (withTextCanReward) {
+        rewardIfPossible();
+        withTextCanReward = false;
+      }
+    });
+
+    audioNoText.addEventListener("play", function () {
+      noTextCanReward = false;
+      doneNoText.classList.remove("show");
+    });
+
+    audioNoText.addEventListener("ended", function () {
+      noTextCanReward = true;
+      doneNoText.classList.add("show");
+    });
+
+    doneNoText.addEventListener("click", function () {
+      if (!noTextCanReward) {
+        return;
+      }
+      rewardIfPossible();
+      noTextCanReward = false;
+      doneNoText.classList.remove("show");
+    });
+
+    messageEl.textContent = defaultHintMessage;
+    renderStaticTranscript();
+    renderMarks();
+  </script>
+</body>
+</html>

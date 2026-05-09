@@ -17,6 +17,9 @@
   }
   var isEditRoute = isEditModeParams(sp);
   var dataSrc = String(boot.dataSrc || sp.get("src") || "").trim();
+  if (!dataSrc && contextId === "unit10-uoe") {
+    dataSrc = "ex-athlete-taken-in/published.json";
+  }
   /** Level 9 Workbook Part 1: вшитый JSON в part1-mc-cloze/index.html (без fetch / file://). */
   var unit9InteriorHardwired =
     String(contextId) === "unit9-uoe" ||
@@ -27,16 +30,34 @@
   var unit9PisaHardwired =
     String(contextId) === "unit9-uoe-pisa" ||
     /published-unit9-pisa-leaning-tower\.json\s*$/i.test(dataSrc);
+  /** Unit 9 · Solving a mystery — same as other L9 Part 1: JSON in #part1-mc-bundled-unit9-solving-mystery (works file://). */
+  var unit9SolvingMysteryHardwired =
+    String(contextId) === "unit9-uoe-solving-mystery" ||
+    /published-unit9-solving-mystery\.json\s*$/i.test(dataSrc);
+  /** Unit 8 FCE · Seville — JSON in #part1-mc-bundled-unit8-seville. */
+  var unit8UoeSevilleBundled = String(contextId) === "unit8-uoe-seville";
   var unit9BundledPart1 =
-    unit9InteriorHardwired || unit9ArtisticTalentHardwired || unit9PisaHardwired;
+    unit9InteriorHardwired ||
+    unit9ArtisticTalentHardwired ||
+    unit9PisaHardwired ||
+    unit9SolvingMysteryHardwired;
+  var unit10ExAthleteBundled =
+    String(contextId) === "unit10-uoe" ||
+    /ex-athlete-taken-in\/published\.json\s*$/i.test(dataSrc);
+  /** Unit 5 FCE · Summer jobs — JSON in #part1-mc-bundled-unit5-summer-jobs (works file://). */
+  var unit5UoeBundled = String(contextId) === "unit5-uoe";
   var studentOnly =
     boot.studentOnly === true ||
     sp.get("part1Student") === "1" ||
-    unit9BundledPart1;
+    unit9BundledPart1 ||
+    unit8UoeSevilleBundled;
   var useEmbeddedExercise =
     boot.embeddedOnly === true ||
     sp.get("part1Embedded") === "1" ||
-    unit9BundledPart1;
+    unit9BundledPart1 ||
+    unit10ExAthleteBundled ||
+    unit5UoeBundled ||
+    unit8UoeSevilleBundled;
   var boxedSite =
     (typeof window !== "undefined" && window.__PREP_BOXED_SITE__ === true) ||
     boot.boxedSite === true ||
@@ -65,35 +86,34 @@
       document.querySelectorAll(".admin-only").forEach(function (n) {
         if (n && n.parentNode) n.parentNode.removeChild(n);
       });
-      var tg = document.querySelector(".part1-view-toggle");
-      if (tg && tg.parentNode) tg.parentNode.removeChild(tg);
     } catch (eStrip) {}
     document.body.classList.add("part1-mc-student-only");
   }
   stripStudentOnlyAdminChrome();
 
+  /** Опциональный шаблон только если в HTML есть #part1-mc-default-data (без демо-заглушки в коде). */
   function parseDefaultJson() {
     var el = document.getElementById("part1-mc-default-data");
-    if (!el) {
-      return {
-        title: "PART 1 — DEMO",
-        subtitle: "Добавь [[1]] в текст и четыре варианта в режиме Edit (в адресе prepView=edit).",
-        passage: "Replace this demo with your text and a gap [[1]].\n\nSecond paragraph.",
-        example: null,
-        items: [{ options: ["option A", "option B", "option C", "option D"], correctIndex: 0 }]
-      };
-    }
+    if (!el) return null;
     try {
       return JSON.parse(el.textContent.trim());
     } catch (e) {
-      return {
-        title: "Sample",
-        subtitle: "",
-        passage: "Text with [[1]] here.",
-        example: null,
-        items: [{ options: ["one", "two", "three", "four"], correctIndex: 0 }]
-      };
+      return null;
     }
+  }
+
+  /** Пустой черновик для редактора после «Сбросить» — не показывается ученикам. */
+  function adminBlankExerciseTemplate() {
+    return {
+      title: "Part 1 — Multiple-choice cloze",
+      subtitle: "Edit subtitle and passage, then Save.",
+      passage: "Replace this passage. Use gap markers [[1]], [[2]], …\n\nSecond paragraph with [[2]].",
+      example: null,
+      items: [
+        { options: ["(replace)", "(replace)", "(replace)", "(replace)"], correctIndex: 0 },
+        { options: ["(replace)", "(replace)", "(replace)", "(replace)"], correctIndex: 1 }
+      ]
+    };
   }
 
   function deepClone(o) {
@@ -301,17 +321,6 @@
     }
     var h1 = document.getElementById("part1McH1");
     if (h1) h1.textContent = pageTitle;
-
-    var tabPrev = document.getElementById("part1McPreviewTab");
-    var tabEdit = document.getElementById("part1McEditTab");
-    if (tabPrev) {
-      tabPrev.href = buildNavQuery(false);
-      tabPrev.classList.toggle("is-active", !isAdmin);
-    }
-    if (tabEdit) {
-      tabEdit.href = buildNavQuery(true);
-      tabEdit.classList.toggle("is-active", !!isAdmin);
-    }
   }
 
   function extractGapNums(passage) {
@@ -542,7 +551,7 @@
   }
 
   var state = {
-    exercise: parseDefaultJson(),
+    exercise: null,
     names: [],
     blocks: [],
     nQuestions: 0,
@@ -610,6 +619,21 @@
   }
 
   wireNav();
+
+  function showStudentExerciseLoadFailed() {
+    document.body.classList.add("part1-mc-load-failed");
+    if (elTitle) elTitle.textContent = "";
+    if (elSubtitle) elSubtitle.textContent = "";
+    if (elPassage) elPassage.innerHTML = "";
+    if (mcOptsCol) mcOptsCol.innerHTML = "";
+    if (mcLayout) mcLayout.style.display = "none";
+    if (feedback) {
+      feedback.className = "feedback";
+      feedback.innerHTML = "";
+    }
+    if (btnCheck) btnCheck.disabled = true;
+    if (btnReset) btnReset.disabled = true;
+  }
 
   /**
    * Общая отрисовка заголовка, текста и колонки вариантов (как у ученика).
@@ -1607,7 +1631,7 @@
         PrepCloudClient.pushExercise(contextId, toStore)
           .then(function () {
             setDataBanner(
-              localOk + "<strong>Облако:</strong> по этой ссылке ученики видят это задание (Supabase).",
+              localOk + "<strong>Облако:</strong> по ссылке ученики видят эту опубликованную версию задания.",
               true
             );
           })
@@ -1616,14 +1640,13 @@
               localOk +
                 "<strong>Облако не записалось:</strong> " +
                 String((err && err.message) || err) +
-                " (см. infra/supabase/PREP-CLOUD.md).",
+                " (проверьте настройки публикации и секрет).",
               false
             );
           });
       } else {
         setDataBanner(
-          localOk +
-            "Для учеников без ручного деплоя подключи облако — <code>infra/supabase/PREP-CLOUD.md</code>.",
+          localOk + "Для учеников без ручного выкладывания файла подключи облачную публикацию (настрой у разработчика).",
           true
         );
       }
@@ -1731,7 +1754,7 @@
     }
 
     document.getElementById("btnAdmReset").addEventListener("click", function () {
-      var d = parseDefaultJson();
+      var d = adminBlankExerciseTemplate();
       adminFillFromData(d);
       try {
         localStorage.removeItem(STORAGE_PUBLISH_KEY);
@@ -1739,7 +1762,7 @@
           localStorage.removeItem(LEGACY_STORAGE);
         }
       } catch (e) {}
-      setDataBanner("Сброшено к встроенному демо. localStorage очищен.", true);
+      setDataBanner("Сброшен черновик в редакторе. Заполните текст и варианты, затем Сохранить.", true);
     });
   }
 
@@ -1786,6 +1809,56 @@
         }
       }
     }
+    if (unit9SolvingMysteryHardwired) {
+      var elSm = document.getElementById("part1-mc-bundled-unit9-solving-mystery");
+      if (elSm) {
+        try {
+          return JSON.parse(elSm.textContent.trim());
+        } catch (eSm) {
+          return null;
+        }
+      }
+    }
+    if (unit8UoeSevilleBundled) {
+      var elU8s = document.getElementById("part1-mc-bundled-unit8-seville");
+      if (elU8s) {
+        try {
+          return JSON.parse(elU8s.textContent.trim());
+        } catch (eU8s) {
+          return null;
+        }
+      }
+    }
+    if (unit10ExAthleteBundled) {
+      var el10ex = document.getElementById("part1-mc-bundled-unit10-ex-athlete");
+      if (el10ex) {
+        try {
+          return JSON.parse(el10ex.textContent.trim());
+        } catch (e10ex) {
+          return null;
+        }
+      }
+    }
+    if (unit5UoeBundled) {
+      var el5sj = document.getElementById("part1-mc-bundled-unit5-summer-jobs");
+      if (el5sj) {
+        try {
+          return JSON.parse(el5sj.textContent.trim());
+        } catch (e5sj) {
+          return null;
+        }
+      }
+    }
+    if (String(contextId) === "unit12-part1-sedentary") {
+      var el12 = document.getElementById("part1-mc-bundled-unit12-sedentary");
+      if (el12) {
+        try {
+          return JSON.parse(el12.textContent.trim());
+        } catch (e12) {
+          return null;
+        }
+      }
+    }
     var bid = boot.embeddedDataScriptId;
     if (bid) {
       var elId = document.getElementById(String(bid));
@@ -1800,13 +1873,12 @@
     return null;
   }
 
-  /** Встроенный в страницу JSON для context unit9-uoe, если fetch к файлу недоступен (file:// и т.д.). */
+  /** Встроенный в страницу JSON для unit9 / unit10 / unit12, если fetch недоступен (file:// и т.д.). */
   function readBundledPublishedFallback() {
     return readEmbeddedExercisePayload();
   }
 
   function loadPublishedFileThenFallback() {
-    var def = parseDefaultJson();
     var url = publishedFetchUrl();
     var fetchCache = boxedSite ? "default" : "no-store";
     var tryCloud = boxedSite
@@ -1828,7 +1900,7 @@
           if (loc) return loc;
           var bundled = readBundledPublishedFallback();
           if (bundled) return bundled;
-          return def;
+          return null;
         });
     });
   }
@@ -1840,7 +1912,7 @@
     if (useEmbeddedExercise) {
       var emb = readEmbeddedExercisePayload();
       if (emb) return Promise.resolve(emb);
-      return Promise.resolve(parseDefaultJson());
+      return Promise.resolve(null);
     }
     return loadPublishedFileThenFallback();
   }
@@ -1854,11 +1926,19 @@
 
   (isAdmin && hasAdminDom ? mergeLoadOrderAdmin() : mergeLoadOrderStudent()).then(function (data) {
     if (isAdmin && hasAdminDom) {
+      if (!data) {
+        adminFillFromData(adminBlankExerciseTemplate());
+        setDataBanner(
+          "Файл задания не найден или недоступен. Заполните форму или импортируйте published.json.",
+          false
+        );
+        return;
+      }
       adminFillFromData(deepClone(data));
       try {
         var hasPub = !!readLocalPublished();
         setDataBanner(
-          "После <strong>«Сохранить»</strong> фиксируется версия для учеников (облако Supabase, если настроено — см. <code>infra/supabase/PREP-CLOUD.md</code>; иначе файл и localStorage). " +
+          "После <strong>«Сохранить»</strong> фиксируется версия для учеников (облако, если настроено; иначе файл и localStorage). " +
             (hasPub ? "На этом устройстве уже есть опубликованная копия." : ""),
           true
         );
@@ -1866,6 +1946,10 @@
         setDataBanner("", true);
       }
     } else {
+      if (!data) {
+        showStudentExerciseLoadFailed();
+        return;
+      }
       var forStudent = deepClone(data);
       forStudent.items = alignItemsToDocumentPassage(forStudent.passage || "", forStudent.items || []);
       if (renderStudent(forStudent)) {

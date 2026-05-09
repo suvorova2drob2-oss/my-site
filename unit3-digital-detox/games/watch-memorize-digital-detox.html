@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch &amp; Memorize &mdash; My digital detox (Unit 3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #0b1020; --card: #131a2e; --line: #2a3555; --text: #e8ecff; --dim: #8b95b8; --acc: #7c3aed; --ok: #22c55e; --bad: #f43f5e; --glow: #a78bfa; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Manrope", system-ui, sans-serif; background: radial-gradient(900px 500px at 50% -20%, #1e1b4b 0%, var(--bg) 50%); color: var(--text); min-height: 100dvh; padding: 12px 12px 28px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .bar a { color: var(--glow); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    h1 { font-size: 1.25rem; font-weight: 800; }
+    .sub { color: var(--dim); font-size: 0.88rem; line-height: 1.55; margin: 8px 0 14px; }
+    .sub strong { color: #c4b5fd; }
+    .panel {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 16px 50px rgba(0,0,0,0.4);
+    }
+    .phase-tag { text-align: center; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--glow); font-weight: 800; margin-bottom: 10px; }
+    .opts {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; font-size: 0.78rem; color: var(--dim);
+    }
+    .opts fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #0a0f1d55; max-width: 100%; }
+    .opts fieldset:disabled { opacity: 0.5; }
+    .opts label { display: flex; align-items: center; gap: 4px; cursor: pointer; margin: 0 2px; }
+    .opts fieldset.mode-fs { min-width: min(100%, 32rem); }
+    .countwrap { text-align: center; margin: 6px 0 12px; }
+    .big { font-size: 2.8rem; font-weight: 800; color: var(--glow); font-variant-numeric: tabular-nums; line-height: 1.1; }
+    .countwrap .subt { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
+    .grid {
+      display: grid; gap: 10px; margin: 0 auto 16px; max-width: 100%;
+    }
+    .g6 { grid-template-columns: 1fr 1fr; }
+    .g8 { grid-template-columns: 1fr 1fr; }
+    @media (min-width: 640px) {
+      .g6 { grid-template-columns: repeat(3, 1fr); }
+    }
+    .cell {
+      min-height: 5.5rem; border-radius: 12px; border: 2px solid #2d3a5e; background: #0a0f1d; padding: 8px 10px;
+      display: flex; align-items: center; justify-content: center; text-align: center; font-size: clamp(0.68rem, 1.5vw, 0.88rem);
+      font-weight: 700; line-height: 1.3; color: #f1f5ff; cursor: default; user-select: none; transition: border-color 0.2s, background 0.2s, transform 0.15s; word-break: break-word; overflow: auto; max-height: 9rem; -webkit-overflow-scrolling: touch;
+    }
+    .cell[data-role="recall"] { cursor: pointer; }
+    .cell[data-role="recall"]:hover { border-color: #7dd3fc; }
+    .cell.watch { border-color: #4c1d95; }
+    .cell.hide { color: #64748b; font-size: 1.1rem; }
+    .cell.correct-locked { border-color: var(--ok); background: #052e1a; cursor: default; }
+    .cell.wrong { animation: shake 0.45s ease; border-color: var(--bad); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    .prompt {
+      min-height: 3.2em; margin: 6px 0 14px; padding: 12px 14px; border-radius: 12px; background: rgba(124, 58, 237, 0.2); border: 1px solid #5b21b6;
+      text-align: center; font-size: 0.92rem; line-height: 1.45; color: #e9d5ff;
+    }
+    .prompt kbd { display: block; margin-top: 8px; font-size: 0.95rem; color: #fff; font-weight: 800; font-style: normal; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+    button {
+      font-family: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72rem; border: none; border-radius: 12px; padding: 12px 18px; cursor: pointer;
+    }
+    .b-main { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: #fff; }
+    .b-sec { background: #2d3a5e; color: var(--text); }
+    .b-main:hover, .b-sec:hover { filter: brightness(1.1); }
+    .msg { text-align: center; min-height: 1.5em; font-size: 0.9rem; font-weight: 600; margin: 6px 0; }
+    .msg.ok { color: var(--ok); }
+    .msg.bad { color: #fca5a5; }
+    .hidden { display: none !important; }
+    .lights { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; color: #555; font-size: 1.1rem; font-weight: 800; }
+    .present-block {
+      background: #0a0f1d; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 8px 0 14px; line-height: 1.5; font-size: 0.95rem;
+    }
+    .present-block h3 { color: #fde68a; font-size: 0.9rem; margin-bottom: 10px; }
+    .type-wrap { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 14px; }
+    .type-wrap label { font-size: 0.8rem; color: var(--dim); display: block; margin-bottom: 2px; }
+    .type-wrap input, .type-wrap textarea {
+      width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0a0f1d; color: var(--text); font-family: inherit; font-size: 0.88rem;
+    }
+    .type-wrap textarea { min-height: 6rem; resize: vertical; }
+    .teacher-key { margin-top: 20px; padding: 12px; border: 1px dashed #4c1d95; border-radius: 10px; background: #0f0620; }
+    .teacher-key summary { cursor: pointer; color: #a78bfa; font-weight: 800; font-size: 0.85rem; }
+    .teacher-key ol { margin: 10px 0 0 1.25rem; line-height: 1.5; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <h1>Watch &amp; Memorize</h1>
+      <a href="../index.html">Text hub</a> &middot; <a href="index.html">Games</a> &middot; <a href="../../unit3.html">Unit 3</a>
+    </div>
+    <p class="sub" id="staticIntro">
+      Phrases from <em>My digital detox</em> in a <strong>grid</strong>. <strong>Watch</strong> while the timer runs, then the grid is hidden. What happens next depends on the <strong>mode</strong> below. Use
+      <strong>Projector (paper only)</strong> in class: students copy from memory on paper, with <strong>no on-screen text clues</strong> &mdash; you only open the page, run the round, and optionally check answers from the folded <strong>Answer key (teacher only)</strong> on your own screen (not on the main board). For real memory practice without phrase prompts, use <strong>Full recall (type)</strong> or the projector mode.
+    </p>
+
+    <div class="panel" id="playCard">
+      <p class="phase-tag" id="phaseName">Set options, then &ldquo;Start&rdquo;</p>
+      <div class="opts" id="optsRow">
+        <fieldset id="optMode" class="mode-fs">
+          <span style="color:var(--glow);font-weight:800;display:block;margin-bottom:4px">Recall mode (after the grid is hidden)</span>
+          <label><input type="radio" name="rm" value="present" checked /> <strong>Projector (paper only)</strong> &mdash; no word clues on this screen. Students write in their notebooks. Teacher answer key is hidden in a details box below the slide content.</label>
+          <label><input type="radio" name="rm" value="type" /> <strong>Full recall (type)</strong> &mdash; type every phrase in <strong>reading order</strong> (no phrases shown; self-check, optional key).</label>
+          <label><input type="radio" name="rm" value="guided" /> <strong>Guided (tap)</strong> &mdash; one phrase at a time is shown; find the right cell (easier, gives hints).</label>
+        </fieldset>
+        <fieldset id="optSize">
+          <span style="color:var(--glow);font-weight:800">Grid</span>
+          <label><input type="radio" name="gs" value="6" /> 6</label>
+          <label><input type="radio" name="gs" value="8" checked /> 8</label>
+        </fieldset>
+        <fieldset id="optWatch">
+          <span style="color:var(--glow);font-weight:800">View time</span>
+          <label><input type="radio" name="wt" value="8" /> 8s</label>
+          <label><input type="radio" name="wt" value="12" checked /> 12s</label>
+          <label><input type="radio" name="wt" value="20" /> 20s</label>
+        </fieldset>
+      </div>
+      <div class="countwrap" id="countWrap">
+        <div class="big" id="countNum">—</div>
+        <p class="subt" id="countSub">—</p>
+      </div>
+      <div class="grid g8" id="grid" aria-label="phrase grid"></div>
+      <div class="hidden" id="presentBlock" role="region" aria-label="recall without hints">
+        <div class="present-block">
+          <h3>Memory task &mdash; no phrases on the board</h3>
+          <p>
+            The grid is gone. On paper, write <strong>all <span id="presentN">8</span> phrases</strong> in the same order the cells appeared: <strong>row by row, left to right, then the next row</strong> (like reading a page). Do not use your phones for notes.
+            If you are the teacher, open the <strong>Answer key</strong> on your own device; do <strong>not</strong> show it to the class.
+          </p>
+        </div>
+        <div class="teacher-key">
+          <details id="teacherKey">
+            <summary>Answer key (teacher only) &mdash; do not show on the projector</summary>
+            <p style="color:var(--dim);font-size:0.8rem;margin:8px 0 6px">Order = reading order, same as the grid you showed.</p>
+            <ol id="teacherKeyList"></ol>
+          </details>
+        </div>
+      </div>
+      <div class="hidden" id="typeBlock" role="region" aria-label="type recall">
+        <p class="sub" style="margin-bottom:8px">Type the <strong>full phrases</strong> in <strong>reading order</strong> (cell 1 = top row, left&hellip;). No other hints.</p>
+        <div class="type-wrap" id="typeFields"></div>
+        <p class="row"><button type="button" class="b-main" id="btnCheckType">Check answers</button></p>
+      </div>
+      <p class="prompt hidden" id="promptBox" role="status">
+        <span>Find the cell that had this phrase:</span>
+        <kbd id="targetPhrase">—</kbd>
+      </p>
+      <p class="msg" id="msgLine"></p>
+      <div class="row">
+        <button type="button" class="b-main" id="btnStart">Start</button>
+        <button type="button" class="b-sec" id="btnHow">How it works</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lights hidden" id="lightsOut">…</div>
+
+  <script src="../data/u3-digital-detox-lexis.js"></script>
+  <script>
+(function () {
+  var POOL = (typeof U3_KEY_PHRASES_MISSING !== "undefined" && U3_KEY_PHRASES_MISSING.length)
+    ? U3_KEY_PHRASES_MISSING.slice()
+    : (typeof U3_DIGITAL_DETOX_PHRASES !== "undefined" ? U3_DIGITAL_DETOX_PHRASES.slice() : []);
+  var gridN = 8;
+  var cells = [];
+  var askOrder = [];
+  var qStep = 0;
+  var busy = false;
+  var tmr = null;
+
+  function el(id) { return document.getElementById(id); }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+  function getGridSize() { return parseInt((document.querySelector("input[name=gs]:checked") || {}).value || "8", 10) || 8; }
+  function getWatchSec() { return parseInt((document.querySelector("input[name=wt]:checked") || {}).value || "12", 10) || 12; }
+  function getRecallMode() {
+    return (document.querySelector("input[name=rm]:checked") || {}).value || "present";
+  }
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/['’`]/g, "'").replace(/\s+/g, " ");
+  }
+  function applyQueryMode() {
+    var sp = new URLSearchParams(window.location.search || "");
+    var m = sp.get("mode");
+    if (m === "present" || m === "type" || m === "guided") {
+      var r = document.querySelector('input[name=rm][value="' + m + '"]');
+      if (r) { r.checked = true; }
+    }
+  }
+
+  function setOptsLock(locked) {
+    el("optSize").disabled = locked;
+    el("optWatch").disabled = locked;
+    el("optMode").disabled = locked;
+  }
+
+  function clearTmr() { if (tmr) { clearInterval(tmr); tmr = null; } }
+
+  function setGridClass(n) {
+    el("grid").className = "grid " + (n === 6 ? "g6" : "g8");
+  }
+
+  function resetPanels() {
+    el("presentBlock").classList.add("hidden");
+    el("typeBlock").classList.add("hidden");
+    el("promptBox").classList.add("hidden");
+    el("grid").classList.remove("hidden");
+  }
+
+  function startWatch() {
+    gridN = getGridSize();
+    if (POOL.length < gridN) { el("msgLine").textContent = "Not enough phrases in the bank."; el("msgLine").className = "msg bad"; return; }
+    clearTmr();
+    setOptsLock(true);
+    cells = shuffle(POOL).slice(0, gridN);
+    askOrder = shuffle(cells.map(function (_, i) { return i; }));
+    qStep = 0;
+    el("msgLine").textContent = "";
+    el("msgLine").className = "msg";
+    resetPanels();
+    setGridClass(gridN);
+    el("phaseName").textContent = "WATCH  &middot;  " + gridN + " items  " + (gridN === 6 ? " (2×3)" : " (2×4)");
+    var g = el("grid");
+    g.innerHTML = "";
+    for (var i = 0; i < cells.length; i++) {
+      var c = document.createElement("div");
+      c.className = "cell watch";
+      c.setAttribute("data-idx", String(i));
+      c.setAttribute("data-role", "watch");
+      c.textContent = cells[i];
+      g.appendChild(c);
+    }
+    el("countWrap").classList.remove("hidden");
+    var s = getWatchSec();
+    el("countNum").textContent = String(s);
+    el("countSub").textContent = "seconds until the grid is hidden";
+    var left = s;
+    tmr = setInterval(function () {
+      left--;
+      el("countNum").textContent = String(Math.max(0, left));
+      if (left <= 0) { clearTmr(); doLights(); }
+    }, 1000);
+  }
+
+  function doLights() {
+    el("countNum").textContent = "";
+    el("countSub").textContent = "";
+    var o = el("lightsOut");
+    o.classList.remove("hidden");
+    setTimeout(function () { o.classList.add("hidden"); afterLights(); }, 900);
+  }
+
+  function afterLights() {
+    var mode = getRecallMode();
+    if (mode === "present") {
+      startPresentRecall();
+    } else if (mode === "type") {
+      startTypeRecall();
+    } else {
+      startRecall();
+    }
+  }
+
+  function fillTeacherKey() {
+    var list = el("teacherKeyList");
+    list.innerHTML = "";
+    for (var i = 0; i < cells.length; i++) {
+      var li = document.createElement("li");
+      li.textContent = cells[i];
+      list.appendChild(li);
+    }
+    el("presentN").textContent = String(gridN);
+  }
+
+  function startPresentRecall() {
+    el("grid").classList.add("hidden");
+    el("countWrap").classList.add("hidden");
+    el("phaseName").textContent = "RECALL  &middot;  on paper, no on-screen text";
+    el("msgLine").className = "msg";
+    el("msgLine").textContent = "Learners: write from memory. Teacher: the answer list is in the collapsed \u201cAnswer key (teacher only)\u201d below\u2014use it on a private device, not on the main board. Use Start for another round when you are done.";
+    fillTeacherKey();
+    el("teacherKey").open = false;
+    el("presentBlock").classList.remove("hidden");
+    setOptsLock(false);
+  }
+
+  function startTypeRecall() {
+    el("grid").classList.add("hidden");
+    el("countWrap").classList.add("hidden");
+    el("phaseName").textContent = "RECALL  &middot;  type  " + gridN + "  phrases in order";
+    el("typeFields").innerHTML = "";
+    for (var i = 0; i < gridN; i++) {
+      (function (num) {
+        var lab = document.createElement("label");
+        lab.setAttribute("for", "tf" + num);
+        lab.textContent = "Item " + num + " (reading order):";
+        var inp = document.createElement("input");
+        inp.type = "text";
+        inp.id = "tf" + num;
+        inp.setAttribute("autocomplete", "off");
+        inp.setAttribute("spellcheck", "false");
+        inp.setAttribute("data-i", String(num - 1));
+        var w = document.createElement("div");
+        w.appendChild(lab);
+        w.appendChild(inp);
+        el("typeFields").appendChild(w);
+      })(i + 1);
+    }
+    el("typeBlock").classList.remove("hidden");
+    el("msgLine").textContent = "";
+    if (el("tf1")) el("tf1").focus();
+  }
+
+  function startRecall() {
+    el("phaseName").textContent = "TAP THE CELL  &middot;  step 1 / " + gridN;
+    var g = el("grid");
+    g.innerHTML = "";
+    for (var i = 0; i < cells.length; i++) {
+      (function (idx) {
+        var c = document.createElement("div");
+        c.className = "cell hide";
+        c.setAttribute("data-idx", String(idx));
+        c.setAttribute("data-role", "recall");
+        c.setAttribute("role", "button");
+        c.setAttribute("tabindex", "0");
+        c.setAttribute("aria-label", "Cell " + (idx + 1));
+        c.textContent = "?";
+        c.addEventListener("click", onCellClick);
+        c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCellClick({ currentTarget: c }); } });
+        g.appendChild(c);
+      })(i);
+    }
+    qStep = 0;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if (qStep >= gridN) { win(); return; }
+    var wantIdx = askOrder[qStep];
+    el("targetPhrase").textContent = cells[wantIdx];
+    el("promptBox").classList.remove("hidden");
+    el("phaseName").textContent = "TAP THE CELL  &middot;  step " + (qStep + 1) + " / " + gridN;
+  }
+
+  function onCellClick(ev) {
+    if (busy) return;
+    var cell = ev.currentTarget;
+    if (!cell || cell.getAttribute("data-role") !== "recall") return;
+    if (cell.classList.contains("correct-locked")) return;
+    var idx = parseInt(cell.getAttribute("data-idx") || "0", 10);
+    var wantIdx = askOrder[qStep];
+    if (idx === wantIdx) {
+      cell.classList.add("correct-locked");
+      cell.classList.remove("hide");
+      cell.textContent = "\u2713";
+      qStep++;
+      if (qStep >= gridN) { win(); return; }
+      showQuestion();
+    } else {
+      cell.classList.add("wrong");
+      el("msgLine").textContent = "Not that cell. Try again.";
+      el("msgLine").className = "msg bad";
+      busy = true;
+      setTimeout(function () {
+        cell.classList.remove("wrong");
+        busy = false;
+        el("msgLine").textContent = "";
+        el("msgLine").className = "msg";
+      }, 500);
+    }
+  }
+
+  function win() {
+    el("phaseName").textContent = "DONE  &middot;  " + gridN + " / " + gridN;
+    el("promptBox").classList.add("hidden");
+    el("msgLine").textContent = "All positions matched. Nice.";
+    el("msgLine").className = "msg ok";
+    setOptsLock(false);
+    var g = el("grid");
+    g.classList.remove("hidden");
+    g.querySelectorAll(".cell").forEach(function (c) {
+      var idx = parseInt(c.getAttribute("data-idx") || "0", 10);
+      c.textContent = cells[idx];
+      c.className = "cell watch";
+      c.classList.add("correct-locked");
+      c.setAttribute("data-role", "show");
+      c.removeEventListener("click", onCellClick);
+      c.removeAttribute("tabindex");
+    });
+  }
+
+  function checkTypeRecall() {
+    var good = 0;
+    for (var i = 0; i < gridN; i++) {
+      var inp = el("tf" + (i + 1));
+      if (!inp) return;
+      if (norm(inp.value) === norm(cells[i])) good += 1;
+    }
+    el("msgLine").textContent = "Exact matches: " + good + " / " + gridN + ". (Text is compared in a simple normalized form.)";
+    el("msgLine").className = good === gridN ? "msg ok" : "msg bad";
+    setOptsLock(false);
+  }
+
+  el("btnCheckType").addEventListener("click", checkTypeRecall);
+
+  el("btnStart").addEventListener("click", function () { startWatch(); });
+  el("btnHow").addEventListener("click", function () {
+    alert("Choose a recall mode, grid size, and view time, then Start.\n\n" +
+      "— PROJECTOR (PAPER): After the grid hides, there are no phrase prompts. Students write every phrase in reading order. Use this when you are teaching: you &ldquo;just open&rdquo; the page, run a round, and use the answer key (collapsed) on your own screen only.\n\n" +
+      "— FULL RECALL (TYPE): Same as memory, but each learner types all phrases in order. No words appear on the screen. Check compares answers to the original phrases.\n\n" +
+      "— GUIDED: Easier. One phrase is shown; tap the cell where it was.\n\n" +
+      "Data: u3-digital-detox-lexis.js, U3_KEY_PHRASES_MISSING.\n" +
+      "URL: add ?mode=present or ?mode=type or ?mode=guided to pick a default mode.");
+  });
+
+  applyQueryMode();
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Reading &mdash; Private investigators investigated</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 8px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+
+    .passage {
+      font-size: 0.96rem;
+      line-height: 1.88;
+      color: #e8f0ff;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .passage h2 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #bae6fd;
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
+    }
+    .passage p { margin-bottom: 12px; }
+    .passage p:last-child { margin-bottom: 0; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q { margin-bottom: 16px; border-bottom: 1px solid #34507d; padding-bottom: 14px; }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.98rem; line-height: 1.4; margin-bottom: 10px; color: #e8f0ff; }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.28);
+      border-color: #4ade80;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.65);
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #f87171;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      line-height: 1.45;
+      min-height: 1.5em;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Reading &middot; Multiple choice</span>
+        <h1>Private investigators investigated</h1>
+        <p class="lead">Same article as the Unit 10 word formation task; six exam-style questions (<strong>A&ndash;D</strong>).</p>
+      </div>
+      <a class="back" href="../unit10.html">&larr; Unit 10</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;6</strong>, choose the answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) which you think fits best according to the text.
+    </p>
+    <noscript>
+      <p style="color: #fca5a5; margin-bottom: 12px; font-weight: 600;">Enable JavaScript to load the questions.</p>
+    </noscript>
+
+    <div class="passage">
+      <h2>PRIVATE INVESTIGATORS INVESTIGATED</h2>
+      <p>
+        <strong>David Lee</strong> investigates the world of the private eye &ndash; and uncovers some surprising truths. When I walk into the offices of <strong>Wright &amp; Wrong Ltd</strong>, a predominantly female firm of private investigators, I am a little disappointed. My only previous contact with private detective agencies has been through black and white films from the golden age of Hollywood. So I am half expecting to see a small, dark, smoke-filled room, a single desk with an empty in-tray and a long, scruffy raincoat hanging from a hatstand.
+      </p>
+      <p>
+        Clearly, my romantic image of the profession needs updating. Wright &amp; Wrong Ltd&rsquo;s offices are light and spacious and there are no ashtrays in sight on any of the dozen or so desks. These are tidy and free of paper, but concentrated faces at large computer screens give the place a busy feel.
+      </p>
+      <p>
+        <strong>Jenny Wright</strong>, founder of the agency, is not surprised at my error and with a note of irritation in her voice, points to further misconceptions. &lsquo;Cinema and television are mostly to blame for our reputation. Contrary to popular belief, we always work strictly within the law &ndash; there&rsquo;s no violence, no break-ins, and certainly no guns. The laws relating to our activities are very tight and if we don&rsquo;t stick to them, there&rsquo;s a very real danger that the evidence we obtain will not be accepted in court.&rsquo;
+      </p>
+      <p>
+        The types of cases her agency deals with are varied but the day-to-day work is often far from stimulating. Wright &amp; Wrong Ltd handles anything from infidelity in a marriage or tracing a missing person to insurance fraud, employee theft and advising companies on security measures. &lsquo;Resolving a case is very rewarding,&rsquo; says Jenny, &lsquo;but the actual investigation can be rather dull. When we&rsquo;re not dealing with paperwork or internet searches, we&rsquo;re usually involved in surveillance. And that normally means just sitting around in cars or caf&eacute;s for hours, waiting for something to happen.&rsquo;
+      </p>
+      <p>
+        Not surprisingly, then, patience is an important asset for anyone doing this kind of work. Is that why nine of the twelve investigators in her team are women? &lsquo;Obviously, women don&rsquo;t have a monopoly on patience,&rsquo; replies Jenny, &lsquo;but perhaps it&rsquo;s no coincidence that they tend to stay in the job longer than men.&rsquo; Jenny tells me that people&rsquo;s perceptions of women make them popular with clients, and also, consequently, with her as an employer. Women are often considered to be more sensitive than men. They&rsquo;re looked upon as less threatening when it comes to making inquiries. &lsquo;People open up to women more readily,&rsquo; she says, &lsquo;and are relieved when a woman picks up the phone to speak to them. We&rsquo;re also good at breaking bad news. What may be a victory for the agency &ndash; filming someone doing something they shouldn&rsquo;t be doing, for example &ndash; tends not to be such a pleasant discovery for the client, and there&rsquo;s a right and wrong way of handling that information.&rsquo;
+      </p>
+      <p>
+        Most of Jenny&rsquo;s clients are wealthy. The hourly rate is anything between sixty and a hundred pounds, so the cost of a single case will often run into thousands of pounds. Even with the latest hi-tech equipment, such as long-range listening devices, a surveillance campaign can last several days. &lsquo;The technology is freely available and most of what we do could be done by the clients,&rsquo; explains Jenny, &lsquo;but they&rsquo;re reluctant to get involved. Finding out the truth is often just too painful to do on your own.&rsquo;
+      </p>
+      <p>
+        I ask Jenny, a former night club owner, how she came to be a private detective. Her face turns red, she gives a slight grin and drops her voice to a whisper so as not to be overheard by her staff. &lsquo;I used to read a lot of crime novels,&rsquo; she confides, &lsquo;and I started to think &ldquo;I could do that&rdquo;. I went on a training course and realised I was in the wrong job.&rsquo; I am about to ask her whether she ever wears a long, scruffy raincoat, when her phone rings and she is called away on business.
+      </p>
+    </div>
+
+    <div id="mcq-root" class="questions" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear choices &amp; marks</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script>
+    (function () {
+      /** Ready for First — Reading, Unit 10 article (aligned to textbook key). */
+      var CORRECT = ["D", "C", "A", "D", "B", "A"];
+
+      var MCQ = [
+        {
+          q: "What does the writer discover on his visit to the offices of Wright & Wrong Ltd?",
+          options: {
+            A: "The firm is not as dynamic as he had been told.",
+            B: "The offices have recently been modernised.",
+            C: "All the private detectives in the firm are women.",
+            D: "He has an old-fashioned idea of private detectives."
+          }
+        },
+        {
+          q: "Jenny Wright is annoyed by",
+          options: {
+            A: "the strict laws controlling private detectives.",
+            B: "the inflexibility of the law courts.",
+            C: "the way her profession is represented in films.",
+            D: "the violence used by other detective agencies."
+          }
+        },
+        {
+          q: "According to Jenny, most of the work of a private detective is",
+          options: {
+            A: "monotonous.",
+            B: "challenging.",
+            C: "exhausting.",
+            D: "enjoyable."
+          }
+        },
+        {
+          q: "Jenny is influenced in her decision to take on women by",
+          options: {
+            A: "women's ability to get results.",
+            B: "the speed at which women work.",
+            C: "women's tendency to speak openly.",
+            D: "the way clients see women."
+          }
+        },
+        {
+          q: "What do we learn about Jenny's clients?",
+          options: {
+            A: "They cannot afford to buy the surveillance equipment.",
+            B: "They do not want to do the detective work themselves.",
+            C: "They object to paying such high prices for the work.",
+            D: "They prefer more than one detective to work on a case."
+          }
+        },
+        {
+          q: "How does Jenny feel about telling her story in the last paragraph?",
+          options: {
+            A: "embarrassed",
+            B: "frightened",
+            C: "proud",
+            D: "angry"
+          }
+        }
+      ];
+
+      var KEYS = ["A", "B", "C", "D"];
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      var root = document.getElementById("mcq-root");
+      var fb = document.getElementById("feedback");
+
+      function render() {
+        root.innerHTML = MCQ.map(function (item, qIdx) {
+          var opts = KEYS.map(function (k) {
+            if (!item.options[k]) return "";
+            var id = "q" + qIdx + k;
+            return (
+              '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+              '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+              '<label for="' + id + '"><span class="letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
+            );
+          }).join("");
+          return (
+            '<article class="q">' +
+            '<p class="stem"><strong>' + String(qIdx + 1) + ".</strong> " + escapeHtml(item.q) + "</p>" +
+            '<ul class="opts">' + opts + "</ul></article>"
+          );
+        }).join("");
+
+        root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            clearMarks();
+            fb.textContent = "";
+          });
+        });
+      }
+
+      function clearMarks() {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+      }
+
+      function getChoice(i) {
+        var el = root.querySelector('input[name="q' + i + '"]:checked');
+        return el ? el.value : "";
+      }
+
+      render();
+
+      document.getElementById("btnCheck").addEventListener("click", function () {
+        clearMarks();
+        var n = MCQ.length;
+        var missing = false;
+        for (var i = 0; i < n; i++) {
+          if (!getChoice(i)) {
+            missing = true;
+            break;
+          }
+        }
+        if (missing) {
+          fb.textContent = "Choose A, B, C or D for every question, then check again.";
+          return;
+        }
+        var score = 0;
+        for (var j = 0; j < n; j++) {
+          var pick = getChoice(j);
+          var ok = pick === CORRECT[j];
+          if (ok) score++;
+          var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
+          if (line) line.classList.add(ok ? "ok" : "bad-pick");
+          var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + CORRECT[j] + '"]');
+          if (correctLine && !ok) correctLine.classList.add("ok");
+        }
+        fb.innerHTML =
+          score === n
+            ? "<strong>All " + n + " correct.</strong>"
+            : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct option; your wrong pick is outlined in red where applicable.";
+      });
+
+      document.getElementById("btnClear").addEventListener("click", function () {
+        root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+          r.checked = false;
+        });
+        clearMarks();
+        fb.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>

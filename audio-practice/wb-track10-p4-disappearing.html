@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-prep-back-default="../index.html?prep_stay=1&prep_open_folder=prep_legacy_u10_listening_p4">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 10 — Disappearing Text · Listening Part 4 · SB Track 10.1</title>
+  <style>
+    :root {
+      --bg: #08142f;
+      --panel: #15274c;
+      --line: #355286;
+      --text: #eaf1ff;
+      --muted: #9db4dc;
+      --accent: #56ccf2;
+      --ok: #5ad3a4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #040b1b 0%, var(--bg) 100%);
+      color: var(--text);
+      padding: 20px;
+    }
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: calc(100vh - 40px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(21, 39, 76, 0.95);
+      padding: 10px;
+    }
+    audio { width: 100%; margin-top: 6px; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .speed {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    button {
+      border: 0;
+      background: #1f3967;
+      color: var(--text);
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    button.active { background: #2f4f85; }
+    .text-box {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0e1d41;
+      padding: 12px;
+      overflow-y: auto;
+    }
+    .line {
+      margin-bottom: 8px;
+      line-height: 1.5;
+      color: #dbe7ff;
+      transition: opacity 0.25s ease;
+    }
+    .target-slot { display: inline-block; }
+    .target-slot .gap-input {
+      display: none;
+      width: 110px;
+      border: 1px solid #537ab2;
+      border-radius: 7px;
+      background: #0b1734;
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 0.9rem;
+      margin-right: 2px;
+    }
+    .target-slot.hidden .word { display: none; }
+    .target-slot.hidden .gap-input { display: inline-block; }
+    .status { color: var(--muted); font-size: 0.9rem; }
+    .status.done { color: var(--ok); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Disappearing Text · Listening Part 4 · SB Track 10.1</h1>
+      <a class="back prep-link-back" href="../index.html?prep_stay=1&amp;prep_open_folder=prep_legacy_u10_listening_p4">&larr; Listening Part 4 tasks</a>
+    </header>
+
+    <section class="audio-wrap">
+      <div class="controls">
+        <div class="speed">
+          <button type="button" data-speed="0.7">Slow</button>
+          <button type="button" class="active" data-speed="1">Medium</button>
+          <button type="button" data-speed="1.4">Hard</button>
+        </div>
+        <button type="button" id="resetBtn">Reset visible</button>
+      </div>
+      <audio id="audio" controls preload="metadata"></audio>
+    </section>
+
+    <section id="textBox" class="text-box"></section>
+    <p id="status" class="status">Press Play. After 28s on the timeline, gaps open progressively; every 10th word becomes a typing gap.</p>
+  </main>
+
+  <script src="wb-track10-p4-data.js"></script>
+  <script src="../js/prep-link-back.js"></script>
+  <script>
+    var speedButtons = document.querySelectorAll("[data-speed]");
+    var resetBtn = document.getElementById("resetBtn");
+    var textBox = document.getElementById("textBox");
+    var audio = document.getElementById("audio");
+    var statusEl = document.getElementById("status");
+
+    var DATA = window.CPE_WB10_P4_MULTIPLE_MATCHING;
+    if (!DATA) {
+      document.body.innerHTML = "<p>Missing wb-track10-p4-data.js</p>";
+      throw new Error("CPE_WB10_P4_MULTIPLE_MATCHING");
+    }
+
+    audio.src = DATA.audioSrc;
+
+    var speedFactor = 1;
+    var targetWordSlots = [];
+    var hiddenTargetCount = 0;
+    var startDelaySec = 28;
+
+    function renderLines() {
+      textBox.innerHTML = "";
+      targetWordSlots = [];
+      var wordCount = 0;
+      DATA.sentences.forEach(function (line) {
+        var p = document.createElement("p");
+        p.className = "line";
+        var parts = line.split(/\s+/).filter(Boolean);
+        parts.forEach(function (part, index) {
+          if (!part.length) {
+            return;
+          }
+          var slot = document.createElement("span");
+          slot.className = "target-slot";
+          var span = document.createElement("span");
+          span.className = "word";
+          span.textContent = part + (index < parts.length - 1 ? " " : "");
+          slot.appendChild(span);
+          wordCount += 1;
+          if (wordCount % 10 === 0) {
+            var input = document.createElement("input");
+            input.className = "gap-input";
+            input.setAttribute("type", "text");
+            input.setAttribute("aria-label", "Type missing word");
+            slot.appendChild(input);
+            targetWordSlots.push(slot);
+          }
+          p.appendChild(slot);
+          if (index < parts.length - 1) {
+            p.appendChild(document.createTextNode(" "));
+          }
+        });
+        textBox.appendChild(p);
+      });
+      hiddenTargetCount = 0;
+      statusEl.className = "status";
+      statusEl.textContent =
+        "Press Play. After " +
+        String(startDelaySec) +
+        "s, gaps open progressively; every 10th word becomes a typing gap.";
+    }
+
+    function setSpeed(nextSpeed) {
+      speedFactor = Number(nextSpeed);
+      speedButtons.forEach(function (btn) {
+        btn.classList.toggle("active", Number(btn.getAttribute("data-speed")) === speedFactor);
+      });
+    }
+
+    function applyHiddenCount(targetCount) {
+      targetWordSlots.forEach(function (slot, index) {
+        slot.classList.toggle("hidden", index < targetCount);
+      });
+      hiddenTargetCount = targetCount;
+    }
+
+    function syncDisappearingToAudio() {
+      if (!Number.isFinite(audio.duration) || audio.duration <= 0 || targetWordSlots.length === 0) {
+        return;
+      }
+      var delay = startDelaySec;
+      var effectiveDuration = Math.max(audio.duration - delay, 0.1);
+      var effectiveCurrent = Math.max(audio.currentTime - delay, 0);
+      var progress = Math.max(0, Math.min(effectiveCurrent / effectiveDuration, 1));
+      var scaledProgress = Math.max(0, Math.min(progress * speedFactor, 1));
+      var shouldHide = Math.floor(scaledProgress * targetWordSlots.length);
+      if (shouldHide !== hiddenTargetCount) {
+        applyHiddenCount(shouldHide);
+      }
+      if (audio.currentTime < delay) {
+        statusEl.className = "status";
+        statusEl.textContent =
+          "Waiting: disappearing starts in " + String(Math.ceil(delay - audio.currentTime)) + "s.";
+      } else {
+        statusEl.className = "status";
+        statusEl.textContent =
+          "Gaps opened: " + String(hiddenTargetCount) + " / " + String(targetWordSlots.length) + ". Type missing words.";
+      }
+    }
+
+    function resetVisible() {
+      applyHiddenCount(0);
+      statusEl.className = "status";
+      statusEl.textContent =
+        "Reset complete. Press Play; disappearing starts after " + String(startDelaySec) + " seconds.";
+    }
+
+    speedButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setSpeed(btn.getAttribute("data-speed"));
+      });
+    });
+
+    resetBtn.addEventListener("click", resetVisible);
+    audio.addEventListener("timeupdate", syncDisappearingToAudio);
+    audio.addEventListener("play", function () {
+      syncDisappearingToAudio();
+    });
+    audio.addEventListener("ended", function () {
+      applyHiddenCount(targetWordSlots.length);
+      statusEl.className = "status done";
+      statusEl.textContent = "All target words became gaps. Fill all missing words.";
+    });
+
+    setSpeed(1);
+    renderLines();
+  </script>
+</body>
+</html>

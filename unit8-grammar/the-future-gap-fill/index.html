@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Grammar &mdash; The future (gaps)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(780px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .task h2 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #bae6fd;
+    }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+    }
+    .vocab-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .vocab-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .vocab-nav a:hover { text-decoration: underline; }
+    .vocab-nav span { color: var(--muted); }
+
+    .social-post {
+      border: 2px solid #3d5680;
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 18px 18px 16px;
+      margin-bottom: 18px;
+    }
+    .post-body {
+      font-size: 0.96rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+    }
+    .gap-num {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 0.85em;
+      margin-right: 2px;
+    }
+    .gap-example {
+      color: #fef08a;
+      font-weight: 700;
+      font-style: italic;
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      width: 6.5rem;
+      min-width: 4.5rem;
+      max-width: 10rem;
+      margin: 0 3px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; }
+    .gap-input.is-bad { border-color: #f87171; }
+
+    .post-stats {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 22px;
+    }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; color: #e0e8f8; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    @media (max-width: 600px) {
+      .gap-input { width: 5.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Language focus: The future</h1>
+      <a class="back u8g-back-grammar-index" href="../index.html">&larr; Grammar hub</a>
+    </header>
+
+    <nav class="vocab-nav" aria-label="Unit 8 grammar">
+      <a class="u8g-nav-sibling" href="../index.html">Grammar hub</a>
+      <span>|</span>
+      <a class="u8g-nav-sibling" href="../the-future-predictions/index.html">Predictions 2035 (a&ndash;c)</a>
+      <span>|</span>
+      <span><strong>The future</strong> (gaps)</span>
+    </nav>
+
+    <section class="task">
+      <h2>Complete each gap with <strong>one</strong> word</h2>
+      <p class="instr">
+        There is an example at the beginning <span class="gap-num">(0)</span>. <span class="gap-num">(6)</span> is given in the coursebook (filled in here for you).
+      </p>
+
+      <div class="social-post">
+        <p class="post-body">
+          I <span class="gap-num">(0)</span> <span class="gap-example">am</span> just about to go on a three-day business trip to St Petersburg. My husband&rsquo;s going with me, but while he&rsquo;s out enjoying himself, looking around the city, I&rsquo;ll be
+          <span class="gap-num">(1)</span>
+          <input type="text" class="gap-input" id="g1" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+          part in meetings. I&rsquo;m not planning
+          <span class="gap-num">(2)</span>
+          <input type="text" class="gap-input" id="g2" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+          doing much sightseeing myself, as I don&rsquo;t expect
+          <span class="gap-num">(3)</span>
+          <input type="text" class="gap-input" id="g3" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+          have a great deal of free time. However, if I do get the chance, I
+          <span class="gap-num">(4)</span>
+          <input type="text" class="gap-input" id="g4" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+          well pay a quick visit to the Hermitage Museum. I&rsquo;m a huge fan of Leonardo da Vinci, and I know for certain that two of his works
+          <span class="gap-num">(5)</span>
+          <input type="text" class="gap-input" id="g5" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+          be on display there. Being February, it
+          <span class="gap-num">(6)</span>
+          <span class="gap-example">is</span>
+          likely to be very cold, but I might
+          <span class="gap-num">(7)</span>
+          <input type="text" class="gap-input" id="g7" autocomplete="off" spellcheck="false" aria-label="Gap 7" />
+          notice that too much as I&rsquo;ll be inside most of the time. It&rsquo;s really not going to
+          <span class="gap-num">(8)</span>
+          <input type="text" class="gap-input" id="g8" autocomplete="off" spellcheck="false" aria-label="Gap 8" />
+          much fun for me.
+        </p>
+        <div class="post-stats">
+          <span>298 Retweets</span>
+          <span>643 Likes</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/u8-grammar-course-context.js"></script>
+  <script>
+(function () {
+  var ORDER = [1, 2, 3, 4, 5, 7, 8];
+  var DISPLAY = {
+    1: "taking",
+    2: "on",
+    3: "to",
+    4: "may / might / could",
+    5: "will",
+    7: "not",
+    8: "be"
+  };
+  var ACCEPT = {
+    1: ["taking"],
+    2: ["on"],
+    3: ["to"],
+    4: ["may", "might", "could"],
+    5: ["will"],
+    7: ["not"],
+    8: ["be"]
+  };
+  var EXPLAIN = {
+    1: "<strong>Future continuous + take part</strong> &mdash; <em>I&rsquo;ll be taking part in meetings</em>.",
+    2: "<strong>plan on + -ing</strong> &mdash; <em>I&rsquo;m not planning on doing much sightseeing</em>.",
+    3: "<strong>expect + to + infinitive</strong> &mdash; <em>don&rsquo;t expect to have</em>.",
+    4: "<strong>may/might/could well</strong> &mdash; it is quite possible that you will visit the museum.",
+    5: "<strong>will</strong> for strong prediction / certainty &mdash; <em>two of his works will be on display</em>.",
+    7: "<strong>might not</strong> &mdash; perhaps you won&rsquo;t notice the cold much.",
+    8: "<strong>going to be</strong> &mdash; negative: <em>not going to be much fun</em>."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("g" + n);
+  }
+
+  function matches(n, userRaw) {
+    var u = norm(userRaw);
+    if (!u) return false;
+    var list = ACCEPT[n];
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  function bindInputClear() {
+    ORDER.forEach(function (n) {
+      getIn(n).addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+      });
+    });
+  }
+
+  bindInputClear();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var total = ORDER.length;
+    var correct = 0;
+    var html = "";
+
+    ORDER.forEach(function (n) {
+      var el = getIn(n);
+      var raw = el.value;
+      var ok = matches(n, raw);
+      if (raw.trim() && ok) correct++;
+
+      el.classList.remove("is-ok", "is-bad");
+      if (!raw.trim()) {
+        el.classList.add("is-bad");
+      } else {
+        el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      html += '<div class="fb-item ' + (ok && raw.trim() ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok && raw.trim() ? "\u2713" : "\u2717") + " (" + n + ")</h4>";
+      html +=
+        '<p class="fb-meta">Your answer: <strong>' +
+        (raw.trim() ? esc(raw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[n]) +
+        "</strong></p>";
+      html += "<p>" + EXPLAIN[n] + "</p></div>";
+    });
+
+    var filled = 0;
+    ORDER.forEach(function (n) {
+      if (getIn(n).value.trim()) filled++;
+    });
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / " +
+      total +
+      (filled < total ? " &mdash; fill every gap for a full score." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    ORDER.forEach(function (n) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    });
+  });
+})();
+  </script>
+</body>
+</html>

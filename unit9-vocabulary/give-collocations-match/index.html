@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Vocabulary — Collocations with give</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+    }
+    .match-hint {
+      font-size: 0.86rem;
+      color: #b8cce8;
+      margin: -8px 0 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.1);
+      border: 1px solid rgba(86, 204, 242, 0.35);
+    }
+    .match-hint-inner em { color: #86efac; font-style: normal; font-weight: 600; }
+
+    .match-col-left {
+      padding-right: 12px;
+      border-right: 1px solid rgba(50, 74, 113, 0.7);
+    }
+    .match-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px 28px;
+      align-items: start;
+      margin-top: 4px;
+    }
+    .match-col { min-width: 0; }
+    @media (max-width: 720px) {
+      .match-col-left {
+        padding-right: 0;
+        border-right: none;
+        margin-bottom: 8px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(50, 74, 113, 0.7);
+      }
+      .match-layout { grid-template-columns: 1fr; }
+      .match-col-right .endings-box {
+        position: relative;
+        top: auto;
+        max-height: none;
+        overflow-y: visible;
+      }
+    }
+    .col-title {
+      font-size: 0.82rem;
+      color: #bae6fd;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .match-col-right .endings-box {
+      margin-bottom: 0;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+
+    .endings-box {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .ending-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      color: inherit;
+      font: inherit;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ending-item:last-child { margin-bottom: 0; }
+    .ending-item:hover { border-color: #5a7ab0; }
+    .ending-item.is-pick {
+      box-shadow: 0 0 0 2px var(--accent);
+      border-color: #56ccf2;
+    }
+    .end-key {
+      display: inline-block;
+      min-width: 1.25rem;
+      font-weight: 700;
+      color: #86efac;
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .match-row:hover { border-color: #5a7ab0; }
+    .match-row.is-pick {
+      box-shadow: 0 0 0 2px var(--accent);
+      border-color: #56ccf2;
+    }
+    .match-row.is-bad-line { border-color: #f87171; }
+    @media (max-width: 600px) {
+      .match-row {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+      }
+      .match-row .num { align-self: start; padding-top: 2px; }
+      .match-row .begin { grid-column: 2; }
+      .match-badge { grid-column: 2; justify-self: end; }
+    }
+    .match-row .num {
+      font-weight: 700;
+      color: #86efac;
+    }
+    .match-row .begin { color: #e8f0ff; }
+    .match-row .begin strong { color: #bae6fd; }
+    .match-badge {
+      min-width: 2.75rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #86efac;
+      letter-spacing: 0.02em;
+    }
+    .pair-to {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .ending-item.is-linked {
+      border-color: rgba(34, 197, 94, 0.55);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 20px;
+      align-items: center;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Collocations with <em style="font-style:italic;color:#bae6fd;">give</em></h1>
+      <a class="back u9-back-vocab-index" href="../index.html">&larr; Unit 9 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 9 vocabulary">
+      <a class="u9-nav-sibling" href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <span><strong><em>Give</em> collocations</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Match beginnings and endings</h2>
+      <p class="instr">
+        Match each sentence beginning <strong>1&ndash;7</strong> with a suitable ending <strong>a&ndash;g</strong>.
+        Click a line on the left, then an ending on the right, or the other way round.
+        You&rsquo;ll see <strong>&rarr; letter</strong> on the line and <strong>&rarr; number</strong> on the ending.
+      </p>
+      <p id="match-hint" class="match-hint" aria-live="polite">
+        <span class="match-hint-inner">Choose a beginning <em>or</em> an ending to start pairing.</span>
+      </p>
+
+      <div class="match-layout">
+        <div class="match-col match-col-left">
+          <div class="col-title">Beginnings 1 &ndash; 7</div>
+          <div id="match-rows">
+            <div class="match-row" data-line="1">
+              <span class="num">1.</span>
+              <span class="begin">Pat saw the mouse, <strong>gave a piercing</strong></span>
+              <span class="match-badge" id="badge-1">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="2">
+              <span class="num">2.</span>
+              <span class="begin">Thrilled at the news, he <strong>gave a broad</strong></span>
+              <span class="match-badge" id="badge-2">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="3">
+              <span class="num">3.</span>
+              <span class="begin">Your gifts of soft toys will <strong>give great</strong></span>
+              <span class="match-badge" id="badge-3">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="4">
+              <span class="num">4.</span>
+              <span class="begin">He looked at her photo, <strong>gave a deep</strong></span>
+              <span class="match-badge" id="badge-4">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="5">
+              <span class="num">5.</span>
+              <span class="begin">She waved, but he <strong>gave her a blank</strong></span>
+              <span class="match-badge" id="badge-5">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="6">
+              <span class="num">6.</span>
+              <span class="begin">Jasmin&rsquo;s parents were <strong>given a nasty</strong></span>
+              <span class="match-badge" id="badge-6">&mdash;</span>
+            </div>
+            <div class="match-row" data-line="7">
+              <span class="num">7.</span>
+              <span class="begin">My boss, Megan, <strong>gave me a pleasant</strong></span>
+              <span class="match-badge" id="badge-7">&mdash;</span>
+            </div>
+          </div>
+        </div>
+        <div class="match-col match-col-right">
+          <div class="col-title">Endings a &ndash; g</div>
+          <div class="endings-box" aria-label="Endings a to g">
+            <button type="button" class="ending-item" data-letter="a"><span class="end-key">a</span> <strong>sigh</strong>, and sent her yet another text.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="b"><span class="end-key">b</span> <strong>surprise</strong> yesterday; a 5% pay rise!<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="c"><span class="end-key">c</span> <strong>smile</strong>, showing all his teeth.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="d"><span class="end-key">d</span> <strong>look</strong>, as if he didn&rsquo;t recognise her.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="e"><span class="end-key">e</span> <strong>shock</strong> when they saw her phone bill.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="f"><span class="end-key">f</span> <strong>scream</strong> and ran out of the room.<span class="pair-to" aria-hidden="true"></span></button>
+            <button type="button" class="ending-item" data-letter="g"><span class="end-key">g</span> <strong>pleasure</strong> to the orphaned children.<span class="pair-to" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-vocab-course-context.js"></script>
+  <script>
+(function () {
+  var TOTAL = 7;
+  var linked = Object.create(null);
+  var CORRECT_LETTER = { 1: "f", 2: "c", 3: "g", 4: "a", 5: "d", 6: "e", 7: "b" };
+
+  var NOTE = {
+    1: "<strong>Give a piercing scream</strong> &mdash; a sudden loud cry of fear.",
+    2: "<strong>Give a broad smile</strong> &mdash; a wide, obvious happy smile.",
+    3: "<strong>Give great pleasure</strong> &mdash; make someone very happy (here: the children).",
+    4: "<strong>Give a deep sigh</strong> &mdash; breathe out slowly, often from sadness or longing.",
+    5: "<strong>Give someone a blank look</strong> &mdash; show no recognition or reaction in your eyes.",
+    6: "<strong>Give someone a nasty shock</strong> (passive: <em>were given</em>) &mdash; upset them badly with unexpected news.",
+    7: "<strong>Give someone a pleasant surprise</strong> &mdash; something nice they did not expect."
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function letterOk(n, v) {
+    return norm(v) === CORRECT_LETTER[n];
+  }
+
+  var pickLine = null;
+  var pickLetter = null;
+  var hintEl = document.querySelector("#match-hint .match-hint-inner");
+
+  function renderHint() {
+    if (!hintEl) return;
+    if (pickLine != null && pickLetter != null) {
+      hintEl.innerHTML = "Linking&hellip;";
+      return;
+    }
+    if (pickLine != null) {
+      hintEl.innerHTML =
+        'Beginning <strong>' +
+        pickLine +
+        '</strong> selected &mdash; now click an ending <strong>a&ndash;g</strong>.';
+      return;
+    }
+    if (pickLetter != null) {
+      hintEl.innerHTML =
+        'Ending <strong>' +
+        pickLetter +
+        '</strong> selected &mdash; now click a line <strong>1&ndash;7</strong>.';
+      return;
+    }
+    hintEl.innerHTML = 'Choose a beginning <em>or</em> an ending to start pairing.';
+  }
+
+  function clearPicks() {
+    pickLine = null;
+    pickLetter = null;
+    document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+      el.classList.remove("is-pick");
+    });
+    document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+      el.classList.remove("is-pick");
+    });
+    renderHint();
+  }
+
+  function syncVisual() {
+    for (var n = 1; n <= TOTAL; n++) {
+      var b = document.getElementById("badge-" + n);
+      if (b) {
+        b.textContent = linked[n] ? "\u2192 " + linked[n] : "\u2014";
+      }
+    }
+    document.querySelectorAll(".ending-item").forEach(function (btn) {
+      var letter = norm(btn.getAttribute("data-letter") || "");
+      var pairLine = null;
+      for (var i = 1; i <= TOTAL; i++) {
+        if (linked[i] === letter) {
+          pairLine = String(i);
+          break;
+        }
+      }
+      btn.classList.toggle("is-linked", pairLine !== null);
+      var tag = btn.querySelector(".pair-to");
+      if (tag) {
+        tag.textContent = pairLine ? " \u2192 " + pairLine : "";
+      }
+    });
+  }
+
+  function getLinkedLetter(lineNum) {
+    return linked[lineNum] ? norm(linked[lineNum]) : "";
+  }
+
+  function applyPair(lineNum, letter) {
+    letter = norm(letter);
+    if (!letter) return;
+
+    for (var i = 1; i <= TOTAL; i++) {
+      if (i !== lineNum && linked[i] === letter) {
+        delete linked[i];
+      }
+    }
+    linked[lineNum] = letter;
+    syncVisual();
+    clearFeedbackStyles();
+    clearPicks();
+  }
+
+  document.querySelectorAll("#match-rows .match-row").forEach(function (row) {
+    row.addEventListener("click", function () {
+      var n = parseInt(row.getAttribute("data-line"), 10);
+      if (!n || n < 1 || n > TOTAL) return;
+
+      if (pickLetter != null) {
+        applyPair(n, pickLetter);
+        return;
+      }
+
+      if (pickLine === n) {
+        pickLine = null;
+        row.classList.remove("is-pick");
+        renderHint();
+        return;
+      }
+
+      pickLine = n;
+      pickLetter = null;
+      document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      row.classList.add("is-pick");
+      renderHint();
+    });
+  });
+
+  document.querySelectorAll(".ending-item").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var letter = norm(btn.getAttribute("data-letter") || "");
+      if (!letter) return;
+
+      if (pickLine != null) {
+        applyPair(pickLine, letter);
+        return;
+      }
+
+      if (pickLetter === letter) {
+        pickLetter = null;
+        btn.classList.remove("is-pick");
+        renderHint();
+        return;
+      }
+
+      pickLetter = letter;
+      pickLine = null;
+      document.querySelectorAll(".ending-item.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      document.querySelectorAll(".match-row.is-pick").forEach(function (el) {
+        el.classList.remove("is-pick");
+      });
+      btn.classList.add("is-pick");
+      renderHint();
+    });
+  });
+
+  function clearFeedbackStyles() {
+    for (var i = 1; i <= TOTAL; i++) {
+      var row = document.querySelector('.match-row[data-line="' + i + '"]');
+      if (row) row.classList.remove("is-bad-line");
+    }
+    document.getElementById("feedback").classList.remove("show");
+  }
+
+  syncVisual();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    clearPicks();
+    var fb = document.getElementById("feedback");
+    var html = "";
+    var correctN = 0;
+
+    for (var g = 1; g <= TOTAL; g++) {
+      var lv = getLinkedLetter(g);
+      var lo = letterOk(g, lv);
+      var complete = !!lv;
+
+      var rowEl = document.querySelector('.match-row[data-line="' + g + '"]');
+      if (rowEl) rowEl.classList.remove("is-bad-line");
+      if (complete && !lo && rowEl) rowEl.classList.add("is-bad-line");
+
+      if (complete && lo) correctN++;
+
+      var lineOk = complete && lo;
+      html += '<div class="fb-item ' + (lineOk ? "ok" : "bad") + '">';
+      html += "<h4>" + (lineOk ? "\u2713" : "\u2717") + " " + g + "</h4>";
+      html +=
+        '<p class="fb-meta">Your ending: <strong>' +
+        (lv ? esc(lv) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        CORRECT_LETTER[g] +
+        "</strong></p>";
+      html += "<p>" + NOTE[g] + "</p>";
+      html += "</div>";
+    }
+
+    html =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Correct: ' +
+      correctN +
+      " / " +
+      TOTAL +
+      (correctN < TOTAL ? " &mdash; adjust any mismatched pairs and check again." : "") +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    clearPicks();
+    linked = Object.create(null);
+    syncVisual();
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    for (var r = 1; r <= TOTAL; r++) {
+      var rowR = document.querySelector('.match-row[data-line="' + r + '"]');
+      if (rowR) rowR.classList.remove("is-bad-line");
+    }
+  });
+})();
+  </script>
+</body>
+</html>

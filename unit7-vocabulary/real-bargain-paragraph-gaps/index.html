@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 7 Vocabulary &mdash; A real bargain! (paragraph gaps)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .social-post {
+      border: 2px solid #3d5680;
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 18px 18px 16px;
+      margin-bottom: 18px;
+    }
+    .post-title {
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+    }
+    .post-body {
+      font-size: 0.96rem;
+      line-height: 1.95;
+      color: #e8f0ff;
+    }
+    .gap-num {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 0.82em;
+      margin-right: 2px;
+    }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      width: 6.5rem;
+      min-width: 3.5rem;
+      max-width: 11rem;
+      margin: 0 2px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+    .gap-input.gap-wide { width: 8.5rem; }
+    .gap-input.gap-tiny { width: 4.2rem; }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .gap-input.is-ok { border-color: #22c55e; }
+    .gap-input.is-bad { border-color: #f87171; }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 14px;
+    }
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .word-box-label {
+      width: 100%;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #bae6fd;
+      margin-bottom: 2px;
+    }
+    .bank-chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(86, 204, 242, 0.14);
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bank-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .bank-note {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary</span>
+        <h1>A real bargain! &mdash; word bank + paragraph</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 7 vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 7 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <a href="../shopping-word-box/index.html">Shopping (word box)</a>
+      <span>|</span>
+      <a href="../shopping-paragraph-gaps/index.html">Birthday jeans</a>
+      <span>|</span>
+      <a href="../towns-villages-word-box/index.html">Towns (word box)</a>
+      <span>|</span>
+      <a href="../towns-adjective-pairs/index.html">Adjective pairs</a>
+      <span>|</span>
+      <span><strong>A real bargain</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Complete the gaps</h2>
+      <p class="instr">
+        One word per gap. Use the <strong>word bank</strong> (each word once) or type.
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> click a gap, then click a word in the bank &mdash; or type in the box.
+      </p>
+
+      <div class="word-box" id="word-bank" aria-label="Word bank">
+        <span class="word-box-label">Word bank</span>
+        <button type="button" class="bank-chip" data-word="centres">centres</button>
+        <button type="button" class="bank-chip" data-word="charge">charge</button>
+        <button type="button" class="bank-chip" data-word="discount">discount</button>
+        <button type="button" class="bank-chip" data-word="make">make</button>
+        <button type="button" class="bank-chip" data-word="order">order</button>
+        <button type="button" class="bank-chip" data-word="price">price</button>
+        <button type="button" class="bank-chip" data-word="purchase">purchase</button>
+        <button type="button" class="bank-chip" data-word="stock">stock</button>
+        <button type="button" class="bank-chip" data-word="value">value</button>
+        <button type="button" class="bank-chip" data-word="worth">worth</button>
+        <p class="bank-note">US spelling <strong>centers</strong> is accepted for gap (3).</p>
+      </div>
+
+      <div class="social-post">
+        <p class="post-title">A real bargain!</p>
+        <p class="post-body">
+          I tried to get a speaker for my sister&rsquo;s birthday in town, but none of the shops had the
+          <span class="gap-num">(1)</span>
+          <input type="text" class="gap-input" id="g1" autocomplete="off" spellcheck="false" aria-label="Gap 1" />
+          that she wanted in
+          <span class="gap-num">(2)</span>
+          <input type="text" class="gap-input gap-tiny" id="g2" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+          . I hate going to huge shopping
+          <span class="gap-num">(3)</span>
+          <input type="text" class="gap-input gap-wide" id="g3" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+          , so I decided to
+          <span class="gap-num">(4)</span>
+          <input type="text" class="gap-input" id="g4" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+          one direct from a major retailer&rsquo;s website. The
+          <span class="gap-num">(5)</span>
+          <input type="text" class="gap-input" id="g5" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+          was reasonable, so I bought another one for myself. And because the total cost was over a certain amount, delivery was free of
+          <span class="gap-num">(6)</span>
+          <input type="text" class="gap-input" id="g6" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+          , plus I was offered 20%
+          <span class="gap-num">(7)</span>
+          <input type="text" class="gap-input gap-wide" id="g7" autocomplete="off" spellcheck="false" aria-label="Gap 7" />
+          off my next
+          <span class="gap-num">(8)</span>
+          <input type="text" class="gap-input gap-wide" id="g8" autocomplete="off" spellcheck="false" aria-label="Gap 8" />
+          . The speakers turned out to be very good
+          <span class="gap-num">(9)</span>
+          <input type="text" class="gap-input" id="g9" autocomplete="off" spellcheck="false" aria-label="Gap 9" />
+          for money &ndash; they&rsquo;re great quality and
+          <span class="gap-num">(10)</span>
+          <input type="text" class="gap-input" id="g10" autocomplete="off" spellcheck="false" aria-label="Gap 10" />
+          every penny I spent.
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  var lastFocus = null;
+
+  var ACCEPT = {
+    1: ["make"],
+    2: ["stock"],
+    3: ["centres", "centers"],
+    4: ["order"],
+    5: ["price"],
+    6: ["charge"],
+    7: ["discount"],
+    8: ["purchase"],
+    9: ["value"],
+    10: ["worth"]
+  };
+
+  var DISPLAY = {
+    1: "make",
+    2: "stock",
+    3: "centres",
+    4: "order",
+    5: "price",
+    6: "charge",
+    7: "discount",
+    8: "purchase",
+    9: "value",
+    10: "worth"
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function getIn(n) {
+    return document.getElementById("g" + n);
+  }
+
+  function matches(n, userRaw) {
+    var list = ACCEPT[n];
+    var u = norm(userRaw);
+    for (var i = 0; i < list.length; i++) {
+      if (norm(list[i]) === u) return true;
+    }
+    return false;
+  }
+
+  ORDER.forEach(function (n) {
+    var el = getIn(n);
+    el.addEventListener("focus", function () {
+      lastFocus = this;
+    });
+    el.addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      document.getElementById("feedback").classList.remove("show");
+    });
+  });
+
+  var bank = document.getElementById("word-bank");
+  bank.querySelectorAll(".bank-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var w = this.getAttribute("data-word") || "";
+      var target = lastFocus;
+      if (!target || ORDER.indexOf(parseInt(target.id.replace("g", ""), 10)) < 0) {
+        for (var i = 0; i < ORDER.length; i++) {
+          var cand = getIn(ORDER[i]);
+          if (cand && !norm(cand.value)) {
+            target = cand;
+            break;
+          }
+        }
+      }
+      if (!target) target = getIn(ORDER[0]);
+      if (target) {
+        target.value = w;
+        target.classList.remove("is-ok", "is-bad");
+        document.getElementById("feedback").classList.remove("show");
+        target.focus();
+        lastFocus = target;
+      }
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var fb = document.getElementById("feedback");
+    var total = ORDER.length;
+    var correct = 0;
+    var html = "";
+
+    for (var j = 0; j < ORDER.length; j++) {
+      var gn = ORDER[j];
+      var gel = getIn(gn);
+      var graw = gel.value;
+      var allowsEmpty = ACCEPT[gn].indexOf("") >= 0;
+      var hasText = norm(graw).length > 0;
+      var gok = matches(gn, graw);
+      if (!allowsEmpty && !hasText) gok = false;
+
+      gel.classList.remove("is-ok", "is-bad");
+      gel.classList.add(gok ? "is-ok" : "is-bad");
+      if (gok) correct++;
+
+      html +=
+        "<div>(" +
+        gn +
+        ") Your: <strong>" +
+        (graw.trim() ? esc(graw.trim()) : "\u2014") +
+        "</strong> &middot; Key: <strong>" +
+        esc(DISPLAY[gn]) +
+        "</strong></div>";
+    }
+
+    fb.innerHTML =
+      '<p style="margin-bottom:10px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / " +
+      total +
+      "</p>" +
+      html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+    ORDER.forEach(function (n) {
+      var el = getIn(n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    });
+  });
+})();
+  </script>
+</body>
+</html>

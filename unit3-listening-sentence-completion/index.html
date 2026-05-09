@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 &middot; Listening Part 2 &mdash; Sentence completion (3.1)</title>
+  <style>
+    :root {
+      --panel: rgba(30, 41, 59, 0.75);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --accent: #a78bfa;
+      --ok: #34d399;
+      --bad: #f87171;
+      --border: rgba(148, 163, 184, 0.25);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(ellipse 100% 70% at 50% -15%, rgba(56, 189, 248, 0.12), transparent 52%),
+        linear-gradient(165deg, #0a0f1a 0%, #111827 45%, #0c1222 100%);
+      color: var(--text);
+      line-height: 1.55;
+      padding: clamp(14px, 3vw, 28px);
+    }
+    .shell { max-width: 820px; margin: 0 auto; }
+    a.back { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; }
+    a.back:hover { text-decoration: underline; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 { font-size: clamp(1.15rem, 3.5vw, 1.45rem); margin: 8px 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--muted); font-size: 1rem; margin: 0 0 16px; }
+    .rubric { color: var(--muted); font-size: 14px; margin: 0 0 18px; line-height: 1.5; }
+    .audio-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 22px;
+      backdrop-filter: blur(10px);
+    }
+    .audio-card label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    audio { width: 100%; }
+    .study-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .study-toggle input { width: 18px; height: 18px; accent-color: var(--primary); }
+    .gaps { display: flex; flex-direction: column; gap: 16px; }
+    .gap-block {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .gap-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .gap-num { font-weight: 800; color: var(--accent); }
+    .sent { margin: 0; font-size: 15px; line-height: 1.65; }
+    .sent input.gap-inp {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 7rem;
+      max-width: 100%;
+      margin: 0 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 15px;
+    }
+    .sent input.gap-inp:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+    .sent input.gap-inp.ok { border-color: rgba(52, 211, 153, 0.85); }
+    .sent input.gap-inp.bad { border-color: rgba(248, 113, 113, 0.85); }
+    .btn-hint {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.1);
+      color: #bae6fd;
+      cursor: pointer;
+    }
+    .btn-hint:disabled { opacity: 0.4; cursor: not-allowed; }
+    .hint-panel { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(167, 139, 250, 0.3); font-size: 13px; color: #cbd5e1; }
+    .hint-panel.on { display: block; }
+    .gap-key-row { display: none; margin-top: 10px; font-size: 13px; color: #86efac; }
+    .gap-key-row.reveal { display: block; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .btn { font-weight: 700; padding: 11px 18px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; }
+    .btn-primary { background: linear-gradient(135deg, #0ea5e9, #6366f1); color: #fff; }
+    .btn-secondary { background: rgba(51, 65, 85, 0.9); color: #e2e8f0; border: 1px solid var(--border); }
+    .feedback { margin-top: 14px; min-height: 24px; font-size: 15px; color: var(--muted); }
+    .exam-strip {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #c4d0e0;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+    .exam-strip a { color: var(--primary); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <p><a class="back" href="../unit3.html">&larr; Unit 3</a></p>
+    <span class="tag">Listening Part 2 &middot; Sentence completion</span>
+    <h1>Track 3.1 &mdash; RF B2 First (Skills Booster)</h1>
+    <p class="sub">Paul &mdash; RoboCup</p>
+
+    <div class="audio-card">
+      <label for="track-audio">Audio</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RfB2First_SB_Track%203.1.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio. Open the MP3 link directly.
+      </audio>
+    </div>
+
+    <p class="rubric">
+      Listen to the recording. For <strong>questions 1&ndash;10</strong>, complete the sentences with a <strong>word or short phrase</strong>.
+    </p>
+
+    <p class="exam-strip" id="exam-mode-note" role="note">
+      <strong>Exam-style view:</strong> no script on this page &mdash; audio and gaps only.
+      <a href="transcript.html">Transcript (study, read-only) &rarr;</a>
+      &middot; <a href="?study=1">Same page with pre-submit hints on by default &rarr;</a>
+    </p>
+    <script>
+      (function () {
+        var note = document.getElementById("exam-mode-note");
+        if (!note) return;
+        try {
+          if (new URLSearchParams(window.location.search).get("study") === "1") {
+            note.innerHTML =
+              '<strong>Study mode:</strong> pre-submit hints are on below. <a href="transcript.html">Transcript</a> &middot; <a href="index.html">Strict exam view</a> (hints off by default).';
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <div class="study-toggle">
+      <input type="checkbox" id="study-mode" />
+      <span><strong>Pre-submit hints</strong> &mdash; short strategy only (no answers). <strong>Keys</strong> appear <strong>after</strong> you submit.</span>
+    </div>
+
+    <h2 style="font-size:1.05rem;margin:0 0 12px;">Gap fill (10)</h2>
+    <div class="gaps" id="gaps-root"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="btn-check">Submit / Check answers</button>
+      <button type="button" class="btn btn-secondary" id="btn-clear">Clear gap marking only</button>
+    </div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+  </div>
+
+  <script>
+    (function () {
+      var TASK = [
+        {
+          before: "RoboCup was held for the first time in ",
+          after: " in 1997.",
+          answers: ["Japan"],
+          hintPre: "Which country hosted the very first championship? One proper noun."
+        },
+        {
+          before: "The categories in the children's competition are Soccer, OnStage and ",
+          after: ".",
+          answers: ["Rescue"],
+          hintPre: "RoboCupJunior &mdash; one more category name alongside Soccer and OnStage (single capitalised word)."
+        },
+        {
+          before: "Paul says he didn't watch any videos of teams performing a ",
+          after: " in the OnStage event.",
+          answers: ["magic show"],
+          hintPre: "One performance option he lists (two words) &mdash; he says there were no online videos of teams doing this."
+        },
+        {
+          before: "Paul's favourite video of an OnStage performance featured a robot dressed as a ",
+          after: ".",
+          answers: ["penguin"],
+          hintPre: "The &lsquo;star&rsquo; of his favourite clip wore an animal costume &mdash; think cold-climate seabird (one word)."
+        },
+        {
+          before: "Team members in the OnStage event are interviewed about their involvement in the design and ",
+          after: " of their robots.",
+          answers: ["programming"],
+          hintPre: "Technical interview: what else besides design do they explain? One noun (&ldquo;coding&rdquo; idea)."
+        },
+        {
+          before: "The maximum total time each team can spend on the stage is ",
+          after: " minutes.",
+          answers: ["six", "6"],
+          hintPre: "Total cap including performance + clear-up: a small whole number (&ldquo;no more than <em>...</em> altogether&rdquo;)."
+        },
+        {
+          before: "Paul was impressed by the fact that the robots in RoboCupSoccer are all ",
+          after: ".",
+          answers: ["autonomous"],
+          hintPre: "No remote control &mdash; one long adjective describing self-directed robots."
+        },
+        {
+          before: "Paul says that all of the robot soccer teams he watched lacked a good ",
+          after: ".",
+          answers: ["defence", "defense"],
+          hintPre: "What was missing when a goal was scored too easily? Spelling variants accepted."
+        },
+        {
+          before: "In RoboCup@Home, designers have to communicate with their robots by using their ",
+          after: ".",
+          answers: ["voice"],
+          hintPre: "Only spoken interaction &mdash; one noun (&ldquo;by <em>...</em>&rdquo;)."
+        },
+        {
+          before: "Paul watched robots fetch objects from the ",
+          after: " and give them to their designer in another room of the apartment.",
+          answers: ["kitchen"],
+          hintPre: "Room where robots pick up cups or bottles (&ldquo;go into the <em>...</em>&rdquo;)."
+        }
+      ];
+
+      function norm(s) {
+        return String(s || "")
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .replace(/[""«»]/g, '"')
+          .replace(/['']/g, "'")
+          .replace(/^a\s+/i, "")
+          .replace(/^the\s+/i, "")
+          .trim();
+      }
+
+      function matches(val, answers) {
+        var n = norm(val);
+        if (!n) return false;
+        for (var i = 0; i < answers.length; i++) {
+          var key = norm(answers[i]);
+          if (n === key) return true;
+        }
+        return false;
+      }
+
+      function keyLabel(item) {
+        return item.answers.join(" <strong>or</strong> ");
+      }
+
+      var studyEl = document.getElementById("study-mode");
+      try {
+        if (new URLSearchParams(window.location.search).get("study") === "1" && studyEl) {
+          studyEl.checked = true;
+        }
+      } catch (eSt) {}
+      var root = document.getElementById("gaps-root");
+      var fb = document.getElementById("feedback");
+      var gapEverSubmitted = false;
+
+      function buildGaps() {
+        root.innerHTML = "";
+        for (var i = 0; i < TASK.length; i++) {
+          (function (idx, item) {
+            var wrap = document.createElement("div");
+            wrap.className = "gap-block";
+            var head = document.createElement("div");
+            head.className = "gap-head";
+            var num = document.createElement("span");
+            num.className = "gap-num";
+            num.textContent = String(idx + 1) + ".";
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn-hint";
+            btn.textContent = "Hint";
+            btn.disabled = !studyEl.checked;
+            head.appendChild(num);
+            head.appendChild(btn);
+
+            var p = document.createElement("p");
+            p.className = "sent";
+            p.appendChild(document.createTextNode(item.before));
+            var inp = document.createElement("input");
+            inp.type = "text";
+            inp.className = "gap-inp";
+            inp.setAttribute("autocomplete", "off");
+            inp.setAttribute("spellcheck", "true");
+            inp.setAttribute("aria-label", "Gap " + String(idx + 1));
+            inp.id = "gap-" + String(idx + 1);
+            p.appendChild(inp);
+            p.appendChild(document.createTextNode(item.after));
+
+            var hint = document.createElement("div");
+            hint.className = "hint-panel hint-pre";
+            hint.id = "hint-" + String(idx + 1);
+            hint.innerHTML = "<p>" + item.hintPre + "</p>";
+
+            var keyRow = document.createElement("div");
+            keyRow.className = "gap-key-row";
+            keyRow.id = "gap-key-" + String(idx + 1);
+            keyRow.innerHTML = "Acceptable: " + keyLabel(item);
+
+            btn.addEventListener("click", function () {
+              if (!studyEl.checked) return;
+              if (!gapEverSubmitted) {
+                var on = hint.classList.toggle("on");
+                btn.setAttribute("aria-expanded", on ? "true" : "false");
+                return;
+              }
+              hint.classList.add("on");
+              keyRow.classList.add("reveal");
+            });
+
+            wrap.appendChild(head);
+            wrap.appendChild(p);
+            wrap.appendChild(hint);
+            wrap.appendChild(keyRow);
+            root.appendChild(wrap);
+          })(i, TASK[i]);
+        }
+      }
+      buildGaps();
+
+      studyEl.addEventListener("change", function () {
+        var disabled = !studyEl.checked;
+        var buttons = root.querySelectorAll(".btn-hint");
+        var panels = root.querySelectorAll(".hint-panel");
+        for (var b = 0; b < buttons.length; b++) {
+          buttons[b].disabled = disabled;
+          if (disabled) buttons[b].setAttribute("aria-expanded", "false");
+        }
+        if (disabled) {
+          for (var p = 0; p < panels.length; p++) panels[p].classList.remove("on");
+        }
+      });
+
+      function applySubmitReveal() {
+        gapEverSubmitted = true;
+        for (var k = 0; k < TASK.length; k++) {
+          var kr = document.getElementById("gap-key-" + String(k + 1));
+          if (kr) kr.classList.add("reveal");
+        }
+      }
+
+      document.getElementById("btn-check").addEventListener("click", function () {
+        var okc = 0;
+        for (var i = 0; i < TASK.length; i++) {
+          var inp = document.getElementById("gap-" + String(i + 1));
+          if (!inp) continue;
+          inp.classList.remove("ok", "bad");
+          var v = inp.value;
+          if (matches(v, TASK[i].answers)) {
+            inp.classList.add("ok");
+            okc++;
+          } else if (norm(v)) inp.classList.add("bad");
+        }
+        applySubmitReveal();
+        fb.innerHTML =
+          okc === TASK.length
+            ? "<strong style='color:var(--ok)'>All gaps match a key.</strong>"
+            : "Score: <strong>" + String(okc) + "</strong> / " + String(TASK.length) + ". Accepted wordings appear under each item.";
+      });
+
+      document.getElementById("btn-clear").addEventListener("click", function () {
+        for (var j = 0; j < TASK.length; j++) {
+          var inp2 = document.getElementById("gap-" + String(j + 1));
+          if (inp2) inp2.classList.remove("ok", "bad");
+        }
+        fb.textContent = "";
+      });
+    })();
+  </script>
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+</body>
+</html>

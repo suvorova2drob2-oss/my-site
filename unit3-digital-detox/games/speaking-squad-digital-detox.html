@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Squad missions (speaking) &mdash; My digital detox (Unit 3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0a0f1a; --bg1: #111827; --line: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+      --a: #22d3ee; --b: #a78bfa; --ok: #34d399; --warn: #fbbf24; --card: #0f172a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif; background: radial-gradient(1200px 600px at 20% 0%, #1a1030 0%, transparent 50%), var(--bg0);
+      color: var(--text); min-height: 100dvh; padding: 20px 16px 32px;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    .bar {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 20px;
+    }
+    .bar a { color: var(--a); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    .bar a:hover { text-decoration: underline; }
+    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .tag {
+      display: inline-block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--a); font-weight: 800;
+      border: 1px solid #164e63; background: #083344; padding: 4px 8px; border-radius: 6px; margin-bottom: 6px;
+    }
+    .lead { font-size: 0.9rem; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+    .mission {
+      background: linear-gradient(145deg, #1e1b2e 0%, var(--card) 100%);
+      border: 1px solid #334155; border-radius: 20px; padding: 22px; margin-top: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .mission .kicker { font-size: 0.75rem; color: var(--b); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+    .mission .target {
+      font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.9rem; color: var(--a); line-height: 1.4; margin: 12px 0 14px;
+      padding: 12px; background: #020617; border-radius: 10px; border: 1px solid #0e7490;
+    }
+    .mission .blurb { font-size: 0.95rem; line-height: 1.5; color: #cbd5e1; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    button, .tbtn {
+      font-family: inherit; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      border: none; border-radius: 12px; padding: 10px 16px; cursor: pointer; transition: 0.15s;
+    }
+    .b-roll { background: linear-gradient(135deg, #0e7490, #0f766e); color: #fff; }
+    .b-roll:hover { filter: brightness(1.1); }
+    .b-sec { background: #334155; color: #e2e8f0; }
+    .b-sec:hover { background: #475569; }
+    .b-warn { background: #6d28d9; color: #fff; }
+    .timer-box { margin-top: 18px; padding: 14px; background: #020617; border-radius: 12px; border: 1px solid var(--line); }
+    .timer-box p { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+    .t-big { font-family: "JetBrains Mono", monospace; font-size: 2.2rem; font-weight: 500; color: var(--warn); }
+    .t-big.go { color: var(--ok); }
+    .tline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 14px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">Squad-style speaking</p>
+        <h1>My digital detox — missions</h1>
+        <p class="lead">Phrases = your <strong>23 memorable items</strong> from the unit. Each &ldquo;mission&rdquo; is a party-style prompt (like <em>side quests</em> in co-op games): you roll <strong>phrase + task</strong>, then speak. Teacher can use a phone timer, or the built-in stopwatch. No accounts, no multiplayer.</p>
+      </div>
+      <a href="../index.html">Text hub</a> &middot; <a href="index.html">Games</a> &middot; <a href="speaking-names-minute-digital-detox.html" style="color:#34d399;">Names (1:00)</a> &middot; <a href="../../unit3.html">Unit 3</a>
+    </div>
+
+    <div class="mission" id="card">
+      <p class="kicker" id="mTitle">Roll the mission</p>
+      <div class="target" id="mPhrase">—</div>
+      <p class="blurb" id="mBlurb">Tap <strong>Roll all</strong> to draw a new phrase and a new mission type.</p>
+      <div class="row">
+        <button type="button" class="b-roll" id="btnAll">Roll all</button>
+        <button type="button" class="b-sec" id="btnPh">New phrase</button>
+        <button type="button" class="b-warn" id="btnMi">New mission</button>
+      </div>
+      <p class="hint" id="mHint">Tip: &ldquo;Reroll&rdquo; keeps the other part fixed so you can keep the same phrase but change the task, or the opposite.</p>
+
+      <div class="timer-box">
+        <p>Optional classroom timer (seconds count down, beep = look up)</p>
+        <div class="tline">
+          <span class="t-big" id="tDisp">0:45</span>
+          <button type="button" class="b-sec" id="btnTStart">Start 0:45</button>
+          <button type="button" class="b-sec" id="btnT45">Set 0:45</button>
+          <button type="button" class="b-sec" id="btnT60">0:60</button>
+          <button type="button" class="b-sec" id="btnT90">1:30</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../data/u3-digital-detox-lexis.js"></script>
+  <script>
+(function () {
+  var DECK = (typeof U3_DIGITAL_DETOX_PHRASES !== "undefined" && U3_DIGITAL_DETOX_PHRASES.length) ? U3_DIGITAL_DETOX_PHRASES.slice() : [];
+  var MISSIONS = [
+    { t: "Connection run", b: "In 30–45 seconds, say how «{p}» links to <strong>one</strong> of the six parts of <em>My digital detox</em>. Name the part (1–6)." },
+    { t: "Pro / con", b: "Give <strong>one</strong> possible advantage and <strong>one</strong> possible downside, in speech, for an idea that involves «{p}». Use the articles or polite general knowledge." },
+    { t: "Headline", b: "Invent a short <strong>news headline</strong> (spoken) that could include or clearly imply «{p}»." },
+    { t: "Teach your partner", b: "You have 60 seconds. Explain «{p}» to a classmate who was absent, as if from our unit (no reading — speech only)." },
+    { t: "One-sentence past", b: "Say <strong>one</strong> past-tense sentence: a made-up situation in which «{p}» mattered in real life (reported-style allowed)." },
+    { t: "Debate open", b: "You are in a short TV debate. Open with <strong>one</strong> strong opinion sentence that uses or clearly refers to «{p}»." },
+    { t: "Clarify", b: "Paraphrase «{p}» in <strong>two</strong> different ways (two short clauses), without using the same main nouns/verbs in both." },
+    { t: "Question the room", b: "Ask the class a thoughtful <strong>wh-question</strong> (Why / How / What if) that is impossible to answer with just yes or no, and that fits «{p}»." }
+  ];
+  var phrase = "";
+  var mi = 0;
+  var tsec = 45, tcur = 0, tiv = null;
+
+  function el(id) { return document.getElementById(id); }
+  function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+
+  function pickPhrase() {
+    if (!DECK.length) return "";
+    return DECK[Math.floor(Math.random() * DECK.length)];
+  }
+
+  function applyBlurb() {
+    if (!DECK.length) { el("mPhrase").textContent = "Load data/u3-digital-detox-lexis.js — list missing."; return; }
+    if (!phrase) phrase = pickPhrase();
+    el("mTitle").textContent = MISSIONS[mi] ? MISSIONS[mi].t : "—";
+    el("mPhrase").textContent = "«" + phrase + "»";
+    if (MISSIONS[mi]) el("mBlurb").innerHTML = MISSIONS[mi].b.replace(/\{p\}/g, phrase);
+  }
+
+  el("btnAll").addEventListener("click", function () {
+    if (!DECK.length) return;
+    phrase = pickPhrase();
+    mi = Math.floor(Math.random() * MISSIONS.length);
+    applyBlurb();
+  });
+  el("btnPh").addEventListener("click", function () { if (DECK.length) { phrase = pickPhrase(); applyBlurb(); } });
+  el("btnMi").addEventListener("click", function () { mi = Math.floor(Math.random() * MISSIONS.length); applyBlurb(); });
+
+  function tDispv() {
+    var s = tcur, m = Math.floor(s / 60), r = s % 60;
+    el("tDisp").textContent = m + ":" + (r < 10 ? "0" : "") + r;
+    el("tDisp").className = s <= 5 && tiv ? "t-big go" : "t-big";
+  }
+  function tStop() { if (tiv) { clearInterval(tiv); tiv = null; } }
+  el("btnT45").addEventListener("click", function () { tsec = 45; tcur = 45; tStop(); tDispv(); el("btnTStart").textContent = "Start 0:45"; });
+  el("btnT60").addEventListener("click", function () { tsec = 60; tcur = 60; tStop(); tDispv(); el("btnTStart").textContent = "Start 0:60"; });
+  el("btnT90").addEventListener("click", function () { tsec = 90; tcur = 90; tStop(); tDispv(); el("btnTStart").textContent = "Start 1:30"; });
+  el("btnTStart").addEventListener("click", function () {
+    tStop();
+    tcur = tsec;
+    tDispv();
+    tiv = setInterval(function () {
+      tcur--;
+      tDispv();
+      if (tcur <= 0) { tStop(); beep(); }
+    }, 1000);
+  });
+  var ctxA = null;
+  function beep() {
+    try {
+      if (!ctxA) ctxA = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctxA.state === "suspended") ctxA.resume();
+      var o = ctxA.createOscillator();
+      var g = ctxA.createGain();
+      o.connect(g);
+      g.connect(ctxA.destination);
+      o.frequency.value = 880;
+      g.gain.value = 0.08;
+      o.start(0);
+      o.stop(0.12);
+    } catch (e) {}
+  }
+
+  if (DECK.length) { phrase = pickPhrase(); mi = 0; applyBlurb(); }
+  el("btnT45").click();
+})();
+  </script>
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+</body>
+</html>

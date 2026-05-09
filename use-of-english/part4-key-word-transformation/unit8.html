@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 — Part 4 Key word transformation (FCE)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --key: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 {
+      flex: 1 1 220px;
+      font-size: 1.15rem;
+      margin: 0;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .back:hover { text-decoration: underline; }
+    .progress {
+      width: 100%;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .progress strong { color: #bae6fd; }
+
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+    .instr {
+      border: 1px solid var(--line);
+      background: rgba(26, 44, 73, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #c5d4ef;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .kw-num { font-weight: 800; color: var(--accent); margin-bottom: 10px; font-size: 1rem; }
+    .kw-first {
+      margin-bottom: 12px;
+      line-height: 1.6;
+      font-size: 0.96rem;
+    }
+    .kw-given { margin-bottom: 12px; font-size: 0.95rem; }
+    .kw-given strong {
+      color: var(--key);
+      letter-spacing: 0.06em;
+      font-size: 1.05rem;
+    }
+    .kw-line {
+      line-height: 1.85;
+      font-size: 0.96rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .kw-input {
+      flex: 1;
+      min-width: 180px;
+      border: 2px solid #4d6fa1;
+      border-radius: 10px;
+      background: #12264b;
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 1rem;
+    }
+    .kw-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.22);
+    }
+    .kw-input.ok {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.12);
+    }
+    .kw-input.bad {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .kw-input:disabled {
+      opacity: 0.85;
+      cursor: not-allowed;
+    }
+
+    .instant-key {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(74, 222, 128, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .instant-key.show { display: block; }
+    .instant-key .lab {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #86efac;
+      margin-bottom: 6px;
+    }
+    .instant-key .full {
+      margin-top: 10px;
+      color: #bae6fd;
+      font-size: 0.88rem;
+    }
+
+    .ok-msg {
+      display: none;
+      margin-top: 12px;
+      color: #86efac;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .ok-msg.show { display: block; }
+
+    .btn-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-check:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-next {
+      background: var(--accent);
+      color: #052030;
+      display: none;
+    }
+    .btn-next.show { display: inline-block; }
+    .hub-link {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+
+    .done-all {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.08);
+      text-align: center;
+      font-weight: 700;
+      color: #bae6fd;
+    }
+    .done-all.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div style="flex:1;min-width:0;">
+        <p class="progress">Question <strong id="elStep">1</strong> of <strong>6</strong></p>
+        <h1>Reading and Use of English &mdash; Part 4 Key word transformation</h1>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">Unit 8 &middot; B2 First style</p>
+      </div>
+      <a class="back" id="backLink" href="../../unit8.html">&larr; Unit 8</a>
+    </header>
+
+    <p class="subtitle">
+      For questions 1&ndash;6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given.
+      Do not change the word given. You must use between two and five words, including the word given.
+    </p>
+    <p class="instr">
+      Type only the words for the gap (do not repeat text printed before or after the box).
+      Press <strong>Check</strong>. If it is wrong, the key appears straight away. Then press <strong>Next question</strong>.
+    </p>
+
+    <section class="card" id="taskCard" aria-live="polite">
+      <p class="kw-num" id="elNum">1.</p>
+      <p class="kw-first" id="elFirst"></p>
+      <p class="kw-given">Key word: <strong id="elKey"></strong></p>
+      <p class="kw-line">
+        <span id="elBefore"></span>
+        <input type="text" id="elInput" class="kw-input" autocomplete="off" spellcheck="false" placeholder="2–5 words" aria-label="Gap answer" />
+        <span id="elAfter"></span>
+      </p>
+
+      <p class="ok-msg" id="elOk">Correct.</p>
+
+      <div class="instant-key" id="elKeyBox">
+        <div class="lab">Key</div>
+        <span id="elKeyText"></span>
+        <p class="full" id="elFull"></p>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check</button>
+        <button type="button" class="btn-next" id="btnNext">Next question</button>
+      </div>
+    </section>
+
+    <p class="done-all" id="elDone">All 6 questions completed. You can close the page or reload to practise again.</p>
+
+    <p class="hub-link">
+      <a href="unit6.html">Part 4 &mdash; Unit 6</a>
+      &nbsp;&middot;&nbsp;
+      <a href="unit7.html">Part 4 &mdash; Unit 7</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../../unit8.html">&larr; Unit 8 (Mastering B2)</a>
+      &nbsp;&middot;&nbsp;
+      <a href="unit9.html">Part 4 &mdash; Unit 9</a>
+      &nbsp;&middot;&nbsp;
+      <a href="unit10.html">Part 4 &mdash; Unit 10</a>
+      &nbsp;&middot;&nbsp;
+      <a href="index.html">Part 4 &mdash; Unit 11</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  /** Unit 8 — B2 First style key word transformations (coursebook set). */
+  var TASKS = [
+    {
+      first: "He was about to decide when his phone rang.",
+      keyword: "POINT",
+      before: "He was ",
+      after: " up his mind when his phone rang.",
+      accept: ["on the point of making"],
+      revealGap: "on the POINT of making",
+      fullSecond:
+        "He was on the POINT of making up his mind when his phone rang."
+    },
+    {
+      first: "The weather probably won't improve for several days.",
+      keyword: "LIKELY",
+      before: "The weather is ",
+      after: " better for several days.",
+      accept: ["not likely to get"],
+      revealGap: "not LIKELY to get",
+      fullSecond:
+        "The weather is not LIKELY to get better for several days."
+    },
+    {
+      first: "Dan wants to start his own travel business.",
+      keyword: "SETTING",
+      before: "Dan\u2019s planning ",
+      after: " his own travel business.",
+      accept: ["on setting up"],
+      revealGap: "on SETTING up",
+      fullSecond:
+        "Dan\u2019s planning on SETTING up his own travel business."
+    },
+    {
+      first: "The plants will probably be dead when we eventually get home.",
+      keyword: "HAVE",
+      before: "The plants may well ",
+      after: " the time we get home.",
+      accept: ["have died by"],
+      revealGap: "HAVE died by",
+      fullSecond:
+        "The plants may well HAVE died by the time we get home."
+    },
+    {
+      first: "Let me know the moment you think of a solution to this problem.",
+      keyword: "COME",
+      before: "Let me know as ",
+      after: " with a solution to this problem.",
+      accept: ["soon as you come up"],
+      revealGap: "soon as you COME up",
+      fullSecond:
+        "Let me know as soon as you COME up with a solution to this problem."
+    },
+    {
+      first: "It was hot and humid, but we still enjoyed our holiday.",
+      keyword: "SPITE",
+      before: "We enjoyed our holiday ",
+      after: " and humidity.",
+      accept: ["in spite of the heat"],
+      revealGap: "in SPITE of the heat",
+      fullSecond:
+        "We enjoyed our holiday in SPITE of the heat and humidity."
+    }
+  ];
+
+  var idx = 0;
+  var checkedThisRound = false;
+
+  var elStep = document.getElementById("elStep");
+  var elNum = document.getElementById("elNum");
+  var elFirst = document.getElementById("elFirst");
+  var elKey = document.getElementById("elKey");
+  var elBefore = document.getElementById("elBefore");
+  var elAfter = document.getElementById("elAfter");
+  var elInput = document.getElementById("elInput");
+  var elOk = document.getElementById("elOk");
+  var elKeyBox = document.getElementById("elKeyBox");
+  var elKeyText = document.getElementById("elKeyText");
+  var elFull = document.getElementById("elFull");
+  var btnCheck = document.getElementById("btnCheck");
+  var btnNext = document.getElementById("btnNext");
+  var taskCard = document.getElementById("taskCard");
+  var elDone = document.getElementById("elDone");
+
+  function normalizeAnswer(v) {
+    return String(v || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function renderTask() {
+    checkedThisRound = false;
+    var t = TASKS[idx];
+    elStep.textContent = String(idx + 1);
+    elNum.textContent = idx + 1 + ".";
+    elFirst.textContent = t.first;
+    elKey.textContent = t.keyword;
+    elBefore.textContent = t.before;
+    elAfter.textContent = t.after;
+    elInput.value = "";
+    elInput.classList.remove("ok", "bad");
+    elInput.disabled = false;
+    elOk.classList.remove("show");
+    elKeyBox.classList.remove("show");
+    btnNext.classList.remove("show");
+    btnCheck.disabled = false;
+    elInput.focus();
+  }
+
+  function isAccepted(t, norm) {
+    if (!norm) return false;
+    var list = t.accept || [];
+    for (var i = 0; i < list.length; i++) {
+      if (norm === list[i]) return true;
+    }
+    return false;
+  }
+
+  function onCheck() {
+    var t = TASKS[idx];
+    var norm = normalizeAnswer(elInput.value);
+    checkedThisRound = true;
+
+    if (isAccepted(t, norm)) {
+      elInput.classList.remove("bad");
+      elInput.classList.add("ok");
+      elInput.disabled = true;
+      elOk.classList.add("show");
+      elKeyBox.classList.remove("show");
+      btnCheck.disabled = true;
+      btnNext.classList.add("show");
+      return;
+    }
+
+    elInput.classList.add("bad");
+    elOk.classList.remove("show");
+    elInput.disabled = true;
+    elKeyText.textContent = t.revealGap;
+    elFull.textContent = "Full sentence: " + t.fullSecond;
+    elKeyBox.classList.add("show");
+    btnNext.classList.add("show");
+    btnCheck.disabled = true;
+  }
+
+  function onNext() {
+    if (idx >= TASKS.length - 1) {
+      taskCard.style.display = "none";
+      elDone.classList.add("show");
+      return;
+    }
+    idx += 1;
+    renderTask();
+  }
+
+  btnCheck.addEventListener("click", onCheck);
+  btnNext.addEventListener("click", onNext);
+
+  elInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!btnCheck.disabled) onCheck();
+    }
+  });
+
+  elInput.addEventListener("input", function () {
+    if (elInput.disabled) return;
+    if (!checkedThisRound) return;
+    elInput.classList.remove("ok", "bad");
+    elOk.classList.remove("show");
+    elKeyBox.classList.remove("show");
+    btnNext.classList.remove("show");
+    btnCheck.disabled = false;
+    checkedThisRound = false;
+  });
+
+  var q = new URLSearchParams(window.location.search);
+  var bl = document.getElementById("backLink");
+  if (q.get("back")) {
+    bl.href = q.get("back");
+  }
+  if (q.get("backLabel")) {
+    try {
+      bl.textContent =
+        "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+    } catch (e) {}
+  }
+
+  renderTask();
+})();
+  </script>
+</body>
+</html>

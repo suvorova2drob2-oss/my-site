@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Grammar &mdash; Trains vs cars (Exercise 4)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(800px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .vocab-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .vocab-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .vocab-nav span { color: var(--muted); }
+
+    .task h2 { font-size: 1.05rem; margin-bottom: 8px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+    }
+    .word-box strong { color: #bae6fd; display: block; margin-bottom: 8px; }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+    .bank-chip {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.55);
+      font-weight: 600;
+      color: #e8f0ff;
+    }
+
+    .speaker {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 18px 0 10px;
+      letter-spacing: 0.04em;
+    }
+    .speaker:first-of-type { margin-top: 0; }
+
+    .op-line {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      width: 7.5rem;
+      min-width: 5rem;
+      margin: 0 3px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; }
+    .gap-input.is-bad { border-color: #f87171; }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-num { font-weight: 700; color: #bae6fd; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Exercise 4 &mdash; Trains and cars (contrast linkers)</h1>
+      <a class="back u8g-back-grammar-index" href="../index.html">&larr; Grammar hub</a>
+    </header>
+
+    <nav class="vocab-nav" aria-label="Unit 8 grammar">
+      <a class="u8g-nav-sibling" href="../index.html">Grammar hub</a>
+      <span>|</span>
+      <span><strong>Harry &amp; Jodie</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Use the words from the box</h2>
+      <p class="instr">
+        Complete the opinions from <strong>Harry</strong> and <strong>Jodie</strong>. Each word from the box is used <strong>once</strong>.
+      </p>
+
+      <div class="word-box">
+        <strong>Word box</strong>
+        <div class="word-box-line" role="list">
+          <span class="bank-chip" role="listitem">although</span>
+          <span class="bank-chip" role="listitem">despite</span>
+          <span class="bank-chip" role="listitem">however</span>
+          <span class="bank-chip" role="listitem">spite</span>
+          <span class="bank-chip" role="listitem">though</span>
+          <span class="bank-chip" role="listitem">whereas</span>
+        </div>
+      </div>
+
+      <p class="speaker">Harry</p>
+      <p class="op-line">
+        Rail travel is more expensive than going by car.
+        <input type="text" class="gap-input" id="g1" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 1" />,
+        you don&rsquo;t suffer traffic jams in a train.
+      </p>
+      <p class="op-line">
+        I&rsquo;d always much rather catch a train, in
+        <input type="text" class="gap-input" id="g2" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+        of the higher cost. Trains pollute less than cars.
+      </p>
+      <p class="op-line">
+        <input type="text" class="gap-input" id="g3" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+        cars are more convenient, driving is more tiring than sitting on a train.
+      </p>
+
+      <p class="speaker">Jodie</p>
+      <p class="op-line">
+        <input type="text" class="gap-input" id="g4" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+        being slower than trains, cars get you to your destination more quickly.
+      </p>
+      <p class="op-line">
+        Cars take you door to door,
+        <input type="text" class="gap-input" id="g5" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+        trains do not.
+      </p>
+      <p class="op-line">
+        Even
+        <input type="text" class="gap-input" id="g6" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+        trains are usually punctual, passengers can still suffer delays.
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/u8-grammar-course-context.js"></script>
+  <script>
+(function () {
+  var ANSWERS = ["however", "spite", "although", "despite", "whereas", "though"];
+  var HINTS = [
+    "<span class='fb-num'>1.</span> <strong>However</strong> introduces a contrast in a new sentence (often after a full stop).",
+    "<span class='fb-num'>2.</span> <strong>In spite of</strong> needs the noun <strong>spite</strong> in the box.",
+    "<span class='fb-num'>3.</span> <strong>Although</strong> + clause (not <em>though</em> here &mdash; you need <em>though</em> for gap 6 in <em>even though</em>).",
+    "<span class='fb-num'>4.</span> <strong>Despite</strong> + <strong>-ing</strong> (being slower &hellip;).",
+    "<span class='fb-num'>5.</span> <strong>Whereas</strong> contrasts two clauses: door-to-door vs not.",
+    "<span class='fb-num'>6.</span> <strong>Even though</strong> &mdash; the missing word is <strong>though</strong>."
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/,$/, "")
+      .replace(/\s+/g, " ");
+  }
+
+  document.querySelectorAll(".gap-input").forEach(function (el) {
+    el.addEventListener("input", function () {
+      el.classList.remove("is-ok", "is-bad");
+      document.getElementById("feedback").classList.remove("show");
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var filled = [];
+    var correct = 0;
+    var body = "";
+    for (var i = 0; i < 6; i++) {
+      var el = document.getElementById("g" + (i + 1));
+      var v = norm(el.value);
+      var ok = v === ANSWERS[i];
+      if (v) filled.push(v);
+      if (ok) correct++;
+      el.classList.toggle("is-ok", ok && !!v);
+      el.classList.toggle("is-bad", !!v && !ok);
+    }
+
+    var dupNote = "";
+    var uniq = {};
+    filled.forEach(function (w) {
+      uniq[w] = (uniq[w] || 0) + 1;
+    });
+    var dupes = Object.keys(uniq).filter(function (w) {
+      return uniq[w] > 1;
+    });
+    if (dupes.length) {
+      dupNote =
+        "<p style='margin:12px 0;color:#fca5a5;'>You used the same word more than once. Each word from the box should appear <strong>once</strong>.</p>";
+    }
+
+    for (var j = 0; j < 6; j++) {
+      var elj = document.getElementById("g" + (j + 1));
+      if (!norm(elj.value)) {
+        body += "<p>" + HINTS[j] + "</p>";
+      } else if (norm(elj.value) !== ANSWERS[j]) {
+        body += "<p>" + HINTS[j] + "</p>";
+      }
+    }
+
+    var fb = document.getElementById("feedback");
+    fb.innerHTML =
+      "<p style='font-weight:700;margin-bottom:10px;color:#bae6fd;'>Score: " +
+      correct +
+      " / 6</p>" +
+      dupNote +
+      (correct === 6 && dupes.length === 0
+        ? "<p style='color:#86efac;'>All correct. Each linker is used once.</p>"
+        : body
+          ? "<div style='margin-top:12px;'>" + body + "</div>"
+          : "");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    for (var i = 1; i <= 6; i++) {
+      var el = document.getElementById("g" + i);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    }
+    document.getElementById("feedback").classList.remove("show");
+    document.getElementById("feedback").innerHTML = "";
+  });
+})();
+  </script>
+</body>
+</html>

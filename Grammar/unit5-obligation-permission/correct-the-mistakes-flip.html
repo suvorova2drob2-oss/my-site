@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 Grammar — Correct the mistakes (flip cards)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+      --lf-green: #4ade80;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .lf {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--lf-green);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      max-width: min(100%, 560px);
+      line-height: 1.35;
+      color: #f1f5ff;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .card-wrap { margin-bottom: 16px; }
+    .card-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front {
+      background: var(--front-bg);
+      color: #f1f5ff;
+    }
+    .flip-back {
+      background: var(--back-bg);
+      color: #e8f0ff;
+      transform: rotateY(180deg);
+    }
+
+    .flip-front .situation-lead {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #fda4af;
+      margin-bottom: 10px;
+    }
+    .flip-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #86efac;
+      margin-bottom: 10px;
+    }
+    .flip-body { overflow-wrap: anywhere; }
+    .tap-hint {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .back-note {
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hub {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="lf">Language focus · Grammar</span>
+        <h1>Exercise 3 &mdash; Correct the mistakes (flip cards)</h1>
+      </div>
+      <a class="back" href="index.html">&larr; Grammar folder</a>
+    </header>
+
+    <p class="instr">
+      <strong>There is a mistake</strong> in each sentence (modals, obligation, passive, etc.). Read the line on the front, then <strong>tap the card</strong> (or press Space/Enter) to see a corrected version.
+    </p>
+    <p class="hint">Front = original sentence from the book with the error. Back = one possible correct sentence.</p>
+
+    <div id="deck" aria-label="Eight correction flip cards"></div>
+
+    <p class="hub">
+      <a href="index.html">&larr; Grammar folder</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../../unit5.html">Unit 5 (Mastering B2)</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  var CARDS = [
+    {
+      wrong:
+        "Children were let to leave school at the age of twelve when my grandparents were younger.",
+      correct:
+        "Children were allowed to leave school at the age of twelve when my grandparents were younger.",
+      note: "With this meaning, use \u201cbe allowed to\u201d rather than passive \u201cbe let\u201d."
+    },
+    {
+      wrong:
+        "My English teacher wears formal clothes in class, but she mustn\u2019t \u2013 she could wear jeans and a T-shirt if she wanted to.",
+      correct:
+        "My English teacher wears formal clothes in class, but she doesn\u2019t have to \u2013 she could wear jeans and a T-shirt if she wanted to.",
+      note: "Here it is lack of obligation, not prohibition (\u201cmustn\u2019t\u201d = must not)."
+    },
+    {
+      wrong:
+        "When my parents were at school, they must wore a uniform, including a hat.",
+      correct:
+        "When my parents were at school, they had to wear a uniform, including a hat.",
+      note: "Past obligation: \u201chad to\u201d, not \u201cmust + past form\u201d."
+    },
+    {
+      wrong:
+        "We supposed to get homework after every English class, but it doesn\u2019t always happen.",
+      correct:
+        "We are supposed to get homework after every English class, but it doesn\u2019t always happen.",
+      note: "Use \"be supposed to\" with the correct form of be (am/is/are)."
+    },
+    {
+      wrong:
+        "Parents in my country must to pay for their children\u2019s schoolbooks, but I don\u2019t think that\u2019s fair.",
+      correct:
+        "Parents in my country must pay for their children\u2019s schoolbooks, but I don\u2019t think that\u2019s fair.",
+      note: "After \u201cmust\u201d use the bare infinitive (\u201cpay\u201d), not \u201cto pay\u201d."
+    },
+    {
+      wrong:
+        "It\u2019s my view that schools should to provide all pupils with a tablet to use in class.",
+      correct:
+        "It\u2019s my view that schools should provide all pupils with a tablet to use in class.",
+      note: "After \u201cshould\u201d use the bare infinitive."
+    },
+    {
+      wrong:
+        "Children in schools used to be made stand in the corner with a book on their head if they misbehaved.",
+      correct:
+        "Children in schools used to be made to stand in the corner with a book on their head if they misbehaved.",
+      note: "Passive \u201cbe made\u201d is followed by a \u201cto\u201d\u2013infinitive."
+    },
+    {
+      wrong:
+        "I needn\u2019t to read the Grammar reference on page 214; I already know this area of grammar inside out.",
+      correct:
+        "I needn\u2019t read the Grammar reference on page 214; I already know this area of grammar inside out.",
+      note: "\u201cNeedn\u2019t\u201d behaves like a modal: bare infinitive (\u201cread\u201d), not \u201cto read\u201d."
+    }
+  ];
+
+  function escapeHtml(t) {
+    return String(t)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var deck = document.getElementById("deck");
+  deck.innerHTML = CARDS.map(function (c, i) {
+    var n = i + 1;
+    var note = c.note
+      ? '<p class="back-note">' + escapeHtml(c.note) + "</p>"
+      : "";
+    return (
+      '<div class="card-wrap">' +
+      '<p class="card-meta">Sentence ' +
+      n +
+      " / " +
+      CARDS.length +
+      "</p>" +
+      '<button type="button" class="flip-card" aria-pressed="false" aria-label="Sentence ' +
+      n +
+      '. Flip to see correction.">' +
+      '<div class="flip-inner">' +
+      '<div class="flip-face flip-front">' +
+      '<div class="situation-lead">With a mistake</div>' +
+      '<p class="flip-body"><strong>' +
+      n +
+      ".</strong> " +
+      escapeHtml(c.wrong) +
+      "</p>" +
+      '<div class="tap-hint">Tap to flip</div>' +
+      "</div>" +
+      '<div class="flip-face flip-back">' +
+      '<div class="flip-tag">Corrected</div>' +
+      '<p class="flip-body">' +
+      escapeHtml(c.correct) +
+      "</p>" +
+      note +
+      "</div>" +
+      "</div>" +
+      "</button>" +
+      "</div>"
+    );
+  }).join("");
+
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

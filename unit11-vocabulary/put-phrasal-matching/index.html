@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 11 Vocabulary &mdash; Put matching</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --orange-panel: rgba(251, 191, 36, 0.11);
+      --orange-border: rgba(251, 191, 36, 0.35);
+      --blue-panel: rgba(96, 165, 250, 0.12);
+      --blue-border: rgba(96, 165, 250, 0.38);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 14px;
+    }
+    .top h1 { font-size: 1.2rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+
+    .instr {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.86rem;
+      color: #bae6fd;
+      margin-bottom: 18px;
+    }
+
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .match-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      border-radius: 14px;
+      padding: 14px 14px 18px;
+      border: 2px solid;
+      min-height: 120px;
+    }
+    .panel-left {
+      background: var(--orange-panel);
+      border-color: var(--orange-border);
+    }
+    .panel-right {
+      background: var(--blue-panel);
+      border-color: var(--blue-border);
+    }
+    .panel-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      color: #fcd34d;
+    }
+    .panel-right .panel-title { color: #93c5fd; }
+
+    .start-row {
+      padding: 10px 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: rgba(15, 23, 42, 0.35);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      line-height: 1.55;
+      font-size: 0.92rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .start-row:hover {
+      border-color: rgba(251, 191, 36, 0.35);
+    }
+    .start-row.is-focused {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+    }
+    .start-row strong { color: #fef9c3; font-weight: 700; }
+    .start-row .num { font-weight: 800; color: #fcd34d; margin-right: 6px; }
+    .start-meta {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      min-height: 1.35em;
+    }
+    .start-meta.has-pick { color: #a5f3fc; font-style: normal; }
+
+    .end-chip {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: rgba(15, 23, 42, 0.45);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      transition: border-color 0.15s ease, opacity 0.15s ease;
+    }
+    .end-chip:hover:not(:disabled) {
+      border-color: #60a5fa;
+    }
+    .end-chip:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .end-chip.is-used {
+      border-color: rgba(52, 211, 153, 0.45);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .end-chip .badge {
+      display: inline-block;
+      min-width: 1.5rem;
+      font-weight: 800;
+      color: #93c5fd;
+      margin-right: 8px;
+    }
+    .dup-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-left: 4px;
+      font-weight: 600;
+    }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-item h4 { font-size: 0.8rem; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Vocabulary &mdash; <em style="color:#bae6fd;font-style:italic;">Put on</em> / <em style="color:#bae6fd;font-style:italic;">put up</em> / <em style="color:#bae6fd;font-style:italic;">put off</em></h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary hub</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Vocabulary tasks">
+      <a href="../index.html">Task 1</a>
+      <span>|</span>
+      <a href="../put-phrases/index.html">Task 2</a>
+      <span>|</span>
+      <span>Task 3 &mdash; Matching</span>
+      <span>|</span>
+      <a href="../weather-sentence-matching/index.html">Task 4</a>
+      <span>|</span>
+      <a href="../put-use-twice/index.html">Task 5</a>
+      <span>|</span>
+      <a href="../phrasal-down-choice/index.html">Task 6</a>
+      <span>|</span>
+      <a href="../phrasal-down-gaps/index.html">Task 7</a>
+      <span>|</span>
+      <a href="../weather-collocations-choice/index.html">Task 8</a>
+      <span>|</span>
+      <a href="../put-phrases-choice/index.html">Task 9</a>
+    </nav>
+
+    <p class="instr">
+      Match each sentence beginning (1&ndash;9) on the left with the correct ending on the right. The endings reuse letters <strong>a</strong>&ndash;<strong>g</strong> as in the book (two endings are labelled <strong>d</strong>, two <strong>f</strong>).
+    </p>
+    <p class="hint-bar">
+      <strong>How:</strong> click a sentence on the left (it highlights), then click an ending on the right. Each ending is used once. <strong>Change a pair:</strong> click that sentence again and choose another ending.
+    </p>
+
+    <div class="match-grid">
+      <div class="panel panel-left" aria-label="Sentence beginnings">
+        <div class="panel-title">Beginnings</div>
+        <button type="button" class="start-row" data-num="1">
+          <span class="num">1.</span>
+          Paula&rsquo;s joined an amateur dramatics society: they&rsquo;re <strong>putting on</strong>
+          <div class="start-meta js-pick" data-for="1"></div>
+        </button>
+        <button type="button" class="start-row" data-num="2">
+          <span class="num">2.</span>
+          These trousers are far too tight for me now: I must have <strong>put on</strong>
+          <div class="start-meta js-pick" data-for="2"></div>
+        </button>
+        <button type="button" class="start-row" data-num="3">
+          <span class="num">3.</span>
+          I don&rsquo;t really feel like watching anything now: we could <strong>put on</strong>
+          <div class="start-meta js-pick" data-for="3"></div>
+        </button>
+        <button type="button" class="start-row" data-num="4">
+          <span class="num">4.</span>
+          I&rsquo;m going to have to move out of my flat. My landlord&rsquo;s <strong>put up</strong>
+          <div class="start-meta js-pick" data-for="4"></div>
+        </button>
+        <button type="button" class="start-row" data-num="5">
+          <span class="num">5.</span>
+          Don&rsquo;t shout out the answer, Lara. You know you have to <strong>put up</strong>
+          <div class="start-meta js-pick" data-for="5"></div>
+        </button>
+        <button type="button" class="start-row" data-num="6">
+          <span class="num">6.</span>
+          Robin&rsquo;s coming to London today and I&rsquo;ve offered to <strong>put him up</strong>
+          <div class="start-meta js-pick" data-for="6"></div>
+        </button>
+        <button type="button" class="start-row" data-num="7">
+          <span class="num">7.</span>
+          The groom had an accident in the morning so they had to <strong>put off</strong>
+          <div class="start-meta js-pick" data-for="7"></div>
+        </button>
+        <button type="button" class="start-row" data-num="8">
+          <span class="num">8.</span>
+          It rained every single day and the tent got flooded. It <strong>put him off</strong>
+          <div class="start-meta js-pick" data-for="8"></div>
+        </button>
+        <button type="button" class="start-row" data-num="9">
+          <span class="num">9.</span>
+          She found it hard to study, as several things were <strong>putting her off</strong>
+          <div class="start-meta js-pick" data-for="9"></div>
+        </button>
+      </div>
+
+      <div class="panel panel-right" aria-label="Sentence endings">
+        <div class="panel-title">Endings</div>
+        <button type="button" class="end-chip" data-end="0"><span class="badge">a</span> weight.</button>
+        <button type="button" class="end-chip" data-end="1"><span class="badge">b</span> for the night.</button>
+        <button type="button" class="end-chip" data-end="2"><span class="badge">c</span> camping for life.</button>
+        <button type="button" class="end-chip" data-end="3"><span class="badge">d</span> the rent yet again.</button>
+        <button type="button" class="end-chip" data-end="4"><span class="badge">e</span> some music instead.</button>
+        <button type="button" class="end-chip" data-end="5"><span class="badge">f</span> the wedding to a later date.</button>
+        <button type="button" class="end-chip" data-end="6"><span class="badge">d</span> a production of Hamlet in June.<span class="dup-hint">(2nd d)</span></button>
+        <button type="button" class="end-chip" data-end="7"><span class="badge">f</span> your hand if you want to say something.<span class="dup-hint">(2nd f)</span></button>
+        <button type="button" class="end-chip" data-end="8"><span class="badge">g</span> like the noise of the traffic and the neighbours arguing.</button>
+      </div>
+    </div>
+
+    <p id="bank-hint" class="sr-only" aria-live="polite"></p>
+
+    <div class="btn-row">
+      <button type="button" class="action btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="action btn-reset" id="btn-reset">Reset</button>
+    </div>
+
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script>
+(function () {
+  /** sentence number 1–9 → correct ending index 0–8 (order in right column) */
+  var KEY = {
+    1: 6,
+    2: 0,
+    3: 4,
+    4: 3,
+    5: 7,
+    6: 1,
+    7: 5,
+    8: 2,
+    9: 8
+  };
+
+  var END_SNIPPET = [
+    "weight.",
+    "for the night.",
+    "camping for life.",
+    "the rent yet again.",
+    "some music instead.",
+    "the wedding to a later date.",
+    "a production of Hamlet in June.",
+    "your hand if you want to say something.",
+    "like the noise of the traffic and the neighbours arguing."
+  ];
+
+  var END_BOOK_LETTER = ["a", "b", "c", "d", "e", "f", "d", "f", "g"];
+
+  var EXPLAIN = {
+    1: "<strong>put on</strong> a show / production — organise a performance.",
+    2: "<strong>put on</strong> weight — gain body mass.",
+    3: "<strong>put on</strong> music — play or broadcast music.",
+    4: "<strong>put up</strong> (here: rent) — increase the price.",
+    5: "<strong>put up</strong> your hand — classroom signal before speaking.",
+    6: "<strong>put someone up</strong> — give overnight accommodation.",
+    7: "<strong>put off</strong> an event — postpone.",
+    8: "<strong>put someone off</strong> — discourage or spoil enthusiasm for something.",
+    9: "<strong>put someone off</strong> — distract or disturb concentration."
+  };
+
+  /** map num → assigned end id or null */
+  var assign = {};
+  var focusedNum = null;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function announce(msg) {
+    var h = document.getElementById("bank-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  function clearFeedbackDisplay() {
+    var fb = document.getElementById("feedback");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  }
+
+  function updatePickLines() {
+    for (var n = 1; n <= 9; n++) {
+      var line = document.querySelector(".js-pick[data-for=\"" + n + "\"]");
+      var eid = assign[n];
+      line.classList.toggle("has-pick", eid != null);
+      if (eid == null) {
+        line.textContent = "";
+      } else {
+        line.textContent = "\u2192 (" + END_BOOK_LETTER[eid] + ") " + END_SNIPPET[eid];
+      }
+    }
+  }
+
+  function refreshEndButtons() {
+    var usedByEnd = {};
+    for (var k in assign) {
+      if (Object.prototype.hasOwnProperty.call(assign, k)) {
+        var v = assign[k];
+        if (v != null) usedByEnd[v] = Number(k);
+      }
+    }
+    document.querySelectorAll(".end-chip").forEach(function (btn) {
+      var id = Number(btn.getAttribute("data-end"));
+      var num = usedByEnd[id];
+      btn.disabled = false;
+      btn.classList.remove("is-used");
+      if (num != null) {
+        btn.classList.add("is-used");
+        btn.setAttribute("aria-label", "Ending " + btn.querySelector(".badge").textContent.trim() + " — paired with sentence " + num);
+      } else {
+        btn.setAttribute(
+          "aria-label",
+          "Ending: " + (btn.textContent || "").replace(/\s+/g, " ").trim()
+        );
+      }
+    });
+  }
+
+  function wireStarts() {
+    document.querySelectorAll(".start-row").forEach(function (row) {
+      row.addEventListener("click", function () {
+        clearFeedbackDisplay();
+        var n = Number(row.getAttribute("data-num"));
+        focusedNum = n;
+        document.querySelectorAll(".start-row").forEach(function (r) {
+          r.classList.toggle("is-focused", r === row);
+        });
+        announce("");
+      });
+    });
+  }
+
+  function wireEnds() {
+    document.querySelectorAll(".end-chip").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.disabled) return;
+        var endId = Number(btn.getAttribute("data-end"));
+        if (focusedNum == null) {
+          announce("First click a sentence on the left.");
+          return;
+        }
+        clearFeedbackDisplay();
+        for (var k in assign) {
+          if (Object.prototype.hasOwnProperty.call(assign, k) && assign[k] === endId) {
+            assign[k] = null;
+          }
+        }
+        assign[focusedNum] = endId;
+        updatePickLines();
+        refreshEndButtons();
+      });
+    });
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 9; n++) {
+      var user = assign[n];
+      var ok = user != null && user === KEY[n];
+      if (ok) correct++;
+
+      html += '<div class="fb-item ' + (ok ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      if (user == null) {
+        html += "<p>No ending chosen.</p>";
+      } else {
+        html +=
+          "<p>Your choice: <strong>(" +
+          esc(END_BOOK_LETTER[user]) +
+          ")</strong> " +
+          esc(END_SNIPPET[user]) +
+          "</p>";
+      }
+      html += "<p>" + EXPLAIN[n] + "</p>";
+      if (!ok) {
+        html +=
+          "<p>Key: <strong>(" +
+          esc(END_BOOK_LETTER[KEY[n]]) +
+          ")</strong> " +
+          esc(END_SNIPPET[KEY[n]]) +
+          "</p>";
+      }
+      html += "</div>";
+    }
+
+    html =
+      '<p style="margin-bottom:12px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 9</p>" +
+      html;
+    var fb = document.getElementById("feedback");
+    fb.innerHTML = html;
+    fb.classList.add("show");
+    focusedNum = null;
+    document.querySelectorAll(".start-row").forEach(function (r) {
+      r.classList.remove("is-focused");
+    });
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    assign = {};
+    focusedNum = null;
+    clearFeedbackDisplay();
+    announce("");
+    document.querySelectorAll(".start-row").forEach(function (r) {
+      r.classList.remove("is-focused");
+    });
+    updatePickLines();
+    refreshEndButtons();
+  });
+
+  wireStarts();
+  wireEnds();
+  updatePickLines();
+  refreshEndButtons();
+})();
+  </script>
+</body>
+</html>
