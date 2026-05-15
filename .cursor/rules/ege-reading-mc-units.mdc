@@ -1,0 +1,47 @@
+---
+description: ЕГЭ Reading Multiple Choice — схема юнитов, словарь, hunt, подсветка после проверки (для новых mc-reading-units)
+globs: js/ege-reading/ege-mc-reading*.js, js/ege-reading/mc-reading-units/**/*, ege-reading-multiple-choice.html, css/ege-reading-multiple-choice.css
+alwaysApply: false
+---
+
+# Reading · Multiple Choice (текст + 1 из 4)
+
+## Файлы
+
+- Бутстрап пакета: `js/ege-reading/ege-mc-reading-data.js` (`window.__EGE_READING_MC__.units`).
+- Юниты: `js/ege-reading/mc-reading-units/u*.js` — только `pack.units.push({...})`.
+- Подключение в `ege-reading-multiple-choice.html`: после `ege-mc-reading-data.js`, по порядку юнитов, затем `ege-mc-reading-stats-bridge.js`, `ege-mc-reading-app.js`.
+- Логика UI: `js/ege-reading/ege-mc-reading-app.js`.
+- Статистика: `js/ege-reading/ege-mc-reading-stats-bridge.js` → навык **Reading: Multiple Choice**, ключ `ege_reading_mcr_scores`.
+
+## Поля юнита (контракт)
+
+Обязательно:
+
+- `id` (строка, уникально), `unitOrder`, `title`, `instructionHtml`.
+- `paragraphs[]`: объекты `{ n: number, text: string }`. Необязательно `evidence: { support: string[], distract: string[] }` — подстроки **дословно** из `text` для подсветки после проверки.
+- `questions[]`: `{ examNum, prompt, key: 1..4, choices: [{ num, text }], explainRu }`.
+  - **`prompt`** — **только на английском**, как в задании (допустим безопасный HTML в строке: `<strong>`, типографские кавычки `&ldquo;` и т.д.).
+  - **`explainRu`** — разбор на русском; в разметке допускается HTML (`<strong>`, абзацы).
+- **`quickPhrases[]`**: пары `{ en, ru }` для боковой панели «must-have» / коллокации.
+- **`tapPhrases[]`**: фразы, которые реально встречаются в тексте → клик по тексту с переводом. Если нет `tapLexicon`, в приложении включён **только фразовый** тап (как в Matching Headlines unit 10+).
+
+## Поведение экрана (не ломать при правках движка)
+
+1. **Вёрстка**: `.ege-mcr-split` — слева текст + hunt-бар, справа вопросы, кнопки, итог; на узком экране одна колонка. На широком правая колонка липкая (`sticky`).
+2. **Быстрый словарь**: FAB + drawer (`ex3-dict-*`, классы как в Matching Headlines); тело панели собирается из `quickPhrases` / подсказки по `tapPhrases`.
+3. **После «Проверить»** (зафиксировано в `ege-mc-reading-app.js`):
+   - у правильного ответа класс **`ege-mcr-opt--key`** (зелёный);
+   - у выбранного пользователем при ошибке — **`ege-mcr-opt--user`** + **`ege-mcr-opt--user-wrong`** (красный);
+   - при верном ответе тот же пункт получает **`ege-mcr-opt--key`** и **`ege-mcr-opt--user`** (усиленное зелёное);
+   - блок объяснения: **`ege-mcr-explain-head`** (твой ответ / правильный вариант с текстом) + **`ege-mcr-explain-body`** = **`explainRu`** для **каждого** вопроса (и верного, и неверного);
+   - радиокнопки `disabled`, но **видимы** (`opacity: 1` у `input[disabled]`).
+4. **Evidence / distractor hunt**: после проверки показывается бар с чекбоксом; зелёный/розовый — те же семантики, что в §10 (`ege-mh-ev--ok` / `ege-mh-ev--distract`).
+5. **Сброс**: классы `ege-mcr-opt--key`, `ege-mcr-opt--user`, `ege-mcr-opt--user-wrong` снимаются со всех `.ege-mcr-opt`.
+
+## Чеклист нового юнита
+
+- [ ] Новый файл `mc-reading-units/uN-….js`, `unitOrder: N`, подключить в HTML после предыдущего юнита.
+- [ ] Все `prompt` на английском; `key` согласован с `choices`.
+- [ ] `evidence.support` / `distract` — точные вырезки из абзаца или не задавать `evidence`.
+- [ ] `quickPhrases` / `tapPhrases` — в приоритете **фразы**, не словари на сотню одиночных слов (см. `ege-quick-dictionary-phrases-policy.mdc`).

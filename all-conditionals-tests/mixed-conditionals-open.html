@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All conditionals — H · Verb forms (open)</title>
+  <link rel="stylesheet" href="../css/part2-open-cloze.css" />
+  <style>
+    .has-p2-dict-fab .part2-open-page {
+      padding-right: max(76px, calc(68px + env(safe-area-inset-right, 0px)));
+      box-sizing: border-box;
+    }
+
+    .ex3-glossary-inner {
+      padding: 14px 16px 18px;
+    }
+
+    .ex3-glossary-inner dl {
+      margin: 0;
+    }
+
+    .ex3-glossary-inner dt {
+      margin-top: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fef08a;
+    }
+
+    .ex3-glossary-inner dt:first-of-type {
+      margin-top: 0;
+    }
+
+    .ex3-glossary-inner dd {
+      margin: 5px 0 0;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1.52;
+      color: #cbd5e1;
+    }
+
+    .ex3-glossary-inner dd strong {
+      color: #fde68a;
+      font-weight: 800;
+    }
+
+    .p2-mixed-gloss__why {
+      margin: 0 0 8px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .ex3-dict-fab {
+      position: fixed;
+      z-index: 100002;
+      right: max(8px, env(safe-area-inset-right, 0px));
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      padding: 6px 5px;
+      border-radius: 12px;
+      border: 2px solid rgba(192, 132, 252, 0.8);
+      margin: 0;
+      font: inherit;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(
+        165deg,
+        rgba(139, 92, 246, 0.55) 0%,
+        rgba(30, 27, 75, 0.96) 45%,
+        rgba(15, 23, 42, 0.98) 100%
+      );
+      color: #faf5ff;
+      box-shadow: 0 4px 22px rgba(124, 58, 237, 0.38);
+      transition:
+        right 0.3s ease,
+        left 0.3s ease,
+        filter 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .ex3-dict-fab:hover {
+      filter: brightness(1.08);
+    }
+
+    .ex3-dict-fab:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    body.part2--dict-open .ex3-dict-fab {
+      right: min(360px, calc(92vw - env(safe-area-inset-right, 0px)));
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 480px) {
+      body.part2--dict-open .ex3-dict-fab {
+        right: auto;
+        left: max(8px, env(safe-area-inset-left, 8px));
+        transform: translateY(-50%);
+      }
+
+      body.part2--dict-open .ex3-dict-fab:active {
+        transform: translateY(-50%) scale(0.94);
+      }
+    }
+
+    .ex3-dict-fab-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      font-size: 7.5px;
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .ex3-dict-fab-line {
+      display: block;
+      max-width: 100%;
+    }
+
+    .ex3-dict-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100001;
+      background: rgba(2, 6, 23, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .ex3-dict-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(360px, 92vw);
+      height: 100%;
+      max-height: 100dvh;
+      z-index: 100002;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 55%, #0a0f1a 100%);
+      border-left: 2px solid rgba(167, 139, 250, 0.45);
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+      transform: translateX(100%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    }
+
+    .ex3-dict-drawer.is-visible {
+      transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .ex3-dict-drawer-head {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e9d5ff;
+    }
+
+    .ex3-dict-drawer-x {
+      font: inherit;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(248, 113, 113, 0.15);
+      color: #fecaca;
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .ex3-dict-drawer-x:hover {
+      background: rgba(248, 113, 113, 0.28);
+    }
+
+    .ex3-dict-drawer-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 16px));
+      border-top: none;
+      max-height: none;
+    }
+  </style>
+  <script>
+    window.PART2_OPEN_BOOT = {
+      contextId: "ege-all-conditionals-mixed-forms",
+      embeddedScriptId: "part2-open-bundled-ege-all-conditionals-mixed-forms",
+      backHref: "index.html",
+      backLabel: "Все типы — тесты",
+      pageTitle: "H · Mixed &amp; second &amp; third — verb forms",
+      documentTitle: "All conditionals — H · Verb forms (open)",
+      chainNext: "only-child-open.html",
+      chainNextLabel: "J · Being an only child"
+    };
+  </script>
+</head>
+<body class="part2-open-body has-p2-dict-fab">
+  <main class="part2-open-page">
+    <header class="part2-open-top">
+      <a class="part2-open-back" id="part2OpenBack" href="index.html">&larr; Back</a>
+      <h1 id="part2OpenH1">H · Verb forms</h1>
+    </header>
+    <p class="part2-open-subtitle" id="part2OpenSubtitle"></p>
+    <div id="part2OpenSplit" class="part2-open-split">
+      <div class="part2-open-main-col">
+        <section class="part2-open-task" id="part2OpenTask" aria-label="Open cloze text"></section>
+        <div class="part2-btn-row">
+          <button type="button" id="part2BtnCheck" class="part2-btn-check">Проверить</button>
+          <button type="button" id="part2BtnReset" class="part2-btn-reset">Сбросить</button>
+        </div>
+        <div id="part2Feedback" class="part2-feedback" role="status" aria-live="polite"></div>
+      </div>
+      <aside id="part2InlineReveal" class="part2-inline-panel" hidden aria-label="Ключ и пояснения к пропускам"></aside>
+    </div>
+    <div id="part2OpenNextStrip" class="part2-chain-next" hidden>
+      <a id="part2OpenNextLink" class="part2-chain-next__link" href="#">Next task</a>
+    </div>
+  </main>
+
+  <button
+    type="button"
+    class="ex3-dict-fab"
+    id="p2-mixed-dict-fab"
+    aria-label="Открыть быстрый словарь"
+    aria-controls="p2-mixed-dict-drawer"
+    aria-expanded="false"
+  >
+    <span class="ex3-dict-fab-text">
+      <span class="ex3-dict-fab-line">Быстрый</span>
+      <span class="ex3-dict-fab-line">словарь</span>
+    </span>
+  </button>
+  <div class="ex3-dict-backdrop" id="p2-mixed-dict-backdrop" hidden aria-hidden="true"></div>
+  <aside
+    class="ex3-dict-drawer"
+    id="p2-mixed-dict-drawer"
+    aria-label="Быстрый словарь"
+    aria-hidden="true"
+  >
+    <div class="ex3-dict-drawer-head">
+      <span>Быстрый словарь</span>
+      <button type="button" class="ex3-dict-drawer-x" id="p2-mixed-dict-close" aria-label="Закрыть словарь">
+        ×
+      </button>
+    </div>
+    <div class="ex3-glossary-inner ex3-dict-drawer-body" id="p2-mixed-dict-body">
+      <dl>
+        <dt>1. Be good at something</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> классика заданий 30&ndash;36 (лексика). Ученики часто по привычке ставят <em>in</em>.
+          </p>
+          <p><strong>В словарик:</strong> <em>Be good at maths / physics / swimming</em> &mdash; хорошо разбираться в чём-то.</p>
+        </dd>
+        <dt>2. Offer a place</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> устойчивое словосочетание (collocation) для темы образования: не <em>give a place</em>, не <em>invite</em>, а именно <em>offer</em>.
+          </p>
+          <p><strong>В словарик:</strong> <em>The university offered me a place</em> &mdash; университет зачислил меня / предложил место.</p>
+        </dd>
+        <dt>3. Get a lift</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> разговорная фраза из упражнения (предложение про обочину). Полезно для аудирования и неформального письма.
+          </p>
+          <p><strong>В словарик:</strong> <em>Try to get a lift</em> &mdash; пытаться поймать попутку / доехать с кем-то.</p>
+        </dd>
+        <dt>4. By now</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> жёсткий маркер времени. В конце предложения часто сигнал, что в результате нужна форма perfect (в mixed &mdash; например <em>would have + V3</em>).
+          </p>
+          <p><strong>В словарик:</strong> <em>By now</em> &mdash; к настоящему моменту; уже к этому времени.</p>
+        </dd>
+        <dt>5. Spare tyre</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> полезная лексика для рассказа о проблемах в путешествии (в т.ч. устная часть).
+          </p>
+          <p><strong>В словарик:</strong> <em>A spare tyre</em> (BrE) / <em>spare tire</em> (AmE) &mdash; запасное колесо, запаска.</p>
+        </dd>
+        <dt>6. Stay up late</dt>
+        <dd>
+          <p class="p2-mixed-gloss__why">
+            <strong>Почему важно:</strong> фразовый шаблон; часто в текстах про режим дня и здоровье.
+          </p>
+          <p><strong>В словарик:</strong> <em>Stay up late</em> &mdash; засиживаться допоздна, не ложиться вовремя.</p>
+        </dd>
+      </dl>
+    </div>
+  </aside>
+
+  <script id="part2-open-bundled-ege-all-conditionals-mixed-forms" type="application/json">
+{
+  "title": "Complete the conditionals",
+  "subtitle": "Complete each sentence using the correct form of the verb in brackets. Each gap may need more than one word (e.g. had done, wouldn’t be standing). Capital letters where a new sentence starts or in questions.",
+  "passage": "If [[1]] your homework last night, you'd know the answer to this question!\n\nWe [[2]] by the side of the road at the moment trying to get a lift if [[3]] a spare tyre with us.\n\nIf I [[4]] so late last night, I [[5]] so tired this morning!\n\n[[6]] in terrible trouble right now if you [[7]] me.\n\nIf I had a video recorder, [[8]] the match last night.\n\n[[9]] for Andy's phone number when I met him if I [[10]] a boyfriend!\n\nIf Cody [[11]] so far away, he [[12]] so late to the barbecue yesterday.\n\nTracy [[13]] extra lessons last month if she [[14]] as good at maths as you are.\n\n[[15]] a job when you left school if the university [[16]] you a place?\n\nIf you [[17]] as much money as she does, [[18]] by now?",
+  "answers": {
+    "1": ["had done", "'d done"],
+    "2": ["wouldn't be standing", "would not be standing", "wouldnt be standing"],
+    "3": ["had brought", "'d brought"],
+    "4": ["hadn't stayed up", "had not stayed up", "hadnt stayed up", "hadn't stayed", "had not stayed"],
+    "5": ["wouldn't feel", "would not feel", "wouldnt feel"],
+    "6": ["I'd be", "I would be"],
+    "7": ["hadn't helped", "had not helped", "hadnt helped"],
+    "8": ["I'd have recorded", "I would have recorded", "I'd've recorded", "I would've recorded"],
+    "9": ["Would I have asked"],
+    "10": ["hadn't already had", "had not already had", "hadnt already had"],
+    "11": ["didn't live", "did not live", "didnt live"],
+    "12": ["wouldn't have been", "would not have been", "wouldnt have been"],
+    "13": ["wouldn't have needed", "would not have needed", "wouldnt have needed"],
+    "14": ["were"],
+    "15": ["Would you have got", "Would you have gotten"],
+    "16": ["hadn't offered", "had not offered", "hadnt offered"],
+    "17": ["had"],
+    "18": ["would you have retired"]
+  },
+  "explanations": {
+    "1": "Mixed: unreal past situation → present result. If + Past Perfect (had done), main clause with would + base verb (you'd know).",
+    "2": "Mixed: if we had brought (Past Perfect), we wouldn't be standing now (would + be + -ing for ‘right now’).",
+    "3": "Past Perfect after if for a past counterfactual cause (had brought).",
+    "4": "Past Perfect negative in if: hadn't stayed up (or hadn't stayed).",
+    "5": "Present result this morning: wouldn't feel (not wouldn't have felt — ‘this morning’ ties to now).",
+    "6": "Main clause first: I'd be (= I would be) for present unreal result; if you hadn't helped (Past Perfect).",
+    "7": "Past Perfect: you hadn't helped me (but you did help).",
+    "8": "Unreal present in if (had), past result: would have recorded.",
+    "9": "Question form of third conditional: Would I have asked…",
+    "10": "Past Perfect negative: hadn't already had.",
+    "11": "Unreal present in if: didn't live (second conditional style) with past result in main clause.",
+    "12": "Past result: wouldn't have been so late… yesterday.",
+    "13": "Past result last month: wouldn't have needed.",
+    "14": "Present unreal comparison after if: were (as good as you are).",
+    "15": "Third conditional question: Would you have got/gotten…",
+    "16": "Past Perfect in if: hadn't offered.",
+    "17": "Unreal present possession: had (as much money as she does).",
+    "18": "By now with past-oriented result: would you have retired (mixed pattern)."
+  }
+}
+  </script>
+  <script src="../js/prep-boxed.js"></script>
+  <script src="../js/part2-open-cloze-core.js"></script>
+  <script>
+    (function () {
+      var body = document.body;
+      var fab = document.getElementById("p2-mixed-dict-fab");
+      var drawer = document.getElementById("p2-mixed-dict-drawer");
+      var backdrop = document.getElementById("p2-mixed-dict-backdrop");
+      var closeBtn = document.getElementById("p2-mixed-dict-close");
+
+      function closeDict() {
+        if (!drawer) return;
+        drawer.classList.remove("is-visible");
+        drawer.setAttribute("aria-hidden", "true");
+        if (backdrop) {
+          backdrop.hidden = true;
+          backdrop.setAttribute("aria-hidden", "true");
+        }
+        body.classList.remove("part2--dict-open");
+        if (fab) fab.setAttribute("aria-expanded", "false");
+      }
+
+      function openDict() {
+        if (!drawer) return;
+        drawer.classList.add("is-visible");
+        drawer.setAttribute("aria-hidden", "false");
+        if (backdrop) {
+          backdrop.hidden = false;
+          backdrop.setAttribute("aria-hidden", "false");
+        }
+        body.classList.add("part2--dict-open");
+        if (fab) fab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDict() {
+        if (!drawer) return;
+        if (drawer.classList.contains("is-visible")) closeDict();
+        else openDict();
+      }
+
+      if (fab) fab.addEventListener("click", toggleDict);
+      if (closeBtn) closeBtn.addEventListener("click", closeDict);
+      if (backdrop) backdrop.addEventListener("click", closeDict);
+
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key !== "Escape") return;
+        if (drawer && drawer.classList.contains("is-visible")) {
+          ev.preventDefault();
+          closeDict();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

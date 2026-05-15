@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ЕГЭ - Statistics</title>
+  <title>Статистика — ЕГЭ</title>
   <style>
     :root {
       --bg: #071432;
@@ -52,10 +52,7 @@
     }
 
     .hero {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .hero-card,
@@ -82,7 +79,7 @@
 
     .hero-stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
       gap: 10px;
       margin-top: 16px;
     }
@@ -100,40 +97,20 @@
       margin-bottom: 4px;
     }
 
-    .controls {
-      display: grid;
-      gap: 10px;
+    .section-compact {
+      margin-top: 18px;
     }
 
-    .control-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .section-compact h2 {
+      margin-bottom: 8px;
     }
 
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor: pointer;
-      color: #06243a;
-      background: var(--green);
-    }
-
-    button.secondary {
-      background: #dbeafe;
-      color: #10233e;
-    }
-
-    button.warning {
-      background: var(--yellow);
-      color: #2c2204;
-    }
-
-    button.reset {
-      background: #fecdd3;
-      color: #4b1020;
+    .hint-student {
+      margin: 0 0 10px;
+      max-width: 720px;
+      line-height: 1.45;
+      font-size: 0.88rem;
+      color: var(--muted);
     }
 
     .section {
@@ -145,6 +122,12 @@
       margin-bottom: 12px;
     }
 
+    .section-hint {
+      margin: -8px 0 14px;
+      max-width: 720px;
+      line-height: 1.45;
+    }
+
     .mastery-grid,
     .gym-grid,
     .units-grid {
@@ -154,6 +137,80 @@
 
     .mastery-grid {
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    details.mastery-fold.panel {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .mastery-summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 16px 18px;
+      margin: 0;
+    }
+
+    .mastery-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mastery-summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mastery-summary-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mastery-cue {
+      font-size: 0.7rem;
+      opacity: 0.55;
+      transition: transform 0.2s ease;
+    }
+
+    details.mastery-fold[open] .mastery-cue {
+      transform: rotate(180deg);
+      opacity: 0.85;
+    }
+
+    .mastery-fold .mastery-hint {
+      margin: 8px 0 0;
+      font-size: 0.82rem;
+    }
+
+    .mastery-fold .bar-track {
+      margin-top: 10px;
+    }
+
+    .mastery-body {
+      padding: 0 18px 16px;
+      border-top: 1px solid rgba(157, 174, 203, 0.15);
+    }
+
+    .mastery-source-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 8px 11px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .mastery-source-row strong {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.82rem;
     }
 
     .bar-track {
@@ -204,6 +261,54 @@
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
+    .unit-skills-fold {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(157, 174, 203, 0.18);
+    }
+
+    .unit-skills-summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .unit-skills-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .unit-skills-summary .fold-cue {
+      flex-shrink: 0;
+      opacity: 0.65;
+      font-size: 0.75rem;
+      display: inline-block;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .unit-skills-summary-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .unit-skills-fold[open] .fold-cue {
+      opacity: 0.95;
+      transform: rotate(180deg);
+    }
+
+    .unit-skills-peek {
+      color: var(--text);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
     .unit-card.locked {
       opacity: 0.7;
       border-color: rgba(251, 113, 133, 0.35);
@@ -227,9 +332,9 @@
     }
 
     .unit-detail {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(157, 174, 203, 0.18);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(157, 174, 203, 0.12);
       display: grid;
       gap: 8px;
     }
@@ -263,9 +368,347 @@
       background: rgba(255, 255, 255, 0.04);
     }
 
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .insight-stack {
+      display: flex;
+      flex-direction: column;
+      min-height: min(340px, 48vh);
+    }
+
+    .insight-stack-body {
+      flex: 1 1 auto;
+    }
+
+    .insight-aside {
+      flex: 1;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .insight-aside-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 2px;
+    }
+
+    .insight-micro-list {
+      margin: 0;
+      padding-left: 1.15em;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .insight-micro-list li {
+      margin: 3px 0;
+    }
+
+    .streak-mid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .streak-card.insight-stack {
+      align-items: stretch;
+    }
+
+    .streak-card.insight-stack .streak-copy {
+      width: 100%;
+    }
+
+    .streak-card .insight-aside {
+      text-align: left;
+    }
+
+    .insight-card.panel {
+      padding: 14px 16px;
+    }
+
+    .insight-card.panel h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+
+    .insight-card .insight-lead {
+      margin-bottom: 10px;
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--green);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .insight-card .insight-lead.muted {
+      color: var(--muted);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    /* Streak — геймификация */
+    .streak-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 16px 14px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .streak-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 90% 55% at 50% -5%, rgba(251, 146, 60, 0.2), transparent 58%);
+      pointer-events: none;
+    }
+
+    .streak-card.streak-idle::before {
+      background: radial-gradient(ellipse 90% 55% at 50% -5%, rgba(157, 174, 203, 0.12), transparent 58%);
+    }
+
+    .streak-visual {
+      position: relative;
+      width: 108px;
+      height: 108px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .streak-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from -90deg, #f97316, #fbbf24, #a3e635, #38bdf8, #c084fc, #f97316);
+      opacity: 0.55;
+      animation: streak-orbit 10s linear infinite;
+    }
+
+    .streak-card.streak-idle .streak-ring {
+      animation: none;
+      opacity: 0.22;
+      background: conic-gradient(from -90deg, #64748b, #475569, #64748b);
+    }
+
+    @keyframes streak-orbit {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .streak-core {
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      z-index: 1;
+      background: linear-gradient(160deg, #243a5f 0%, #162a4a 100%);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      box-shadow:
+        inset 0 0 22px rgba(251, 146, 60, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .streak-card.streak-idle .streak-core {
+      border-color: rgba(148, 163, 184, 0.35);
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .streak-emoji {
+      font-size: 1.25rem;
+      line-height: 1;
+      filter: drop-shadow(0 2px 8px rgba(251, 146, 60, 0.55));
+    }
+
+    .streak-card.streak-idle .streak-emoji {
+      filter: grayscale(0.4) opacity(0.75);
+    }
+
+    .streak-num {
+      font-size: 1.85rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #fff8e8 0%, #fbbf24 55%, #fb923c 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .streak-card.streak-idle .streak-num {
+      background: none;
+      -webkit-background-clip: initial;
+      background-clip: initial;
+      color: var(--muted);
+    }
+
+    .streak-copy {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .streak-tier {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fdba74;
+      margin-bottom: 6px;
+    }
+
+    .streak-card.streak-idle .streak-tier {
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .streak-msg {
+      margin: 0;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .weak-spot-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      align-items: center;
+      margin-top: 6px;
+      padding: 8px 11px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.84rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .weak-spot-row--novice {
+      border-color: rgba(148, 163, 184, 0.22);
+    }
+
+    .weak-spot-row--survivor {
+      border-color: rgba(56, 189, 248, 0.28);
+    }
+
+    .weak-spot-row--sniper {
+      border-color: rgba(52, 211, 153, 0.32);
+    }
+
+    .weak-spot-row--master {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(244, 114, 182, 0.06));
+    }
+
+    .weak-spot-main a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .weak-spot-main a:hover {
+      text-decoration: underline;
+    }
+
+    .weak-spot-hint {
+      margin: 3px 0 0;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .weak-spot-meta {
+      text-align: right;
+      align-self: center;
+    }
+
+    .weak-spot-pct {
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+    }
+
+    .activity-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 6px;
+      padding: 7px 10px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.84rem;
+      flex-wrap: wrap;
+    }
+
+    .activity-when {
+      color: var(--muted);
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .activity-what {
+      text-align: right;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .activity-what a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .activity-what a:hover {
+      text-decoration: underline;
+    }
+
+    .streak-card > h3 {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .streak-ring {
+        animation: none;
+      }
+    }
+
     @media (max-width: 900px) {
-      .hero {
+      .weak-spot-row {
         grid-template-columns: 1fr;
+      }
+
+      .weak-spot-meta {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding-top: 2px;
       }
     }
   </style>
@@ -276,66 +719,67 @@
 
     <section class="hero">
       <div class="hero-card">
-        <div class="title">Statistics Hub</div>
+        <div class="title">Статистика</div>
         <p class="subtitle">
-          Первый экран статистики для ЕГЭ: допуск к следующим юнитам от <strong>60%</strong>,
-          шкалы мастерства по разделам и отдельный учёт качалок.
+          Здесь видно, как ты продвигаешься по юнитам. Набери <strong>60%</strong> в текущем блоке — откроется следующий.
+          Удобно чередовать чтение, грамматику и мини‑качалки и следить за ритмом занятий.
         </p>
         <div class="hero-stats">
           <div class="stat-pill">
             <strong id="overallScore">0%</strong>
-            <span class="small">Общий mastery score</span>
+            <span class="small">Свод по разделам</span>
           </div>
           <div class="stat-pill">
             <strong id="unlockedUnits">1/4</strong>
-            <span class="small">Открыто exam units</span>
+            <span class="small">Открыто блоков</span>
           </div>
           <div class="stat-pill">
             <strong id="gymAverage">0%</strong>
-            <span class="small">Средний прогресс gym</span>
+            <span class="small">Качалки в среднем</span>
           </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Demo Controls</h2>
-        <p class="small">Нажми кнопку и сразу увидишь, как открываются юниты и меняется статистика.</p>
-        <div class="controls" style="margin-top: 14px;">
-          <div class="control-row">
-            <button type="button" data-demo="59">Unit 1 = 59%</button>
-            <button type="button" data-demo="60" class="warning">Unit 1 = 60%</button>
-            <button type="button" data-demo="85" class="secondary">Unit 1 = 85%</button>
+          <div class="stat-pill">
+            <strong id="fullPackScore">—</strong>
+            <span class="small">Лучший полный прогон</span>
           </div>
-          <div class="control-row">
-            <button type="button" id="startGym">Начать качалки</button>
-            <button type="button" id="masterMode" class="secondary">Master Mode</button>
-            <button type="button" id="resetStats" class="reset">Сбросить</button>
-          </div>
-        </div>
-        <div class="legend">
-          <span>0-59%: locked route</span>
-          <span>60%+: next unit unlocked</span>
-          <span>95%+: legendary glow</span>
         </div>
       </div>
     </section>
 
+    <section class="section section-compact">
+      <h2>Твой фокус</h2>
+      <p class="hint-student">
+        Короткая строка под навыком подсказывает уровень; список сверху — самый приоритетный. Серия сбросится только после пропущенного дня.
+      </p>
+      <div id="insightsPanel" class="insights-grid"></div>
+    </section>
+
     <section class="section">
-      <h2>Exam Units</h2>
+      <h2>Блоки маршрута</h2>
+      <p class="small section-hint">
+        Каждый блок — шаг маршрута. Нажми на карточку, чтобы развернуть навыки и увидеть проценты по строкам.
+      </p>
       <div id="unitsGrid" class="units-grid"></div>
     </section>
 
     <section class="section">
-      <h2>Section Mastery</h2>
+      <h2>Сила по разделам</h2>
+      <p class="small section-hint" style="margin-top: -6px;">
+        Здесь свод по крупным разделам (Reading, Listening…). Карточку можно раскрыть и посмотреть каждый навык.
+      </p>
       <div id="masteryGrid" class="mastery-grid"></div>
     </section>
 
     <section class="section">
-      <h2>Gym Panel</h2>
+      <h2>Мини-тренировки</h2>
       <div id="gymGrid" class="gym-grid"></div>
     </section>
   </main>
 
+  <script src="js/ege/ege-activity-tracker.js" vite-ignore></script>
+  <script src="js/ege-reading/ege-reading-mh-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-reading/ege-gapped-text-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-reading/ege-mc-reading-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege/ege-full-pack-stats.js" vite-ignore></script>
   <script>
     const UNLOCK_THRESHOLD = 60;
     const STORAGE_KEY = "egeStatisticsDemoState";
@@ -348,7 +792,8 @@
           score: 0,
           skills: [
             { name: "Reading: Matching Headlines", score: 0 },
-            { name: "Listening: Matching", score: 0 },
+            { name: "Reading: Gapped Text", score: 0 },
+            { name: "Reading: Multiple Choice", score: 0 },
             { name: "Grammar Exam", score: 0 }
           ]
         },
@@ -357,7 +802,7 @@
           title: "Unit 2",
           score: 0,
           skills: [
-            { name: "Reading: Gapped Text", score: 0 },
+            { name: "Listening: Matching", score: 0 },
             { name: "Lexis Exam", score: 0 },
             { name: "Speaking Exam", score: 0 }
           ]
@@ -394,13 +839,43 @@
     };
 
     const masteryDefinitions = [
-      { name: "Reading", sources: ["Reading: Matching Headlines", "Reading: Gapped Text", "Mixed Reading"] },
+      {
+        name: "Reading",
+        sources: [
+          "Reading: Matching Headlines",
+          "Reading: Gapped Text",
+          "Reading: Multiple Choice",
+          "Mixed Reading"
+        ]
+      },
       { name: "Listening", sources: ["Listening: Matching", "Listening: Multiple Choice"] },
       { name: "Grammar", sources: ["Grammar Exam", "Grammar Exam Advanced", "The Verb Pump", "Passive Power"] },
       { name: "Word Formation", sources: ["Word Formation Exam", "Word Formation Nouns"] },
       { name: "Lexis 30-36", sources: ["Lexis Exam", "Lexis Sniper: synonym-trap", "Mixed Lexis"] },
       { name: "Speaking", sources: ["Speaking Exam", "phonetic-flow", "logic-comparison", "Mixed Speaking"] }
     ];
+
+    const SKILL_HREF = {
+      "Reading: Matching Headlines": "ege-reading-matching-headlines.html",
+      "Reading: Gapped Text": "ege-reading-gapped-text.html",
+      "Reading: Multiple Choice": "ege-reading-multiple-choice.html",
+      "Grammar Exam": "ege-grammar.html",
+      "Listening: Matching": "ege-listening.html",
+      "Lexis Exam": "ege-lexical-games.html",
+      "Speaking Exam": "ege-speaking.html",
+      "Listening: Multiple Choice": "ege-listening.html",
+      "Word Formation Exam": "ege-word-formation.html",
+      "Grammar Exam Advanced": "ege-grammar.html",
+      "Mixed Reading": "ege-reading.html",
+      "Mixed Speaking": "ege-speaking.html",
+      "Mixed Lexis": "ege-multiple-choice-30-36.html",
+      "The Verb Pump": "ege-grammar-gym.html",
+      "Passive Power": "ege-grammar-gym.html",
+      "Word Formation Nouns": "ege-word-factory.html",
+      "Lexis Sniper: synonym-trap": "ege-lexis-sniper.html",
+      "phonetic-flow": "ege-speaking-gym.html",
+      "logic-comparison": "ege-speaking-gym.html"
+    };
 
     const unitsGrid = document.getElementById("unitsGrid");
     const masteryGrid = document.getElementById("masteryGrid");
@@ -429,6 +904,58 @@
 
     function clampScore(value) {
       return Math.max(0, Math.min(100, Math.round(value)));
+    }
+
+    function recalculateUnitScore(unit) {
+      if (!unit || !unit.skills || unit.skills.length < 3) return;
+      const scores = unit.skills.map((s) => s.score || 0);
+      if (scores.length >= 4) {
+        unit.score = clampScore(
+          Math.round(scores.reduce((sum, v) => sum + v, 0) / scores.length)
+        );
+        return;
+      }
+      const a = scores[0];
+      const b = scores[1];
+      const c = scores[2];
+      if ((b || 0) === 0 && (c || 0) === 0) {
+        unit.score = clampScore(a);
+      } else {
+        unit.score = clampScore(Math.round((a + b + c) / 3));
+      }
+    }
+
+    /** Добавить Reading MC в Unit 1 перед Grammar (старые сохранения с 3 навыками). */
+    function migrateAddReadingMultipleChoice(s) {
+      try {
+        const u0 = s.examUnits[0];
+        if (!u0 || !Array.isArray(u0.skills)) return;
+        if (u0.skills.some((sk) => sk.name === "Reading: Multiple Choice")) return;
+        const gi = u0.skills.findIndex((sk) => sk.name === "Grammar Exam");
+        if (gi === -1) return;
+        u0.skills.splice(gi, 0, { name: "Reading: Multiple Choice", score: 0 });
+        recalculateUnitScore(u0);
+      } catch (eMc) {}
+    }
+
+    /** Старые сохранения: Gapped Text был во 2-м unit — переносим в Unit 1 рядом с §10. */
+    function migrateReadingSkillsToUnit1(s) {
+      try {
+        const u0 = s.examUnits[0];
+        const u1 = s.examUnits[1];
+        if (!u0 || !u1 || !u0.skills || !u1.skills) return;
+        if (u0.skills[1].name === "Reading: Gapped Text") return;
+        if (
+          u0.skills[1].name === "Listening: Matching" &&
+          u1.skills[0].name === "Reading: Gapped Text"
+        ) {
+          const tmp = u0.skills[1];
+          u0.skills[1] = u1.skills[0];
+          u1.skills[0] = tmp;
+          recalculateUnitScore(u0);
+          recalculateUnitScore(u1);
+        }
+      } catch (eM) {}
     }
 
     function getUnitUnlocked(index) {
@@ -460,6 +987,16 @@
         const lockIcon = unlocked ? "🔓" : "🔒";
         const unlockText = unlocked ? "Открыт" : "Нужен прошлый unit >= 60%";
 
+        const skillScores = unit.skills.map((s) => s.score || 0);
+        const mn = skillScores.length ? Math.min.apply(null, skillScores) : 0;
+        const mx = skillScores.length ? Math.max.apply(null, skillScores) : 0;
+        const peek =
+          !skillScores.length
+            ? "—"
+            : mn === mx
+              ? `${mx}%`
+              : `${mn}%–${mx}%`;
+
         card.innerHTML = `
           <div class="unit-head">
             <div>
@@ -478,60 +1015,99 @@
           <div class="bar-track">
             <div class="${getBarClass(unit.score)}" style="width:${unit.score}%"></div>
           </div>
-          <div class="unit-detail">
+          <details class="unit-skills-fold">
+            <summary class="unit-skills-summary">
+              <span>Навыки (${unit.skills.length}) · разбивка</span>
+              <span class="unit-skills-summary-meta">
+                <span class="unit-skills-peek">${peek}</span>
+                <span class="fold-cue" aria-hidden="true">▼</span>
+              </span>
+            </summary>
+            <div class="unit-detail">
             ${unit.skills.map((skill) => `
               <div class="skill-chip">
                 <span>${skill.name}</span>
                 <strong>${skill.score}%</strong>
               </div>
             `).join("")}
-          </div>
+            </div>
+          </details>
         `;
 
         unitsGrid.appendChild(card);
       });
     }
 
-    function collectSourceScores(sourceNames) {
-      const scores = [];
-
+    function collectSourceScoreRows(sourceNames) {
+      const byName = {};
+      sourceNames.forEach((n) => {
+        byName[n] = null;
+      });
       state.examUnits.forEach((unit) => {
         unit.skills.forEach((skill) => {
-          if (sourceNames.includes(skill.name)) {
-            scores.push(skill.score);
+          if (Object.prototype.hasOwnProperty.call(byName, skill.name)) {
+            byName[skill.name] = skill.score || 0;
           }
         });
       });
-
       Object.entries(state.gym).forEach(([name, score]) => {
-        if (sourceNames.includes(name)) {
-          scores.push(score);
+        if (Object.prototype.hasOwnProperty.call(byName, name)) {
+          byName[name] = score || 0;
         }
       });
+      return sourceNames.map((n) => ({
+        name: n,
+        score: byName[n] == null ? 0 : byName[n]
+      }));
+    }
 
-      return scores;
+    function escHtml(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
 
     function renderMastery() {
       masteryGrid.innerHTML = "";
 
       const sectionScores = masteryDefinitions.map((section) => {
-        const scores = collectSourceScores(section.sources);
-        const average = scores.length ? Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length) : 0;
+        const rows = collectSourceScoreRows(section.sources);
+        const average = rows.length
+          ? Math.round(rows.reduce((sum, r) => sum + r.score, 0) / rows.length)
+          : 0;
+        const rowHtml = rows
+          .map(
+            (r) => `
+          <div class="mastery-source-row">
+            <span>${escHtml(r.name)}</span>
+            <strong>${r.score}%</strong>
+          </div>`
+          )
+          .join("");
 
-        const card = document.createElement("article");
-        card.className = "panel";
-        card.innerHTML = `
-          <div class="row-top">
-            <strong>${section.name}</strong>
-            <span class="badge">${average}%</span>
-          </div>
-          <p class="small" style="margin-top: 8px;">Шкала мастерства по среднему баллу всех активностей раздела.</p>
-          <div class="bar-track">
-            <div class="${getBarClass(average)}" style="width:${average}%"></div>
+        const det = document.createElement("details");
+        det.className = "mastery-fold panel";
+        det.innerHTML = `
+          <summary class="mastery-summary">
+            <div class="mastery-summary-top">
+              <strong>${escHtml(section.name)}</strong>
+              <span class="mastery-summary-meta">
+                <span class="badge">${average}%</span>
+                <span class="mastery-cue" aria-hidden="true">▼</span>
+              </span>
+            </div>
+            <p class="small mastery-hint">Средний балл по активностям раздела. Нажми, чтобы увидеть каждый навык.</p>
+            <div class="bar-track">
+              <div class="${getBarClass(average)}" style="width:${average}%"></div>
+            </div>
+          </summary>
+          <div class="mastery-body">
+            ${rowHtml}
           </div>
         `;
-        masteryGrid.appendChild(card);
+        masteryGrid.appendChild(det);
         return average;
       });
 
@@ -551,7 +1127,7 @@
             <strong>${name}</strong>
             <span class="badge">${score}%</span>
           </div>
-          <p class="small" style="margin-top: 8px;">Качалка учитывается отдельно и появляется в статистике сразу после первого прохождения.</p>
+          <p class="small" style="margin-top: 8px;">Упражнения «для себя» — отдельно от экзаменационных блоков, но процент тоже виден здесь.</p>
           <div class="bar-track">
             <div class="${getBarClass(score)}" style="width:${score}%"></div>
           </div>
@@ -566,93 +1142,272 @@
       gymAverageEl.textContent = gymAverage + "%";
     }
 
+    function collectAllSkillRows() {
+      const rows = [];
+      state.examUnits.forEach((unit) => {
+        unit.skills.forEach((skill) => {
+          rows.push({ name: skill.name, score: skill.score || 0 });
+        });
+      });
+      Object.entries(state.gym).forEach(([name, score]) => {
+        rows.push({ name, score: score || 0 });
+      });
+      return rows;
+    }
+
+    function formatActivityWhen(atMs, dateYmd) {
+      const tr = window.__egeActivityTracker;
+      if (!tr || typeof tr.localYmd !== "function") {
+        return new Date(atMs).toLocaleString("ru-RU", {
+          day: "numeric",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+      const today = tr.localYmd();
+      const d = new Date(atMs);
+      const t = d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+      if (dateYmd === today) {
+        return "Сегодня, " + t;
+      }
+      const tp = today.split("-").map((x) => Number(x));
+      const prev = new Date(tp[0], tp[1] - 1, tp[2]);
+      prev.setDate(prev.getDate() - 1);
+      const ymdY =
+        prev.getFullYear() +
+        "-" +
+        String(prev.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(prev.getDate()).padStart(2, "0");
+      if (dateYmd === ymdY) {
+        return "Вчера, " + t;
+      }
+      return d.toLocaleString("ru-RU", {
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function getFocusRank(score) {
+      const s = Math.max(0, Math.min(100, Math.round(Number(score) || 0)));
+      if (s <= 40) {
+        return { key: "novice", tagline: "Новичок — ошибка норма." };
+      }
+      if (s <= 70) {
+        return { key: "survivor", tagline: "Выживший — докрути стыки и ловушки." };
+      }
+      if (s <= 90) {
+        return { key: "sniper", tagline: "Снайпер — чаще мешает невнимательность." };
+      }
+      return { key: "master", tagline: "Мастер билета — твоя опора в билете." };
+    }
+
+    function streakTierLabel(n) {
+      const v = Number(n) || 0;
+      if (v >= 14) return "Легенда ритма";
+      if (v >= 7) return "Неделя силы";
+      if (v >= 3) return "В ударе";
+      if (v >= 1) return "Разгон";
+      return "Старт ждёт";
+    }
+
+    function renderInsights() {
+      const root = document.getElementById("insightsPanel");
+      if (!root) {
+        return;
+      }
+
+      const dash =
+        window.__egeActivityTracker && typeof window.__egeActivityTracker.getDashboard === "function"
+          ? window.__egeActivityTracker.getDashboard()
+          : { streak: 0, log: [], lastPracticeDate: null };
+
+      const rows = collectAllSkillRows();
+      const sorted = rows.slice().sort((a, b) => {
+        if (a.score !== b.score) {
+          return a.score - b.score;
+        }
+        return a.name.localeCompare(b.name);
+      });
+      const weak = sorted.slice(0, 5);
+      const allHigh = weak.length && weak.every((w) => w.score >= 100);
+
+      let weakInner;
+      if (allHigh) {
+        weakInner =
+          '<p class="small">По этим строкам у тебя уже уровень <strong>Exam Master</strong> — бери более сложные тексты или новый тип задания.</p>';
+      } else {
+        weakInner = weak
+          .map((w) => {
+            const href = SKILL_HREF[w.name] || "ege.html";
+            const rank = getFocusRank(w.score);
+            return `<div class="weak-spot-row weak-spot-row--${rank.key}">
+            <div class="weak-spot-main">
+              <a href="${escHtml(href)}">${escHtml(w.name)}</a>
+              <p class="weak-spot-hint">${escHtml(rank.tagline)}</p>
+            </div>
+            <div class="weak-spot-meta">
+              <span class="weak-spot-pct">${w.score}%</span>
+            </div>
+          </div>`;
+          })
+          .join("");
+      }
+
+      const streakVal = dash.streak != null ? dash.streak : 0;
+      const tier = streakTierLabel(streakVal);
+      let streakSubtitle;
+      if (streakVal > 0) {
+        streakSubtitle = "Каждый день с практикой добавляет к серии. Пропустишь день — начнёшь сначала, это нормально.";
+      } else if (dash.lastPracticeDate) {
+        streakSubtitle = "Пауза была длиннее суток — счётчик обнулился. Загляни в задание по чтению сегодня и нажми «Проверить».";
+      } else {
+        streakSubtitle = "Загляни в любой тренажёр по чтению и нажми «Проверить» хоть раз сегодня — зажжём первый день.";
+      }
+
+      const log = dash.log || [];
+      let logBlock;
+      let activityAside;
+      if (!log.length) {
+        logBlock = '<p class="small">Здесь появятся последние проверки с результатом.</p>';
+        activityAside = `
+          <div class="insight-aside">
+            <p class="insight-aside-title">Что сделать</p>
+            <ul class="insight-micro-list">
+              <li>Открой Matching Headlines или Gapped Text</li>
+              <li>Нажми «Проверить» после задания</li>
+              <li>Обнови эту страницу — запись будет сверху списка</li>
+            </ul>
+          </div>`;
+      } else {
+        logBlock = log
+          .map((entry) => {
+            const when = formatActivityWhen(entry.at, entry.date);
+            const scorePart = entry.score != null ? " · " + entry.score + "%" : "";
+            const labelSafe = escHtml(entry.label || "");
+            const scoreSafe = escHtml(scorePart);
+            const what = entry.href
+              ? `<a href="${escHtml(entry.href)}">${labelSafe}</a>${scoreSafe}`
+              : `${labelSafe}${scoreSafe}`;
+            return `<div class="activity-row"><span class="activity-when">${escHtml(when)}</span><span class="activity-what">${what}</span></div>`;
+          })
+          .join("");
+        activityAside = `
+          <div class="insight-aside">
+            <p class="small">Нажми на синее название — откроется тот же тренажёр.</p>
+          </div>`;
+      }
+
+      const streakAside = `
+          <div class="insight-aside">
+            <p class="insight-aside-title">Как считается день</p>
+            <p class="small">Сработает одна проверка в тренажёре по чтению за календарный день — день в серии засчитан.</p>
+            <p class="small">Если пропустил сутки, счёт начинается с 1 — это новый старт, не «минус» к оценке.</p>
+          </div>`;
+
+      const focusAside = `
+          <div class="insight-aside">
+            <p class="small">Чем выше строка в списке — тем раньше имеет смысл к ней вернуться (ниже процент).</p>
+          </div>`;
+
+      const streakIdle = streakVal < 1;
+      const streakCardClass = "insight-card panel streak-card" + (streakIdle ? " streak-idle" : "");
+
+      root.innerHTML = `
+        <article class="insight-card panel insight-stack">
+          <h3>С чего начать</h3>
+          <div class="insight-stack-body">${weakInner}</div>
+          ${focusAside}
+        </article>
+        <article class="${streakCardClass} insight-stack">
+          <h3>Серия дней</h3>
+          <div class="streak-mid">
+            <div class="streak-visual" aria-hidden="true">
+              <div class="streak-ring"></div>
+              <div class="streak-core">
+                <span class="streak-emoji">🔥</span>
+                <span class="streak-num">${String(streakVal)}</span>
+              </div>
+            </div>
+            <div class="streak-copy">
+              <span class="streak-tier">${escHtml(tier)}</span>
+              <p class="small streak-msg">${escHtml(streakSubtitle)}</p>
+            </div>
+          </div>
+          ${streakAside}
+        </article>
+        <article class="insight-card panel insight-stack">
+          <h3>Недавние шаги</h3>
+          <div class="insight-stack-body">${logBlock}</div>
+          ${activityAside}
+        </article>
+      `;
+    }
+
     function renderMeta() {
       const unlockedCount = state.examUnits.filter((unit, index) => getUnitUnlocked(index)).length;
       unlockedUnitsEl.textContent = unlockedCount + "/" + state.examUnits.length;
     }
 
+    function renderFullPack() {
+      const strongEl = document.getElementById("fullPackScore");
+      const pill = strongEl && strongEl.closest(".stat-pill");
+      if (!strongEl || !window.__egeFullPackStats) {
+        if (strongEl) strongEl.textContent = "—";
+        if (pill) pill.removeAttribute("title");
+        return;
+      }
+      const d = window.__egeFullPackStats.getDashboard();
+      if (d.isComplete && d.fullAverage != null) {
+        strongEl.textContent = d.fullAverage + "%";
+        if (pill) {
+          pill.title =
+            "Среднее лучших по 10 блокам (reading×3, writing×3, WF, grammar, UoE, MC), все с попыткой.";
+        }
+      } else {
+        strongEl.textContent = "—";
+        if (pill) {
+          pill.title =
+            "Ещё не всё закрыто: " +
+            d.touchedCount +
+            " из " +
+            d.totalPhases +
+            " блоков. Процент появится, когда по каждому из 10 будет попытка.";
+        }
+      }
+    }
+
     function renderAll() {
+      renderInsights();
       renderUnits();
       renderMastery();
       renderGym();
       renderMeta();
+      renderFullPack();
       saveState();
     }
 
-    function applyDemoScore(score) {
-      const unit1 = state.examUnits[0];
-      unit1.score = clampScore(score);
-      unit1.skills[0].score = clampScore(score - 4);
-      unit1.skills[1].score = clampScore(score + 3);
-      unit1.skills[2].score = clampScore(score - 1);
-      renderAll();
-    }
-
-    function activateGymDemo() {
-      state.gym["The Verb Pump"] = 72;
-      state.gym["Passive Power"] = 64;
-      state.gym["Word Formation Nouns"] = 80;
-      state.gym["Lexis Sniper: synonym-trap"] = 48;
-      state.gym["phonetic-flow"] = 67;
-      state.gym["logic-comparison"] = 52;
-      renderAll();
-    }
-
-    function activateMasterMode() {
-      state.examUnits[0].score = 98;
-      state.examUnits[0].skills = [
-        { name: "Reading: Matching Headlines", score: 96 },
-        { name: "Listening: Matching", score: 99 },
-        { name: "Grammar Exam", score: 97 }
-      ];
-      state.examUnits[1].score = 82;
-      state.examUnits[1].skills = [
-        { name: "Reading: Gapped Text", score: 78 },
-        { name: "Lexis Exam", score: 85 },
-        { name: "Speaking Exam", score: 83 }
-      ];
-      state.examUnits[2].score = 0;
-      state.examUnits[2].skills = [
-        { name: "Listening: Multiple Choice", score: 0 },
-        { name: "Word Formation Exam", score: 0 },
-        { name: "Grammar Exam Advanced", score: 0 }
-      ];
-      state.examUnits[3].score = 0;
-      state.examUnits[3].skills = [
-        { name: "Mixed Reading", score: 0 },
-        { name: "Mixed Speaking", score: 0 },
-        { name: "Mixed Lexis", score: 0 }
-      ];
-
-      state.gym = {
-        "The Verb Pump": 94,
-        "Passive Power": 88,
-        "Word Formation Nouns": 80,
-        "Lexis Sniper: synonym-trap": 76,
-        "phonetic-flow": 91,
-        "logic-comparison": 84
-      };
-
-      renderAll();
-    }
-
     let state = loadState();
-
-    document.querySelectorAll("[data-demo]").forEach((button) => {
-      button.addEventListener("click", () => applyDemoScore(Number(button.dataset.demo)));
-    });
-
-    document.getElementById("startGym").addEventListener("click", activateGymDemo);
-    document.getElementById("masterMode").addEventListener("click", activateMasterMode);
-    document.getElementById("resetStats").addEventListener("click", () => {
-      state = structuredClone(defaultState);
-      renderAll();
-    });
+    migrateReadingSkillsToUnit1(state);
+    migrateAddReadingMultipleChoice(state);
+    if (window.__egeReadingMatchingStats) {
+      window.__egeReadingMatchingStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeReadingGappedTextStats) {
+      window.__egeReadingGappedTextStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeReadingMcStats) {
+      window.__egeReadingMcStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
 
     renderAll();
   </script>
     <script src="js/prep-course-profile.js"></script>
   <script src="js/prep-site-content.js"></script>
+  <script src="js/prep-ege-track.js" vite-ignore></script>
 
 </body>
 </html>

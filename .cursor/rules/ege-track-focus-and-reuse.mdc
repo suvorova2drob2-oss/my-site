@@ -1,0 +1,23 @@
+---
+description: EGE as its own deployed site; learner copy stays EGE-only; reuse CPE/FCE engines and patterns in code
+alwaysApply: true
+---
+
+# EGE track: separate site, shared mechanics
+
+The **EGE** product is a **standalone site** (see `ege.html`, Netlify **`publish-ege`** / `scripts/build-netlify-track.mjs ege`, `meta name="prep-deploy-track" content="ege"` on that build). Treat it as **not** the CPE Levels hub and **not** the FCE sheet.
+
+## Learner-facing (EGE origin)
+
+- **No** student UI that pushes other exams by name (no CPE/FCE promo bars, no “materials from other courses” disclaimers). Copy should read as **ЕГЭ / EGE prep only**.
+- **Back / home** for pages meant only for ЕГЭ students should resolve to **`ege.html`** (or the appropriate `ege-*.html` hub), not `index.html` or `fce.html`, unless the page is explicitly shared tooling documented for multi-track use.
+
+## Building from CPE / FCE (allowed and expected)
+
+- **Reuse** shared **engines** and **UX patterns**: e.g. Part 1 MC cloze (`js/part1-mc-cloze-core.js`), Part 2 open cloze, flip trainers, games, audio trainers — same **mechanics**, new or forked **content**.
+- When porting: give ЕГЭ pages their own **`context=`** / storage keys / `published.json` paths so progress and CMS data **do not clash** with CPE or FCE on the same device.
+- **Duplicating** an HTML screen or JSON pack from a CPE/FCE folder into an ЕГЭ route is fine; **avoid** wiring ЕГЭ tiles straight into the full CPE hub unless the user asks for a cross-track link.
+
+## Wording for agents
+
+**Separate product** for learners; **one repo** for maintainers — mechanics and tasks are often **borrowed** from CPE/FCE implementations without exposing those brands on the ЕГЭ site.

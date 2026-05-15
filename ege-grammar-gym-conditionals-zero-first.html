@@ -1,0 +1,5624 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЕГЭ — Zero &amp; First conditional (Реальность)</title>
+  <style>
+    :root {
+      --bg0: #0a0f1a;
+      --bg1: #111827;
+      --panel: rgba(30, 41, 59, 0.65);
+      --border: rgba(148, 163, 184, 0.28);
+      --muted: #94a3b8;
+      --text: #f1f5f9;
+      --accent: #38bdf8;
+      --chip-bg: rgba(251, 146, 60, 0.16);
+      --chip-dot: #f97316;
+      --form-label: rgba(248, 113, 113, 0.22);
+      --form-rule-bg: rgba(250, 204, 21, 0.12);
+      --form-rule-border: rgba(250, 204, 21, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(165deg, var(--bg0) 0%, var(--bg1) 45%, #0c1222 100%);
+      color: var(--text);
+      padding: clamp(16px, 4vw, 32px);
+      line-height: 1.55;
+    }
+
+    .shell {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .nav-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+    }
+
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    .jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .jump a {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.5);
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .jump a:hover {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 22px;
+    }
+
+    section.block {
+      margin-bottom: 28px;
+      padding: 20px 20px 22px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      scroll-margin-top: 16px;
+    }
+
+    .section-head {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px 8px 12px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      margin-bottom: 16px;
+    }
+
+    .section-head::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--chip-dot);
+      flex-shrink: 0;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .form-row {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: var(--form-label);
+      color: #fecaca;
+      margin-bottom: 8px;
+    }
+
+    .form-rule {
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--form-rule-bg);
+      border: 1px solid var(--form-rule-border);
+      color: #fef9c3;
+    }
+
+    .grid-use-ex {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .grid-use-ex {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-use-ex .cell + .cell {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+    }
+
+    .cell {
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    .cell + .cell {
+      border-left: 1px solid var(--border);
+    }
+
+    .cell h3 {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .cell p,
+    .cell li {
+      margin: 0;
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+
+    .examples {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .examples li {
+      margin-bottom: 10px;
+    }
+
+    .examples li:last-child {
+      margin-bottom: 0;
+    }
+
+    strong.v {
+      color: #fde68a;
+      font-weight: 800;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .rule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 520px;
+    }
+
+    .rule-table th,
+    .rule-table td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rule-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rule-table th {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fecaca;
+      background: rgba(248, 113, 113, 0.12);
+    }
+
+    .rule-table td {
+      background: rgba(15, 23, 42, 0.35);
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .rule-table td:first-child {
+      font-weight: 800;
+      color: #f1f5f9;
+      white-space: nowrap;
+    }
+
+    .rule-table .ex-plain {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .section-head--wide h2 {
+      font-size: 0.95rem;
+      line-height: 1.35;
+      max-width: 100%;
+    }
+
+    .link-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* —— Exercise 1: sequential flip cards —— */
+    .ex1-head {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px 8px 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      margin-bottom: 12px;
+    }
+
+    .ex1-head::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .ex1-head h2 {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 800;
+    }
+
+    .ex1-instr {
+      font-size: 14px;
+      color: #e2e8f0;
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+
+    .ex1-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 16px;
+      line-height: 1.45;
+    }
+
+    .ex1-progress {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .flip-ex {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      display: block;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .flip-ex:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.45);
+      border-radius: 16px;
+    }
+
+    .flip-ex-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flip-ex.is-flipped .flip-ex-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-ex-face {
+      grid-area: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 20px 18px;
+      min-height: 140px;
+      font-size: 15px;
+      line-height: 1.6;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .flip-ex-front {
+      background: rgba(30, 41, 59, 0.85);
+      color: #f1f5f9;
+    }
+
+    .flip-ex-back {
+      background: rgba(15, 23, 42, 0.92);
+      color: #e2e8f0;
+      transform: rotateY(180deg);
+    }
+
+    .flip-ex-back strong {
+      color: #fde68a;
+      font-weight: 800;
+    }
+
+    .flip-ex-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 10px;
+    }
+
+    .flip-ex-label--back {
+      color: #86efac;
+    }
+
+    .flip-ex-tap {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .ex1-back-alt {
+      display: block;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .ex1-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .ex1-nav button {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.6);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .ex1-nav button:hover:not(:disabled) {
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--accent);
+    }
+
+    .ex1-nav button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Launcher (в потоке страницы) */
+    .ex1-open-btn {
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 14px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .ex1-open-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+
+    /* Полноэкранное задание */
+    .ex1-overlay,
+    .ex2-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(165deg, #060a12 0%, #0f172a 50%, #0c1222 100%);
+      color: #f1f5f9;
+      padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 16px)
+        env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 16px);
+      animation: ex1-fade-in 0.2s ease;
+    }
+
+    .ex2-overlay {
+      z-index: 100000;
+    }
+
+    .ex1-overlay[hidden],
+    .ex2-overlay[hidden] {
+      display: none !important;
+    }
+
+    @keyframes ex1-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .ex1-overlay-top {
+      flex-shrink: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .ex1-formula-bar {
+      flex-shrink: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px 14px;
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      background: linear-gradient(
+        90deg,
+        rgba(250, 204, 21, 0.12) 0%,
+        rgba(56, 189, 248, 0.1) 50%,
+        rgba(250, 204, 21, 0.1) 100%
+      );
+      box-shadow: 0 0 24px rgba(250, 204, 21, 0.08);
+    }
+
+    .ex1-formula-tag {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fde68a;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(250, 204, 21, 0.3);
+    }
+
+    .ex1-formula-text {
+      font-size: clamp(13px, 2.8vw, 15px);
+      font-weight: 700;
+      color: #fef9c3;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .ex1-formula-text strong {
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .ex1-formula-facts {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.88em;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: #0f172a;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    }
+
+    .ex1-formula-hint {
+      flex-basis: 100%;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .ex1-close {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.7);
+      color: #e2e8f0;
+      cursor: pointer;
+    }
+
+    .ex1-close:hover {
+      border-color: rgba(248, 113, 113, 0.5);
+      color: #fca5a5;
+    }
+
+    .ex1-badge {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fb7185;
+      letter-spacing: 0.02em;
+    }
+
+    .ex1-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .ex1-step {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.6);
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+    }
+
+    .ex1-step.is-current {
+      border-color: rgba(56, 189, 248, 0.7);
+      color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .ex1-step.is-done {
+      background: rgba(34, 197, 94, 0.18);
+      border-color: rgba(34, 197, 94, 0.55);
+      color: #4ade80;
+      font-size: 18px;
+    }
+
+    .ex1-step.is-bad {
+      border-color: rgba(248, 113, 113, 0.55);
+      background: rgba(248, 113, 113, 0.12);
+      color: #f87171;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .ex1-step-nav {
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+      margin: 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .ex1-step-nav:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    .ex1-prompt-gloss {
+      margin-top: 12px;
+      font-size: clamp(0.92rem, 2.8vw, 1.05rem);
+      font-weight: 600;
+      line-height: 1.4;
+      color: #94a3b8;
+    }
+
+    .ex1-overlay-main,
+    .ex2-scroll-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding: 8px 0 16px;
+    }
+
+    .ex2-scroll-main {
+      align-items: flex-start;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ex1-card-wrap {
+      width: min(560px, 100%);
+    }
+
+    .flip-ex {
+      min-height: 200px;
+    }
+
+    .flip-ex-face {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .ex1-prompt-text {
+      font-size: clamp(1.1rem, 3.8vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .ex1-overlay-bottom {
+      flex-shrink: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ex1-hint-bar {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: min(420px, 100%);
+      line-height: 1.45;
+    }
+
+    .ex1-next-main {
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 14px 24px;
+      border-radius: 14px;
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.18);
+      color: #86efac;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    .ex1-next-main:hover:not(:disabled) {
+      background: rgba(34, 197, 94, 0.28);
+    }
+
+    .ex1-next-main:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    #ex1o-back {
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .ex1-done-all {
+      text-align: center;
+      font-weight: 800;
+      color: #86efac;
+      font-size: 1.05rem;
+      padding: 16px;
+    }
+
+    /* Gamified CTA над правилами */
+    .boost-hero {
+      position: relative;
+      margin: 0 0 24px;
+      padding: 1px;
+      border-radius: 20px;
+      background: linear-gradient(
+        135deg,
+        rgba(56, 189, 248, 0.65),
+        rgba(167, 139, 250, 0.55),
+        rgba(251, 191, 36, 0.5)
+      );
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 12px 40px rgba(0, 0, 0, 0.35),
+        0 0 48px rgba(56, 189, 248, 0.12);
+    }
+
+    .boost-hero-inner {
+      border-radius: 19px;
+      padding: 18px 20px 20px;
+      background: linear-gradient(
+        165deg,
+        rgba(15, 23, 42, 0.92) 0%,
+        rgba(30, 41, 59, 0.88) 100%
+      );
+    }
+
+    .boost-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fde68a;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .boost-title {
+      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      font-weight: 900;
+      line-height: 1.25;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+      text-shadow:
+        0 0 24px rgba(56, 189, 248, 0.35),
+        0 1px 0 rgba(15, 23, 42, 0.8);
+    }
+
+    .boost-sub {
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 0 0 16px;
+      line-height: 1.45;
+      max-width: 36em;
+    }
+
+    .boost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 100%;
+      font-family: inherit;
+      font-size: clamp(15px, 3.5vw, 17px);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      padding: 16px 22px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      color: #0f172a;
+      background: linear-gradient(135deg, #38bdf8 0%, #22d3ee 40%, #a78bfa 100%);
+      box-shadow:
+        0 4px 0 rgba(14, 116, 144, 0.45),
+        0 12px 28px rgba(56, 189, 248, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        filter 0.12s ease;
+      animation: boost-pulse 2.8s ease-in-out infinite;
+    }
+
+    .boost-btn:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+      box-shadow:
+        0 5px 0 rgba(14, 116, 144, 0.45),
+        0 16px 36px rgba(56, 189, 248, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .boost-btn:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 2px 0 rgba(14, 116, 144, 0.45),
+        0 8px 20px rgba(56, 189, 248, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes boost-pulse {
+      0%,
+      100% {
+        box-shadow:
+          0 4px 0 rgba(14, 116, 144, 0.45),
+          0 12px 28px rgba(56, 189, 248, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+      50% {
+        box-shadow:
+          0 4px 0 rgba(14, 116, 144, 0.45),
+          0 12px 36px rgba(167, 139, 250, 0.45),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boost-btn {
+        animation: none;
+      }
+    }
+
+    .boost-btn-icon {
+      font-size: 1.25em;
+      line-height: 1;
+    }
+
+    .boost-track {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .boost-coin {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 13px;
+      font-weight: 800;
+      color: #64748b;
+      transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+    }
+
+    .boost-coin.is-done {
+      border-color: rgba(34, 197, 94, 0.65);
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.12);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+    }
+
+    .boost-coin-mark {
+      font-size: 16px;
+      opacity: 0.35;
+    }
+
+    .boost-coin.is-done .boost-coin-mark {
+      opacity: 1;
+    }
+
+    .boost-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .boost-btn--c {
+      background: linear-gradient(135deg, #f472b6 0%, #fb7185 35%, #c084fc 100%);
+      box-shadow:
+        0 4px 0 rgba(157, 23, 77, 0.45),
+        0 12px 28px rgba(244, 114, 182, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      animation: boost-pulse-c 2.8s ease-in-out infinite;
+    }
+
+    @keyframes boost-pulse-c {
+      0%,
+      100% {
+        box-shadow:
+          0 4px 0 rgba(157, 23, 77, 0.45),
+          0 12px 28px rgba(244, 114, 182, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+      50% {
+        box-shadow:
+          0 4px 0 rgba(157, 23, 77, 0.45),
+          0 14px 34px rgba(192, 132, 252, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boost-btn--c {
+        animation: none;
+      }
+    }
+
+    /* —— Exercise C fullscreen —— */
+    .ex2-formula-bar {
+      flex-shrink: 0;
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .ex2-formula-bar-inner {
+      font-size: clamp(14px, 2.8vw, 17px);
+      font-weight: 700;
+      color: #bae6fd;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .ex2-formula-bar-inner strong {
+      color: #fff;
+    }
+
+    .ex2-work {
+      width: min(820px, 100%);
+      margin: 0 auto;
+    }
+
+    .ex2-one-slide {
+      margin-top: 8px;
+    }
+
+    .ex2-one-meta {
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .ex2-one-badge {
+      display: inline-block;
+      font-size: clamp(15px, 3.2vw, 18px);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      color: #7dd3fc;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .ex2-one-card {
+      padding: clamp(22px, 4vw, 32px);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.55);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .ex2-one-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 10px;
+      font-size: clamp(1.15rem, 4.2vw, 1.65rem);
+      font-weight: 600;
+      line-height: 1.55;
+      color: #f1f5f9;
+    }
+
+    .ex2-big-input {
+      flex: 1 1 200px;
+      min-width: min(280px, 100%);
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 800;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 2px solid rgba(56, 189, 248, 0.55);
+      background: rgba(15, 23, 42, 0.92);
+      color: #fef08a;
+    }
+
+    .ex2-big-input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+    }
+
+    .ex2-big-input:disabled {
+      opacity: 0.75;
+    }
+
+    .ex2-one-msg {
+      margin: 16px 0 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #86efac;
+    }
+
+    .ex2-one-msg.is-warn {
+      color: #fca5a5;
+    }
+
+    .ex2-one-feedback {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .ex2-one-feedback[hidden] {
+      display: none !important;
+    }
+
+    .ex2-feedback-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 640px) {
+      .ex2-feedback-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ex2-feedback-label {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      margin-bottom: 8px;
+    }
+
+    .ex2-example-line {
+      margin: 0;
+      font-size: clamp(1rem, 3.6vw, 1.25rem);
+      font-weight: 600;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
+    .ex2-example-line strong {
+      color: #fef08a;
+      font-weight: 900;
+    }
+
+    .ex2-explain-line {
+      margin: 0;
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .ex2-feedback-sample {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .ex2-feedback-explain-wrap {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .ex2-step-btn.ex1-step:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    .ex2-bottom-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      width: min(520px, 100%);
+      margin: 0 auto;
+    }
+
+    .ex2-nav-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ex2-nav-btn {
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.75);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .ex2-nav-btn:hover:not(:disabled) {
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--accent);
+    }
+
+    .ex2-nav-btn--primary {
+      border-color: rgba(52, 211, 153, 0.55);
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    .ex2-nav-btn--primary:hover:not(:disabled) {
+      border-color: rgba(52, 211, 153, 0.85);
+      color: #a7f3d0;
+    }
+
+    .ex2-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .ex2-hint-wide {
+      text-align: center;
+      margin: 0;
+      max-width: none;
+      font-size: clamp(14px, 2.8vw, 17px);
+      line-height: 1.45;
+    }
+
+    .ex2-step-btn {
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+      margin: 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .ex2-step-btn:hover:not(:disabled) {
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #cbd5e1;
+    }
+
+    .ex2-steps-lg .ex1-step {
+      width: 44px;
+      height: 44px;
+      font-size: 15px;
+      border-radius: 12px;
+    }
+
+    .ex2-steps-lg .ex1-step.is-done {
+      font-size: 20px;
+    }
+
+    .ex2-bank {
+      border: 2px solid rgba(251, 113, 133, 0.65);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .ex2-bank-title {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fb923c;
+      margin-bottom: 10px;
+    }
+
+    .ex2-bank-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ex2-bank-words span {
+      font-size: clamp(15px, 3.4vw, 17px);
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+    }
+
+    .ex2-line {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.4);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .ex2-line.is-ok {
+      border-color: rgba(34, 197, 94, 0.55);
+      background: rgba(34, 197, 94, 0.07);
+    }
+
+    .ex2-line.is-bad {
+      border-color: rgba(248, 113, 113, 0.6);
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    .ex2-line-head {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #f1f5f9;
+    }
+
+    .ex2-num {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ex2-input {
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 120px;
+      max-width: 220px;
+      padding: 6px 10px;
+      margin: 0 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      color: #fef08a;
+    }
+
+    .ex2-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    }
+
+    .ex2-input:disabled {
+      opacity: 0.85;
+    }
+
+    .ex2-msg {
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #fca5a5;
+    }
+
+    .ex2-msg.is-hint {
+      color: #86efac;
+    }
+
+    .ex2-panel {
+      width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .ex2-panel h3 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      color: #f8fafc;
+    }
+
+    .ex2-panel-lead {
+      color: #94a3b8;
+      margin: 0 0 16px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .ex2-fail-list,
+    .ex2-pass-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ex2-fail-list li,
+    .ex2-pass-list li {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.4);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .ex2-fail-list li strong {
+      color: #fde68a;
+    }
+
+    .ex2-big-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .ex2-btn {
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: rgba(30, 41, 59, 0.7);
+      color: #e2e8f0;
+    }
+
+    .ex2-btn--primary {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.18);
+      color: #86efac;
+    }
+
+    .ex2-btn--danger {
+      border-color: rgba(248, 113, 113, 0.55);
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+    }
+
+    .ex2-check-btn {
+      font-family: inherit;
+      font-size: clamp(17px, 3.2vw, 19px);
+      font-weight: 900;
+      padding: 16px 28px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      color: #0f172a;
+      background: linear-gradient(135deg, #34d399 0%, #22c55e 100%);
+      box-shadow: 0 4px 0 rgba(21, 128, 61, 0.5);
+    }
+
+    .ex2-check-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* —— Exercise D —— MCQ circle the word (teen / gamified) —— */
+    .ex3-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100001;
+      display: flex;
+      flex-direction: column;
+      padding: max(10px, env(safe-area-inset-top, 12px)) max(16px, env(safe-area-inset-right, 16px))
+        max(10px, env(safe-area-inset-bottom, 12px)) max(16px, env(safe-area-inset-left, 16px));
+      animation: ex1-fade-in 0.2s ease;
+      background:
+        radial-gradient(120% 80% at 20% 0%, rgba(168, 85, 247, 0.35) 0%, transparent 55%),
+        radial-gradient(90% 70% at 100% 30%, rgba(34, 211, 238, 0.22) 0%, transparent 50%),
+        radial-gradient(80% 60% at 50% 100%, rgba(244, 114, 182, 0.18) 0%, transparent 45%),
+        linear-gradient(175deg, #0f0a1a 0%, #1a1033 40%, #0a1628 100%);
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    .ex3-overlay[hidden] {
+      display: none !important;
+    }
+
+    .ex3-badge {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #e879f9, #22d3ee, #a3e635);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 24px rgba(167, 139, 250, 0.4);
+    }
+
+    .ex3-hud {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 4px auto 6px;
+      width: min(640px, 100%);
+    }
+
+    .ex3-progress-outer {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .ex3-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c026d3, #22d3ee, #4ade80);
+      background-size: 200% 100%;
+      animation: ex3-progress-shine 3s linear infinite;
+      transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes ex3-progress-shine {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .ex3-hud-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ex3-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.55);
+      color: #e2e8f0;
+    }
+
+    .ex3-pill--hot {
+      border-color: rgba(52, 211, 153, 0.5);
+      color: #6ee7b7;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+    }
+
+    .ex3-pill--danger {
+      border-color: rgba(251, 113, 133, 0.55);
+      color: #fda4af;
+    }
+
+    @keyframes ex3-drill-glow {
+      0%,
+      100% {
+        box-shadow:
+          0 0 0 1px rgba(250, 204, 21, 0.35),
+          0 6px 22px rgba(192, 132, 252, 0.25);
+      }
+      50% {
+        box-shadow:
+          0 0 0 2px rgba(250, 204, 21, 0.55),
+          0 8px 28px rgba(250, 204, 21, 0.18);
+      }
+    }
+
+    .ex3-step-drill-row {
+      flex-shrink: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      width: 100%;
+      max-width: min(920px, 100%);
+      margin: 0 auto 6px;
+      padding: 6px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(167, 139, 250, 0.32);
+      background: rgba(15, 23, 42, 0.42);
+    }
+
+    .ex3-drill-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1 1 260px;
+      min-width: min(100%, 260px);
+    }
+
+    .ex3-drill-launch--2 {
+      border-color: rgba(52, 211, 153, 0.55);
+      background: linear-gradient(
+        135deg,
+        rgba(52, 211, 153, 0.18) 0%,
+        rgba(56, 189, 248, 0.22) 50%,
+        rgba(250, 204, 21, 0.12) 100%
+      );
+      animation: ex3-drill2-glow 2.8s ease-in-out infinite;
+    }
+
+    @keyframes ex3-drill2-glow {
+      0%,
+      100% {
+        box-shadow:
+          0 0 0 1px rgba(52, 211, 153, 0.35),
+          0 6px 22px rgba(34, 211, 238, 0.2);
+      }
+      50% {
+        box-shadow:
+          0 0 0 2px rgba(52, 211, 153, 0.5),
+          0 8px 26px rgba(52, 211, 153, 0.22);
+      }
+    }
+
+    .ex3-drill-launch--3 {
+      border-color: rgba(244, 114, 182, 0.65);
+      background: linear-gradient(
+        135deg,
+        rgba(244, 114, 182, 0.2) 0%,
+        rgba(167, 139, 250, 0.26) 50%,
+        rgba(250, 204, 21, 0.1) 100%
+      );
+      animation: ex3-drill3-glow 2.8s ease-in-out infinite;
+    }
+
+    @keyframes ex3-drill3-glow {
+      0%,
+      100% {
+        box-shadow:
+          0 0 0 1px rgba(244, 114, 182, 0.38),
+          0 6px 22px rgba(244, 114, 182, 0.18);
+      }
+      50% {
+        box-shadow:
+          0 0 0 2px rgba(244, 114, 182, 0.52),
+          0 8px 26px rgba(192, 132, 252, 0.22);
+      }
+    }
+
+    .ex3-steps-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 12px;
+      flex: 0 1 auto;
+      min-width: min(100%, 380px);
+    }
+
+    .ex3-steps-eyebrow {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(167, 139, 250, 0.95);
+      white-space: nowrap;
+    }
+
+    .ex3-steps-cluster .ex1-steps {
+      flex: 0 1 auto;
+      justify-content: flex-start;
+      min-width: min(100%, 320px);
+    }
+
+    .ex3-step-drill-row .ex2-steps-lg .ex1-step {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+      border-radius: 11px;
+    }
+
+    .ex3-step-drill-row .ex2-steps-lg .ex1-step.is-done {
+      font-size: 18px;
+    }
+
+    .ex3-drill-launch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px 10px 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(250, 204, 21, 0.55);
+      background: linear-gradient(
+        135deg,
+        rgba(250, 204, 21, 0.22) 0%,
+        rgba(192, 132, 252, 0.28) 48%,
+        rgba(34, 211, 238, 0.14) 100%
+      );
+      color: #fefce8;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      animation: ex3-drill-glow 2.6s ease-in-out infinite;
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+
+    .ex3-drill-launch:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .ex3-drill-launch:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .ex3-drill-launch-icon {
+      font-size: 1.35rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.5));
+    }
+
+    .ex3-drill-launch-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      line-height: 1.15;
+    }
+
+    .ex3-drill-launch-kicker {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(254, 249, 195, 0.82);
+    }
+
+    .ex3-drill-launch-title {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .ex3-drill-launch-sub {
+      font-size: 11px;
+      font-weight: 700;
+      color: #a5f3fc;
+      letter-spacing: 0.04em;
+    }
+
+    .ex3-bonus-drills {
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .ex3-bonus-drills > summary.ex3-bonus-drills-sum {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 204, 21, 0.5);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fde68a;
+      user-select: none;
+      white-space: nowrap;
+      transition:
+        filter 0.12s ease,
+        transform 0.12s ease;
+    }
+
+    .ex3-bonus-drills > summary.ex3-bonus-drills-sum::-webkit-details-marker {
+      display: none;
+    }
+
+    .ex3-bonus-drills > summary.ex3-bonus-drills-sum::after {
+      content: "▸";
+      font-size: 9px;
+      opacity: 0.75;
+    }
+
+    .ex3-bonus-drills[open] > summary.ex3-bonus-drills-sum::after {
+      content: "▾";
+    }
+
+    .ex3-bonus-drills > summary.ex3-bonus-drills-sum:hover {
+      filter: brightness(1.08);
+    }
+
+    .ex3-bonus-n {
+      display: inline-block;
+      min-width: 1.1em;
+      text-align: center;
+      padding: 1px 5px;
+      border-radius: 6px;
+      background: rgba(250, 204, 21, 0.2);
+      color: #fef9c3;
+    }
+
+    .ex3-drill-btns--in-drawer {
+      flex: none;
+      width: min(100%, 340px);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(167, 139, 250, 0.35);
+      justify-content: flex-start;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ex3-drill-launch--compact {
+      padding: 7px 14px 7px 10px;
+      gap: 8px;
+      animation: none;
+      box-shadow: 0 2px 0 rgba(76, 29, 149, 0.45);
+    }
+
+    .ex3-drill-launch--2.ex3-drill-launch--compact,
+    .ex3-drill-launch--3.ex3-drill-launch--compact {
+      animation: none;
+    }
+
+    .ex3-drill-launch--compact:hover {
+      animation: none;
+    }
+
+    .ex3-drill-launch--compact .ex3-drill-launch-icon {
+      font-size: 1.05rem;
+    }
+
+    .ex3-drill-launch--compact .ex3-drill-launch-kicker {
+      font-size: 8px;
+    }
+
+    .ex3-drill-launch--compact .ex3-drill-launch-title {
+      font-size: 13px;
+    }
+
+    .ex3-drill-launch--compact .ex3-drill-launch-sub {
+      font-size: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .ex3-step-drill-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ex3-bonus-drills {
+        width: 100%;
+      }
+
+      .ex3-drill-btns--in-drawer {
+        width: 100%;
+      }
+
+      .ex3-steps-cluster {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .ex3-steps-cluster .ex1-steps {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .ex3-drill-btns {
+        flex: 0 1 auto;
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ex3-drill-launch {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .ex3-drill-launch-text {
+        align-items: center;
+      }
+    }
+
+    .ex3-mini-link {
+      display: inline;
+      padding: 0;
+      margin: 0;
+      border: none;
+      background: none;
+      color: #7dd3fc;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .ex3-mini-link:hover {
+      color: #bae6fd;
+    }
+
+    .ex3-overlay .ex1-overlay-top {
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      gap: 8px 12px;
+    }
+
+    .ex3-phrasebar {
+      flex-shrink: 0;
+      width: min(700px, 100%);
+      margin: 0 auto 4px;
+      padding: 5px 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(167, 139, 250, 0.45);
+      background: rgba(15, 23, 42, 0.45);
+      font-size: 10px;
+      line-height: 1.3;
+      color: #c4b5fd;
+    }
+
+    .ex3-phrasebar strong {
+      color: #fef08a;
+    }
+
+    .ex3-scroll {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 0;
+      overflow: auto;
+      padding: 2px max(6px, env(safe-area-inset-right, 0px)) 6px 6px;
+    }
+
+    .ex3-overlay .ex3-work {
+      padding-right: 62px;
+      box-sizing: border-box;
+    }
+
+    .ex3-work {
+      width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .ex3-card {
+      position: relative;
+      padding: clamp(14px, 3.6vw, 24px);
+      border-radius: 22px;
+      border: 2px solid rgba(167, 139, 250, 0.4);
+      background: linear-gradient(160deg, rgba(30, 27, 75, 0.85) 0%, rgba(15, 23, 42, 0.92) 100%);
+      box-shadow:
+        0 24px 48px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+        0 -20px 40px rgba(168, 85, 247, 0.12);
+    }
+
+    .ex3-card.is-win-pulse {
+      animation: ex3-card-win 0.65s ease;
+    }
+
+    @keyframes ex3-card-win {
+      0%,
+      100% {
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+      }
+      50% {
+        box-shadow:
+          0 24px 56px rgba(52, 211, 153, 0.25),
+          0 0 0 2px rgba(52, 211, 153, 0.45) inset;
+      }
+    }
+
+    .ex3-slide-tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: clamp(12px, 3vw, 15px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #22d3ee;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .ex3-sentence {
+      font-size: clamp(1.02rem, 3.6vw, 1.32rem);
+      font-weight: 700;
+      line-height: 1.45;
+      color: #f1f5f9;
+      margin: 0 0 8px;
+    }
+
+    .ex3-line-after {
+      margin: 10px 0 0;
+    }
+
+    .ex3-picks {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px 14px;
+    }
+
+    .ex3-pick {
+      font-family: inherit;
+      font-size: clamp(0.95rem, 3.4vw, 1.12rem);
+      font-weight: 900;
+      padding: 12px 22px;
+      border-radius: 14px;
+      border: 2px solid rgba(167, 139, 250, 0.55);
+      cursor: pointer;
+      color: #fdf4ff;
+      background: linear-gradient(180deg, rgba(139, 92, 246, 0.35) 0%, rgba(30, 27, 75, 0.85) 100%);
+      box-shadow: 0 6px 0 rgba(76, 29, 149, 0.55), 0 12px 24px rgba(0, 0, 0, 0.25);
+      transition: transform 0.12s ease, filter 0.12s ease, opacity 0.2s;
+    }
+
+    .ex3-pick:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.02);
+      filter: brightness(1.08);
+    }
+
+    .ex3-pick:active:not(:disabled) {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 3px 0 rgba(76, 29, 149, 0.55);
+    }
+
+    .ex3-pick:disabled {
+      cursor: default;
+      opacity: 0.55;
+    }
+
+    .ex3-pick.is-winner {
+      border-color: rgba(52, 211, 153, 0.9);
+      color: #ecfdf5;
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.55) 0%, rgba(6, 95, 70, 0.9) 100%);
+      box-shadow: 0 6px 0 rgba(21, 128, 61, 0.65), 0 0 28px rgba(52, 211, 153, 0.35);
+      opacity: 1;
+    }
+
+    .ex3-pick.is-wrong-flash {
+      animation: ex3-shake 0.45s ease;
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fee2e2;
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.45) 0%, rgba(127, 29, 29, 0.85) 100%);
+    }
+
+    @keyframes ex3-shake {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+      20% {
+        transform: translateX(-6px);
+      }
+      40% {
+        transform: translateX(6px);
+      }
+      60% {
+        transform: translateX(-4px);
+      }
+      80% {
+        transform: translateX(4px);
+      }
+    }
+
+    .ex3-pick.is-muted {
+      opacity: 0.35;
+    }
+
+    .ex3-feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(251, 113, 133, 0.45);
+      background: rgba(69, 10, 10, 0.35);
+    }
+
+    .ex3-feedback[hidden] {
+      display: none !important;
+    }
+
+    .ex3-feedback-title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fda4af;
+      margin-bottom: 8px;
+    }
+
+    .ex3-feedback-text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #fecdd3;
+    }
+
+    .ex3-panel {
+      width: min(560px, 100%);
+      margin: 0 auto;
+      padding: 28px 24px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.88);
+    }
+
+    .ex3-panel h3 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+    }
+
+    .ex3-panel-lead {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .ex3-bottom-inner {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px 10px;
+      width: 100%;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .ex3-overlay .ex1-overlay-bottom {
+      padding-top: 4px;
+      border-top-color: rgba(167, 139, 250, 0.22);
+    }
+
+    .ex3-hint-micro {
+      font-size: 10px !important;
+      line-height: 1.3 !important;
+      max-width: min(520px, 100%) !important;
+      margin: 0 !important;
+      color: rgba(148, 163, 184, 0.95) !important;
+      text-align: center !important;
+    }
+
+    .boost-btn--d {
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 40%, #22d3ee 100%);
+      box-shadow:
+        0 4px 0 rgba(88, 28, 135, 0.55),
+        0 14px 32px rgba(168, 85, 247, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .boost-btn--d:hover {
+      filter: brightness(1.06);
+    }
+
+    /* Справочник D: фразы + связки */
+    .ex3-glossary {
+      flex-shrink: 0;
+      width: min(700px, 100%);
+      margin: 0 auto 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      background: rgba(15, 23, 42, 0.5);
+      overflow: hidden;
+    }
+
+    .ex3-glossary > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 7px 12px;
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f0abfc;
+      background: linear-gradient(90deg, rgba(88, 28, 135, 0.4), rgba(34, 211, 238, 0.15));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .ex3-glossary > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .ex3-glossary > summary::after {
+      content: "▼";
+      font-size: 10px;
+      opacity: 0.75;
+      transition: transform 0.2s ease;
+    }
+
+    .ex3-glossary[open] > summary::after {
+      transform: rotate(-180deg);
+    }
+
+    .ex3-glossary-inner {
+      padding: 14px 16px 18px;
+      overflow-y: auto;
+      border-top: 1px solid rgba(167, 139, 250, 0.3);
+    }
+
+    .ex3-glossary .ex3-glossary-inner {
+      max-height: min(38vh, 300px);
+    }
+
+    .ex3-glossary-inner h4 {
+      margin: 14px 0 8px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #22d3ee;
+    }
+
+    .ex3-glossary-inner h4:first-child {
+      margin-top: 0;
+    }
+
+    .ex3-glossary-inner dl {
+      margin: 0;
+    }
+
+    .ex3-glossary-inner dt {
+      margin-top: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fef08a;
+    }
+
+    .ex3-glossary-inner dt:first-of-type {
+      margin-top: 0;
+    }
+
+    .ex3-glossary-inner dd {
+      margin: 5px 0 0;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1.52;
+      color: #cbd5e1;
+    }
+
+    .ex3-dict-fab {
+      position: fixed;
+      z-index: 100002;
+      right: max(8px, env(safe-area-inset-right, 0px));
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      padding: 6px 5px;
+      border-radius: 12px;
+      border: 2px solid rgba(192, 132, 252, 0.8);
+      margin: 0;
+      font: inherit;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(
+        165deg,
+        rgba(139, 92, 246, 0.55) 0%,
+        rgba(30, 27, 75, 0.96) 45%,
+        rgba(15, 23, 42, 0.98) 100%
+      );
+      color: #faf5ff;
+      box-shadow: 0 4px 22px rgba(124, 58, 237, 0.38);
+      transition:
+        right 0.3s ease,
+        left 0.3s ease,
+        filter 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .ex3-dict-fab:hover {
+      filter: brightness(1.08);
+    }
+
+    .ex3-dict-fab:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    .ex3-dict-fab-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      font-size: 7.5px;
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .ex3-dict-fab-line {
+      display: block;
+      max-width: 100%;
+    }
+
+    .ex3-overlay.ex3--dict-open .ex3-dict-fab,
+    .icif-overlay.icif--dict-open .ex3-dict-fab,
+    .dr2-overlay.dr2--dict-open .ex3-dict-fab,
+    .dr3-overlay.dr3--dict-open .ex3-dict-fab {
+      right: min(360px, calc(92vw - env(safe-area-inset-right, 0px)));
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 480px) {
+      .ex3-overlay.ex3--dict-open .ex3-dict-fab,
+      .icif-overlay.icif--dict-open .ex3-dict-fab,
+      .dr2-overlay.dr2--dict-open .ex3-dict-fab,
+      .dr3-overlay.dr3--dict-open .ex3-dict-fab {
+        right: auto;
+        left: max(8px, env(safe-area-inset-left, 8px));
+        transform: translateY(-50%);
+        width: 60px;
+        height: 60px;
+      }
+
+      .ex3-overlay.ex3--dict-open .ex3-dict-fab:active,
+      .icif-overlay.icif--dict-open .ex3-dict-fab:active,
+      .dr2-overlay.dr2--dict-open .ex3-dict-fab:active,
+      .dr3-overlay.dr3--dict-open .ex3-dict-fab:active {
+        transform: translateY(-50%) scale(0.94);
+      }
+    }
+
+    .ex3-dict-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100001;
+      background: rgba(2, 6, 23, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .ex3-dict-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(360px, 92vw);
+      height: 100%;
+      max-height: 100dvh;
+      z-index: 100002;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 55%, #0a0f1a 100%);
+      border-left: 2px solid rgba(167, 139, 250, 0.45);
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+      transform: translateX(100%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    }
+
+    .ex3-dict-drawer.is-visible {
+      transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .ex3-dict-drawer-head {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e9d5ff;
+    }
+
+    .ex3-dict-drawer-x {
+      font: inherit;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(248, 113, 113, 0.15);
+      color: #fecaca;
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .ex3-dict-drawer-x:hover {
+      background: rgba(248, 113, 113, 0.28);
+    }
+
+    .ex3-dict-drawer-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 16px));
+      border-top: none;
+      max-height: none;
+    }
+      margin-top: 18px;
+      scroll-margin-top: 24px;
+    }
+
+    .d-gloss-section > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.55);
+      font-weight: 800;
+      font-size: 15px;
+      color: #7dd3fc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .d-gloss-section > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .d-gloss-section > summary::after {
+      content: "▼";
+      font-size: 11px;
+      opacity: 0.7;
+      transition: transform 0.2s ease;
+    }
+
+    .d-gloss-section[open] > summary::after {
+      transform: rotate(-180deg);
+    }
+
+    .d-gloss-section .ex3-glossary-inner {
+      max-height: none;
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .d-gloss-section .ex3-glossary-inner h4 {
+      color: var(--accent);
+    }
+
+    .d-gloss-section .ex3-glossary-inner dt {
+      color: #fde047;
+    }
+
+    .d-gloss-section .ex3-glossary-inner dd {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /* —— In case vs if: flip drill (inline) —— */
+    .icif-lead {
+      font-size: 14px;
+      color: #e2e8f0;
+      margin: 0 0 14px;
+      line-height: 1.55;
+    }
+
+    .icif-model {
+      border-radius: 14px;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      background: rgba(250, 204, 21, 0.08);
+      padding: 16px 18px 18px;
+      margin-bottom: 20px;
+    }
+
+    .icif-model > strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fde047;
+      margin-bottom: 10px;
+    }
+
+    .icif-model-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+
+    .icif-pair {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .icif-pair:last-child {
+      margin-bottom: 0;
+    }
+
+    .icif-pair .t {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #7dd3fc;
+      margin-bottom: 6px;
+    }
+
+    .icif-pair .icif-k {
+      font-weight: 800;
+      color: #fde047;
+      margin-right: 6px;
+    }
+
+    .icif-pair .q {
+      font-size: 15px;
+      color: #f1f5f9;
+      margin: 0 0 10px;
+      line-height: 1.45;
+    }
+
+    .icif-pair .a {
+      font-size: 15px;
+      margin: 0;
+      line-height: 1.5;
+      color: #e2e8f0;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.28);
+    }
+
+    .icif-pair .tag {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .icif-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+      gap: 10px;
+    }
+
+    .icif-flip.flip-ex {
+      margin-bottom: 0;
+    }
+
+    .icif-flip .flip-ex-face {
+      min-height: 108px;
+      padding: 12px 12px;
+    }
+
+    .icif-flip .flip-ex-front {
+      font-size: 15px;
+    }
+
+    .icif-cue {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin-bottom: 8px;
+    }
+
+    .icif-flip .flip-ex-label {
+      margin-bottom: 8px;
+    }
+
+    .icif-back-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* —— In case vs if: full-screen drill —— */
+    .icif-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100003;
+      display: flex;
+      flex-direction: column;
+      padding: max(10px, env(safe-area-inset-top, 12px)) max(16px, env(safe-area-inset-right, 16px))
+        max(10px, env(safe-area-inset-bottom, 12px)) max(16px, env(safe-area-inset-left, 16px));
+      animation: ex1-fade-in 0.2s ease;
+      background:
+        radial-gradient(120% 80% at 20% 0%, rgba(168, 85, 247, 0.32) 0%, transparent 55%),
+        radial-gradient(90% 70% at 100% 30%, rgba(34, 211, 238, 0.18) 0%, transparent 50%),
+        radial-gradient(80% 60% at 50% 100%, rgba(244, 114, 182, 0.14) 0%, transparent 45%),
+        linear-gradient(175deg, #0f0a1a 0%, #1a1033 40%, #0a1628 100%);
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    .icif-overlay[hidden] {
+      display: none !important;
+    }
+
+    .icif-overlay.dr2-overlay {
+      background:
+        radial-gradient(120% 80% at 18% 0%, rgba(52, 211, 153, 0.28) 0%, transparent 55%),
+        radial-gradient(90% 70% at 100% 28%, rgba(56, 189, 248, 0.2) 0%, transparent 52%),
+        radial-gradient(80% 60% at 50% 100%, rgba(250, 204, 21, 0.12) 0%, transparent 46%),
+        linear-gradient(175deg, #0a1614 0%, #10241f 42%, #0a1620 100%);
+    }
+
+    .icif-overlay.dr2-overlay .ex1-overlay-top {
+      border-bottom-color: rgba(52, 211, 153, 0.28);
+    }
+
+    .icif-overlay.dr3-overlay {
+      background:
+        radial-gradient(120% 80% at 15% 0%, rgba(244, 114, 182, 0.26) 0%, transparent 55%),
+        radial-gradient(90% 70% at 95% 25%, rgba(167, 139, 250, 0.22) 0%, transparent 52%),
+        radial-gradient(80% 60% at 50% 100%, rgba(250, 204, 21, 0.1) 0%, transparent 46%),
+        linear-gradient(175deg, #140a12 0%, #1a1024 42%, #120818 100%);
+    }
+
+    .icif-overlay.dr3-overlay .ex1-overlay-top {
+      border-bottom-color: rgba(244, 114, 182, 0.28);
+    }
+
+    .dr3-problem-line {
+      margin: 10px 0 0;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #fce7f3;
+      font-weight: 700;
+    }
+
+    .dr2-unless-line {
+      margin: 10px 0 0;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #fde68a;
+      font-weight: 700;
+    }
+
+    .icif-overlay .ex1-overlay-top {
+      border-bottom-color: rgba(167, 139, 250, 0.3);
+    }
+
+    .icif-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 16px;
+    }
+
+    .icif-sticky-model {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      padding: 4px 0 10px;
+      margin-bottom: 2px;
+      background: linear-gradient(
+        180deg,
+        rgba(15, 10, 26, 0.98) 0%,
+        rgba(15, 10, 26, 0.92) 70%,
+        rgba(15, 10, 26, 0) 100%
+      );
+    }
+
+    .icif-overlay .icif-model.icif-model--compact {
+      margin-bottom: 8px;
+    }
+
+    .icif-model-hint--tight {
+      font-size: 12px !important;
+      margin-bottom: 8px !important;
+      line-height: 1.45 !important;
+    }
+
+    .icif-model-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .icif-model-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .icif-pair--compact {
+      padding: 10px 12px;
+      margin-bottom: 0;
+    }
+
+    .icif-pair--compact .t {
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .icif-pair--compact .q,
+    .icif-pair--compact .a {
+      font-size: 13px;
+    }
+
+    .icif-pair--compact .tag {
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .icif-overlay .icif-model {
+      margin-bottom: 12px;
+    }
+
+    .icif-overlay .icif-model > strong {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    details.icif-howto {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin: 0 0 12px;
+      padding: 8px 12px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    details.icif-howto > summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      user-select: none;
+    }
+
+    details.icif-howto > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.icif-howto[open] > summary {
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.28);
+    }
+
+    details.icif-howto ol {
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    details.icif-howto li {
+      margin-bottom: 5px;
+    }
+
+    .icif-overlay .icif-grid {
+      padding-top: 4px;
+    }
+
+    .icif-stage-wrap {
+      width: min(460px, 100%);
+      margin: 0 auto;
+      padding: 0 4px 8px;
+    }
+
+    .icif-card-progress {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #22d3ee;
+      margin-bottom: 12px;
+    }
+
+    .icif-active-card {
+      transition: opacity 0.2s ease;
+    }
+
+    .icif-flip--solo {
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    .icif-flip--solo .flip-ex-face {
+      min-height: min(220px, 42vh);
+    }
+
+    .icif-flip--solo #icif-front-text {
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .icif-flip--solo #icif-back-ans {
+      font-size: clamp(0.98rem, 3.2vw, 1.12rem);
+      line-height: 1.5;
+    }
+
+    .icif-stage-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icif-stage-done {
+      text-align: center;
+      padding: 20px 14px 28px;
+      border-radius: 18px;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      background: rgba(15, 23, 42, 0.55);
+      margin-bottom: 12px;
+    }
+
+    .icif-done-title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #86efac;
+    }
+
+    .icif-done-text {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="nav-top">
+      <a class="back" href="ege-grammar-gym-conditionals-stretch.html">&larr; К Conditionals Stretch</a>
+      <div class="jump" aria-label="Быстрый переход">
+        <a href="#zero">Zero</a>
+        <a href="#first">First</a>
+        <a href="#unless-etc">unless, in case…</a>
+        <a href="#ex1">Зад. B</a>
+        <a href="#ex2">Зад. C</a>
+        <a href="#ex3">Зад. D</a>
+        <a href="#d-gloss">Словарь D</a>
+        <a href="#ex-icif">In case / if</a>
+      </div>
+    </div>
+
+    <h1>Zero &amp; First conditional</h1>
+    <p class="subtitle">Реальность — факты, научные обобщения и реальные / вероятные ситуации. Удобно возвращаться к правилу перед тренировкой.</p>
+
+    <div class="boost-hero" role="region" aria-label="Быстрая практика">
+      <div class="boost-hero-inner">
+        <div class="boost-track" id="boost-track" aria-label="Что уже сделано в Boost">
+          <div class="boost-coin" id="boost-coin-b" title="Задание B — flip cards">
+            <span class="boost-coin-mark" aria-hidden="true">⚡</span>
+            <span>B</span>
+          </div>
+          <div class="boost-coin" id="boost-coin-c" title="Задание C — формы глаголов">
+            <span class="boost-coin-mark" aria-hidden="true">✏</span>
+            <span>C</span>
+          </div>
+          <div class="boost-coin" id="boost-coin-d" title="Задание D — выбери союз / фразу">
+            <span class="boost-coin-mark" aria-hidden="true">🎯</span>
+            <span>D</span>
+          </div>
+        </div>
+        <span class="boost-pill">Quick challenge</span>
+        <p class="boost-title">Boost your Zero &amp; First conditional</p>
+        <p class="boost-sub">
+          Три полноэкранных блока: <strong>B</strong> — flip; <strong>C</strong> — глаголы из банка; <strong>D</strong> — выбери правильное слово из двух (unless, in case…). Значки загораются зелёным, когда блок пройден.
+        </p>
+        <div class="boost-btn-row">
+          <button type="button" class="boost-btn" id="ex1-boost">
+            <span class="boost-btn-icon" aria-hidden="true">⚡</span>
+            <span>Задание B — усиление (flip)</span>
+          </button>
+          <button type="button" class="boost-btn boost-btn--c" id="ex2-boost">
+            <span class="boost-btn-icon" aria-hidden="true">✏</span>
+            <span>Задание C — глаголы (full screen)</span>
+          </button>
+          <button type="button" class="boost-btn boost-btn--d" id="ex3-boost">
+            <span class="boost-btn-icon" aria-hidden="true">🎯</span>
+            <span>Задание D — circle the word (full screen)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="block" id="zero">
+      <div class="section-head">
+        <h2>Zero conditional</h2>
+      </div>
+      <div class="form-row">
+        <div class="form-label">Form</div>
+        <div class="form-rule">if + present simple, present simple</div>
+      </div>
+      <div class="grid-use-ex">
+        <div class="cell">
+          <h3>Use</h3>
+          <p>General or scientific facts and definitions.</p>
+        </div>
+        <div class="cell">
+          <h3>Example</h3>
+          <p>If you <strong class="v">have</strong> faith in something, you <strong class="v">believe</strong> in something you cannot prove.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="first">
+      <div class="section-head">
+        <h2>First conditional</h2>
+      </div>
+      <div class="form-row">
+        <div class="form-label">Form</div>
+        <div class="form-rule">if + a present tense, will + bare infinitive</div>
+      </div>
+      <div class="grid-use-ex">
+        <div class="cell">
+          <h3>Use</h3>
+          <p>Real or likely conditions in the present or future and their results in the present and future.</p>
+        </div>
+        <div class="cell">
+          <h3>Examples</h3>
+          <ul class="examples">
+            <li>If you <strong class="v">have</strong> a birthday party, you&rsquo;ll <strong class="v">get</strong> loads of cool presents!</li>
+            <li>If you&rsquo;re <strong class="v">working</strong> till half past six, we&rsquo;ll <strong class="v">have</strong> dinner at about eight.</li>
+            <li>If you <strong class="v">have revised</strong> properly, you <strong class="v">won&rsquo;t have</strong> any problems in the test next week.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="unless-etc">
+      <div class="section-head section-head--wide">
+        <h2>unless, in case, as/so long as, provided (that)</h2>
+      </div>
+      <p class="link-hint">Часто встречаются вместо <strong class="v">if</strong> в реальных и вероятных условиях (особенно с first conditional).</p>
+      <div class="table-wrap">
+        <table class="rule-table">
+          <thead>
+            <tr>
+              <th>Word / phrase</th>
+              <th>Meaning</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>unless</td>
+              <td>&lsquo;except if&rsquo; or &lsquo;if&hellip; not&rsquo;</td>
+              <td>I&rsquo;ll be there at six <strong class="v">unless</strong> I get delayed. <span class="ex-plain">(= except if I get delayed / if I don&rsquo;t get delayed)</span></td>
+            </tr>
+            <tr>
+              <td>in case</td>
+              <td>&lsquo;because he/she/it/etc might&rsquo;</td>
+              <td>Let&rsquo;s take our wellies <strong class="v">in case</strong> it&rsquo;s muddy. <span class="ex-plain">(= because it might be muddy)</span></td>
+            </tr>
+            <tr>
+              <td>as/so long as</td>
+              <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
+              <td><strong class="v">As / So long as</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
+            </tr>
+            <tr>
+              <td>provided (that)</td>
+              <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
+              <td><strong class="v">Provided (that)</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="ex1">
+      <div class="ex1-head">
+        <h2>Задание B — дополни определения</h2>
+      </div>
+      <p class="ex1-instr">
+        Как в учебнике: на экране только начало условного предложения (<em>If you&hellip;</em>).
+        Сформулируй продолжение своими словами, затем переверн карточку и сверься с образцом.
+      </p>
+      <p class="ex1-hint">Упражнение открывается <strong>на весь экран</strong>: так проще сосредоточиться. К следующему пункту можно перейти только после переворота карточки; готовые пункты отмечаются зелёной галочкой.</p>
+      <button type="button" class="ex1-open-btn" id="ex1-open">Открыть задание B на весь экран</button>
+    </section>
+
+    <section class="block" id="ex2">
+      <div class="ex1-head">
+        <h2>Задание C — формы глаголов</h2>
+      </div>
+      <p class="ex1-instr">
+        <strong>C · Complete using the correct form of the verbs in the box.</strong> Десять предложений, банк из учебника.
+        Больше <strong>трёх</strong> ошибок в одной попытке — задание сбрасывается; перед новым заходом показываем, что пошло не так.
+      </p>
+      <p class="ex1-hint">Лимит: до <strong>3 ошибок</strong> включительно — попытка засчитывается как успех (с разбором промахов). 4+ ошибки — только объяснения и «с чистого листа».</p>
+      <button type="button" class="ex1-open-btn" id="ex2-open">Открыть задание C на весь экран</button>
+    </section>
+
+    <section class="block" id="ex3">
+      <div class="ex1-head">
+        <h2>Задание D — Circle the correct word</h2>
+      </div>
+      <p class="ex1-instr">
+        Как в учебнике: в каждом предложении два варианта (<strong>unless / if</strong>, <strong>in case</strong> и т.д.).
+        Тапай по правильному слову — сразу видно результат. До <strong>трёх</strong> неверных ответов за попытку; можно вернуться к номерам сверху.
+      </p>
+      <p class="ex1-hint">
+        Мини-словарь из карточек B: <strong>look up to</strong> — восхищаться кем-то, уважать; <strong>look down on</strong> — смотреть свысока, презирать.
+      </p>
+      <button type="button" class="ex1-open-btn" id="ex3-open">Открыть задание D на весь экран</button>
+      <p class="ex1-hint" id="ex-icif">
+        Бонусный дриллинг <em>in case / if</em> — кнопка <strong>«Дриллинг»</strong> под номерами 1–8 внутри полноэкранного D. Можно также
+        <button type="button" class="ex3-mini-link" id="icif-open">открыть дриллинг отсюда</button>.
+      </p>
+      <details class="d-gloss-section" id="d-gloss">
+        <summary>Словарь к заданию D — фразы и связки</summary>
+        <div class="ex3-glossary-inner">
+          <h4>Фразы и выражения</h4>
+          <dl>
+            <dt>Take a year off</dt>
+            <dd>взять год перерыва (часто между школой и университетом — gap year).</dd>
+            <dt>Decide to do something</dt>
+            <dd>решить что-то сделать — после <strong>decide</strong> почти всегда идёт <strong>to + глагол</strong>.</dd>
+            <dt>There&rsquo;s a lot of traffic</dt>
+            <dd>на дорогах много машин / плотное движение, пробки.</dd>
+            <dt>Go straight to bed</dt>
+            <dd>пойти сразу спать, «прямиком в кровать».</dd>
+            <dt>I don&rsquo;t mind how&hellip;</dt>
+            <dd>мне неважно, насколько&hellip; / я не против того, как&hellip;</dd>
+            <dt>I&rsquo;ve still got my health</dt>
+            <dd>я всё ещё здоров (букв.: «здоровье ещё со мной»).</dd>
+            <dt>Take a sweater with you</dt>
+            <dd>взять свитер с собой, захватить на выход.</dd>
+            <dt>Make noise</dt>
+            <dd>шуметь — обычно глагол <strong>make</strong>, не <strong>do</strong>.</dd>
+            <dt>By midnight</dt>
+            <dd>к полуночи; <strong>by</strong> = дедлайн «не позже чем&hellip;».</dd>
+          </dl>
+          <h4>Слова-связки (условия)</h4>
+          <dl>
+            <dt>Unless</dt>
+            <dd>если не&hellip;; кроме случая, когда&hellip;</dd>
+            <dt>In case</dt>
+            <dd>на случай если&hellip; (про запас, потому что может случиться).</dd>
+            <dt>As long as / So long as</dt>
+            <dd>при условии, что&hellip;; пока (в смысле условия).</dd>
+            <dt>Provided (that)</dt>
+            <dd>при условии, если&hellip; — чуть более формально.</dd>
+          </dl>
+        </div>
+      </details>
+    </section>
+
+    <p class="note">Совет: держи эту вкладку в закладках или возвращайся через Grammar Gym → Conditionals Stretch → Zero and First conditional.</p>
+  </div>
+
+  <div class="ex1-overlay" id="ex1-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ex1-overlay-title">
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="ex1-close">← К правилам</button>
+      <span class="ex1-badge" id="ex1-overlay-title">B · Complete the definitions</span>
+      <div class="ex1-steps" id="ex1-steps" aria-label="Прогресс"></div>
+    </div>
+    <div class="ex1-formula-bar" id="ex1-formula-bar" aria-label="Формула для этого задания">
+      <span class="ex1-formula-tag">Zero conditional</span>
+      <span class="ex1-formula-text">
+        <strong>If</strong> + Present Simple<strong>,</strong> Present Simple
+        <span class="ex1-formula-facts">(FACTS)</span>
+      </span>
+      <span class="ex1-formula-hint">Смысл и форма: обобщения и определения — оба глагола в настоящем времени.</span>
+    </div>
+    <div class="ex1-overlay-main">
+      <div class="ex1-card-wrap" id="ex1-card-wrap">
+        <button type="button" class="flip-ex" id="ex1o-flip" aria-label="Перевернуть карточку">
+          <div class="flip-ex-inner">
+            <div class="flip-ex-face flip-ex-front">
+              <div class="flip-ex-label">Дополни своими словами</div>
+              <div class="ex1-prompt-text" id="ex1o-front"></div>
+              <div class="flip-ex-tap">Нажми, чтобы увидеть образец</div>
+            </div>
+            <div class="flip-ex-face flip-ex-back">
+              <div class="flip-ex-label flip-ex-label--back">Образец</div>
+              <div id="ex1o-back"></div>
+              <div class="flip-ex-tap">Нажми, чтобы вернуться к заданию</div>
+            </div>
+          </div>
+        </button>
+      </div>
+      <div class="ex1-done-all" id="ex1-all-done" hidden>Все пункты сделаны. Можно закрыть окно и вернуться к правилам.</div>
+    </div>
+    <div class="ex1-overlay-bottom">
+      <p class="ex1-hint-bar" id="ex1-hint-bar">Переверни карточку, чтобы увидеть образец — после этого кнопка «Дальше» станет активной.</p>
+      <button type="button" class="ex1-next-main" id="ex1-next-main" disabled>Дальше →</button>
+    </div>
+  </div>
+
+  <div class="ex2-overlay" id="ex2-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ex2-overlay-title">
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="ex2-close">← К правилам</button>
+      <span class="ex1-badge" id="ex2-overlay-title">C · Verb forms in conditionals</span>
+      <div class="ex1-steps ex2-steps-lg" id="ex2-steps" aria-label="Прогресс по предложениям"></div>
+    </div>
+    <div class="ex2-formula-bar">
+      <div class="ex2-formula-bar-inner">
+        <strong>First conditional (часто):</strong> <strong>If</strong> + Present (и др. настоящие формы) → <strong>will</strong> + глагол.
+        Бывают <strong>imperatives</strong> в главном предложении и конструкция <strong>if you should + инфинитив</strong>.
+      </div>
+    </div>
+    <div class="ex2-scroll-main">
+      <div class="ex2-work" id="ex2-work">
+        <div class="ex2-bank">
+          <div class="ex2-bank-title">Verbs in the box</div>
+          <div class="ex2-bank-words" id="ex2-bank-words"></div>
+        </div>
+        <div class="ex2-one-slide" id="ex2-one-slide">
+          <div class="ex2-one-meta">
+            <span class="ex2-one-badge" id="ex2-slide-label">1 / 10</span>
+          </div>
+          <div class="ex2-one-card">
+            <div class="ex2-one-line" id="ex2-one-line">
+              <span id="ex2-sent-before"></span>
+              <input type="text" id="ex2-single-in" class="ex2-big-input" autocomplete="off" spellcheck="false" />
+              <span id="ex2-sent-after"></span>
+            </div>
+            <p class="ex2-one-msg" id="ex2-one-msg" hidden></p>
+            <div class="ex2-one-feedback" id="ex2-one-feedback" hidden>
+              <div class="ex2-feedback-row">
+                <div class="ex2-feedback-sample">
+                  <div class="ex2-feedback-label">Образец</div>
+                  <p class="ex2-example-line" id="ex2-example-line"></p>
+                </div>
+                <div class="ex2-feedback-explain-wrap">
+                  <div class="ex2-feedback-label">Почему так</div>
+                  <p class="ex2-explain-line" id="ex2-explain-line"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ex2-panel" id="ex2-panel-fail" hidden>
+        <h3>Слишком много ошибок</h3>
+        <p class="ex2-panel-lead" id="ex2-fail-lead"></p>
+        <ul class="ex2-fail-list" id="ex2-fail-list"></ul>
+        <div class="ex2-big-actions">
+          <button type="button" class="ex2-btn ex2-btn--danger" id="ex2-retry">Начать с чистого листа</button>
+        </div>
+      </div>
+      <div class="ex2-panel" id="ex2-panel-pass" hidden>
+        <h3 id="ex2-pass-title">Зачёт!</h3>
+        <p class="ex2-panel-lead" id="ex2-pass-lead"></p>
+        <ul class="ex2-pass-list" id="ex2-pass-list"></ul>
+        <div class="ex2-big-actions">
+          <button type="button" class="ex2-btn ex2-btn--primary" id="ex2-pass-close">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    <div class="ex1-overlay-bottom" id="ex2-bottom-bar">
+      <div class="ex2-bottom-inner">
+        <div class="ex2-nav-row">
+          <button type="button" class="ex2-nav-btn" id="ex2-prev">← Назад</button>
+          <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="ex2-next">Проверить и дальше →</button>
+        </div>
+        <p class="ex1-hint-bar ex2-hint-wide" id="ex2-hint-bar">
+          После ответа нажми «Проверить и дальше» или Enter: сразу видно, верно ли. До <strong>трёх</strong> неверных проверок за попытку; при ошибке снизу — образец и объяснение рядом.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex3-overlay" id="ex3-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ex3-overlay-title">
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="ex3-close">← К правилам</button>
+      <span class="ex3-badge" id="ex3-overlay-title">D · Circle the correct word</span>
+    </div>
+    <div class="ex3-step-drill-row">
+      <div class="ex3-steps-cluster">
+        <span class="ex3-steps-eyebrow">Вопросы 1–8</span>
+        <div class="ex1-steps ex2-steps-lg" id="ex3-steps" aria-label="Прогресс по заданию D"></div>
+      </div>
+      <details class="ex3-bonus-drills">
+        <summary class="ex3-bonus-drills-sum">
+          Бонус · <span class="ex3-bonus-n">3</span> дриллинга
+        </summary>
+        <div class="ex3-drill-btns ex3-drill-btns--in-drawer">
+          <button
+            type="button"
+            class="ex3-drill-launch ex3-drill-launch--compact"
+            id="ex3-drill-open"
+            aria-label="Бонус: дриллинг in case и if"
+          >
+            <span class="ex3-drill-launch-icon" aria-hidden="true">⚡</span>
+            <span class="ex3-drill-launch-text">
+              <span class="ex3-drill-launch-kicker">Bonus</span>
+              <span class="ex3-drill-launch-title">Дриллинг</span>
+              <span class="ex3-drill-launch-sub">in case · if</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="ex3-drill-launch ex3-drill-launch--2 ex3-drill-launch--compact"
+            id="ex3-drill2-open"
+            aria-label="Бонус: unless → позитивное условие (as long as, provided)"
+          >
+            <span class="ex3-drill-launch-icon" aria-hidden="true">⇄</span>
+            <span class="ex3-drill-launch-text">
+              <span class="ex3-drill-launch-kicker">Bonus</span>
+              <span class="ex3-drill-launch-title">Дриллинг 2</span>
+              <span class="ex3-drill-launch-sub">unless → позитив</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="ex3-drill-launch ex3-drill-launch--3 ex3-drill-launch--compact"
+            id="ex3-drill3-open"
+            aria-label="Бонус: совет через had better и лексику из D"
+          >
+            <span class="ex3-drill-launch-icon" aria-hidden="true">💬</span>
+            <span class="ex3-drill-launch-text">
+              <span class="ex3-drill-launch-kicker">Bonus</span>
+              <span class="ex3-drill-launch-title">Дриллинг 3</span>
+              <span class="ex3-drill-launch-sub">'d better · лексика</span>
+            </span>
+          </button>
+        </div>
+      </details>
+    </div>
+    <div class="ex3-hud">
+      <div class="ex3-progress-outer" aria-hidden="true">
+        <div class="ex3-progress-fill" id="ex3-progress-fill"></div>
+      </div>
+      <div class="ex3-hud-row">
+        <span class="ex3-pill ex3-pill--hot" id="ex3-done-pill">Готово: 0 / 8</span>
+        <span class="ex3-pill ex3-pill--danger" id="ex3-mistake-pill">Промахов: 0 / 3</span>
+      </div>
+    </div>
+    <div class="ex3-phrasebar">
+      Из задания B: <strong>look up to someone</strong> — восхищаться кем-то, уважать;
+      <strong>look down on someone</strong> — смотреть свысока, презирать.
+    </div>
+    <details class="ex3-glossary">
+      <summary>Фразы и связки — подсказка</summary>
+      <div class="ex3-glossary-inner">
+        <h4>Фразы и выражения</h4>
+        <dl>
+          <dt>Take a year off</dt>
+          <dd>взять год перерыва (часто между школой и университетом — gap year).</dd>
+          <dt>Decide to do something</dt>
+          <dd>решить что-то сделать — после <strong>decide</strong> почти всегда идёт <strong>to + глагол</strong>.</dd>
+          <dt>There&rsquo;s a lot of traffic</dt>
+          <dd>на дорогах много машин / плотное движение, пробки.</dd>
+          <dt>Go straight to bed</dt>
+          <dd>пойти сразу спать, «прямиком в кровать».</dd>
+          <dt>I don&rsquo;t mind how&hellip;</dt>
+          <dd>мне неважно, насколько&hellip; / я не против того, как&hellip;</dd>
+          <dt>I&rsquo;ve still got my health</dt>
+          <dd>я всё ещё здоров (букв.: «здоровье ещё со мной»).</dd>
+          <dt>Take a sweater with you</dt>
+          <dd>взять свитер с собой, захватить на выход.</dd>
+          <dt>Make noise</dt>
+          <dd>шуметь — обычно глагол <strong>make</strong>, не <strong>do</strong>.</dd>
+          <dt>By midnight</dt>
+          <dd>к полуночи; <strong>by</strong> = дедлайн «не позже чем&hellip;».</dd>
+        </dl>
+        <h4>Слова-связки (условия)</h4>
+        <dl>
+          <dt>Unless</dt>
+          <dd>если не&hellip;; кроме случая, когда&hellip;</dd>
+          <dt>In case</dt>
+          <dd>на случай если&hellip; (про запас, потому что может случиться).</dd>
+          <dt>As long as / So long as</dt>
+          <dd>при условии, что&hellip;; пока (в смысле условия).</dd>
+          <dt>Provided (that)</dt>
+          <dd>при условии, если&hellip; — чуть более формально.</dd>
+        </dl>
+      </div>
+    </details>
+    <div class="ex3-scroll">
+      <div class="ex3-work" id="ex3-work">
+        <div class="ex3-card" id="ex3-card">
+          <div class="ex3-slide-tag" id="ex3-slide-label">1 / 8</div>
+          <p class="ex3-sentence" id="ex3-line-top"></p>
+          <div class="ex3-picks" id="ex3-picks">
+            <button type="button" class="ex3-pick" id="ex3-pick-0" data-i="0"></button>
+            <button type="button" class="ex3-pick" id="ex3-pick-1" data-i="1"></button>
+          </div>
+          <p class="ex3-sentence ex3-line-after" id="ex3-line-bot"></p>
+          <div class="ex3-feedback" id="ex3-feedback" hidden>
+            <div class="ex3-feedback-title">Разбор</div>
+            <p class="ex3-feedback-text" id="ex3-feedback-text"></p>
+          </div>
+        </div>
+        <div class="ex3-panel" id="ex3-panel-fail" hidden>
+          <h3>Слишком много промахов</h3>
+          <p class="ex3-panel-lead" id="ex3-fail-lead"></p>
+          <div class="ex2-big-actions">
+            <button type="button" class="ex2-btn ex2-btn--danger" id="ex3-retry">Сначала заново</button>
+          </div>
+        </div>
+        <div class="ex3-panel" id="ex3-panel-pass" hidden>
+          <h3 id="ex3-pass-title">Level up!</h3>
+          <p class="ex3-panel-lead" id="ex3-pass-lead"></p>
+          <div class="ex2-big-actions">
+            <button type="button" class="ex2-btn ex2-btn--primary" id="ex3-pass-close">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ex1-overlay-bottom" id="ex3-bottom-bar">
+      <div class="ex3-bottom-inner">
+        <button type="button" class="ex2-nav-btn" id="ex3-prev">← Назад</button>
+        <p class="ex1-hint-bar ex3-hint-micro" id="ex3-hint-bar">
+          Промахи 0/3 · словарь справа · бонусы — «3 дриллинга» рядом с 1–8.
+        </p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="ex3-dict-fab"
+      id="ex3-dict-fab"
+      aria-expanded="false"
+      aria-controls="ex3-dict-drawer"
+      title="Быстрый словарь — фразы и связки"
+    >
+      <span class="ex3-dict-fab-text"><span class="ex3-dict-fab-line">Быстрый</span><span class="ex3-dict-fab-line">словарь</span></span>
+    </button>
+    <div class="ex3-dict-backdrop" id="ex3-dict-backdrop" hidden aria-hidden="true"></div>
+    <aside
+      class="ex3-dict-drawer"
+      id="ex3-dict-drawer"
+      aria-label="Быстрый словарь"
+      aria-hidden="true"
+    >
+      <div class="ex3-dict-drawer-head">
+        <span>Быстрый словарь</span>
+        <button type="button" class="ex3-dict-drawer-x" id="ex3-dict-close" aria-label="Закрыть словарь">
+          &times;
+        </button>
+      </div>
+      <div class="ex3-dict-drawer-body" id="ex3-dict-drawer-body"></div>
+    </aside>
+  </div>
+  <div
+    class="icif-overlay"
+    id="icif-overlay"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="icif-overlay-title"
+  >
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="icif-close">← К правилам</button>
+      <span class="ex3-badge" id="icif-overlay-title">In case vs if · логика</span>
+    </div>
+    <div class="icif-body">
+      <div class="icif-sticky-model">
+        <div class="icif-model icif-model--compact">
+          <strong>Модель (держи в голове)</strong>
+          <p class="icif-model-hint icif-model-hint--tight">
+            <strong>In case</strong> — про запас, если что-то <em>может</em> случиться.
+            <strong>If</strong> — «если произойдёт X, <em>тогда</em> Y».
+          </p>
+          <div class="icif-model-grid">
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">In case · пример</div>
+              <p class="q"><span class="icif-k">Q:</span> Why are you taking an umbrella?</p>
+              <p class="a">I'm taking it <strong>in case</strong> it rains.</p>
+              <p class="tag">Заранее, дождь возможен.</p>
+            </div>
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">If · пример</div>
+              <p class="q"><span class="icif-k">Q:</span> Will you walk?</p>
+              <p class="a">I'll go <strong>if</strong> it stops raining.</p>
+              <p class="tag">Зависит от погоды.</p>
+            </div>
+          </div>
+        </div>
+        <details class="icif-howto">
+          <summary>Как работать</summary>
+          <ol>
+            <li>Одна карточка за раз: скажи фразу с <em>in case</em> или <em>if</em>, потом жми карточку.</li>
+            <li>После образца жми <strong>Дальше</strong> — следующая ситуация.</li>
+            <li>Словарь из D — квадратная кнопка <strong>«Быстрый словарь»</strong> справа по центру экрана.</li>
+          </ol>
+        </details>
+      </div>
+      <div class="icif-stage-wrap">
+        <div class="icif-card-progress" id="icif-card-progress" aria-live="polite">1 / 8</div>
+        <div class="icif-stage-done" id="icif-stage-done" hidden>
+          <p class="icif-done-title">Серия готова</p>
+          <p class="icif-done-text">Все 8 ситуаций пройдены. Можно закрыть окно или повторить.</p>
+          <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="icif-restart">
+            Ещё раз с начала
+          </button>
+        </div>
+        <div class="icif-active-card" id="icif-active-card">
+          <button
+            type="button"
+            class="flip-ex icif-flip icif-flip--solo"
+            id="icif-flip-btn"
+            aria-expanded="false"
+            aria-label="Перевернуть карточку"
+          >
+            <div class="flip-ex-inner">
+              <div class="flip-ex-face flip-ex-front">
+                <div class="icif-cue">Ситуация</div>
+                <div class="flip-ex-label">Подумай и скажи</div>
+                <div id="icif-front-text"></div>
+                <div class="flip-ex-tap">Нажми, чтобы увидеть образец</div>
+              </div>
+              <div class="flip-ex-face flip-ex-back">
+                <div class="flip-ex-label flip-ex-label--back">Образец</div>
+                <div id="icif-back-ans"></div>
+                <p class="icif-back-note" id="icif-back-note-p"></p>
+                <div class="flip-ex-tap">Нажми, чтобы вернуться</div>
+              </div>
+            </div>
+          </button>
+          <div class="icif-stage-nav">
+            <button type="button" class="ex2-nav-btn" id="icif-card-prev" disabled>← Назад</button>
+            <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="icif-card-next" disabled>
+              Дальше →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="ex3-dict-fab"
+      id="icif-dict-fab"
+      aria-expanded="false"
+      aria-controls="icif-dict-drawer"
+      title="Быстрый словарь — фразы и связки (как в задании D)"
+    >
+      <span class="ex3-dict-fab-text"><span class="ex3-dict-fab-line">Быстрый</span><span class="ex3-dict-fab-line">словарь</span></span>
+    </button>
+    <div class="ex3-dict-backdrop" id="icif-dict-backdrop" hidden aria-hidden="true"></div>
+    <aside
+      class="ex3-dict-drawer"
+      id="icif-dict-drawer"
+      aria-label="Быстрый словарь"
+      aria-hidden="true"
+    >
+      <div class="ex3-dict-drawer-head">
+        <span>Быстрый словарь</span>
+        <button type="button" class="ex3-dict-drawer-x" id="icif-dict-close" aria-label="Закрыть словарь">
+          &times;
+        </button>
+      </div>
+      <div class="ex3-dict-drawer-body" id="icif-dict-drawer-body"></div>
+    </aside>
+  </div>
+  <div
+    class="icif-overlay dr2-overlay"
+    id="dr2-overlay"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dr2-overlay-title"
+  >
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="dr2-close">← К правилам</button>
+      <span class="ex3-badge" id="dr2-overlay-title">unless → позитив · The Positive Parent</span>
+    </div>
+    <div class="icif-body">
+      <div class="icif-sticky-model">
+        <div class="icif-model icif-model--compact">
+          <strong>Две модели (держи в голове)</strong>
+          <p class="icif-model-hint icif-model-hint--tight">
+            <strong>Unless</strong> часто звучит как угроза или «плохой исход».
+            Перефразируй в <strong>нормальное условие</strong>:
+            <strong>as long as</strong>, <strong>provided (that)</strong>, <strong>so long as</strong>
+            — и по смыслу можно сменить глагол на позитивный (<em>pass</em> вместо <em>not fail</em>,
+            <em>on time</em> вместо <em>not late</em>).
+          </p>
+          <div class="icif-model-grid">
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">unless («если не»)</div>
+              <p class="q">You won't go out unless you tidy your room.</p>
+              <div class="t" style="margin-top: 8px">позитивное условие</div>
+              <p class="a">I can go out <strong>as long as</strong> I tidy <strong>my</strong> room.</p>
+              <p class="tag">То же условие, но без угрозы.</p>
+            </div>
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">unless</div>
+              <p class="q">You'll fail the test unless you study hard.</p>
+              <div class="t" style="margin-top: 8px">позитивное условие</div>
+              <p class="a">I'll pass the test <strong>provided</strong> I study hard.</p>
+              <p class="tag">Подойдёт и <strong>as long as</strong> / <strong>so long as</strong>.</p>
+            </div>
+          </div>
+        </div>
+        <details class="icif-howto">
+          <summary>Как работать</summary>
+          <ol>
+            <li>
+              На лицевой стороне — предложение с <em>unless</em>. Сначала попробуй
+              <strong>свой</strong> вариант с позитивным условием.
+            </li>
+            <li>Жми карточку — увидишь <strong>образец</strong> на обороте.</li>
+            <li>После образца жми <strong>Дальше</strong> — следующее предложение (всего 8).</li>
+            <li>Словарь связок из D — кнопка <strong>«Быстрый словарь»</strong> справа по центру.</li>
+          </ol>
+        </details>
+      </div>
+      <div class="icif-stage-wrap">
+        <div class="icif-card-progress" id="dr2-card-progress" aria-live="polite">1 / 8</div>
+        <div class="icif-stage-done" id="dr2-stage-done" hidden>
+          <p class="icif-done-title">Серия готова</p>
+          <p class="icif-done-text">Все 8 фраз пройдены. Можно закрыть окно или повторить.</p>
+          <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="dr2-restart">
+            Ещё раз с начала
+          </button>
+        </div>
+        <div class="icif-active-card" id="dr2-active-card">
+          <button
+            type="button"
+            class="flip-ex icif-flip icif-flip--solo"
+            id="dr2-flip-btn"
+            aria-expanded="false"
+            aria-label="Перевернуть карточку"
+          >
+            <div class="flip-ex-inner">
+              <div class="flip-ex-face flip-ex-front">
+                <div class="icif-cue">unless</div>
+                <div class="flip-ex-label">Скажи позитивный вариант</div>
+                <div id="dr2-front-text"></div>
+                <div class="flip-ex-tap">Нажми, чтобы увидеть образец</div>
+              </div>
+              <div class="flip-ex-face flip-ex-back">
+                <div class="flip-ex-label flip-ex-label--back">Образец ответа</div>
+                <div id="dr2-back-ans"></div>
+                <p class="icif-back-note" id="dr2-back-note-p"></p>
+                <div class="flip-ex-tap">Нажми, чтобы вернуться</div>
+              </div>
+            </div>
+          </button>
+          <div class="icif-stage-nav">
+            <button type="button" class="ex2-nav-btn" id="dr2-card-prev" disabled>← Назад</button>
+            <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="dr2-card-next" disabled>
+              Дальше →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="ex3-dict-fab"
+      id="dr2-dict-fab"
+      aria-expanded="false"
+      aria-controls="dr2-dict-drawer"
+      title="Быстрый словарь — фразы и связки (как в задании D)"
+    >
+      <span class="ex3-dict-fab-text"><span class="ex3-dict-fab-line">Быстрый</span><span class="ex3-dict-fab-line">словарь</span></span>
+    </button>
+    <div class="ex3-dict-backdrop" id="dr2-dict-backdrop" hidden aria-hidden="true"></div>
+    <aside
+      class="ex3-dict-drawer"
+      id="dr2-dict-drawer"
+      aria-label="Быстрый словарь"
+      aria-hidden="true"
+    >
+      <div class="ex3-dict-drawer-head">
+        <span>Быстрый словарь</span>
+        <button type="button" class="ex3-dict-drawer-x" id="dr2-dict-close" aria-label="Закрыть словарь">
+          &times;
+        </button>
+      </div>
+      <div class="ex3-dict-drawer-body" id="dr2-dict-drawer-body"></div>
+    </aside>
+  </div>
+  <div
+    class="icif-overlay dr3-overlay"
+    id="dr3-overlay"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dr3-overlay-title"
+  >
+    <div class="ex1-overlay-top">
+      <button type="button" class="ex1-close" id="dr3-close">← К правилам</button>
+      <span class="ex3-badge" id="dr3-overlay-title">Блиц · 'd better + лексика D</span>
+    </div>
+    <div class="icif-body">
+      <div class="icif-sticky-model">
+        <div class="icif-model icif-model--compact">
+          <strong>Две модели (это не плохой совет — наоборот, прямой и полезный)</strong>
+          <p class="icif-model-hint icif-model-hint--tight">
+            Название <em>Bad Advice</em> здесь ироничное: по смыслу ты даёшь
+            <strong>нормальный жёсткий совет</strong> через <strong>You'd better</strong> (= You had better)
+            и цепляешь <strong>лексику из подсказки D</strong> (сон, gap year, шум, пробки и т.д.).
+          </p>
+          <div class="icif-model-grid">
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">Проблема</div>
+              <p class="q">I'm so tired today.</p>
+              <div class="t" style="margin-top: 8px">Совет ('d better)</div>
+              <p class="a">You'd better <strong>go straight to bed</strong>.</p>
+              <p class="tag">Фраза из блока D · устойчивый совет.</p>
+            </div>
+            <div class="icif-pair icif-pair--compact">
+              <div class="t">Проблема</div>
+              <p class="q">I want to travel but I have no money.</p>
+              <div class="t" style="margin-top: 8px">Совет</div>
+              <p class="a">
+                You'd better <strong>take a year off</strong> and <strong>work</strong> first.
+              </p>
+              <p class="tag"><strong>Take a year off</strong> — из словаря D.</p>
+            </div>
+          </div>
+        </div>
+        <details class="icif-howto">
+          <summary>Как работать</summary>
+          <ol>
+            <li>На лицевой стороне — короткая <strong>жалоба / проблема</strong>. Придумай совет с
+              <strong>You'd better</strong> и словами из D.</li>
+            <li>Жми карточку — <strong>образец</strong> на обороте.</li>
+            <li>После образца жми <strong>Дальше</strong> — ещё семь ситуаций.</li>
+            <li><strong>Быстрый словарь</strong> справа по центру — тот же список, что в D.</li>
+          </ol>
+        </details>
+      </div>
+      <div class="icif-stage-wrap">
+        <div class="icif-card-progress" id="dr3-card-progress" aria-live="polite">1 / 8</div>
+        <div class="icif-stage-done" id="dr3-stage-done" hidden>
+          <p class="icif-done-title">Серия готова</p>
+          <p class="icif-done-text">Все 8 ситуаций пройдены. Можно закрыть окно или повторить.</p>
+          <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="dr3-restart">
+            Ещё раз с начала
+          </button>
+        </div>
+        <div class="icif-active-card" id="dr3-active-card">
+          <button
+            type="button"
+            class="flip-ex icif-flip icif-flip--solo"
+            id="dr3-flip-btn"
+            aria-expanded="false"
+            aria-label="Перевернуть карточку"
+          >
+            <div class="flip-ex-inner">
+              <div class="flip-ex-face flip-ex-front">
+                <div class="icif-cue">Проблема</div>
+                <div class="flip-ex-label">Совет через You'd better</div>
+                <div id="dr3-front-text"></div>
+                <div class="flip-ex-tap">Нажми, чтобы увидеть образец</div>
+              </div>
+              <div class="flip-ex-face flip-ex-back">
+                <div class="flip-ex-label flip-ex-label--back">Образец ответа</div>
+                <div id="dr3-back-ans"></div>
+                <p class="icif-back-note" id="dr3-back-note-p"></p>
+                <div class="flip-ex-tap">Нажми, чтобы вернуться</div>
+              </div>
+            </div>
+          </button>
+          <div class="icif-stage-nav">
+            <button type="button" class="ex2-nav-btn" id="dr3-card-prev" disabled>← Назад</button>
+            <button type="button" class="ex2-nav-btn ex2-nav-btn--primary" id="dr3-card-next" disabled>
+              Дальше →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="ex3-dict-fab"
+      id="dr3-dict-fab"
+      aria-expanded="false"
+      aria-controls="dr3-dict-drawer"
+      title="Быстрый словарь — фразы и связки (как в задании D)"
+    >
+      <span class="ex3-dict-fab-text"><span class="ex3-dict-fab-line">Быстрый</span><span class="ex3-dict-fab-line">словарь</span></span>
+    </button>
+    <div class="ex3-dict-backdrop" id="dr3-dict-backdrop" hidden aria-hidden="true"></div>
+    <aside
+      class="ex3-dict-drawer"
+      id="dr3-dict-drawer"
+      aria-label="Быстрый словарь"
+      aria-hidden="true"
+    >
+      <div class="ex3-dict-drawer-head">
+        <span>Быстрый словарь</span>
+        <button type="button" class="ex3-dict-drawer-x" id="dr3-dict-close" aria-label="Закрыть словарь">
+          &times;
+        </button>
+      </div>
+      <div class="ex3-dict-drawer-body" id="dr3-dict-drawer-body"></div>
+    </aside>
+  </div>
+  <script src="js/prep-course-profile.js"></script>
+  <script src="js/prep-site-content.js"></script>
+  <script src="js/prep-ege-track.js" vite-ignore></script>
+  <script src="js/ege-conditionals/zero-first-page-data.js" vite-ignore></script>
+  <script>
+    (function () {
+      var STORAGE_KEY = "egeCondExB_done_v1";
+      var pack = window.__EGE_CONDITIONALS_ZERO_FIRST__;
+      var CARDS = pack && pack.ex1FlipCards;
+      if (!CARDS || !CARDS.length) {
+        try {
+          console.error(
+            "[EGE conditionals] Нет данных flip-карточек: подключён ли js/ege-conditionals/zero-first-page-data.js?"
+          );
+        } catch (eLog) {}
+        return;
+      }
+
+      var overlay = document.getElementById("ex1-overlay");
+      var openBtn = document.getElementById("ex1-open");
+      var boostBtn = document.getElementById("ex1-boost");
+      var closeBtn = document.getElementById("ex1-close");
+      var stepsEl = document.getElementById("ex1-steps");
+      var flipBtn = document.getElementById("ex1o-flip");
+      var frontEl = document.getElementById("ex1o-front");
+      var backEl = document.getElementById("ex1o-back");
+      var nextBtn = document.getElementById("ex1-next-main");
+      var hintBar = document.getElementById("ex1-hint-bar");
+      var cardWrap = document.getElementById("ex1-card-wrap");
+      var allDoneEl = document.getElementById("ex1-all-done");
+
+      var idx = 0;
+      var completed = CARDS.map(function () {
+        return false;
+      });
+      var sawBack = false;
+
+      function loadDone() {
+        try {
+          var raw = sessionStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length === CARDS.length) {
+            completed = parsed.map(function (x) {
+              return !!x;
+            });
+          }
+        } catch (e) {}
+      }
+
+      function saveDone() {
+        try {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+        } catch (e) {}
+      }
+
+      function firstIncomplete() {
+        for (var i = 0; i < completed.length; i++) {
+          if (!completed[i]) return i;
+        }
+        return completed.length - 1;
+      }
+
+      function allComplete() {
+        return completed.every(Boolean);
+      }
+
+      function updateNextGate() {
+        if (!allDoneEl.hidden) return;
+        var flipped = flipBtn.classList.contains("is-flipped");
+        sawBack = sawBack || flipped;
+        nextBtn.disabled = !sawBack;
+        if (!sawBack && !allComplete()) {
+          hintBar.textContent =
+            "Переверни карточку, чтобы увидеть образец — после этого кнопка «Дальше» станет активной.";
+        } else if (sawBack && !allComplete() && allDoneEl.hidden) {
+          hintBar.textContent = "Нажми «Дальше», чтобы зафиксировать пункт и перейти к следующему.";
+        }
+      }
+
+      function renderSteps() {
+        stepsEl.innerHTML = "";
+        var doneScreen = !allDoneEl.hidden;
+        for (var i = 0; i < CARDS.length; i++) {
+          if (doneScreen) {
+            var sp = document.createElement("span");
+            sp.className = "ex1-step";
+            sp.setAttribute("role", "img");
+            if (completed[i]) {
+              sp.classList.add("is-done");
+              sp.textContent = "✓";
+              sp.title = "Пункт " + (i + 1) + " — готово";
+            } else {
+              sp.textContent = String(i + 1);
+              sp.title = "Пункт " + (i + 1);
+            }
+            if (i === idx && !allComplete()) {
+              sp.classList.add("is-current");
+            }
+            stepsEl.appendChild(sp);
+            continue;
+          }
+
+          (function (ii) {
+            var step = document.createElement("button");
+            step.type = "button";
+            step.className = "ex1-step ex1-step-nav";
+            if (completed[ii]) {
+              step.classList.add("is-done");
+              step.textContent = "✓";
+              step.title =
+                "Пункт " + (ii + 1) + " — готово. Нажми, чтобы снова открыть карточку.";
+            } else {
+              step.textContent = String(ii + 1);
+              step.title = "Пункт " + (ii + 1);
+            }
+            if (ii === idx) {
+              step.classList.add("is-current");
+            }
+            step.disabled = ii > idx;
+            step.addEventListener("click", function () {
+              if (step.disabled || ii === idx) return;
+              idx = ii;
+              sawBack = false;
+              renderCard();
+            });
+            stepsEl.appendChild(step);
+          })(i);
+        }
+      }
+
+      function setFrontPrompt(c) {
+        frontEl.textContent = "";
+        var line = document.createElement("div");
+        line.textContent = c.prompt;
+        frontEl.appendChild(line);
+        if (c.promptRu) {
+          var gloss = document.createElement("div");
+          gloss.className = "ex1-prompt-gloss";
+          gloss.textContent = c.promptRu;
+          frontEl.appendChild(gloss);
+        }
+      }
+
+      function showCompleteState() {
+        cardWrap.hidden = true;
+        allDoneEl.hidden = false;
+        nextBtn.textContent = "Закрыть";
+        nextBtn.disabled = false;
+        hintBar.textContent = "Все 9 предложений отмечены. Возврат к странице с правилами.";
+        flipBtn.classList.remove("is-flipped");
+        renderSteps();
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+      }
+
+      function renderCard() {
+        allDoneEl.hidden = true;
+        cardWrap.hidden = false;
+        nextBtn.textContent = "Дальше →";
+
+        if (allComplete()) {
+          idx = CARDS.length - 1;
+          showCompleteState();
+          return;
+        }
+
+        var c = CARDS[idx];
+        setFrontPrompt(c);
+        var altHtml = c.backAlt
+          ? '<span class="ex1-back-alt">Or: ' + c.backAlt + "</span>"
+          : "";
+        backEl.innerHTML = c.back + altHtml;
+        flipBtn.classList.remove("is-flipped");
+        flipBtn.setAttribute("aria-pressed", "false");
+        sawBack = false;
+        nextBtn.disabled = true;
+        renderSteps();
+        updateNextGate();
+      }
+
+      function openOverlay() {
+        loadDone();
+        overlay.hidden = false;
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        idx = firstIncomplete();
+        if (allComplete()) {
+          showCompleteState();
+        } else {
+          renderCard();
+        }
+        try {
+          closeBtn.focus();
+        } catch (e) {}
+      }
+
+      function closeOverlay() {
+        overlay.hidden = true;
+        overlay.setAttribute("aria-hidden", "true");
+        var ex2ov = document.getElementById("ex2-overlay");
+        var ex3ov = document.getElementById("ex3-overlay");
+        var icifov = document.getElementById("icif-overlay");
+        var dr2ov = document.getElementById("dr2-overlay");
+        var dr3ov = document.getElementById("dr3-overlay");
+        var ex2Open = ex2ov && !ex2ov.hasAttribute("hidden") && !ex2ov.hidden;
+        var ex3Open = ex3ov && !ex3ov.hasAttribute("hidden") && !ex3ov.hidden;
+        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
+        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
+        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
+        if (!ex2Open && !ex3Open && !icifOpen && !dr2Open && !dr3Open) {
+          document.body.style.overflow = "";
+        }
+        saveDone();
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+      }
+
+      openBtn.addEventListener("click", openOverlay);
+      if (boostBtn) boostBtn.addEventListener("click", openOverlay);
+      closeBtn.addEventListener("click", closeOverlay);
+
+      flipBtn.addEventListener("click", function () {
+        flipBtn.classList.toggle("is-flipped");
+        flipBtn.setAttribute(
+          "aria-pressed",
+          flipBtn.classList.contains("is-flipped") ? "true" : "false"
+        );
+        updateNextGate();
+      });
+
+      nextBtn.addEventListener("click", function () {
+        if (!allDoneEl.hidden) {
+          closeOverlay();
+          return;
+        }
+        if (!sawBack) return;
+
+        completed[idx] = true;
+        saveDone();
+
+        if (idx >= CARDS.length - 1) {
+          showCompleteState();
+          return;
+        }
+
+        idx++;
+        renderCard();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (overlay.hidden) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeOverlay();
+        }
+      });
+    })();
+
+    window.__egeZeroFirstSyncBoost = function () {
+      var bEl = document.getElementById("boost-coin-b");
+      var cEl = document.getElementById("boost-coin-c");
+      var dEl = document.getElementById("boost-coin-d");
+      if (!bEl || !cEl) return;
+      var bDone = false;
+      try {
+        var rawB = sessionStorage.getItem("egeCondExB_done_v1");
+        if (rawB) {
+          var arr = JSON.parse(rawB);
+          bDone = Array.isArray(arr) && arr.length === 9 && arr.every(Boolean);
+        }
+      } catch (e1) {}
+      var cDone = false;
+      try {
+        cDone = sessionStorage.getItem("egeCondExC_passed_v1") === "1";
+      } catch (e2) {}
+      var dDone = false;
+      try {
+        dDone = sessionStorage.getItem("egeCondExD_passed_v1") === "1";
+      } catch (e3) {}
+      bEl.classList.toggle("is-done", bDone);
+      cEl.classList.toggle("is-done", cDone);
+      if (dEl) dEl.classList.toggle("is-done", dDone);
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+    });
+
+    (function () {
+      var STORAGE_C = "egeCondExC_passed_v1";
+      var MAX_WRONG = 3;
+
+      var packC = window.__EGE_CONDITIONALS_ZERO_FIRST__;
+      var BANK = packC && packC.ex2WordBank;
+      var ROWS = packC && packC.ex2GapRows;
+      if (!BANK || !BANK.length || !ROWS || !ROWS.length) {
+        try {
+          console.error(
+            "[EGE conditionals] Нет данных Ex2 (gap): проверьте js/ege-conditionals/zero-first-page-data.js"
+          );
+        } catch (eC) {}
+        return;
+      }
+
+      function norm(s) {
+        return String(s || "")
+          .toLowerCase()
+          .replace(/[\u2018\u2019]/g, "'")
+          .trim()
+          .replace(/\s+/g, " ")
+          .replace(/\.*$/, "");
+      }
+
+      function matches(user, answers) {
+        var n = norm(user);
+        if (!n) return false;
+        for (var j = 0; j < answers.length; j++) {
+          if (norm(answers[j]) === n) return true;
+        }
+        return false;
+      }
+
+      var overlay = document.getElementById("ex2-overlay");
+      var openBtn = document.getElementById("ex2-open");
+      var boostOpen = document.getElementById("ex2-boost");
+      var closeBtn = document.getElementById("ex2-close");
+      var stepsEl = document.getElementById("ex2-steps");
+      var bankHost = document.getElementById("ex2-bank-words");
+      var hintBar = document.getElementById("ex2-hint-bar");
+      var bottomBar = document.getElementById("ex2-bottom-bar");
+      var workEl = document.getElementById("ex2-work");
+      var failPanel = document.getElementById("ex2-panel-fail");
+      var passPanel = document.getElementById("ex2-panel-pass");
+      var failLead = document.getElementById("ex2-fail-lead");
+      var failList = document.getElementById("ex2-fail-list");
+      var passTitle = document.getElementById("ex2-pass-title");
+      var passLead = document.getElementById("ex2-pass-lead");
+      var passList = document.getElementById("ex2-pass-list");
+      var retryBtn = document.getElementById("ex2-retry");
+      var passCloseBtn = document.getElementById("ex2-pass-close");
+
+      var singleIn = document.getElementById("ex2-single-in");
+      var sentBefore = document.getElementById("ex2-sent-before");
+      var sentAfter = document.getElementById("ex2-sent-after");
+      var slideLabel = document.getElementById("ex2-slide-label");
+      var oneMsg = document.getElementById("ex2-one-msg");
+      var oneFeedback = document.getElementById("ex2-one-feedback");
+      var exampleLine = document.getElementById("ex2-example-line");
+      var explainLine = document.getElementById("ex2-explain-line");
+      var prevBtn = document.getElementById("ex2-prev");
+      var nextBtn = document.getElementById("ex2-next");
+
+      var bankBuilt = false;
+      var ex2Answers = [];
+      var ex2Idx = 0;
+      var ex2ItemOk = [];
+      var ex2MaxReach = 0;
+      var ex2Mistakes = 0;
+
+      function recalcMaxReach() {
+        ex2MaxReach = 0;
+        for (var i = 0; i < ROWS.length; i++) {
+          if (!ex2ItemOk[i]) break;
+          ex2MaxReach = i + 1;
+        }
+      }
+
+      function hideFeedbackBlock() {
+        oneFeedback.hidden = true;
+        exampleLine.innerHTML = "";
+        explainLine.textContent = "";
+      }
+
+      function updateHintBar() {
+        var left = Math.max(0, MAX_WRONG - ex2Mistakes);
+        hintBar.innerHTML =
+          "После ответа жми «Проверить и дальше» или Enter — проверка сразу. Неверных проверок в этой попытке: <strong>" +
+          ex2Mistakes +
+          "</strong> из допустимых <strong>" +
+          MAX_WRONG +
+          "</strong> (осталось <strong>" +
+          left +
+          "</strong>). При ошибке ниже показываются образец и объяснение.";
+      }
+
+      function invalidateForwardFrom(j) {
+        syncDraft();
+        ex2ItemOk[j] = false;
+        for (var k = j + 1; k < ROWS.length; k++) {
+          ex2ItemOk[k] = false;
+        }
+        recalcMaxReach();
+        if (ex2Idx > ex2MaxReach) {
+          ex2Idx = ex2MaxReach;
+          loadDraft();
+          renderSlide();
+        }
+        hideFeedbackBlock();
+        oneMsg.hidden = true;
+        renderStepsWorking();
+        updateNav();
+        updateHintBar();
+      }
+
+      function buildBankOnce() {
+        if (bankBuilt) return;
+        bankBuilt = true;
+        bankHost.innerHTML = BANK.map(function (w) {
+          return "<span>" + w + "</span>";
+        }).join("");
+      }
+
+      function resetAnswers() {
+        ex2Answers = ROWS.map(function () {
+          return "";
+        });
+      }
+
+      function syncDraft() {
+        if (!singleIn || singleIn.disabled) return;
+        ex2Answers[ex2Idx] = singleIn.value;
+      }
+
+      function loadDraft() {
+        singleIn.value = ex2Answers[ex2Idx] || "";
+      }
+
+      function renderSlide() {
+        var row = ROWS[ex2Idx];
+        sentBefore.textContent = row.before;
+        sentAfter.textContent = row.after;
+        slideLabel.textContent = ex2Idx + 1 + " / " + ROWS.length;
+        singleIn.setAttribute("aria-label", "Предложение " + (ex2Idx + 1));
+        if (nextBtn) {
+          nextBtn.textContent =
+            ex2Idx >= ROWS.length - 1
+              ? "Проверить и завершить →"
+              : "Проверить и дальше →";
+        }
+      }
+
+      function updateNav() {
+        prevBtn.disabled = ex2Idx <= 0;
+      }
+
+      function goTo(i) {
+        if (i < 0 || i >= ROWS.length || i > ex2MaxReach || i === ex2Idx) return;
+        syncDraft();
+        ex2Idx = i;
+        loadDraft();
+        renderSlide();
+        hideFeedbackBlock();
+        oneMsg.hidden = true;
+        oneMsg.classList.remove("is-warn");
+        renderStepsWorking();
+        updateNav();
+        try {
+          singleIn.focus();
+        } catch (e0) {}
+      }
+
+      function renderStepsWorking() {
+        stepsEl.innerHTML = "";
+        for (var i = 0; i < ROWS.length; i++) {
+          (function (idx) {
+            var step = document.createElement("button");
+            step.type = "button";
+            step.className = "ex1-step ex2-step-btn";
+            if (ex2ItemOk[idx]) {
+              step.classList.add("is-done");
+              step.textContent = "✓";
+              step.title =
+                "Предложение " + (idx + 1) + " — верно. Нажми, чтобы открыть снова.";
+            } else {
+              step.textContent = String(idx + 1);
+              step.title = "Предложение " + (idx + 1);
+            }
+            if (idx === ex2Idx) step.classList.add("is-current");
+            if (idx > ex2MaxReach) {
+              step.disabled = true;
+            }
+            step.addEventListener("click", function () {
+              if (step.disabled) return;
+              goTo(idx);
+            });
+            stepsEl.appendChild(step);
+          })(i);
+        }
+      }
+
+      function renderStepsResult(okArr) {
+        stepsEl.innerHTML = "";
+        for (var i = 0; i < ROWS.length; i++) {
+          (function (idx) {
+            var step = document.createElement("button");
+            step.type = "button";
+            step.className = "ex1-step ex2-step-btn";
+            if (okArr[idx]) {
+              step.classList.add("is-done");
+              step.textContent = "✓";
+              step.title = "Верно";
+            } else {
+              step.classList.add("is-bad");
+              step.textContent = "×";
+              step.title = "Ошибка";
+            }
+            step.disabled = true;
+            stepsEl.appendChild(step);
+          })(i);
+        }
+      }
+
+      function showWrongFeedback(row) {
+        oneFeedback.hidden = false;
+        exampleLine.innerHTML =
+          escapeHtml(row.before) +
+          "<strong>" +
+          escapeHtml(row.display) +
+          "</strong>" +
+          escapeHtml(row.after);
+        explainLine.textContent = row.explain;
+      }
+
+      function failTooMany() {
+        workEl.hidden = true;
+        bottomBar.hidden = true;
+        failPanel.hidden = false;
+        passPanel.hidden = true;
+        failLead.textContent =
+          "Превышен лимит: больше " +
+          MAX_WRONG +
+          " неверных проверок в этой попытке. Отдохни, прочитай правила ещё раз и нажми «Начать с чистого листа».";
+        failList.innerHTML = "";
+        var li = document.createElement("li");
+        li.textContent =
+          "Каждая попытка нажать «Проверить и дальше» с неверной формой засчитывается. Исправь ответ по образцу или вернись к предыдущим номерам слева.";
+        failList.appendChild(li);
+        singleIn.disabled = true;
+      }
+
+      function finishSuccess() {
+        var ok = ROWS.map(function () {
+          return true;
+        });
+        renderStepsResult(ok);
+
+        try {
+          sessionStorage.setItem(STORAGE_C, "1");
+        } catch (eS) {}
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+
+        workEl.hidden = true;
+        bottomBar.hidden = true;
+        failPanel.hidden = true;
+        passPanel.hidden = false;
+
+        passTitle.textContent =
+          ex2Mistakes === 0 ? "Идеально!" : "Зачёт!";
+        passLead.textContent =
+          ex2Mistakes === 0
+            ? "Все 10 предложений верны с первой попытки каждой проверки."
+            : "Все предложения верны. Неверных проверок по пути: " +
+              ex2Mistakes +
+              " (лимит был " +
+              MAX_WRONG +
+              "). Разборы по ошибкам ты уже видел(а) под самими предложениями.";
+
+        passList.innerHTML = "";
+        for (var k = 0; k < ROWS.length; k++) {
+          var rk = ROWS[k];
+          var li2 = document.createElement("li");
+          var full = rk.before + "<strong>" + escapeHtml(rk.display) + "</strong>" + rk.after;
+          li2.innerHTML = "<strong>" + (k + 1) + ".</strong> " + full;
+          passList.appendChild(li2);
+        }
+
+        singleIn.disabled = true;
+      }
+
+      function tryAdvance() {
+        syncDraft();
+        var row = ROWS[ex2Idx];
+        var val = ex2Answers[ex2Idx];
+        if (!String(val || "").trim()) {
+          hideFeedbackBlock();
+          oneMsg.hidden = false;
+          oneMsg.classList.add("is-warn");
+          oneMsg.textContent = "Сначала введи форму в поле, затем нажми проверку.";
+          return;
+        }
+        oneMsg.hidden = true;
+        oneMsg.classList.remove("is-warn");
+
+        if (matches(val, row.answers)) {
+          hideFeedbackBlock();
+          ex2ItemOk[ex2Idx] = true;
+          recalcMaxReach();
+          renderStepsWorking();
+          updateNav();
+          updateHintBar();
+          if (ex2Idx === ROWS.length - 1) {
+            finishSuccess();
+            return;
+          }
+          goTo(ex2Idx + 1);
+          return;
+        }
+
+        ex2Mistakes++;
+        updateHintBar();
+        if (ex2Mistakes > MAX_WRONG) {
+          failTooMany();
+          return;
+        }
+        showWrongFeedback(row);
+        renderStepsWorking();
+      }
+
+      function clearAttempt() {
+        resetAnswers();
+        ex2Idx = 0;
+        ex2ItemOk = ROWS.map(function () {
+          return false;
+        });
+        ex2Mistakes = 0;
+        recalcMaxReach();
+        singleIn.disabled = false;
+        loadDraft();
+        renderSlide();
+        hideFeedbackBlock();
+        oneMsg.hidden = true;
+        oneMsg.textContent = "";
+        oneMsg.classList.remove("is-warn");
+        renderStepsWorking();
+        updateNav();
+        updateHintBar();
+
+        failPanel.hidden = true;
+        passPanel.hidden = true;
+        workEl.hidden = false;
+        bottomBar.hidden = false;
+      }
+
+      function openEx2() {
+        buildBankOnce();
+        clearAttempt();
+        overlay.hidden = false;
+        overlay.removeAttribute("hidden");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+        try {
+          singleIn.focus();
+        } catch (e1) {}
+      }
+
+      function closeEx2() {
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+        var ex1 = document.getElementById("ex1-overlay");
+        var ex3 = document.getElementById("ex3-overlay");
+        var icifov = document.getElementById("icif-overlay");
+        var dr2ov = document.getElementById("dr2-overlay");
+        var dr3ov = document.getElementById("dr3-overlay");
+        var ex1Open = ex1 && !ex1.hidden;
+        var ex3Open = ex3 && !ex3.hasAttribute("hidden") && !ex3.hidden;
+        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
+        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
+        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
+        if (!ex1Open && !ex3Open && !icifOpen && !dr2Open && !dr3Open) {
+          document.body.style.overflow = "";
+        }
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+      }
+
+      function escapeHtml(t) {
+        return String(t)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openEx2);
+      if (boostOpen) boostOpen.addEventListener("click", openEx2);
+      closeBtn.addEventListener("click", closeEx2);
+      retryBtn.addEventListener("click", function () {
+        clearAttempt();
+        try {
+          singleIn.focus();
+        } catch (e2) {}
+      });
+      passCloseBtn.addEventListener("click", closeEx2);
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+          goTo(ex2Idx - 1);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", tryAdvance);
+      }
+
+      if (singleIn) {
+        singleIn.addEventListener("input", function () {
+          invalidateForwardFrom(ex2Idx);
+        });
+        singleIn.addEventListener("keydown", function (e) {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          tryAdvance();
+        });
+      }
+
+      document.addEventListener("keydown", function (ev) {
+        if (overlay.hidden) return;
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          closeEx2();
+        }
+      });
+    })();
+
+    (function () {
+      var STORAGE_D = "egeCondExD_passed_v1";
+      var MAX_WRONG = 3;
+
+      var packD = window.__EGE_CONDITIONALS_ZERO_FIRST__;
+      var ROWS = packD && packD.ex3McqRows;
+      if (!ROWS || !ROWS.length) {
+        try {
+          console.error(
+            "[EGE conditionals] Нет данных Ex3 (MCQ): проверьте js/ege-conditionals/zero-first-page-data.js"
+          );
+        } catch (eD) {}
+        return;
+      }
+
+      function escapeHtml(t) {
+        return String(t)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      var overlay = document.getElementById("ex3-overlay");
+      var openBtn = document.getElementById("ex3-open");
+      var boostOpen = document.getElementById("ex3-boost");
+      var closeBtn = document.getElementById("ex3-close");
+      var stepsEl = document.getElementById("ex3-steps");
+      var slideLabel = document.getElementById("ex3-slide-label");
+      var lineTop = document.getElementById("ex3-line-top");
+      var lineBot = document.getElementById("ex3-line-bot");
+      var pick0 = document.getElementById("ex3-pick-0");
+      var pick1 = document.getElementById("ex3-pick-1");
+      var feedback = document.getElementById("ex3-feedback");
+      var feedbackText = document.getElementById("ex3-feedback-text");
+      var card = document.getElementById("ex3-card");
+      var workEl = document.getElementById("ex3-work");
+      var failPanel = document.getElementById("ex3-panel-fail");
+      var passPanel = document.getElementById("ex3-panel-pass");
+      var failLead = document.getElementById("ex3-fail-lead");
+      var passTitle = document.getElementById("ex3-pass-title");
+      var passLead = document.getElementById("ex3-pass-lead");
+      var retryBtn = document.getElementById("ex3-retry");
+      var passCloseBtn = document.getElementById("ex3-pass-close");
+      var bottomBar = document.getElementById("ex3-bottom-bar");
+      var prevBtn = document.getElementById("ex3-prev");
+      var hintBar = document.getElementById("ex3-hint-bar");
+      var progressFill = document.getElementById("ex3-progress-fill");
+      var donePill = document.getElementById("ex3-done-pill");
+      var mistakePill = document.getElementById("ex3-mistake-pill");
+      var dictFab = document.getElementById("ex3-dict-fab");
+      var dictDrawer = document.getElementById("ex3-dict-drawer");
+      var dictBackdrop = document.getElementById("ex3-dict-backdrop");
+      var dictClose = document.getElementById("ex3-dict-close");
+      var dictBody = document.getElementById("ex3-dict-drawer-body");
+
+      var idx = 0;
+      var itemOk = [];
+      var maxReach = 0;
+      var mistakes = 0;
+      var pickBusy = false;
+      var dictFilled = false;
+
+      function closeDictDrawer() {
+        if (!dictDrawer || !overlay) return;
+        dictDrawer.classList.remove("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "true");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = true;
+          dictBackdrop.setAttribute("aria-hidden", "true");
+        }
+        overlay.classList.remove("ex3--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "false");
+      }
+
+      function fillDictDrawer() {
+        if (dictFilled || !dictBody || !overlay) return;
+        var src = overlay.querySelector(".ex3-glossary-inner");
+        if (src) {
+          dictBody.innerHTML = src.innerHTML;
+          dictBody.className = "ex3-glossary-inner ex3-dict-drawer-body";
+        }
+        dictFilled = true;
+      }
+
+      function openDictDrawer() {
+        if (!dictDrawer) return;
+        fillDictDrawer();
+        dictDrawer.classList.add("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "false");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = false;
+          dictBackdrop.setAttribute("aria-hidden", "false");
+        }
+        overlay.classList.add("ex3--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDictDrawer() {
+        if (!dictDrawer) return;
+        if (dictDrawer.classList.contains("is-visible")) {
+          closeDictDrawer();
+        } else {
+          openDictDrawer();
+        }
+      }
+
+      function recalcMaxReach() {
+        maxReach = 0;
+        for (var i = 0; i < ROWS.length; i++) {
+          if (!itemOk[i]) break;
+          maxReach = i + 1;
+        }
+      }
+
+      function countDone() {
+        var n = 0;
+        for (var i = 0; i < ROWS.length; i++) {
+          if (itemOk[i]) n++;
+        }
+        return n;
+      }
+
+      function formatExplain(raw) {
+        var s = String(raw || "");
+        return s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      }
+
+      function updateHud() {
+        var done = countDone();
+        var pct = (done / ROWS.length) * 100;
+        progressFill.style.width = pct + "%";
+        donePill.textContent = "Готово: " + done + " / " + ROWS.length;
+        mistakePill.textContent = "Промахов: " + mistakes + " / " + MAX_WRONG;
+        hintBar.innerHTML =
+          "Промахи: <strong>" +
+          mistakes +
+          "</strong>/" +
+          MAX_WRONG +
+          " · словарь справа · бонусы — «3 дриллинга» рядом с 1–8.";
+      }
+
+      function renderSteps() {
+        stepsEl.innerHTML = "";
+        for (var i = 0; i < ROWS.length; i++) {
+          (function (ii) {
+            var step = document.createElement("button");
+            step.type = "button";
+            step.className = "ex1-step ex2-step-btn";
+            if (itemOk[ii]) {
+              step.classList.add("is-done");
+              step.textContent = "✓";
+              step.title =
+                "Вопрос " + (ii + 1) + " — верно. Нажми, чтобы открыть снова.";
+            } else {
+              step.textContent = String(ii + 1);
+              step.title = "Вопрос " + (ii + 1);
+            }
+            if (ii === idx) step.classList.add("is-current");
+            if (ii > maxReach) step.disabled = true;
+            step.addEventListener("click", function () {
+              if (step.disabled) return;
+              goTo(ii);
+            });
+            stepsEl.appendChild(step);
+          })(i);
+        }
+      }
+
+      function resetPickStyles() {
+        pick0.classList.remove("is-winner", "is-wrong-flash", "is-muted");
+        pick1.classList.remove("is-winner", "is-wrong-flash", "is-muted");
+      }
+
+      function renderSlide() {
+        var row = ROWS[idx];
+        slideLabel.textContent = idx + 1 + " / " + ROWS.length;
+        var num = idx + 1 + ".";
+        if (row.topOnly) {
+          lineTop.textContent = num;
+        } else {
+          lineTop.textContent = num + " " + row.before;
+        }
+        lineBot.textContent = row.after || "";
+        pick0.textContent = row.opt0;
+        pick1.textContent = row.opt1;
+        feedback.hidden = true;
+        resetPickStyles();
+
+        if (itemOk[idx]) {
+          pick0.disabled = true;
+          pick1.disabled = true;
+          if (row.correct === 0) {
+            pick0.classList.add("is-winner");
+            pick1.classList.add("is-muted");
+          } else {
+            pick1.classList.add("is-winner");
+            pick0.classList.add("is-muted");
+          }
+        } else {
+          pick0.disabled = false;
+          pick1.disabled = false;
+        }
+      }
+
+      function goTo(i) {
+        if (i < 0 || i > maxReach || i === idx) return;
+        if (pickBusy) return;
+        idx = i;
+        renderSlide();
+        renderSteps();
+        updateHud();
+      }
+
+      function failRun() {
+        closeDictDrawer();
+        workEl.hidden = true;
+        bottomBar.hidden = true;
+        failPanel.hidden = false;
+        passPanel.hidden = true;
+        failLead.textContent =
+          "Больше " +
+          MAX_WRONG +
+          " неверных ответов в этой попытке. Отдохни секунду и попробуй ещё раз — союзы запоминаются на практике.";
+      }
+
+      function finishOk() {
+        closeDictDrawer();
+        try {
+          sessionStorage.setItem(STORAGE_D, "1");
+        } catch (e) {}
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+        workEl.hidden = true;
+        bottomBar.hidden = true;
+        failPanel.hidden = true;
+        passPanel.hidden = false;
+        passTitle.textContent =
+          mistakes === 0 ? "Идеально!" : "Level up!";
+        var glossAfter =
+          " Тот же словарь остаётся на странице — пункт «Словарь D» в меню вверху или блок под заданием D.";
+        passLead.textContent =
+          (mistakes === 0
+            ? "Все 8 предложений с первого раза. Так держать."
+            : "Все верно. Промахов по пути: " +
+              mistakes +
+              " (лимит был " +
+              MAX_WRONG +
+              "). Можешь ещё раз пробежать правила на странице.") +
+          glossAfter;
+      }
+
+      function handlePick(which) {
+        if (pickBusy || itemOk[idx]) return;
+        var row = ROWS[idx];
+        if (which === row.correct) {
+          itemOk[idx] = true;
+          recalcMaxReach();
+          resetPickStyles();
+          pick0.disabled = true;
+          pick1.disabled = true;
+          if (row.correct === 0) {
+            pick0.classList.add("is-winner");
+            pick1.classList.add("is-muted");
+          } else {
+            pick1.classList.add("is-winner");
+            pick0.classList.add("is-muted");
+          }
+          feedback.hidden = true;
+          renderSteps();
+          updateHud();
+          card.classList.add("is-win-pulse");
+          pickBusy = true;
+          window.setTimeout(function () {
+            card.classList.remove("is-win-pulse");
+            pickBusy = false;
+            if (idx >= ROWS.length - 1) {
+              finishOk();
+            } else {
+              idx++;
+              renderSlide();
+              renderSteps();
+              updateHud();
+            }
+          }, 720);
+        } else {
+          mistakes++;
+          updateHud();
+          var wrongBtn = which === 0 ? pick0 : pick1;
+          wrongBtn.classList.remove("is-wrong-flash");
+          void wrongBtn.offsetWidth;
+          wrongBtn.classList.add("is-wrong-flash");
+          window.setTimeout(function () {
+            wrongBtn.classList.remove("is-wrong-flash");
+          }, 460);
+          feedback.hidden = false;
+          feedbackText.innerHTML = formatExplain(row.explain);
+          if (mistakes > MAX_WRONG) {
+            failRun();
+          }
+        }
+      }
+
+      function clearAttempt() {
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        idx = 0;
+        mistakes = 0;
+        itemOk = ROWS.map(function () {
+          return false;
+        });
+        recalcMaxReach();
+        failPanel.hidden = true;
+        passPanel.hidden = true;
+        workEl.hidden = false;
+        bottomBar.hidden = false;
+        pickBusy = false;
+        renderSteps();
+        renderSlide();
+        updateHud();
+      }
+
+      function openEx3() {
+        clearAttempt();
+        overlay.hidden = false;
+        overlay.removeAttribute("hidden");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+      }
+
+      function closeEx3() {
+        closeDictDrawer();
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+        var ex1 = document.getElementById("ex1-overlay");
+        var ex2 = document.getElementById("ex2-overlay");
+        var icifov = document.getElementById("icif-overlay");
+        var dr2ov = document.getElementById("dr2-overlay");
+        var dr3ov = document.getElementById("dr3-overlay");
+        var ex1Open = ex1 && !ex1.hidden;
+        var ex2Open = ex2 && !ex2.hasAttribute("hidden") && !ex2.hidden;
+        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
+        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
+        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
+        if (!ex1Open && !ex2Open && !icifOpen && !dr2Open && !dr3Open) {
+          document.body.style.overflow = "";
+        }
+        if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openEx3);
+      if (boostOpen) boostOpen.addEventListener("click", openEx3);
+      closeBtn.addEventListener("click", closeEx3);
+      retryBtn.addEventListener("click", function () {
+        clearAttempt();
+      });
+      passCloseBtn.addEventListener("click", closeEx3);
+      prevBtn.addEventListener("click", function () {
+        goTo(idx - 1);
+      });
+      pick0.addEventListener("click", function () {
+        handlePick(0);
+      });
+      pick1.addEventListener("click", function () {
+        handlePick(1);
+      });
+
+      document.addEventListener("keydown", function (ev) {
+        if (overlay.hidden) return;
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          if (dictDrawer && dictDrawer.classList.contains("is-visible")) {
+            closeDictDrawer();
+            return;
+          }
+          closeEx3();
+        }
+      });
+
+      if (dictFab) dictFab.addEventListener("click", toggleDictDrawer);
+      if (dictBackdrop) {
+        dictBackdrop.addEventListener("click", closeDictDrawer);
+      }
+      if (dictClose) dictClose.addEventListener("click", closeDictDrawer);
+
+      var bonusDrills = document.querySelector(".ex3-bonus-drills");
+      function collapseBonusDrills() {
+        if (bonusDrills) bonusDrills.open = false;
+      }
+      ["ex3-drill-open", "ex3-drill2-open", "ex3-drill3-open"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener("click", collapseBonusDrills);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var icifOverlay = document.getElementById("icif-overlay");
+      var icifOpenBtn = document.getElementById("icif-open");
+      var ex3DrillOpen = document.getElementById("ex3-drill-open");
+      var icifCloseBtn = document.getElementById("icif-close");
+      var dictFab = document.getElementById("icif-dict-fab");
+      var dictDrawer = document.getElementById("icif-dict-drawer");
+      var dictBackdrop = document.getElementById("icif-dict-backdrop");
+      var dictClose = document.getElementById("icif-dict-close");
+      var dictBody = document.getElementById("icif-dict-drawer-body");
+      var dictFilled = false;
+
+      var ICIF_SLIDES = [
+        {
+          q: "Why are you taking a map?",
+          a: "I'm taking it <strong>in case</strong> I get lost.",
+          n: "<strong>In case</strong> — карта с собой до того, как заблудимся."
+        },
+        {
+          q: "When should I call you?",
+          a: "Call me <strong>if</strong> you have any problems.",
+          n: "<strong>If</strong> — звонок при наступлении ситуации с проблемами."
+        },
+        {
+          q: "Why are you taking an extra sweater?",
+          a: "I'm taking one <strong>in case</strong> it gets cold.",
+          n: "<strong>In case</strong> — свитер про запас, холод возможен."
+        },
+        {
+          q: "When will you buy that car?",
+          a: "I'll buy it <strong>if</strong> I get a promotion.",
+          n: "<strong>If</strong> — покупка зависит от повышения."
+        },
+        {
+          q: "Why are you writing down his phone number?",
+          a: "I'm writing it down <strong>in case</strong> I forget it.",
+          n: "<strong>In case</strong> — страховка от возможной забывчивости."
+        },
+        {
+          q: "When can we go to the beach?",
+          a: "We can go <strong>if</strong> the weather is sunny.",
+          n: "<strong>If</strong> — поездка при хорошей погоде."
+        },
+        {
+          q: "Why are you leaving so early?",
+          a: "I'm leaving early <strong>in case</strong> there is a traffic jam.",
+          n: "<strong>In case</strong> — запас по времени до возможной пробки."
+        },
+        {
+          q: "When will you finish the report?",
+          a: "I'll finish it <strong>if</strong> I have enough time.",
+          n: "<strong>If</strong> — результат при условии достатка времени."
+        }
+      ];
+
+      var flipBtn = document.getElementById("icif-flip-btn");
+      var frontTextEl = document.getElementById("icif-front-text");
+      var backAnsEl = document.getElementById("icif-back-ans");
+      var backNoteEl = document.getElementById("icif-back-note-p");
+      var progEl = document.getElementById("icif-card-progress");
+      var prevCardBtn = document.getElementById("icif-card-prev");
+      var nextCardBtn = document.getElementById("icif-card-next");
+      var stageDoneEl = document.getElementById("icif-stage-done");
+      var activeCardEl = document.getElementById("icif-active-card");
+      var restartBtn = document.getElementById("icif-restart");
+
+      var icifIdx = 0;
+      var icifSawBack = false;
+
+      function closeDictDrawer() {
+        if (!dictDrawer || !icifOverlay) return;
+        dictDrawer.classList.remove("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "true");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = true;
+          dictBackdrop.setAttribute("aria-hidden", "true");
+        }
+        icifOverlay.classList.remove("icif--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "false");
+      }
+
+      function fillDictDrawer() {
+        if (dictFilled || !dictBody) return;
+        var src = document.querySelector("#d-gloss .ex3-glossary-inner");
+        if (src) {
+          dictBody.innerHTML = src.innerHTML;
+          dictBody.className = "ex3-glossary-inner ex3-dict-drawer-body";
+        }
+        dictFilled = true;
+      }
+
+      function openDictDrawer() {
+        if (!dictDrawer || !icifOverlay) return;
+        fillDictDrawer();
+        dictDrawer.classList.add("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "false");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = false;
+          dictBackdrop.setAttribute("aria-hidden", "false");
+        }
+        icifOverlay.classList.add("icif--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDictDrawer() {
+        if (!dictDrawer) return;
+        if (dictDrawer.classList.contains("is-visible")) {
+          closeDictDrawer();
+        } else {
+          openDictDrawer();
+        }
+      }
+
+      function resetFlip() {
+        if (!flipBtn) return;
+        flipBtn.classList.remove("is-flipped");
+        flipBtn.setAttribute("aria-expanded", "false");
+      }
+
+      function updateCardNav() {
+        if (!prevCardBtn || !nextCardBtn) return;
+        prevCardBtn.disabled = icifIdx <= 0;
+        nextCardBtn.disabled = !icifSawBack;
+        if (icifIdx >= ICIF_SLIDES.length - 1) {
+          nextCardBtn.textContent = "Готово ✓";
+        } else {
+          nextCardBtn.textContent = "Дальше →";
+        }
+      }
+
+      function renderIcifSlide() {
+        var row = ICIF_SLIDES[icifIdx];
+        if (!row || !frontTextEl || !backAnsEl || !backNoteEl || !progEl) return;
+        frontTextEl.innerHTML = '<strong class="v">' + row.q + "</strong>";
+        backAnsEl.innerHTML = row.a;
+        backNoteEl.innerHTML = row.n;
+        progEl.textContent = icifIdx + 1 + " / " + ICIF_SLIDES.length;
+        icifSawBack = false;
+        resetFlip();
+        updateCardNav();
+      }
+
+      function showIcifDone() {
+        if (stageDoneEl) stageDoneEl.hidden = false;
+        if (activeCardEl) activeCardEl.hidden = true;
+        if (progEl) progEl.textContent = "✓ 8 / 8";
+      }
+
+      function runIcifDeck() {
+        if (stageDoneEl) stageDoneEl.hidden = true;
+        if (activeCardEl) activeCardEl.hidden = false;
+        icifIdx = 0;
+        renderIcifSlide();
+      }
+
+      function openIcif(fromTaskD) {
+        if (!icifOverlay) return;
+        if (fromTaskD) {
+          icifOverlay.setAttribute("data-return-to-d", "1");
+          if (icifCloseBtn) icifCloseBtn.textContent = "← К заданию D";
+        } else {
+          icifOverlay.removeAttribute("data-return-to-d");
+          if (icifCloseBtn) icifCloseBtn.textContent = "← К правилам";
+        }
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        runIcifDeck();
+        icifOverlay.hidden = false;
+        icifOverlay.removeAttribute("hidden");
+        icifOverlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        try {
+          if (icifCloseBtn) icifCloseBtn.focus();
+        } catch (e1) {}
+      }
+
+      function closeIcif() {
+        if (!icifOverlay) return;
+        var backToD = icifOverlay.getAttribute("data-return-to-d") === "1";
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        icifOverlay.hidden = true;
+        icifOverlay.setAttribute("hidden", "");
+        icifOverlay.setAttribute("aria-hidden", "true");
+        icifOverlay.removeAttribute("data-return-to-d");
+        if (icifCloseBtn) icifCloseBtn.textContent = "← К правилам";
+        resetFlip();
+        var ex1 = document.getElementById("ex1-overlay");
+        var ex2 = document.getElementById("ex2-overlay");
+        var ex3 = document.getElementById("ex3-overlay");
+        var dr2ov = document.getElementById("dr2-overlay");
+        var dr3ov = document.getElementById("dr3-overlay");
+        var ex1Open = ex1 && !ex1.hidden;
+        var ex2Open = ex2 && !ex2.hasAttribute("hidden") && !ex2.hidden;
+        var ex3Open = ex3 && !ex3.hasAttribute("hidden") && !ex3.hidden;
+        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
+        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
+        if (!ex1Open && !ex2Open && !ex3Open && !dr2Open && !dr3Open) {
+          document.body.style.overflow = "";
+        }
+        if (backToD && ex3DrillOpen) {
+          try {
+            ex3DrillOpen.focus();
+          } catch (e2) {}
+        }
+      }
+
+      if (icifOpenBtn) icifOpenBtn.addEventListener("click", function () {
+        openIcif(false);
+      });
+      if (ex3DrillOpen) {
+        ex3DrillOpen.addEventListener("click", function () {
+          openIcif(true);
+        });
+      }
+      if (icifCloseBtn) icifCloseBtn.addEventListener("click", closeIcif);
+
+      if (flipBtn) {
+        flipBtn.addEventListener("click", function () {
+          var on = flipBtn.classList.toggle("is-flipped");
+          flipBtn.setAttribute("aria-expanded", on ? "true" : "false");
+          if (on) icifSawBack = true;
+          else icifSawBack = false;
+          updateCardNav();
+        });
+      }
+
+      if (prevCardBtn) {
+        prevCardBtn.addEventListener("click", function () {
+          if (icifIdx <= 0) return;
+          icifIdx--;
+          renderIcifSlide();
+        });
+      }
+
+      if (nextCardBtn) {
+        nextCardBtn.addEventListener("click", function () {
+          if (!icifSawBack) return;
+          if (icifIdx >= ICIF_SLIDES.length - 1) {
+            showIcifDone();
+            return;
+          }
+          icifIdx++;
+          renderIcifSlide();
+        });
+      }
+
+      if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+          runIcifDeck();
+        });
+      }
+
+      document.addEventListener("keydown", function (ev) {
+        if (!icifOverlay || icifOverlay.hidden) return;
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          if (dictDrawer && dictDrawer.classList.contains("is-visible")) {
+            closeDictDrawer();
+            return;
+          }
+          closeIcif();
+        }
+      });
+
+      if (dictFab) dictFab.addEventListener("click", toggleDictDrawer);
+      if (dictBackdrop) dictBackdrop.addEventListener("click", closeDictDrawer);
+      if (dictClose) dictClose.addEventListener("click", closeDictDrawer);
+    })();
+
+    (function () {
+      var dr2Overlay = document.getElementById("dr2-overlay");
+      var ex3Drill2Open = document.getElementById("ex3-drill2-open");
+      var dr2CloseBtn = document.getElementById("dr2-close");
+      var dictFab = document.getElementById("dr2-dict-fab");
+      var dictDrawer = document.getElementById("dr2-dict-drawer");
+      var dictBackdrop = document.getElementById("dr2-dict-backdrop");
+      var dictClose = document.getElementById("dr2-dict-close");
+      var dictBody = document.getElementById("dr2-dict-drawer-body");
+      var dictFilled = false;
+
+      var DR2_SLIDES = [
+        {
+          unless: "You won't go out unless you tidy your room.",
+          ans:
+            "I can go out <strong>as long as</strong> I tidy <strong>my</strong> room.",
+          n: "Грамматика та же — меняем «угрозу» на спокойное условие."
+        },
+        {
+          unless: "You'll fail the test unless you study hard.",
+          ans: "I'll pass the test <strong>provided</strong> I study hard.",
+          n: "Допустимы <strong>as long as</strong> / <strong>so long as</strong> вместо provided."
+        },
+        {
+          unless: "We'll be late unless we take a taxi.",
+          ans: "We'll be on time <strong>so long as</strong> we take a taxi.",
+          n: "Позитивный исход (on time) вместо отрицания (late)."
+        },
+        {
+          unless: "You won't get dessert unless you finish your vegetables.",
+          ans:
+            "You can have dessert <strong>as long as</strong> you finish your vegetables.",
+          n: "won't get → can have при том же условии."
+        },
+        {
+          unless: "I won't help you unless you ask politely.",
+          ans: "I'll help you <strong>provided (that)</strong> you ask politely.",
+          n: "Формальнее звучит с <strong>provided that</strong>."
+        },
+        {
+          unless: "They won't let us in unless we show our tickets.",
+          ans: "They'll let us in <strong>so long as</strong> we show our tickets.",
+          n: "Тот же глагол let — убираем отрицание с помощью позитивного условия."
+        },
+        {
+          unless: "We won't finish on time unless we work this weekend.",
+          ans:
+            "We'll finish on time <strong>as long as</strong> we work this weekend.",
+          n: "Смысл: успеваем при условии работы в выходные."
+        },
+        {
+          unless: "You won't recover unless you rest for a few days.",
+          ans:
+            "You'll recover <strong>provided (that)</strong> you rest for a few days.",
+          n: "won't recover → will recover + условие с связкой."
+        }
+      ];
+
+      var flipBtn = document.getElementById("dr2-flip-btn");
+      var frontTextEl = document.getElementById("dr2-front-text");
+      var backAnsEl = document.getElementById("dr2-back-ans");
+      var backNoteEl = document.getElementById("dr2-back-note-p");
+      var progEl = document.getElementById("dr2-card-progress");
+      var prevCardBtn = document.getElementById("dr2-card-prev");
+      var nextCardBtn = document.getElementById("dr2-card-next");
+      var stageDoneEl = document.getElementById("dr2-stage-done");
+      var activeCardEl = document.getElementById("dr2-active-card");
+      var restartBtn = document.getElementById("dr2-restart");
+
+      var dr2Idx = 0;
+      var dr2SawBack = false;
+
+      function closeDictDrawer() {
+        if (!dictDrawer || !dr2Overlay) return;
+        dictDrawer.classList.remove("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "true");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = true;
+          dictBackdrop.setAttribute("aria-hidden", "true");
+        }
+        dr2Overlay.classList.remove("dr2--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "false");
+      }
+
+      function fillDictDrawer() {
+        if (dictFilled || !dictBody) return;
+        var src = document.querySelector("#d-gloss .ex3-glossary-inner");
+        if (src) {
+          dictBody.innerHTML = src.innerHTML;
+          dictBody.className = "ex3-glossary-inner ex3-dict-drawer-body";
+        }
+        dictFilled = true;
+      }
+
+      function openDictDrawer() {
+        if (!dictDrawer || !dr2Overlay) return;
+        fillDictDrawer();
+        dictDrawer.classList.add("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "false");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = false;
+          dictBackdrop.setAttribute("aria-hidden", "false");
+        }
+        dr2Overlay.classList.add("dr2--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDictDrawer() {
+        if (!dictDrawer) return;
+        if (dictDrawer.classList.contains("is-visible")) {
+          closeDictDrawer();
+        } else {
+          openDictDrawer();
+        }
+      }
+
+      function resetFlip() {
+        if (!flipBtn) return;
+        flipBtn.classList.remove("is-flipped");
+        flipBtn.setAttribute("aria-expanded", "false");
+      }
+
+      function updateCardNav() {
+        if (!prevCardBtn || !nextCardBtn) return;
+        prevCardBtn.disabled = dr2Idx <= 0;
+        nextCardBtn.disabled = !dr2SawBack;
+        if (dr2Idx >= DR2_SLIDES.length - 1) {
+          nextCardBtn.textContent = "Готово ✓";
+        } else {
+          nextCardBtn.textContent = "Дальше →";
+        }
+      }
+
+      function renderDr2Slide() {
+        var row = DR2_SLIDES[dr2Idx];
+        if (!row || !frontTextEl || !backAnsEl || !backNoteEl || !progEl) return;
+        frontTextEl.innerHTML = '<p class="dr2-unless-line">' + row.unless + "</p>";
+        backAnsEl.innerHTML = row.ans;
+        backNoteEl.innerHTML = row.n;
+        progEl.textContent = dr2Idx + 1 + " / " + DR2_SLIDES.length;
+        dr2SawBack = false;
+        resetFlip();
+        updateCardNav();
+      }
+
+      function showDr2Done() {
+        if (stageDoneEl) stageDoneEl.hidden = false;
+        if (activeCardEl) activeCardEl.hidden = true;
+        if (progEl) progEl.textContent = "✓ 8 / 8";
+      }
+
+      function runDr2Deck() {
+        if (stageDoneEl) stageDoneEl.hidden = true;
+        if (activeCardEl) activeCardEl.hidden = false;
+        dr2Idx = 0;
+        renderDr2Slide();
+      }
+
+      function openDr2(fromTaskD) {
+        if (!dr2Overlay) return;
+        if (fromTaskD) {
+          dr2Overlay.setAttribute("data-return-to-d", "1");
+          if (dr2CloseBtn) dr2CloseBtn.textContent = "← К заданию D";
+        } else {
+          dr2Overlay.removeAttribute("data-return-to-d");
+          if (dr2CloseBtn) dr2CloseBtn.textContent = "← К правилам";
+        }
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        runDr2Deck();
+        dr2Overlay.hidden = false;
+        dr2Overlay.removeAttribute("hidden");
+        dr2Overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        try {
+          if (dr2CloseBtn) dr2CloseBtn.focus();
+        } catch (e0) {}
+      }
+
+      function closeDr2() {
+        if (!dr2Overlay) return;
+        var backToD = dr2Overlay.getAttribute("data-return-to-d") === "1";
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        dr2Overlay.hidden = true;
+        dr2Overlay.setAttribute("hidden", "");
+        dr2Overlay.setAttribute("aria-hidden", "true");
+        dr2Overlay.removeAttribute("data-return-to-d");
+        if (dr2CloseBtn) dr2CloseBtn.textContent = "← К правилам";
+        resetFlip();
+        var ex1 = document.getElementById("ex1-overlay");
+        var ex2 = document.getElementById("ex2-overlay");
+        var ex3 = document.getElementById("ex3-overlay");
+        var icifov = document.getElementById("icif-overlay");
+        var dr3ov = document.getElementById("dr3-overlay");
+        var ex1Open = ex1 && !ex1.hidden;
+        var ex2Open = ex2 && !ex2.hasAttribute("hidden") && !ex2.hidden;
+        var ex3Open = ex3 && !ex3.hasAttribute("hidden") && !ex3.hidden;
+        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
+        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
+        if (!ex1Open && !ex2Open && !ex3Open && !icifOpen && !dr3Open) {
+          document.body.style.overflow = "";
+        }
+        if (backToD && ex3Drill2Open) {
+          try {
+            ex3Drill2Open.focus();
+          } catch (e1) {}
+        }
+      }
+
+      if (ex3Drill2Open) {
+        ex3Drill2Open.addEventListener("click", function () {
+          openDr2(true);
+        });
+      }
+      if (dr2CloseBtn) dr2CloseBtn.addEventListener("click", closeDr2);
+
+      if (flipBtn) {
+        flipBtn.addEventListener("click", function () {
+          var on = flipBtn.classList.toggle("is-flipped");
+          flipBtn.setAttribute("aria-expanded", on ? "true" : "false");
+          dr2SawBack = !!on;
+          updateCardNav();
+        });
+      }
+
+      if (prevCardBtn) {
+        prevCardBtn.addEventListener("click", function () {
+          if (dr2Idx <= 0) return;
+          dr2Idx--;
+          renderDr2Slide();
+        });
+      }
+
+      if (nextCardBtn) {
+        nextCardBtn.addEventListener("click", function () {
+          if (!dr2SawBack) return;
+          if (dr2Idx >= DR2_SLIDES.length - 1) {
+            showDr2Done();
+            return;
+          }
+          dr2Idx++;
+          renderDr2Slide();
+        });
+      }
+
+      if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+          runDr2Deck();
+        });
+      }
+
+      document.addEventListener("keydown", function (ev) {
+        if (!dr2Overlay || dr2Overlay.hidden) return;
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          if (dictDrawer && dictDrawer.classList.contains("is-visible")) {
+            closeDictDrawer();
+            return;
+          }
+          closeDr2();
+        }
+      });
+
+      if (dictFab) dictFab.addEventListener("click", toggleDictDrawer);
+      if (dictBackdrop) dictBackdrop.addEventListener("click", closeDictDrawer);
+      if (dictClose) dictClose.addEventListener("click", closeDictDrawer);
+    })();
+
+    (function () {
+      var dr3Overlay = document.getElementById("dr3-overlay");
+      var ex3Drill3Open = document.getElementById("ex3-drill3-open");
+      var dr3CloseBtn = document.getElementById("dr3-close");
+      var dictFab = document.getElementById("dr3-dict-fab");
+      var dictDrawer = document.getElementById("dr3-dict-drawer");
+      var dictBackdrop = document.getElementById("dr3-dict-backdrop");
+      var dictClose = document.getElementById("dr3-dict-close");
+      var dictBody = document.getElementById("dr3-dict-drawer-body");
+      var dictFilled = false;
+
+      var DR3_SLIDES = [
+        {
+          problem: "I'm so tired today.",
+          ans: "You'd better <strong>go straight to bed</strong>.",
+          n: "Устойчивая коллокация из подсказки D."
+        },
+        {
+          problem: "I want to travel but I have no money.",
+          ans:
+            "You'd better <strong>take a year off</strong> and <strong>work</strong> first.",
+          n: "<strong>Take a year off</strong> — из словаря; порядок действий логичен для gap year."
+        },
+        {
+          problem: "My neighbors are very loud.",
+          ans: "You'd better tell them not to <strong>make noise</strong>.",
+          n: "Глагол <strong>make</strong> + noise — как в D, не <em>do</em>."
+        },
+        {
+          problem: "It's freezing and I only have this light jacket on me.",
+          ans: "You'd better <strong>take a sweater with you</strong>.",
+          n: "Готовая формулировка из блока «Take a sweater with you»."
+        },
+        {
+          problem: "We need to be across town at six — rush hour will be awful.",
+          ans:
+            "You'd better leave now — <strong>there's a lot of traffic</strong>.",
+          n: "Связка с коллокацией про пробки из D."
+        },
+        {
+          problem: "People keep pushing me to pick a degree, but I'm totally stuck.",
+          ans:
+            "You'd better <strong>decide to</strong> speak to a careers advisor before you choose.",
+          n: "После <strong>decide</strong> — <strong>to + глагол</strong>, как в пояснении D."
+        },
+        {
+          problem: "My essay has to be in the teacher's inbox by nine tomorrow morning.",
+          ans: "You'd better <strong>finish it by midnight</strong>.",
+          n: "<strong>By midnight</strong> — дедлайн «не позже чем&hellip;»."
+        },
+        {
+          problem: "I failed the interview — I feel like everything is ruined.",
+          ans:
+            "You'd better remember <strong>you've still got your health</strong>.",
+          n: "Готовая фраза-поддержка из словаря D."
+        }
+      ];
+
+      var flipBtn = document.getElementById("dr3-flip-btn");
+      var frontTextEl = document.getElementById("dr3-front-text");
+      var backAnsEl = document.getElementById("dr3-back-ans");
+      var backNoteEl = document.getElementById("dr3-back-note-p");
+      var progEl = document.getElementById("dr3-card-progress");
+      var prevCardBtn = document.getElementById("dr3-card-prev");
+      var nextCardBtn = document.getElementById("dr3-card-next");
+      var stageDoneEl = document.getElementById("dr3-stage-done");
+      var activeCardEl = document.getElementById("dr3-active-card");
+      var restartBtn = document.getElementById("dr3-restart");
+
+      var dr3Idx = 0;
+      var dr3SawBack = false;
+
+      function closeDictDrawer() {
+        if (!dictDrawer || !dr3Overlay) return;
+        dictDrawer.classList.remove("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "true");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = true;
+          dictBackdrop.setAttribute("aria-hidden", "true");
+        }
+        dr3Overlay.classList.remove("dr3--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "false");
+      }
+
+      function fillDictDrawer() {
+        if (dictFilled || !dictBody) return;
+        var src = document.querySelector("#d-gloss .ex3-glossary-inner");
+        if (src) {
+          dictBody.innerHTML = src.innerHTML;
+          dictBody.className = "ex3-glossary-inner ex3-dict-drawer-body";
+        }
+        dictFilled = true;
+      }
+
+      function openDictDrawer() {
+        if (!dictDrawer || !dr3Overlay) return;
+        fillDictDrawer();
+        dictDrawer.classList.add("is-visible");
+        dictDrawer.setAttribute("aria-hidden", "false");
+        if (dictBackdrop) {
+          dictBackdrop.hidden = false;
+          dictBackdrop.setAttribute("aria-hidden", "false");
+        }
+        dr3Overlay.classList.add("dr3--dict-open");
+        if (dictFab) dictFab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDictDrawer() {
+        if (!dictDrawer) return;
+        if (dictDrawer.classList.contains("is-visible")) {
+          closeDictDrawer();
+        } else {
+          openDictDrawer();
+        }
+      }
+
+      function resetFlip() {
+        if (!flipBtn) return;
+        flipBtn.classList.remove("is-flipped");
+        flipBtn.setAttribute("aria-expanded", "false");
+      }
+
+      function updateCardNav() {
+        if (!prevCardBtn || !nextCardBtn) return;
+        prevCardBtn.disabled = dr3Idx <= 0;
+        nextCardBtn.disabled = !dr3SawBack;
+        if (dr3Idx >= DR3_SLIDES.length - 1) {
+          nextCardBtn.textContent = "Готово ✓";
+        } else {
+          nextCardBtn.textContent = "Дальше →";
+        }
+      }
+
+      function renderDr3Slide() {
+        var row = DR3_SLIDES[dr3Idx];
+        if (!row || !frontTextEl || !backAnsEl || !backNoteEl || !progEl) return;
+        frontTextEl.innerHTML = '<p class="dr3-problem-line">' + row.problem + "</p>";
+        backAnsEl.innerHTML = row.ans;
+        backNoteEl.innerHTML = row.n;
+        progEl.textContent = dr3Idx + 1 + " / " + DR3_SLIDES.length;
+        dr3SawBack = false;
+        resetFlip();
+        updateCardNav();
+      }
+
+      function showDr3Done() {
+        if (stageDoneEl) stageDoneEl.hidden = false;
+        if (activeCardEl) activeCardEl.hidden = true;
+        if (progEl) progEl.textContent = "✓ 8 / 8";
+      }
+
+      function runDr3Deck() {
+        if (stageDoneEl) stageDoneEl.hidden = true;
+        if (activeCardEl) activeCardEl.hidden = false;
+        dr3Idx = 0;
+        renderDr3Slide();
+      }
+
+      function openDr3(fromTaskD) {
+        if (!dr3Overlay) return;
+        if (fromTaskD) {
+          dr3Overlay.setAttribute("data-return-to-d", "1");
+          if (dr3CloseBtn) dr3CloseBtn.textContent = "← К заданию D";
+        } else {
+          dr3Overlay.removeAttribute("data-return-to-d");
+          if (dr3CloseBtn) dr3CloseBtn.textContent = "← К правилам";
+        }
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        runDr3Deck();
+        dr3Overlay.hidden = false;
+        dr3Overlay.removeAttribute("hidden");
+        dr3Overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        try {
+          if (dr3CloseBtn) dr3CloseBtn.focus();
+        } catch (e0) {}
+      }
+
+      function closeDr3() {
+        if (!dr3Overlay) return;
+        var backToD = dr3Overlay.getAttribute("data-return-to-d") === "1";
+        closeDictDrawer();
+        dictFilled = false;
+        if (dictBody) dictBody.innerHTML = "";
+        dr3Overlay.hidden = true;
+        dr3Overlay.setAttribute("hidden", "");
+        dr3Overlay.setAttribute("aria-hidden", "true");
+        dr3Overlay.removeAttribute("data-return-to-d");
+        if (dr3CloseBtn) dr3CloseBtn.textContent = "← К правилам";
+        resetFlip();
+        var ex1 = document.getElementById("ex1-overlay");
+        var ex2 = document.getElementById("ex2-overlay");
+        var ex3 = document.getElementById("ex3-overlay");
+        var icifov = document.getElementById("icif-overlay");
+        var dr2ov = document.getElementById("dr2-overlay");
+        var ex1Open = ex1 && !ex1.hidden;
+        var ex2Open = ex2 && !ex2.hasAttribute("hidden") && !ex2.hidden;
+        var ex3Open = ex3 && !ex3.hasAttribute("hidden") && !ex3.hidden;
+        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
+        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
+        if (!ex1Open && !ex2Open && !ex3Open && !icifOpen && !dr2Open) {
+          document.body.style.overflow = "";
+        }
+        if (backToD && ex3Drill3Open) {
+          try {
+            ex3Drill3Open.focus();
+          } catch (e1) {}
+        }
+      }
+
+      if (ex3Drill3Open) {
+        ex3Drill3Open.addEventListener("click", function () {
+          openDr3(true);
+        });
+      }
+      if (dr3CloseBtn) dr3CloseBtn.addEventListener("click", closeDr3);
+
+      if (flipBtn) {
+        flipBtn.addEventListener("click", function () {
+          var on = flipBtn.classList.toggle("is-flipped");
+          flipBtn.setAttribute("aria-expanded", on ? "true" : "false");
+          dr3SawBack = !!on;
+          updateCardNav();
+        });
+      }
+
+      if (prevCardBtn) {
+        prevCardBtn.addEventListener("click", function () {
+          if (dr3Idx <= 0) return;
+          dr3Idx--;
+          renderDr3Slide();
+        });
+      }
+
+      if (nextCardBtn) {
+        nextCardBtn.addEventListener("click", function () {
+          if (!dr3SawBack) return;
+          if (dr3Idx >= DR3_SLIDES.length - 1) {
+            showDr3Done();
+            return;
+          }
+          dr3Idx++;
+          renderDr3Slide();
+        });
+      }
+
+      if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+          runDr3Deck();
+        });
+      }
+
+      document.addEventListener("keydown", function (ev) {
+        if (!dr3Overlay || dr3Overlay.hidden) return;
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          if (dictDrawer && dictDrawer.classList.contains("is-visible")) {
+            closeDictDrawer();
+            return;
+          }
+          closeDr3();
+        }
+      });
+
+      if (dictFab) dictFab.addEventListener("click", toggleDictDrawer);
+      if (dictBackdrop) dictBackdrop.addEventListener("click", closeDictDrawer);
+      if (dictClose) dictClose.addEventListener("click", closeDictDrawer);
+    })();
+  </script>
+</body>
+</html>
