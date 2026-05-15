@@ -335,6 +335,18 @@
     });
     document.getElementById("feedback").textContent = "";
   });
+
+  var q = new URLSearchParams(window.location.search);
+  var bh = document.getElementById("backHub");
+  if (bh && q.get("back")) {
+    bh.href = q.get("back");
+  }
+  if (bh && q.get("backLabel")) {
+    try {
+      bh.innerHTML =
+        "&larr; " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+    } catch (e) {}
+  }
 })();
   </script>
 </body>

@@ -1,0 +1,69 @@
+---
+description: Lexical games / Word Bank — один источник фраз, синхрон игр и хабов; workflow когда ментейнер присылает список.
+globs: "**/index.html,**/js/listening-*-pack.js,**/js/u10-*-lexis*.js,**/js/unit9-ttt-word-bank.js,**/js/art-restoration-listen-data.js,**/js/lexical-games-plain-row-kit.js,**/js/lexical-games-source-manifest.js"
+alwaysApply: false
+---
+
+# Lexical games + Word Bank — логика без «пропадающих» фраз
+
+Ментейнер присылает **список целевых фраз** (часто на русском с пояснениями); агент подбирает **английские парафразы (hint)** для фронтов карточек и игр и вносит правки в **данные**, не размазывая один и тот же список по десяти файлам вручную.
+
+## Технический слой (меньше дублирования)
+
+- **`js/lexical-games-plain-row-kit.js`** — `LexicalGamesPlainRowKit`: одна реализация «hint + ans в plain» для **fall pool** и **Word Bank**. Из **`index.html`** вызываются **`lexicalGamesHintAnsRowsToFallPoolRows`** и **`lexicalGamesHintAnsRowsToWordBankItems`** (после `u9FallBuildGapLine`).
+- **`js/lexical-games-source-manifest.js`** — **`LEXICAL_GAMES_SOURCE_MANIFEST`**: карта всех источников (plain-таблицы, кастомные куски пула, TTT). Новый материал того же типа — добавить строку в **`plainAnchoredRowPacks`** и подключить сборку через kit.
+
+Постепенно другие reading/listening/vocabulary таблицы с тем же форматом можно перевести на kit + строку в манифесте; legacy-сборщики (idioms, scrape readings, …) остаются до поэтапной миграции.
+
+## Принцип: один канонический массив на материал
+
+Для каждого «пакета» (Reading / Listening script / Interior / Unit 10 Part 4 / Books & films и т.д.) держите **одну** таблицу строк вида `{ hint, ans }` (и при необходимости `definition`, `keyword`, контекст для sticky):
+
+- **`ans`** — точная подстрока из **plain-текста** (склеенный транскрипт / статья), как в оригинале **включая апострофы и пробелы**.
+- **`hint`** — английский парафраз для игр и Word Bank · **на фронте flip-карточки без спойлера целевой коллокации** — см. **`vocab-lists-and-flip-cards.mdc`**.
+
+От этого массива **производятся**:
+
+- **`ensureU9FallPool()`** → lexical drop / trainer-style режимы с `fallText` (через `u9FallFindAnsSpan`, см. ниже),
+- **Word Bank** (`cpeWbBuild*Items`) — для U10 **должен использовать тот же отбор**, что и fall pool, иначе в банке оказываются лишние строки, которых нет в играх,
+- definition cards / MCQ / express / echo / playback / match — те же строки из общего пула или его фильтра по спикеру,
+- **Prep vault / escape** — через те же спикер-теги и пакеты, что и hub,
+- **Tic-Tac-Toe** — отдельный сборщик **`js/unit9-ttt-word-bank.js`**: новые темы нужно **явно добавлять** в `buildAllWords()` / тематические массивы, иначе TTT не увидит пакет (рассинхрон не баг движка, а пропуск подключения).
+
+## Почему «не все слова попадают» в игры
+
+Игры с контекстом (lexical drop и др.) строят строку из **`u9FallFindAnsSpan(plain, ans)`**. Если **`ans`** не находится в **`plain`** (опечатка, другой апостроф, обрезанный кусок, текст статьи обновили, а массив фраз — нет), строка **молча отбрасывается** из fall pool.
+
+**Word Bank для Unit 10 Part 4 и Books & films** собирается через **`LexicalGamesPlainRowKit`** — тот же отбор по plain, что и fall pool (`lexicalGamesHintAnsRowsToWordBankItems`).
+
+**Что делать при авторинге:** после правки массива убедиться, что каждый `ans` есть в актуальном plain (поиск по файлу или временный лог в консоли).
+
+## Дубли массивов (Treasure Hunt vs lexical rows)
+
+Для одного материала иногда живут два массива (пример Unit 10 P4: **`U10_P4_LEXIS_GAME_ROWS`** и **`LEX_LISTENING_P4_WB10_DATA`** для Treasure Hunt). Это **два разных упражнения**; если хотите один источник — позже можно генерировать одно из другого или держать общий «master» и собирать оба экспорта скриптом. Пока меняете оба вручную — держите список ключевых фраз согласованным.
+
+## Sticky board
+
+Отдельная политика длины ответа и коллокаций — **`sticky-board-keywords.mdc`**. Плюс в **`index.html`** у sticky есть особые ограничения на экране выбора reading (некоторые чекбоксы принудительно вкл/выкл): если «пропали» темы — проверить режим **sticky** и фильтр **Unit 10 lexical games** (`u9-sticky-hub-u10` / спикеры).
+
+**Договорённость по контенту ментейнера:** см. **`prep-user-dictionary-wordbank-sticky-contract.mdc`** — фразы из словаря = те же для Word Bank; sticky включать в связке с Lexical games; без произвольного расширения списка агентом.
+
+## Изменение общего пула Level 9
+
+Если меняется состав или логика **`ensureU9FallPool()`**, при необходимости увеличь **`U9_FALL_POOL_SCHEMA`** в **`index.html`**, чтобы у пользователей пересобрался кеш пула в сессии.
+
+## Чеклист «новый блок фраз для юнита»
+
+1. Один файл данных (или один экспортируемый массив) + один **`LEX_*_SPEAKER_LABEL`** / строка спикера для фильтра Word Bank.
+2. Plain-текст для поиска подстрок (**`…_PLAIN`** или параграфы → join).
+3. Проверка: каждый **`ans`** ∈ plain (игры).
+4. Подключить к **`ensureU9FallPool`** (или отдельному пути только для Unit N games).
+5. Подключить к **`cpeWbBuild…`** для темы Word Bank (с тем же отбором, что и pool, где нужно совпадение).
+6. При необходимости: flip/MCQ данные, Prep escape pack id, **TTT**, sticky blocks — по **`all-games-scope.mdc`** не останавливаться на одном экране.
+
+## Связанные правила
+
+- **`vocab-lists-and-flip-cards.mdc`** — спойлеры на карточках, единый источник по Unit 9 lexical.
+- **`all-games-scope.mdc`** — «во все игры» = полный охват режимов.
+- **`sticky-board-keywords.mdc`** — sticky / один токен в коллокации.
+- **`prep-folder-back-to-hub.mdc`** — ссылки назад в папку курса.

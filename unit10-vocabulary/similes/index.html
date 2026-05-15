@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Vocabulary — Similes (CPE)</title>
+  <!-- CPE-only page: navigation is static (no shared course=fce / fce.html wiring). Ship this HTML only on the CPE site. -->
+  <style>
+    :root {
+      --panel: #1e293b;
+      --panel-soft: #334155;
+      --line: rgba(148, 163, 184, 0.22);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #22c55e;
+      --bad: #f43f5e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: radial-gradient(120% 85% at 50% 0%, #111827 0%, #0d1117 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    body.u10sim--dict-open .u10sim-dict-fab { right: calc(min(400px, 92vw) + 18px); }
+    @media (max-width: 520px) {
+      body.u10sim--dict-open .u10sim-dict-fab { right: calc(92vw + 10px); opacity: 0.92; }
+    }
+    .page {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.06);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fef9c3;
+    }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 12px; color: #bae6fd; }
+
+    .row {
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.45);
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+    .row-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .row-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .gap-in {
+      width: min(200px, 100%);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid rgba(148, 163, 184, 0.28);
+      background: #0f172a;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .gap-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.22);
+    }
+    .gap-in.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.1); }
+    .gap-in.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+
+    .row-key {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #bbf7d0;
+    }
+    .row-key.show { display: block; }
+    .row-key em { color: #fde68a; font-style: normal; font-weight: 600; }
+
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #475569; color: var(--text); }
+
+    .score {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .score strong { color: var(--text); }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
+    /* Quick dictionary FAB + drawer */
+    .u10sim-dict-fab {
+      position: fixed;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10041;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 12px;
+      max-width: min(128px, 26vw);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(165deg, rgba(56, 189, 248, 0.22), rgba(30, 41, 59, 0.95));
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      font-size: 0.68rem;
+      line-height: 1.15;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      touch-action: manipulation;
+      transition: right 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+    .u10sim-dict-fab-inner { font-size: 1.35rem; line-height: 1; }
+    .u10sim-dict-fab-line { display: block; text-align: center; }
+    .u10sim-dict-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10038;
+      background: rgba(6, 11, 22, 0.55);
+      backdrop-filter: blur(2px);
+    }
+    .u10sim-dict-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(400px, 92vw);
+      z-index: 10039;
+      background: var(--panel-soft);
+      border-left: 1px solid var(--line);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(104%);
+      transition: transform 0.22s ease;
+      visibility: hidden;
+    }
+    .u10sim-dict-drawer.is-visible { visibility: visible; transform: translateX(0); }
+    .u10sim-dict-drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .u10sim-dict-drawer-title {
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #bae6fd;
+    }
+    .u10sim-dict-drawer-x {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .u10sim-dict-drawer-x:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+    .u10sim-dict-drawer-body {
+      padding: 12px 16px 28px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .u10sim-dict-lede { color: var(--muted); font-size: 0.86rem; margin: 0 0 14px; }
+    .u10sim-dict-entry {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.18);
+    }
+    .u10sim-dict-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .u10sim-dict-phrase { font-size: 0.95rem; font-weight: 800; color: var(--accent); margin: 0 0 6px; }
+    .u10sim-dict-def { margin: 0; color: #cbd5e1; }
+
+    #u10sim-gloss-source { display: none; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Vocabulary — Similes</h1>
+        <span class="badge">Unit 10 · CPE</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:flex-end;font-size:0.92rem;">
+        <a class="back" id="u10sim-back-vocab" href="../cpe/index.html?course=cpe">&larr; Vocabulary</a>
+      </div>
+    </header>
+
+    <script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var backRaw = params.get("back");
+  var link = document.getElementById("u10sim-back-vocab");
+  /** Prep ?back=: reject cross-track / wrong home targets (same rule as describing-books-*.html). */
+  function isPrepSafeReturnHref(href) {
+    if (!href || typeof href !== "string") return false;
+    var s = href.trim().replace(/\\/g, "/").toLowerCase();
+    return !/(?:^|\/)(fce\.html|ege\.html|unit10\.html)(?:[?#]|$)/.test(s);
+  }
+  if (link && backRaw) {
+    try {
+      var dec = decodeURIComponent(backRaw);
+      if (isPrepSafeReturnHref(dec)) {
+        link.href = dec;
+        link.textContent = "\u2190 Back";
+      }
+    } catch (eBack) {}
+  }
+})();
+    </script>
+
+    <p class="hint">Use the correct <strong>form</strong> of the verb (Exercise&nbsp;1) or the adjective from the box (Exercise&nbsp;2). After <strong>Check</strong>, wrong gaps show the key plus short notes on the other words &mdash; meanings and typical collocations.</p>
+
+    <section class="task">
+      <p class="instr"><span class="instr-num">1</span> Complete the sentences with the correct forms of the verbs from the box.</p>
+      <div class="word-box" aria-label="Verb bank">
+        <span>fight</span><span>&middot;</span>
+        <span>get on</span><span>&middot;</span>
+        <span>sleep</span><span>&middot;</span>
+        <span>stick out</span><span>&middot;</span>
+        <span>watch</span>
+      </div>
+
+      <div class="row" data-i="0">
+        <div class="row-line">
+          <span class="row-num">1.</span>
+          <span>Joanne and I</span>
+          <input type="text" class="gap-in" maxlength="28" data-i="0" autocomplete="off" spellcheck="false" aria-label="Gap 1 verb" />
+          <span><strong>like a house on fire</strong> at the party. We just have so much in common and virtually identical tastes in music, food and movies.</span>
+        </div>
+        <div class="row-key" data-key-for="0"></div>
+      </div>
+      <div class="row" data-i="1">
+        <div class="row-line">
+          <span class="row-num">2.</span>
+          <span>I didn&rsquo;t want the kids to have an accident, so I</span>
+          <input type="text" class="gap-in" maxlength="28" data-i="1" autocomplete="off" spellcheck="false" aria-label="Gap 2 verb" />
+          <span>them <strong>like a hawk</strong> while they rode their bikes down the street.</span>
+        </div>
+        <div class="row-key" data-key-for="1"></div>
+      </div>
+      <div class="row" data-i="2">
+        <div class="row-line">
+          <span class="row-num">3.</span>
+          <span>The building didn&rsquo;t blend in with its surroundings. In fact, it</span>
+          <input type="text" class="gap-in" maxlength="28" data-i="2" autocomplete="off" spellcheck="false" aria-label="Gap 3 verb" />
+          <span><strong>like a sore thumb</strong>.</span>
+        </div>
+        <div class="row-key" data-key-for="2"></div>
+      </div>
+      <div class="row" data-i="3">
+        <div class="row-line">
+          <span class="row-num">4.</span>
+          <span>All families tell tales of sibling rivalry, where sisters and brothers are so different that they constantly</span>
+          <input type="text" class="gap-in" maxlength="28" data-i="3" autocomplete="off" spellcheck="false" aria-label="Gap 4 verb" />
+          <span><strong>like cat and dog</strong>.</span>
+        </div>
+        <div class="row-key" data-key-for="3"></div>
+      </div>
+      <div class="row" data-i="4">
+        <div class="row-line">
+          <span class="row-num">5.</span>
+          <span>After such an exhausting day, I suspect that I&rsquo;ll</span>
+          <input type="text" class="gap-in" maxlength="28" data-i="4" autocomplete="off" spellcheck="false" aria-label="Gap 5 verb" />
+          <span><strong>like a log</strong>.</span>
+        </div>
+        <div class="row-key" data-key-for="4"></div>
+      </div>
+    </section>
+
+    <section class="task">
+      <p class="instr"><span class="instr-num">2</span> Complete the sentences with an adjective from the box.</p>
+      <div class="word-box" aria-label="Adjective bank">
+        <span>clear</span><span>&middot;</span>
+        <span>dull</span><span>&middot;</span>
+        <span>mad</span><span>&middot;</span>
+        <span>sly</span><span>&middot;</span>
+        <span>tough</span>
+      </div>
+
+      <div class="row" data-i="5">
+        <div class="row-line">
+          <span class="row-num">1.</span>
+          <span>There&rsquo;s a fine line between being called eccentric or <strong>as</strong></span>
+          <input type="text" class="gap-in" maxlength="20" data-i="5" autocomplete="off" spellcheck="false" aria-label="Gap 6 adjective" />
+          <span><strong>as a box of frogs</strong>!</span>
+        </div>
+        <div class="row-key" data-key-for="5"></div>
+      </div>
+      <div class="row" data-i="6">
+        <div class="row-line">
+          <span class="row-num">2.</span>
+          <span>The book was <strong>as</strong></span>
+          <input type="text" class="gap-in" maxlength="20" data-i="6" autocomplete="off" spellcheck="false" aria-label="Gap 7 adjective" />
+          <span><strong>as ditch water</strong>; I&rsquo;ve never read anything so tedious.</span>
+        </div>
+        <div class="row-key" data-key-for="6"></div>
+      </div>
+      <div class="row" data-i="7">
+        <div class="row-line">
+          <span class="row-num">3.</span>
+          <span>Luis won&rsquo;t be upset at this setback &ndash; he&rsquo;s <strong>as</strong></span>
+          <input type="text" class="gap-in" maxlength="20" data-i="7" autocomplete="off" spellcheck="false" aria-label="Gap 8 adjective" />
+          <span><strong>as old boots</strong>.</span>
+        </div>
+        <div class="row-key" data-key-for="7"></div>
+      </div>
+      <div class="row" data-i="8">
+        <div class="row-line">
+          <span class="row-num">4.</span>
+          <span>No one can fix the printer &ndash; the instruction manual is <strong>as</strong></span>
+          <input type="text" class="gap-in" maxlength="20" data-i="8" autocomplete="off" spellcheck="false" aria-label="Gap 9 adjective" />
+          <span><strong>as mud</strong>.</span>
+        </div>
+        <div class="row-key" data-key-for="8"></div>
+      </div>
+      <div class="row" data-i="9">
+        <div class="row-line">
+          <span class="row-num">5.</span>
+          <span>She&rsquo;s <strong>as</strong></span>
+          <input type="text" class="gap-in" maxlength="20" data-i="9" autocomplete="off" spellcheck="false" aria-label="Gap 10 adjective" />
+          <span><strong>as a fox</strong> in business negotiations largely due to her ability to read people&rsquo;s weaknesses.</span>
+        </div>
+        <div class="row-key" data-key-for="9"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+        <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      </div>
+      <p class="score" id="elScore" hidden>Correct: <strong id="elScoreN">0</strong> / 10</p>
+    </section>
+
+  </main>
+
+  <div id="u10sim-gloss-source" aria-hidden="true">
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">get on (well) · got on like a house on fire</h3><p class="u10sim-dict-def">When two people <strong>get on</strong>, their relationship is friendly; <strong>like a house on fire</strong> stresses instant rapport and shared tastes.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">watch someone like a hawk</h3><p class="u10sim-dict-def">Observe very closely so nothing risky goes unnoticed &mdash; typical when looking after children or monitoring mistakes.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">stick out like a sore thumb</h3><p class="u10sim-dict-def">Look obviously different or out of place compared with everything around &mdash; buildings, clothes, behaviour.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">fight like cat and dog</h3><p class="u10sim-dict-def">Argue or clash all the time &mdash; fixed pairs (<em>brothers</em>, <em>flatmates</em>) often appear with this simile.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">sleep like a log</h3><p class="u10sim-dict-def">Sleep very deeply and soundly, especially after exhaustion.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">as mad as a box of frogs</h3><p class="u10sim-dict-def">Informal and humorous for &lsquo;eccentric / crazy in an odd way&rsquo;; near-synonym territory with <em>eccentric</em> in the sentence frame.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">as dull as ditch water</h3><p class="u10sim-dict-def">Extremely boring &mdash; stronger than <em>a bit dull</em>; often collocates with books, talks, meetings.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">as tough as old boots</h3><p class="u10sim-dict-def">Emotionally resilient: setbacks don&rsquo;t easily upset the person &mdash; informal praise of stamina.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">as clear as mud</h3><p class="u10sim-dict-def">Irony: <strong>not</strong> clear at all &mdash; instructions or explanations are confusing despite sounding helpful.</p></article>
+    <article class="u10sim-dict-entry"><h3 class="u10sim-dict-phrase">as sly as a fox</h3><p class="u10sim-dict-def">Clever and discreet when pursuing an advantage &mdash; negotiating, politics, subtle manipulation.</p></article>
+  </div>
+
+  <script>
+(function () {
+  /** @type {string[][]} accepted forms after normalisation */
+  var KEYS = [
+    ["got on", "get on"],
+    ["watched", "watch"],
+    ["stuck out", "stick out"],
+    ["fight"],
+    ["sleep", "slept"]
+  ].concat([
+    ["mad"],
+    ["dull"],
+    ["tough"],
+    ["clear"],
+    ["sly"]
+  ]);
+
+  var EXPLAIN = [
+    "<strong>Key:</strong> <em>got on</em> (also <em>get on</em> if you keep present tense). Collocation: <strong>get on like a house on fire</strong> &mdash; instant friendship. <strong>Watch</strong> belongs with <em>hawk</em>; <strong>stick out</strong> with <em>sore thumb</em>; <strong>fight</strong> with <em>cat and dog</em>; <strong>sleep</strong> with <em>log</em>.",
+    "<strong>Key:</strong> <em>watched</em> &mdash; continuous careful observation: <strong>watch like a hawk</strong>. <strong>Got on</strong> fits <em>house on fire</em>; <strong>stuck out</strong> &mdash; visible mismatch; <strong>fight</strong> &mdash; constant arguing; <strong>sleep</strong> &mdash; deep rest.",
+    "<strong>Key:</strong> <em>stuck out</em> &mdash; visibly doesn&rsquo;t belong: <strong>stick out like a sore thumb</strong>. <strong>Watched</strong> goes with supervision; <strong>got on</strong> with rapport; <strong>fight</strong> with siblings; <strong>sleep</strong> after fatigue.",
+    "<strong>Key:</strong> <em>fight</em> (continuous clash: <strong>fight like cat and dog</strong>). <strong>Got on</strong> is the opposite (harmony); <strong>watch</strong> &mdash; monitoring; <strong>stuck out</strong> &mdash; standing out; <strong>sleep</strong> &mdash; resting.",
+    "<strong>Key:</strong> <em>sleep</em> after <em>will</em> &mdash; <strong>sleep like a log</strong> (deep sleep). Other verbs don&rsquo;t follow <em>I&rsquo;ll ___ like a log</em>.",
+    "<strong>Key:</strong> <em>mad</em> &mdash; informal &lsquo;crazy / eccentric&rsquo;: <strong>as mad as a box of frogs</strong>. <strong>Dull</strong> &mdash; boring (<em>ditch water</em>); <strong>tough</strong> &mdash; resilient (<em>old boots</em>); <strong>clear</strong> &mdash; ironic with <em>mud</em>; <strong>sly</strong> &mdash; cunning (<em>fox</em>).",
+    "<strong>Key:</strong> <em>dull</em> &mdash; tedious: <strong>as dull as ditch water</strong>. <strong>Mad</strong> &mdash; eccentric line; <strong>tough</strong> &mdash; not upset easily; <strong>clear</strong> &mdash; ironic clarity; <strong>sly</strong> &mdash; fox-like cunning.",
+    "<strong>Key:</strong> <em>tough</em> &mdash; resilient: <strong>as tough as old boots</strong>. <strong>Mad</strong> &mdash; frogs idiom; <strong>dull</strong> &mdash; boredom; <strong>clear</strong> &mdash; muddy instructions joke; <strong>sly</strong> &mdash; negotiation wit.",
+    "<strong>Key:</strong> <em>clear</em> &mdash; ironic: <strong>as clear as mud</strong> means confusing. <strong>Mad / dull / tough / sly</strong> fill the other fixed similes in Exercise&nbsp;2.",
+    "<strong>Key:</strong> <em>sly</em> &mdash; discreetly clever: <strong>as sly as a fox</strong>. Other adjectives pair with different second halves (<em>frogs, ditch water, boots, mud</em>)."
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .replace(/[-'`]/g, "")
+      .replace(/\s+/g, "");
+  }
+
+  function matches(v, arr) {
+    var n = norm(v);
+    for (var j = 0; j < arr.length; j++) {
+      if (n === norm(arr[j])) return true;
+    }
+    return false;
+  }
+
+  function inp(i) {
+    return document.querySelector('.gap-in[data-i="' + i + '"]');
+  }
+  function kb(i) {
+    return document.querySelector('[data-key-for="' + i + '"]');
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    for (var i = 0; i < 10; i++) {
+      var el = inp(i);
+      var good = matches(el.value, KEYS[i]);
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(good ? "is-ok" : "is-bad");
+      var box = kb(i);
+      box.classList.toggle("show", !good);
+      box.innerHTML = good ? "" : EXPLAIN[i];
+      if (good) ok++;
+    }
+    document.getElementById("elScoreN").textContent = String(ok);
+    document.getElementById("elScore").hidden = false;
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    for (var i = 0; i < 10; i++) {
+      inp(i).value = "";
+      inp(i).classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      kb(i).innerHTML = "";
+    }
+    document.getElementById("elScore").hidden = true;
+  });
+
+  document.querySelectorAll(".gap-in").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var i = el.getAttribute("data-i");
+      el.classList.remove("is-ok", "is-bad");
+      kb(i).classList.remove("show");
+      document.getElementById("elScore").hidden = true;
+    });
+  });
+
+  /* Quick dictionary mount */
+  function mountDict() {
+    if (document.getElementById("u10sim-dict-fab")) return;
+    var src = document.getElementById("u10sim-gloss-source");
+    var inner = src ? src.innerHTML : "";
+
+    var fab = document.createElement("button");
+    fab.type = "button";
+    fab.id = "u10sim-dict-fab";
+    fab.className = "u10sim-dict-fab";
+    fab.setAttribute("aria-expanded", "false");
+    fab.setAttribute("aria-controls", "u10sim-dict-drawer");
+    fab.setAttribute("title", "Quick dictionary");
+    fab.innerHTML =
+      '<span class="u10sim-dict-fab-inner" aria-hidden="true">\uD83D\uDCD6</span>' +
+      '<span><span class="u10sim-dict-fab-line">Quick</span><span class="u10sim-dict-fab-line">dictionary</span></span>';
+
+    var backdrop = document.createElement("div");
+    backdrop.id = "u10sim-dict-backdrop";
+    backdrop.className = "u10sim-dict-backdrop";
+    backdrop.hidden = true;
+
+    var drawer = document.createElement("aside");
+    drawer.id = "u10sim-dict-drawer";
+    drawer.className = "u10sim-dict-drawer";
+    drawer.setAttribute("aria-label", "Quick dictionary");
+    drawer.hidden = true;
+    drawer.innerHTML =
+      '<div class="u10sim-dict-drawer-head">' +
+      '<span class="u10sim-dict-drawer-title">Quick dictionary</span>' +
+      '<button type="button" class="u10sim-dict-drawer-x" aria-label="Close">\u00d7</button>' +
+      '</div><div class="u10sim-dict-drawer-body">' +
+      '<p class="u10sim-dict-lede">English notes on the similes in this task.</p>' +
+      inner +
+      "</div>";
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(drawer);
+    document.body.appendChild(fab);
+
+    var btnX = drawer.querySelector(".u10sim-dict-drawer-x");
+
+    function setOpen(on) {
+      var open = !!on;
+      document.body.classList.toggle("u10sim--dict-open", open);
+      backdrop.hidden = !open;
+      drawer.hidden = !open;
+      drawer.classList.toggle("is-visible", open);
+      fab.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function closeDict() {
+      setOpen(false);
+    }
+
+    fab.addEventListener("click", function () {
+      setOpen(backdrop.hidden);
+    });
+    backdrop.addEventListener("click", closeDict);
+    if (btnX) btnX.addEventListener("click", closeDict);
+
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key !== "Escape") return;
+        if (!document.body.classList.contains("u10sim--dict-open")) return;
+        e.preventDefault();
+        closeDict();
+      },
+      true
+    );
+  }
+
+  mountDict();
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+---
+description: Level 10 Prep — Use of English глубина и контент (без лишней матрёшки MC).
+---
+
+# Unit 10 · Use of English в Prep hub — фиксированная структура
+
+## Глубина (обязательно)
+
+На сетке **Level 10** одна linked-папка **`Use of English`** (`prep_legacy_u10_uoe`).
+
+Внутри **только задачи** (`tasks` на самой папке): первая сидированная — **Multiple Choice Cloze про Шекспира** (prep-link на Part 1 MC cloze).
+
+**Запрещено** снова вводить промежуточную вложенную папку **`Multiple Choice Cloze`** (`prep_legacy_u10_uoe_mc_cloze`) между «Use of English» и упражнением. Это даёт три уровня кликов и ломает задумку «папка в папке», а не «папка в папке в папке».
+
+## Где править
+
+- Сиды контента и текст плитки: **`js/prep-hub-seeds-unit10-uoe.js`** (`PREP_HUB_U10_UOE_SEEDS.folderUseOfEnglish` + `part1McSeeded`).
+- Логика и миграция (удаление старой вложенной строки из `PrepSiteContent`): **`js/prep-hub-unit10-nests.js`** → `ensurePrepUnit10UoeNest`.
+
+## Миграция
+
+Если у пользователя в localStorage осталась старая вложенная папка `prep_legacy_u10_uoe_mc_cloze`, `ensurePrepUnit10UoeNest` переносит её `tasks` на родителя и **удаляет** запись вложенной папки. Deep-link с этим id редиректится на родителя через `prepHubNormalizeLegacyFolderId`.

@@ -20,7 +20,7 @@ Netlify **track builds** (`scripts/build-netlify-track.mjs`): on FCE/EGE publish
 1. **Do not** add CPE-only or Prep-specific teaching content (e.g. seeded Level folders, big hub features) to **`fce.html`** unless the user asks for the FCE tile grid to show it.
 2. **Do not** link **from** the CPE hub / `index.html` surfaces **to** `fce.html` as “back” or “home” for standard navigation. Users on the CPE flow should return to **`index.html`** (Levels hub), not to the FCE sheet.
 3. **Shared unit menus** (`unit1.html` … `unit12.html`) live at repo root and are used by more than one surface. Their **“back / home” link must be `index.html`**, not hardcoded `fce.html`, so CPE users are not dropped into the FCE grid. On **FCE-only deploys**, stub `index.html` forwards to `fce.html` automatically.
-4. **`unit10-vocabulary/`** (and similar Prep-tied vocabulary menus under a Level) must **only** offer “home / back” to **`index.html`** (Levels hub), or in-page links inside the same folder. **Do not** add a second “Unit 10 menu” link to **`unit10.html`** — that is the Mastering B2/FCE unit sheet and confuses the CPE flow.
+4. **`unit10-vocabulary/`** — разные хабы без общих плиток: **`unit10-vocabulary/fce/index.html`** (Mastering B2: phrasals, crimes, titles; домой → **`fce.html`**) и **`unit10-vocabulary/cpe/index.html`** (CPE Prep: books/films/similes; домой → **`index.html`**). Корневой **`unit10-vocabulary/index.html`** только редиректит на `fce/` или `cpe/` по **`?course=`** (без параметра — **`cpe/`**, как прежний дефолт). Упражнения в подпапках используют **`js/u10-vocab-course-context.js`** (**`?course=`** или путь **`…/fce/`** vs **`…/cpe/`**). **`similes/index.html`** — статичная CPE-страница.
 5. **`index.html`** auto-redirect to `fce.html` happens only when **`window.__PREP_DEPLOY_TRACK__ === "fce"`** (or profile `courseTrack`), i.e. intentional for that build — do not duplicate that logic in random content pages.
 
 ## Wording
@@ -29,12 +29,18 @@ Reserve **“FCE”** for the **`fce.html`** / Mastering B2 sheet. Reserve **“
 
 ## `?course=` parameter (Unit 10 vocabulary folder)
 
-Teaching HTML under **`unit10-vocabulary/`** use **`js/u10-vocab-course-context.js`**.
+Teaching HTML under **`unit10-vocabulary/`** (except **`similes/index.html`**) loads **`js/u10-vocab-course-context.js`**.
 
-- **`?course=cpe`** (default): Levels / home navigation targets **root `index.html`** (full CPE hub). Used when opening from **Levels hub Prep** (`hubAppendTaskTile` adds `course=cpe&back=…`).
-- **`?course=fce`**: home navigation targets **`fce.html`** (**`#u10-nav-levels`**, **`#nav-back`** on book pages); sibling links retain **`course=fce`**. Set when entering from **`unit10.html?…`** via **`unit10-vocabulary/index.html?course=fce`** (Mastering B2 tile).
+- **Mastering B2**: вход с **`unit10.html`** → **`unit10-vocabulary/fce/`**; домой → **`fce.html`**; ссылки несут **`course=fce`** где нужно.
+- **CPE Prep**: **`unit10-vocabulary/cpe/`**; домой → **`index.html`**; **`course=cpe`** на упражнениях.
 
-Do **not** use bare **`../index.html`** as “course home” inside this folder — on mixed deploys users confuse stub redirect with full CPE. The script binds the correct home per **`course`**.
+**`similes/index.html`**: статичные ссылки; **no** shared script. Omit **`similes/`** from **publish-fce** (see **`scripts/build-netlify-track.mjs`**).
+
+- **Exercise subpages:** **`u10-back-vocab-index`** → **`…/fce/index.html`** или **`…/cpe/index.html`** с **`course=`**; **`data-u10-levels-depth`** → **`fce.html`** или **`index.html`** per track.
+
+### FCE/EGE publish vs “Levels hub”
+
+On **`publish-fce`** / **`publish-ege`**, root **`index.html`** is a **stub** (see **`scripts/build-netlify-track.mjs`**): a link to **`/index.html`** cannot open the **full CPE Levels hub** — it forwards to **`fce.html`** / **`ege.html`**. Learners who need Prep + Levels hub must use the **`publish-cpe`** (or equivalent) origin; this is a **deploy** boundary, not fixable by relative links alone.
 
 ### Prep `back=` on `describing-books-*.html`
 

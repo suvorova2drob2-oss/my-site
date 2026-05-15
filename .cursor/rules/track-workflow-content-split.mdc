@@ -1,0 +1,15 @@
+---
+description: Треки CPE/FCE/ЕГЭ, деплой publish-*, разделение контента и движков, npm run check:tracks
+alwaysApply: false
+---
+
+# Процесс треков и контент vs движки
+
+- **CPE** для ученика — вход через корневой **`index.html`** (Levels / Prep). **FCE** — **`fce.html`**. **ЕГЭ** — **`ege.html`**. Не смешивать «домой» и копирайт разных экзаменов на одном экране без явной просьбы пользователя.
+- **Что реально выкладывается:** после `npm run build*` содержимое **`publish-cpe` | `publish-fce` | `publish-ege`** (см. `scripts/build-netlify-track.mjs`), не «весь репозиторий».
+- **Разведение хабов:** см. **`docs/track-workflow.md`** — отдельные URL `…/fce/` и `…/cpe/` вместо двух наборов плиток на одной странице, где это уже принято (Unit 10 UoE и словарь).
+- **Контент и движки:** новые задания того же типа — по возможности **JSON / data-модуль + существующий core** (`part1-mc-cloze-core.js`, `part2-open-cloze-core.js`, и т.д.), а не только новый монолитный HTML.
+- **Относительные пути из `use-of-english/part1-mc-cloze/` и `part2-open-cloze/`:** на хаб Unit 10 — **`../unit10/…`**, не **`../../unit10/fce/`** (иначе корень сайта).
+- Перед PR / деплоем трека: **`npm run check:tracks`**.
+
+Полная шпаргалка: **`docs/track-workflow.md`**.

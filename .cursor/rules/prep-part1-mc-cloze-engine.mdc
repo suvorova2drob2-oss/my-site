@@ -51,15 +51,23 @@ description: Part 1 multiple-choice cloze engine (part1-mc-cloze-core.js) — lo
 - **`explainCorrect`** — строка: коротко, почему верный вариант (буква показывается как у ученика после shuffle).
 - **`explainIfChosen`** — объект: ключи **`"0"` … `"3"`** = **индекс слота варианта** (как в `options` / `correctIndex`), значение — почему этот вариант не подходит, если ученик его выбрал.
 
+После **Submit**, если есть ошибки, модалка строит блок **Explanations**. Для каждого неверного пропуска: **Why [верная буква]** (`explainCorrect`), **Why not [выбор ученика]** (текст из `explainIfChosen` для выбранного слота или общий fallback). Если для других неверных слотов заданы строки в **`explainIfChosen`**, под списком показывается секция **Other incorrect options** (буква · слово — пояснение).
+
 Если полей нет, модалка с ключом работает как раньше. Блок «Explanations» строится только для **ошибочных** пропусков и только если есть хотя бы `explainCorrect` или текст для выбранного неверного слота (иначе — общий fallback для «Why not …»). В админке пояснения **не редактируются полями формы**; при сохранении из редактора они **подмешиваются** из текущего `state.exercise.items` (той же длины), чтобы JSON с пояснениями не обнулялись при правке слов. Для надёжного задания пояснений в контенте правьте `published.json` / встроенный JSON напрямую.
 
 ## Prep hub / блокировка
 
 - Если `contextId` вида `prep-hub-<folderId>` и в `PrepSiteContent` у папки `studentLocked === true`, не-редактирующий заход может редиректить назад (см. начало IIFE в core).
 
+## Тема оформления (CPE vs FCE)
+
+- После монтирования `body.part1-mc-body` ядро вешает **`part1-mc-cpe-theme`** (палитра Levels / slate из **`css/part1-mc-cloze.css` · `:root`) **по умолчанию**.
+- Явный **`?course=fce`** → класс **`part1-mc-fce-theme`** («книжный» синий Mastering B2). Mastering B2: хаб **`use-of-english/unit10/fce/index.html`** — Part 1 ex-athlete с **`course=fce`**. CPE Prep: **`use-of-english/unit10/cpe/index.html`** — Shakespeare и др. с **`course=cpe`**. Корневой **`use-of-english/unit10/index.html`** только редиректит на `fce/` или `cpe/`.
+- **Quick dictionary** на Shakespeare: FAB 📖 + две строки **Quick** / **dictionary**, заголовок панели **Quick dictionary** — см. **`mountPart1ShakespeareDictionary`** в **`js/use-of-english/u10-uoe-shakespeare-lexicon.js`** и классы **`p1mc-dict-*`** в **`css/part1-mc-cloze.css`**.
+
 ## Level 9 / Unit 10 Part 1 — вшитые пакеты (без отдельного `published-*.json`)
 
-Контексты **unit9-uoe**, **unit9-uoe-artistic-talent**, **unit9-uoe-pisa**, **unit9-uoe-solving-mystery**, **unit10-uoe** обязаны иметь JSON в **`use-of-english/part1-mc-cloze/index.html`** в `<script id="part1-mc-bundled-…" type="application/json">`. В **`js/part1-mc-cloze-core.js`** добавить флаг вида `unit9…Hardwired`, включить в **`unit9BundledPart1`** (или аналог для U10), и ветку в **`readEmbeddedExercisePayload`**. Ссылки с хабов — **`?context=…&back=…`** (без **`?src=published-….json`**), иначе при открытии HTML с диска **`file://`** `fetch` к JSON падает. Для этих контекстов **не** добавлять отдельный файл `published-….json` только под ученика.
+Контексты **unit9-uoe**, **unit9-uoe-artistic-talent**, **unit9-uoe-pisa**, **unit9-uoe-solving-mystery**, **unit10-uoe**, **unit10-uoe-shakespeare** обязаны иметь JSON в **`use-of-english/part1-mc-cloze/index.html`** в `<script id="part1-mc-bundled-…" type="application/json">`. В **`js/part1-mc-cloze-core.js`** добавить флаг (например `unit9…Hardwired` / `unit10ShakespeareBundled`), включить загрузку из **`readEmbeddedExercisePayload`** и при необходимости в **`useEmbeddedExercise`**. Ссылки с хабов — **`?context=…&back=…`** (без **`?src=published-….json`**), иначе при открытии HTML с диска **`file://`** `fetch` к JSON падает. Для этих контекстов **не** добавлять отдельный файл `published-….json` только под ученика.
 
 ## Где править
 

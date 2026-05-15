@@ -1,6 +1,6 @@
 /**
  * Part 1 — Multiple-choice cloze (shared).
- * Configure before load: window.PART1_MC_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle }
+ * Configure before load: window.PART1_MC_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle, chainNext?, chainNextLabel? }
  * Or URL: ?context=slug&src=relative/path/to/published.json&back=unit3.html&backLabel=...
  * Edit mode: &prepView=edit (hub / track) and/or legacy &admin=1
  * Student-only chrome: boot.studentOnly or &part1Student=1 — скрывает редактор и игнорирует edit в URL.
@@ -11,6 +11,24 @@
   var boot = window.PART1_MC_BOOT || window.PART1_MC_CONFIG || {};
   var sp = new URLSearchParams(window.location.search);
   var contextId = String(boot.contextId || sp.get("context") || "default").trim() || "default";
+  /* ЕГЭ-контексты на общем Part 1 → тот же namespace PrepSiteContent, что на ege.html */
+  if (/^ege/i.test(contextId) && window.prepCourseProfile && typeof window.prepCourseProfile.load === "function" && typeof window.prepCourseProfile.save === "function") {
+    try {
+      var _egeCur = window.prepCourseProfile.load();
+      if (_egeCur.courseTrack !== "creator") {
+        var _egeCid = window.prepCourseProfile.normalizeCourseId
+          ? window.prepCourseProfile.normalizeCourseId(_egeCur.courseId)
+          : String(_egeCur.courseId || "");
+        if (_egeCur.courseTrack !== "ege" || _egeCid !== "ege") {
+          window.prepCourseProfile.save({
+            courseTrack: "ege",
+            courseId: "ege",
+            wizardCompleted: _egeCur.wizardCompleted !== false,
+          });
+        }
+      }
+    } catch (eEgePart1) {}
+  }
   function isEditModeParams(params) {
     var p = params || sp;
     return p.get("admin") === "1" || p.get("prepView") === "edit";
@@ -44,6 +62,8 @@
   var unit10ExAthleteBundled =
     String(contextId) === "unit10-uoe" ||
     /ex-athlete-taken-in\/published\.json\s*$/i.test(dataSrc);
+  /** Unit 10 — Was Shakespeare a woman? — JSON in #part1-mc-bundled-unit10-shakespeare-woman. */
+  var unit10ShakespeareBundled = String(contextId) === "unit10-uoe-shakespeare";
   /** Unit 5 FCE · Summer jobs — JSON in #part1-mc-bundled-unit5-summer-jobs (works file://). */
   var unit5UoeBundled = String(contextId) === "unit5-uoe";
   var studentOnly =
@@ -56,6 +76,7 @@
     sp.get("part1Embedded") === "1" ||
     unit9BundledPart1 ||
     unit10ExAthleteBundled ||
+    unit10ShakespeareBundled ||
     unit5UoeBundled ||
     unit8UoeSevilleBundled;
   var boxedSite =
@@ -78,6 +99,10 @@
   var LETTERS_U = ["A", "B", "C", "D"];
 
   document.body.classList.add("part1-mc-body");
+  /* CPE — палитра Levels / slate по умолчанию; `course=fce` оставляет «книжный» синий Mastering B2. */
+  var courseSkin = String(boot.course || sp.get("course") || "").toLowerCase().trim();
+  if (courseSkin === "fce") document.body.classList.add("part1-mc-fce-theme");
+  else document.body.classList.add("part1-mc-cpe-theme");
   document.title = docTitle;
 
   function stripStudentOnlyAdminChrome() {
@@ -185,7 +210,16 @@
       var eic = it.explainIfChosen || {};
       var gapNum = docNums[i] != null ? docNums[i] : i + 1;
       var ynote = lookupExplainChosen(eic, pick);
-      if (!ec && !ynote) continue;
+      var hasOtherDistractorNotes = false;
+      for (var sj = 0; sj < 4; sj++) {
+        var sjk = String(sj);
+        if (sjk === correct || sjk === pick) continue;
+        if (lookupExplainChosen(eic, sjk)) {
+          hasOtherDistractorNotes = true;
+          break;
+        }
+      }
+      if (!ec && !ynote && !hasOtherDistractorNotes) continue;
       var Lc = displayLetterForSlot(i, correct);
       var Lp = pick ? displayLetterForSlot(i, pick) : "?";
       var html =
@@ -211,6 +245,36 @@
               "."
         ) +
         "</p>";
+
+      /* Остальные неверные слоты: смысл / коллокации из explainIfChosen (ключ "0".."3"). */
+      var otherLi = [];
+      for (var si = 0; si < 4; si++) {
+        var sk = String(si);
+        if (sk === correct || sk === pick) continue;
+        if (!String(it.options[si] || "").trim()) continue;
+        var noteO = lookupExplainChosen(eic, sk);
+        if (!noteO) continue;
+        var Lo = displayLetterForSlot(i, sk);
+        var wordO = String(it.options[si] || "").trim();
+        otherLi.push(
+          '<li class="reveal-explain-distractor-li"><span class="reveal-explain-distractor-cap">' +
+            esc(Lo) +
+            " · " +
+            esc(wordO) +
+            '</span> — ' +
+            esc(noteO) +
+            "</li>"
+        );
+      }
+      if (otherLi.length) {
+        html +=
+          '<div class="reveal-explain-distractors">' +
+          '<div class="reveal-explain-distractors-h">Other incorrect options</div>' +
+          '<ul class="reveal-explain-distractor-ul">' +
+          otherLi.join("") +
+          "</ul></div>";
+      }
+
       html += "</div>";
       blocks.push(html);
     }
@@ -248,15 +312,29 @@
 
   function resolveBackHref() {
     var raw = String(backHref || "").trim();
+    var loc = window.location;
     if (!raw) {
       try {
-        return new URL("../../index.html", window.location.href).href;
+        return new URL("../../index.html", loc.href).href;
       } catch (e) {
         return "../../index.html";
       }
     }
+    // "ege.html" / "index.html" from deep under /use-of-english/ must be site-root, not .../part1-mc-cloze/ege.html
+    var simpleRootHtml =
+      /^[a-z0-9._-]+\.html$/i.test(raw) && raw.indexOf("/") === -1 && raw.indexOf("\\") === -1;
+    if (simpleRootHtml && /\/use-of-english\//i.test(loc.pathname)) {
+      try {
+        if (loc.protocol === "http:" || loc.protocol === "https:") {
+          return new URL("/" + raw, loc.origin).href;
+        }
+      } catch (e0) {}
+      try {
+        return new URL("../../" + raw, loc.href).href;
+      } catch (e1) {}
+    }
     try {
-      return new URL(raw, window.location.href).href;
+      return new URL(raw, loc.href).href;
     } catch (e2) {
       return raw;
     }
@@ -290,14 +368,14 @@
   }
 
   function wirePart1ChainNext() {
-    var rawNext = sp.get("next");
+    var rawNext = String(sp.get("next") || boot.chainNext || "").trim();
     if (!rawNext) return;
     var strip = document.getElementById("part1McNextStrip");
     var link = document.getElementById("part1McNextLink");
     if (!strip || !link) return;
     var nextLabelDecoded = sp.get("nextLabel")
       ? decodeURIComponent(sp.get("nextLabel"))
-      : "Next task";
+      : String(boot.chainNextLabel || "").trim() || "Next task";
     link.setAttribute("href", resolveChainNextHref(String(rawNext).trim()));
     link.textContent = "\u2192 " + nextLabelDecoded;
     strip.removeAttribute("hidden");
@@ -313,6 +391,8 @@
       }
       back.textContent = lb;
       back.addEventListener("click", function (e) {
+        /* Explicit ?back= / boot.backHref must win — history.back() skips the hub and lands on whatever was visited before (e.g. another unit). */
+        if (String(backHref || "").trim()) return;
         if (window.history.length > 1) {
           e.preventDefault();
           window.history.back();
@@ -1835,6 +1915,16 @@
         try {
           return JSON.parse(el10ex.textContent.trim());
         } catch (e10ex) {
+          return null;
+        }
+      }
+    }
+    if (unit10ShakespeareBundled) {
+      var el10sha = document.getElementById("part1-mc-bundled-unit10-shakespeare-woman");
+      if (el10sha) {
+        try {
+          return JSON.parse(el10sha.textContent.trim());
+        } catch (e10sha) {
           return null;
         }
       }

@@ -19,6 +19,41 @@ const SKIP_DIRS = new Set([
   "supabase",
 ]);
 
+type PrepBuildTrack = "dev" | "cpe" | "ege" | "fce";
+
+function resolvePrepBuildTrack(command: string, mode: string): PrepBuildTrack {
+  if (command !== "build") return "dev";
+  if (mode === "ege") return "ege";
+  if (mode === "fce") return "fce";
+  return "cpe";
+}
+
+function isRootEgeHubHtml(relPosix: string): boolean {
+  if (!relPosix || relPosix.includes("/")) return false;
+  return relPosix === "ege.html" || relPosix.startsWith("ege-");
+}
+
+function includeHtmlForTrack(relPosix: string, track: PrepBuildTrack): boolean {
+  if (track === "dev") return true;
+
+  const inAllCond = relPosix.startsWith("all-conditionals-tests/");
+  const uoePart1 = relPosix === "use-of-english/part1-mc-cloze/index.html";
+  const egeRoot = isRootEgeHubHtml(relPosix);
+
+  if (track === "ege") {
+    if (egeRoot) return true;
+    if (uoePart1) return true;
+    if (inAllCond && relPosix.endsWith(".html")) return true;
+    return false;
+  }
+
+  if (inAllCond) return false;
+  if (egeRoot) return false;
+  if (relPosix === "fce.html") return track === "fce";
+  if (relPosix === "index.html") return track === "cpe";
+  return true;
+}
+
 function* walkHtmlFiles(dir: string, rel = ""): Generator<string> {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const ent of entries) {
@@ -80,7 +115,7 @@ function viteIgnoreClassicScripts(): Plugin {
 
 /**
  * Classic scripts and co-located JSON are referenced by URL (?src=published-….json, ../../js/…)
- * but not imported into the Rollup graph. With publicDir: false they would be missing from dist/.
+ * but not imported into the Rollup graph. With publicDir: false copy them into dist/.
  */
 function copyLegacyStaticAssets(): Plugin {
   let outDir = path.join(root, "dist");
@@ -165,26 +200,31 @@ function copyLegacyStaticAssets(): Plugin {
   };
 }
 
-const input: Record<string, string> = {};
-for (const rel of walkHtmlFiles(root)) {
-  input[rollupInputKey(rel)] = path.resolve(root, rel);
-}
+export default defineConfig(({ command, mode }) => {
+  const prepTrack = resolvePrepBuildTrack(command, mode);
 
-export default defineConfig({
-  root,
-  publicDir: false,
-  plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets()],
-  appType: "mpa",
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-    chunkSizeWarningLimit: 6000,
-    rollupOptions: {
-      input,
+  const input: Record<string, string> = {};
+  for (const rel of walkHtmlFiles(root)) {
+    if (!includeHtmlForTrack(rel, prepTrack)) continue;
+    input[rollupInputKey(rel)] = path.resolve(root, rel);
+  }
+
+  return {
+    root,
+    publicDir: false,
+    plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets()],
+    appType: "mpa",
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
+      chunkSizeWarningLimit: 6000,
+      rollupOptions: {
+        input,
+      },
     },
-  },
-  server: {
-    port: 5173,
-    strictPort: false,
-  },
+    server: {
+      port: 5173,
+      strictPort: false,
+    },
+  };
 });

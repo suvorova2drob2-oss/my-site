@@ -1875,7 +1875,9 @@
             border-radius: 10px;
             padding: 10px 12px;
             min-height: 120px;
-            min-width: 120px;
+            /* Flex default min-width:auto uses max-content — Chrome can wrap inside nowrap glue on narrow cards */
+            flex: 0 1 236px;
+            min-width: 0;
             max-width: 250px;
             text-align: left;
             font-size: 16px;
@@ -1891,6 +1893,20 @@
         #screen-unit9-lex-sticky .u9-sticky-gap {
             font-weight: 700;
             margin-bottom: 8px;
+            /* break-word fights nowrap runs — orphans “____” after the cue word on narrow notes */
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+        #screen-unit9-lex-sticky .u9-sticky-gap .u9-sticky-gap-run {
+            display: inline-block;
+            white-space: nowrap !important;
+            line-break: auto;
+            overflow-wrap: normal !important;
+            word-break: normal !important;
+            vertical-align: baseline;
+        }
+        #screen-unit9-lex-sticky .u9-sticky-gap .u9-sticky-gap-blank {
+            white-space: nowrap !important;
         }
         #screen-unit9-lex-sticky .u9-sticky-ctrl {
             display: flex;
@@ -1963,6 +1979,7 @@
                 gap: 10px;
             }
             #screen-unit9-lex-sticky .u9-sticky-note {
+                flex-basis: 208px;
                 max-width: 220px;
                 min-height: 112px;
                 font-size: 15px;
@@ -1983,6 +2000,7 @@
                 gap: 8px;
             }
             #screen-unit9-lex-sticky .u9-sticky-note {
+                flex: 1 1 100%;
                 min-width: 100%;
                 max-width: 100%;
                 min-height: 116px;
@@ -2149,6 +2167,10 @@
             border-color: transparent;
             background: var(--primary);
             color: #0f172a;
+        }
+        /* Unit 10 lexical games: vault pool is Part 4 + books/films + Shakespeare UoE — hide Level 9 pack buttons */
+        #screen-unit9-prep-escape.prep-escape-scope-u10 .prep-escape-pack-btn[data-pack]:not([data-pack='u10_p4']):not([data-pack='u10_books']):not([data-pack='u10_uoe_shakespeare']):not([data-pack='all']) {
+            display: none !important;
         }
         #screen-unit9-prep-escape.prep-escape-lockout .prep-escape-pack-bar {
             pointer-events: none;
@@ -5327,37 +5349,22 @@
             <span style="color:var(--muted);font-size:13px;">Future Tech / exam focus</span>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Level 9</h2>
-        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Open a folder, then choose a reading. You can add more readings under each activity later.</p>
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);"><strong>Reading</strong> and <strong>Listening</strong> gather every exam folder on disk for Level 9; other sections stay on this menu.</p>
         <div id="unit9-dynamic-folders" class="unit-dynamic-folders" aria-live="polite"></div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-reading-robots" onclick="unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - the robots are taking over/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - the robots are taking over/index.html')">
-            <strong>Reading Part 7 &mdash; Multiple matching &mdash; The robots are taking over</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Course hub on disk &middot; opens exam trainer first, then you can add more subfolders later.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-reading-all" onclick="openUnit9ReadingFolderHub()" onkeydown="if(event.key==='Enter')openUnit9ReadingFolderHub()">
+            <strong>Reading</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 7 multiple matching on disk (both readings) plus the in-app lexical reading trainer / Treasure Hunt.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open folder list &rarr;</div>
         </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-reading-contemporary-art" onclick="unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - Contemporary art/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - Contemporary art/index.html')">
-            <strong>Reading Part 7 &mdash; Multiple matching &mdash; Contemporary art</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Same on-disk layout as the robots pack: exam, lexical, speaking. Import the final C2 text into the exam <code>*.js</code> files when ready.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-listening-mark" onclick="unitFolderRowNav(event,this,'href','Listening Part 2 Sentence completion - Making a mark/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Listening Part 2 Sentence completion - Making a mark/index.html')">
-            <strong>Listening Part 2 &mdash; Sentence completion &mdash; Making a mark</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Course hub on disk &middot; exam trainer first, then lexical / speaking / audio (same layout as Reading Part 7 robots).</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-listening-minds-eye" onclick="unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)">
-            <strong>Listening Part 2 &mdash; Sentence completion &mdash; Painting with the mind&rsquo;s eye</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Workbook Track 10 (RF C2) on disk &middot; exam-style gaps; accepts slash-marked key variants. Audio: Yandex <code>RF_C2_WB_Track 10</code>.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-listening-all" onclick="openUnit9ListeningFolderHub()" onkeydown="if(event.key==='Enter')openUnit9ListeningFolderHub()">
+            <strong>Listening</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 2 sentence completion (Making a mark; Painting with the mind&rsquo;s eye) and Part 3 multiple choice (Art restoration).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open folder list &rarr;</div>
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-vocab" onclick="unitFolderRowNav(event,this,'href','Vocabulary/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Vocabulary/index.html')">
             <strong>Vocabulary</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Vocabulary/</code> &rarr; <code>idioms/</code>; <code>prepositional-phrases/</code>; <code>describing-art-architecture/</code> (hub for art &amp; architecture lexis). List: <code>Vocabulary/disk-folders.js</code>. Typed gaps stay in the app Lexical trainer.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-listening-p3-art-restoration" onclick="unitFolderRowNav(event,this,'href','Listening Part 3 Multiple choice - Art restoration/exam trainer/art-restoration.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Listening Part 3 Multiple choice - Art restoration/exam trainer/art-restoration.html')">
-            <strong>Listening Part 3 &mdash; Multiple choice &mdash; Art restoration</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 3 MCQ + distractor hunt (Track 9.4) on disk &mdash; opens the task directly. Lexical, speaking, and audio trainers sit in the same course folder.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open exam task &rarr;</div>
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-lexgames" onclick="unitFolderRowNav(event,this,'fn','u9lexgames')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u9lexgames')">
             <strong>Lexical games</strong>
@@ -5396,15 +5403,65 @@
         </div>
     </div>
 
+    <div id="screen-unit9-reading-folder" class="screen">
+        <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
+        <div class="user-stats" style="margin-top:0;">
+            <span>Reading</span>
+            <span style="color:var(--muted);font-size:13px;">Level 9 &middot; disk folders + lexical trainer</span>
+        </div>
+        <h2 style="margin:0 0 6px;font-size:1.2rem;">Reading</h2>
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5;">Exam packs live on disk (same paths as before). Use <strong>Lexical reading trainer</strong> for in-app Treasure Hunt on the robots / contemporary-art phrase banks.</p>
+        <div class="folder" role="button" tabindex="0" onclick="openUnit9ReadingHub()" onkeydown="if(event.key==='Enter')openUnit9ReadingHub()">
+            <strong>Lexical reading trainer</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Treasure Hunt chain &mdash; robots reading or Contemporary art (same flows as before).</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open trainer hub &rarr;</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - the robots are taking over/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - the robots are taking over/index.html')">
+            <strong>Reading Part 7 &mdash; Multiple matching &mdash; The robots are taking over</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Course hub on disk &middot; opens exam trainer first, then lexical / speaking alongside.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - Contemporary art/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Reading Part 7 - Multiple matching - Contemporary art/index.html')">
+            <strong>Reading Part 7 &mdash; Multiple matching &mdash; Contemporary art</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Same on-disk layout as the robots pack: exam, lexical, speaking.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        </div>
+    </div>
+
+    <div id="screen-unit9-listening-folder" class="screen">
+        <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
+        <div class="user-stats" style="margin-top:0;">
+            <span>Listening</span>
+            <span style="color:var(--muted);font-size:13px;">Level 9 &middot; exam folders on disk</span>
+        </div>
+        <h2 style="margin:0 0 6px;font-size:1.2rem;">Listening</h2>
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5;">All Listening packs for this level open their course folders on disk (exam trainer first, then lexical / speaking where wired).</p>
+        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,'href','Listening Part 2 Sentence completion - Making a mark/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Listening Part 2 Sentence completion - Making a mark/index.html')">
+            <strong>Listening Part 2 &mdash; Sentence completion &mdash; Making a mark</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Course hub on disk &middot; exam trainer first, then lexical / speaking / audio.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)">
+            <strong>Listening Part 2 &mdash; Sentence completion &mdash; Painting with the mind&rsquo;s eye</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Workbook Track 10 (RF C2) on disk &middot; exam-style gaps; accepts slash-marked key variants.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
+        </div>
+        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,'href','Listening Part 3 Multiple choice - Art restoration/exam trainer/art-restoration.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Listening Part 3 Multiple choice - Art restoration/exam trainer/art-restoration.html')">
+            <strong>Listening Part 3 &mdash; Multiple choice &mdash; Art restoration</strong>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 3 MCQ + distractor hunt (Track 9.4) on disk &mdash; opens the exam task directly.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open exam task &rarr;</div>
+        </div>
+    </div>
+
     <div id="screen-unit9-uoe" class="screen">
         <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
         <div class="user-stats" style="margin-top:0;">
             <span>Use of English</span>
-            <span style="color:var(--muted);font-size:13px;">Level 9 &middot; Part 1, Part 2 &amp; Part 4 (FCE)</span>
+            <span style="color:var(--muted);font-size:13px;">Level 9 · CPE prep · Part 1 &amp; Part 2 line</span>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Use of English</h2>
         <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5;">
-          <strong>Part 1</strong> &mdash; multiple-choice cloze (A&ndash;D). <strong>Part 2</strong> &mdash; open cloze (one word per gap). <strong>Part 4</strong> &mdash; key word transformation (B2 First style). From the first Part 1 task you can move through the rest with <strong>Next task</strong> without returning here. <strong>Back</strong> in the exercise is one browser step. Submit to check; wrong answers show the key. The <strong>collocation sprint</strong> (hearts) closes the line after <em>Sounds about right</em> &mdash; same phrases from these tasks, embedded so it works offline too.
+          <strong>Part 1</strong> &mdash; multiple-choice cloze (A&ndash;D). <strong>Part 2</strong> &mdash; open cloze (one word per gap). <strong>Part 4</strong> &mdash; key word transformation. From the first Part 1 task you can move through the rest with <strong>Next task</strong> without returning here. <strong>Back</strong> in the exercise is one browser step. Submit to check; wrong answers show the key. The <strong>collocation sprint</strong> (hearts) closes the line after <em>Sounds about right</em> &mdash; same phrases from these tasks, embedded so it works offline too.
         </p>
         <a
           class="folder folder-link"
@@ -5435,16 +5492,6 @@
             <strong>Leaning Tower of Pisa</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 &middot; example (0) + 8 gaps &middot; Reading &amp; Use of English.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open task &rarr;</div>
-        </a>
-        <p style="margin:16px 0 10px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Part 4 &amp; word formation &mdash; subfolder</p>
-        <a
-          class="folder folder-link"
-          id="u9uoe-link-u9-subfolder"
-          href="use-of-english/unit9/index.html?back=..%2F..%2Findex.html&amp;backLabel=Level%209"
-        >
-            <strong>Use of English &mdash; Unit 9</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Part 1 (Solving a mystery), Part 4, and word formation &mdash; adverbs with hearts, in one folder.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open folder &rarr;</div>
         </a>
         <p style="margin:16px 0 10px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Part 2 &mdash; Open cloze</p>
         <a
@@ -5486,7 +5533,6 @@
             var p1 = "use-of-english/part1-mc-cloze/index.html";
             var p2Base = "use-of-english/part2-open-cloze/index.html";
             var drillBase = "use-of-english/unit9-uoe-collocation-drill/index.html";
-            var u9UoeHub = "use-of-english/unit9/index.html";
             var drillQ =
                 "back=" +
                 back +
@@ -5551,7 +5597,6 @@
             setHref("u9uoe-link-p2", p2Base + "?" + part2q);
             setHref("u9uoe-link-p2-sounds", p2Base + "?" + part2SoundsQ);
             setHref("u9uoe-link-coll-drill", drillBase + "?" + drillQ);
-            setHref("u9uoe-link-u9-subfolder", u9UoeHub + "?back=" + back + "&backLabel=" + bl);
         })();
         </script>
     </div>
@@ -6110,6 +6155,7 @@
                     <button type="button" class="prep-escape-pack-btn" data-pack="art_restoration">Art rest.</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_p4">U10 Part 4</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_books">U10 books</button>
+                    <button type="button" class="prep-escape-pack-btn" data-pack="u10_uoe_shakespeare">Shakespeare UoE</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="all">Choose all</button>
                 </div>
             </div>
@@ -6193,8 +6239,6 @@
                     <option value="artrest">Task 7: Art restoration (P3) only</option>
                     <option value="contemp">Task 8: Contemporary art only</option>
                     <option value="minds">Task 9: Minds eye (Track 10) only</option>
-                    <option value="u10p4">Task 10: Unit 10 Part 4 only</option>
-                    <option value="u10books">Task 11: Unit 10 books &amp; films only</option>
                 </select>
             </div>
             <label class="prep-live-label" for="prep-live-share">Student link (copy after creating a room)</label>
@@ -6241,14 +6285,15 @@
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Word Bank (Memrise style)</h2>
         <p id="cpe-wb-lead-default" class="u9-hub-lead" style="margin-bottom:12px;">Topic packs, searchable list, and spaced repetition review status.</p>
         <p id="cpe-wb-lead-u10" class="u9-hub-lead" style="margin-bottom:12px;" hidden>
-            <strong>Unit 10 lexical flow.</strong> The two <b>tabs</b> above choose <b>Listening Part 4</b> (multiple matching) or <b>Describing books &amp; films</b>. The list and every folder below use that pack until you switch. <b>Back</b> returns to the Level 10 folder.
+            <strong>Unit 10 lexical flow.</strong> The <b>tabs</b> above choose <b>Listening Part 4</b> (multiple matching), <b>Describing books &amp; films</b>, or <b>Shakespeare &middot; Use of English</b> (<em>Was Shakespeare a woman?</em>). The list and every folder below use that pack until you switch. <b>Back</b> returns to the Level 10 folder.
         </p>
         <div id="cpe-wb-u10-tabs" class="wb-u10-tabs" role="tablist" aria-label="Unit 10 Word Bank packs" hidden>
             <button type="button" role="tab" class="wb-u10-tab active" id="cpe-wb-u10-tab-p4" data-u10-wb-tab="p4" aria-selected="true" aria-controls="cpe-wb-list">Listening multiple matching</button>
             <button type="button" role="tab" class="wb-u10-tab" id="cpe-wb-u10-tab-books" data-u10-wb-tab="books" aria-selected="false" aria-controls="cpe-wb-list">Vocabulary &middot; describing books &amp; films</button>
+            <button type="button" role="tab" class="wb-u10-tab" id="cpe-wb-u10-tab-shakespeare" data-u10-wb-tab="shakespeare" aria-selected="false" aria-controls="cpe-wb-list">Shakespeare &middot; Use of English</button>
         </div>
         <div id="cpe-wb-u10-modes" class="u10-wb-lexgames-strip" hidden>
-            <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). <b>Pack</b> for Unit 10 comes from the <b>two tabs</b> above (Part 4 or books &amp; films).</p>
+            <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). <b>Pack</b> for Unit 10 comes from the <b>tabs</b> above (Part 4, books &amp; films, or Shakespeare &middot; Use of English).</p>
             <div class="folder" role="button" tabindex="0" onclick="cpeU10WbScrollToList()" onkeydown="if(event.key==='Enter')cpeU10WbScrollToList()">
                 <strong>Word Bank list (below)</strong>
                 <div style="color:var(--muted);font-size:12px;margin-top:6px;">Search, filters, and Memrise-style rows for the pack you picked on the tabs.</div>
@@ -6306,12 +6351,12 @@
             </a>
             <div class="folder" role="button" tabindex="0" onclick="openUnit10StickyGame()" onkeydown="if(event.key==='Enter')openUnit10StickyGame()">
                 <strong>Sticky notes board</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">Two Unit 10 packs only: <b>Listening Part 4</b> and <b>books &amp; films</b> (twelve phrases from Exercises 1&ndash;2) &mdash; missing-word notes, same mechanics as Level 9 sticky.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;"><b>Sticky notes</b> use the same phrases as the active tab: Part 4, books &amp; films, or Shakespeare &middot; Use of English.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Missing-word sticky drills</div>
             </div>
             <button type="button" class="folder" onclick="openUnit10PrepEscapeRoom()">
                 <strong>Prep vault (escape room)</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run can start on <b>U10 Part 4</b> or <b>U10 books</b> from the tab you chose. Six phrases, <b>3:00</b> clock; hints and lockout as on Level 9.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run can start on <b>U10 Part 4</b>, <b>U10 books</b>, or <b>Shakespeare UoE</b> from the tab you chose. Six phrases, <b>3:00</b> clock; hints and lockout as on Level 9.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Timed &middot; pack picker on vault screen</div>
             </button>
             <a class="folder" href="live-room-supabase-demo.html" style="text-decoration:none;color:inherit;">
@@ -6627,12 +6672,12 @@
                 <span class="u9-lex-live-ico" aria-hidden="true">▼</span>
             </button>
             <div id="u9-lex-live-body-sticky" class="u9-lex-live-body" hidden>
-                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (Level 9 tasks 1&ndash;9, or Unit 10 Part 4 / books &amp; films only), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
+                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (Level 9 tasks 1&ndash;9, or Unit 10 Part 4 / books &amp; films / Shakespeare UoE), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
             </div>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Sticky notes board</h2>
         <p class="lex-reading-tag u9-sticky-tag-l9">Level 9 &middot; nine sticky tasks</p>
-        <p class="lex-reading-tag u9-sticky-tag-u10" style="display:none;">Unit 10 &middot; two packs (Part 4 · books &amp; films)</p>
+        <p class="lex-reading-tag u9-sticky-tag-u10" style="display:none;">Unit 10 &middot; three packs (Part 4 · books &amp; films · Shakespeare UoE)</p>
         <div class="u9-sticky-tabs">
             <button type="button" id="u9-sticky-tab-idiom" class="u9-sticky-tab u9-sticky-pack-l9 active" onclick="u9StickyShowTask('idiom')">Task 1: Idioms</button>
             <button type="button" id="u9-sticky-tab-prep" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('prep')">Task 2: at / in / on / under</button>
@@ -6643,13 +6688,12 @@
             <button type="button" id="u9-sticky-tab-artrest" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('artrest')">Task 7: Art restoration (P3)</button>
             <button type="button" id="u9-sticky-tab-contemp" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('contemp')">Task 8: Contemporary art</button>
             <button type="button" id="u9-sticky-tab-minds" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('minds')">Task 9: Minds eye (Track 10)</button>
-            <button type="button" id="u9-sticky-tab-u10p4" class="u9-sticky-tab u9-sticky-pack-u10" onclick="u9StickyShowTask('u10p4')">Task 10: Unit 10 Part 4</button>
-            <button type="button" id="u9-sticky-tab-u10books" class="u9-sticky-tab u9-sticky-pack-u10" onclick="u9StickyShowTask('u10books')">Task 11: books &amp; films</button>
+            <div id="u10-sticky-tabs-mount" style="display:contents"></div>
         </div>
         <p class="u9-sticky-global-hint u9-sticky-hint-l9" style="margin:10px 0 14px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--muted);background:rgba(0,0,0,.04);border-radius:8px;border-left:3px solid var(--accent, #3b82f6);"><strong>Task 2</strong> &mdash; <strong>at / in / on / under</strong>. <strong>Task 3</strong> &mdash; compact <code>____</code> cues; full lines under <strong>Context</strong>. <strong>Task 1</strong> is idioms only.</p>
-        <p class="u9-sticky-global-hint u9-sticky-hint-u10" style="display:none;margin:10px 0 14px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--muted);background:rgba(0,0,0,.04);border-radius:8px;border-left:3px solid var(--accent, #3b82f6);"><strong>Task 1</strong> &mdash; Listening Part 4 (SB 10.1). <strong>Task 2</strong> &mdash; Describing books &amp; films: same <strong>twelve</strong> chunks as textbook Exercises 1–2.</p>
+        <p class="u9-sticky-global-hint u9-sticky-hint-u10" style="display:none;margin:10px 0 14px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--muted);background:rgba(0,0,0,.04);border-radius:8px;border-left:3px solid var(--accent, #3b82f6);" aria-live="polite"></p>
 
-        <div id="u9-sticky-task-idiom" class="u9-sticky-task u9-sticky-pack-l9 active">
+        <div id="u9-sticky-task-idiom" class="u9-sticky-task u9-sticky-pack-l9 active" data-sticky-deck="u9StickyDeck">
             <p style="margin:0 0 12px;font-size:14px;color:var(--muted);line-height:1.55;">Task 1. One missing word per sticky. Type the missing word and press Check.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-sticky-done">0 / 0</b></span>
@@ -6658,7 +6702,7 @@
             <div id="u9-sticky-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-prep" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-prep" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9PrepDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 2. Short prepositional chunks: type the missing piece &mdash; <b>at</b>, <b>in</b>, <b>on</b>, or <b>under</b> (capitalisation on the note is a hint).</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-prep-done">0 / 0</b></span>
@@ -6667,7 +6711,7 @@
             <div id="u9-prep-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-prep2" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-prep2" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9Prep2Deck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 3. <b>Prepositional phrases 2</b> &mdash; short skeleton on each sticky (<code>____</code> = missing piece). The <b>full sentence</b> from the disk Word Bank appears only after you tap <b>Context</b>.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-prep2-done">0 / 0</b></span>
@@ -6676,7 +6720,7 @@
             <div id="u9-prep2-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-robots" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-robots" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9RobotsDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 4. Key lexical chunks from <b>The robots are taking over</b>. One missing word per sticky.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-robots-done">0 / 0</b></span>
@@ -6685,7 +6729,7 @@
             <div id="u9-robots-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-mark" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-mark" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9MarkDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 5. Key chunks from <b>Making a mark</b>. One missing word per sticky.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-mark-done">0 / 0</b></span>
@@ -6694,7 +6738,7 @@
             <div id="u9-mark-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-interior" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-interior" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9InteriorDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 6. Key chunks from <b>Different strokes for different folks</b> (<code style="font-size:11px;">interior-design-vocab-core.js</code>). One missing word per sticky.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-interior-done">0 / 0</b></span>
@@ -6703,7 +6747,7 @@
             <div id="u9-interior-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-artrest" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-artrest" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9ArtRestDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 7. Key chunks from <b>Listening Part 3 &mdash; Art restoration</b> (Track 9.4; <code style="font-size:11px;">art-restoration-data.js</code>). One missing word per sticky.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-artrest-done">0 / 0</b></span>
@@ -6712,7 +6756,7 @@
             <div id="u9-artrest-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-contemp" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-contemp" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9ContempDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 8. High-level chunks from the <b>Contemporary art</b> Word Bank pack (<code style="font-size:11px;">u9-must-know-lexis.js</code>). The slot is <b>usually a preposition or particle</b> in the collocation (e.g. <b>with</b>, <b>to</b>, <b>of</b>, <b>at</b>) &mdash; not the long content word, so the line reads naturally. <b>Context</b> shows the full sentence from the text.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-contemp-done">0 / 0</b></span>
@@ -6721,7 +6765,7 @@
             <div id="u9-contemp-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-minds" class="u9-sticky-task u9-sticky-pack-l9">
+        <div id="u9-sticky-task-minds" class="u9-sticky-task u9-sticky-pack-l9" data-sticky-deck="u9MindsDeck">
             <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 9. Full <b>Minds eye Word Bank (Memrise)</b> for Track 10. One missing word per sticky; <b>Context</b> shows the script paragraph.</p>
             <div class="u9-sticky-hud">
                 <span>Done: <b id="u9-minds-done">0 / 0</b></span>
@@ -6730,22 +6774,7 @@
             <div id="u9-minds-board" class="u9-sticky-board"></div>
         </div>
 
-        <div id="u9-sticky-task-u10p4" class="u9-sticky-task u9-sticky-pack-u10">
-            <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 10. <b>Listening Part 4</b> (SB 10.1) phrases only. One missing word per sticky; <b>Context</b> shows the full line.</p>
-            <div class="u9-sticky-hud">
-                <span>Done: <b id="u10-p4-sticky-done">0 / 0</b></span>
-                <button type="button" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="u10P4StickyResetUI()">Reset Part 4</button>
-            </div>
-            <div id="u10-p4-sticky-board" class="u9-sticky-board"></div>
-        </div>
-        <div id="u9-sticky-task-u10books" class="u9-sticky-task u9-sticky-pack-u10">
-            <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;">Task 2. <b>Describing books &amp; films</b> &mdash; all <b>twelve</b> chunks from textbook Exercises 1–2 (same word bank as the vocabulary folder).</p>
-            <div class="u9-sticky-hud">
-                <span>Done: <b id="u10-books-sticky-done">0 / 0</b></span>
-                <button type="button" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="u10BooksStickyResetUI()">Reset books &amp; films</button>
-            </div>
-            <div id="u10-books-sticky-board" class="u9-sticky-board"></div>
-        </div>
+        <div id="u10-sticky-tasks-mount" style="display:contents"></div>
     </div>
 
     <div id="screen-unit9-speaking" class="screen">
@@ -7093,7 +7122,13 @@
 
 <script src="js/units-data.js"></script>
 <script src="js/prep-course-profile.js"></script>
+<script src="js/prep-sync-hub-track.js" data-track="cpe" vite-ignore></script>
 <script src="js/prep-site-content.js"></script>
+<script src="js/prep-hub-seeds-unit10-grammar.js"></script>
+<script src="js/prep-listening-pack-registry.js"></script>
+<script src="js/prep-hub-seeds-unit10-listening.js"></script>
+<script src="js/prep-hub-seeds-unit10-uoe.js"></script>
+<script src="js/prep-hub-unit10-nests.js"></script>
 <script src="js/prep-boxed.js"></script>
 <script src="js/prep-remote-defaults.js"></script>
 <script src="live-supabase-local.js"></script>
@@ -7161,8 +7196,13 @@
 <script src="js/minds-eye-listen-data.js"></script>
 <script src="js/listening-p4-wb10-pack.js"></script>
 <script src="js/u10-books-films-lexis.js"></script>
+<script src="js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+<script src="js/unit10-sticky-registry.js"></script>
+<script src="js/unit10-plain-sticky-kit.js"></script>
     <script src="js/u9-contemporary-art-reading-data.js"></script>
     <script src="js/u9-must-know-lexis.js"></script>
+<script src="js/lexical-games-plain-row-kit.js"></script>
+<script src="js/lexical-games-source-manifest.js"></script>
 <script>
 var STORAGE_KEY = 'english_mastery_perfect';
 /** Stable copy of display name — survives partial JSON corruption; do not clear elsewhere. */
@@ -8338,6 +8378,10 @@ var LEX_U10_P4_SECTION_STEPS = [];
 var LEX_U10_BOOKS_TYPE_TASKS = [];
 var LEX_U10_BOOKS_HINTS = [];
 var LEX_U10_BOOKS_SECTION_STEPS = [];
+/** Unit 10 · Shakespeare · Use of English — Was Shakespeare a woman? (see {@link lexU10ShakespeareBuildTasks}). */
+var LEX_U10_SHAKESPEARE_TYPE_TASKS = [];
+var LEX_U10_SHAKESPEARE_HINTS = [];
+var LEX_U10_SHAKESPEARE_SECTION_STEPS = [];
 
 function lexTrainerIsUnit8EnvLex() {
     return lexTrainerPack === 'environment' || lexTrainerPack === 'environment2';
@@ -8351,6 +8395,7 @@ function lexTypeTasksNow() {
     if (lexTrainerPack === 'art_restoration') return LEX_ART_REST_TYPE_TASKS;
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_TYPE_TASKS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_TYPE_TASKS;
+    if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_TYPE_TASKS;
     if (lexTrainerPack === 'environment') return LEX_ENV_TYPE_TASKS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_TYPE_TASKS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_TYPE_TASKS.length) {
@@ -8366,6 +8411,7 @@ function lexTypeHintsNow() {
     if (lexTrainerPack === 'art_restoration') return LEX_ART_REST_HINTS;
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_HINTS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_HINTS;
+    if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_HINTS;
     if (lexTrainerPack === 'environment') return LEX_ENV_HINTS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_HINTS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_HINTS.length) {
@@ -8381,6 +8427,7 @@ function lexSectionStepsNow() {
     if (lexTrainerPack === 'art_restoration') return LEX_ART_REST_SECTION_STEPS;
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_SECTION_STEPS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_SECTION_STEPS;
+    if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_SECTION_STEPS;
     if (lexTrainerPack === 'environment') return LEX_ENV_SECTION_STEPS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_SECTION_STEPS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_SECTION_STEPS.length) {
@@ -8520,19 +8567,18 @@ var u9LexActivityReturnToLexGames = false;
 var u9LexActivityReturnToUnit10LexGames = false;
 /** When true, top-level back targets Unit 10 Lexical games hub (Word Bank / flip / fall…) instead of Level 9. */
 var u10LexGamesActive = false;
-/** <code>p4</code> = Listening Part 4 pool only; <code>books</code> = Describing books &amp; films only. */
+/** <code>p4</code> · <code>books</code> · <code>shakespeare</code> — Shakespeare · Use of English (<em>Was Shakespeare a woman?</em>). */
 var u10LexGamesPack = 'p4';
 /** Typed-gap trainer opened from Unit 10 lexical trainer list — back to readings → Unit 10 hub. */
 var u10LexTrainerReturnToHub = false;
 
 function u10LexPackTabsSyncUI() {
-    var p4on = u10LexGamesPack !== 'books';
     var hubTabs = document.querySelectorAll('#u10-lex-pack-tabs .u10-lex-pack-tab');
     var h;
     for (h = 0; h < hubTabs.length; h++) {
         var t = hubTabs[h];
-        var isBooks = t.getAttribute('data-u10-pack') === 'books';
-        var on = (isBooks && !p4on) || (!isBooks && p4on);
+        var tabPack = t.getAttribute('data-u10-pack');
+        var on = tabPack === u10LexGamesPack;
         t.classList.toggle('active', on);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
     }
@@ -8540,24 +8586,30 @@ function u10LexPackTabsSyncUI() {
     var w;
     for (w = 0; w < wbTabs.length; w++) {
         var tb = wbTabs[w];
-        var isB = tb.getAttribute('data-u10-wb-tab') === 'books';
-        var on2 = (isB && !p4on) || (!isB && p4on);
+        var wbPack = tb.getAttribute('data-u10-wb-tab');
+        var on2 = wbPack === u10LexGamesPack;
         tb.classList.toggle('active', on2);
         tb.setAttribute('aria-selected', on2 ? 'true' : 'false');
     }
 }
 
+function u10LexThemeFromPack() {
+    if (u10LexGamesPack === 'books') return 'u10_books';
+    if (u10LexGamesPack === 'shakespeare') return 'u10_uoe_shakespeare';
+    return 'u10_p4';
+}
+
 function u10LexPackTabSelect(pack) {
-    u10LexSetPack(pack === 'books' ? 'books' : 'p4');
+    u10LexSetPack(pack === 'books' ? 'books' : pack === 'shakespeare' ? 'shakespeare' : 'p4');
     var wbScr = document.getElementById('screen-unit9-wordbank');
     if (wbScr && wbScr.classList.contains('u10-wb-only') && wbScr.classList.contains('active')) {
-        cpeWbTheme = u10LexGamesPack === 'books' ? 'u10_books' : 'u10_p4';
+        cpeWbTheme = u10LexThemeFromPack();
         cpeWordBankRender();
     }
 }
 
 function u10LexSetPack(pack) {
-    u10LexGamesPack = pack === 'books' ? 'books' : 'p4';
+    u10LexGamesPack = pack === 'books' ? 'books' : pack === 'shakespeare' ? 'shakespeare' : 'p4';
     u10LexGamesApplyPoolFilter();
     u10LexPackTabsSyncUI();
 }
@@ -8776,25 +8828,37 @@ function openUnit9ActivityHub(mode, opt) {
     }
     var cfg = resolveU9ActivityHubCfg(mode);
     if (mode === 'lexical' && opt.fromUnit10LexGames) {
-        var u10BooksTrainer = u10LexGamesPack === 'books';
+        var u10TrainerBooks = u10LexGamesPack === 'books';
+        var u10TrainerShake = u10LexGamesPack === 'shakespeare';
+        var packLead =
+            u10TrainerBooks
+                ? '<b>Describing books &amp; films</b> only (Unit 10 vocabulary). Same bank as the Word Bank theme · <b>three hearts</b> for the run.'
+                : u10TrainerShake
+                  ? '<b>Shakespeare · Use of English</b> only (<em>Was Shakespeare a woman?</em>). Same phrases as the Word Bank tab · <b>three hearts</b> for the run.'
+                  : '<b>Listening Part 4</b> (SB 10.1) only. Same bank as the Part 4 Word Bank theme · <b>three hearts</b> for the run.';
+        var tileTitle = u10TrainerBooks
+            ? 'Unit 10 · Describing books & films'
+            : u10TrainerShake
+              ? 'Unit 10 · Shakespeare · Use of English'
+              : 'Unit 10 · Listening Part 4';
+        var tileLine = u10TrainerBooks
+            ? 'Review lines from the books &amp; films pack — paraphrase hints, then type the exact chunk.'
+            : u10TrainerShake
+              ? 'Review collocations from <em>Was Shakespeare a woman?</em> — paraphrase hints, then type the exact chunk from the passage.'
+              : 'Monologues from Track 10.1 — paraphrase hints, then type the exact chunk.';
+        var openTrainerFn = u10TrainerBooks
+            ? openLexicalTrainerU10Books
+            : u10TrainerShake
+              ? openLexicalTrainerU10Shakespeare
+              : openLexicalTrainerU10P4;
         cfg = {
             title: 'Lexical trainer',
-            lead: u10BooksTrainer
-                ? '<b>Describing books &amp; films</b> only (Unit 10 vocabulary). Same bank as the Word Bank theme · <b>three hearts</b> for the run.'
-                : '<b>Listening Part 4</b> (SB 10.1) only. Same bank as the Part 4 Word Bank theme · <b>three hearts</b> for the run.',
+            lead: packLead,
             readings: [
                 {
-                    title: u10BooksTrainer ? 'Unit 10 · Describing books & films' : 'Unit 10 · Listening Part 4',
-                    line1: u10BooksTrainer
-                        ? 'Review lines from the books &amp; films pack — paraphrase hints, then type the exact chunk.'
-                        : 'Monologues from Track 10.1 — paraphrase hints, then type the exact chunk.',
-                    action: u10BooksTrainer
-                        ? function () {
-                              openLexicalTrainerU10Books();
-                          }
-                        : function () {
-                              openLexicalTrainerU10P4();
-                          }
+                    title: tileTitle,
+                    line1: tileLine,
+                    action: openTrainerFn
                 }
             ]
         };
@@ -9311,6 +9375,14 @@ function openUnit9ReadingHub() {
     showScreen('screen-unit9-reading-hub');
 }
 
+function openUnit9ReadingFolderHub() {
+    showScreen('screen-unit9-reading-folder');
+}
+
+function openUnit9ListeningFolderHub() {
+    showScreen('screen-unit9-listening-folder');
+}
+
 function normalizeLexAns(s) {
     if (!s) return '';
     var t = String(s).toLowerCase().trim().replace(/\s+/g, ' ');
@@ -9574,7 +9646,7 @@ var U9_FALL_LIVES_START = 3;
 var u9FallSpeakerFilter = null;
 var U9_FALL_GAP_WORDS_MIN = 1;
 var U9_FALL_GAP_WORDS_MAX = 8;
-var U9_FALL_POOL_SCHEMA = 23;
+var U9_FALL_POOL_SCHEMA = 29;
 var u9FallPoolSchema = 0;
 
 function u9FallScrapePhrases(rootId, clickSel) {
@@ -9687,6 +9759,29 @@ function u9FallBuildGapLine(pRaw, ans, speaker) {
     var before = pRaw.slice(sentStart, idx).replace(/\s+/g, ' ').trim();
     var after = pRaw.slice(end, sentEnd).replace(/\s+/g, ' ').trim();
     return before + gapMark + after;
+}
+
+/** Обёртка над LexicalGamesPlainRowKit — одна логика для fall pool и hint/ans таблиц в plain. */
+function lexicalGamesHintAnsRowsToFallPoolRows(plain, rows, speaker) {
+    if (!window.LexicalGamesPlainRowKit) return [];
+    return LexicalGamesPlainRowKit.hintAnsRowsToFallItems({
+        plain: plain,
+        rows: rows || [],
+        speaker: speaker,
+        findAnsSpan: u9FallFindAnsSpan,
+        buildGapLine: u9FallBuildGapLine
+    });
+}
+
+function lexicalGamesHintAnsRowsToWordBankItems(plain, rows, speaker, idPrefix) {
+    if (!window.LexicalGamesPlainRowKit) return [];
+    return LexicalGamesPlainRowKit.hintAnsRowsToWbItems({
+        plain: plain,
+        rows: rows || [],
+        speaker: speaker,
+        idPrefix: idPrefix || "lexwb",
+        findAnsSpan: u9FallFindAnsSpan
+    });
 }
 
 /**
@@ -9901,6 +9996,60 @@ function lexU10BooksBuildTasks() {
     LEX_U10_BOOKS_SECTION_STEPS =
         tasksB.length > 0 ? [{ label: speakerBf, start: 0, end: tasksB.length - 1 }] : [];
     lexU10BooksBuildTasks.__runOnce = true;
+}
+
+/**
+ * Typed-gap tasks for Unit 10 · Shakespeare · Use of English (Was Shakespeare a woman?) only.
+ */
+function lexU10ShakespeareBuildTasks() {
+    if (lexU10ShakespeareBuildTasks.__ver !== 4) {
+        lexU10ShakespeareBuildTasks.__runOnce = false;
+        lexU10ShakespeareBuildTasks.__ver = 4;
+    }
+    if (lexU10ShakespeareBuildTasks.__runOnce) return;
+    LEX_U10_SHAKESPEARE_TYPE_TASKS = [];
+    LEX_U10_SHAKESPEARE_HINTS = [];
+    LEX_U10_SHAKESPEARE_SECTION_STEPS = [];
+    var speakerSh =
+        typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
+            ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
+            : 'Shakespeare · Use of English';
+    var plainSh =
+        typeof U10_UOE_SHAKESPEARE_LEXIS_PLAIN === 'string' ? U10_UOE_SHAKESPEARE_LEXIS_PLAIN : '';
+    if (
+        !plainSh ||
+        typeof U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS === 'undefined' ||
+        !U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS ||
+        !U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS.length
+    ) {
+        lexU10ShakespeareBuildTasks.__runOnce = true;
+        return;
+    }
+    var tasksSh = [];
+    var hintsSh = [];
+    var gapMarkSh = ' ____ ';
+    var ks;
+    for (ks = 0; ks < U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS.length; ks++) {
+        var bitSh = U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS[ks];
+        if (!bitSh || !bitSh.ans) continue;
+        var phraseSh = String(bitSh.ans).trim();
+        if (!phraseSh || u9FallFindAnsSpan(plainSh, phraseSh) == null) continue;
+        var gapLineSh = u9FallBuildGapLine(plainSh, phraseSh, speakerSh);
+        var gs = gapLineSh.indexOf(gapMarkSh);
+        if (gs === -1) continue;
+        tasksSh.push({
+            speaker: speakerSh,
+            before: gapLineSh.slice(0, gs),
+            after: gapLineSh.slice(gs + gapMarkSh.length),
+            ans: phraseSh
+        });
+        hintsSh.push(bitSh.hint || '');
+    }
+    LEX_U10_SHAKESPEARE_TYPE_TASKS = tasksSh;
+    LEX_U10_SHAKESPEARE_HINTS = hintsSh;
+    LEX_U10_SHAKESPEARE_SECTION_STEPS =
+        tasksSh.length > 0 ? [{ label: speakerSh, start: 0, end: tasksSh.length - 1 }] : [];
+    lexU10ShakespeareBuildTasks.__runOnce = true;
 }
 
 function u9FallAnsWordCount(ans) {
@@ -10141,14 +10290,31 @@ function ensureU9FallPool() {
         .concat(artRestItems)
         .concat(mindsEyeItems)
         .concat(u10P4LexFallItems())
-        .concat(u10BooksFilmsLexFallItems());
+        .concat(u10BooksFilmsLexFallItems())
+        .concat(u10ShakespeareLexFallItems());
+}
+
+function u10BooksFilmsLexPlainText() {
+    return typeof U10_BOOKS_FILMS_LEXIS_PLAIN === 'string' ? U10_BOOKS_FILMS_LEXIS_PLAIN : '';
+}
+
+/** Plain passage for Unit 10 Listening Part 4 lexical rows — must match `u10P4LexFallItems` / Word Bank filter. */
+function u10P4LexPlainText() {
+    if (typeof U10_P4_LEXIS_PLAIN === 'string' && String(U10_P4_LEXIS_PLAIN).trim()) {
+        return String(U10_P4_LEXIS_PLAIN).trim();
+    }
+    if (typeof U10_P4_WB_TRANSCRIPT_PARAS !== 'undefined' && U10_P4_WB_TRANSCRIPT_PARAS && U10_P4_WB_TRANSCRIPT_PARAS.length) {
+        return U10_P4_WB_TRANSCRIPT_PARAS.join(' ')
+            .replace(/\r\n/g, '\n')
+            .replace(/\n\n+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+    return '';
 }
 
 function u10BooksFilmsLexFallItems() {
-    var plain =
-        typeof U10_BOOKS_FILMS_LEXIS_PLAIN === 'string'
-            ? U10_BOOKS_FILMS_LEXIS_PLAIN
-            : '';
+    var plain = u10BooksFilmsLexPlainText();
     var sp =
         typeof LEX_U10_BOOKS_FILMS_SPEAKER_LABEL === 'string'
             ? LEX_U10_BOOKS_FILMS_SPEAKER_LABEL
@@ -10156,35 +10322,27 @@ function u10BooksFilmsLexFallItems() {
     if (!plain || typeof U10_BOOKS_FILMS_LEXIS_GAME_ROWS === 'undefined' || !U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length) {
         return [];
     }
-    var out = [];
-    for (var j = 0; j < U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length; j++) {
-        var row = U10_BOOKS_FILMS_LEXIS_GAME_ROWS[j];
-        if (!row || !row.ans) continue;
-        var ans = String(row.ans).trim();
-        if (!ans || u9FallFindAnsSpan(plain, ans) == null) continue;
-        var hint = String(row.hint || '').trim();
-        out.push({
-            syn: hint,
-            flipDef: hint,
-            ans: ans,
-            speaker: sp,
-            fallText: u9FallBuildGapLine(plain, ans, sp)
-        });
+    return lexicalGamesHintAnsRowsToFallPoolRows(plain, U10_BOOKS_FILMS_LEXIS_GAME_ROWS, sp);
+}
+
+function u10ShakespeareLexPlainText() {
+    return typeof U10_UOE_SHAKESPEARE_LEXIS_PLAIN === 'string' ? U10_UOE_SHAKESPEARE_LEXIS_PLAIN : '';
+}
+
+function u10ShakespeareLexFallItems() {
+    var plainS = u10ShakespeareLexPlainText();
+    var spS =
+        typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
+            ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
+            : 'Shakespeare · Use of English';
+    if (!plainS || typeof U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS === 'undefined' || !U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS.length) {
+        return [];
     }
-    return out;
+    return lexicalGamesHintAnsRowsToFallPoolRows(plainS, U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS, spS);
 }
 
 function u10P4LexFallItems() {
-    var plain =
-        typeof U10_P4_LEXIS_PLAIN === 'string'
-            ? U10_P4_LEXIS_PLAIN
-            : typeof U10_P4_WB_TRANSCRIPT_PARAS !== 'undefined' && U10_P4_WB_TRANSCRIPT_PARAS
-              ? U10_P4_WB_TRANSCRIPT_PARAS.join(' ')
-                    .replace(/\r\n/g, '\n')
-                    .replace(/\n\n+/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim()
-              : '';
+    var plain = u10P4LexPlainText();
     var sp =
         typeof LEX_U10_P4_SPEAKER_LABEL === 'string'
             ? LEX_U10_P4_SPEAKER_LABEL
@@ -10192,21 +10350,7 @@ function u10P4LexFallItems() {
     if (!plain || typeof U10_P4_LEXIS_GAME_ROWS === 'undefined' || !U10_P4_LEXIS_GAME_ROWS.length) {
         return [];
     }
-    var out = [];
-    for (var j = 0; j < U10_P4_LEXIS_GAME_ROWS.length; j++) {
-        var row = U10_P4_LEXIS_GAME_ROWS[j];
-        if (!row || !row.ans) continue;
-        var ans = String(row.ans).trim();
-        if (!ans || u9FallFindAnsSpan(plain, ans) == null) continue;
-        out.push({
-            syn: String(row.hint || '').trim(),
-            flipDef: String(row.hint || '').trim(),
-            ans: ans,
-            speaker: sp,
-            fallText: u9FallBuildGapLine(plain, ans, sp)
-        });
-    }
-    return out;
+    return lexicalGamesHintAnsRowsToFallPoolRows(plain, U10_P4_LEXIS_GAME_ROWS, sp);
 }
 
 function u9FallGetFilteredPool() {
@@ -10301,7 +10445,13 @@ function u10LexGamesApplyPoolFilter() {
         typeof LEX_U10_BOOKS_FILMS_SPEAKER_LABEL === 'string'
             ? LEX_U10_BOOKS_FILMS_SPEAKER_LABEL
             : 'Unit 10 · Describing books & films';
-    u9FallSpeakerFilter = u10LexGamesPack === 'books' ? [spBf] : [spP4];
+    var spShake =
+        typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
+            ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
+            : 'Shakespeare · Use of English';
+    if (u10LexGamesPack === 'books') u9FallSpeakerFilter = [spBf];
+    else if (u10LexGamesPack === 'shakespeare') u9FallSpeakerFilter = [spShake];
+    else u9FallSpeakerFilter = [spP4];
 }
 
 function openUnit10LexReadingPick(mode) {
@@ -10324,9 +10474,19 @@ function openUnit10LexReadingPick(mode) {
 
 function openUnit10WordBank(theme) {
     u10LexGamesActive = true;
+    /* Lexicon loads before cpeWbCache is filled; if that script ever failed to parse, Shakespeare rows cached as []. Rebuild when entering this hub. */
+    cpeWbCache = null;
     var th =
-        theme === 'u10_books' ? 'u10_books' : theme === 'u10_p4' ? 'u10_p4' : u10LexGamesPack === 'books' ? 'u10_books' : 'u10_p4';
-    u10LexSetPack(th === 'u10_books' ? 'books' : 'p4');
+        theme === 'u10_books'
+            ? 'u10_books'
+            : theme === 'u10_uoe_shakespeare'
+              ? 'u10_uoe_shakespeare'
+              : theme === 'u10_p4'
+                ? 'u10_p4'
+                : u10LexThemeFromPack();
+    u10LexSetPack(
+        th === 'u10_books' ? 'books' : th === 'u10_uoe_shakespeare' ? 'shakespeare' : 'p4'
+    );
     cpeWbTheme = th;
     cpeWordBankEnsureBind();
     var wbScr = document.getElementById('screen-unit9-wordbank');
@@ -10354,25 +10514,28 @@ function openUnit10StickyGame() {
     }
     u10LexGamesActive = true;
     u10LexGamesApplyPoolFilter();
-    u9StickyRenderBoard();
-    u9PrepRenderBoard();
-    u9Prep2RenderBoard();
-    u9RobotsRenderBoard();
-    u9MarkRenderBoard();
-    u9MindsRenderBoard();
-    u9InteriorRenderBoard();
-    u9ArtRestRenderBoard();
-    u9ContempRenderBoard();
-    u10P4StickyRenderBoard();
-    u10BooksStickyRenderBoard();
+    prepCourseHub.stickyLazyModes = {};
     showScreen('screen-unit9-lex-sticky');
-    if (u10LexGamesPack === 'books') u9StickyShowTask('u10books');
-    else u9StickyShowTask('u10p4');
+    window.requestAnimationFrame(function () {
+        if (typeof unit10StickyPrimeLazyModes === "function") unit10StickyPrimeLazyModes(prepCourseHub);
+        if (typeof unit10StickyRenderAllPacks === "function") unit10StickyRenderAllPacks();
+        var sm =
+            typeof unit10LexGamesPackToStickyMode === "function"
+                ? unit10LexGamesPackToStickyMode(u10LexGamesPack)
+                : "u10p4";
+        u9StickyShowTask(sm);
+    });
 }
 
 function openUnit10PrepEscapeRoom() {
+    u10LexGamesActive = true;
     prepEscapeReturnToUnit10LexGames = true;
-    prepEscapeInitialPack = u10LexGamesPack === 'books' ? 'u10_books' : 'u10_p4';
+    prepEscapeInitialPack =
+        u10LexGamesPack === 'books'
+            ? 'u10_books'
+            : u10LexGamesPack === 'shakespeare'
+              ? 'u10_uoe_shakespeare'
+              : 'u10_p4';
     openUnit9PrepEscapeRoom();
 }
 
@@ -10707,43 +10870,39 @@ function cpeWbBuildContemporaryArtItems() {
 }
 
 function cpeWbBuildU10P4Items() {
-    var out = [];
     var spP4 =
         typeof LEX_U10_P4_SPEAKER_LABEL === 'string'
             ? LEX_U10_P4_SPEAKER_LABEL
             : 'Listening: Part 4 · Unit 10 (SB 10.1)';
-    if (typeof U10_P4_LEXIS_GAME_ROWS !== 'undefined' && U10_P4_LEXIS_GAME_ROWS.length) {
-        out = U10_P4_LEXIS_GAME_ROWS.map(function (row, i) {
-            return {
-                id: 'u10p4::' + i + '::' + String(row.ans || ''),
-                phrase: String(row.ans || '').trim(),
-                hint: String(row.hint || '').trim(),
-                speaker: spP4
-            };
-        });
+    var plain = u10P4LexPlainText();
+    if (!plain || typeof U10_P4_LEXIS_GAME_ROWS === 'undefined' || !U10_P4_LEXIS_GAME_ROWS.length) {
+        return [];
     }
-    return out;
+    return lexicalGamesHintAnsRowsToWordBankItems(plain, U10_P4_LEXIS_GAME_ROWS, spP4, 'u10p4');
 }
 
 function cpeWbBuildU10BooksItems() {
-    var out = [];
     var spBf =
         typeof LEX_U10_BOOKS_FILMS_SPEAKER_LABEL === 'string'
             ? LEX_U10_BOOKS_FILMS_SPEAKER_LABEL
             : 'Unit 10 · Describing books & films';
-    if (typeof U10_BOOKS_FILMS_LEXIS_GAME_ROWS !== 'undefined' && U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length) {
-        for (var b = 0; b < U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length; b++) {
-            var brow = U10_BOOKS_FILMS_LEXIS_GAME_ROWS[b];
-            if (!brow || !brow.ans) continue;
-            out.push({
-                id: 'u10bf::' + b + '::' + String(brow.ans || ''),
-                phrase: String(brow.ans || '').trim(),
-                hint: String(brow.hint || '').trim(),
-                speaker: spBf
-            });
-        }
+    var plain = u10BooksFilmsLexPlainText();
+    if (!plain || typeof U10_BOOKS_FILMS_LEXIS_GAME_ROWS === 'undefined' || !U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length) {
+        return [];
     }
-    return out;
+    return lexicalGamesHintAnsRowsToWordBankItems(plain, U10_BOOKS_FILMS_LEXIS_GAME_ROWS, spBf, 'u10bf');
+}
+
+function cpeWbBuildU10ShakespeareItems() {
+    var spSh =
+        typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
+            ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
+            : 'Shakespeare · Use of English';
+    var plainSh = u10ShakespeareLexPlainText();
+    if (!plainSh || typeof U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS === 'undefined' || !U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS.length) {
+        return [];
+    }
+    return lexicalGamesHintAnsRowsToWordBankItems(plainSh, U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS, spSh, 'u10shak');
 }
 
 function cpeWbItems(theme) {
@@ -10758,7 +10917,8 @@ function cpeWbItems(theme) {
             art_restoration: cpeWbBuildArtRestItems(),
             contemporary_art: cpeWbBuildContemporaryArtItems(),
             u10_p4: cpeWbBuildU10P4Items(),
-            u10_books: cpeWbBuildU10BooksItems()
+            u10_books: cpeWbBuildU10BooksItems(),
+            u10_uoe_shakespeare: cpeWbBuildU10ShakespeareItems()
         };
     }
     return (cpeWbCache[theme] || []).slice();
@@ -10824,7 +10984,9 @@ function cpeWordBankRender() {
                         ? 'Unit 10 · Listening Part 4 (SB 10.1)'
                         : cpeWbTheme === 'u10_books'
                           ? 'Unit 10 · Describing books & films'
-                        : 'Idioms: Art and creativity') +
+                          : cpeWbTheme === 'u10_uoe_shakespeare'
+                            ? 'Unit 10 · Shakespeare · Use of English'
+                            : 'Idioms: Art and creativity') +
         ' · Total: ' +
         filtered.length +
         ' · Due now: ' +
@@ -10879,7 +11041,7 @@ function cpeWordBankEnsureBind() {
         var u10Tab = e.target.closest('#cpe-wb-u10-tabs .wb-u10-tab');
         if (u10Tab) {
             var pack = u10Tab.getAttribute('data-u10-wb-tab');
-            if (pack === 'p4' || pack === 'books') {
+            if (pack === 'p4' || pack === 'books' || pack === 'shakespeare') {
                 u10LexPackTabSelect(pack);
                 cpeWordBankRender();
             }
@@ -12799,9 +12961,7 @@ var U9_STICKY_IDIOMS = [
 ];
 
 function u9StickyGapText(text, gapWord) {
-    var escaped = String(gapWord).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('\\b' + escaped + '\\b', 'i');
-    return String(text).replace(re, '____');
+    return u9RobotsGapText(text, gapWord);
 }
 
 function u9ContextRestore(text, answer) {
@@ -12865,10 +13025,11 @@ function u9StickyRenderBoard() {
     if (!board) return;
     board.innerHTML = '';
     u9StickyDeck = u9FallShuffle(U9_STICKY_IDIOMS.map(function (x) {
-        return { text: x.text, gap: x.gap, ok: false, context: x.text };
+        var gap = x.gap;
+        var displayLine = u9StickyGapText(x.text, gap);
+        return { text: x.text, gap: gap, displayLine: displayLine, ok: false, context: x.text };
     })).filter(function (x) {
-        var g = u9StickyGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9StickyDeck.length; i++) {
         var note = document.createElement('div');
@@ -12878,7 +13039,7 @@ function u9StickyRenderBoard() {
         var item = u9StickyDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9StickyGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-sticky-inp-' + i;
@@ -12942,19 +13103,21 @@ function openUnit9StickyGame() {
             window.prepLiveStickyStudentJoin = false;
         } catch (eSt) {}
     }
-    u9StickyRenderBoard();
-    u9PrepRenderBoard();
-    u9Prep2RenderBoard();
-    u9RobotsRenderBoard();
-    u9MarkRenderBoard();
-    u9MindsRenderBoard();
-    u9InteriorRenderBoard();
-    u9ArtRestRenderBoard();
-    u9ContempRenderBoard();
-    u10P4StickyRenderBoard();
-    u10BooksStickyRenderBoard();
+    prepCourseHub.stickyLazyModes = null;
     showScreen('screen-unit9-lex-sticky');
-    u9StickyShowTask('idiom');
+    window.requestAnimationFrame(function () {
+        u9StickyRenderBoard();
+        u9PrepRenderBoard();
+        u9Prep2RenderBoard();
+        u9RobotsRenderBoard();
+        u9MarkRenderBoard();
+        u9MindsRenderBoard();
+        u9InteriorRenderBoard();
+        u9ArtRestRenderBoard();
+        u9ContempRenderBoard();
+        if (typeof unit10StickyRenderAllPacks === "function") unit10StickyRenderAllPacks();
+        u9StickyShowTask('idiom');
+    });
 }
 
 function u9StickyResetUI() {
@@ -12999,9 +13162,7 @@ var U9_PREP_PHRASES = U9_PREP_PHRASES_FALLBACK;
 var u9PrepDeck = [];
 
 function u9PrepGapText(text, gapWord) {
-    var escaped = String(gapWord).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('\\b' + escaped + '\\b', 'i');
-    return String(text).replace(re, '____');
+    return u9RobotsGapText(text, gapWord);
 }
 
 function u9PrepUpdateDone() {
@@ -13057,10 +13218,11 @@ function u9PrepRenderBoard() {
     if (!board) return;
     board.innerHTML = '';
     u9PrepDeck = u9FallShuffle(U9_PREP_PHRASES.map(function (x) {
-        return { text: x.text, gap: x.gap, ok: false, context: x.text };
+        var gap = x.gap;
+        var displayLine = u9PrepGapText(x.text, gap);
+        return { text: x.text, gap: gap, displayLine: displayLine, ok: false, context: x.text };
     })).filter(function (x) {
-        var g = u9PrepGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9PrepDeck.length; i++) {
         var note = document.createElement('div');
@@ -13070,7 +13232,7 @@ function u9PrepRenderBoard() {
         var item = u9PrepDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9PrepGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-prep-inp-' + i;
@@ -13201,19 +13363,23 @@ function u9Prep2RenderBoard() {
     var src = U9_PREP2_PHRASES && U9_PREP2_PHRASES.length ? U9_PREP2_PHRASES : [];
     u9Prep2Deck = u9FallShuffle(
         src.map(function (x) {
+            var displayLine =
+                x.cue != null && x.cue !== ''
+                    ? String(x.cue)
+                    : u9PrepGapText(x.text, x.fullAns || x.gap);
             return {
                 text: x.text,
                 cue: x.cue,
                 gap: x.gap,
                 fullAns: x.fullAns,
                 acceptable: x.acceptable,
+                displayLine: displayLine,
                 ok: false
             };
         })
     ).filter(function (x) {
         if (x.cue) return x.cue.indexOf('____') !== -1 && x.gap;
-        var g = u9PrepGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9Prep2Deck.length; i++) {
         var note = document.createElement('div');
@@ -13223,10 +13389,7 @@ function u9Prep2RenderBoard() {
         var item = u9Prep2Deck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent =
-            item.cue != null && item.cue !== ''
-                ? item.cue
-                : u9PrepGapText(item.text, item.fullAns || item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-prep2-inp-' + i;
@@ -13373,18 +13536,21 @@ function prepEscapeApplyTimePenalty(sec) {
 
 function prepEscapeBuildUnifiedPool() {
     cpeWbItems('robots');
-    var themes = [
-        'minds_eye',
-        'robots',
-        'idioms',
-        'contemporary_art',
-        'listening',
-        'u10_p4',
-        'u10_books',
-        'prep',
-        'interior',
-        'art_restoration'
-    ];
+    var themes = u10LexGamesActive
+        ? ['u10_p4', 'u10_books', 'u10_uoe_shakespeare']
+        : [
+              'minds_eye',
+              'robots',
+              'idioms',
+              'contemporary_art',
+              'listening',
+              'u10_p4',
+              'u10_books',
+              'u10_uoe_shakespeare',
+              'prep',
+              'interior',
+              'art_restoration'
+          ];
     var seen = {};
     var pool = [];
     for (var t = 0; t < themes.length; t++) {
@@ -13440,6 +13606,23 @@ function prepEscapeUpdatePackBarUI() {
         var b = btns[i];
         if (b.getAttribute('data-pack') === f) b.classList.add('prep-escape-pack-active');
         else b.classList.remove('prep-escape-pack-active');
+    }
+}
+
+/** Level 10 lexical hub: только U10 пакеты в Prep vault + другая подпись у «Choose all». */
+function prepEscapeSyncVaultScopeUi() {
+    var scr = document.getElementById('screen-unit9-prep-escape');
+    if (scr) scr.classList.toggle('prep-escape-scope-u10', !!u10LexGamesActive);
+    var tag = document.querySelector('#screen-unit9-prep-escape .lex-reading-tag');
+    if (tag) {
+        tag.textContent = u10LexGamesActive
+            ? 'Unit 10 · Part 4 + books & films + Shakespeare UoE'
+            : 'Level 9 · Word Bank packs (pick one or Choose all)';
+    }
+    var bar = document.getElementById('prep-escape-pack-bar');
+    if (bar) {
+        var allBtn = bar.querySelector('button[data-pack="all"]');
+        if (allBtn) allBtn.textContent = u10LexGamesActive ? 'All Unit 10 packs' : 'Choose all';
     }
 }
 
@@ -13721,6 +13904,28 @@ function prepEscapeEnrichFromU10BooksRow(row) {
     return null;
 }
 
+function prepEscapeEnrichFromU10ShakespeareRow(row) {
+    var keyS = normalizeLexAns(row.ans);
+    if (!keyS) return null;
+    lexU10ShakespeareBuildTasks();
+    if (!LEX_U10_SHAKESPEARE_TYPE_TASKS || !LEX_U10_SHAKESPEARE_TYPE_TASKS.length) return null;
+    var tasksS = LEX_U10_SHAKESPEARE_TYPE_TASKS;
+    for (var si = 0; si < tasksS.length; si++) {
+        var ts = tasksS[si];
+        if (!ts || !ts.ans) continue;
+        if (normalizeLexAns(ts.ans) !== keyS) continue;
+        return {
+            before: ts.before,
+            after: ts.after,
+            ans: ts.ans,
+            hint: row.hint,
+            speaker: row.speaker,
+            wbId: row.wbId
+        };
+    }
+    return null;
+}
+
 function prepEscapeEnrichRowFull(row) {
     var r = prepEscapeEnrichFromPrepCore(row);
     if (prepEscapeRowHasSentenceFrame(r)) return r;
@@ -13745,6 +13950,11 @@ function prepEscapeEnrichRowFull(row) {
     }
     if (sp.indexOf('describing books') !== -1 || sp.indexOf('books & films') !== -1) {
         a = prepEscapeEnrichFromU10BooksRow(row);
+        if (a) return a;
+        return r;
+    }
+    if (sp.indexOf('shakespeare') !== -1 && sp.indexOf('english') !== -1) {
+        a = prepEscapeEnrichFromU10ShakespeareRow(row);
         if (a) return a;
         return r;
     }
@@ -13833,7 +14043,7 @@ function prepEscapeFirstLetter(ans) {
 }
 
 function prepEscapeAllEnrichedRowsFromPool() {
-    var k = String(prepEscapePackFilter || 'all');
+    var k = String(prepEscapePackFilter || 'all') + '|' + (u10LexGamesActive ? 'u10vault' : 'l9vault');
     if (prepEscapeEnrichedCacheKey === k && prepEscapeEnrichedCacheRows) {
         return prepEscapeEnrichedCacheRows;
     }
@@ -13855,9 +14065,11 @@ function prepEscapeAllEnrichedRowsFromPool() {
         rows.push(prepEscapeEnrichRowFull(raw[r]));
     }
     if (!rows.length) {
-        var fallback = LEX_PREP_PHRASE_DATA || [];
-        for (var j = 0; j < fallback.length; j++) {
-            if (fallback[j] && fallback[j].ans) rows.push(fallback[j]);
+        if (!u10LexGamesActive) {
+            var fallback = LEX_PREP_PHRASE_DATA || [];
+            for (var j = 0; j < fallback.length; j++) {
+                if (fallback[j] && fallback[j].ans) rows.push(fallback[j]);
+            }
         }
     }
     prepEscapeEnrichedCacheKey = k;
@@ -14274,7 +14486,10 @@ var prepLiveBroadcastSb = null;
 var prepLiveBroadcastCh = null;
 var prepLiveBroadcastRoomBound = "";
 var prepLiveFlashTimer = null;
-var PREP_LIVE_STICKY_MODES = ["idiom", "prep", "prep2", "robots", "mark", "interior", "artrest", "contemp", "minds", "u10p4", "u10books"];
+var PREP_LIVE_STICKY_MODES_L9 = ["idiom", "prep", "prep2", "robots", "mark", "interior", "artrest", "contemp", "minds"];
+var PREP_LIVE_STICKY_MODES = PREP_LIVE_STICKY_MODES_L9.concat(
+    typeof unit10StickyPackModes === "function" ? unit10StickyPackModes() : []
+);
 
 function prepLiveActiveScreenId() {
     var s = document.querySelector(".screen.active");
@@ -14289,25 +14504,16 @@ function prepLiveSyncStickyLinkChrome(screenId) {
     if (joinRow) joinRow.style.display = screenId === "screen-unit9-lex-sticky" ? "none" : "";
     if (scopeRow) scopeRow.style.display = screenId === "screen-unit9-lex-sticky" ? "" : "none";
     if (scopePick && screenId === "screen-unit9-lex-sticky") {
-        var map = {
-            idiom: "u9-sticky-tab-idiom",
-            prep: "u9-sticky-tab-prep",
-            prep2: "u9-sticky-tab-prep2",
-            robots: "u9-sticky-tab-robots",
-            mark: "u9-sticky-tab-mark",
-            interior: "u9-sticky-tab-interior",
-            artrest: "u9-sticky-tab-artrest",
-            contemp: "u9-sticky-tab-contemp",
-            minds: "u9-sticky-tab-minds",
-            u10p4: "u9-sticky-tab-u10p4",
-            u10books: "u9-sticky-tab-u10books"
-        };
-        var k;
-        for (k in map) {
-            if (!Object.prototype.hasOwnProperty.call(map, k)) continue;
-            var t = document.getElementById(map[k]);
+        var mi;
+        for (mi = 0; mi < PREP_LIVE_STICKY_MODES.length; mi++) {
+            var mk = PREP_LIVE_STICKY_MODES[mi];
+            var tabId =
+                typeof prepLiveStickyTabIdForMode === "function"
+                    ? prepLiveStickyTabIdForMode(mk)
+                    : "u9-sticky-tab-" + mk;
+            var t = document.getElementById(tabId);
             if (t && t.classList.contains("active")) {
-                scopePick.value = k;
+                scopePick.value = mk;
                 break;
             }
         }
@@ -14838,24 +15044,33 @@ function prepLiveFilterRosterRows(lb) {
     });
 }
 
+function prepLiveStickyGapCueResolveKind(taskKey) {
+    var pk =
+        typeof UNIT10_STICKY_PACK_BY_MODE !== "undefined" && UNIT10_STICKY_PACK_BY_MODE
+            ? UNIT10_STICKY_PACK_BY_MODE[taskKey]
+            : null;
+    if (pk && pk.gapCueKind) return pk.gapCueKind;
+    return String(taskKey || "");
+}
+
 function prepLiveStickyGapCueForMistake(taskKey, item) {
     if (!item) return "";
+    if (item.displayLine != null && String(item.displayLine).trim()) return String(item.displayLine);
     try {
-        if (taskKey === "idiom") return u9StickyGapText(item.text, item.gap);
-        if (taskKey === "prep") return u9PrepGapText(item.text, item.gap);
-        if (taskKey === "prep2") {
+        var kind = prepLiveStickyGapCueResolveKind(taskKey);
+        if (kind === "idiom") return u9StickyGapText(item.text, item.gap);
+        if (kind === "prep") return u9PrepGapText(item.text, item.gap);
+        if (kind === "prep2") {
             return item.cue != null && item.cue !== ""
                 ? String(item.cue)
                 : u9PrepGapText(item.text, item.fullAns || item.gap);
         }
-        if (taskKey === "robots") return u9RobotsGapText(item.text, item.gap);
-        if (taskKey === "mark") return u9MarkGapText(item.text, item.gap);
-        if (taskKey === "minds") return u9MindsGapText(item.text, item.gap);
-        if (taskKey === "interior") return u9RobotsGapText(item.text, item.gap);
-        if (taskKey === "artrest") return u9ArtRestGapText(item.text, item.gap);
-        if (taskKey === "contemp") return u9ContempGapText(item.text, item.gap);
-        if (taskKey === "u10p4") return u9ArtRestGapText(item.text, item.gap);
-        if (taskKey === "u10books") return u9ArtRestGapText(item.text, item.gap);
+        if (kind === "robots") return u9RobotsGapText(item.text, item.gap);
+        if (kind === "mark") return u9MarkGapText(item.text, item.gap);
+        if (kind === "minds") return u9MindsGapText(item.text, item.gap);
+        if (kind === "interior") return u9RobotsGapText(item.text, item.gap);
+        if (kind === "artrest") return u9ArtRestGapText(item.text, item.gap);
+        if (kind === "contemp") return u9ContempGapText(item.text, item.gap);
     } catch (eG) {}
     return "";
 }
@@ -14873,21 +15088,12 @@ function prepLiveStickyActiveDeckLen() {
     var root = document.getElementById("screen-unit9-lex-sticky");
     if (!root || !root.classList.contains("active")) return 0;
     var act = root.querySelector(".u9-sticky-task.active");
-    if (!act || !act.id) return 0;
-    var id = act.id;
+    if (!act) return 0;
+    var deckProp = act.getAttribute("data-sticky-deck");
+    if (!deckProp) return 0;
     try {
-        if (id === "u9-sticky-task-idiom" && typeof u9StickyDeck !== "undefined" && u9StickyDeck) return u9StickyDeck.length;
-        if (id === "u9-sticky-task-prep" && typeof u9PrepDeck !== "undefined" && u9PrepDeck) return u9PrepDeck.length;
-        if (id === "u9-sticky-task-prep2" && typeof u9Prep2Deck !== "undefined" && u9Prep2Deck) return u9Prep2Deck.length;
-        if (id === "u9-sticky-task-robots" && typeof u9RobotsDeck !== "undefined" && u9RobotsDeck) return u9RobotsDeck.length;
-        if (id === "u9-sticky-task-mark" && typeof u9MarkDeck !== "undefined" && u9MarkDeck) return u9MarkDeck.length;
-        if (id === "u9-sticky-task-minds" && typeof u9MindsDeck !== "undefined" && u9MindsDeck) return u9MindsDeck.length;
-        if (id === "u9-sticky-task-interior" && typeof u9InteriorDeck !== "undefined" && u9InteriorDeck)
-            return u9InteriorDeck.length;
-        if (id === "u9-sticky-task-artrest" && typeof u9ArtRestDeck !== "undefined" && u9ArtRestDeck) return u9ArtRestDeck.length;
-        if (id === "u9-sticky-task-contemp" && typeof u9ContempDeck !== "undefined" && u9ContempDeck) return u9ContempDeck.length;
-        if (id === "u9-sticky-task-u10p4" && typeof u10P4StickyDeck !== "undefined" && u10P4StickyDeck) return u10P4StickyDeck.length;
-        if (id === "u9-sticky-task-u10books" && typeof u10BooksStickyDeck !== "undefined" && u10BooksStickyDeck) return u10BooksStickyDeck.length;
+        var d = window[deckProp];
+        if (d && typeof d.length === "number") return d.length;
     } catch (eL) {}
     return 0;
 }
@@ -15503,6 +15709,7 @@ function openUnit9PrepEscapeRoom() {
     if (!prepLiveStudentDeepLinkPending) prepLiveIsStudentSession = false;
     prepLiveStudentDeepLinkPending = false;
     showScreen("screen-unit9-prep-escape");
+    prepEscapeSyncVaultScopeUi();
     prepLiveOnEnterPrepEscape();
     try {
         prepLiveUpdateStudentWaitOverlay(null);
@@ -15545,6 +15752,78 @@ function u9RobotsBuildSource() {
     return out;
 }
 
+function u9StickyNormGapToken(tok) {
+    return String(tok || '').replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '').toLowerCase();
+}
+
+function u9StickyGlueGapMarker(s) {
+    var t = String(s);
+    t = t.replace(/(\S)\s+(____)/g, '$1\u00A0$2');
+    t = t.replace(/(____)\s+(\S)/g, '$1\u00A0$2');
+    return t;
+}
+
+function u9StickyDeckKeepGapPrompt(line) {
+    if (!line || line.indexOf('____') < 0) return false;
+    var g = line.replace(/[^\w_]+/g, ' ').trim();
+    return !!g && g !== '____';
+}
+
+/** Sticky gap line: nowrap tail + blank so ____ is not orphaned; glue short word after ____ (e.g. would ____ up). */
+function u9StickyGapLineDom(el, fullLine) {
+    if (!el) return;
+    function escGapHtml(s) {
+        return String(s || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/"/g, "&quot;");
+    }
+    var full = String(fullLine || '');
+    var gi = full.indexOf('____');
+    if (gi < 0) {
+        el.textContent = full;
+        return;
+    }
+    var restRaw = full.slice(gi + 4);
+    var afterWord = '';
+    var restTail = restRaw;
+    var am = /^(\s*)([A-Za-z][A-Za-z'\-]{0,13})\b/.exec(restRaw);
+    if (am && am[2]) {
+        afterWord = am[2];
+        restTail = restRaw.slice(am[0].length);
+    }
+    var before = full.slice(0, gi).replace(/\s+$/, '');
+    var words = before.trim().split(/\s+/).filter(Boolean);
+    var nTail;
+    if (afterWord) {
+        nTail = words.length >= 2 ? 2 : Math.max(1, words.length);
+    } else if (words.length >= 8) {
+        nTail = 4;
+    } else if (words.length >= 5) {
+        nTail = 3;
+    } else if (words.length >= 2) {
+        nTail = 2;
+    } else {
+        nTail = Math.max(1, words.length);
+    }
+    if (nTail > words.length) nTail = words.length;
+    var tailTok = words.slice(-nTail).join(' ');
+    var prefixWords = words.slice(0, -nTail);
+    var prefix = prefixWords.length ? prefixWords.join(' ') + ' ' : '';
+    /* Word joiner (U+2060): Chrome still broke cue + ____ inside flex notes without this glue */
+    var runMid =
+        escGapHtml(tailTok) +
+        (tailTok ? '\u2060' : '') +
+        '\u00a0<span class="u9-sticky-gap-blank">\u2060____\u2060</span>' +
+        (afterWord ? '\u00a0' + escGapHtml(afterWord) : '');
+    el.innerHTML =
+        escGapHtml(prefix) +
+        '<span class="u9-sticky-gap-run">' +
+        runMid +
+        '</span>' +
+        escGapHtml(restTail);
+}
+
 function u9RobotsPickGap(phrase) {
     var words = String(phrase).split(/\s+/);
     var stop = {
@@ -15565,9 +15844,27 @@ function u9RobotsPickGap(phrase) {
 }
 
 function u9RobotsGapText(text, gapWord) {
-    var escaped = String(gapWord).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('\\b' + escaped + '\\b', 'i');
-    return String(text).replace(re, '____');
+    var raw = String(text);
+    var gw = String(gapWord || '').trim();
+    if (!gw) return u9StickyGlueGapMarker(raw);
+    var gwKey = u9StickyNormGapToken(gw);
+    if (!gwKey) return u9StickyGlueGapMarker(raw);
+
+    var escaped = gw.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
+    var out = raw.replace(new RegExp('\\b' + escaped + '\\b', 'i'), '____');
+    if (out.indexOf('____') !== -1) return u9StickyGlueGapMarker(out);
+
+    var parts = raw.split(/(\s+)/);
+    var i;
+    for (i = parts.length - 1; i >= 0; i--) {
+        var chunk = parts[i];
+        if (!chunk || /^\s+$/.test(chunk)) continue;
+        if (u9StickyNormGapToken(chunk) === gwKey) {
+            parts[i] = '____';
+            return u9StickyGlueGapMarker(parts.join(''));
+        }
+    }
+    return u9StickyGlueGapMarker(raw);
 }
 
 function u9RobotsUpdateDone() {
@@ -15624,10 +15921,11 @@ function u9RobotsRenderBoard() {
     board.innerHTML = '';
     var src = u9RobotsBuildSource();
     u9RobotsDeck = u9FallShuffle(src.map(function (row) {
-        return { text: row.ans, gap: u9RobotsPickGap(row.ans), ok: false, context: row.context || row.ans };
+        var gap = u9RobotsPickGap(row.ans);
+        var displayLine = u9RobotsGapText(row.ans, gap);
+        return { text: row.ans, gap: gap, displayLine: displayLine, ok: false, context: row.context || row.ans };
     })).filter(function (x) {
-        var g = u9RobotsGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9RobotsDeck.length; i++) {
         var note = document.createElement('div');
@@ -15637,7 +15935,7 @@ function u9RobotsRenderBoard() {
         var item = u9RobotsDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9RobotsGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-robots-inp-' + i;
@@ -15783,10 +16081,11 @@ function u9MarkRenderBoard() {
     board.innerHTML = '';
     var src = u9MarkBuildSource();
     u9MarkDeck = u9FallShuffle(src.map(function (row) {
-        return { text: row.ans, gap: u9MarkPickGap(row.ans), ok: false, context: row.context || row.ans };
+        var gap = u9MarkPickGap(row.ans);
+        var displayLine = u9MarkGapText(row.ans, gap);
+        return { text: row.ans, gap: gap, displayLine: displayLine, ok: false, context: row.context || row.ans };
     })).filter(function (x) {
-        var g = u9MarkGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9MarkDeck.length; i++) {
         var note = document.createElement('div');
@@ -15796,7 +16095,7 @@ function u9MarkRenderBoard() {
         var item = u9MarkDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9MarkGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-mark-inp-' + i;
@@ -15946,10 +16245,11 @@ function u9MindsRenderBoard() {
     board.innerHTML = '';
     var src = u9MindsBuildSource();
     u9MindsDeck = u9FallShuffle(src.map(function (row) {
-        return { text: row.ans, gap: u9MindsPickGap(row.ans), ok: false, context: row.context || row.ans };
+        var gap = u9MindsPickGap(row.ans);
+        var displayLine = u9MindsGapText(row.ans, gap);
+        return { text: row.ans, gap: gap, displayLine: displayLine, ok: false, context: row.context || row.ans };
     })).filter(function (x) {
-        var g = u9MindsGapText(x.text, x.gap).replace(/[^\w_]+/g, ' ').trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9MindsDeck.length; i++) {
         var note = document.createElement('div');
@@ -15959,7 +16259,7 @@ function u9MindsRenderBoard() {
         var item = u9MindsDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9MindsGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-minds-inp-' + i;
@@ -16111,18 +16411,18 @@ function u9InteriorRenderBoard() {
     var src = u9InteriorBuildStickySource();
     u9InteriorDeck = u9FallShuffle(
         src.map(function (row) {
+            var gap = u9InteriorPickGap(row.ans);
+            var displayLine = u9InteriorGapText(row.ans, gap);
             return {
                 text: row.ans,
-                gap: u9InteriorPickGap(row.ans),
+                gap: gap,
+                displayLine: displayLine,
                 ok: false,
                 context: row.context || row.ans
             };
         })
     ).filter(function (x) {
-        var g = u9InteriorGapText(x.text, x.gap)
-            .replace(/[^\w_]+/g, ' ')
-            .trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9InteriorDeck.length; i++) {
         var note = document.createElement('div');
@@ -16132,7 +16432,7 @@ function u9InteriorRenderBoard() {
         var item = u9InteriorDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9InteriorGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-interior-inp-' + i;
@@ -16289,13 +16589,12 @@ function u9ArtRestRenderBoard() {
     var src = u9ArtRestBuildSource();
     u9ArtRestDeck = u9FallShuffle(
         src.map(function (row) {
-            return { text: row.ans, gap: u9ArtRestPickGap(row.ans), ok: false, context: row.context || row.ans };
+            var gap = u9ArtRestPickGap(row.ans);
+            var displayLine = u9ArtRestGapText(row.ans, gap);
+            return { text: row.ans, gap: gap, displayLine: displayLine, ok: false, context: row.context || row.ans };
         })
     ).filter(function (x) {
-        var g = u9ArtRestGapText(x.text, x.gap)
-            .replace(/[^\w_]+/g, ' ')
-            .trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9ArtRestDeck.length; i++) {
         var note = document.createElement('div');
@@ -16305,7 +16604,7 @@ function u9ArtRestRenderBoard() {
         var item = u9ArtRestDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9ArtRestGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-artrest-inp-' + i;
@@ -16373,364 +16672,7 @@ function u9ArtRestResetUI() {
     u9ArtRestRenderBoard();
 }
 
-var u10P4StickyDeck = [];
-
-function u10P4StickyBuildSource() {
-    var out = [];
-    var seen = {};
-
-    function pushRows(rows, plain, spLab) {
-        if (!rows || !rows.length || !plain) return;
-        var i;
-        for (i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            if (!row || !row.ans) continue;
-            var ans = String(row.ans).trim();
-            if (!ans) continue;
-            var key = normalizeLexAns(ans);
-            if (!key || seen[key]) continue;
-            seen[key] = true;
-            if (u9FallFindAnsSpan(plain, ans) == null) continue;
-            var ctx = ans;
-            var ft = u9FallBuildGapLine(plain, ans, spLab);
-            ctx = u9ContextRestore(ft, ans);
-            out.push({ ans: ans, context: ctx });
-        }
-    }
-
-    if (typeof U10_P4_LEXIS_GAME_ROWS !== 'undefined' && U10_P4_LEXIS_GAME_ROWS.length) {
-        var plainP4 = typeof U10_P4_LEXIS_PLAIN === 'string' ? U10_P4_LEXIS_PLAIN : '';
-        var spP4 = typeof LEX_U10_P4_SPEAKER_LABEL === 'string' ? LEX_U10_P4_SPEAKER_LABEL : 'Listening Part 4 · Unit 10';
-        pushRows(U10_P4_LEXIS_GAME_ROWS, plainP4, spP4);
-    }
-    return out;
-}
-
-function u10P4StickyUpdateDone() {
-    var done = 0;
-    for (var i = 0; i < u10P4StickyDeck.length; i++) {
-        if (u10P4StickyDeck[i].ok) done++;
-    }
-    var el = document.getElementById('u10-p4-sticky-done');
-    if (el) el.textContent = done + ' / ' + u10P4StickyDeck.length;
-}
-
-function u10P4StickyCheck(idx) {
-    var item = u10P4StickyDeck[idx];
-    if (!item) return;
-    var inp = document.getElementById('u10-p4-sticky-inp-' + idx);
-    var fb = document.getElementById('u10-p4-sticky-fb-' + idx);
-    var note = document.getElementById('u10-p4-sticky-note-' + idx);
-    if (!inp || !fb || !note) return;
-    if (lexAnsMatch(inp.value, item.gap)) {
-        item.ok = true;
-        note.classList.add('done');
-        fb.textContent = 'Correct';
-        fb.style.color = 'var(--success)';
-        inp.disabled = true;
-        prepLiveNotifyStickyItemSolved('u10p4', idx);
-    } else {
-        fb.textContent = 'Try again';
-        fb.style.color = 'var(--error)';
-        prepLiveNotifyStickyWrongAttempt('u10p4', idx, item, inp.value);
-    }
-    u10P4StickyUpdateDone();
-}
-
-function u10P4StickyShowAnswer(idx) {
-    var item = u10P4StickyDeck[idx];
-    if (!item) return;
-    var inp = document.getElementById('u10-p4-sticky-inp-' + idx);
-    var fb = document.getElementById('u10-p4-sticky-fb-' + idx);
-    if (!inp || !fb) return;
-    inp.value = item.gap;
-    fb.textContent = 'Answer shown';
-    fb.style.color = 'var(--muted)';
-}
-
-function u10P4StickyToggleContext(idx) {
-    var el = document.getElementById('u10-p4-sticky-ctx-' + idx);
-    if (!el) return;
-    el.classList.toggle('on');
-}
-
-function u10P4StickyRenderBoard() {
-    var board = document.getElementById('u10-p4-sticky-board');
-    if (!board) return;
-    board.innerHTML = '';
-    var src = u10P4StickyBuildSource();
-    u10P4StickyDeck = u9FallShuffle(
-        src.map(function (row) {
-            return { text: row.ans, gap: u9ArtRestPickGap(row.ans), ok: false, context: row.context || row.ans };
-        })
-    ).filter(function (x) {
-        var g = u9ArtRestGapText(x.text, x.gap)
-            .replace(/[^\w_]+/g, ' ')
-            .trim();
-        return g && g !== '____';
-    });
-    for (var i = 0; i < u10P4StickyDeck.length; i++) {
-        var note = document.createElement('div');
-        note.className = 'u9-sticky-note ' + u9StickyColorClass(i);
-        note.id = 'u10-p4-sticky-note-' + i;
-        note.style.transform = 'rotate(' + String((Math.random() * 8 - 4).toFixed(2)) + 'deg)';
-        var item = u10P4StickyDeck[i];
-        var gapLine = document.createElement('div');
-        gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9ArtRestGapText(item.text, item.gap);
-        var inp = document.createElement('input');
-        inp.type = 'text';
-        inp.id = 'u10-p4-sticky-inp-' + i;
-        inp.className = 'u9-sticky-inp';
-        inp.placeholder = 'missing word';
-        inp.setAttribute('autocomplete', 'off');
-        inp.addEventListener('keydown', function (ev) {
-            if (ev.key === 'Enter') {
-                ev.preventDefault();
-                var id = Number(String(this.id).replace('u10-p4-sticky-inp-', ''), 10);
-                u10P4StickyCheck(id);
-            }
-        });
-        var ctrl = document.createElement('div');
-        ctrl.className = 'u9-sticky-ctrl';
-        var bCheck = document.createElement('button');
-        bCheck.type = 'button';
-        bCheck.className = 'u9-sticky-btn';
-        bCheck.textContent = 'Check';
-        (function (idx) {
-            bCheck.addEventListener('click', function () {
-                u10P4StickyCheck(idx);
-            });
-        })(i);
-        var bShow = document.createElement('button');
-        bShow.type = 'button';
-        bShow.className = 'u9-sticky-btn';
-        bShow.textContent = 'Show answer';
-        (function (idx) {
-            bShow.addEventListener('click', function () {
-                u10P4StickyShowAnswer(idx);
-            });
-        })(i);
-        var bCtx = document.createElement('button');
-        bCtx.type = 'button';
-        bCtx.className = 'u9-sticky-btn';
-        bCtx.textContent = 'Context';
-        (function (idx) {
-            bCtx.addEventListener('click', function () {
-                u10P4StickyToggleContext(idx);
-            });
-        })(i);
-        ctrl.appendChild(bCheck);
-        ctrl.appendChild(bShow);
-        ctrl.appendChild(bCtx);
-        var fb = document.createElement('div');
-        fb.className = 'u9-sticky-fb';
-        fb.id = 'u10-p4-sticky-fb-' + i;
-        var ctx = document.createElement('div');
-        ctx.className = 'u9-sticky-context';
-        ctx.id = 'u10-p4-sticky-ctx-' + i;
-        ctx.textContent = item.context || item.text;
-        note.appendChild(gapLine);
-        note.appendChild(inp);
-        note.appendChild(ctrl);
-        note.appendChild(fb);
-        note.appendChild(ctx);
-        board.appendChild(note);
-    }
-    u10P4StickyUpdateDone();
-    prepLiveStickyRefreshSlotsMeta();
-}
-
-function u10P4StickyResetUI() {
-    u10P4StickyRenderBoard();
-}
-
-var u10BooksStickyDeck = [];
-
-function u10BooksStickyBuildSource() {
-    var out = [];
-    var seen = {};
-    var plainBf = typeof U10_BOOKS_FILMS_LEXIS_PLAIN === 'string' ? U10_BOOKS_FILMS_LEXIS_PLAIN : '';
-    var spBf =
-        typeof LEX_U10_BOOKS_FILMS_SPEAKER_LABEL === 'string'
-            ? LEX_U10_BOOKS_FILMS_SPEAKER_LABEL
-            : 'Unit 10 · Describing books & films';
-    function pushAns(ans) {
-        if (!plainBf) return;
-        var a = String(ans).trim();
-        if (!a) return;
-        var key = normalizeLexAns(a);
-        if (!key || seen[key]) return;
-        seen[key] = true;
-        if (u9FallFindAnsSpan(plainBf, a) == null) return;
-        var ft = u9FallBuildGapLine(plainBf, a, spBf);
-        var ctx = u9ContextRestore(ft, a);
-        out.push({ ans: a, context: ctx });
-    }
-    var bank = typeof U10_BOOKS_FILMS_EXERCISE_BANK !== 'undefined' && U10_BOOKS_FILMS_EXERCISE_BANK.length
-        ? U10_BOOKS_FILMS_EXERCISE_BANK
-        : null;
-    if (bank) {
-        var bi;
-        for (bi = 0; bi < bank.length; bi++) pushAns(bank[bi]);
-        if (out.length) return out;
-    }
-    if (typeof U10_BOOKS_FILMS_LEXIS_GAME_ROWS !== 'undefined' && U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length) {
-        var i;
-        for (i = 0; i < U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length; i++) {
-            var row = U10_BOOKS_FILMS_LEXIS_GAME_ROWS[i];
-            if (row && row.ans) pushAns(row.ans);
-        }
-    }
-    return out;
-}
-
-function u10BooksStickyUpdateDone() {
-    var done = 0;
-    for (var i = 0; i < u10BooksStickyDeck.length; i++) {
-        if (u10BooksStickyDeck[i].ok) done++;
-    }
-    var el = document.getElementById('u10-books-sticky-done');
-    if (el) el.textContent = done + ' / ' + u10BooksStickyDeck.length;
-}
-
-function u10BooksStickyCheck(idx) {
-    var item = u10BooksStickyDeck[idx];
-    if (!item) return;
-    var inp = document.getElementById('u10-books-sticky-inp-' + idx);
-    var fb = document.getElementById('u10-books-sticky-fb-' + idx);
-    var note = document.getElementById('u10-books-sticky-note-' + idx);
-    if (!inp || !fb || !note) return;
-    if (lexAnsMatch(inp.value, item.gap)) {
-        item.ok = true;
-        note.classList.add('done');
-        fb.textContent = 'Correct';
-        fb.style.color = 'var(--success)';
-        inp.disabled = true;
-        prepLiveNotifyStickyItemSolved('u10books', idx);
-    } else {
-        fb.textContent = 'Try again';
-        fb.style.color = 'var(--error)';
-        prepLiveNotifyStickyWrongAttempt('u10books', idx, item, inp.value);
-    }
-    u10BooksStickyUpdateDone();
-}
-
-function u10BooksStickyShowAnswer(idx) {
-    var item = u10BooksStickyDeck[idx];
-    if (!item) return;
-    var inp = document.getElementById('u10-books-sticky-inp-' + idx);
-    var fb = document.getElementById('u10-books-sticky-fb-' + idx);
-    if (!inp || !fb) return;
-    inp.value = item.gap;
-    fb.textContent = 'Answer shown';
-    fb.style.color = 'var(--muted)';
-}
-
-function u10BooksStickyToggleContext(idx) {
-    var el = document.getElementById('u10-books-sticky-ctx-' + idx);
-    if (!el) return;
-    el.classList.toggle('on');
-}
-
-function u10BooksStickyRenderBoard() {
-    var board = document.getElementById('u10-books-sticky-board');
-    if (!board) return;
-    board.innerHTML = '';
-    var src = u10BooksStickyBuildSource();
-    u10BooksStickyDeck = u9FallShuffle(
-        src.map(function (row) {
-            var phrase = String(row.ans || '').trim();
-            var displayText = (row.context && String(row.context).trim()) || phrase;
-            var gap = u9ArtRestPickGap(phrase);
-            if (!gap) gap = phrase;
-            if (u9ArtRestGapText(displayText, gap).indexOf('____') < 0) {
-                gap = phrase;
-            }
-            if (u9ArtRestGapText(displayText, gap).indexOf('____') < 0) {
-                displayText = phrase;
-                gap = u9ArtRestPickGap(phrase) || phrase;
-            }
-            return { text: displayText, gap: gap, ok: false, context: row.context || displayText };
-        })
-    ).filter(function (x) {
-        return u9ArtRestGapText(x.text, x.gap).indexOf('____') >= 0;
-    });
-    for (var i = 0; i < u10BooksStickyDeck.length; i++) {
-        var note = document.createElement('div');
-        note.className = 'u9-sticky-note ' + u9StickyColorClass(i);
-        note.id = 'u10-books-sticky-note-' + i;
-        note.style.transform = 'rotate(' + String((Math.random() * 8 - 4).toFixed(2)) + 'deg)';
-        var item = u10BooksStickyDeck[i];
-        var gapLine = document.createElement('div');
-        gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9ArtRestGapText(item.text, item.gap);
-        var inp = document.createElement('input');
-        inp.type = 'text';
-        inp.id = 'u10-books-sticky-inp-' + i;
-        inp.className = 'u9-sticky-inp';
-        inp.placeholder = 'missing word';
-        inp.setAttribute('autocomplete', 'off');
-        inp.addEventListener('keydown', function (ev) {
-            if (ev.key === 'Enter') {
-                ev.preventDefault();
-                var id = Number(String(this.id).replace('u10-books-sticky-inp-', ''), 10);
-                u10BooksStickyCheck(id);
-            }
-        });
-        var ctrl = document.createElement('div');
-        ctrl.className = 'u9-sticky-ctrl';
-        var bCheck = document.createElement('button');
-        bCheck.type = 'button';
-        bCheck.className = 'u9-sticky-btn';
-        bCheck.textContent = 'Check';
-        (function (idx) {
-            bCheck.addEventListener('click', function () {
-                u10BooksStickyCheck(idx);
-            });
-        })(i);
-        var bShow = document.createElement('button');
-        bShow.type = 'button';
-        bShow.className = 'u9-sticky-btn';
-        bShow.textContent = 'Show answer';
-        (function (idx) {
-            bShow.addEventListener('click', function () {
-                u10BooksStickyShowAnswer(idx);
-            });
-        })(i);
-        var bCtx = document.createElement('button');
-        bCtx.type = 'button';
-        bCtx.className = 'u9-sticky-btn';
-        bCtx.textContent = 'Context';
-        (function (idx) {
-            bCtx.addEventListener('click', function () {
-                u10BooksStickyToggleContext(idx);
-            });
-        })(i);
-        ctrl.appendChild(bCheck);
-        ctrl.appendChild(bShow);
-        ctrl.appendChild(bCtx);
-        var fb = document.createElement('div');
-        fb.className = 'u9-sticky-fb';
-        fb.id = 'u10-books-sticky-fb-' + i;
-        var ctx = document.createElement('div');
-        ctx.className = 'u9-sticky-context';
-        ctx.id = 'u10-books-sticky-ctx-' + i;
-        ctx.textContent = item.context || item.text;
-        note.appendChild(gapLine);
-        note.appendChild(inp);
-        note.appendChild(ctrl);
-        note.appendChild(fb);
-        note.appendChild(ctx);
-        board.appendChild(note);
-    }
-    u10BooksStickyUpdateDone();
-    prepLiveStickyRefreshSlotsMeta();
-}
-
-function u10BooksStickyResetUI() {
-    u10BooksStickyRenderBoard();
-}
+/** Unit 10 sticky: Part 4 — js/unit10-p4-sticky-board.js; plain-тексты — js/unit10-plain-sticky-kit.js; метаданные — js/unit10-sticky-registry.js */
 
 var u9ContempDeck = [];
 
@@ -16876,13 +16818,12 @@ function u9ContempRenderBoard() {
     var src = u9ContempStickyBuildSource();
     u9ContempDeck = u9FallShuffle(
         src.map(function (row) {
-            return { text: row.ans, gap: u9ContempPickGap(row.ans), ok: false, context: row.context || row.ans };
+            var gap = u9ContempPickGap(row.ans);
+            var displayLine = u9ContempGapText(row.ans, gap);
+            return { text: row.ans, gap: gap, displayLine: displayLine, ok: false, context: row.context || row.ans };
         })
     ).filter(function (x) {
-        var g = u9ContempGapText(x.text, x.gap)
-            .replace(/[^\w_]+/g, ' ')
-            .trim();
-        return g && g !== '____';
+        return u9StickyDeckKeepGapPrompt(x.displayLine);
     });
     for (var i = 0; i < u9ContempDeck.length; i++) {
         var note = document.createElement('div');
@@ -16892,7 +16833,7 @@ function u9ContempRenderBoard() {
         var item = u9ContempDeck[i];
         var gapLine = document.createElement('div');
         gapLine.className = 'u9-sticky-gap';
-        gapLine.textContent = u9ContempGapText(item.text, item.gap);
+        u9StickyGapLineDom(gapLine, item.displayLine);
         var inp = document.createElement('input');
         inp.type = 'text';
         inp.id = 'u9-contemp-inp-' + i;
@@ -16967,14 +16908,13 @@ function u9StickySetHubMode(hub) {
     var u10 = hub === 'u10';
     scr.classList.toggle('u9-sticky-hub-l9', !u10);
     scr.classList.toggle('u9-sticky-hub-u10', u10);
-    var tP4 = document.getElementById('u9-sticky-tab-u10p4');
-    var tBk = document.getElementById('u9-sticky-tab-u10books');
-    if (tP4) tP4.textContent = u10 ? 'Task 1: Listening multiple matching (Part 4)' : 'Task 10: Unit 10 Part 4';
-    if (tBk) tBk.textContent = u10 ? 'Task 2: Books & films (Ex. 1–2 bank)' : 'Task 11: books & films';
+    if (typeof unit10StickySyncPackTabLabels === 'function') unit10StickySyncPackTabLabels(u10);
+    if (typeof unit10StickySyncGlobalHint === 'function') unit10StickySyncGlobalHint(u10);
 }
 
 function u9StickyShowTask(mode, opts) {
     opts = opts || {};
+    if (typeof unit10StickyEnsureDom === 'function') unit10StickyEnsureDom();
     var idiomTask = document.getElementById('u9-sticky-task-idiom');
     var prepTask = document.getElementById('u9-sticky-task-prep');
     var prep2Task = document.getElementById('u9-sticky-task-prep2');
@@ -16984,8 +16924,6 @@ function u9StickyShowTask(mode, opts) {
     var artrestTask = document.getElementById('u9-sticky-task-artrest');
     var contempTask = document.getElementById('u9-sticky-task-contemp');
     var mindsTask = document.getElementById('u9-sticky-task-minds');
-    var u10p4Task = document.getElementById('u9-sticky-task-u10p4');
-    var u10booksTask = document.getElementById('u9-sticky-task-u10books');
     var idiomTab = document.getElementById('u9-sticky-tab-idiom');
     var prepTab = document.getElementById('u9-sticky-tab-prep');
     var prep2Tab = document.getElementById('u9-sticky-tab-prep2');
@@ -16995,8 +16933,6 @@ function u9StickyShowTask(mode, opts) {
     var artrestTab = document.getElementById('u9-sticky-tab-artrest');
     var contempTab = document.getElementById('u9-sticky-tab-contemp');
     var mindsTab = document.getElementById('u9-sticky-tab-minds');
-    var u10p4Tab = document.getElementById('u9-sticky-tab-u10p4');
-    var u10booksTab = document.getElementById('u9-sticky-tab-u10books');
     var showIdiom = mode === 'idiom';
     var showPrep = mode === 'prep';
     var showPrep2 = mode === 'prep2';
@@ -17006,8 +16942,7 @@ function u9StickyShowTask(mode, opts) {
     var showArtrest = mode === 'artrest';
     var showContemp = mode === 'contemp';
     var showMinds = mode === 'minds';
-    var showU10p4 = mode === 'u10p4';
-    var showU10books = mode === 'u10books';
+    var showU10Pack = typeof unit10StickyIsPackMode === 'function' && unit10StickyIsPackMode(mode);
     if (
         !showIdiom &&
         !showPrep &&
@@ -17018,11 +16953,53 @@ function u9StickyShowTask(mode, opts) {
         !showArtrest &&
         !showContemp &&
         !showMinds &&
-        !showU10p4 &&
-        !showU10books
+        !showU10Pack
     ) {
         showIdiom = true;
         mode = 'idiom';
+    }
+    if (prepCourseHub.stickyLazyModes && prepCourseHub.stickyLazyModes[mode] !== true) {
+        prepCourseHub.stickyLazyModes[mode] = true;
+        switch (mode) {
+            case 'idiom':
+                u9StickyRenderBoard();
+                break;
+            case 'prep':
+                u9PrepRenderBoard();
+                break;
+            case 'prep2':
+                u9Prep2RenderBoard();
+                break;
+            case 'robots':
+                u9RobotsRenderBoard();
+                break;
+            case 'mark':
+                u9MarkRenderBoard();
+                break;
+            case 'interior':
+                u9InteriorRenderBoard();
+                break;
+            case 'artrest':
+                u9ArtRestRenderBoard();
+                break;
+            case 'contemp':
+                u9ContempRenderBoard();
+                break;
+            case 'minds':
+                u9MindsRenderBoard();
+                break;
+            default: {
+                var pk =
+                    typeof UNIT10_STICKY_PACK_BY_MODE !== 'undefined' && UNIT10_STICKY_PACK_BY_MODE
+                        ? UNIT10_STICKY_PACK_BY_MODE[mode]
+                        : null;
+                if (pk) {
+                    var rf = window[pk.renderGlobal];
+                    if (typeof rf === 'function') rf();
+                }
+                break;
+            }
+        }
     }
     if (idiomTask) idiomTask.classList.toggle('active', showIdiom);
     if (prepTask) prepTask.classList.toggle('active', showPrep);
@@ -17033,8 +17010,7 @@ function u9StickyShowTask(mode, opts) {
     if (artrestTask) artrestTask.classList.toggle('active', showArtrest);
     if (contempTask) contempTask.classList.toggle('active', showContemp);
     if (mindsTask) mindsTask.classList.toggle('active', showMinds);
-    if (u10p4Task) u10p4Task.classList.toggle('active', showU10p4);
-    if (u10booksTask) u10booksTask.classList.toggle('active', showU10books);
+    if (typeof unit10StickyTogglePackUi === 'function') unit10StickyTogglePackUi(mode);
     if (idiomTab) idiomTab.classList.toggle('active', showIdiom);
     if (prepTab) prepTab.classList.toggle('active', showPrep);
     if (prep2Tab) prep2Tab.classList.toggle('active', showPrep2);
@@ -17044,8 +17020,6 @@ function u9StickyShowTask(mode, opts) {
     if (artrestTab) artrestTab.classList.toggle('active', showArtrest);
     if (contempTab) contempTab.classList.toggle('active', showContemp);
     if (mindsTab) mindsTab.classList.toggle('active', showMinds);
-    if (u10p4Tab) u10p4Tab.classList.toggle('active', showU10p4);
-    if (u10booksTab) u10booksTab.classList.toggle('active', showU10books);
     var scopePick = document.getElementById("prep-live-sticky-scope");
     if (scopePick && PREP_LIVE_STICKY_MODES.indexOf(mode) >= 0 && !opts.fromLiveSnap) {
         scopePick.value = mode;
@@ -17058,7 +17032,7 @@ function u9StickyShowTask(mode, opts) {
     try {
         window.__prepLiveStickyTaskKey = mode;
     } catch (eTk) {}
-    u9StickySetHubMode(mode === 'u10p4' || mode === 'u10books' ? 'u10' : 'l9');
+    u9StickySetHubMode(showU10Pack ? 'u10' : 'l9');
     prepLiveStickyRefreshSlotsMeta();
 }
 
@@ -17509,7 +17483,9 @@ function updateLexLocalLine() {
                         ? 'Unit 10 Listening Part 4 only — five monologues (SB 10.1).'
                         : lexTrainerPack === 'u10_books'
                           ? 'Unit 10 · Describing books & films review lines only.'
-                          : lexTrainerPack === 'environment'
+                          : lexTrainerPack === 'u10_shakespeare'
+                            ? 'Shakespeare · Use of English only — collocations from Was Shakespeare a woman?'
+                            : lexTrainerPack === 'environment'
                             ? 'Environment collocations only \u2014 seven chunks in example sentences.'
                             : lexTrainerPack === 'environment2'
                               ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
@@ -17680,6 +17656,15 @@ function lexTypeApplyScreenCopy() {
         if (winSub) winSub.textContent = 'Unit 10 · Describing books & films';
         if (winBody) winBody.textContent = 'You cleared every gap in the books & films pack.';
         if (goFull) goFull.textContent = 'Restart books & films pack';
+    } else if (lexTrainerPack === 'u10_shakespeare') {
+        if (tag) tag.textContent = 'Shakespeare · Use of English';
+        if (lead) {
+            lead.innerHTML =
+                'Use each <b>hint</b> (English gloss), then <b>type the exact chunk</b> from the <em>Was Shakespeare a woman?</em> reading (same wording as the Unit&nbsp;10 Word Bank tab). <b>Three hearts</b> for the run; after a wrong check, the answer appears and you <b>must type it</b> to continue.';
+        }
+        if (winSub) winSub.textContent = 'Shakespeare · Use of English';
+        if (winBody) winBody.textContent = 'You cleared every gap in the Shakespeare · Use of English pack.';
+        if (goFull) goFull.textContent = 'Restart Shakespeare · Use of English pack';
     } else if (lexTrainerPack === 'environment') {
         if (tag) tag.textContent = 'Environment collocations';
         if (lead) {
@@ -17738,6 +17723,8 @@ function lexTrainerRestartFull() {
         openLexicalTrainerU10P4();
     } else if (lexTrainerPack === 'u10_books') {
         openLexicalTrainerU10Books();
+    } else if (lexTrainerPack === 'u10_shakespeare') {
+        openLexicalTrainerU10Shakespeare();
     } else if (lexTrainerPack === 'environment') {
         openLexicalTrainerEnvironment();
     } else if (lexTrainerPack === 'environment2') {
@@ -17751,7 +17738,7 @@ function lexTrainerRestartFull() {
 function lexTrainerBackToReadings() {
     if (lexTrainerFromUnit8) {
         openUnit8ActivityHub('lexical');
-    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books') && u10LexTrainerReturnToHub) {
+    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare') && u10LexTrainerReturnToHub) {
         openUnit9ActivityHub('lexical', { fromUnit10LexGames: true });
     } else {
         openUnit9ActivityHub('lexical');
@@ -17761,7 +17748,7 @@ function lexTrainerBackToReadings() {
 function lexTrainerBackToUnitMenu() {
     if (lexTrainerFromUnit8) {
         showScreen('screen-unit8');
-    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books') && u10LexTrainerReturnToHub) {
+    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare') && u10LexTrainerReturnToHub) {
         u10LexTrainerReturnToHub = false;
         openUnit10WordBank();
     } else {
@@ -18025,6 +18012,42 @@ function openLexicalTrainerU10Books() {
     renderLexicalTrainerItem();
 }
 
+function openLexicalTrainerU10Shakespeare() {
+    lexU10ShakespeareBuildTasks();
+    if (!LEX_U10_SHAKESPEARE_TYPE_TASKS.length) {
+        alert(
+            'Could not load the Shakespeare · Use of English pack. Check that js/use-of-english/u10-uoe-shakespeare-lexicon.js is included.'
+        );
+        return;
+    }
+    lexTrainerFromUnit8 = false;
+    u10LexTrainerReturnToHub = !!(u10LexGamesActive || u9LexActivityReturnToUnit10LexGames);
+    lexTrainerPack = 'u10_shakespeare';
+    lexTypeIdx = 0;
+    lexTypeLives = 3;
+    lexAwaitingRetype = false;
+    var revS = document.getElementById('lex-type-reveal');
+    if (revS) {
+        revS.style.display = 'none';
+        revS.innerHTML = '';
+    }
+    var gaS = document.getElementById('lex-type-go-answer');
+    if (gaS) {
+        gaS.style.display = 'none';
+        gaS.textContent = '';
+    }
+    var goS = document.getElementById('lex-type-gameover');
+    var winS = document.getElementById('lex-type-win');
+    var actS = document.getElementById('lex-type-active');
+    if (goS) goS.classList.remove('active');
+    if (winS) winS.classList.remove('active');
+    if (actS) actS.style.display = '';
+    lexTypeApplyScreenCopy();
+    updateLexTypeLivesDisplay();
+    showScreen('screen-unit9-lexical-type');
+    renderLexicalTrainerItem();
+}
+
 function openLexicalTrainerPrep() {
     lexTrainerFromUnit8 = false;
     lexTrainerPack = 'prep';
@@ -18129,8 +18152,10 @@ function lexAdvanceAfterCorrect() {
                         ? 'Pack complete \u2014 you\'ve finished every Art restoration gap. Brilliant work!'
                         : lexTrainerPack === 'u10_p4'
                           ? 'Pack complete \u2014 you\'ve finished every Part 4 gap. Brilliant work!'
-                          : lexTrainerPack === 'u10_books'
-                            ? 'Pack complete \u2014 you\'ve finished every books & films gap. Brilliant work!'
+                        : lexTrainerPack === 'u10_books'
+                          ? 'Pack complete \u2014 you\'ve finished every books & films gap. Brilliant work!'
+                          : lexTrainerPack === 'u10_shakespeare'
+                            ? 'Pack complete \u2014 you\'ve finished every Shakespeare · Use of English gap. Brilliant work!'
                             : lexTrainerIsUnit8EnvLex()
                               ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
                               : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
@@ -18205,11 +18230,13 @@ function checkLexicalTrainer() {
                                   ? 'Out of lives in this Unit 10 Part 4 pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
                                   : lexTrainerPack === 'u10_books'
                                     ? 'Out of lives in the books & films pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                                    : lexTrainerIsUnit8EnvLex()
-                                      ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                                      : 'Out of lives in ' +
-                                        (failSec ? failSec.label : 'this') +
-                                        '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
+                                    : lexTrainerPack === 'u10_shakespeare'
+                                      ? 'Out of lives in the Shakespeare · Use of English pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                                      : lexTrainerIsUnit8EnvLex()
+                                        ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                                        : 'Out of lives in ' +
+                                          (failSec ? failSec.label : 'this') +
+                                          '\'s block. Retry this block from phrase 1, restart the whole trainer from A Jack, or go back to the menu.';
             }
             var ga = document.getElementById('lex-type-go-answer');
             if (ga) {
@@ -20965,6 +20992,8 @@ function showScreen(id) {
                 id === 'screen-unit9-phoebe' ||
                 id === 'screen-unit9-richard' ||
                 id === 'screen-unit9-kiki' ||
+                id === 'screen-unit9-reading-folder' ||
+                id === 'screen-unit9-listening-folder' ||
                 id === 'screen-unit9-reading-hub' ||
                 id === 'screen-unit9' ||
                 id === 'screen-unit9-uoe' ||
@@ -21379,25 +21408,14 @@ var prepCourseHub = {
     createModalEditBuiltinUnit: null,
     activityHubCtx: null,
     linkedFoldersSyncWired: false,
-    moveTileModal: null
+    moveTileModal: null,
+    /** When set, sticky tabs render decks on first visit (Unit 10 fast open). */
+    stickyLazyModes: null
 };
 
 /** Level 9 app menu: "Use of English" opens this folder (starts empty; teacher adds Part 1 activities). */
 var PREP_LEGACY_U9_UOE_FOLDER_ID = "prep_legacy_u9_uoe";
-/** Level 10 — seeded "Vocabulary" folder (linked only; textbook-style books/films gap fill). */
-var PREP_LEGACY_U10_VOCAB_FOLDER_ID = "prep_legacy_u10_vocab";
-/** Level 10 — Lexical games (Word Bank through Prep vault) — first linked folder on the Level 10 grid. */
-var PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID = "prep_legacy_u10_lexical_games";
-/** Level 10 — seeded Listening Part 4 (multiple matching): four prep-link tiles, no disk hub. */
-var PREP_LEGACY_U10_LISTENING_P4_FOLDER_ID = "prep_legacy_u10_listening_p4";
-
-function hubLegacyU10LinkedFolderSortKey(folderId) {
-    var s = String(folderId == null ? "" : folderId);
-    if (s === String(PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID)) return 0;
-    if (s === String(PREP_LEGACY_U10_VOCAB_FOLDER_ID)) return 1;
-    if (s === String(PREP_LEGACY_U10_LISTENING_P4_FOLDER_ID)) return 2;
-    return 10;
-}
+/* Level 10 Prep folder ids & ensures — js/prep-hub-unit10-nests.js (PREP_LEGACY_U10_* on window). */
 
 function isActivityHubScopedPrep(f) {
     return !!(f && f.prepPageKey && /^u\d+-activity-/.test(String(f.prepPageKey)));
@@ -21412,6 +21430,12 @@ function hubBuiltinSubtitle(unit) {
     if (unit === 7) return "Use of English \u00b7 word formation";
     if (unit === 8) return "Environment collocations";
     if (unit === 9) return "Vocabulary \u00b7 Exam only";
+    return "";
+}
+
+/** Default large line on the hub card when the teacher has not set a custom title. */
+function hubBuiltinDefaultTitle(unit) {
+    if (unit === 10) return "Adaptations";
     return "";
 }
 
@@ -22807,14 +22831,18 @@ function hubMountBuiltinHubTile(g, unit, tileMetaAll, subs, edit, mainGridSlotLe
             : "";
     var subLine = hubNormalizeBuiltinSubtitle(unit, rawMetaSub || rawSubs);
     var customTitle = meta.title != null && String(meta.title).trim() ? String(meta.title).trim() : "";
+    if (!customTitle) {
+        var defTitle = hubBuiltinDefaultTitle(unit);
+        if (defTitle) customTitle = defTitle;
+    }
     var slotLab = Number(mainGridSlotLevel);
     var kicker =
         HUB_I18N.unitKickerPrefix + " " + (isFinite(slotLab) && slotLab >= 1 ? slotLab : unit);
     var descTrim = meta.description != null && String(meta.description).trim() ? String(meta.description).trim() : "";
     var hasDesc = !!descTrim;
-    var descAccent = (unit === 8 || unit === 9) && hasDesc;
+    var descAccent = (unit === 8 || unit === 9 || unit === 10) && hasDesc;
     var subCls = "unit-tile__subtitle unit-tile__subtitle--hub-slot";
-    if ((unit === 8 || unit === 9) && subLine) subCls += " unit-tile__subtitle--accent";
+    if ((unit === 8 || unit === 9 || unit === 10) && subLine) subCls += " unit-tile__subtitle--accent";
     var meta6 = unit === 6 ? '<div class="tile-meta unit-tile__meta" id="hub-meta-u6"></div>' : "";
     var lockedU = hubIsBuiltinUnitStudentLocked(unit) && hubHubNavBlockedForStudent();
     if (lockedU) {
@@ -23238,14 +23266,8 @@ function ensureHubBuilt() {
         ensurePrepLegacyU9UoeFolder();
     } catch (eLegU9) {}
     try {
-        ensurePrepUnit10VocabularyFolder();
-    } catch (eLegU10) {}
-    try {
-        ensurePrepUnit10ListeningPart4Folder();
-    } catch (eLegU10L4) {}
-    try {
-        ensurePrepUnit10LexicalGamesFolder();
-    } catch (eLegU10Lg) {}
+        ensurePrepUnit10LinkedShells();
+    } catch (eLegU10All) {}
     try {
         hubEnsureMainHubUnitNumbers();
     } catch (eHubNum) {}
@@ -23476,7 +23498,10 @@ function hubCreateModalOpen(opts) {
         var metaB = loadHubBuiltinTileMeta()[String(uBuiltin)] || {};
         if (h3) h3.textContent = "Edit unit tile";
         if (ti) {
-            ti.placeholder = "Large name under the unit number (optional)";
+            var defNm = hubBuiltinDefaultTitle(uBuiltin) || "";
+            ti.placeholder = defNm
+                ? "Leave empty to show \u201c" + defNm + "\u201d"
+                : "Large name under the unit number (optional)";
             ti.value = metaB.title != null && String(metaB.title).trim() ? String(metaB.title).trim() : "";
         }
         if (st) {
@@ -23893,21 +23918,20 @@ function openHubUnitWorkspace(u) {
 }
 
 function openHubFolderWorkspace(fid) {
+    var fidRaw = fid;
+    if (typeof prepHubUnit10EnsureByFolderId === "function") {
+        prepHubUnit10EnsureByFolderId(fidRaw);
+    }
+    fid =
+        typeof prepHubNormalizeLegacyFolderId === "function"
+            ? prepHubNormalizeLegacyFolderId(fidRaw)
+            : fidRaw;
     var f = hubFindPrepFolder(fid);
     if (!f && String(fid) === String(PREP_LEGACY_U9_UOE_FOLDER_ID)) {
         ensurePrepLegacyU9UoeFolder();
         f = hubFindPrepFolder(fid);
     }
-    if (!f && String(fid) === String(PREP_LEGACY_U10_VOCAB_FOLDER_ID)) {
-        ensurePrepUnit10VocabularyFolder();
-        f = hubFindPrepFolder(fid);
-    }
-    if (!f && String(fid) === String(PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID)) {
-        ensurePrepUnit10LexicalGamesFolder();
-        f = hubFindPrepFolder(fid);
-    }
-    if (!f && String(fid) === String(PREP_LEGACY_U10_LISTENING_P4_FOLDER_ID)) {
-        ensurePrepUnit10ListeningPart4Folder();
+    if (!f && typeof prepHubUnit10EnsureByFolderId === "function" && prepHubUnit10EnsureByFolderId(fid)) {
         f = hubFindPrepFolder(fid);
     }
     if (!f) {
@@ -23968,187 +23992,6 @@ function ensurePrepLegacyU9UoeFolder() {
         linkedUnit: 9,
         sections: [],
         tasks: [seedTask]
-    });
-    PrepSiteContent.save(d);
-}
-
-/**
- * Level 10 — seeded linked folder «Vocabulary» (first card under Level 10 prep list).
- * prep-link tasks include optional books/films drills; phrasals & crime stay in unit10-vocabulary.
- */
-function ensurePrepUnit10VocabularyFolder() {
-    if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
-    var d = PrepSiteContent.load();
-    d.folders = d.folders || [];
-    var id = PREP_LEGACY_U10_VOCAB_FOLDER_ID;
-    var seedTask = {
-        id: "u10_describing_books_films_seed",
-        title: "Describing books and films — Exercise 1",
-        subtitle: "Unit 10 · textbook Exercise 1 · 12-gap word bank · four reviews",
-        kind: "prep-link",
-        href: "unit10-vocabulary/describing-books-films/index.html"
-    };
-    var seedTask2 = {
-        id: "u10_describing_meanings_seed",
-        title: "Describing books and films — Exercise 2",
-        subtitle: "Match meanings to phrases from Exercise 1",
-        kind: "prep-link",
-        href: "unit10-vocabulary/describing-books-meanings/index.html"
-    };
-    function ensureTasksOnFolder(fld) {
-        fld.tasks = Array.isArray(fld.tasks) ? fld.tasks : [];
-        var ch = false;
-        if (!fld.tasks.some(function (t) { return t && String(t.id) === String(seedTask.id); })) {
-            fld.tasks.push(seedTask);
-            ch = true;
-        }
-        if (!fld.tasks.some(function (t) { return t && String(t.id) === String(seedTask2.id); })) {
-            fld.tasks.push(seedTask2);
-            ch = true;
-        }
-        return ch;
-    }
-    for (var i = 0; i < d.folders.length; i++) {
-        if (String(d.folders[i].id == null ? "" : d.folders[i].id) !== String(id)) continue;
-        var f = d.folders[i];
-        if (f.linkedUnit !== 10) {
-            f.linkedUnit = 10;
-            PrepSiteContent.save(d);
-        }
-        if (ensureTasksOnFolder(f)) PrepSiteContent.save(d);
-        return;
-    }
-    d.folders.unshift({
-        id: id,
-        type: "folder",
-        title: "Vocabulary",
-        subtitle: "Phrasals · crime · criminals' titles (folder list on site)",
-        goal: "",
-        linkedUnit: 10,
-        sections: [],
-        tasks: [seedTask, seedTask2]
-    });
-    PrepSiteContent.save(d);
-}
-
-/**
- * Level 10 — seeded linked folder «Listening Part 4 · Multiple matching» (after Vocabulary).
- * Four prep-link tiles (Exam / Lexical / Speaking / Audio) — no intermediate disk hub.
- */
-function ensurePrepUnit10ListeningPart4Folder() {
-    if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
-    var d = PrepSiteContent.load();
-    d.folders = d.folders || [];
-    var id = PREP_LEGACY_U10_LISTENING_P4_FOLDER_ID;
-    var base = "Listening Part 4 Multiple matching/";
-    var seedExam = {
-        id: "u10_listening_p4_exam",
-        title: "Exam trainer",
-        subtitle: "Part 4 multiple matching · Track 10 · key + Stage 2 hunt",
-        kind: "prep-link",
-        href: base + "exam trainer/p4-multiple-matching.html"
-    };
-    var seedLexical = {
-        id: "u10_listening_p4_lexical",
-        title: "Lexical trainer",
-        subtitle: "Gap fill, app games, Stage 2 script (Track 10)",
-        kind: "prep-link",
-        href: base + "Lexical trainer/index.html"
-    };
-    var seedSpeaking = {
-        id: "u10_listening_p4_speaking",
-        title: "Speaking trainer",
-        subtitle: "Shadowing, exam speakers, speedy typing",
-        kind: "prep-link",
-        href: base + "Speaking trainer/index.html"
-    };
-    var seedAudio = {
-        id: "u10_listening_p4_audio",
-        title: "Audio trainer",
-        subtitle: "Track 10 player, transcript, shadowing / gap / typing",
-        kind: "prep-link",
-        href: base + "Audio trainer/index.html"
-    };
-    var fourIds = ["u10_listening_p4_exam", "u10_listening_p4_lexical", "u10_listening_p4_speaking", "u10_listening_p4_audio"];
-    function ensureTasksOnFolder(fld) {
-        fld.tasks = Array.isArray(fld.tasks) ? fld.tasks : [];
-        var hasAll = fourIds.every(function (fid) {
-            return fld.tasks.some(function (t) {
-                return t && String(t.id) === fid;
-            });
-        });
-        if (hasAll) return false;
-        fld.tasks = fld.tasks.filter(function (t) {
-            if (!t) return false;
-            var tid = String(t.id);
-            if (tid === "u10_listening_p4_hub_seed") return false;
-            if (fourIds.indexOf(tid) >= 0) return false;
-            return true;
-        });
-        fld.tasks.push(seedExam, seedLexical, seedSpeaking, seedAudio);
-        return true;
-    }
-    for (var i = 0; i < d.folders.length; i++) {
-        if (String(d.folders[i].id == null ? "" : d.folders[i].id) !== String(id)) continue;
-        var f = d.folders[i];
-        if (f.linkedUnit !== 10) {
-            f.linkedUnit = 10;
-            PrepSiteContent.save(d);
-        }
-        if (ensureTasksOnFolder(f)) PrepSiteContent.save(d);
-        return;
-    }
-    d.folders.push({
-        id: id,
-        type: "folder",
-        title: "Listening Part 4 · Multiple matching",
-        subtitle: "CPE Part 4 — five short extracts, eight statements",
-        goal: "",
-        linkedUnit: 10,
-        sections: [],
-        tasks: [seedExam, seedLexical, seedSpeaking, seedAudio]
-    });
-    PrepSiteContent.save(d);
-}
-
-/**
- * Level 10 — linked folder «Lexical games»: opening the folder jumps straight to Word Bank / games
- * (no intermediate prep-link tile). Edit mode still lists the folder for + Activity.
- */
-function ensurePrepUnit10LexicalGamesFolder() {
-    if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
-    var d = PrepSiteContent.load();
-    d.folders = d.folders || [];
-    var id = PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID;
-    var launcherId = "u10_lexical_games_app";
-    function stripLauncherTile(fld) {
-        fld.tasks = Array.isArray(fld.tasks) ? fld.tasks : [];
-        var next = fld.tasks.filter(function (t) {
-            return !t || String(t.id) !== launcherId;
-        });
-        var changed = next.length !== fld.tasks.length;
-        fld.tasks = next;
-        return changed;
-    }
-    for (var i = 0; i < d.folders.length; i++) {
-        if (String(d.folders[i].id == null ? "" : d.folders[i].id) !== String(id)) continue;
-        var f = d.folders[i];
-        if (f.linkedUnit !== 10) {
-            f.linkedUnit = 10;
-            PrepSiteContent.save(d);
-        }
-        if (stripLauncherTile(f)) PrepSiteContent.save(d);
-        return;
-    }
-    d.folders.unshift({
-        id: id,
-        type: "folder",
-        title: "Lexical games",
-        subtitle: "Unit 10 · Listening Part 4 phrase bank (SB 10.1)",
-        goal: "",
-        linkedUnit: 10,
-        sections: [],
-        tasks: []
     });
     PrepSiteContent.save(d);
 }
@@ -24400,7 +24243,7 @@ function hubInstallHubTaskOverflowMenu(tile, ctx, tk) {
 }
 
 var LEGACY_FOLDER_ORDER_DEFAULT = {
-    9: ["u9-reading-robots", "u9-listening-mark", "u9-vocab", "u9-listening-p3-art-restoration", "u9-lexgames", "u9-uoe", "u9-grammar"],
+    9: ["u9-reading-all", "u9-listening-all", "u9-vocab", "u9-lexgames", "u9-uoe", "u9-grammar", "u9-writing"],
     8: ["u8-listening", "u8-lexgames", "u8-speak", "u8-uoe", "u8-treasure"]
 };
 var LEGACY_FOLDER_ORDER_KEY = "prep-legacy-folder-order-v1";
@@ -24441,17 +24284,6 @@ function legacyGetOrder(unit) {
             }
         }
         out.splice(insertAt, 0, key);
-    }
-    if (unit === 9) {
-        var p3k = "u9-listening-p3-art-restoration";
-        var vk = "u9-vocab";
-        var ixP3 = out.indexOf(p3k);
-        var ixV = out.indexOf(vk);
-        if (ixP3 !== -1 && ixV !== -1 && ixP3 !== ixV + 1) {
-            out.splice(ixP3, 1);
-            ixV = out.indexOf(vk);
-            out.splice(ixV + 1, 0, p3k);
-        }
     }
     return out;
 }
@@ -24779,16 +24611,12 @@ function renderHubUnitTasksContent() {
         ensurePrepLegacyU9UoeFolder();
         fd = hubFindPrepFolder(hubWorkspace.folderId);
     }
-    if (!fd && String(hubWorkspace.folderId) === String(PREP_LEGACY_U10_VOCAB_FOLDER_ID)) {
-        ensurePrepUnit10VocabularyFolder();
-        fd = hubFindPrepFolder(hubWorkspace.folderId);
-    }
-    if (!fd && String(hubWorkspace.folderId) === String(PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID)) {
-        ensurePrepUnit10LexicalGamesFolder();
-        fd = hubFindPrepFolder(hubWorkspace.folderId);
-    }
-    if (!fd && String(hubWorkspace.folderId) === String(PREP_LEGACY_U10_LISTENING_P4_FOLDER_ID)) {
-        ensurePrepUnit10ListeningPart4Folder();
+    if (
+        !fd &&
+        hubWorkspace.folderId != null &&
+        typeof prepHubUnit10EnsureByFolderId === "function" &&
+        prepHubUnit10EnsureByFolderId(hubWorkspace.folderId)
+    ) {
         fd = hubFindPrepFolder(hubWorkspace.folderId);
     }
     if (!fd) {
@@ -24824,6 +24652,10 @@ function renderHubUnitTasksContent() {
             nestSibs.push(allNest[ci]);
         }
         nestSibs.sort(function (a, b) {
+            if (fd && typeof prepHubUnit10CompareNestedFolders === "function") {
+                var cmp = prepHubUnit10CompareNestedFolders(fd.id, a.id, b.id);
+                if (cmp != null) return cmp;
+            }
             return allNest.indexOf(a) - allNest.indexOf(b);
         });
         for (var cs = 0; cs < nestSibs.length; cs++) {
@@ -25878,17 +25710,8 @@ window.onload = function () {
             } else if (dTrack === "fce") {
                 window.location.replace(prepResolveSiteFile("fce.html"));
                 return;
-            } else if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
-                var examTrack = prepCourseProfile.load().courseTrack;
-                if (examTrack === "ege") {
-                    window.location.replace(prepResolveSiteFile("ege.html"));
-                    return;
-                }
-                if (examTrack === "fce") {
-                    window.location.replace(prepResolveSiteFile("fce.html"));
-                    return;
-                }
             }
+            /* dTrack null (local / placeholder): never redirect index → fce/ege from saved profile */
         } catch (eExamHome) {}
     }
     ensureHubBuilt();
@@ -26058,6 +25881,7 @@ window.addEventListener('focus', function () {
     } catch (eF) {}
 });
 </script>
+<script src="js/unit10-p4-sticky-board.js"></script>
 <div
     id="hub-toast"
     class="hub-toast"

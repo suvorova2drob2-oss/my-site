@@ -1,6 +1,6 @@
 /**
  * Part 2 — Open Cloze (shared).
- * Boot: window.PART2_OPEN_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle, embeddedScriptId }
+ * Boot: window.PART2_OPEN_BOOT = { contextId, dataSrc, backHref, backLabel, pageTitle, documentTitle, embeddedScriptId, chainNext?, chainNextLabel? }
  * URL: ?context=slug&src=relative/published.json&back=...&backLabel=...
  *
  * Data JSON:
@@ -9,6 +9,8 @@
  *   exampleHighlight: optional "(0) REACHED" — wrapped in <span class="p2-example"> for workbook-style example.
  *   answers: { "1": ["at"], "2": ["foo","bar"], … } — compare after normalize (trim, lower case).
  *   explanations: optional { "1": "why this word fits", … } — shown in the answer key panel after Submit (always when present), including when all gaps are correct.
+ *   gapCues: optional { "1": "HAVE", "2": "NOT / BE", … } — ЕГЭ-style right column of cue words (bold caps in the UI); must cover every gap when set.
+ *   cueRailBreaksAfter: optional [2, 4] — extra vertical space after those gap rows (like line breaks in the book column).
  */
 (function () {
   var boot = window.PART2_OPEN_BOOT || {};
@@ -30,15 +32,28 @@
 
   function resolveBackHref() {
     var raw = String(backHref || "").trim();
+    var loc = window.location;
     if (!raw) {
       try {
-        return new URL("../../index.html", window.location.href).href;
+        return new URL("../../index.html", loc.href).href;
       } catch (e) {
         return "../../index.html";
       }
     }
+    var simpleRootHtml =
+      /^[a-z0-9._-]+\.html$/i.test(raw) && raw.indexOf("/") === -1 && raw.indexOf("\\") === -1;
+    if (simpleRootHtml && /\/use-of-english\//i.test(loc.pathname)) {
+      try {
+        if (loc.protocol === "http:" || loc.protocol === "https:") {
+          return new URL("/" + raw, loc.origin).href;
+        }
+      } catch (e0) {}
+      try {
+        return new URL("../../" + raw, loc.href).href;
+      } catch (e1) {}
+    }
     try {
-      return new URL(raw, window.location.href).href;
+      return new URL(raw, loc.href).href;
     } catch (e2) {
       return raw;
     }
@@ -54,6 +69,7 @@
     }
     back.textContent = lb;
     back.addEventListener("click", function (e) {
+      if (String(backHref || "").trim()) return;
       if (window.history.length > 1) {
         e.preventDefault();
         window.history.back();
@@ -91,14 +107,14 @@
   }
 
   function wirePart2ChainNext() {
-    var rawNext = sp.get("next");
+    var rawNext = String(sp.get("next") || boot.chainNext || "").trim();
     if (!rawNext) return;
     var strip = document.getElementById("part2OpenNextStrip");
     var link = document.getElementById("part2OpenNextLink");
     if (!strip || !link) return;
     var nextLabelDecoded = sp.get("nextLabel")
       ? decodeURIComponent(sp.get("nextLabel"))
-      : "Next task";
+      : String(boot.chainNextLabel || "").trim() || "Next task";
     link.setAttribute("href", resolveChainNextHref(String(rawNext).trim()));
     link.textContent = "\u2192 " + nextLabelDecoded;
     strip.removeAttribute("hidden");
@@ -271,6 +287,56 @@
     return htmlChunk.split(safe).join('<span class="p2-example">' + safe + "</span>");
   }
 
+  function hasGapCueRail(data) {
+    var c = data && data.gapCues;
+    if (!c || typeof c !== "object" || Array.isArray(c)) return false;
+    return Object.keys(c).length > 0;
+  }
+
+  function buildGapCueRailAside(data) {
+    var cues = data.gapCues;
+    var nums = gapNumsFromPassage(data.passage);
+    var breaksRaw = data.cueRailBreaksAfter || data.gapCueBreaksAfter || [];
+    var breakSet = {};
+    for (var bi = 0; bi < breaksRaw.length; bi++) {
+      breakSet[String(breaksRaw[bi])] = true;
+    }
+    var rows = [];
+    for (var ri = 0; ri < nums.length; ri++) {
+      var n = nums[ri];
+      var gn = String(n);
+      var cueRaw = cues[gn] != null ? cues[gn] : cues[n];
+      var cue = String(cueRaw != null ? cueRaw : "").trim();
+      var brk = breakSet[gn] ? " part2-open-cue-rail__row--break-after" : "";
+      rows.push(
+        '<div class="part2-open-cue-rail__row' +
+          brk +
+          '"><span class="part2-open-cue-rail__cue" title="Gap ' +
+          esc(gn) +
+          '">' +
+          esc(cue) +
+          "</span></div>"
+      );
+    }
+    return (
+      '<aside class="part2-open-cue-rail" aria-label="Опорные слова к пропускам">' +
+      '<div class="part2-open-cue-rail__inner">' +
+      rows.join("") +
+      "</div></aside>"
+    );
+  }
+
+  function wrapTaskHtmlForCueRail(passageHtml, data) {
+    if (!hasGapCueRail(data)) return passageHtml;
+    return (
+      '<div class="part2-open-cue-wrap"><div class="part2-open-cue-passage">' +
+      passageHtml +
+      "</div>" +
+      buildGapCueRailAside(data) +
+      "</div>"
+    );
+  }
+
   function buildTaskHtml(passage, exampleHighlight) {
     var paras = String(passage || "").split(/\n\n+/);
     return paras
@@ -436,6 +502,16 @@
       }
       if (!ok) return "No answer key for gap " + key + ".";
     }
+    if (hasGapCueRail(data)) {
+      var cues = data.gapCues;
+      for (var cq = 0; cq < nums.length; cq++) {
+        var cgn = String(nums[cq]);
+        var rawCue = cues[cgn] != null ? cues[cgn] : cues[nums[cq]];
+        if (rawCue == null || !String(rawCue).trim()) {
+          return "gapCues: add a cue for gap " + cgn + " (right-hand column).";
+        }
+      }
+    }
     return null;
   }
 
@@ -467,7 +543,18 @@
       if (elH1 && data.title) elH1.textContent = data.title;
       if (data.title) document.title = String(data.title);
 
-      if (elTask) elTask.innerHTML = buildTaskHtml(data.passage, data.exampleHighlight);
+      if (hasGapCueRail(data)) {
+        document.body.classList.add("part2-open--cue-rail");
+      } else {
+        document.body.classList.remove("part2-open--cue-rail");
+      }
+
+      if (elTask) {
+        elTask.innerHTML = wrapTaskHtmlForCueRail(
+          buildTaskHtml(data.passage, data.exampleHighlight),
+          data
+        );
+      }
 
       var gaps = Array.prototype.slice.call(document.querySelectorAll(".gap"));
 
@@ -561,6 +648,7 @@
       });
     })
     .catch(function () {
+      document.body.classList.remove("part2-open--cue-rail");
       if (elTask) elTask.innerHTML = "";
       if (btnCheck) btnCheck.disabled = true;
       if (btnReset) btnReset.disabled = true;

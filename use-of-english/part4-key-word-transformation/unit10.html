@@ -220,7 +220,7 @@
         <h1>Reading and Use of English &mdash; Part 4 Key word transformation</h1>
         <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">Unit 10</p>
       </div>
-      <a class="back" id="backLink" href="../unit10/index.html">&larr; Use of English — Unit 10</a>
+      <a class="back" id="backLink" href="../unit10/fce/index.html">&larr; Use of English — Unit 10</a>
     </header>
 
     <p class="subtitle">
@@ -259,7 +259,7 @@
     <p class="done-all" id="elDone">All 6 questions completed. You can close the page or reload to practise again.</p>
 
     <p class="hub-link">
-      <a href="../unit10/index.html">&larr; Use of English — Unit 10</a>
+      <a id="u10-uoe-hub-foot" href="../unit10/fce/index.html">&larr; Use of English — Unit 10</a>
       &nbsp;&middot;&nbsp;
       <a href="../index.html">Use of English — Unit 11 hub</a>
       &nbsp;&middot;&nbsp;
@@ -444,14 +444,23 @@
 
   var q = new URLSearchParams(window.location.search);
   var bl = document.getElementById("backLink");
-  if (q.get("back")) {
-    bl.href = q.get("back");
-  }
-  if (q.get("backLabel")) {
-    try {
-      bl.textContent =
-        "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
-    } catch (e) {}
+  var u10uoe = String(q.get("u10uoe") || "fce").toLowerCase();
+  var hubIdx = u10uoe === "cpe" ? "../unit10/cpe/index.html" : "../unit10/fce/index.html";
+  var foot = document.getElementById("u10-uoe-hub-foot");
+  if (foot) foot.setAttribute("href", hubIdx);
+
+  if (bl) {
+    if (q.get("back")) {
+      bl.href = q.get("back");
+    } else {
+      bl.href = hubIdx;
+    }
+    if (q.get("backLabel")) {
+      try {
+        bl.textContent =
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+      } catch (e) {}
+    }
   }
 
   renderTask();

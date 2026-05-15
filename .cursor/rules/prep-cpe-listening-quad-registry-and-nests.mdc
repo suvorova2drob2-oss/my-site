@@ -1,0 +1,68 @@
+---
+description: CPE Prep hub — Listening (quad registry + nested folders), Grammar nest; как добавлять новые юниты без дублирования четырёх тренажёров.
+globs: "**/js/prep-*listening*"
+alwaysApply: false
+---
+
+# Prep hub — Listening quad + вложенные папки (и связка с Grammar)
+
+Ментейнер опирается на **один реестр контента** и **фабрику из четырёх плиток**; агент при работе над новыми юнитами / Listening должен **повторять этот паттерн**, а не копировать четыре объекта `prep-link` вручную.
+
+## Стандарт CPE Listening в хабе
+
+У каждого материала (пакета) в папке вида **Listening → Part N** набор входов **фиксирован по ролям**, контент меняется:
+
+1. **Exam trainer**  
+2. **Lexical trainer**  
+3. **Speaking trainer**  
+4. **Audio trainer**
+
+Движки — отдельные страницы; **контент пакета** (подписи, пути, id задач, `prep_open_folder`) живёт в реестре.
+
+## Реестр пакетов (единый источник данных для quad)
+
+- Файл: **`js/prep-listening-pack-registry.js`**
+- Экспорт на `window`:
+  - **`PREP_LISTENING_PACK_REGISTRY`** — объект `{ [packId]: ListeningPackDef }`
+  - **`buildListeningQuadPrepLinks(packId)`** — массив из **четырёх** задач `{ id, title, subtitle, kind: "prep-link", href }` в порядке Exam → Lexical → Speaking → Audio
+  - **`listeningQuadTaskIds(packId)`** — только стабильные `id` (миграции, фильтры)
+
+Структура **`ListeningPackDef`** (ключевые поля):
+
+- **`hubSeedIdStrip`** — legacy-id старого «hub seed», который нужно вычищать при миграции
+- **`prepOpenFolderId`** — id папки Prep для **`prep_open_folder`** и резервных back-link на дисковых страницах (см. **`prep-folder-back-to-hub.mdc`**)
+- **`nestedFolder`** — `{ title, subtitle }` строки вложенной папки Part в хабе
+- **`enginesBase`** — префикс пути от корня сайта (например `Listening Part 4 Multiple matching/`), без дублирования слешей с `path`
+- **`quad`** — ровно **4** записи: `{ taskId, title, subtitle, path }`, где **`path`** относительно **`enginesBase`**
+
+Новый материал: **добавить ключ** `packId` в реестр; **не** дублировать четыре карточки в `index.html`.
+
+## Hub seeds по юниту (тонкий слой)
+
+- Пример: **`js/prep-hub-seeds-unit10-listening.js`**
+- Задаёт **`PACK_ID`** (строка из реестра) и собирает **`PREP_HUB_U10_LISTENING_SEEDS`** из `buildListeningQuadPrepLinks(PACK_ID)` + поля оболочки родителя **Listening**.
+- **Порядок скриптов в `index.html`:** сначала **`prep-listening-pack-registry.js`**, затем **`prep-hub-seeds-unit10-listening.js`** (иначе предупреждение в консоли и сиды не поднимутся).
+
+## Nest «Listening» на юните (матрёшка)
+
+- На сетке юнита одна папка **`PREP_LEGACY_U10_LISTENING_FOLDER_ID`** (`prep_legacy_u10_listening`), **`linkedUnit`**, без **`parentFolderId`**.
+- Части (**Part 4** и дальше вручную) — отдельные folder id с **`parentFolderId`** = id родителя Listening.
+- **`ensurePrepUnit10ListeningNest()`** в **`index.html`**: создаёт родителя, привязывает известные части (сейчас Part 4), переносит builtin-плитки с родителя на дочерние папки, сохраняет **`PrepSiteContent`**.
+- **Порядок подпапок под Listening не фиксируется кодом** — как лежат записи в **`folders`** / порядок добавления (в отличие от Grammar, где Inversion/Cleft сортируются явно).
+
+## Grammar nest (для контекста)
+
+- Родитель **`prep_legacy_u10_grammar`**, дети **Inversion** / **Cleft** с **`parentFolderId`**.
+- Контент сидов: **`js/prep-hub-seeds-unit10-grammar.js`**; **`ensurePrepUnit10GrammarNest()`**.
+
+## Чеклист для нового юнита / новой части Listening
+
+1. Добавить **`packId`** в **`prep-listening-pack-registry.js`** (полный quad + оболочка nested folder + `prepOpenFolderId`).
+2. Завести стабильный **`PREP_LEGACY_U*_…_FOLDER_ID`** для вложенной папки части при необходимости.
+3. В **nest-функции** юнита: создать/обновить folder с **`parentFolderId`** = Listening родителя; **`defaultTasks`** = **`buildListeningQuadPrepLinks(packId)`**; мигрировать старый top-level при необходимости.
+4. На дисковых HTML движков: **`prep_open_folder`** / **`data-prep-back-default`** = **`prepOpenFolderId`** из пакета (или целевая папка).
+5. Следующий этап архитектуры (когда понадобится): **`?pack=<packId>`** на страницах движков и чтение метаданных из того же реестра — без дублирования Track/Part в каждом HTML.
+
+## Связанные правила
+
+- Возврат в папку хаба с дисковых страниц: **`prep-folder-back-to-hub.mdc`**

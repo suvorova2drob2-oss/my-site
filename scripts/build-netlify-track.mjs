@@ -1,10 +1,13 @@
 /**
- * Vite output (dist/) → publish-cpe | publish-ege | publish-fce for separate Netlify sites.
- * Run `npm run vite:build` first (dist/ must exist).
+ * Vite output (dist/) → publish-cpe | publish-ege | publish-fce for separate deploy roots.
+ * Run `npm run vite:build` / `vite:build:ege` / `vite:build:fce` first (dist/ must exist).
  * Usage: node scripts/build-netlify-track.mjs cpe|ege|fce
  *
  * - CPE publish: full index.html; removes ege.html & fce.html.
  * - EGE / FCE publish: removes the other track’s hub HTML; replaces root index.html with a tiny redirect stub to ege.html | fce.html (no full CPE app on that origin).
+ * - FCE publish: also removes `unit10-vocabulary/similes/` (CPE-only).
+ *
+ * Also writes STATIC-HOST-ROUTING.txt (hints without Netlify _redirects).
  *
  * Sets <meta name="prep-deploy-track" content="…"> via the __PREP_META_TRACK__ placeholder
  * in any HTML file that includes it (see index.html, ege.html, fce.html).
@@ -65,6 +68,58 @@ const REDIRECT_LINES = {
 function writeRedirects() {
   const body = REDIRECT_LINES[TRACK].join("\n") + "\n";
   fs.writeFileSync(path.join(OUT, "_redirects"), body, "utf8");
+}
+
+const ROUTING_HINT_HOME = {
+  cpe: "index.html",
+  ege: "ege.html",
+  fce: "fce.html",
+};
+
+/** Explains Netlify _redirects and same behavior on static hosts (no magic on plain S3-like buckets). */
+function writeStaticHostRoutingHints() {
+  const home = ROUTING_HINT_HOME[TRACK] || "index.html";
+  const lines = REDIRECT_LINES[TRACK] || [];
+  const nginx = [
+    `# Track: ${TRACK} — serve course home at "/" (internal rewrite). Adjust if the bucket root is not /.`,
+    `location = / {`,
+    `    rewrite ^ /${home} break;`,
+    `}`,
+    ``,
+    `# Optional legacy paths (same as _redirects in this folder):`,
+    ...lines
+      .filter((l) => !l.startsWith("#"))
+      .map((l) => {
+        const parts = l.trim().split(/\s+/);
+        if (parts.length >= 3 && parts[2] === "200") {
+          const from = parts[0];
+          const to = parts[1];
+          if (from !== "/" && to.startsWith("/")) {
+            return `location = ${from} { rewrite ^ ${to} break; }`;
+          }
+        }
+        return `# ${l}`;
+      }),
+  ];
+  const text = `Static hosting routing — track "${TRACK}"
+================================================
+
+What Netlify _redirects does in this folder (copy for ALB / CDN rule editors):
+${lines.map((l) => "  " + l).join("\n")}
+
+Plain object storage (Yandex Object Storage website / similar)
+-------------------------------------------------------------
+- There is NO _redirects processing. Upload the whole publish-${TRACK} tree.
+- "/" usually serves index.html — this build already replaces index.html with a stub that sends users to ${home}.
+- Paths like /b2, /fce-course, /legacy: either configure matching rewrites on your CDN / load balancer,
+  or add real placeholder files / accept 404s if you never use those URLs.
+
+nginx (example)
+---------------
+${nginx.join("\n")}
+
+`;
+  fs.writeFileSync(path.join(OUT, "STATIC-HOST-ROUTING.txt"), text, "utf8");
 }
 
 function walkHtmlFiles(dir, acc) {
@@ -130,9 +185,18 @@ function pruneSiblingHubFiles() {
   }
 }
 
+/** FCE-only publish: drop CPE-exclusive vocabulary routes (same repo, separate products). */
+function pruneFceCpeOnlyContent() {
+  if (TRACK !== "fce") return;
+  const sim = path.join(OUT, "unit10-vocabulary", "similes");
+  if (fs.existsSync(sim)) fs.rmSync(sim, { recursive: true, force: true });
+}
+
 copyTree();
 pruneSiblingHubFiles();
+pruneFceCpeOnlyContent();
 writeLightIndexStub();
 patchPrepMeta();
 writeRedirects();
+writeStaticHostRoutingHints();
 console.log("Built", OUT, "track=" + TRACK);
