@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Grammar &mdash; Cleft sentences &amp; emphasis</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --purple: #c4b5fd;
+      --green: #86efac;
+      --orange: #fdba74;
+      --yellow: #fef08a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 26px 30px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .top h1 { font-size: 1.15rem; font-weight: 800; color: #fef9c3; }
+    .top .sub { font-size: 0.88rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+    .back:hover { text-decoration: underline; }
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .back--sister {
+      font-size: 0.85rem;
+      opacity: 0.92;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .section-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      margin: 22px 0 12px;
+      color: #bae6fd;
+    }
+    .lead { color: var(--muted); font-size: 0.92rem; margin-bottom: 14px; }
+
+    .legend {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+    }
+    .legend strong { display: block; margin-bottom: 8px; color: #e0f2fe; }
+    .legend-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .legend-row:last-child { margin-bottom: 0; }
+    .swatch {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      margin-top: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .swatch.p { background: var(--purple); }
+    .swatch.g { background: var(--green); }
+    .swatch.o { background: var(--orange); }
+    .swatch.y { background: var(--yellow); }
+
+    ol.ex1 {
+      padding-left: 1.35rem;
+      margin-bottom: 8px;
+    }
+    ol.ex1 li { margin-bottom: 14px; padding-left: 4px; }
+    ol.ex2 {
+      padding-left: 1.35rem;
+      margin-top: 10px;
+    }
+    ol.ex2 li { margin-bottom: 14px; padding-left: 4px; }
+
+    .hl-p {
+      color: #ede9fe;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: var(--purple);
+      text-underline-offset: 3px;
+    }
+    .hl-g {
+      color: #dcfce7;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: var(--green);
+      text-underline-offset: 3px;
+    }
+    .hl-o {
+      color: #ffedd5;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: var(--orange);
+      text-underline-offset: 3px;
+    }
+    .hl-y {
+      color: #fefce8;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: var(--yellow);
+      text-underline-offset: 3px;
+    }
+
+    .book-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #5eead4;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(94, 234, 212, 0.35);
+    }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 18px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 720px) {
+      .ref-grid { grid-template-columns: 1fr; }
+    }
+
+    .ref-card {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ref-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      border-radius: 14px 0 0 14px;
+    }
+    .ref-card--o::before { background: linear-gradient(180deg, var(--orange), #ea580c); }
+    .ref-card--y::before { background: linear-gradient(180deg, var(--yellow), #ca8a04); }
+    .ref-card--p::before { background: linear-gradient(180deg, var(--purple), #7c3aed); }
+    .ref-card--g::before { background: linear-gradient(180deg, var(--green), #16a34a); }
+
+    .ref-card-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .ref-num {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      min-width: 1.6rem;
+    }
+    .ref-card--o .ref-num { color: #fed7aa; }
+    .ref-card--y .ref-num { color: #fef08a; }
+    .ref-card--p .ref-num { color: #ddd6fe; }
+    .ref-card--g .ref-num { color: #bbf7d0; }
+    .ref-card-title {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: #f0f9ff;
+      line-height: 1.35;
+    }
+    .ref-rule {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .ref-rule code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.82em;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #e2e8f0;
+    }
+    .ref-example {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #7dd3fc;
+      line-height: 1.55;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(125, 211, 252, 0.2);
+    }
+
+    .your-line-panel {
+      margin: 8px 0 26px;
+      padding: 18px 18px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: linear-gradient(145deg, rgba(30, 58, 138, 0.35) 0%, rgba(30, 41, 59, 0.7) 100%);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+    }
+    .your-line-panel > strong {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #38bdf8;
+      margin-bottom: 12px;
+    }
+    .fix-row {
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(127, 29, 29, 0.25);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #fecaca;
+    }
+    .fix-row .bad { text-decoration: line-through; opacity: 0.9; }
+    .ok-row {
+      font-size: 0.95rem;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(22, 101, 52, 0.28);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #ecfccb;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .transform-intro {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .transform-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .transform-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 12px;
+      align-items: start;
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .transform-item .tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .transform-item--o .tag { color: #ffedd5; background: rgba(234, 88, 12, 0.25); }
+    .transform-item--y .tag { color: #fef9c3; background: rgba(202, 138, 4, 0.28); }
+    .transform-item--p .tag { color: #ede9fe; background: rgba(124, 58, 237, 0.28); }
+    .transform-item--g .tag { color: #dcfce7; background: rgba(22, 163, 74, 0.28); }
+    .transform-item em {
+      font-style: italic;
+      color: #7dd3fc;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Language focus</h1>
+        <p class="sub">Creating emphasis and cleft sentences</p>
+      </div>
+      <div class="top-links">
+        <a id="nav-back" class="back" href="../../index.html">&larr; Levels hub</a>
+        <a class="back back--sister" href="../inversion/index.html">Inversion reference &rarr;</a>
+      </div>
+    </header>
+
+    <p class="lead">
+      Reference notes on <strong>cleft sentences</strong> and <strong>emphasis</strong>. See also the sister sheet on <a style="color: var(--accent); font-weight: 700;" href="../inversion/index.html">10 Inversion</a>.
+    </p>
+
+    <h2 class="book-title">10 &nbsp;Creating emphasis and cleft sentences</h2>
+
+    <div class="ref-grid">
+      <article class="ref-card ref-card--o" aria-labelledby="ref-h-o">
+        <div class="ref-card-head">
+          <span class="ref-num">1</span>
+          <span id="ref-h-o" class="ref-card-title">Question words</span>
+        </div>
+        <p class="ref-rule">
+          Use <strong>What / Who / How / Why / Where + clause</strong> as the <strong>subject</strong> of the sentence to pull one piece of information into focus.
+        </p>
+        <p class="ref-example">How the agency will respond to these requests is unclear.</p>
+      </article>
+      <article class="ref-card ref-card--y" aria-labelledby="ref-h-y">
+        <div class="ref-card-head">
+          <span class="ref-num">2</span>
+          <span id="ref-h-y" class="ref-card-title">Nouns with premodifiers</span>
+        </div>
+        <p class="ref-rule">
+          <code>the (+ premodifier) + thing / fact / point / problem / reason / issue + be (that)</code> &mdash; often to frame an evaluation or summary.
+        </p>
+        <p class="ref-example">The underlying problem has always been the council&rsquo;s reluctance to spend money on public transport.</p>
+      </article>
+      <article class="ref-card ref-card--p" aria-labelledby="ref-h-p">
+        <div class="ref-card-head">
+          <span class="ref-num">3</span>
+          <span id="ref-h-p" class="ref-card-title">Emphasising a person or thing</span>
+        </div>
+        <p class="ref-rule">
+          <code>It + be + noun phrase + relative clause</code> &mdash; a classic <strong>wh-</strong> or <strong>that</strong>-cleft.
+        </p>
+        <p class="ref-example">In the play, it&rsquo;s May who notices that the necklace has been stolen, whereas in the film version it&rsquo;s her maid.</p>
+      </article>
+      <article class="ref-card ref-card--g" aria-labelledby="ref-h-g">
+        <div class="ref-card-head">
+          <span class="ref-num">4</span>
+          <span id="ref-h-g" class="ref-card-title">Negative <em>Not</em></span>
+        </div>
+        <p class="ref-rule">
+          <code>Not a + noun</code> for dramatic focus (often with passive or existential flavour). Typical of literary style.
+        </p>
+        <p class="ref-example">Not a day goes by that I don&rsquo;t think of what could have happened differently.</p>
+      </article>
+    </div>
+
+    <section class="your-line-panel" aria-labelledby="your-line-heading">
+      <strong id="your-line-heading">Your line &mdash; fix &amp; emphasise</strong>
+      <p class="fix-row">
+        <span class="bad">Nowadays he thought more about what might be in the water beneath him.</span>
+        &mdash; <strong>tense:</strong> <em>nowadays</em> goes with a <strong>present</strong> habit, not past <em>thought</em>.
+      </p>
+      <p class="ok-row">
+        &check; Neutral: Nowadays he thinks more about what might be in the water beneath him.
+      </p>
+      <p class="transform-intro">The same idea re-weighted with the four patterns above (linking colours):</p>
+      <div class="transform-list">
+        <div class="transform-item transform-item--o">
+          <span class="tag">1 · Wh- subject</span>
+          <div><em>What he thinks about more nowadays</em> is what might be in the water beneath him.</div>
+        </div>
+        <div class="transform-item transform-item--y">
+          <span class="tag">2 · Noun frame</span>
+          <div><em>The plain fact is that</em> nowadays he thinks more about what might be in the water beneath him.</div>
+        </div>
+        <div class="transform-item transform-item--p">
+          <span class="tag">3 · It-cleft</span>
+          <div><em>It&rsquo;s he who</em> thinks more nowadays about what might be in the water beneath him.</div>
+        </div>
+        <div class="transform-item transform-item--g">
+          <span class="tag">4 · Not a + noun</span>
+          <div><em>Not a day goes by nowadays</em> without his thinking more about what might be in the water beneath him.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="legend" aria-label="Colour key">
+      <strong>What the colours signal in Exercises 1&ndash;2</strong>
+      <div class="legend-row"><span class="swatch p" aria-hidden="true"></span><span>(a) factual detail / location</span></div>
+      <div class="legend-row"><span class="swatch g" aria-hidden="true"></span><span>(b) emphasis on absence / &ldquo;not any&rdquo;</span></div>
+      <div class="legend-row"><span class="swatch o" aria-hidden="true"></span><span>(c) what someone is thinking about</span></div>
+      <div class="legend-row"><span class="swatch y" aria-hidden="true"></span><span>(d) stating a problem or issue</span></div>
+    </div>
+
+    <h2 class="section-title">Exercise 1 &mdash; emphatic structures</h2>
+    <ol class="ex1">
+      <li>
+        <span class="hl-p">It was at a writers&rsquo; festival that</span> George got the idea for his next book.
+      </li>
+      <li>
+        <span class="hl-g">Not a single</span> crime novel deals with commonplace low-level events.
+      </li>
+      <li>
+        <span class="hl-o">What might be in the water beneath him</span> came into his thoughts more nowadays.
+      </li>
+      <li>
+        <span class="hl-y">The unfortunate truth is that</span> crime fiction is often formulaic and predictable.
+      </li>
+    </ol>
+
+    <h2 class="section-title">Exercise 2 &mdash; the same ideas, standard order</h2>
+    <p class="lead">Compare the highlighted chunks with Exercise&nbsp;1.</p>
+    <ol class="ex2">
+      <li>
+        George <span class="hl-p">got the idea for his next book at a writers&rsquo; festival.</span>
+      </li>
+      <li>
+        There aren&rsquo;t <span class="hl-g">any crime novels that deal with commonplace low-level events.</span>
+      </li>
+      <li>
+        Nowadays he <span class="hl-o">thinks more about what might be in the water beneath him.</span>
+      </li>
+      <li>
+        Unfortunately, <span class="hl-y">crime fiction is often formulaic and predictable.</span>
+      </li>
+    </ol>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search || "");
+      var backRaw = params.get("back");
+      var navBack = document.getElementById("nav-back");
+      function isPrepSafeReturnHref(href) {
+        if (!href || typeof href !== "string") return false;
+        var s = href.trim().replace(/\\/g, "/").toLowerCase();
+        return !/(?:^|\/)(fce\.html|ege\.html|unit10\.html)(?:[?#]|$)/.test(s);
+      }
+      if (navBack && backRaw) {
+        try {
+          var dec = decodeURIComponent(backRaw);
+          if (isPrepSafeReturnHref(dec)) {
+            navBack.href = dec;
+            navBack.textContent = "\u2190 Back";
+          }
+        } catch (e) {}
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Grammar &mdash; 10 Inversion &mdash; Exercise 2</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --heading: #7dd3fc;
+      --pink: #f472b6;
+      --green: #4ade80;
+      --green-bg: rgba(22, 163, 74, 0.22);
+      --wrong-bg: rgba(190, 24, 93, 0.22);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+      line-height: 1.58;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 22px 32px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .top h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.42rem;
+      font-weight: 700;
+      color: var(--heading);
+    }
+    .instr {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #bae6fd;
+      margin-top: 10px;
+      max-width: 38rem;
+    }
+    .note-soft {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .back:hover { text-decoration: underline; }
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .back--sister {
+      font-size: 0.84rem;
+      opacity: 0.92;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .score-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #bae6fd;
+    }
+    .score-strip span strong {
+      color: var(--accent);
+      font-size: 1.05rem;
+    }
+    .btn-reset {
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+    .btn-reset:hover {
+      background: rgba(56, 189, 248, 0.22);
+    }
+
+    details.story-full {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.35);
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      line-height: 1.65;
+    }
+    details.story-full summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0;
+    }
+    details.story-full[open] summary {
+      margin-bottom: 10px;
+    }
+
+    .mc-q {
+      margin-bottom: 22px;
+      padding: 16px 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .mc-q.correct {
+      border-color: rgba(74, 222, 128, 0.45);
+      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.2);
+    }
+    .mc-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .mc-head .mc-ctx {
+      flex: 1;
+      min-width: 0;
+    }
+    .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.65rem;
+      height: 1.65rem;
+      padding: 0 6px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .mc-ctx {
+      font-size: 0.93rem;
+      color: #f1f5f9;
+      line-height: 1.55;
+    }
+    .mc-ctx em {
+      color: #fde68a;
+      font-style: normal;
+      font-weight: 700;
+    }
+    .mc-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .mc-opt {
+      flex: 1;
+      min-width: min(200px, 100%);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.35);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.45;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .mc-opt:hover:not(:disabled) {
+      border-color: rgba(56, 189, 248, 0.55);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .mc-opt:disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+    .mc-opt.picked-right {
+      border-color: rgba(74, 222, 128, 0.7);
+      background: var(--green-bg);
+      color: #ecfccb;
+    }
+    .mc-opt.picked-wrong {
+      border-color: rgba(244, 114, 182, 0.7);
+      background: var(--wrong-bg);
+      color: #fce7f3;
+      animation: mcShake 0.45s ease;
+    }
+    .dual-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    @keyframes mcShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    details.teach-note {
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.35);
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    details.teach-note summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>10 &nbsp;Inversion</h1>
+        <p class="instr">2 &nbsp;Choose the correct alternative. In some cases both options may be possible.</p>
+        <p class="note-soft">Tap the option you think fits the detective story &mdash; the page tells you straight away if it&rsquo;s right.</p>
+      </div>
+      <div class="top-links">
+        <a id="nav-back" class="back" href="../../index.html">&larr; Levels hub</a>
+        <a class="back back--sister" href="index.html">&larr; Reference</a>
+        <a class="back back--sister" href="exercises.html">Exercise 1 &rarr;</a>
+        <a class="back back--sister" href="exercises-rewrite.html">Rewrite &rarr;</a>
+      </div>
+    </header>
+
+    <div class="score-strip">
+      <span>Correct: <strong id="score-count">0</strong> / <span id="score-total">8</span></span>
+      <button type="button" class="btn-reset" id="btn-reset">Reset choices</button>
+    </div>
+
+    <details class="story-full">
+      <summary>Full passage for context (gaps numbered)</summary>
+      <p style="margin-top:10px;">
+        The detective surveyed the scene in her usual attentive manner. On the side of the road were a jacket, a pair of boots and a hat.
+        They&rsquo;d been put there deliberately, suggesting that someone was coming back for them. She needed a closer look, but
+        <strong>(1)</strong> had she bent down to examine the clothes <strong>(2)</strong> her deputy ran over.
+        <strong>(3)</strong> trouble she thought to herself as she stood up.
+      </p>
+      <p style="margin-top:10px;">
+        <strong>(4)</strong> for his anxious expression, she might have had him wait till she was done, but something about the scene was nagging at her anyway so she motioned to Fraser to talk.
+        He informed her that he had just received a call from the station &ndash; the inspector wanted an update.
+      </p>
+      <p style="margin-top:10px;">
+        Iris was well aware that <strong>(5)</strong>, her job would be on the line, so reluctantly she pulled her mobile out of her pocket.
+        She cleared her throat and focused her mind. The inspector shouldn&rsquo;t sense she was uneasy, <strong>(6)</strong> he suspect the investigation was stalling.
+        The call was mercifully short. She hung up and tried to remember what she&rsquo;d been thinking before the call.
+        She gazed across at the scene and <strong>(7)</strong> did she realise what had been on her mind.
+        Sticking out of a bush on the other side of the road <strong>(8)</strong>.
+      </p>
+    </details>
+
+    <div id="mc-root">
+      <section class="mc-q" data-correct="b">
+        <div class="mc-head">
+          <span class="num">1</span>
+          <p class="mc-ctx">She needed a closer look, but <em>_____</em> had she bent down to examine the clothes &hellip;</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 1">
+          <button type="button" class="mc-opt" data-choice="a">rarely</button>
+          <button type="button" class="mc-opt" data-choice="b">hardly</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="b">
+        <div class="mc-head">
+          <span class="num">2</span>
+          <p class="mc-ctx">&hellip; had she bent down to examine the clothes <em>_____</em> her deputy ran over.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 2">
+          <button type="button" class="mc-opt" data-choice="a">then</button>
+          <button type="button" class="mc-opt" data-choice="b">when</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="b">
+        <div class="mc-head">
+          <span class="num">3</span>
+          <p class="mc-ctx"><em>_____</em> trouble she thought to herself as she stood up.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 3">
+          <button type="button" class="mc-opt" data-choice="a">Here it comes</button>
+          <button type="button" class="mc-opt" data-choice="b">Here comes</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="a,b">
+        <div class="mc-head">
+          <span class="num">4</span>
+          <p class="mc-ctx"><em>_____</em> for his anxious expression, she might have had him wait till she was done, but something about the scene was nagging at her anyway so she motioned to Fraser to talk.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 4">
+          <button type="button" class="mc-opt" data-choice="a">Were it not</button>
+          <button type="button" class="mc-opt" data-choice="b">Had it not been</button>
+        </div>
+        <p class="dual-hint">In the book, <strong>both</strong> are possible here: present unreal <em>Were it not for</em> &middot; third-conditional-style <em>Had it not been for</em>.</p>
+      </section>
+
+      <section class="mc-q" data-correct="b">
+        <div class="mc-head">
+          <span class="num">5</span>
+          <p class="mc-ctx">Iris was well aware that <em>_____</em>, her job would be on the line, so reluctantly she pulled her mobile out of her pocket.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 5">
+          <button type="button" class="mc-opt" data-choice="a">if the fugitive should not be found</button>
+          <button type="button" class="mc-opt" data-choice="b">should the fugitive not be found</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="a">
+        <div class="mc-head">
+          <span class="num">6</span>
+          <p class="mc-ctx">The inspector shouldn&rsquo;t sense she was uneasy, <em>_____</em> he suspect the investigation was stalling.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 6">
+          <button type="button" class="mc-opt" data-choice="a">nor must</button>
+          <button type="button" class="mc-opt" data-choice="b">must nor</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="a">
+        <div class="mc-head">
+          <span class="num">7</span>
+          <p class="mc-ctx">She gazed across at the scene and <em>_____</em> did she realise what had been on her mind.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 7">
+          <button type="button" class="mc-opt" data-choice="a">only then</button>
+          <button type="button" class="mc-opt" data-choice="b">only when</button>
+        </div>
+      </section>
+
+      <section class="mc-q" data-correct="a">
+        <div class="mc-head">
+          <span class="num">8</span>
+          <p class="mc-ctx">Sticking out of a bush on the other side of the road <em>_____</em>.</p>
+        </div>
+        <div class="mc-btns" role="group" aria-label="Question 8">
+          <button type="button" class="mc-opt" data-choice="a">was something that looked like a scarf</button>
+          <button type="button" class="mc-opt" data-choice="b">something that looked like a scarf was</button>
+        </div>
+      </section>
+    </div>
+
+    <details class="teach-note">
+      <summary>Note for self-study</summary>
+      <p style="margin-top:10px;line-height:1.55;">
+        Question <strong>(4)</strong> accepts <strong>either</strong> answer on this site (were-concessive vs third-conditional inversion), matching the textbook line &ldquo;both options may be possible.&rdquo;
+        Other items follow the edition&rsquo;s preferred marking unless your teacher agrees otherwise.
+      </p>
+    </details>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search || "");
+      var backRaw = params.get("back");
+      var navBack = document.getElementById("nav-back");
+      function isPrepSafeReturnHref(href) {
+        if (!href || typeof href !== "string") return false;
+        var s = href.trim().replace(/\\/g, "/").toLowerCase();
+        return !/(?:^|\/)(fce\.html|ege\.html|unit10\.html)(?:[?#]|$)/.test(s);
+      }
+      if (navBack && backRaw) {
+        try {
+          var dec = decodeURIComponent(backRaw);
+          if (isPrepSafeReturnHref(dec)) {
+            navBack.href = dec;
+            navBack.textContent = "\u2190 Back";
+          }
+        } catch (e) {}
+      }
+
+      var scoreEl = document.getElementById("score-count");
+      var boxes = Array.prototype.slice.call(document.querySelectorAll(".mc-q"));
+      var total = boxes.length;
+
+      function countDone() {
+        return boxes.filter(function (b) {
+          return b.classList.contains("correct");
+        }).length;
+      }
+
+      function updateScore() {
+        scoreEl.textContent = String(countDone());
+      }
+
+      function wireBox(box) {
+        var raw = (box.getAttribute("data-correct") || "").trim();
+        var okSet =
+          raw.indexOf(",") >= 0
+            ? raw.split(",").map(function (s) {
+                return s.trim();
+              })
+            : raw
+              ? [raw]
+              : [];
+        var btns = box.querySelectorAll(".mc-opt");
+        Array.prototype.forEach.call(btns, function (btn) {
+          btn.addEventListener("click", function () {
+            if (box.classList.contains("correct")) return;
+            var ch = btn.getAttribute("data-choice");
+            if (okSet.indexOf(ch) >= 0) {
+              box.classList.add("correct");
+              Array.prototype.forEach.call(btns, function (b) {
+                b.disabled = true;
+              });
+              btn.classList.add("picked-right");
+              updateScore();
+            } else {
+              btn.classList.add("picked-wrong");
+              window.setTimeout(function () {
+                btn.classList.remove("picked-wrong");
+              }, 650);
+            }
+          });
+        });
+      }
+
+      boxes.forEach(wireBox);
+      updateScore();
+
+      document.getElementById("btn-reset").addEventListener("click", function () {
+        boxes.forEach(function (box) {
+          box.classList.remove("correct");
+          Array.prototype.forEach.call(box.querySelectorAll(".mc-opt"), function (b) {
+            b.disabled = false;
+            b.classList.remove("picked-right", "picked-wrong");
+          });
+        });
+        updateScore();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Grammar &mdash; Inversion rewrite &mdash; Hamilton</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --heading: #7dd3fc;
+      --pink: #f472b6;
+      --flip-min-h: 300px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+      line-height: 1.58;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 22px 32px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .top h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.38rem;
+      font-weight: 700;
+      color: var(--heading);
+    }
+    .instr {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #bae6fd;
+      margin-top: 8px;
+      max-width: 40rem;
+    }
+    .theme-line {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-top: 8px;
+      max-width: 44rem;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .back:hover { text-decoration: underline; }
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .back--sister {
+      font-size: 0.84rem;
+      opacity: 0.92;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .flip-hint {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .flip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 720px) {
+      .flip-grid { grid-template-columns: 1fr; }
+    }
+
+    .flip-card {
+      perspective: 1200px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 16px;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.65);
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: var(--flip-min-h);
+      transition: transform 0.58s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+    }
+    .flip-card.is-flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 16px 16px 44px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(165deg, #243454 0%, #1e3055 100%);
+    }
+
+    .face-kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .face-kicker--answer {
+      color: var(--pink);
+    }
+
+    .tap-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.95;
+      white-space: nowrap;
+    }
+    .flip-card.is-flipped .flip-front .tap-badge {
+      visibility: hidden;
+    }
+
+    .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.65rem;
+      height: 1.65rem;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-right: 8px;
+      vertical-align: top;
+      flex-shrink: 0;
+    }
+
+    .rewrite-src {
+      font-size: 0.91rem;
+      color: #f1f5f9;
+      line-height: 1.55;
+      flex: 1;
+    }
+    .prompt-chip {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #fef08a;
+      background: rgba(234, 179, 8, 0.22);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+    }
+
+    .model-answer {
+      font-size: 0.9rem;
+      font-style: italic;
+      font-weight: 600;
+      color: #fbcfe8;
+      line-height: 1.55;
+      flex: 1;
+    }
+    .model-answer strong {
+      font-style: normal;
+      color: #fef08a;
+      font-weight: 800;
+    }
+
+    details.note-box {
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.35);
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+    details.note-box summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Inversion &mdash; guided rewrite</h1>
+        <p class="instr">Rewrite each cue line using the opener given in brackets (magazine article on Lin-Manuel Miranda and <em>Hamilton</em>).</p>
+        <p class="theme-line">Front = neutral cue &amp; prompt &middot; Back = textbook-style inverted model you can compare your version with.</p>
+      </div>
+      <div class="top-links">
+        <a id="nav-back" class="back" href="../../index.html">&larr; Levels hub</a>
+        <a class="back back--sister" href="index.html">Reference</a>
+        <a class="back back--sister" href="exercises.html">Ex 1</a>
+        <a class="back back--sister" href="exercises-2.html">Ex 2</a>
+      </div>
+    </header>
+
+    <p class="flip-hint">Tap / click a card (or press Space / Enter when focused) to see the model inversion.</p>
+
+    <div class="flip-grid" id="flip-grid">
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 1. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">1</span>
+              The musical <em>Hamilton</em> opened in 2015 and it became a roaring success, first at the Public Theatre in Lower Manhattan and then on Broadway.
+              <span class="prompt-chip">Use: No sooner</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              <strong>No sooner had</strong> the musical <em>Hamilton</em> opened in 2015 <strong>than</strong> it became a roaring success, first at the Public Theatre in Lower Manhattan and then on Broadway.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 2. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">2</span>
+              Miranda could never have predicted <em>Hamilton</em>&rsquo;s incredible worldwide appeal, but the number of accolades it&rsquo;s received speaks for itself.
+              <span class="prompt-chip">Use: Under no circumstances</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              <strong>Under no circumstances could</strong> Miranda have predicted <em>Hamilton</em>&rsquo;s incredible worldwide appeal, but the number of accolades it&rsquo;s received speaks for itself.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 3. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">3</span>
+              It won 11 Tony awards, 8 Drama Desk Awards, a Grammy, an Emmy and a Pulitzer Prize.
+              <span class="prompt-chip">Use: Not only</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              <strong>Not only did</strong> it win 11 Tony awards, <strong>but also</strong> 8 Drama Desk Awards, a Grammy, an Emmy and a Pulitzer Prize.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 4. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">4</span>
+              His remarkable talent for writing songs that can communicate huge amounts of emotion and depth in relatively few words became apparent then.
+              <span class="prompt-chip">Use: Only then</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              <strong>Only then did</strong> his remarkable talent for writing songs that can communicate huge amounts of emotion and depth in relatively few words <strong>become apparent</strong>.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 5. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">5</span>
+              Shortly after the latter film was released on Disney+, the song <em>We don&rsquo;t talk about Bruno</em> became an international hit, reaching number one on US Spotify and becoming the top trending music video on YouTube.
+              <span class="prompt-chip">Use: Scarcely</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              <strong>Scarcely had</strong> the song <em>We don&rsquo;t talk about Bruno</em> been released on Disney+ <strong>than</strong> it had become an international hit, reaching number one on US Spotify and becoming the top trending music video on YouTube.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="flip-card" tabindex="0" role="button" aria-label="Rewrite 6. Tap to flip." aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="face-kicker">Cue line</span>
+            <div class="rewrite-src">
+              <span class="num">6</span>
+              Miranda acknowledges that <strong>if it were not for</strong> two influential people in his life &mdash; his long-time university friend and director Thomas Kail and his wife, Vanessa Nadal &mdash; things might have been very different.
+              <span class="prompt-chip">Rewrite with <strong>were it</strong> (drop <em>if</em>)</span>
+            </div>
+            <span class="tap-badge">Tap to flip &rarr;</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="face-kicker face-kicker--answer">Model answer</span>
+            <p class="model-answer">
+              Miranda acknowledges that <strong>were it not for</strong> two influential people in his life &mdash; his long-time university friend and director Thomas Kail and his wife, Vanessa Nadal &mdash; things might have been very different.
+            </p>
+            <span class="tap-badge">&larr; Tap to flip back</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <details class="note-box">
+      <summary>Register note</summary>
+      <p style="margin-top:10px;line-height:1.55;">
+        Item&nbsp;5 follows the magazine key (<strong>Scarcely had &hellip; than &hellip;</strong>). Many classrooms prefer <strong>when</strong> after <em>scarcely/hardly</em> &mdash; compare your inversion reference sheet.
+      </p>
+    </details>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search || "");
+      var backRaw = params.get("back");
+      var navBack = document.getElementById("nav-back");
+      function isPrepSafeReturnHref(href) {
+        if (!href || typeof href !== "string") return false;
+        var s = href.trim().replace(/\\/g, "/").toLowerCase();
+        return !/(?:^|\/)(fce\.html|ege\.html|unit10\.html)(?:[?#]|$)/.test(s);
+      }
+      if (navBack && backRaw) {
+        try {
+          var dec = decodeURIComponent(backRaw);
+          if (isPrepSafeReturnHref(dec)) {
+            navBack.href = dec;
+            navBack.textContent = "\u2190 Back";
+          }
+        } catch (e) {}
+      }
+
+      function toggleCard(card) {
+        var on = card.classList.toggle("is-flipped");
+        card.setAttribute("aria-pressed", on ? "true" : "false");
+      }
+
+      document.getElementById("flip-grid").addEventListener("click", function (ev) {
+        var card = ev.target.closest(".flip-card");
+        if (!card) return;
+        toggleCard(card);
+      });
+
+      document.getElementById("flip-grid").addEventListener("keydown", function (ev) {
+        var card = ev.target.closest(".flip-card");
+        if (!card || (ev.key !== " " && ev.key !== "Enter")) return;
+        ev.preventDefault();
+        toggleCard(card);
+      });
+    })();
+  </script>
+</body>
+</html>
