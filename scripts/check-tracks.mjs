@@ -42,6 +42,7 @@ const CPE_LEARNER_FILES = new Set([
  */
 function isCpeLearnerScope(rel) {
   const lower = rel.replace(/\\/g, "/").toLowerCase();
+  if (lower.includes("/cpe/")) return true;
   return CPE_LEARNER_PREFIXES.some((prefix) => lower.startsWith(prefix)) || CPE_LEARNER_FILES.has(lower);
 }
 
