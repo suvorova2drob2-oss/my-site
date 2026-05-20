@@ -30,6 +30,7 @@ const CPE_LEARNER_PREFIXES = [
 ];
 
 const CPE_LEARNER_FILES = new Set([
+  "unit10-vocabulary/index.html",
   "unit12-use-of-english.html",
   "vocabulary-tic-tac-toe-unit10.html",
   "audio practice/unit12-shadowing.html",
