@@ -81,6 +81,16 @@ const RULES = [
     },
   },
   {
+    id: "cpe-learner-cross-course-comments",
+    message:
+      "CPE learner-facing pages should not mention other tracks (FCE/EGE) in HTML comments.",
+    test(rel, text) {
+      if (!isCpeLearnerScope(rel)) return [];
+      const re = /<!--[^>]*(FCE|EGE)[^>]*-->/gi;
+      return matchLines(text, re);
+    },
+  },
+  {
     id: "cpe-learner-cross-course-href",
     message:
       "CPE learner-facing pages must not link to other tracks via href (fce.html/ege.html/course=fce|ege).",

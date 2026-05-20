@@ -19,6 +19,7 @@ Goal: prevent regressions like cross-unit jumps.
 - [ ] URL `back/next` handling stays sanitized (no raw param-to-href assignment).
 - [ ] No `backLabel` insertion via `innerHTML`.
 - [ ] CPE learner-facing pages in guarded scope do not contain `FCE`/`EGE` learner copy.
+- [ ] CPE learner-facing pages in guarded scope do not contain `FCE`/`EGE` in HTML comments.
 - [ ] CPE learner-facing pages in guarded scope do not link to other tracks (`fce.html` / `ege.html` / `course=fce|ege`).
 
 ## 3) Data consistency
@@ -40,7 +41,7 @@ Goal: prevent regressions like cross-unit jumps.
 ## 5) Automated checks (required)
 
 - [ ] `npm run check:all`
-- [ ] If CPE learner copy/navigation changed: `npm run check:tracks` (must pass `cpe-learner-cross-course-copy` and `cpe-learner-cross-course-href`).
+- [ ] If CPE learner copy/navigation changed: `npm run check:tracks` (must pass `cpe-learner-cross-course-copy`, `cpe-learner-cross-course-comments`, `cpe-learner-cross-course-href`).
 - [ ] Target build:
   - CPE: `npm run build:cpe`
   - EGE: `npm run build:ege`

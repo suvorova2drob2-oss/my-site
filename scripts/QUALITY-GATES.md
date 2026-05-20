@@ -27,6 +27,7 @@ Release is **blocked** if any of these fail:
 3. **Track separation**
    - Forbidden cross-track path/content patterns from `check-tracks.mjs`.
    - `cpe-learner-cross-course-copy`: learner-facing CPE pages must not expose `FCE`/`EGE` wording.
+   - `cpe-learner-cross-course-comments`: learner-facing CPE pages must not contain `FCE`/`EGE` in HTML comments.
    - `cpe-learner-cross-course-href`: learner-facing CPE pages must not contain `href` to other tracks (`fce.html`, `ege.html`, `course=fce`, `course=ege`).
      Current guarded scope includes:
      - any learner page with `/cpe/` in path (auto-covered)
