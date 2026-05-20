@@ -31,6 +31,7 @@ Release is **blocked** if any of these fail:
    - `cpe-learner-cross-course-href`: learner-facing CPE pages must not contain `href` to other tracks (`fce.html`, `ege.html`, `course=fce`, `course=ege`).
      Current guarded scope includes:
      - any learner page with `/cpe/` in path (auto-covered)
+     - any learner page with `course=cpe` marker in HTML (auto-covered, except root `index.html`)
      - `games/cpe/**`
      - `speaking/unit10/cpe/**`
      - `writing/unit10/cpe/**`

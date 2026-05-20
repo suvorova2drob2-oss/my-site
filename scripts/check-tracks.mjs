@@ -46,6 +46,20 @@ function isCpeLearnerScope(rel) {
   return CPE_LEARNER_PREFIXES.some((prefix) => lower.startsWith(prefix)) || CPE_LEARNER_FILES.has(lower);
 }
 
+/**
+ * Auto-cover CPE learner entries that pass `course=cpe` in page links.
+ * Keep root index excluded because it contains track-management code/comments.
+ *
+ * @param {string} rel
+ * @param {string} text
+ */
+function isGuardedCpeLearnerPage(rel, text) {
+  if (isCpeLearnerScope(rel)) return true;
+  const lower = rel.replace(/\\/g, "/").toLowerCase();
+  if (lower === "index.html") return false;
+  return /course=cpe/i.test(text);
+}
+
 /** @type {{ id: string; message: string; test: (relPath: string, text: string) => string[] }}[] */
 const RULES = [
   {
@@ -75,7 +89,7 @@ const RULES = [
     message:
       "CPE learner-facing pages should not mention other tracks (FCE/EGE). Keep course text CPE-local.",
     test(rel, text) {
-      if (!isCpeLearnerScope(rel)) return [];
+      if (!isGuardedCpeLearnerPage(rel, text)) return [];
       const re = />[^<]*(FCE|EGE)[^<]*</g;
       return matchLines(text, re);
     },
@@ -85,7 +99,7 @@ const RULES = [
     message:
       "CPE learner-facing pages should not mention other tracks (FCE/EGE) in HTML comments.",
     test(rel, text) {
-      if (!isCpeLearnerScope(rel)) return [];
+      if (!isGuardedCpeLearnerPage(rel, text)) return [];
       const re = /<!--[^>]*(FCE|EGE)[^>]*-->/gi;
       return matchLines(text, re);
     },
@@ -95,7 +109,7 @@ const RULES = [
     message:
       "CPE learner-facing pages must not link to other tracks via href (fce.html/ege.html/course=fce|ege).",
     test(rel, text) {
-      if (!isCpeLearnerScope(rel)) return [];
+      if (!isGuardedCpeLearnerPage(rel, text)) return [];
       const re = /href\s*=\s*["'][^"']*(?:fce\.html|ege\.html|course=(?:fce|ege))[^"']*["']/gi;
       return matchLines(text, re);
     },
