@@ -44,12 +44,23 @@ const RULES = [
     },
   },
   {
-    id: "cpe-games-cross-course-copy",
+    id: "cpe-learner-cross-course-copy",
     message:
-      "games/cpe/** learner-facing copy should not mention other tracks (FCE/EGE). Keep course text CPE-local.",
+      "CPE learner-facing pages should not mention other tracks (FCE/EGE). Keep course text CPE-local.",
     test(rel, text) {
       const lower = rel.replace(/\\/g, "/").toLowerCase();
-      if (!lower.startsWith("games/cpe/")) return [];
+      const cpePrefixes = [
+        "games/cpe/",
+        "unit10-vocabulary/cpe/",
+        "use-of-english/unit10/cpe/",
+      ];
+      const cpeFiles = new Set([
+        "unit12-use-of-english.html",
+        "vocabulary-tic-tac-toe-unit10.html",
+        "audio practice/unit12-shadowing.html",
+      ]);
+      const isCpeScope = cpePrefixes.some((prefix) => lower.startsWith(prefix)) || cpeFiles.has(lower);
+      if (!isCpeScope) return [];
       const re = />[^<]*(FCE|EGE)[^<]*</g;
       return matchLines(text, re);
     },
