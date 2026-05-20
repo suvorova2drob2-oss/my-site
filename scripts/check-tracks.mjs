@@ -19,6 +19,28 @@ const SKIP_DIRS = new Set([
   ".cursor",
 ]);
 
+const CPE_LEARNER_PREFIXES = [
+  "games/cpe/",
+  "unit10-vocabulary/cpe/",
+  "use-of-english/unit10/cpe/",
+];
+
+const CPE_LEARNER_FILES = new Set([
+  "unit12-use-of-english.html",
+  "vocabulary-tic-tac-toe-unit10.html",
+  "audio practice/unit12-shadowing.html",
+  "unit11-reading-confronting-issues/exam-mode-part7-confronting-issues.html",
+  "unit11-reading-confronting-issues/stage2-retell.html",
+]);
+
+/**
+ * @param {string} rel
+ */
+function isCpeLearnerScope(rel) {
+  const lower = rel.replace(/\\/g, "/").toLowerCase();
+  return CPE_LEARNER_PREFIXES.some((prefix) => lower.startsWith(prefix)) || CPE_LEARNER_FILES.has(lower);
+}
+
 /** @type {{ id: string; message: string; test: (relPath: string, text: string) => string[] }}[] */
 const RULES = [
   {
@@ -48,22 +70,18 @@ const RULES = [
     message:
       "CPE learner-facing pages should not mention other tracks (FCE/EGE). Keep course text CPE-local.",
     test(rel, text) {
-      const lower = rel.replace(/\\/g, "/").toLowerCase();
-      const cpePrefixes = [
-        "games/cpe/",
-        "unit10-vocabulary/cpe/",
-        "use-of-english/unit10/cpe/",
-      ];
-      const cpeFiles = new Set([
-        "unit12-use-of-english.html",
-        "vocabulary-tic-tac-toe-unit10.html",
-        "audio practice/unit12-shadowing.html",
-        "unit11-reading-confronting-issues/exam-mode-part7-confronting-issues.html",
-        "unit11-reading-confronting-issues/stage2-retell.html",
-      ]);
-      const isCpeScope = cpePrefixes.some((prefix) => lower.startsWith(prefix)) || cpeFiles.has(lower);
-      if (!isCpeScope) return [];
+      if (!isCpeLearnerScope(rel)) return [];
       const re = />[^<]*(FCE|EGE)[^<]*</g;
+      return matchLines(text, re);
+    },
+  },
+  {
+    id: "cpe-learner-cross-course-href",
+    message:
+      "CPE learner-facing pages must not link to other tracks via href (fce.html/ege.html/course=fce|ege).",
+    test(rel, text) {
+      if (!isCpeLearnerScope(rel)) return [];
+      const re = /href\s*=\s*["'][^"']*(?:fce\.html|ege\.html|course=(?:fce|ege))[^"']*["']/gi;
       return matchLines(text, re);
     },
   },
