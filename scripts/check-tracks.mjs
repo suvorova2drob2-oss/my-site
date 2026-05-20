@@ -21,6 +21,8 @@ const SKIP_DIRS = new Set([
 
 const CPE_LEARNER_PREFIXES = [
   "games/cpe/",
+  "speaking/unit10/cpe/",
+  "writing/unit10/cpe/",
   "unit10-vocabulary/cpe/",
   "use-of-english/unit10/cpe/",
 ];
@@ -29,6 +31,7 @@ const CPE_LEARNER_FILES = new Set([
   "unit12-use-of-english.html",
   "vocabulary-tic-tac-toe-unit10.html",
   "audio practice/unit12-shadowing.html",
+  "use-of-english/unit10/word-formation/literary-translation-pitfalls.html",
   "unit11-reading-confronting-issues/exam-mode-part7-confronting-issues.html",
   "unit11-reading-confronting-issues/stage2-retell.html",
 ]);
