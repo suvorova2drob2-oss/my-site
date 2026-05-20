@@ -1,7 +1,6 @@
 /**
  * Единое хранилище контента сайта (папки → разделы → задания).
- * localStorage + BroadcastChannel. Если подключён PrepCloudClient,
- * при save() данные уходят в облако; при загрузке страницы — PrepSiteContent.hydrateFromCloud().
+ * Работает локально: localStorage + BroadcastChannel.
  */
 (function (global) {
   var KEY = "prep-site-content-v1";
@@ -118,41 +117,12 @@
   }
 
   /**
-   * Pull course folders from the cloud when PrepCloudClient is loaded and URL/key are set.
-   * Safe no-op (resolves false) when cloud is not configured.
+   * Legacy compatibility hook.
+   * Cloud hydrate отключён; оставляем метод как безопасный no-op,
+   * чтобы старые вызовы не ломали загрузку.
    */
   function hydrateFromCloud() {
-    try {
-      if (global.__PREP_BOXED_SITE__ === true) {
-        return Promise.resolve(false);
-      }
-      var PC = global.PrepCloudClient;
-      if (
-        !PC ||
-        typeof PC.pullCourseSnapshot !== "function" ||
-        typeof PC.isReadConfigured !== "function" ||
-        !PC.isReadConfigured()
-      ) {
-        return Promise.resolve(false);
-      }
-      var cid = getCourseId();
-      return PC.pullCourseSnapshot(cid)
-        .then(function (snap) {
-          if (!snap || snap.data == null) return false;
-          var data = snap.data;
-          if (!data || !Array.isArray(data.folders)) return false;
-          try {
-            global.localStorage.setItem(namespacedKey(cid), JSON.stringify(data));
-          } catch (eStore) {}
-          broadcast();
-          return true;
-        })
-        .catch(function () {
-          return false;
-        });
-    } catch (e) {
-      return Promise.resolve(false);
-    }
+    return Promise.resolve(false);
   }
 
   var syncFns = [];

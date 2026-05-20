@@ -1,0 +1,33 @@
+---
+description: Playground в Prep и на уровнях открывает сразу games/cpe/unit… без промежуточного экрана папки (кроме Edit mode).
+globs: "**/index.html,**/js/prep-hub*.js,.cursor/rules/**/*.mdc"
+alwaysApply: false
+---
+
+# Prep Playground — прямой заход на игровую площадку
+
+## Цель
+
+Папка **Playground** в Prep не должна показывать промежуточный экран «одна карточка → Open». Ученик и препью сразу попадают на **standalone**-хаб игр (`games/cpe/unit…`).
+
+## Unit 10 (Prep CMS folder)
+
+- **Folder id:** `PREP_LEGACY_U10_GAMES_FOLDER_ID` (`prep_legacy_u10_games`), задаётся в `js/prep-hub-unit10-nests.js`.
+- **URL:** берётся из `PREP_HUB_U10_GAMES_SEEDS.hubTask.href` в `js/prep-hub-seeds-unit10-games.js` (fallback в коде: `games/cpe/unit10/index.html?course=cpe`).
+- **Движки vs Confronting:** карточки Playground ссылаются на `unit11-reading-confronting-issues/*.html?course=cpe`. При этом параметре движки подставляют **пустые/нейтральные заглушки** вместо колод и текстов A–D (`js/prep-u10-playground-shell.js`). Без `course=cpe` (типичный заход из FCE Unit 11) остаётся полный контент Confronting issues.
+- **Snowball phrases (цепочка фраз):** не плодить новый движок — см. **`.cursor/rules/prep-snowball-phrases.mdc`** и **`js/prep-snowball-phrases-engine.js`**. Unit 10 CPE: **`games/cpe/unit10/snowball-phrases.html`** + **`js/unit10-snowball-wordbank.js`**.
+- **Навигация:** `hubTryNavigatePrepPlaygroundFolder` + `hubPrepPlaygroundHref` в корневом `index.html` — вызываются из `hubNavigateToCmsFolder` и `openHubFolderWorkspace` до показа workspace/CMS.
+- **Edit mode** (`getHubViewMode() === "edit"`): редиректа нет — папка открывается как обычный folder workspace (управление задачами, legacy overflow).
+
+## Units 8–9 (статические level screens)
+
+- Чип **Playground** сразу ведёт на `games/cpe/unit8/index.html?course=cpe` и `games/cpe/unit9/index.html?course=cpe` (`unitFolderRowNav` / `href`). Отдельного Prep-folder bypass не нужно.
+
+## Страница `games/cpe/unitN/index.html`
+
+- Это **витрина игр** (карточки форматов). Не встраивать сюда блоки **Listening-транскриптов**, длинные справочные тексты и ссылки «только тексты» — они остаются на своих страницах курса / exam trainer.
+
+## Новые юниты
+
+- Если появится Prep-папка «Playground» с одним `prep-link` на игровой хаб — добавь такой же **прямой** bypass по folder id (как для Unit 10), чтобы не дублировать экран списка задач.
+- Если только статический чип на уровне — достаточно `href` на `games/cpe/unitN/index.html`.

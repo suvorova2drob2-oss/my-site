@@ -255,7 +255,7 @@
       </a>
     </div>
 
-    <p class="section-title">Quiz</p>
+    <p class="section-title">Reading · quiz</p>
     <div class="games-grid">
       <a class="game-tile" href="millionaire/index.html?course=cpe">
         <div class="tile-row">
@@ -408,12 +408,26 @@
   var q = new URLSearchParams(window.location.search || "");
   var rawBack = q.get("back");
   var nav = document.getElementById("nav-home");
-  if (nav && rawBack && rawBack.indexOf("fce.html") < 0 && rawBack.indexOf("ege.html") < 0) {
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
     try {
-      nav.href = decodeURIComponent(rawBack.replace(/\+/g, " "));
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      if (/fce\.html|ege\.html/i.test(u.pathname)) return fallback || "";
+      return u.pathname + u.search + u.hash;
     } catch (e) {
-      nav.href = rawBack;
+      return fallback || "";
     }
+  }
+  if (nav && rawBack && rawBack.indexOf("fce.html") < 0 && rawBack.indexOf("ege.html") < 0) {
+    var decoded = rawBack;
+    try {
+      decoded = decodeURIComponent(rawBack.replace(/\+/g, " "));
+    } catch (e0) {}
+    nav.href = sanitizeReturnHref(decoded, nav.getAttribute("href"));
   }
 })();
   </script>

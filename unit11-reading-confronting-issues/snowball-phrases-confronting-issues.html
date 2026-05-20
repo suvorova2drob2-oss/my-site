@@ -47,6 +47,7 @@
     .row-btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
     .row-btns button { width: auto; }
   </style>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -96,9 +97,18 @@
   <script src="../js/u11-must-know-lexis.js"></script>
   <script>
 (function () {
+  var hubA = document.querySelector(".bar a[href=\"index.html\"]");
+  if (hubA && window.PREP_U10_PG_CPE) {
+    hubA.setAttribute("href", "../games/cpe/unit10/index.html?course=cpe");
+    hubA.innerHTML = "&larr; Playground";
+  }
+
   var PHRASES = (typeof U11_KEY_PHRASES_MISSING !== "undefined" && U11_KEY_PHRASES_MISSING.length)
     ? U11_KEY_PHRASES_MISSING.slice()
     : (typeof U11_WHAT_MISSING_DECK !== "undefined" && U11_WHAT_MISSING_DECK.length) ? U11_WHAT_MISSING_DECK.slice() : [];
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && typeof PREP_U10_PG_STUB.phrasesOneLine === "function") {
+    PHRASES = PREP_U10_PG_STUB.phrasesOneLine();
+  }
   var names = [];
   var numRounds = 2;
   var turn = 0;

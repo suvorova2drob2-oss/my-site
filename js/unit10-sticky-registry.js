@@ -63,6 +63,25 @@
                     "<b>Shakespeare · Use of English</b> — same <b>ten</b> phrases as the Unit&nbsp;10 Word Bank tab for this pack (<em>Was Shakespeare a woman?</em>). One missing word per sticky; <b>Context</b> shows the full line.",
                 resetBtn: "Reset Shakespeare UoE"
             }
+        },
+        {
+            mode: "u10similes",
+            deckProp: "u10SimilesStickyDeck",
+            renderGlobal: "u10SimilesStickyRenderBoard",
+            resetGlobal: "u10SimilesStickyResetUI",
+            gapCueKind: "artrest",
+            tabId: "u10-sticky-tab-u10similes",
+            taskPanelId: "u10-sticky-task-u10similes",
+            boardId: "u10-similes-sticky-board",
+            doneId: "u10-similes-sticky-done",
+            labels: {
+                hubTab: "Task 4: Similes (Unit 10 vocabulary)",
+                l9Tab: "Task 13: Similes",
+                liveScopeLabel: "Task 13: Unit 10 similes only",
+                panelLeadHtml:
+                    "<b>Similes</b> &mdash; same <b>twelve</b> phrases as the Unit&nbsp;10 Word Bank tab for this pack (similes + two related idioms). One missing word per sticky; <b>Context</b> shows the full line.",
+                resetBtn: "Reset similes"
+            }
         }
     ];
 
@@ -85,10 +104,11 @@
         return !!BY[String(m || "")];
     };
 
-    /** Связка с вкладкой Word Bank / Lexical games (`p4` | `books` | `shakespeare`). */
+    /** Связка с вкладкой Word Bank / Lexical games (`p4` | `books` | `shakespeare` | `similes`). */
     W.unit10LexGamesPackToStickyMode = function (pack) {
         if (pack === "books") return "u10books";
         if (pack === "shakespeare") return "u10shakespeare";
+        if (pack === "similes") return "u10similes";
         return "u10p4";
     };
 

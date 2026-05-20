@@ -896,8 +896,22 @@
   });
 
   var q = new URLSearchParams(window.location.search);
-  if (q.get("back")) {
-    document.getElementById("homeLink").href = q.get("back");
+  var homeLink = document.getElementById("homeLink");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+  if (homeLink) {
+    homeLink.href = sanitizeReturnHref(q.get("back"), homeLink.getAttribute("href") || "");
   }
 
   buildSuffixGrid();

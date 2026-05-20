@@ -934,11 +934,7 @@
         });
     }
 
-    if (typeof PrepSiteContent !== "undefined" && PrepSiteContent.hydrateFromCloud) {
-      PrepSiteContent.hydrateFromCloud().finally(continueBoot);
-    } else {
-      continueBoot();
-    }
+    continueBoot();
   }
 
   if (document.readyState === "loading") {

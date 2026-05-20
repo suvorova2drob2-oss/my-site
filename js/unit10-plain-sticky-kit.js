@@ -292,4 +292,25 @@
                 : "Shakespeare · Use of English";
         }
     });
+
+    W.unit10RegisterPlainStickyPack({
+        mode: "u10similes",
+        notifyTaskKey: "u10similes",
+        deckProp: "u10SimilesStickyDeck",
+        renderFnName: "u10SimilesStickyRenderBoard",
+        resetFnName: "u10SimilesStickyResetUI",
+        domPrefix: "u10-similes-sticky",
+        doneElementId: "u10-similes-sticky-done",
+        plainGetter: function () {
+            return W.U10_SIMILES_LEXIS_PLAIN;
+        },
+        rowsGetter: function () {
+            return W.U10_SIMILES_LEXIS_GAME_ROWS;
+        },
+        speakerLabelGetter: function () {
+            return typeof W.LEX_U10_SIMILES_SPEAKER_LABEL === "string"
+                ? W.LEX_U10_SIMILES_SPEAKER_LABEL
+                : "Unit 10 · Similes";
+        }
+    });
 })(typeof window !== "undefined" ? window : globalThis);

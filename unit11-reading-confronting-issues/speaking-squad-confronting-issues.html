@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Squad missions (speaking) &mdash; Confronting issues</title>
+  <title>Squad missions (speaking)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
@@ -55,23 +55,62 @@
     .t-big.go { color: var(--ok); }
     .tline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
     .hint { font-size: 0.8rem; color: var(--muted); margin-top: 14px; line-height: 1.4; }
+    .pack-box {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #2b4159;
+      background: rgba(2, 6, 23, 0.8);
+    }
+    .pack-legend {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 6px;
+    }
+    .pack-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 6px 0;
+      font-size: 0.82rem;
+      color: #dbeafe;
+      cursor: pointer;
+    }
+    .pack-row input { margin-top: 3px; accent-color: #22d3ee; }
+    .pack-hint { margin-top: 6px; font-size: 0.74rem; color: #93c5fd; line-height: 1.35; }
+    .bank-meta { margin-top: 10px; font-size: 0.78rem; color: #7dd3fc; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
     <div class="bar">
       <div>
         <p class="tag">Squad-style speaking</p>
-        <h1>Confronting issues — missions</h1>
-        <p class="lead">Phrases = your <strong>23 memorable items</strong> from the unit. Each &ldquo;mission&rdquo; is a party-style prompt (like <em>side quests</em> in co-op games): you roll <strong>phrase + task</strong>, then speak. Teacher can use a phone timer, or the built-in stopwatch. No accounts, no multiplayer.</p>
+        <h1>Speaking missions</h1>
+        <p class="lead">Roll <strong>phrase + task</strong> and speak. Use one or several Unit 10 packs below. Teacher can use a phone timer, or the built-in stopwatch. No accounts, no multiplayer.</p>
       </div>
-      <a href="index.html">&larr; Hub</a> &middot; <a href="speaking-names-minute.html" style="color:#34d399;">Names (1:00)</a>
+      <a href="index.html" id="hubLink">&larr; Hub</a> &middot; <a href="speaking-names-minute.html" id="namesLink" style="color:#34d399;">Names (1:00)</a>
     </div>
 
     <div class="mission" id="card">
+      <div class="pack-box" id="packBox">
+        <div class="pack-legend">Unit 10 word bank</div>
+        <div id="sqTopicChecks"></div>
+        <p class="pack-hint" id="sqTopicHint">Choose one or more packs. If all are ticked, missions use the full bank.</p>
+      </div>
       <p class="kicker" id="mTitle">Roll the mission</p>
       <div class="target" id="mPhrase">—</div>
       <p class="blurb" id="mBlurb">Tap <strong>Roll all</strong> to draw a new phrase and a new mission type.</p>
+      <p class="bank-meta" id="mBankMeta">Bank: all packs</p>
       <div class="row">
         <button type="button" class="b-roll" id="btnAll">Roll all</button>
         <button type="button" class="b-sec" id="btnPh">New phrase</button>
@@ -95,7 +134,9 @@
   <script src="../js/u11-must-know-lexis.js"></script>
   <script>
 (function () {
-  var DECK = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length) ? U11_CONFRONTING_MUST_KNOW.slice() : [];
+  var CPE_HUB = "../games/cpe/unit10/index.html?course=cpe";
+  var course = new URLSearchParams(window.location.search).get("course");
+  var DECK = [];
   var MISSIONS = [
     { t: "Connection run", b: "In 30–45 seconds, say how «{p}» links to <strong>one</strong> of the four texts (A–D). Name the letter." },
     { t: "Pro / con", b: "Give <strong>one</strong> possible advantage and <strong>one</strong> possible downside, in speech, for an idea that involves «{p}». Use the articles or polite general knowledge." },
@@ -109,30 +150,156 @@
   var phrase = "";
   var mi = 0;
   var tsec = 45, tcur = 0, tiv = null;
+  var selectedTopicIds = null;
+  var labelByTopic = {};
+  var deckEntries = [];
+  var baseIsWordBank = false;
 
   function el(id) { return document.getElementById(id); }
   function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+  function escHtml(s) { return String(s || "").replace(/[&<>\"']/g, function (ch) { return ch === "&" ? "&amp;" : ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : ch === "\"" ? "&quot;" : "&#39;"; }); }
+
+  function setLinks() {
+    var hub = el("hubLink");
+    var names = el("namesLink");
+    if (!hub || !names) return;
+    if (window.PREP_U10_PG_CPE || course === "cpe") {
+      hub.href = CPE_HUB;
+      names.href = "speaking-names-minute.html?course=cpe";
+    }
+  }
+
+  function buildDeckEntries() {
+    var out = [];
+    var seen = Object.create(null);
+    var rows = Array.isArray(window.VOCAB_TTT_WORDS) ? window.VOCAB_TTT_WORDS : [];
+    var topics = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    var i;
+    for (i = 0; i < topics.length; i++) {
+      if (topics[i] && topics[i].id) labelByTopic[topics[i].id] = topics[i].label || topics[i].id;
+    }
+    for (i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      if (!row) continue;
+      var raw = row.phrase != null ? row.phrase : row.ans;
+      var p = String(raw || "").trim();
+      if (!p) continue;
+      var key = p.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+      out.push({ phrase: p, topicId: row.topic || "u10_misc" });
+    }
+    if (out.length) {
+      baseIsWordBank = true;
+      return out;
+    }
+
+    DECK = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length) ? U11_CONFRONTING_MUST_KNOW.slice() : [];
+    if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && typeof PREP_U10_PG_STUB.phrasesDeckMustKnow === "function") {
+      DECK = PREP_U10_PG_STUB.phrasesDeckMustKnow();
+    }
+    for (i = 0; i < DECK.length; i++) {
+      var phraseText = String(DECK[i] || "").trim();
+      if (!phraseText) continue;
+      out.push({ phrase: phraseText, topicId: "legacy" });
+    }
+    return out;
+  }
+
+  function allTopicIds() {
+    var list = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    var out = [];
+    for (var i = 0; i < list.length; i++) if (list[i] && list[i].id) out.push(list[i].id);
+    return out;
+  }
+
+  function filteredDeckEntries() {
+    if (!selectedTopicIds || !selectedTopicIds.length) return deckEntries.slice();
+    var out = [];
+    for (var i = 0; i < deckEntries.length; i++) {
+      if (selectedTopicIds.indexOf(deckEntries[i].topicId) !== -1) out.push(deckEntries[i]);
+    }
+    return out;
+  }
+
+  function selectedTopicLabel() {
+    if (!baseIsWordBank) return "default set";
+    if (!selectedTopicIds || !selectedTopicIds.length) return "all packs";
+    var labels = [];
+    for (var i = 0; i < selectedTopicIds.length; i++) labels.push(labelByTopic[selectedTopicIds[i]] || selectedTopicIds[i]);
+    return labels.join(" + ");
+  }
 
   function pickPhrase() {
-    if (!DECK.length) return "";
-    return DECK[Math.floor(Math.random() * DECK.length)];
+    var pool = filteredDeckEntries();
+    if (!pool.length) return "";
+    return pool[Math.floor(Math.random() * pool.length)].phrase;
+  }
+
+  function initTopicPicker() {
+    var wrap = el("sqTopicChecks");
+    var box = el("packBox");
+    if (!wrap || !box) return;
+    wrap.innerHTML = "";
+    if (!baseIsWordBank) {
+      box.style.display = "none";
+      return;
+    }
+    var list = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    if (!list.length) {
+      box.style.display = "none";
+      return;
+    }
+    box.style.display = "";
+    for (var i = 0; i < list.length; i++) {
+      var t = list[i];
+      var row = document.createElement("label");
+      row.className = "pack-row";
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = t.id;
+      cb.checked = true;
+      cb.addEventListener("change", onTopicChange);
+      var text = document.createElement("span");
+      text.textContent = t.label;
+      row.appendChild(cb);
+      row.appendChild(text);
+      wrap.appendChild(row);
+    }
+  }
+
+  function onTopicChange() {
+    var inputs = document.querySelectorAll("#sqTopicChecks input[type=checkbox]");
+    var picked = [];
+    for (var i = 0; i < inputs.length; i++) if (inputs[i].checked) picked.push(inputs[i].value);
+    if (!picked.length) {
+      var hint = el("sqTopicHint");
+      if (hint) hint.textContent = "Pick at least one pack. Keeping previous phrase until you tick a pack.";
+      return;
+    }
+    var all = allTopicIds();
+    selectedTopicIds = (all.length && picked.length >= all.length) ? null : picked;
+    phrase = pickPhrase();
+    applyBlurb();
   }
 
   function applyBlurb() {
-    if (!DECK.length) { el("mPhrase").textContent = "Load js/u11-must-know-lexis.js — list missing."; return; }
+    var pool = filteredDeckEntries();
+    if (!pool.length) { el("mPhrase").textContent = "No phrases in selected bank yet."; return; }
     if (!phrase) phrase = pickPhrase();
     el("mTitle").textContent = MISSIONS[mi] ? MISSIONS[mi].t : "—";
     el("mPhrase").textContent = "«" + phrase + "»";
-    if (MISSIONS[mi]) el("mBlurb").innerHTML = MISSIONS[mi].b.replace(/\{p\}/g, phrase);
+    if (MISSIONS[mi]) el("mBlurb").innerHTML = MISSIONS[mi].b.replace(/\{p\}/g, escHtml(phrase));
+    el("mBankMeta").textContent = "Bank: " + selectedTopicLabel() + " (" + pool.length + ")";
   }
 
   el("btnAll").addEventListener("click", function () {
-    if (!DECK.length) return;
+    if (!filteredDeckEntries().length) return;
     phrase = pickPhrase();
     mi = Math.floor(Math.random() * MISSIONS.length);
     applyBlurb();
   });
-  el("btnPh").addEventListener("click", function () { if (DECK.length) { phrase = pickPhrase(); applyBlurb(); } });
+  el("btnPh").addEventListener("click", function () { if (filteredDeckEntries().length) { phrase = pickPhrase(); applyBlurb(); } });
   el("btnMi").addEventListener("click", function () { mi = Math.floor(Math.random() * MISSIONS.length); applyBlurb(); });
 
   function tDispv() {
@@ -170,7 +337,11 @@
     } catch (e) {}
   }
 
-  if (DECK.length) { phrase = pickPhrase(); mi = 0; applyBlurb(); }
+  setLinks();
+  deckEntries = buildDeckEntries();
+  initTopicPicker();
+  if (deckEntries.length) { phrase = pickPhrase(); mi = 0; applyBlurb(); }
+  else { el("mPhrase").textContent = "Phrase list is not loaded."; }
   el("btnT45").click();
 })();
   </script>

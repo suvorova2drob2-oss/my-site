@@ -1,0 +1,44 @@
+---
+description: Voice Bingo (Prep) — общий движок 3×3 для любых юнитов с таблицей { hint, ans }; порядок скриптов и семантика матчинга.
+globs: "**/prep-voice-bingo-engine.js,**/prep-retell-chain-speech-match.js,**/lexical-games-source-manifest.js,**/unit*-vocabulary/**/*.html"
+alwaysApply: false
+---
+
+# Voice Bingo — переиспользуемый движок
+
+Страницы юнитов могут подключать **один и тот же** движок для голосового бинго (определение → произнеси фразу или ввод).
+
+См. также спринт «на слух» — **`prep-echo-minute-engine.mdc`** (**Echo Minute**, `PREP_ECHO_MINUTE`).
+
+## Файлы
+
+| Роль | Путь |
+|------|------|
+| Движок UI + микрофон + сетка | `js/prep-voice-bingo-engine.js` → глобал **`PREP_VOICE_BINGO.mount(...)`** |
+| Нормализация + матчинг STT | `js/prep-retell-chain-speech-match.js` → **`PREP_RETELL_CHAIN_SPEECH`** |
+| Карта проекта (орienteир) | `js/lexical-games-source-manifest.js` → **`voiceBingoEngineFile`** |
+
+## Порядок скриптов на странице
+
+1. **`prep-retell-chain-speech-match.js`** (обязательно **до** движка бинго — нужны **`phraseMatchesVoiceBingo`**, **`typedMatchesPhrase`**, **`buildHaystack`**).
+2. **`prep-voice-bingo-engine.js`**
+3. Данные юнита: массив строк **`{ ans, hint }`** (как в plain row kit).
+
+## Контракт `mount`
+
+- **`getLexRows(themeId)`** → массив **`{ ans, hint }`**; для игры нужно **≥ 9 уникальных фраз** (берётся случайная девятка).
+- **`speech`**: по умолчанию **`window.PREP_RETELL_CHAIN_SPEECH`** — не подменять без необходимости.
+- **`speechLang`**: обычно **`en-GB`** или **`en-US`** в зависимости от страницы.
+
+## Поведение (не ломать без причины)
+
+- **Голос:** только **`phraseMatchesVoiceBingo`** — строже общего lenient-режима, чтобы **один шумный транскрипт не открывал все ячейки** (мультисловные ответы требуют все токены или форму по длинной фразе; одиночные слова — fuzzy + **`roughSttShapeMatchBingo`**).
+- **Набор с клавиатуры:** **`typedMatchesPhrase`** (мягче).
+- **Не перезапускать Web Speech после каждого попадания** — иначе на **`file://`** браузер снова показывает запрос микрофона. После голосового успеха — **короткий cooldown** внутри движка, буферы транскрипта очищаются в **`revealActiveCell`**.
+- Остановка микрофона: конец партии (**9/9**) или **`stopMic`** при новой игре / выходе.
+
+## Новый юнит
+
+1. Завести **`*.js`** с **`ROWS`** / plain по образцу других паков в манифесте.
+2. При необходимости добавить запись в **`LEXICAL_GAMES_SOURCE_MANIFEST.plainAnchoredRowPacks`**.
+3. На HTML-странице режима: разметка под **`PREP_VOICE_BINGO.mount({ els, getLexRows, themeDefinitions, ... })`** — переиспользовать разметку существующей страницы Voice Bingo этого проекта.

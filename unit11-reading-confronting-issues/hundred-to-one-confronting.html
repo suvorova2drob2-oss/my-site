@@ -41,6 +41,25 @@
     .hud .team.t-a { border-color: rgba(56, 189, 248, 0.5); }
     .hud .team.t-b { border-color: rgba(244, 114, 182, 0.5); }
     .hud .round { font-size: 0.75rem; color: var(--muted); padding: 6px 12px; background: #111827; border-radius: 8px; border: 1px solid #334155; }
+    .hud .theme-pick {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 6px 10px;
+      background: #111827;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .hud .theme-pick select {
+      background: #0b1220;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 0.75rem;
+    }
     .qbox {
       background: var(--bg-panel); border: 2px solid #2d4a6f; border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
     }
@@ -76,7 +95,7 @@
     }
     .pcard:hover:not(:disabled) { border-color: var(--gold); background: var(--bg-answer-h); }
     .pcard:disabled { cursor: default; opacity: 0.35; filter: grayscale(0.3); }
-    .pcard.bad { border-color: rgba(239, 68, 68, 0.4); }
+    .pcard.bad { border-color: rgba(239, 68, 68, 0.65); }
     .pcard.bad.shown { animation: shake 0.4s; }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
     .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
@@ -93,6 +112,12 @@
     .hint-frame-wrap iframe { display: block; width: 100%; height: min(68vh, 700px); border: 0; }
     .hint-foot { font-size: 0.7rem; color: #64748b; padding: 6px 12px; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -111,6 +136,9 @@
       <div class="team t-a" id="teamA"><span class="l">Team A</span> <span class="p" id="scoreA">0</span></div>
       <div class="team t-b" id="teamB"><span class="l">Team B</span> <span class="p" id="scoreB">0</span></div>
       <span class="round" id="roundLbl">Round 1 / 4</span>
+      <label class="theme-pick">Theme
+        <select id="roundPick" aria-label="Choose theme"></select>
+      </label>
     </div>
 
     <div class="qbox">
@@ -132,7 +160,7 @@
         </div>
       </div>
       <div class="pool">
-        <h3>Pick a card</h3>
+        <h3>Task cards</h3>
         <p class="hint2" id="turnHint">&mdash;</p>
         <div class="pool-grid" id="pool"></div>
       </div>
@@ -239,6 +267,10 @@
     }
   ];
 
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && typeof PREP_U10_PG_STUB.hundredToOneRounds === "function") {
+    ROUNDS = PREP_U10_PG_STUB.hundredToOneRounds();
+  }
+
   var state = {
     round: 0,
     scores: [0, 0],
@@ -274,8 +306,22 @@
     el("scoreB").textContent = state.scores[1];
     el("teamA").classList.toggle("is-on", state.current === 0);
     el("teamB").classList.toggle("is-on", state.current === 1);
-    el("roundLbl").textContent = "Round " + (state.round + 1) + " / 4";
+    el("roundLbl").textContent = "Round " + (state.round + 1) + " / " + ROUNDS.length;
+    if (el("roundPick")) el("roundPick").value = String(state.round);
     el("turnHint").textContent = "To play: Team " + (state.current === 0 ? "A" : "B") + ". Hit a board answer &rarr; same team again. Miss &rarr; other team&rsquo;s go.";
+  }
+
+  function renderRoundPicker() {
+    var rp = el("roundPick");
+    if (!rp) return;
+    rp.innerHTML = "";
+    for (var i = 0; i < ROUNDS.length; i++) {
+      var op = document.createElement("option");
+      op.value = String(i);
+      op.textContent = "Theme " + (i + 1) + ": " + String(ROUNDS[i].topic || "").replace(/\s*·\s*Unit 10 word bank$/i, "");
+      rp.appendChild(op);
+    }
+    rp.value = String(state.round);
   }
 
   function renderBoard() {
@@ -331,7 +377,7 @@
       var item = state.pool[i];
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "pcard" + (item.good ? "" : " bad") + (item.used && !item.good ? " shown" : "");
+      b.className = "pcard" + (item.used && !item.good ? " bad shown" : "");
       b.innerHTML = item.used
         ? (item.good ? "✓ " : "✕ ") + item.label
         : item.label;
@@ -356,11 +402,11 @@
   }
 
   el("btnNext").addEventListener("click", function () {
-    if (state.round < 3) {
+    if (state.round < ROUNDS.length - 1) {
       startRound(state.round + 1);
       return;
     }
-    el("lineMsg").innerHTML = "All four rounds are done. Score: Team A <strong>" + state.scores[0] + "</strong> &mdash; Team B <strong>" + state.scores[1] + "</strong>. &ldquo;Reset all&rdquo; for a new game.";
+    el("lineMsg").innerHTML = "All rounds are done. Score: Team A <strong>" + state.scores[0] + "</strong> &mdash; Team B <strong>" + state.scores[1] + "</strong>. &ldquo;Reset all&rdquo; for a new game.";
   });
 
   el("btnReset").addEventListener("click", function () {
@@ -370,14 +416,29 @@
 
   el("btnText").addEventListener("click", function () {
     var h = ROUNDS[state.round].hint;
-    el("hintTitle").textContent = h;
     var f = el("hintFrame");
+    if (window.PREP_U10_PG_CPE || !h) {
+      el("hintTitle").textContent = "CPE Prep · текст";
+      f.removeAttribute("src");
+      try {
+        f.srcdoc = "<!DOCTYPE html><html><head><meta charset=utf-8><style>body{font-family:system-ui,sans-serif;padding:14px;background:#0f172a;color:#94a3b8;line-height:1.45}</style></head><body><p>В режиме <code>course=cpe</code> или при пустом <code>hint</code> страницы Confronting не открываются — задайте свой источник в данных раунда.</p></body></html>";
+      } catch (eTxt0) {}
+      el("hintModal").classList.add("open");
+      return;
+    }
+    el("hintTitle").textContent = h;
     f.src = h + "?embed=1";
     el("hintModal").classList.add("open");
   });
   el("hintClose").addEventListener("click", function () { el("hintModal").classList.remove("open"); });
   el("hintModal").addEventListener("click", function (e) { if (e.target.id === "hintModal") el("hintModal").classList.remove("open"); });
+  el("roundPick").addEventListener("change", function (e) {
+    var next = parseInt(e.target.value, 10);
+    if (isNaN(next) || next < 0 || next >= ROUNDS.length) return;
+    startRound(next);
+  });
 
+  renderRoundPicker();
   startRound(0);
 })();
   </script>

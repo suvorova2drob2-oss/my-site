@@ -133,13 +133,37 @@
   var rawBack = q.get("back");
   if (!bh) return;
 
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+
+  function decodeLabel(raw, fallback) {
+    if (!raw) return fallback || "";
+    try {
+      return decodeURIComponent(String(raw).replace(/\+/g, " "));
+    } catch (e) {
+      return String(raw);
+    }
+  }
+
   if (!rawBack) {
     bh.setAttribute("href", "../../../unit10.html");
-    bh.innerHTML = "&larr; Unit 10 hub";
+    bh.textContent = "← Unit 10 hub";
     return;
   }
 
   var tF = String(rawBack).trim();
+  var candidate = tF;
   if (
     tF &&
     !/^[a-z][a-z0-9+.-]*:/i.test(tF) &&
@@ -147,15 +171,13 @@
     tF.indexOf("\\") === -1 &&
     /\.html?$/i.test(tF)
   ) {
-    bh.href = "../../../" + tF.replace(/^\.\//, "");
-  } else {
-    bh.href = tF;
+    candidate = "../../../" + tF.replace(/^\.\//, "");
   }
+  bh.href = sanitizeReturnHref(candidate, "../../../unit10.html");
   if (q.get("backLabel")) {
-    try {
-      bh.innerHTML =
-        "&larr; " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
-    } catch (e) {}
+    bh.textContent = "← " + decodeLabel(q.get("backLabel"), "Back");
+  } else {
+    bh.textContent = "← Back";
   }
 })();
   </script>

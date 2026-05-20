@@ -414,15 +414,84 @@
     return null;
   }
 
-  function makeChip(num, text) {
+  function shuffleArray(arr) {
+    var i;
+    var j;
+    var t;
+    for (i = arr.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      t = arr[i];
+      arr[i] = arr[j];
+      arr[j] = t;
+    }
+    return arr;
+  }
+
+  function buildDisplayNumMap(fragList) {
+    var reals = [];
+    var labels = [];
+    var map = {};
+    var i;
+    for (i = 0; i < fragList.length; i++) {
+      reals.push(fragList[i].num);
+      labels.push(fragList[i].num);
+    }
+    shuffleArray(labels);
+    for (i = 0; i < reals.length; i++) {
+      map[reals[i]] = labels[i];
+    }
+    return map;
+  }
+
+  function getBankChipNums() {
+    if (!bankEl) return [];
+    return [].map.call(bankEl.querySelectorAll(".ege-gt-chip"), function (c) {
+      return parseInt(c.getAttribute("data-n") || "0", 10);
+    });
+  }
+
+  function isTrivialBankOrder(nums, letters, key) {
+    var i;
+    if (!letters.length || nums.length < letters.length) return false;
+    for (i = 0; i < letters.length; i++) {
+      if (nums[i] !== key[letters[i]]) return false;
+    }
+    return true;
+  }
+
+  var answersRevealed = false;
+
+  function revealAllChipNumbers() {
+    answersRevealed = true;
+    allChips().forEach(function (chip) {
+      var real = chip.getAttribute("data-n") || "";
+      var span = chip.querySelector(".ege-gt-chip-num");
+      if (span) span.textContent = real;
+      chip.classList.add("ege-gt-chip--revealed");
+      chip.setAttribute(
+        "aria-label",
+        "Фрагмент " +
+          real +
+          ": " +
+          ((chip.querySelector(".ege-gt-chip-txt") || {}).textContent || "")
+      );
+    });
+  }
+
+  function makeChip(num, text, displayNum) {
     var b = document.createElement("div");
     b.className = "ege-gt-chip";
     b.setAttribute("draggable", "true");
     b.setAttribute("data-n", String(num));
+    b.setAttribute("data-display-n", String(displayNum));
     b.setAttribute("tabindex", "0");
+    b.setAttribute(
+      "aria-label",
+      "Фраза " + displayNum + ": " + String(text || "")
+    );
     b.innerHTML =
       '<span class="ege-gt-chip-num" aria-hidden="true">' +
-      esc(num) +
+      esc(displayNum) +
       '</span><span class="ege-gt-chip-txt">' +
       esc(text) +
       "</span>";
@@ -573,16 +642,27 @@
   }
 
   function buildBankFresh() {
+    answersRevealed = false;
     bankEl.innerHTML = "";
-    var list = U.fragments || [];
+    var source = U.fragments || [];
+    var letters = collectGapLetters();
+    var key = U.key || {};
+    var displayMap = buildDisplayNumMap(source);
+    var list;
     var i;
     var fr;
     var c;
-    for (i = 0; i < list.length; i++) {
-      fr = list[i];
-      c = makeChip(fr.num, fr.text);
-      hookChip(c);
-      bankEl.appendChild(c);
+    var attempt;
+    for (attempt = 0; attempt < 24; attempt++) {
+      bankEl.innerHTML = "";
+      list = shuffleArray(source.slice());
+      for (i = 0; i < list.length; i++) {
+        fr = list[i];
+        c = makeChip(fr.num, fr.text, displayMap[fr.num]);
+        hookChip(c);
+        bankEl.appendChild(c);
+      }
+      if (!isTrivialBankOrder(getBankChipNums(), letters, key)) break;
     }
     shuffleBankChildren();
   }
@@ -793,12 +873,10 @@
       fragCount +
       " карточек на " +
       gapsCount +
-      ' пропусков — <strong>одна лишняя</strong>. На телефоне удобнее «тап-тап».</p>';
+      ' пропусков — <strong>одна лишняя</strong>. Порядок карточек и цифры на них каждый раз случайные. После проверки — настоящие номера фрагментов. На телефоне удобнее «тап-тап».</p>';
     html +=
       '<div id="ege-gt-bank" class="ege-gt-bank" aria-live="polite"></div>';
     html += '<div class="ege-gt-actions">';
-    html +=
-      '<button type="button" id="ege-gt-shuffle">Перемешать банк</button>';
     html += '<button type="button" id="ege-gt-reset">С нуля</button>';
     html +=
       '<button type="button" id="ege-gt-check" class="ege-gt-btn-main">Отправить на проверку</button>';
@@ -877,17 +955,6 @@
         history.replaceState({}, "", url.toString());
       } catch (e4) {}
       mountUnit();
-    });
-
-    document.getElementById("ege-gt-shuffle").addEventListener("click", function () {
-      var inBank = [].filter.call(bankEl.querySelectorAll(".ege-gt-chip"), function (c) {
-        return c.parentNode === bankEl;
-      });
-      inBank.forEach(function (c) {
-        bankEl.appendChild(c);
-      });
-      shuffleBankChildren();
-      saveLayout();
     });
 
     document.getElementById("ege-gt-reset").addEventListener("click", function () {
@@ -970,6 +1037,7 @@
       if (fbBody) fbBody.innerHTML = renderFeedbackAfterSubmit(lettersC, ok, total);
       if (fbEl) fbEl.removeAttribute("hidden");
       if (kwEl) kwEl.removeAttribute("hidden");
+      revealAllChipNumbers();
 
       if (ok === total) {
         msgEl.textContent = "Зачёт: все " + total + " на месте. Красава.";

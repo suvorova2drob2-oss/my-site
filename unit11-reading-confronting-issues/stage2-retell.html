@@ -3,127 +3,434 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unit 11 &mdash; Stage 2: Retell (4 texts in order)</title>
+  <title>Unit 11 &mdash; Stage 2: Retell (same reader engine as Stage 1)</title>
   <style>
-    :root { --bg: #0f1b38; --panel: #1d2b4a; --line: #324a71; --text: #e8f0ff; --muted: #9bb0d3; --accent: #56ccf2; --paper: #f8fafc; --ink: #0f172a; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(180deg, #09122a 0%, #101d3c 100%); color: var(--text); min-height: 100vh; padding: 24px; }
-    .page { width: min(640px, 100%); margin: 0 auto; }
+    /* CPE Prep palette — same tokens as root index.html & games/cpe Playground */
+    :root {
+      --bg: #0d1117;
+      --bg-mid: #111827;
+      --panel: #1e293b;
+      --panel-soft: #334155;
+      --surface-inset: #0f172a;
+      --line: rgba(148, 163, 184, 0.22);
+      --line-strong: rgba(148, 163, 184, 0.35);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --accent-border: rgba(56, 189, 248, 0.38);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    body {
+      background: radial-gradient(120% 85% at 50% 0%, var(--bg-mid) 0%, var(--bg) 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
     .top {
-      background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
       margin-bottom: 16px;
     }
-    .top h1 { font-size: 1.2rem; line-height: 1.3; margin-bottom: 8px; }
-    .top .sub { color: var(--muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 10px; }
-    .top .ru { color: #7dd3fc; font-size: 0.86rem; line-height: 1.5; margin-bottom: 4px; }
-    .path { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
-    .path a { color: var(--accent); font-weight: 600; text-decoration: none; }
-    .path a:hover { text-decoration: underline; }
-    .path span { color: #4b5f88; }
+    .top h1 {
+      font-size: 1.25rem;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .ru {
+      color: var(--accent);
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      opacity: 0.95;
+    }
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .path a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .path a:hover {
+      text-decoration: underline;
+    }
+    .path span {
+      color: var(--muted);
+      opacity: 0.85;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .back:hover {
+      text-decoration: underline;
+    }
     .howto {
-      background: #152546; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 0.9rem; color: #c9d8f0; line-height: 1.55; margin-bottom: 16px;
+      background: var(--surface-inset);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
     }
-    .howto strong { color: #e8f0ff; }
-    .stack { display: flex; flex-direction: column; gap: 12px; }
-    .step {
-      background: var(--paper); color: var(--ink);
-      border-radius: 14px; border: 1px solid #e2e8f0; padding: 16px 18px;
-      position: relative;
+    .howto strong {
+      color: var(--text);
     }
-    .step-num {
-      position: absolute; top: 14px; right: 16px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em;
-      color: #0ea5e9; text-transform: uppercase;
+    .section-head {
+      font-size: 1.05rem;
+      margin: 8px 0 12px;
+      color: var(--text);
+      font-weight: 700;
     }
-    .step h2 { font-size: 1.05rem; color: #0f172a; margin-bottom: 6px; padding-right: 4rem; }
-    .aim { font-size: 0.86rem; color: #475569; line-height: 1.45; margin-bottom: 10px; }
-    .aim .en { color: #334155; }
-    .aim .ru { color: #64748b; display: block; margin-top: 4px; font-size: 0.85rem; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .lead {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .text-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .text-drop {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      overflow: hidden;
+    }
+    .text-drop[open] {
+      border-color: var(--accent-border);
+    }
+    .text-drop > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 12px;
+    }
+    .text-drop > summary::-webkit-details-marker {
+      display: none;
+    }
+    .text-drop .sum-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      flex: 1;
+      min-width: 0;
+    }
+    .text-drop .sum-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+    .text-drop .sum-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .text-drop .sum-cta {
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .text-drop-embed {
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--line);
+    }
+    .text-drop-frame {
+      display: block;
+      width: 100%;
+      min-height: 420px;
+      height: min(78vh, 900px);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-inset);
+    }
+    .text-drop-foot {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .text-drop-alone {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a.text-drop-alone:hover {
+      text-decoration: underline;
+    }
+    .retell-hints {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-inset);
+      border: 1px solid var(--line);
+    }
+    .retell-hints .step-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .aim {
+      font-size: 0.86rem;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .aim .en {
+      color: #e2e8f0;
+      display: block;
+    }
+    .aim .ru {
+      color: var(--muted);
+      display: block;
+      margin-top: 6px;
+      font-size: 0.85rem;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
     .chips span {
-      font-size: 0.78rem; background: #e0f2fe; color: #0c4a6e; padding: 3px 8px; border-radius: 6px; font-weight: 600; border: 1px solid #bae6fd;
+      font-size: 0.78rem;
+      background: var(--accent-soft);
+      color: #bae6fd;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid var(--accent-border);
     }
   </style>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <main class="page">
     <header class="top">
-      <h1>Stage 2 &mdash; Chained retell (all 4 in order)</h1>
-      <p class="sub">Speak in sequence: <strong>Text 1 &rarr; 2 &rarr; 3 &rarr; 4</strong>. Use the key ideas below; you do not have to use every word. Aim for a clear, connected monologue, not a word-for-word read-out.</p>
-      <p class="ru">Устно, подряд: сначала весь смысл первого текста, затем второго и т.д. Опорные фразы &mdash; подсказка, а не &laquo;зубрёжка&raquo;.</p>
-      <div class="path">
-        <a href="index.html">Confronting issues (hub)</a>
-        <span>&middot;</span>
-        <a href="../unit11.html">Unit 11</a>
+      <div>
+        <h1>Stage 2 &mdash; Chained retell (all 4 in order)</h1>
+        <p class="sub">
+          Speak in sequence: <strong>Text 1 &rarr; 2 &rarr; 3 &rarr; 4</strong>. Open each row for the full reading (iframe); use the key ideas below &mdash; you do not need every word. Aim for a clear, connected monologue.
+        </p>
+        <p class="ru">
+          Устно, подряд. Строка раскрывает текст здесь же; опорные фразы &mdash; подсказка, не «зубрёжка».
+        </p>
+        <div class="path">
+          <a href="index.html">Confronting issues (hub)</a>
+          <span>&middot;</span>
+          <a href="../unit11.html">Unit 11</a>
+        </div>
       </div>
+      <a class="back" href="index.html">&larr; Hub</a>
     </header>
+
     <p class="howto">
-      <strong>How to run it:</strong> one minute&rsquo;s prep with the key chips (optional) &rarr; retell A &rarr; short pause &rarr; retell B &rarr; C &rarr; D. If you work in pairs, Partner B repeats the same chain after listening once, or you alternate texts.
+      <strong>How to run it:</strong> optional one minute with the chips &rarr; retell A &rarr; short pause &rarr; B &rarr; C &rarr; D. In pairs: Partner B repeats the chain, or alternate texts.
     </p>
-    <div class="stack">
-      <section class="step" aria-labelledby="s1">
-        <span class="step-num">1 / 4</span>
-        <h2 id="s1">A LAND RECLAMATION</h2>
-        <p class="aim">
-          <span class="en">Say: why countries need more land, what they do to the sea, one Asian example, then environment vs fishing.</span>
-          <span class="ru">Зачем намывают сушу, чем платят экология и рыбаки.</span>
-        </p>
-        <div class="chips" aria-label="Key phrases 1">
-          <span>reclaim from the sea</span>
-          <span>artificial islands</span>
-          <span>explosion of projects</span>
-          <span>price to pay</span>
-          <span>fish stocks / livelihoods</span>
+
+    <h2 class="section-head">Тексты A&ndash;D (Stage 1 reader)</h2>
+    <p class="lead">
+      Нажмите строку, чтобы раскрыть текст здесь же (iframe). Полная страница &mdash; ссылка под окном. Ниже окна &mdash; подсказки для пересказа этой части цепочки.
+    </p>
+
+    <div class="text-list" id="stage2RetellTexts">
+      <details class="text-drop" data-iframe>
+        <summary>
+          <div class="sum-main">
+            <span class="sum-title">Text 1 &mdash; A LAND RECLAMATION</span>
+            <span class="sum-desc">Coastal growth, land reclamation, environment vs fish stocks.</span>
+          </div>
+          <span class="sum-cta">Show text &darr;</span>
+        </summary>
+        <div class="text-drop-embed">
+          <iframe class="text-drop-frame" data-src="text-01.html?embed=1" title="Text 1: A LAND RECLAMATION"></iframe>
+          <div class="text-drop-foot">
+            <a class="text-drop-alone" href="text-01.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in full page &nearr;</a>
+          </div>
+          <div class="retell-hints">
+            <div class="step-num">Retell &middot; 1 / 4</div>
+            <p class="aim">
+              <span class="en">Say: why countries need more land, what they do to the sea, one Asian example, then environment vs fishing.</span>
+              <span class="ru">Зачем намывают сушу, чем платят экология и рыбаки.</span>
+            </p>
+            <div class="chips" aria-label="Key phrases 1">
+              <span>reclaim from the sea</span>
+              <span>artificial islands</span>
+              <span>explosion of projects</span>
+              <span>price to pay</span>
+              <span>fish stocks / livelihoods</span>
+            </div>
+          </div>
         </div>
-      </section>
-      <section class="step" aria-labelledby="s2">
-        <span class="step-num">2 / 4</span>
-        <h2 id="s2">B CLOUD SEEDING</h2>
-        <p class="aim">
-          <span class="en">Say: the problem (water), what gets sprayed into clouds, why it is in the news, the debate + Wyoming numbers, the downside.</span>
-          <span class="ru">Суть посева облаков, спорен ли эффект, плюс цифры и минусы.</span>
-        </p>
-        <div class="chips" aria-label="Key phrases 2">
-          <span>water scarcity / shortages</span>
-          <span>whereby (method)</span>
-          <span>press attention</span>
-          <span>open to debate / definitive</span>
-          <span>precipitation 5&ndash;15%</span>
-          <span>on the downside</span>
+      </details>
+
+      <details class="text-drop" data-iframe>
+        <summary>
+          <div class="sum-main">
+            <span class="sum-title">Text 2 &mdash; B CLOUD SEEDING</span>
+            <span class="sum-desc">Cloud seeding, water scarcity, press, debate, precipitation.</span>
+          </div>
+          <span class="sum-cta">Show text &darr;</span>
+        </summary>
+        <div class="text-drop-embed">
+          <iframe class="text-drop-frame" data-src="text-02.html?embed=1" title="Text 2: B CLOUD SEEDING"></iframe>
+          <div class="text-drop-foot">
+            <a class="text-drop-alone" href="text-02.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in full page &nearr;</a>
+          </div>
+          <div class="retell-hints">
+            <div class="step-num">Retell &middot; 2 / 4</div>
+            <p class="aim">
+              <span class="en">Say: the problem (water), what gets sprayed into clouds, why it is in the news, the debate + Wyoming numbers, the downside.</span>
+              <span class="ru">Суть посева облаков, спорен ли эффект, плюс цифры и минусы.</span>
+            </p>
+            <div class="chips" aria-label="Key phrases 2">
+              <span>water scarcity / shortages</span>
+              <span>whereby (method)</span>
+              <span>press attention</span>
+              <span>open to debate / definitive</span>
+              <span>precipitation 5&ndash;15%</span>
+              <span>on the downside</span>
+            </div>
+          </div>
         </div>
-      </section>
-      <section class="step" aria-labelledby="s3">
-        <span class="step-num">3 / 4</span>
-        <h2 id="s3">C UNDERWATER FARMING</h2>
-        <p class="aim">
-          <span class="en">Say: Noli / Nemo&rsquo;s Garden, who started it, how the biosphere &ldquo;works&rdquo; (water cycle, no pests), future hope for sustainable farming.</span>
-          <span class="ru">Про подводные биосферы, воду, вредителей и &laquo;нехватку полей&raquo;.</span>
-        </p>
-        <div class="chips" aria-label="Key phrases 3">
-          <span>science fiction vs reality</span>
-          <span>off the coast (Noli)</span>
-          <span>biospheres</span>
-          <span>evaporate &rarr; condense &rarr; fresh water</span>
-          <span>sustainable / shortage of farmland</span>
+      </details>
+
+      <details class="text-drop" data-iframe>
+        <summary>
+          <div class="sum-main">
+            <span class="sum-title">Text 3 &mdash; C UNDERWATER FARMING</span>
+            <span class="sum-desc">Nemo&rsquo;s Garden, biospheres, sustainable farming, shortage of land.</span>
+          </div>
+          <span class="sum-cta">Show text &darr;</span>
+        </summary>
+        <div class="text-drop-embed">
+          <iframe class="text-drop-frame" data-src="text-03.html?embed=1" title="Text 3: C UNDERWATER FARMING"></iframe>
+          <div class="text-drop-foot">
+            <a class="text-drop-alone" href="text-03.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in full page &nearr;</a>
+          </div>
+          <div class="retell-hints">
+            <div class="step-num">Retell &middot; 3 / 4</div>
+            <p class="aim">
+              <span class="en">Say: Noli / Nemo&rsquo;s Garden, who started it, how the biosphere &ldquo;works&rdquo; (water cycle, no pests), future hope for sustainable farming.</span>
+              <span class="ru">Подводные биосферы, вода, вредители и «нехватка полей».</span>
+            </p>
+            <div class="chips" aria-label="Key phrases 3">
+              <span>science fiction vs reality</span>
+              <span>off the coast (Noli)</span>
+              <span>biospheres</span>
+              <span>evaporate &rarr; condense &rarr; fresh water</span>
+              <span>sustainable / shortage of farmland</span>
+            </div>
+          </div>
         </div>
-      </section>
-      <section class="step" aria-labelledby="s4">
-        <span class="step-num">4 / 4</span>
-        <h2 id="s4">D RECYCLING DOG WASTE</h2>
-        <p class="aim">
-          <span class="en">Say: the lamp + the bag routine, what happens in the biodigester, tests before 2017, the modest claim (not the energy crisis), other countries&rsquo; schemes.</span>
-          <span class="ru">Фонарь, метан, испытания, педагогический эффект, распространение идей.</span>
-        </p>
-        <div class="chips" aria-label="Key phrases 4">
-          <span>powered by</span>
-          <span>biodigester &rarr; methane</span>
-          <span>trials / full operation 2017</span>
-          <span>put an end to the crisis? (irony)</span>
-          <span>serve to teach</span>
-          <span>schemes adopted (Canada&ndash;India)</span>
+      </details>
+
+      <details class="text-drop" data-iframe>
+        <summary>
+          <div class="sum-main">
+            <span class="sum-title">Text 4 &mdash; D RECYCLING DOG WASTE</span>
+            <span class="sum-desc">Biodigester, methane, trials, schemes adopted worldwide.</span>
+          </div>
+          <span class="sum-cta">Show text &darr;</span>
+        </summary>
+        <div class="text-drop-embed">
+          <iframe class="text-drop-frame" data-src="text-04.html?embed=1" title="Text 4: D RECYCLING DOG WASTE"></iframe>
+          <div class="text-drop-foot">
+            <a class="text-drop-alone" href="text-04.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in full page &nearr;</a>
+          </div>
+          <div class="retell-hints">
+            <div class="step-num">Retell &middot; 4 / 4</div>
+            <p class="aim">
+              <span class="en">Say: the lamp + the bag routine, what happens in the biodigester, tests before 2017, the modest claim (not the energy crisis), other countries&rsquo; schemes.</span>
+              <span class="ru">Фонарь, метан, испытания, педагогический эффект, распространение идей.</span>
+            </p>
+            <div class="chips" aria-label="Key phrases 4">
+              <span>powered by</span>
+              <span>biodigester &rarr; methane</span>
+              <span>trials / full operation 2017</span>
+              <span>put an end to the crisis? (irony)</span>
+              <span>serve to teach</span>
+              <span>schemes adopted (Canada&ndash;India)</span>
+            </div>
+          </div>
         </div>
-      </section>
+      </details>
     </div>
   </main>
+  <script>
+    (function () {
+      var blankHtml =
+        "<!DOCTYPE html><html><head><meta charset=utf-8><style>body{font-family:system-ui,sans-serif;padding:16px;background:#0f172a;color:#94a3b8;line-height:1.45}</style></head><body><p><strong>CPE Prep · шаблон.</strong> Тексты Confronting issues (A–D) здесь не подставляются. Добавьте свои iframe-источники или откройте полный материал без параметра <code>course=cpe</code> (FCE).</p></body></html>";
+      document.querySelectorAll("details.text-drop[data-iframe]").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          if (!d.open) return;
+          var f = d.querySelector("iframe[data-src], iframe.text-drop-frame");
+          if (!f || f.getAttribute("src")) return;
+          if (window.PREP_U10_PG_CPE) {
+            f.removeAttribute("data-src");
+            f.srcdoc = blankHtml;
+            return;
+          }
+          var ds = f.getAttribute("data-src");
+          if (ds) f.setAttribute("src", ds);
+        });
+      });
+      if (window.PREP_U10_PG_CPE) {
+        document.querySelectorAll(".text-drop-alone").forEach(function (a) {
+          a.style.display = "none";
+        });
+        document.querySelectorAll(".retell-hints").forEach(function (node) {
+          node.style.display = "none";
+        });
+      }
+    })();
+  </script>
   <script src="../js/prep-course-profile.js"></script>
   <script src="../js/prep-site-content.js"></script>
 </body>

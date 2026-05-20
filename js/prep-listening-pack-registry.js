@@ -56,6 +56,48 @@
                     title: "Audio trainer",
                     subtitle: "Track 10 player, transcript, shadowing / gap / typing",
                     path: "Audio trainer/index.html"
+                },
+                {
+                    taskId: "u10_listening_p4_full_scripts",
+                    title: "Full scripts",
+                    subtitle: "Five extracts · complete text only (CPE Prep · SB Track 10.1)",
+                    path: "full-scripts-cpe.html?course=cpe"
+                }
+            ]
+        },
+        /** Unit 10 · Listening Part 4 · Workbook Track 11 (separate nested folder). */
+        u10_p4_wb_track11: {
+            hubSeedIdStrip: "u10_listening_p4_wb11_hub_seed",
+            prepOpenFolderId: "prep_legacy_u10_listening_p4_wb11",
+            nestedFolder: {
+                title: "Listening Part 4 · WB Track 11",
+                subtitle: "CPE Part 4 — workbook audio variant"
+            },
+            enginesBase: "Listening Part 4 Multiple matching/",
+            quad: [
+                {
+                    taskId: "u10_listening_p4_wb11_exam",
+                    title: "Exam trainer",
+                    subtitle: "Part 4 multiple matching · WB Track 11 · key check",
+                    path: "exam trainer/p4-multiple-matching.html?set=wb11"
+                }
+            ]
+        },
+        /** Unit 10 · Listening Part 2 · Workbook Track 12 (separate nested folder). */
+        u10_p2_wb_track12: {
+            hubSeedIdStrip: "u10_listening_p2_wb12_hub_seed",
+            prepOpenFolderId: "prep_legacy_u10_listening_p2_wb12",
+            nestedFolder: {
+                title: "Listening Part 2 · WB Track 12",
+                subtitle: "CPE Part 2 — sentence completion (workbook)"
+            },
+            enginesBase: "Listening Part 2 Sentence completion - Celtic languages/",
+            quad: [
+                {
+                    taskId: "u10_listening_p2_wb12_exam",
+                    title: "Exam trainer",
+                    subtitle: "Sentence completion · WB Track 12 · 9 gaps",
+                    path: "exam trainer/index.html"
                 }
             ]
         }

@@ -87,7 +87,7 @@
         <h1>Explain the name (1:00)</h1>
         <p class="lead"><strong>1)</strong> Write who is in the group (one name per line). <strong>2)</strong> Open the card: people speak <strong>in that order</strong>. Each person gets <strong>one minute</strong> (timer; default auto-starts). The card also picks <strong>which name to talk about</strong> (random; usually not yourself if there are others). <strong>Next speaker</strong> = next in the list. No sign-in.</p>
       </div>
-      <a href="index.html">&larr; Hub</a> &middot; <a href="speaking-squad-confronting-issues.html">Squad (phrases)</a>
+      <a href="index.html" id="hubLink">&larr; Hub</a> &middot; <a href="speaking-squad-confronting-issues.html" id="squadLink">Squad (phrases)</a>
     </div>
 
     <div class="box setup" id="setup">
@@ -138,6 +138,8 @@
 
   <script>
 (function () {
+  var course = new URLSearchParams(window.location.search).get("course");
+  var CPE_HUB = "../games/cpe/unit10/index.html?course=cpe";
   var list = [];
   var turnIndex = 0;
   var namePicked = "";
@@ -155,6 +157,13 @@
   ];
 
   function el(id) { return document.getElementById(id); }
+  function setNavLinks() {
+    if (course !== "cpe") return;
+    var hub = el("hubLink");
+    var squad = el("squadLink");
+    if (hub) hub.href = CPE_HUB;
+    if (squad) squad.href = "speaking-squad-confronting-issues.html?course=cpe";
+  }
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
@@ -293,6 +302,7 @@
       o.stop(0.12);
     } catch (e) {}
   }
+  setNavLinks();
 })();
   </script>
   <script src="../js/prep-course-profile.js"></script>

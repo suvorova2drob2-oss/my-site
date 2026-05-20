@@ -461,8 +461,22 @@
   });
 
   var q = new URLSearchParams(window.location.search);
-  if (q.get("back")) {
-    document.getElementById("backLink").href = q.get("back");
+  var backLink = document.getElementById("backLink");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+  if (backLink) {
+    backLink.href = sanitizeReturnHref(q.get("back"), backLink.getAttribute("href") || "");
   }
 
   renderTask();

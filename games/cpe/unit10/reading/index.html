@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 CPE Reading — Punctuation and literature</title>
+  <style>
+    :root {
+      --bg: #101722;
+      --panel: #242f3f;
+      --panel-soft: #2f3d50;
+      --line: rgba(148, 163, 184, 0.34);
+      --line-soft: rgba(148, 163, 184, 0.22);
+      --text: #edf2f7;
+      --muted: #b7c4d5;
+      --accent: #8ec5e8;
+      --ok: #44e0a1;
+      --bad: #ff7d87;
+      --warn: #f7ca59;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(85% 80% at 20% 0%, #2a3a50 0%, transparent 65%),
+        radial-gradient(120% 90% at 80% 100%, #243449 0%, transparent 65%),
+        linear-gradient(180deg, #111827 0%, #1b2533 100%);
+      color: var(--text);
+      padding: 18px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(1320px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(36, 47, 63, 0.94) 0%, rgba(29, 39, 53, 0.97) 100%);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.34);
+      padding: 18px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #b9d5ee;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.24; margin-bottom: 4px; }
+    .lead { color: var(--muted); font-size: 0.93rem; line-height: 1.42; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px 12px;
+      background: rgba(27, 37, 51, 0.72);
+    }
+    .back:hover { border-color: var(--accent); }
+
+    .main-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(520px, 1.05fr) minmax(420px, 0.95fr);
+      align-items: start;
+    }
+    @media (max-width: 1100px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .left-pane,
+    .right-pane {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(47, 61, 80, 0.72);
+      min-height: 120px;
+    }
+    .left-pane { padding: 13px; }
+    .right-pane { padding: 0; overflow: visible; }
+
+    .instr {
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line-soft);
+      background: rgba(30, 41, 57, 0.68);
+    }
+
+    .questions {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(41, 55, 73, 0.82) 0%, rgba(37, 50, 67, 0.86) 100%);
+      padding: 12px;
+    }
+    .q {
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(125, 166, 218, 0.16);
+      padding-bottom: 12px;
+    }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.95rem; line-height: 1.4; margin-bottom: 9px; color: #f3f6fb; }
+    .opts { list-style: none; display: grid; gap: 5px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 9px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      background: rgba(39, 52, 71, 0.75);
+    }
+    .opt-line:hover { border-color: rgba(103, 215, 255, 0.35); }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.34; font-size: 0.91rem; }
+    .letter {
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 1.25em;
+      display: inline-block;
+      margin-right: 2px;
+    }
+    .opt-line.ok {
+      background: rgba(68, 224, 161, 0.16);
+      border-color: #44e0a1;
+      box-shadow: inset 0 0 0 1px rgba(68, 224, 161, 0.45);
+    }
+    .opt-line.bad-pick {
+      background: rgba(255, 125, 135, 0.15);
+      border-color: #ff7d87;
+      box-shadow: inset 0 0 0 1px rgba(255, 125, 135, 0.35);
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #335987; color: #e8f0ff; border: 1px solid var(--line-soft); }
+    .feedback {
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--line-soft);
+      background: rgba(31, 42, 57, 0.82);
+      line-height: 1.42;
+      min-height: 1.5em;
+      font-size: 0.9rem;
+      color: #d9e9ff;
+    }
+
+    .passage-head {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(35, 47, 64, 0.78);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .passage-head h2 { font-size: 1rem; color: #d7e2ef; }
+    .passage-head p { color: var(--muted); font-size: 0.81rem; }
+    .passage {
+      max-height: none;
+      overflow: visible;
+      font-size: 0.95rem;
+      line-height: 1.78;
+      color: #eef2f7;
+      padding: 16px 16px 20px;
+    }
+    .passage p { margin-bottom: 22px; }
+    .passage p:last-child { margin-bottom: 0; }
+
+    .hunt {
+      margin-top: 14px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(40, 53, 70, 0.86) 0%, rgba(35, 46, 61, 0.9) 100%);
+      padding: 13px;
+    }
+    .hunt h3 {
+      font-size: 1rem;
+      color: #d7e2ef;
+      margin-bottom: 5px;
+    }
+    .hunt-intro {
+      color: var(--muted);
+      font-size: 0.89rem;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .hunt-tools {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .hunt-tool {
+      padding: 7px 11px;
+      font-size: 0.82rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      color: #d7e9ff;
+      background: rgba(25, 50, 83, 0.7);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .hunt-tool.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(103, 215, 255, 0.2); }
+    .hunt-tool-e.active { border-color: var(--ok); box-shadow: 0 0 0 2px rgba(68, 224, 161, 0.18); }
+    .hunt-tool-d.active { border-color: #ff9ba3; box-shadow: 0 0 0 2px rgba(255, 125, 135, 0.2); }
+
+    .hunt-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+    .hunt-tab {
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      background: rgba(18, 40, 69, 0.8);
+      color: #d8e9ff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .hunt-tab.active {
+      border-color: var(--accent);
+      color: #051828;
+      background: var(--accent);
+    }
+    .hunt-prompt {
+      margin-bottom: 8px;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      line-height: 1.42;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--line-soft);
+      background: rgba(42, 56, 74, 0.8);
+    }
+    .hunt-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .hunt-hit {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      text-align: left;
+      color: #e9f2ff;
+      background: rgba(19, 43, 75, 0.82);
+      padding: 10px 11px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: border-color 0.1s ease, background 0.1s ease;
+    }
+    .hunt-hit:hover { border-color: rgba(103, 215, 255, 0.45); }
+    .hunt-hit.is-evidence {
+      border-color: rgba(68, 224, 161, 0.85);
+      background: rgba(68, 224, 161, 0.18);
+    }
+    .hunt-hit.is-distractor {
+      border-color: rgba(255, 125, 135, 0.85);
+      background: rgba(255, 125, 135, 0.17);
+    }
+    .hunt-hit.hunt-bad {
+      box-shadow: inset 0 0 0 2px var(--warn);
+      border-color: var(--warn);
+    }
+    .hunt-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .hunt-btn {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #e7f2ff;
+      background: rgba(29, 61, 102, 0.75);
+    }
+    .hunt-btn-primary { background: #2fba8f; color: #062519; border-color: transparent; }
+    .hunt-feedback {
+      margin-top: 9px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-size: 0.87rem;
+      line-height: 1.42;
+      color: #d8e9ff;
+      border: 1px solid var(--line-soft);
+      background: rgba(10, 26, 45, 0.85);
+      min-height: 1.4em;
+    }
+    .hunt-explain {
+      margin-top: 9px;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 9px 10px;
+      background: rgba(14, 31, 54, 0.82);
+    }
+    .hunt-explain h4 {
+      font-size: 0.84rem;
+      margin-bottom: 6px;
+      color: #bcecff;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .hunt-explain ul { list-style: none; display: grid; gap: 5px; }
+    .hunt-explain li {
+      font-size: 0.84rem;
+      line-height: 1.42;
+      color: #dae9ff;
+      padding: 6px 7px;
+      border-radius: 7px;
+      border: 1px solid rgba(125, 166, 218, 0.18);
+      background: rgba(18, 40, 68, 0.75);
+    }
+    .hunt-label {
+      display: inline-block;
+      margin-right: 7px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .hunt-label.e { background: rgba(68, 224, 161, 0.26); color: #7df2bf; }
+    .hunt-label.d { background: rgba(255, 125, 135, 0.25); color: #ffb7bf; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">CPE Unit 10 · Reading · Part 5 style</span>
+        <h1>Gen Z punctuation and great literature</h1>
+        <p class="lead">Article + six multiple-choice questions. Left panel = options, right panel = full text.</p>
+      </div>
+      <a class="back" href="../../../../index.html?course=cpe">&larr; Levels hub</a>
+    </header>
+
+    <section class="main-grid">
+      <section class="right-pane">
+        <div class="passage-head">
+          <h2>Text: Gen Z has nothing to be ashamed of</h2>
+          <p>Read and locate evidence before checking.</p>
+        </div>
+        <div class="passage">
+          <p>
+            In one of the more ludicrous skirmishes of the intergenerational culture wars, linguists declared this week that Gen Z has
+            "cancelled" the full stop. As usual, technology is the battleground: apparently the decline of this most humble punctuation
+            mark is the result of the proliferation of digital communication among teens.
+          </p>
+          <p>
+            There is decent evidence to support this claim: a 2015 study by Binghamton University in New York found that undergraduates
+            perceived text messages ending in a full stop to be less sincere than those without. When it comes to digital communication,
+            punctuation is being squeezed out.
+          </p>
+          <p>
+            Despite the lack of evidence that this is in any way a "Gen Z" phenomenon, rather than a "people who text" one, most of
+            2015's undergraduates were actually millennials - teenagers have inevitably borne the brunt of punctuation purists' fury.
+          </p>
+          <p>
+            Almost everything about these accusations is rubbish, period. Playing fast and loose with punctuation is hardly some piece
+            of sexy stylistic radicalism - it is a century-old literary technique used by creators of modern literature. Modernism
+            questioned the comfortable conventions of the traditional novel with its well-constructed plots, clear chapter-divisions and
+            satisfying endings. To writers like Virginia Woolf and James Joyce, such order was artificial; they experimented with looser,
+            smudged certainties of a world in ruins. One casualty was consistent punctuation: the final chapter of <em>Ulysses</em> is one
+            infamous sentence.
+          </p>
+          <p>
+            It is tempting to think of punctuation as fundamental to communication, a scaffolding without which language would fall apart.
+            But history tells us something different: punctuation is a written convention, as arbitrary as writing horizontally across a page.
+            Ancient Greek texts contain no gaps between words, let alone full stops. It was a system invented in the late medieval and early
+            modern period, mostly for ease of communication. We owe punctuation nothing.
+          </p>
+          <p>
+            Modernists like Woolf and Joyce argued that their grammar-lite literature was more mimetic of reality than the so-called
+            "realism" of nineteenth-century novels. No one thinks in full sentences or arranges thoughts into paragraphs. Life, Woolf
+            famously wrote, is not a series of gig lamps symmetrically arranged; life is a luminous halo, a semi-transparent envelope
+            surrounding us from the beginning of consciousness to the end. Punctuation is the gig lamps, useful but artificial; free-flowing
+            prose is the more truthful envelope of consciousness.
+          </p>
+          <p>
+            This is not to deny that the proliferation of instant technological communication has had an impact on our use (or under-use)
+            of punctuation. It is merely to suggest that such under-use does not herald the collapse of communication as we know it. Quite
+            the reverse: the rich resurgence of fiction that takes a sceptical, playful approach to punctuation in recent years is not
+            unconnected to our digital age.
+          </p>
+          <p>
+            In 2019, for example, Lucy Ellmann's 1000-page novel, <em>Ducks, Newburyport</em>, one part of which was made up of a single
+            sentence, was shortlisted for the Booker Prize. The joint winner that same year, Bernardine Evaristo's <em>Girl, Woman, Other</em>,
+            dispensed with full stops and capital letters, instead signifying pauses through line breaks, like poetry.
+          </p>
+          <p>
+            And perhaps the most important British author of the last 20 years, Zadie Smith, abandoned speech marks in her 2012 novel
+            <em>NW</em>, a technique recently adopted, to much comment, by digital-native writers such as Sally Rooney and Daisy Johnson.
+            When one too many journalists asked her about this, Rooney's exasperated response was: "I mean, it's a novel written in the
+            first person, isn't it all quotation?"
+          </p>
+          <p>
+            Such technical variations reflect more than literary bling - they leak through the language and shape the stories they tell.
+            What is most memorable about Smith's writing is the voices of her characters: loud, multicultural, multitudinous. Removing the
+            speech marks peels away a barrier between those voices and the reader; they speak inside your head or over your shoulder.
+            Similarly, Johnson and Rooney's stories of intense relationships are studded with fragments of whip-smart dialogue: when you
+            look down at the page, at the characters' words tangling into each other, something of their intimacy stares back at you.
+          </p>
+          <p>
+            Evaristo's style is perhaps the most radical. When you first read <em>Girl, Woman, Other</em>, it feels contrived, the odd-looking
+            pages undulating with paragraph breaks. So why did she do it? It is a novel that is always slipping. Amma, the primary character,
+            finds herself sliding from the social margins into the establishment; other characters flirt between entirely different identities.
+          </p>
+          <p>
+            Is this a comfortable process? Rarely. But by the end of the novel, you have entirely forgotten its punctuation is unconventional.
+            The little black dot of a barrier proves as unnecessary as the barriers we use to separate different kinds of people. That is a
+            powerful statement from a black woman writer. Perhaps we should all let our punctuation slide.
+          </p>
+        </div>
+      </section>
+
+      <section class="left-pane">
+        <p class="instr">
+          You are going to read an article about punctuation and literature. For questions <strong>1-6</strong>, choose the answer
+          (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) which you think fits best according to the text.
+        </p>
+        <div id="mcq-root" class="questions" aria-live="polite"></div>
+        <div class="btn-row">
+          <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+          <button type="button" class="btn-reset" id="btnClear">Clear choices and marks</button>
+        </div>
+        <p class="feedback" id="feedback"></p>
+      </section>
+    </section>
+
+    <section class="hunt">
+      <h3>Evidence vs Distractor Hunt</h3>
+      <p class="hunt-intro">
+        Pick a brush, mark each quote as <strong>Evidence</strong> or <strong>Distractor</strong>, then check. On full match, you get short explanations for every fragment.
+      </p>
+      <div class="hunt-tools">
+        <button type="button" class="hunt-tool hunt-tool-e active" id="huntBrushE">Evidence</button>
+        <button type="button" class="hunt-tool hunt-tool-d" id="huntBrushD">Distractor</button>
+        <button type="button" class="hunt-tool" id="huntBrushX">Erase</button>
+      </div>
+      <div class="hunt-tabs" id="huntTabs"></div>
+      <p class="hunt-prompt" id="huntPrompt"></p>
+      <ul class="hunt-list" id="huntList"></ul>
+      <div class="hunt-actions">
+        <button type="button" class="hunt-btn hunt-btn-primary" id="huntCheck">Check markings</button>
+        <button type="button" class="hunt-btn" id="huntClear">Clear this question</button>
+      </div>
+      <p class="hunt-feedback" id="huntFeedback"></p>
+      <div class="hunt-explain" id="huntExplain" hidden>
+        <h4>Explanations</h4>
+        <ul id="huntExplainList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../../../js/u10-cpe-reading-punctuation-data.js"></script>
+  <script src="../../../../js/u10-cpe-reading-punctuation-engine.js"></script>
+</body>
+</html>

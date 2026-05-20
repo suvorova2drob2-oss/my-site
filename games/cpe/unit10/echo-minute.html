@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echo Minute · Unit 10 · CPE Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../../../js/prep-u10-playground-shell.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a30;
+      --line: #2a3555;
+      --text: #e8ecff;
+      --dim: #8b95b8;
+      --accent: #38bdf8;
+      --accent2: #f472b6;
+      --ok: #86efac;
+      --stage-bg: linear-gradient(155deg, rgba(24, 33, 58, 0.98), #0f172a 55%, rgba(30, 58, 95, 0.55));
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 520px at 70% -12%, rgba(244, 114, 182, 0.09), transparent 55%),
+        radial-gradient(700px 420px at 12% 5%, rgba(56, 189, 248, 0.11), transparent 48%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 8px clamp(10px, 2.5vw, 16px) 14px;
+    }
+    .wrap { max-width: 560px; margin: 0 auto; }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .bar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 8px 4px;
+      border-radius: 10px;
+    }
+    .bar a:hover { background: rgba(56, 189, 248, 0.08); }
+    .tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      margin-bottom: 3px;
+    }
+    h1 {
+      font-size: clamp(1.08rem, 3.5vw, 1.38rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .subtitle {
+      font-size: 0.82rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .howfold {
+      margin-bottom: 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.28);
+      background: rgba(15, 23, 42, 0.42);
+      padding: 6px 10px;
+    }
+    .howfold summary {
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent);
+      list-style: none;
+      padding: 4px 0;
+    }
+    .howfold summary::-webkit-details-marker { display: none; }
+    .howfold .sub {
+      margin: 8px 0 4px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #c8d4f0;
+    }
+
+    .panel {
+      background: linear-gradient(165deg, rgba(24, 33, 58, 0.95), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: clamp(12px, 2.8vw, 18px);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.34);
+    }
+
+    .wb-head {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .theme-cell { position: relative; }
+    .theme-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .theme-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 64px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.88);
+      cursor: pointer;
+      transition: border-color 0.18s ease, transform 0.14s ease;
+    }
+    .theme-pill:hover {
+      border-color: rgba(244, 114, 182, 0.35);
+      transform: translateY(-1px);
+    }
+    .theme-input:focus-visible + .theme-pill {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .theme-input:checked + .theme-pill {
+      border-color: rgba(244, 114, 182, 0.55);
+      background: linear-gradient(155deg, rgba(244, 114, 182, 0.12), rgba(56, 189, 248, 0.08));
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.18);
+    }
+    .theme-ico { font-size: 1.22rem; line-height: 1; }
+    .theme-title { font-weight: 800; font-size: 0.76rem; color: #f1f5ff; }
+    .theme-tag { font-size: 0.64rem; color: var(--dim); font-weight: 600; }
+
+    .deck-meta {
+      font-size: 0.7rem;
+      color: var(--dim);
+      text-align: center;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .tts-voice-row {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(244, 114, 182, 0.22);
+      background: rgba(15, 23, 42, 0.55);
+    }
+    .tts-voice-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .tts-voice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      align-items: center;
+    }
+    .tts-voice-grid label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #e8ecff;
+    }
+    .tts-voice-grid input {
+      accent-color: var(--accent2);
+      width: 1rem;
+      height: 1rem;
+    }
+    .tts-voice-note {
+      margin-top: 8px;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--dim);
+      font-weight: 600;
+    }
+    .tts-voice-select-wrap {
+      margin-top: 10px;
+    }
+    .tts-voice-select-wrap label {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bae6fd;
+      margin-bottom: 6px;
+    }
+    .tts-voice-select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.92);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .tts-voice-select:focus {
+      outline: 2px solid rgba(56, 189, 248, 0.45);
+      outline-offset: 2px;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: center;
+      gap: clamp(14px, 5vw, 28px);
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .hud-block {
+      text-align: center;
+      min-width: 84px;
+    }
+    .hud-label {
+      font-size: 0.58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      margin-bottom: 4px;
+    }
+    .hud-value {
+      font-size: clamp(2rem, 10vw, 2.85rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-value--time { color: var(--accent); text-shadow: 0 0 28px rgba(56, 189, 248, 0.35); }
+    .hud-value--score { color: var(--ok); text-shadow: 0 0 24px rgba(134, 239, 172, 0.28); }
+
+    .stage {
+      min-height: clamp(140px, 36vw, 200px);
+      border-radius: 16px;
+      background: var(--stage-bg);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 16px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .stage .em-idle {
+      font-size: clamp(0.88rem, 2.6vw, 1rem);
+      font-weight: 600;
+      line-height: 1.45;
+      color: #e2e8ff;
+      max-width: 34ch;
+    }
+    .stage .em-listen-cue {
+      font-size: clamp(1.35rem, 5vw, 1.85rem);
+      font-weight: 800;
+      color: #fde68a;
+    }
+    .stage .em-answer {
+      font-size: clamp(1.05rem, 3.8vw, 1.45rem);
+      font-weight: 800;
+      color: var(--ok);
+      line-height: 1.35;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+    .stage .em-over {
+      font-size: clamp(1.45rem, 6vw, 2rem);
+      font-weight: 800;
+      color: var(--accent2);
+      letter-spacing: 0.02em;
+    }
+
+    .stage-sub {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dim);
+      line-height: 1.4;
+      max-width: 38ch;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .actions button {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 10px 16px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .actions button:hover:not(:disabled) { transform: translateY(-1px); }
+    .actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .b-go {
+      background: linear-gradient(165deg, rgba(244, 114, 182, 0.35), rgba(56, 189, 248, 0.18));
+      border-color: rgba(244, 114, 182, 0.45);
+      color: var(--text);
+    }
+    .b-replay {
+      background: rgba(13, 19, 36, 0.72);
+      color: var(--text);
+    }
+    .b-skip {
+      background: rgba(251, 113, 133, 0.09);
+      border-color: rgba(251, 113, 133, 0.38);
+      color: #fecdd3;
+    }
+
+    .summary-line {
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--ok);
+      margin-bottom: 10px;
+      min-height: 1.35em;
+    }
+    .summary-line[hidden] { display: none !important; }
+
+    .mic-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .vb-transcript {
+      font-size: 0.76rem;
+      line-height: 1.35;
+      color: #c8d4f0;
+      text-align: center;
+      min-height: 1.4em;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(13, 19, 36, 0.55);
+      border: 1px solid rgba(42, 53, 85, 0.85);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .vb-type-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+    .vb-type-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 8px;
+    }
+    .vb-type-row input {
+      flex: 1;
+      min-width: 140px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.72);
+      color: var(--text);
+    }
+    .vb-type-row input:focus {
+      outline: 2px solid rgba(244, 114, 182, 0.4);
+      outline-offset: 2px;
+    }
+    .vb-type-row .b-check {
+      flex-shrink: 0;
+      align-self: center;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.78rem;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .status-row {
+      font-size: 0.74rem;
+      color: var(--dim);
+      text-align: center;
+      min-height: 1.15em;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">CPE Prep · Level 10 · Playground</p>
+        <h1>Echo Minute</h1>
+        <p class="subtitle">Минута на слух · голосом или текстом</p>
+      </div>
+      <a id="navBack" href="index.html?course=cpe">&larr; Playground</a>
+    </div>
+
+    <details class="howfold">
+      <summary>Правила</summary>
+      <p class="sub">
+        Нажмите <strong>Старт</strong>: определение читается вслух (синтез речи) —
+        <strong>текста определения на экране нет</strong>.
+        Успейте за минуту назвать как можно больше ответов.
+        Произнесите коллокацию / фразу с микрофона или введите её в поле.
+        Скажите или напишите <strong>I don't know</strong>, <strong>skip</strong>, <strong>pass</strong> —
+        покажем ответ без очка и перейдём дальше.
+        Таймер стоит, пока идёт озвучка или показ ответа.
+        <strong>Совет:</strong> если страница открыта как файл (<code>file://</code>), браузер может чаще спрашивать микрофон —
+        удобнее открыть сайт через локальный сервер (<code>http://localhost</code>…).
+      </p>
+    </details>
+
+    <div class="panel">
+      <p class="wb-head">Тема Word Bank</p>
+      <div class="theme-grid" id="emThemeRail" role="radiogroup" aria-label="Тема Word Bank"></div>
+      <p class="deck-meta" id="emDeckMeta"></p>
+
+      <div class="tts-voice-row" role="radiogroup" aria-label="Голос для озвучки">
+        <span class="tts-voice-label">Голос определения (TTS)</span>
+        <div class="tts-voice-grid">
+          <label>
+            <input type="radio" name="emVoiceGender" value="female" checked />
+            Женский
+          </label>
+          <label>
+            <input type="radio" name="emVoiceGender" value="male" />
+            Мужской
+          </label>
+        </div>
+        <div class="tts-voice-select-wrap">
+          <label for="emVoicePick">Конкретный голос</label>
+          <select id="emVoicePick" class="tts-voice-select" aria-label="Голос синтеза речи"></select>
+        </div>
+        <p class="tts-voice-note">
+          В списке сверху — самые «живые» по версии браузера.
+          Значок ☁ — облачный голос (<strong>Natural / Online</strong> в Chrome и Edge), обычно он звучит естественнее локального робота.
+          Режим «Авто» подбирает лучший голос по полу и этому же рейтингу.
+        </p>
+      </div>
+
+      <div class="hud" aria-live="polite">
+        <div class="hud-block">
+          <p class="hud-label">Секунд</p>
+          <p class="hud-value hud-value--time" id="emTimer">60</p>
+        </div>
+        <div class="hud-block">
+          <p class="hud-label">Попадания</p>
+          <p class="hud-value hud-value--score" id="emScore">0</p>
+        </div>
+      </div>
+
+      <div class="stage" id="emStage" aria-live="polite">
+        <!-- filled by engine -->
+      </div>
+      <p class="stage-sub" id="emStageSub"></p>
+
+      <p class="summary-line" id="emSummary" hidden></p>
+
+      <div class="actions">
+        <button type="button" class="b-go" id="emStart">Старт</button>
+        <button type="button" class="b-replay" id="emReplay">Повторить определение</button>
+        <button type="button" class="b-skip" id="emSkip">I don't know / Skip</button>
+      </div>
+
+      <p class="mic-label">Микрофон · транскрипт скрыт</p>
+      <p class="vb-transcript" id="emTranscript"></p>
+
+      <p class="vb-type-label">Или ввод с клавиатуры</p>
+      <div class="vb-type-row">
+        <input
+          type="text"
+          id="emType"
+          enterkeyhint="done"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Phrase or skip…"
+        />
+        <button type="button" class="b-check" id="emCheck">Проверить</button>
+      </div>
+
+      <p class="status-row" id="emStatus"></p>
+    </div>
+  </div>
+
+  <script src="../../../js/listening-p4-wb10-pack.js"></script>
+  <script src="../../../js/u10-books-films-lexis.js"></script>
+  <script src="../../../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../../../js/u10-similes-lexis.js"></script>
+  <script src="../../../js/unit10-snowball-wordbank.js"></script>
+  <script src="../../../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../../../js/prep-snowball-phrases-engine.js"></script>
+  <script src="../../../js/prep-echo-minute-engine.js"></script>
+  <script>
+(function () {
+  var hub = document.getElementById("navBack");
+  if (hub && window.PREP_U10_PG_CPE) hub.href = "index.html?course=cpe";
+
+  var defs = window.U10_SNOWBALL_THEME_DEFINITIONS || [];
+  var combined = window.U10_SNOWBALL_THEME_DEFINITIONS_COMBINED;
+  var rail = document.getElementById("emThemeRail");
+  var deckMeta = document.getElementById("emDeckMeta");
+
+  function countLex(id) {
+    if (typeof window.U10_SNOWBALL_getLexRows !== "function") return 0;
+    return window.U10_SNOWBALL_getLexRows(id).length;
+  }
+
+  if (rail && window.PREP_SNOWBALL_PHRASES && typeof window.PREP_SNOWBALL_PHRASES.fillThemeRail === "function") {
+    window.PREP_SNOWBALL_PHRASES.fillThemeRail(rail, {
+      definitions: defs,
+      combined: combined || null,
+      radioName: "echoMinuteTheme",
+      inputClass: "theme-input",
+      deckMetaEl: deckMeta,
+      countPhrases: countLex,
+      formatDeckMeta: function (n) {
+        return n + " пар hint→phrase · минимум 5 для этого режима.";
+      }
+    });
+  }
+
+  var stage = document.getElementById("emStage");
+  if (stage && window.PREP_ECHO_MINUTE && typeof window.PREP_ECHO_MINUTE.mount === "function") {
+    window.PREP_ECHO_MINUTE.mount({
+      els: {
+        stageMain: stage,
+        stageSub: document.getElementById("emStageSub"),
+        timer: document.getElementById("emTimer"),
+        scoreLive: document.getElementById("emScore"),
+        summary: document.getElementById("emSummary"),
+        status: document.getElementById("emStatus"),
+        transcript: document.getElementById("emTranscript"),
+        typeInput: document.getElementById("emType"),
+        btnCheck: document.getElementById("emCheck"),
+        btnStart: document.getElementById("emStart"),
+        btnReplay: document.getElementById("emReplay"),
+        btnSkip: document.getElementById("emSkip"),
+        voicePickSelect: document.getElementById("emVoicePick")
+      },
+      themeDefinitions: defs,
+      radioName: "echoMinuteTheme",
+      roundSeconds: 60,
+      minDeck: 5,
+      voiceGenderRadioName: "emVoiceGender",
+      getLexRows: function (themeId) {
+        return typeof window.U10_SNOWBALL_getLexRows === "function"
+          ? window.U10_SNOWBALL_getLexRows(themeId)
+          : [];
+      }
+    });
+  }
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

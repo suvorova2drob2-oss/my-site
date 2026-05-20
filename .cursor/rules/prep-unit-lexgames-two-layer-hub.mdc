@@ -1,0 +1,35 @@
+---
+description: Lexical flow Prep — Unit 9 hub → режимы; Unit 10 без отдельного hub, сразу Word Bank; в UI см. Vocab Gym.
+globs: "**/index.html,**/js/prep-hub*.js"
+alwaysApply: false
+---
+
+# Unit lexical games — вход в режимы
+
+**Пользовательское имя в `index.html`:** **Vocab Gym** (Level 8+). Технические id (`lexgames`, `openUnit9LexGamesHub`, …) могут оставаться прежними — см. **`prep-vocab-gym-user-facing-name.mdc`**.
+
+## Level 9 — два слоя (hub → Word Bank / режимы)
+
+- **Слой 1:** `#screen-unit9-lexgames-hub` — полное меню плиток (Word Bank, lexical trainer, режимы, vault, sticky, …).
+- **Слой 2:** тяжёлые экраны (`screen-unit9-wordbank` без `u10-wb-only`, reading pick, fall, …).
+- **Back** с Level 9 Word Bank → снова hub (`openLexGamesHubReturn` / `openUnit9LexGamesHub`).
+
+## Level 10 — один рабочий экран (Word Bank)
+
+- Отдельного `#screen-unit10-lexgames-hub` **нет**. Prep-папка lexical (`PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID`) вызывает **`openUnit10LexGamesHub()`**, который после сброса shell сразу вызывает **`openUnit10WordBank()`** (`screen-unit9-wordbank` + класс `u10-wb-only`).
+- Режимы, Prep vault, sticky, tic-tac-toe, live demo — только внутри блока **`#cpe-wb-u10-modes`** на Word Bank (не дублировать вторым меню снаружи).
+- **`openUnit10LexGamesHubResume()`** = **`openUnit10WordBank()`** (возврат из vault и др. без промежуточного экрана).
+- **Back** на Unit 10 Word Bank → **`hubReturnToUnit10LexicalGamesFolder()`** (Prep Level 10 folder), подпись кнопки «← Level 10 folder».
+
+## Обязательные точки навигации
+
+1. **`openLexGamesHubReturn()`** при `u10LexGamesActive` → **`openUnit10LexGamesHub()`** (полный сброс после режима на общих экранах Level 9).
+2. **`prepEscapeHubBack`** при `prepEscapeReturnToUnit10LexGames` → **`openUnit10WordBank()`**.
+3. **`showScreen` whitelist** — держать `screen-unit9-wordbank`; hub Unit 10 не регистрировать.
+
+## Эталоны
+
+- Level 9: `#screen-unit9-lexgames-hub`, `openUnit9LexGamesHub()`.
+- Level 10: `openUnit10LexGamesHub()`, `openUnit10WordBank()`, вход из `PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID`.
+
+Новый юнит (11+): если один общий Word Bank как у Unit 10 — можно пропускать hub; если как Level 9 — сохранить hub.

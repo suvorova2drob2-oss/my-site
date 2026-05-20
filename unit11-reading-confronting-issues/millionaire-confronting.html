@@ -141,6 +141,7 @@
     }
     .hint-foot { padding: 8px 14px 12px; font-size: 0.72rem; color: #64748b; border-top: 1px solid #1e293b; }
   </style>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -225,6 +226,10 @@
     { topic: "D: Recycling dog waste", q: "According to the text, ten bags of waste can power the light for: ", opts: ["thirty minutes", "one hour", "two hours", "a full night (about eight hours)"], correct: 2 }
   ];
 
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && PREP_U10_PG_STUB.millionaireFacts && PREP_U10_PG_STUB.millionaireFacts.length) {
+    QUESTIONS = PREP_U10_PG_STUB.millionaireFacts.slice();
+  }
+
   var state = { i: 0, used50: false, fifty: false, locked: false };
 
   function moneyAt(stepIndex) {
@@ -275,7 +280,7 @@
     state.locked = false;
     state.fifty = false;
     var qu = QUESTIONS[state.i];
-    document.getElementById("qNum").textContent = "Вопрос " + (state.i + 1) + " из 15";
+    document.getElementById("qNum").textContent = "Вопрос " + (state.i + 1) + " из " + QUESTIONS.length;
     document.getElementById("qTopic").textContent = qu.topic;
     document.getElementById("qText").textContent = qu.q;
     var box = document.getElementById("answers");
@@ -360,9 +365,20 @@
 
   function openTextHint() {
     var qu = QUESTIONS[state.i];
+    var frame = document.getElementById("hintFrame");
+    if (window.PREP_U10_PG_CPE) {
+      document.getElementById("hintTitle").textContent = "CPE Prep · подсказка";
+      frame.removeAttribute("src");
+      try {
+        frame.srcdoc = "<!DOCTYPE html><html><head><meta charset=utf-8><style>body{font-family:system-ui,sans-serif;padding:14px;background:#0f172a;color:#94a3b8;line-height:1.45}</style></head><body><p>В режиме <code>course=cpe</code> тексты Confronting здесь не подключаются.</p></body></html>";
+      } catch (eH0) {}
+      delete frame.dataset.loadedFile;
+      document.getElementById("hintModal").classList.add("open");
+      try { frame.focus(); } catch (eH1) {}
+      return;
+    }
     var file = sourceFileForTopic(qu.topic);
     document.getElementById("hintTitle").textContent = "Исходник: " + qu.topic;
-    var frame = document.getElementById("hintFrame");
     var needLoad = frame.dataset.loadedFile !== file;
     if (needLoad) {
       frame.src = file + "?embed=1";

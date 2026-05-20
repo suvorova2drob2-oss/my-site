@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 CPE Writing — Censorship language workshop</title>
+  <style>
+    :root {
+      --bg: #151c25;
+      --panel: #2b3440;
+      --panel-soft: #394451;
+      --line: rgba(148, 163, 184, 0.32);
+      --line-soft: rgba(148, 163, 184, 0.2);
+      --text: #edf2f7;
+      --muted: #b3c0d2;
+      --accent: #90c4e6;
+      --head-red: #c62f44;
+      --head-teal: #4a8693;
+      --gold: #f2c14b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(75% 60% at 0% 0%, #3d4958 0%, transparent 60%),
+        radial-gradient(85% 65% at 100% 100%, #2f3a48 0%, transparent 60%),
+        linear-gradient(180deg, #121820 0%, #1a212c 100%);
+      padding: 18px;
+      line-height: 1.55;
+    }
+    .page {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(43, 52, 64, 0.95) 0%, rgba(35, 43, 54, 0.98) 100%);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+      padding: 18px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #bed9ef;
+    }
+    h1 { font-size: 1.34rem; margin-bottom: 4px; }
+    .lead { color: var(--muted); font-size: 0.92rem; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 7px 12px;
+      background: rgba(23, 31, 40, 0.78);
+    }
+    .back:hover { border-color: var(--accent); }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      margin-bottom: 14px;
+    }
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+    .card {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(48, 60, 75, 0.86);
+    }
+    .card-head {
+      padding: 10px 14px;
+      color: #f8fafc;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .card-head.red { background: linear-gradient(90deg, var(--head-red), #b9263c); }
+    .card-head.teal { background: linear-gradient(90deg, var(--head-teal), #5b9ca9); }
+    .card-head .gold { color: var(--gold); }
+    .card-body {
+      padding: 14px 14px 16px;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #f1f5f9;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 100%),
+        rgba(58, 70, 86, 0.68);
+    }
+    .card-body p { margin-bottom: 10px; }
+    .card-body p:last-child { margin-bottom: 0; }
+
+    .hl {
+      display: inline;
+      border: 0;
+      background: rgba(143, 193, 226, 0.22);
+      color: #e7f3ff;
+      border-bottom: 1px dashed rgba(143, 193, 226, 0.85);
+      padding: 0 2px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: inherit;
+      line-height: inherit;
+    }
+    .hl:hover { background: rgba(143, 193, 226, 0.34); }
+    .hl.active {
+      background: rgba(242, 193, 75, 0.26);
+      border-bottom-color: rgba(242, 193, 75, 0.95);
+      color: #fff7df;
+    }
+
+    .panel {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(44, 56, 71, 0.86);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .panel h2 {
+      font-size: 0.96rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #cce1f3;
+      margin-bottom: 7px;
+    }
+    .focus {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: rgba(29, 38, 50, 0.85);
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .focus .term {
+      font-size: 1.03rem;
+      font-weight: 800;
+      color: #f8fbff;
+      margin-bottom: 5px;
+    }
+    .focus .para {
+      font-size: 0.92rem;
+      color: #d6e4f3;
+      line-height: 1.45;
+    }
+    .hint {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .bank button {
+      border: 1px solid rgba(143, 193, 226, 0.42);
+      border-radius: 999px;
+      background: rgba(143, 193, 226, 0.14);
+      color: #e2eef9;
+      font-size: 0.8rem;
+      padding: 5px 9px;
+      cursor: pointer;
+    }
+    .bank button:hover { background: rgba(143, 193, 226, 0.24); }
+    .wb-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      margin-top: 10px;
+    }
+    @media (max-width: 1080px) {
+      .wb-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+    @media (max-width: 740px) {
+      .wb-grid { grid-template-columns: 1fr; }
+    }
+    .wb-col {
+      --wb-accent: #8fc1e2;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(30, 39, 51, 0.94), rgba(30, 39, 51, 0.8));
+      padding: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      border-top: 3px solid var(--wb-accent);
+    }
+    .wb-col h3 {
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e4f1fc;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .wb-sub {
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: #bdd4e8;
+      margin-bottom: 8px;
+    }
+    .wb-count {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: #f4f8fd;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .wb-col ul { list-style: none; display: grid; gap: 6px; }
+    .wb-col li {
+      font-size: 0.9rem;
+      color: #f2f7fc;
+      line-height: 1.4;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: rgba(143, 193, 226, 0.1);
+      border: 1px solid rgba(143, 193, 226, 0.24);
+      border-left: 3px solid var(--wb-accent);
+    }
+    .wb-col--intro { --wb-accent: #7cc7ff; }
+    .wb-col--compare { --wb-accent: #8de1bf; }
+    .wb-col--stance { --wb-accent: #f8c271; }
+    .wb-col--conclusion { --wb-accent: #d7a8ff; }
+    .eval-panel {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(185, 203, 218, 0.22), rgba(171, 190, 206, 0.12));
+      overflow: hidden;
+    }
+    .eval-head {
+      background: #0b4f69;
+      color: #f5fbff;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+    .eval-body {
+      padding: 12px;
+      display: grid;
+      gap: 11px;
+      color: #eaf3fb;
+    }
+    .eval-intro {
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: #dbe8f5;
+    }
+    .eval-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+    }
+    @media (max-width: 760px) {
+      .eval-grid { grid-template-columns: 1fr; }
+    }
+    .eval-col h3 {
+      color: #f3f8fd;
+      font-size: 0.95rem;
+      margin-bottom: 7px;
+    }
+    .eval-col ul {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+    .eval-col li {
+      font-style: italic;
+      font-size: 0.97rem;
+      line-height: 1.35;
+      color: #f1f6fc;
+    }
+    .eval-lines {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .eval-line {
+      display: inline-block;
+      width: fit-content;
+      padding: 0 3px;
+      background: rgba(255, 221, 87, 0.88);
+      color: #2f2a00;
+      border-radius: 3px;
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+    .game-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: rgba(29, 38, 50, 0.86);
+      padding: 10px;
+      margin-top: 8px;
+    }
+    .game-para {
+      font-size: 0.92rem;
+      color: #dae8f6;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+    .game-opts { display: grid; gap: 7px; }
+    .game-opt {
+      border: 1px solid rgba(143, 193, 226, 0.34);
+      border-radius: 9px;
+      background: rgba(143, 193, 226, 0.12);
+      color: #edf4fb;
+      text-align: left;
+      font-size: 0.88rem;
+      padding: 8px 9px;
+      cursor: pointer;
+    }
+    .game-opt:hover { background: rgba(143, 193, 226, 0.22); }
+    .game-opt.ok { border-color: #4cd1a7; background: rgba(76, 209, 167, 0.2); }
+    .game-opt.bad { border-color: #f88a95; background: rgba(248, 138, 149, 0.18); }
+    .write-lab {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: rgba(29, 38, 50, 0.86);
+      padding: 10px;
+      margin-top: 8px;
+      display: grid;
+      gap: 8px;
+    }
+    .write-topic {
+      border: 1px dashed rgba(143, 193, 226, 0.44);
+      border-radius: 9px;
+      background: rgba(143, 193, 226, 0.09);
+      padding: 8px 10px;
+      color: #e9f3fb;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .write-topic strong { color: #f4fbff; }
+    .write-input {
+      width: 100%;
+      min-height: 190px;
+      border-radius: 10px;
+      border: 1px solid rgba(143, 193, 226, 0.34);
+      background: rgba(18, 25, 35, 0.95);
+      color: #eef5fc;
+      padding: 10px;
+      line-height: 1.55;
+      font-size: 0.93rem;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .write-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(143, 193, 226, 0.18);
+    }
+    .write-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+    .write-list li {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 7px 9px;
+      background: rgba(36, 47, 61, 0.85);
+      font-size: 0.86rem;
+      color: #e9f2fb;
+      line-height: 1.4;
+    }
+    .write-list li.ok {
+      border-color: #4cd1a7;
+      box-shadow: 0 0 0 2px rgba(76, 209, 167, 0.12);
+    }
+    .write-list li.bad {
+      border-color: #f88a95;
+      box-shadow: 0 0 0 2px rgba(248, 138, 149, 0.12);
+    }
+    .mission-box {
+      border: 1px solid rgba(143, 193, 226, 0.28);
+      border-radius: 9px;
+      background: rgba(20, 30, 42, 0.78);
+      padding: 8px;
+      display: grid;
+      gap: 7px;
+    }
+    .mission-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #deebf8;
+      font-weight: 700;
+    }
+    .mission-meter {
+      font-size: 0.78rem;
+      color: #ffe8a3;
+    }
+    .mission-list {
+      list-style: none;
+      display: grid;
+      gap: 5px;
+      max-height: 170px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .mission-list li {
+      font-size: 0.82rem;
+      line-height: 1.35;
+      color: #d8e6f4;
+      border: 1px solid rgba(143, 193, 226, 0.2);
+      border-radius: 7px;
+      padding: 5px 7px;
+      background: rgba(143, 193, 226, 0.07);
+    }
+    .mission-list li.ok {
+      border-color: #4cd1a7;
+      background: rgba(76, 209, 167, 0.13);
+      color: #ecfff8;
+    }
+    .examiner-box {
+      border: 1px solid rgba(143, 193, 226, 0.3);
+      border-radius: 9px;
+      background: rgba(20, 30, 42, 0.74);
+      padding: 8px;
+      display: grid;
+      gap: 7px;
+    }
+    .examiner-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #f4fbff;
+    }
+    .examiner-total {
+      font-size: 0.84rem;
+      color: #d6e5f4;
+    }
+    .examiner-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+    .examiner-list li {
+      border: 1px solid rgba(143, 193, 226, 0.22);
+      border-radius: 7px;
+      padding: 6px 8px;
+      background: rgba(143, 193, 226, 0.08);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      color: #e6f1fb;
+    }
+    .exam-band {
+      font-weight: 800;
+      color: #ffe8a3;
+    }
+    .ref-wrap {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: rgba(29, 38, 50, 0.86);
+      padding: 10px;
+      margin-top: 8px;
+    }
+    .model-answer {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: rgba(242, 241, 225, 0.08);
+      padding: 10px;
+      font-size: 0.95rem;
+      line-height: 1.62;
+      color: #eef4fb;
+      margin-bottom: 9px;
+    }
+    .model-answer p { margin-bottom: 10px; }
+    .model-answer p:last-child { margin-bottom: 0; }
+    .ref-list { list-style: none; display: grid; gap: 7px; }
+    .ref-row {
+      border: 1px solid var(--line-soft);
+      border-radius: 9px;
+      background: rgba(36, 47, 61, 0.85);
+      padding: 8px;
+      display: grid;
+      gap: 7px;
+    }
+    .ref-phrase {
+      font-size: 0.9rem;
+      color: #f3f7fc;
+      line-height: 1.45;
+    }
+    .ref-controls {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ref-choice {
+      border: 1px solid rgba(143, 193, 226, 0.36);
+      border-radius: 999px;
+      background: rgba(143, 193, 226, 0.1);
+      color: #e6f0f9;
+      font-size: 0.79rem;
+      padding: 5px 9px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .ref-choice.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(143, 193, 226, 0.2);
+      background: rgba(143, 193, 226, 0.22);
+    }
+    .ref-row.bad {
+      border-color: #f88a95;
+      box-shadow: 0 0 0 2px rgba(248, 138, 149, 0.14);
+    }
+    .ref-row.ok {
+      border-color: #4cd1a7;
+      box-shadow: 0 0 0 2px rgba(76, 209, 167, 0.14);
+    }
+    .hot-phrase {
+      background: linear-gradient(180deg, rgba(255, 214, 102, 0.32), rgba(255, 214, 102, 0.16));
+      border-bottom: 2px solid rgba(255, 214, 102, 0.95);
+      border-radius: 4px;
+      padding: 0 3px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">CPE Unit 10 · Writing</span>
+        <h1>Censorship arguments — advanced language workshop</h1>
+        <p class="lead">Click highlighted phrases to see an English paraphrase you can reuse in essays and reviews.</p>
+      </div>
+      <a class="back" href="../../../index.html?course=cpe">&larr; Levels hub</a>
+    </header>
+
+    <section class="cards">
+      <article class="card">
+        <h2 class="card-head red">What is <span style="text-decoration: line-through">censorship</span> anyway?</h2>
+        <div class="card-body">
+          <p>
+            Censorship usually
+            <button type="button" class="hl" data-term="conjures up ideas of" data-para="immediately makes people think of">conjures up ideas of</button>
+            banning books in medieval times, whereas in contemporary society it manifests itself
+            in more subtle ways. These days writers and journalists can see their work
+            <button type="button" class="hl" data-term="sidelined inconspicuously" data-para="pushed out of attention without obvious public action">sidelined inconspicuously</button>;
+            a series of damaging reviews, or a change of leadership at a publishing company can
+            <button type="button" class="hl" data-term="relegate certain voices" data-para="push specific viewpoints down to a less influential level">relegate certain voices</button>
+            to a less
+            <button type="button" class="hl" data-term="prominent position" data-para="a highly visible and influential place in public discourse">prominent position</button>
+            and move public
+            <button type="button" class="hl" data-term="move public perception" data-para="shift the way people understand or judge something">perception</button>
+            in a different direction.
+          </p>
+          <p>
+            Publishing tends
+            <button type="button" class="hl" data-term="to reflect public interest" data-para="to mirror what the public is currently interested in">to reflect public interest</button>,
+            and as such whichever genre or subject has captured people's attention will be more heavily
+            <button type="button" class="hl" data-term="more heavily commissioned" data-para="ordered and funded by publishers more often than alternatives">commissioned</button>.
+          </p>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="card-head teal">Filtering out the <span class="gold">hate</span></h2>
+        <div class="card-body">
+          <p>
+            Unfortunately, the modern world is
+            <button type="button" class="hl" data-term="more nuanced than many care to admit" data-para="more complex and requiring fine distinctions than people prefer to acknowledge">more nuanced than many care to admit</button>,
+            and censorship is
+            <button type="button" class="hl" data-term="no longer as clear-cut" data-para="not as simple or black-and-white as before">no longer as clear-cut</button>
+            as it once was. Self-publishing and blogging have given authors platforms
+            to write about anything
+            <button type="button" class="hl" data-term="without editorial oversight" data-para="without formal supervision and quality control from an editor">without the oversight</button>
+            which would previously have come from an editor.
+          </p>
+          <p>
+            <button type="button" class="hl" data-term="the downside is that..." data-para="the negative side of this development is that...">The downside is that</button>
+            we can be
+            <button type="button" class="hl" data-term="be exposed to writing" data-para="encounter writing directly, including harmful material">exposed to writing</button>
+            which may be
+            <button type="button" class="hl" data-term="unnecessarily upsetting" data-para="disturbing in ways that are avoidable rather than essential">unnecessarily upsetting</button>,
+            damaging or misleading. What constitutes censorship for some is merely a way of protecting the
+            <button type="button" class="hl" data-term="protecting the vulnerable" data-para="shielding people who are more likely to be harmed or exploited">vulnerable</button>
+            for others, and in some ways this is a
+            <button type="button" class="hl" data-term="laudable aim" data-para="an objective that is morally praiseworthy">laudable aim</button>.
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Paraphrase focus</h2>
+      <p class="hint">Tap a highlighted phrase in the text. You can also pick from the quick bank below.</p>
+      <div class="focus">
+        <p class="term" id="focusTerm">sidelined inconspicuously</p>
+        <p class="para" id="focusPara">pushed out of attention without obvious public action</p>
+      </div>
+      <div class="bank" id="quickBank"></div>
+    </section>
+
+    <section class="panel">
+      <div class="eval-panel">
+        <div class="eval-head">Useful language: evaluating ideas</div>
+        <div class="eval-body">
+          <p class="eval-intro">
+            You can evaluate specific points raised in input texts or focus more broadly on general ideas about the topic.
+            The phrases below will help you organise your ideas.
+          </p>
+          <div class="eval-grid">
+            <div class="eval-col">
+              <h3>Referring to the texts</h3>
+              <ul>
+                <li>There are some fundamental flaws in that ...</li>
+                <li>Weighing up all the points raised, ...</li>
+                <li>It is potentially more contentious because ...</li>
+                <li>They make a compelling argument for / to ...</li>
+              </ul>
+              <div class="eval-lines">
+                <span class="eval-line">rightly question whether</span>
+                <span class="eval-line">They come from very distinct standpoints</span>
+                <span class="eval-line">both make valuable points</span>
+              </div>
+            </div>
+            <div class="eval-col">
+              <h3>Referring to ideas in general</h3>
+              <ul>
+                <li>A salient / pertinent / striking aspect of this matter is ...</li>
+                <li>Central to this idea is ...</li>
+                <li>On further inspection, ...</li>
+                <li>Something often overlooked is that ...</li>
+              </ul>
+              <div class="eval-lines">
+                <span class="eval-line">There is no doubt that</span>
+                <span class="eval-line">that ignores the fact that</span>
+                <span class="eval-line">What is undeniable is</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Writing bank with paraphrase game</h2>
+      <p class="hint">Use these full phrases in Writing Part 1. Then play: match each paraphrase to the exact phrase.</p>
+      <div class="wb-grid">
+        <div class="wb-col wb-col--intro">
+          <h3><span>Introducing topic</span><span class="wb-count" id="wbCountIntro"></span></h3>
+          <p class="wb-sub">Frames the issue and sets the essay focus clearly.</p>
+          <ul id="wbIntro"></ul>
+        </div>
+        <div class="wb-col wb-col--compare">
+          <h3><span>Comparing inputs</span><span class="wb-count" id="wbCountCompare"></span></h3>
+          <p class="wb-sub">Compares Text A and Text B in a balanced way.</p>
+          <ul id="wbCompare"></ul>
+        </div>
+        <div class="wb-col wb-col--stance">
+          <h3><span>Stance & concession</span><span class="wb-count" id="wbCountStance"></span></h3>
+          <p class="wb-sub">Gives your opinion but still acknowledges complexity.</p>
+          <ul id="wbStance"></ul>
+        </div>
+        <div class="wb-col wb-col--conclusion">
+          <h3><span>Conclusion / recommendation</span><span class="wb-count" id="wbCountConclusion"></span></h3>
+          <p class="wb-sub">Summarises and suggests what should happen next.</p>
+          <ul id="wbConclusion"></ul>
+        </div>
+      </div>
+      <div class="game-card">
+        <p class="game-para" id="gamePara"></p>
+        <div class="game-opts" id="gameOpts"></div>
+        <div class="bank" style="margin-top:8px">
+          <button type="button" id="gameNext">Next paraphrase</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Task 4 · model answer reference tracker</h2>
+      <p class="hint">Now read the model answer again and decide which input text each underlined idea refers to.</p>
+      <div class="ref-wrap">
+        <div class="model-answer">
+          <p>
+            <span class="hot-phrase">The topic addressed is whether</span> the works of authors and journalists should be censored in today's world.
+            <span class="hot-phrase">The texts put forward the idea that</span> perhaps
+            <span class="hot-phrase">it is time for society to reassess</span> how this term is understood and
+            <span class="hot-phrase">rightly question whether censorship is being applied correctly</span> or
+            <span class="hot-phrase">being wielded as a tool for questionable purposes</span>.
+          </p>
+          <p>
+            While <span class="hot-phrase">the first text asserts that</span> contemporary writers are being censored indirectly, and that this is
+            <span class="hot-phrase">a potential road to disaster</span>, <span class="hot-phrase">the second takes the view that</span> some censorship may be desirable.
+            <span class="hot-phrase">They come from very distinct standpoints</span>, however
+            <span class="hot-phrase">both make valuable points</span> which
+            <span class="hot-phrase">should be explored further</span>.
+          </p>
+          <p>
+            <span class="hot-phrase">There is no doubt that</span> freedom of speech for writers
+            <span class="hot-phrase">should be upheld whatever the circumstances</span>, yet
+            <span class="hot-phrase">that ignores the fact that</span> fewer contemporary writers are
+            <span class="hot-phrase">subjected to the editing process</span>, whereby another person assesses
+            the acceptability of a piece of writing <span class="hot-phrase">prior to publication</span>.
+          </p>
+          <p>
+            <span class="hot-phrase">Never before has society been in this situation</span>, with so many
+            <span class="hot-phrase">disparate voices</span> <span class="hot-phrase">wanting to have their say</span> and so many platforms available.
+            <span class="hot-phrase">What is undeniable is that</span> the way in which we police the writers and journalists of our time
+            <span class="hot-phrase">needs a thorough review</span> to
+            <span class="hot-phrase">ensure the system remains fit for purpose</span>.
+          </p>
+        </div>
+        <ul class="ref-list" id="refList"></ul>
+        <div class="btn-row">
+          <button type="button" class="btn-check" id="refCheck">Check references</button>
+          <button type="button" class="btn-clear" id="refReset">Reset task 4</button>
+        </div>
+        <p class="fb" id="refFb"></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Mini writing auto-check</h2>
+      <p class="hint">Write one paragraph on the topic, then run auto-check and examiner feedback.</p>
+      <div class="write-lab">
+        <p class="write-topic" id="writePrompt"></p>
+        <div class="bank">
+          <button type="button" id="writePromptNew">New topic prompt</button>
+          <button type="button" id="writeSeed">Insert starter sentence</button>
+        </div>
+        <div class="mission-box">
+          <div class="mission-head">
+            <span>Phrase mission: use all required phrases</span>
+            <span class="mission-meter" id="phraseMissionMeter">0/0 used</span>
+          </div>
+          <ul class="mission-list" id="phraseMissionList"></ul>
+        </div>
+        <textarea
+          id="writeInput"
+          class="write-input"
+          spellcheck="true"
+          placeholder="Write 140-220 words here and use all required phrases from the mission list."
+        ></textarea>
+        <div class="btn-row">
+          <button type="button" class="btn-check" id="writeCheck">Check paragraph</button>
+          <button type="button" class="btn-clear" id="writeReset">Clear</button>
+        </div>
+        <p class="fb" id="writeScore"></p>
+        <div class="examiner-box">
+          <p class="examiner-title">Examiner feedback (CPE style)</p>
+          <p class="examiner-total" id="examinerTotal">Run Check paragraph to see Content / Communicative Achievement / Organisation / Language.</p>
+          <ul class="examiner-list" id="examinerList"></ul>
+        </div>
+        <ul class="write-list" id="writeReport"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../../js/u10-cpe-writing-workshop-data.js"></script>
+  <script src="../../../js/u10-cpe-writing-workshop-engine.js"></script>
+</body>
+</html>

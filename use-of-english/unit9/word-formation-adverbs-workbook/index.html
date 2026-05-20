@@ -338,13 +338,26 @@
 
   var q = new URLSearchParams(window.location.search);
   var bh = document.getElementById("backHub");
-  if (bh && q.get("back")) {
-    bh.href = q.get("back");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+  if (bh) {
+    bh.href = sanitizeReturnHref(q.get("back"), bh.getAttribute("href") || "");
   }
   if (bh && q.get("backLabel")) {
     try {
-      bh.innerHTML =
-        "&larr; " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+      bh.textContent =
+        "← " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
     } catch (e) {}
   }
 })();

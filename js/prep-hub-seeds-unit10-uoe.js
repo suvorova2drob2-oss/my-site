@@ -31,11 +31,21 @@
             encodeURIComponent("Use of English — Unit 10"),
     };
 
+    var part4KeyWordTransformation = {
+        id: "u10_uoe_part4_key_word_transformation",
+        title: "Part 4 — Key word transformation",
+        subtitle: "Six items · FOR, IN, NARROW, COMMON, OUT, HANG",
+        kind: "prep-link",
+        href:
+            "use-of-english/part4-key-word-transformation/unit10.html?course=cpe&u10uoe=cpe&backLabel=" +
+            encodeURIComponent("Use of English — Unit 10"),
+    };
+
     W.PREP_HUB_U10_UOE_SEEDS = {
         /** Карточка на списке Level 10 */
         folderUseOfEnglish: {
             title: "Use of English",
-            subtitle: "Unit 10 · Part 1, word formation (literary text), Part 4 (disk links)",
+            subtitle: "Unit 10 · Part 1 MC cloze, Part 3-style word formation, Part 4 key word transformation",
         },
         /**
          * Prep-link задачи на корне папки Use of English (юнит → UoE → задачи).
@@ -43,8 +53,12 @@
          */
         part1McSeeded: {
             hubSeedIdStrip: null,
-            taskIdsOrdered: [shakespeareMc.id, wfLiteraryTranslation.id],
-            defaultTasks: [shakespeareMc, wfLiteraryTranslation],
+            taskIdsOrdered: [
+                shakespeareMc.id,
+                wfLiteraryTranslation.id,
+                part4KeyWordTransformation.id,
+            ],
+            defaultTasks: [shakespeareMc, wfLiteraryTranslation, part4KeyWordTransformation],
         },
     };
 })(typeof window !== "undefined" ? window : globalThis);

@@ -218,12 +218,12 @@
       <div style="flex:1;min-width:0;">
         <p class="progress">Question <strong id="elStep">1</strong> of <strong>6</strong></p>
         <h1>Reading and Use of English &mdash; Part 4 Key word transformation</h1>
-        <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">Unit 10</p>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;" id="kwUnitTag">Unit 10</p>
       </div>
       <a class="back" id="backLink" href="../unit10/fce/index.html">&larr; Use of English — Unit 10</a>
     </header>
 
-    <p class="subtitle">
+    <p class="subtitle" id="kwSubtitle">
       For questions 1&ndash;6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given.
       Do not change the word given. You must use between two and five words, including the word given.
     </p>
@@ -271,8 +271,15 @@
 
   <script>
 (function () {
-  /** Unit 10 — textbook-style key word transformations */
-  var TASKS = [
+  /**
+   * Один HTML на два хаба: `?u10uoe=fce` (Mastering B2 · unit10/fce) и `?u10uoe=cpe` (CPE Prep · unit10/cpe).
+   * Наборы заданий разные — не смешивать.
+   */
+  var q = new URLSearchParams(window.location.search);
+  var u10uoe = String(q.get("u10uoe") || "fce").toLowerCase();
+
+  /** Mastering B2 / FCE — Unit 10 book-style key word transformations */
+  var TASKS_FCE = [
     {
       first: "You should keep dust off the computer screen.",
       keyword: "FREE",
@@ -329,6 +336,92 @@
     }
   ];
 
+  /** CPE Prep — Unit 10 (отдельный ключ от учебника B2) */
+  var TASKS_CPE = [
+    {
+      first: "James was afraid of holding the vase in case he should drop it.",
+      keyword: "FOR",
+      before: "James didn't want to hold the vase ",
+      after: " it.",
+      accept: ["for fear of dropping"],
+      revealGap: "for FEAR of dropping",
+      fullSecond: "James didn't want to hold the vase for FEAR of dropping it."
+    },
+    {
+      first: "Please refrain from touching this machine while it is being operated.",
+      keyword: "IN",
+      before: "Do not touch this machine while ",
+      after: ", please.",
+      accept: ["it is in operation"],
+      revealGap: "it is IN operation",
+      fullSecond: "Do not touch this machine while it is IN operation, please."
+    },
+    {
+      first: "We haven't quite decided which place to go for our next holiday, but it'll be one of two destinations in Europe.",
+      keyword: "NARROW",
+      before: "We've managed ",
+      after: " to a couple of places in Europe.",
+      accept: [
+        "to narrow down our next holiday destination",
+        "to narrow our next holiday destination down",
+        "to narrow our choice down",
+        "to narrow the choice down"
+      ],
+      revealGap: "to NARROW down our next holiday destination",
+      fullSecond: "We've managed to NARROW down our next holiday destination to a couple of places in Europe."
+    },
+    {
+      first: "After some initial clashes of opinion at the climate change conference, the countries reached an agreement.",
+      keyword: "COMMON",
+      before: "Countries finally overcame their differences and ",
+      after: " at the climate change conference.",
+      accept: ["found common ground", "found some common ground"],
+      revealGap: "found (some) COMMON ground",
+      fullSecond: "Countries finally overcame their differences and found COMMON ground at the climate change conference."
+    },
+    {
+      first: "I didn't think that it was appropriate for Zeina to speak like that to her colleagues.",
+      keyword: "OUT",
+      before: "From my perspective, Zeina's comments ",
+      after: " in the workplace.",
+      accept: ["were out of line", "were out of order", "were out of place"],
+      revealGap: "were OUT of line / order / place",
+      fullSecond: "From my perspective, Zeina's comments were OUT of place in the workplace."
+    },
+    {
+      first: "I had never skied before, but after only a day of practising, I had learned how to do it.",
+      keyword: "HANG",
+      before: "It only took me a day ",
+      after: " having done it before.",
+      accept: [
+        "to get the hang of skiing despite never",
+        "to get the hang of skiing despite not"
+      ],
+      revealGap: "to get the HANG of skiing despite never / not",
+      fullSecond: "It only took me a day to get the HANG of skiing despite never having done it before."
+    }
+  ];
+
+  var TASKS = u10uoe === "cpe" ? TASKS_CPE : TASKS_FCE;
+
+  var kwSubtitle = document.getElementById("kwSubtitle");
+  if (kwSubtitle) {
+    var rubricWords =
+      u10uoe === "cpe"
+        ? "between three and eight words"
+        : "between two and five words";
+    kwSubtitle.innerHTML =
+      "For questions 1&ndash;6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. " +
+      "Do not change the word given. You must use " +
+      rubricWords +
+      ", including the word given.";
+  }
+  var kwTag = document.getElementById("kwUnitTag");
+  if (kwTag) {
+    kwTag.textContent =
+      u10uoe === "cpe" ? "Unit 10 · CPE Prep" : "Unit 10 · Mastering B2";
+  }
+
   var idx = 0;
   var checkedThisRound = false;
 
@@ -347,6 +440,8 @@
   var btnNext = document.getElementById("btnNext");
   var taskCard = document.getElementById("taskCard");
   var elDone = document.getElementById("elDone");
+
+  elInput.placeholder = u10uoe === "cpe" ? "3–8 words" : "2–5 words";
 
   function normalizeAnswer(v) {
     var s = String(v || "")
@@ -442,19 +537,27 @@
     checkedThisRound = false;
   });
 
-  var q = new URLSearchParams(window.location.search);
   var bl = document.getElementById("backLink");
-  var u10uoe = String(q.get("u10uoe") || "fce").toLowerCase();
   var hubIdx = u10uoe === "cpe" ? "../unit10/cpe/index.html" : "../unit10/fce/index.html";
   var foot = document.getElementById("u10-uoe-hub-foot");
   if (foot) foot.setAttribute("href", hubIdx);
 
-  if (bl) {
-    if (q.get("back")) {
-      bl.href = q.get("back");
-    } else {
-      bl.href = hubIdx;
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
     }
+  }
+
+  if (bl) {
+    bl.href = sanitizeReturnHref(q.get("back"), hubIdx);
     if (q.get("backLabel")) {
       try {
         bl.textContent =

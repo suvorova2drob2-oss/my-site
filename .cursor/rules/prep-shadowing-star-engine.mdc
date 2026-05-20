@@ -1,0 +1,43 @@
+---
+description: Shadowing Star — тень за классовым аудио + runner-метафора (микрофон / тишина); PREP_SHADOWING_STAR, треки U10_SHADOWING_STAR_TRACKS.
+globs: "**/prep-shadowing-star-engine.js,**/unit10-shadowing-star-tracks.js,**/shadowing-star.html,**/lexical-games-source-manifest.js"
+alwaysApply: false
+---
+
+# Shadowing Star · движок для юнитов
+
+**UI-имя:** **Shadowing Star**. Игрок включает аудио и **говорит вслух вместе** с записью; распознавание речи используется только как **детектор активности** (не матч фраз).
+
+## Файлы
+
+| Роль | Путь |
+|------|------|
+| Движок | `js/prep-shadowing-star-engine.js` → **`PREP_SHADOWING_STAR.mount`** |
+| Список треков (расширять при новых аудио) | `js/unit10-shadowing-star-tracks.js` → **`U10_SHADOWING_STAR_TRACKS`** |
+| Эталон страницы | `games/cpe/unit10/shadowing-star.html` |
+| Манифест | `js/lexical-games-source-manifest.js` → **`shadowingStarEngineFile`** |
+
+## Контракт трека
+
+```ts
+{ id: string, label: string, src: string }
+```
+
+Если в массиве **больше одного** трека — показывается **`trackSelect`** + **`trackSwitchWrap`**; при одном треке обёртка скрывается (`display: none`).
+
+## Поведение
+
+- **`speechLang`** для Web Speech (по умолчанию `en-GB`).
+- Пока идёт звук и микрофон видит речь — классы **`ss-boost`**, растут **combo** и **звёзды**. Долгая **тишина** после **`graceMs`** → **страйк**.
+- **Скорость полосы (`--ss-stripe-dur`)** задаётся из JS: быстрее при высоком **combo** и при эвристике **`ss-flow`** (много колбеков SR за ~2.2 с ≈ ровный поток речи рядом с темпом диктора). Это **не измерение интонации / F0** — для этого нужны отдельные инструменты; в копии страницы честно объясняется связь «интонация → стабильный поток → быстрее дорога».
+- **`prep-retell-chain-speech-match.js` не нужен** — это не fuzzy bingo.
+
+## Новый юнит / новое аудио
+
+1. Добавить объект в **`U10_SHADOWING_STAR_TRACKS`** (или свой массив и передать в **`mount({ tracks })`**).
+2. Скопировать патерн **`shadowing-star.html`**: скрытый `<audio>`, блок рельсов (**`rail`**, **`vehicle`**), кнопки Старт/Стоп.
+
+## Связанные движки
+
+- **Echo Minute** — «Минута на слух» с TTS (`prep-echo-minute-engine.mdc`).
+- **Voice Bingo** — сетка по подсказкам (`prep-voice-bingo-engine.mdc`).

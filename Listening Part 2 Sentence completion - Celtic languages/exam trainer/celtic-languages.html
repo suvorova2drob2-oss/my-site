@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening Part 2 &middot; Celtic languages</title>
+  <style>
+    :root {
+      --bg: #1e293b;
+      --panel: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --accent: #a78bfa;
+      --ok: #34d399;
+      --bad: #f87171;
+      --line: #475569;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: max(20px, env(safe-area-inset-top, 0px))
+        max(16px, env(safe-area-inset-right, 0px))
+        max(32px, env(safe-area-inset-bottom, 0px))
+        max(16px, env(safe-area-inset-left, 0px));
+    }
+    .shell { max-width: 860px; margin: 0 auto; }
+    .btn-levels {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.18);
+      color: #cbd5e1;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+    .btn-levels:hover { border-color: #64748b; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.16);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 { font-size: clamp(1.2rem, 3.5vw, 1.5rem); margin: 8px 0 6px; letter-spacing: -0.02em; }
+    .art-title { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 1.35rem; color: #e0f2fe; margin: 0 0 14px; }
+    .rubric { color: var(--muted); font-size: 14px; margin: 0 0 20px; line-height: 1.5; }
+    .audio-card {
+      background: var(--panel);
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 22px;
+    }
+    .audio-card label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    audio { width: 100%; }
+    .study-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: var(--panel);
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 12px;
+    }
+    .study-toggle input { width: 18px; height: 18px; accent-color: var(--primary); }
+    .gaps { display: flex; flex-direction: column; gap: 16px; }
+    .gap-block {
+      background: var(--panel);
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .gap-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .gap-num { font-weight: 800; color: var(--accent); }
+    .sent { margin: 0; font-size: 15px; line-height: 1.65; }
+    .sent input.gap-inp {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 7rem;
+      max-width: 100%;
+      margin: 0 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: #1e293b;
+      color: var(--text);
+      font-size: 15px;
+    }
+    .sent input.gap-inp:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+    .sent input.gap-inp.ok { border-color: rgba(52, 211, 153, 0.85); }
+    .sent input.gap-inp.bad { border-color: rgba(248, 113, 113, 0.85); }
+    .btn-hint {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.1);
+      color: #bae6fd;
+      cursor: pointer;
+    }
+    .btn-hint:disabled { opacity: 0.4; cursor: not-allowed; }
+    .hint-panel { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #1e293b; border: 1px solid rgba(167, 139, 250, 0.35); font-size: 13px; color: #cbd5e1; }
+    .hint-panel.on { display: block; }
+    .gap-key-row { display: none; margin-top: 10px; font-size: 13px; color: #86efac; }
+    .gap-key-row.reveal { display: block; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .btn { font-weight: 700; padding: 11px 18px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; }
+    .btn-primary { background: #0ea5e9; color: #fff; }
+    .btn-secondary { background: #475569; color: #e2e8f0; border: 1px solid rgba(71, 85, 105, 0.75); }
+    .feedback { margin-top: 14px; min-height: 24px; font-size: 15px; color: var(--muted); }
+    .exam-strip {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #c4d0e0;
+      background: var(--panel);
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+    .exam-strip a { color: var(--primary); font-weight: 600; }
+    .exam-strip a + a { margin-left: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <p><a class="btn-levels" href="index.html">&larr; Levels</a></p>
+    <span class="tag">Listening Part 2 &middot; Sentence completion</span>
+    <h1>Track 12 &mdash; Workbook (RF C2)</h1>
+    <p class="art-title">Celtic languages</p>
+    <p class="rubric">
+      You will hear a speaker talking about Celtic languages. For <strong>questions 1&ndash;9</strong>, complete the sentences
+      with a <strong>word or short phrase</strong>. Marking accepts <strong>any</strong> official key where the
+      workbook allows alternatives.
+    </p>
+    <div class="audio-card">
+      <label for="track-audio">Audio (Yandex Object Storage)</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/cpe/RF_C2_WB_Track%2012.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio. Open the MP3 link directly.
+      </audio>
+    </div>
+    <p class="exam-strip" id="exam-mode-note" role="note">
+      <strong>Exam-style view:</strong> no script on this page &mdash; audio and gaps only.
+      <a href="workbook-transcript.html">Workbook script (study, read-only) &rarr;</a>
+      &middot; <a href="?study=1">Same gaps with pre-submit hints on by default &rarr;</a>
+    </p>
+    <script>
+      (function () {
+        var note = document.getElementById("exam-mode-note");
+        if (!note) return;
+        try {
+          if (new URLSearchParams(window.location.search).get("study") === "1") {
+            note.innerHTML =
+              '<strong>Study mode:</strong> pre-submit hints are on below; still <strong>no</strong> script on this page &mdash; <a href="workbook-transcript.html">workbook script</a> &middot; <a href="celtic-languages.html">strict exam view</a> (hints off by default).';
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div class="study-toggle">
+      <input type="checkbox" id="study-mode" />
+      <span><strong>Pre-submit hints</strong> &mdash; short strategy per question (no answers). <strong>Official keys</strong> appear <strong>after</strong> you submit or tap each hint after submit.</span>
+    </div>
+    <h2 style="font-size:1.05rem;margin:0 0 12px;">Exam-style gap fill (9)</h2>
+    <div class="gaps" id="gaps-root"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="btn-check">Submit / Check answers</button>
+      <button type="button" class="btn btn-secondary" id="btn-clear">Clear gap marking only</button>
+    </div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+  </div>
+
+  <script>
+    (function () {
+      var TASK = [
+        {
+          before: "These seem to have originated in a quiet corner of the Alps two and a half thousand years ago, and gradually expanded from this ",
+          after: ".",
+          answers: ["ancient heartland"],
+          hintPre: "Two words: original geographic core area."
+        },
+        {
+          before: "For instance, many speakers of Cornish, the Celtic language of Cornwall, ",
+          after: " emigrated to Brittany.",
+          answers: ["cornish speakers", "many speakers of cornish"],
+          hintPre: "Who moved to Brittany: a phrase about Cornish-speaking people."
+        },
+        {
+          before: "Back in Britain, Celtic languages faced a ",
+          after: " from a new set of invaders: the Anglo-Saxons.",
+          answers: ["vicious onslaught"],
+          hintPre: "Two-word strong phrase meaning a severe attack."
+        },
+        {
+          before: "Irish Gaelic survived mainly in the ",
+          after: " of Ireland, before undergoing a revival.",
+          answers: ["western fringes", "sparsely populated western fringes"],
+          hintPre: "Edge regions in the west; short or expanded version accepted."
+        },
+        {
+          before: "This remote outpost of Scottish Gaelic has spawned several prominent ",
+          after: ", including Lewis MacKinnon.",
+          answers: ["literary figures"],
+          hintPre: "Two words: category of notable writers."
+        },
+        {
+          before: "However, in recent years, there have been concerted ",
+          after: " to bring the language back from the dead.",
+          answers: ["efforts", "concerted efforts"],
+          hintPre: "Attempts to revive the language; one-word or two-word variant."
+        },
+        {
+          before: "By 1900, it was already a minority language in Wales, and ",
+          after: " had all but disappeared over the next hundred years.",
+          answers: ["monolingual speakers of welsh", "monolingual welsh speakers"],
+          hintPre: "Phrase for people speaking only Welsh."
+        },
+        {
+          before: "This remote corner of England... now seems a handful of speakers kept the language alive surreptitiously, presumably due to ",
+          after: " from the English-speaking elite.",
+          answers: ["persecution", "relentless persecution"],
+          hintPre: "Pressure/harsh treatment from elites; short or expanded phrase."
+        },
+        {
+          before: "In 2010, UNESCO officially changed its designation of Cornish from extinct to ",
+          after: ".",
+          answers: ["critically endangered", "endangered"],
+          hintPre: "UNESCO risk label, stronger or shorter accepted wording."
+        }
+      ];
+
+      function norm(s) {
+        return String(s || "")
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .replace(/[""]/g, '"')
+          .replace(/['']/g, "'")
+          .trim();
+      }
+
+      function matches(val, answers) {
+        var n = norm(val);
+        if (!n) return false;
+        for (var i = 0; i < answers.length; i++) {
+          if (norm(answers[i]) === n) return true;
+        }
+        return false;
+      }
+
+      function keyLabel(item) {
+        return item.answers.join(" <strong>or</strong> ");
+      }
+
+      var studyEl = document.getElementById("study-mode");
+      try {
+        if (new URLSearchParams(window.location.search).get("study") === "1" && studyEl) {
+          studyEl.checked = true;
+        }
+      } catch (eSt) {}
+      var root = document.getElementById("gaps-root");
+      var fb = document.getElementById("feedback");
+      var gapEverSubmitted = false;
+
+      function buildGaps() {
+        root.innerHTML = "";
+        for (var i = 0; i < TASK.length; i++) {
+          (function (idx, item) {
+            var wrap = document.createElement("div");
+            wrap.className = "gap-block";
+            var head = document.createElement("div");
+            head.className = "gap-head";
+            var num = document.createElement("span");
+            num.className = "gap-num";
+            num.textContent = String(idx + 1) + ".";
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn-hint";
+            btn.textContent = "Hint";
+            btn.disabled = !studyEl.checked;
+            head.appendChild(num);
+            head.appendChild(btn);
+
+            var p = document.createElement("p");
+            p.className = "sent";
+            p.appendChild(document.createTextNode(item.before));
+            var inp = document.createElement("input");
+            inp.type = "text";
+            inp.className = "gap-inp";
+            inp.setAttribute("autocomplete", "off");
+            inp.setAttribute("spellcheck", "true");
+            inp.setAttribute("aria-label", "Gap " + String(idx + 1));
+            inp.id = "gap-" + String(idx + 1);
+            p.appendChild(inp);
+            p.appendChild(document.createTextNode(item.after));
+
+            var hint = document.createElement("div");
+            hint.className = "hint-panel hint-pre";
+            hint.id = "hint-" + String(idx + 1);
+            hint.innerHTML = "<p>" + item.hintPre + "</p>";
+
+            var keyRow = document.createElement("div");
+            keyRow.className = "gap-key-row";
+            keyRow.id = "gap-key-" + String(idx + 1);
+            keyRow.innerHTML = "Acceptable: " + keyLabel(item);
+
+            btn.addEventListener("click", function () {
+              if (!studyEl.checked) return;
+              if (!gapEverSubmitted) {
+                var on = hint.classList.toggle("on");
+                btn.setAttribute("aria-expanded", on ? "true" : "false");
+                return;
+              }
+              hint.classList.add("on");
+              keyRow.classList.add("reveal");
+            });
+
+            studyEl.addEventListener("change", function () {
+              btn.disabled = !studyEl.checked;
+              if (!studyEl.checked) {
+                hint.classList.remove("on");
+                btn.setAttribute("aria-expanded", "false");
+              }
+            });
+
+            wrap.appendChild(head);
+            wrap.appendChild(p);
+            wrap.appendChild(hint);
+            wrap.appendChild(keyRow);
+            root.appendChild(wrap);
+          })(i, TASK[i]);
+        }
+      }
+      buildGaps();
+
+      function applySubmitReveal() {
+        gapEverSubmitted = true;
+        for (var k = 0; k < TASK.length; k++) {
+          var kr = document.getElementById("gap-key-" + String(k + 1));
+          if (kr) kr.classList.add("reveal");
+        }
+      }
+
+      document.getElementById("btn-check").addEventListener("click", function () {
+        var okc = 0;
+        for (var i = 0; i < TASK.length; i++) {
+          var inp = document.getElementById("gap-" + String(i + 1));
+          if (!inp) continue;
+          inp.classList.remove("ok", "bad");
+          var v = inp.value;
+          if (matches(v, TASK[i].answers)) {
+            inp.classList.add("ok");
+            okc++;
+          } else if (norm(v)) inp.classList.add("bad");
+        }
+        applySubmitReveal();
+        fb.innerHTML =
+          okc === TASK.length
+            ? "<strong style='color:var(--ok)'>All gaps match an official key.</strong>"
+            : "Score: <strong>" + String(okc) + "</strong> / " + String(TASK.length) + ". Acceptable keys are shown under each item.";
+      });
+
+      document.getElementById("btn-clear").addEventListener("click", function () {
+        for (var j = 0; j < TASK.length; j++) {
+          var inp2 = document.getElementById("gap-" + String(j + 1));
+          if (inp2) inp2.classList.remove("ok", "bad");
+        }
+        fb.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>

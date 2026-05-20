@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retell chain · Unit 10 · CPE Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../../../js/prep-u10-playground-shell.js"></script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-mid: #111827;
+      --panel: #1e293b;
+      --panel-soft: #334155;
+      --surface-inset: #0f172a;
+      --line: rgba(148, 163, 184, 0.22);
+      --line-strong: rgba(148, 163, 184, 0.35);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --dim: #8b95b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --accent-border: rgba(56, 189, 248, 0.38);
+      --accent2: #a78bfa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Manrope", "Segoe UI", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 520px at 80% -15%, rgba(56, 189, 248, 0.1), transparent 55%),
+        radial-gradient(120% 85% at 50% 0%, var(--bg-mid) 0%, var(--bg) 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 22px clamp(14px, 3vw, 22px) 32px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(20px, 3vw, 26px);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.35);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 {
+      font-size: clamp(1.15rem, 3vw, 1.35rem);
+      line-height: 1.28;
+      margin-bottom: 8px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.52;
+      margin-bottom: 8px;
+      max-width: 54rem;
+    }
+    .ru {
+      color: var(--accent);
+      font-size: 0.86rem;
+      line-height: 1.52;
+      margin-bottom: 8px;
+      opacity: 0.96;
+      max-width: 54rem;
+    }
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .path a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .path a:hover { text-decoration: underline; }
+    .path span { opacity: 0.85; }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 6px 4px;
+      border-radius: 10px;
+    }
+    .back:hover { background: rgba(56, 189, 248, 0.08); text-decoration: underline; }
+
+    .audio-strip {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-inset);
+    }
+    .audio-strip p {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .audio-strip audio { width: 100%; max-width: 560px; height: 40px; }
+    .audio-strip[hidden] { display: none !important; }
+
+    .howto {
+      background: var(--surface-inset);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .howto strong { color: var(--text); }
+
+    .wb-head {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .rail-stack {
+      margin-bottom: 18px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.22);
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .theme-cell { position: relative; }
+    .theme-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .theme-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: 82px;
+      padding: 11px 13px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.72);
+      cursor: pointer;
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.15s ease,
+        background 0.18s ease;
+    }
+    .theme-pill:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-1px);
+    }
+    .theme-input:focus-visible + .theme-pill {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .theme-input:checked + .theme-pill {
+      border-color: rgba(56, 189, 248, 0.65);
+      background: linear-gradient(155deg, rgba(56, 189, 248, 0.14), rgba(167, 139, 250, 0.07));
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.22),
+        0 12px 28px rgba(0, 0, 0, 0.28);
+    }
+    .theme-ico { font-size: 1.28rem; line-height: 1; }
+    .theme-title { font-weight: 800; font-size: 0.78rem; line-height: 1.28; color: #f1f5ff; }
+    .theme-tag { font-size: 0.66rem; color: var(--dim); line-height: 1.32; font-weight: 600; }
+
+    .section-head {
+      font-size: 1.02rem;
+      margin: 6px 0 10px;
+      font-weight: 800;
+    }
+    .lead {
+      color: var(--muted);
+      font-size: 0.91rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .text-list { display: flex; flex-direction: column; gap: 10px; }
+    .text-drop {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      overflow: hidden;
+    }
+    .text-drop[open] { border-color: var(--accent-border); }
+    .text-drop > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 12px;
+    }
+    .text-drop > summary::-webkit-details-marker { display: none; }
+    .text-drop .sum-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      flex: 1;
+      min-width: 0;
+    }
+    .text-drop .sum-title { font-size: 1rem; font-weight: 800; }
+    .text-drop .sum-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.4; }
+    .text-drop .sum-cta {
+      font-size: 0.76rem;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .text-drop-embed {
+      padding: 0 12px 14px;
+      border-top: 1px solid var(--line);
+    }
+    .transcript-pane {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface-inset);
+      font-size: 0.92rem;
+      line-height: 1.58;
+      color: #e2e8f0;
+      max-height: min(52vh, 420px);
+      overflow-y: auto;
+    }
+    .text-drop-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      justify-content: flex-end;
+    }
+    .text-drop-alone {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .text-drop-alone:hover { text-decoration: underline; }
+
+    .retell-hints {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-inset);
+      border: 1px solid var(--line);
+    }
+    .retell-hints .step-num {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .aim { font-size: 0.85rem; line-height: 1.45; margin-bottom: 10px; }
+    .aim .en { color: #e2e8f0; display: block; }
+    .aim .ru { color: var(--muted); display: block; margin-top: 6px; font-size: 0.84rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips span {
+      font-size: 0.76rem;
+      background: var(--accent-soft);
+      color: #bae6fd;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid var(--accent-border);
+    }
+
+    .text-drop.is-hidden { display: none !important; }
+
+    .retell-timed-launch {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .btn-timed-open {
+      font: inherit;
+      font-weight: 800;
+      font-size: 0.84rem;
+      padding: 11px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--accent-border);
+      background: linear-gradient(155deg, rgba(56, 189, 248, 0.22), rgba(167, 139, 250, 0.12));
+      color: #e0f2fe;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    }
+    .btn-timed-open:hover {
+      filter: brightness(1.06);
+    }
+    .retell-timed-launch .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 26rem;
+      line-height: 1.45;
+    }
+
+    .retell-timed-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 32px);
+      overflow-y: auto;
+      background: rgba(6, 10, 18, 0.72);
+      backdrop-filter: blur(6px);
+    }
+    .retell-timed-backdrop[hidden] {
+      display: none !important;
+    }
+    .retell-timed-panel {
+      width: min(640px, 100%);
+      margin-top: min(4vh, 40px);
+      margin-bottom: 32px;
+      background: var(--panel);
+      border: 1px solid var(--line-strong);
+      border-radius: 18px;
+      padding: clamp(18px, 3vw, 22px);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+      overflow: visible;
+    }
+    .retell-timed-panel h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .retell-timed-lead {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.52;
+      margin-bottom: 18px;
+    }
+    .retell-timed-field {
+      margin-bottom: 14px;
+    }
+    .retell-timed-field label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .retell-timed-field select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--surface-inset);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .retell-timed-chain {
+      margin: 16px 0 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--accent-border);
+      background: rgba(56, 189, 248, 0.06);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: #e2e8f0;
+    }
+    .retell-timed-chain label {
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .retell-timed-chain input {
+      margin-top: 3px;
+      flex-shrink: 0;
+      accent-color: #f87171;
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+    .retell-timed-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .retell-timed-actions .btn-primary-t {
+      font: inherit;
+      font-weight: 800;
+      padding: 11px 22px;
+      border-radius: 11px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(14, 165, 233, 0.35);
+    }
+    .retell-timed-actions .btn-muted-t {
+      font: inherit;
+      font-weight: 700;
+      padding: 11px 18px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      background: var(--surface-inset);
+      color: var(--muted);
+    }
+
+    .retell-timed-run-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .retell-timed-seg-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      line-height: 1.35;
+      flex: 1;
+      min-width: 0;
+    }
+    .btn-ghost-t {
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-ghost-t:hover {
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .retell-timed-stage-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      margin-bottom: 8px;
+    }
+    .retell-timed-stage-bar #retellTimedStageTitle {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      line-height: 1.3;
+      flex: 1;
+      min-width: 0;
+    }
+    .retell-timed-big-time {
+      font-size: clamp(1.45rem, 4.5vw, 1.85rem);
+      font-weight: 800;
+      color: #f8fafc;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .retell-timed-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .retell-timed-phrase-progress {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #86efac;
+      margin: -4px 0 10px;
+      min-height: 1.25em;
+      letter-spacing: 0.02em;
+    }
+    .retell-timed-mic-hint {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: -6px 0 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.28);
+      background: rgba(15, 23, 42, 0.35);
+    }
+    .retell-timed-run-inner {
+      position: relative;
+      min-height: 0;
+      margin-bottom: 12px;
+      transition: opacity 0.35s ease;
+      overflow: visible;
+    }
+    .retell-timed-run-inner.retell-timed-dim {
+      opacity: 0.2;
+    }
+    .retell-timed-pane {
+      display: none;
+      overflow: visible;
+      padding: 6px 0 14px;
+    }
+    .retell-timed-pane.is-active {
+      display: block;
+    }
+    .retell-timed-fulltext {
+      padding: 20px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(15, 23, 42, 0.45);
+      font-size: 1.05rem;
+      line-height: 1.82;
+      letter-spacing: 0.02em;
+      color: #cbd5e1;
+      font-weight: 500;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    .retell-timed-muted {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .retell-timed-lex-hint {
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+      opacity: 0.92;
+    }
+    .retell-timed-lex-hint--retell {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.22);
+      color: #cbd5e1;
+    }
+    .retell-timed-lex-hint kbd {
+      font: inherit;
+      font-size: 0.72em;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.65);
+      white-space: nowrap;
+    }
+
+    .retell-lex-w,
+    .retell-lex-chip {
+      font: inherit;
+      font-weight: 600;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      position: relative;
+      margin: 0;
+      padding: 0 0 1px;
+      border: none;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      color: #e0f2fe;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: rgba(56, 189, 248, 0.45);
+      text-underline-offset: 4px;
+      vertical-align: baseline;
+      box-shadow: none;
+    }
+    .retell-lex-chip {
+      font-size: 0.82rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      margin: 0 6px 8px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      background: rgba(56, 189, 248, 0.08);
+      text-decoration: none;
+      color: #bae6fd;
+      line-height: 1.35;
+    }
+    .retell-lex-chip:hover {
+      border-color: rgba(56, 189, 248, 0.42);
+      background: rgba(56, 189, 248, 0.12);
+    }
+    .retell-lex-chip--heard {
+      background: rgba(34, 197, 94, 0.2) !important;
+      border-color: rgba(74, 222, 128, 0.55) !important;
+      color: #d1fae5 !important;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.28);
+    }
+    .retell-lex-chip--heard:hover {
+      border-color: rgba(74, 222, 128, 0.75);
+      background: rgba(34, 197, 94, 0.26) !important;
+    }
+    .retell-lex-w:focus-visible,
+    .retell-lex-chip:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .retell-lex-w::after,
+    .retell-lex-chip::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 0;
+      top: calc(100% + 10px);
+      min-width: 200px;
+      max-width: min(94vw, 380px);
+      padding: 11px 14px;
+      background: #0b1220;
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.48;
+      color: #e2e8f0;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 50;
+      transition: opacity 0.16s ease, visibility 0.16s ease;
+      white-space: normal;
+      text-align: left;
+      text-decoration: none;
+      hyphens: auto;
+    }
+    .retell-lex-chip::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .retell-lex-w.is-tip-open::after,
+    .retell-lex-w:hover::after,
+    .retell-lex-w:focus-visible::after,
+    .retell-lex-chip.is-tip-open::after,
+    .retell-lex-chip:hover::after,
+    .retell-lex-chip:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .retell-timed-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 4px;
+      align-items: flex-start;
+    }
+    .retell-timed-skip-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 6px;
+    }
+    .retell-timed-congrats {
+      text-align: center;
+      padding: 12px 8px 8px;
+    }
+    .retell-timed-congrats h2 {
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+    .retell-timed-congrats p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .retell-timed-congrats .btn-primary-t {
+      width: 100%;
+      max-width: 280px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .retell-timed-run-inner {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="tag">CPE Prep · Level 10 · Playground</p>
+        <h1 id="retellPageTitle">Stage 2 — Chained retell</h1>
+        <p class="sub" id="retellSubEn"></p>
+        <p class="ru" id="retellSubRu"></p>
+        <div class="path">
+          <a id="navPlayground" href="index.html?course=cpe">Playground · Unit 10</a>
+          <span id="trainerPathWrap" hidden><span>&middot;</span>
+          <a id="trainerPathLink" href="../../../Listening%20Part%204%20Multiple%20matching/exam%20trainer/p4-multiple-matching.html">Listening Part 4 trainer</a></span>
+        </div>
+      </div>
+      <a class="back" id="navBack" href="index.html?course=cpe">&larr; Playground</a>
+    </header>
+
+    <div id="audioStrip" class="audio-strip" hidden>
+      <p id="audioCaption">Class audio</p>
+      <audio id="mainAudio" controls preload="metadata">
+        <source id="mainAudioSource" src="" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <p class="howto" id="retellHowto">
+      <strong>Engine vs content:</strong> layout stays fixed; copy lives in <code>js/unit10-retell-chain-sources.js</code>. Pick a <strong>retell pack</strong> on the top strip (Snowball-style), then <strong>section focus</strong> below &mdash; full chain or one chunk for rehearsal.
+    </p>
+
+    <div class="rail-stack">
+      <p class="wb-head">Retell pack</p>
+      <div id="retellPackRail" class="theme-grid" role="radiogroup" aria-label="Retell pack"></div>
+    </div>
+
+    <div class="rail-stack">
+      <p class="wb-head">Section focus</p>
+      <div id="retellFocusRail" class="theme-grid" role="radiogroup" aria-label="Section focus"></div>
+    </div>
+
+    <h2 class="section-head" id="sectionHead">Script blocks</h2>
+    <p class="lead" id="sectionLead"></p>
+
+    <div class="retell-timed-launch">
+      <button type="button" class="btn-timed-open" id="retellTimedOpenBtn" aria-haspopup="dialog" aria-expanded="false">
+        Пересказ по ключевым словам (таймер)
+      </button>
+      <p class="hint">
+        Этап 1: полный текст на время (опорные фразы подчёркнуты — нажмите для EN-пояснения из bank).
+        Этап 2: только фразы банка, тоже с подсказкой по клику.
+        Этап 3: пересказ вслух с теми же ключевыми фразами на экране (полный текст скрыт). Включите цепочку для перехода к следующему фрагменту.
+      </p>
+    </div>
+
+    <div class="text-list" id="stage2RetellTexts"></div>
+  </main>
+
+  <div id="retellTimedBackdrop" class="retell-timed-backdrop" hidden aria-hidden="true">
+    <div class="retell-timed-panel" role="dialog" aria-modal="true" aria-labelledby="retellTimedDlgTitle">
+      <div id="retellTimedConfigView">
+        <h2 id="retellTimedDlgTitle">Пересказ по ключевым словам</h2>
+        <p class="retell-timed-lead">
+          Сначала читайте полный текст на время, затем — только опорные фразы из word bank, затем пересказ вслух на время: <strong>на этапе пересказа полный текст скрыт, но те же ключевые фразы остаются на экране</strong> (с быстрым EN-словарём по клику).
+          <span style="display:block;margin-top:8px;opacity:0.85;">Timed drill: full script → bank phrases → aloud retell with the same bank chips visible (no full text). Uses the pack and section focus selected above.</span>
+        </p>
+        <div class="retell-timed-field">
+          <label for="retellTimedReadSec">Чтение полного текста</label>
+          <select id="retellTimedReadSec"></select>
+        </div>
+        <div class="retell-timed-field">
+          <label for="retellTimedPhraseSec">Просмотр фраз</label>
+          <select id="retellTimedPhraseSec"></select>
+        </div>
+        <div class="retell-timed-field">
+          <label for="retellTimedRetellSec">Пересказ вслух</label>
+          <select id="retellTimedRetellSec"></select>
+        </div>
+        <div class="retell-timed-field">
+          <label for="retellTimedMarkMode">Отметка фраз на этапе 3</label>
+          <select id="retellTimedMarkMode">
+            <option value="manual" selected>Вручную — клик по фразе, когда услышали</option>
+            <option value="mic">Микрофон — авто (Chrome / Edge, EN)</option>
+          </select>
+        </div>
+        <p class="retell-timed-mic-hint" id="retellTimedMicHint" hidden></p>
+        <div class="retell-timed-chain">
+          <label>
+            <input type="checkbox" id="retellTimedChain" checked />
+            <span>После пересказа автоматически открыть следующий текст и продолжить те же этапы (чтение → фразы → пересказ).</span>
+          </label>
+        </div>
+        <div class="retell-timed-actions">
+          <button type="button" class="btn-primary-t" id="retellTimedStart">Начать</button>
+          <button type="button" class="btn-muted-t" id="retellTimedResetCfg">Сброс</button>
+        </div>
+      </div>
+
+      <div id="retellTimedRunView" hidden>
+        <div class="retell-timed-run-top">
+          <div id="retellTimedSegmentBadge" class="retell-timed-seg-badge"></div>
+          <button type="button" class="btn-ghost-t" id="retellTimedExit">Выйти</button>
+        </div>
+        <div class="retell-timed-stage-bar">
+          <span id="retellTimedStageTitle"></span>
+          <span id="retellTimedTimer" class="retell-timed-big-time" aria-live="polite">0</span>
+        </div>
+        <p id="retellTimedStageHint" class="retell-timed-hint"></p>
+        <p id="retellTimedPhraseProgress" class="retell-timed-phrase-progress" hidden aria-live="polite"></p>
+        <div id="retellTimedRunInner" class="retell-timed-run-inner">
+          <div id="retellTimedPaneFull" class="retell-timed-pane is-active"></div>
+          <div id="retellTimedPanePhrases" class="retell-timed-pane"></div>
+          <div id="retellTimedPaneRetell" class="retell-timed-pane"></div>
+        </div>
+        <div class="retell-timed-skip-row">
+          <button type="button" class="btn-ghost-t" id="retellTimedSkip">Пропустить этап</button>
+        </div>
+      </div>
+
+      <div id="retellTimedCongratsView" class="retell-timed-congrats" hidden>
+        <h2>Поздравляем!</h2>
+        <p>
+          Вы завершили цепочку пересказов для выбранных фрагментов.<br />
+          <span style="opacity:0.9;">Congratulations — you finished this retell chain.</span>
+        </p>
+        <button type="button" class="btn-primary-t" id="retellTimedCongratsClose">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../../js/listening-p4-wb10-pack.js"></script>
+  <script src="../../../js/u10-books-films-lexis.js"></script>
+  <script src="../../../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../../../js/u10-similes-lexis.js"></script>
+  <script src="../../../js/unit10-snowball-wordbank.js"></script>
+  <!-- Retell chain: kit → speech matcher → UI copy → unit segments → engine → page bootstrap -->
+  <script src="../../../js/prep-retell-chain-kit.js"></script>
+  <script src="../../../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../../../js/prep-retell-chain-timed-copy.js"></script>
+  <script src="../../../js/unit10-retell-chain-sources.js"></script>
+  <script src="../../../js/prep-retell-chain-timed-engine.js"></script>
+  <script src="../../../js/unit10-retell-chain-page.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

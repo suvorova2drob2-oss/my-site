@@ -1,0 +1,24 @@
+---
+description: В main app лексический хаб Level 8+ в UI называется Vocab Gym; техслой (lexgames, id экранов) может оставаться прежним.
+globs: "**/index.html,**/js/units-data.js,**/js/prep-hub*.js,.cursor/rules/**/*.mdc"
+alwaysApply: false
+---
+
+# Vocab Gym — пользовательское имя лексического хаба
+
+## Где так называть
+
+- **`index.html`**: экраны **`#screen-unit8`** и **`#screen-unit9`** — блок **Practice tools** с чипами **Vocab Gym** и **Playground**, затем подпись **Unit materials** (как на Level 10 в Prep). Лёгкие hub: `#screen-unit8-lexgames-hub`, `#screen-unit9-lexgames-hub`. **Unit 10** из Prep открывает сразу **`#screen-unit9-wordbank`** с классом **`u10-wb-only`** (отдельного `#screen-unit10-lexgames-hub` нет). Общие экраны режимов — подписи «назад» через **`hubLexGamesBackArrowText`** / **`hubLexGamesBackPlainText`** и **`data-lexgames-back`** (на Unit 10 Word Bank кнопка назад — «Level 10 folder», см. **`hubSyncLexGamesNavLabels`** / **`cpeWordBankHubBack`**).
+- **`js/units-data.js`** и fallback-плитки уровней в **`index.html`** (`HUB_TILES_FALLBACK`): в описании тайла Level 8 используй **Vocab Gym**, если перечисляешь лексический хаб рядом с lexical trainer.
+- **Новые юниты (11+)** по тому же паттерну двухслойного хаба: в **любом новом пользовательском тексте** (заголовки, кнопки, lead-абзацы) называй хаб **Vocab Gym**. От учебниковых папок и от **Playground** (классовые колоды / отдельная страница) по смыслу он уже отделён в Unit 10 — сохраняй этот принцип.
+
+## Что не переименовывать без рефакторинга
+
+- Идентификаторы и символы кода: `openUnit9LexGamesHub`, `u10LexGamesActive`, `PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID`, `screen-unit9-lexgames-hub`, префиксы CSS `#screen-unit9-lexgames-hub`, `legacy-folder="u9-lexgames"` и т.п. — это **технический след**; меняй только вместе с миграцией данных и ссылок.
+- Отдельные дисковые / legacy курсы (`unit3-digital-detox`, `unit12-lexical-games.html`, …) не трогай под это правило, пока явно не попросят выровнять брендинг.
+
+## Связанные правила
+
+- **`prep-playground-direct-navigation.mdc`** — Playground открывается сразу на `games/cpe/unit…`, без промежуточного folder workspace (кроме Edit mode).
+- **`prep-unit-lexgames-two-layer-hub.mdc`** — два слоя меню → Word Bank / режимы.
+- **`prep-lexical-games-single-source-workflow.mdc`** — один источник фраз и пулов (в тексте правила по-прежнему «lexical games» как название процесса данных).

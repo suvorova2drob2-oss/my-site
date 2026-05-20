@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-prep-back-default="../../index.html?prep_stay=1&prep_open_folder=prep_legacy_u10_listening_p4">
+<html lang="en" data-prep-back-default="../index.html">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Listening Part 4 — Multiple matching</title>
+  <link rel="stylesheet" href="../../css/cpe-quick-dictionary-drawer.css" />
   <style>
     :root {
       --bg: #0b1220;
@@ -19,6 +20,8 @@
       --bad: #fb7185;
       --bad-bg: rgba(251, 113, 133, 0.1);
       --radius: 16px;
+      --panel-soft: #263047;
+      --cpe-qdict-fab-mid: rgba(26, 39, 64, 0.96);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, sans-serif; }
     html { -webkit-text-size-adjust: 100%; }
@@ -641,22 +644,23 @@
 <body>
   <div class="wrap">
     <div class="box">
-      <h1>Listening Part 4 &middot; Multiple matching</h1>
-      <p class="lead">
+      <h1 id="p4-page-title">Listening Part 4 &middot; Multiple matching</h1>
+      <p class="lead" id="p4-page-lead">
         <strong>Student&apos;s Book</strong> class audio (RF_C2_SB Track 10.1). <strong>While you listen you must complete both tasks.</strong> Five extracts, two questions per speaker.
         Choose <strong>one letter (A&ndash;H)</strong> for each gap; three letters are not used in each task.
+        Phrase help: use the <strong>Quick dictionary</strong> control on the right (same Word Bank as SB 10.1 — <code>U10_P4_LEXIS_GAME_ROWS</code>).
       </p>
-      <p class="track-label">Audio — RF_C2_SB Track 10.1 (Student&apos;s Book — Part 4)</p>
+      <p class="track-label" id="p4-track-label">Audio — RF_C2_SB Track 10.1 (Student&apos;s Book — Part 4)</p>
       <audio id="main-audio" controls preload="metadata">
-        <source src="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3" type="audio/mpeg" />
-        <a href="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3">Download MP3</a>
+        <source id="p4-audio-source" src="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3" type="audio/mpeg" />
+        <a id="p4-audio-download" href="https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3">Download MP3</a>
       </audio>
     </div>
 
     <div class="box">
       <details class="banks">
-        <summary>Task 1 &mdash; all options (A&ndash;H) &middot; reason for the issue</summary>
-        <ul class="letter-bank">
+        <summary id="p4-task1-summary">Task 1 &mdash; all options (A&ndash;H) &middot; reason for the issue</summary>
+        <ul class="letter-bank" id="p4-task1-bank">
           <li><span class="ltr">A</span> ignoring expert advice</li>
           <li><span class="ltr">B</span> choosing an easy option</li>
           <li><span class="ltr">C</span> a quarrel between those involved</li>
@@ -668,8 +672,8 @@
         </ul>
       </details>
       <details class="banks">
-        <summary>Task 2 &mdash; all options (A&ndash;H) &middot; what they learnt</summary>
-        <ul class="letter-bank">
+        <summary id="p4-task2-summary">Task 2 &mdash; all options (A&ndash;H) &middot; what they learnt</summary>
+        <ul class="letter-bank" id="p4-task2-bank">
           <li><span class="ltr">A</span> the advantage of keeping a process simple</li>
           <li><span class="ltr">B</span> the benefit of investing in equipment</li>
           <li><span class="ltr">C</span> the importance of giving clear instructions</li>
@@ -879,11 +883,129 @@
     </div>
 
     <p class="back">
-      <a class="prep-link-back" href="../../index.html?prep_stay=1&amp;prep_open_folder=prep_legacy_u10_listening_p4">&larr; Listening Part 4 tasks</a>
+      <a class="prep-link-back" href="../index.html">&larr; Listening Part 4 tasks</a>
       &middot; <a href="../../index.html">CPE Prep hub</a>
     </p>
   </div>
 
+  <script src="../../js/listening-p4-wb10-pack.js"></script>
+  <script>
+(function () {
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : String(s);
+    return d.innerHTML;
+  }
+
+  if (document.getElementById("p4-qdict-fab")) return;
+
+  var rows =
+    typeof U10_P4_LEXIS_GAME_ROWS !== "undefined" && U10_P4_LEXIS_GAME_ROWS.length
+      ? U10_P4_LEXIS_GAME_ROWS.slice()
+      : [];
+  rows.sort(function (a, b) {
+    return String(a.ans || "").localeCompare(String(b.ans || ""));
+  });
+
+  var fab = document.createElement("button");
+  fab.type = "button";
+  fab.id = "p4-qdict-fab";
+  fab.className = "cpe-qdict-fab";
+  fab.setAttribute("aria-expanded", "false");
+  fab.setAttribute("aria-controls", "p4-qdict-drawer");
+  fab.setAttribute("title", "Quick dictionary");
+  fab.innerHTML =
+    '<span class="cpe-qdict-fab-inner" aria-hidden="true">\uD83D\uDCD6</span>' +
+    '<span class="cpe-qdict-fab-label">' +
+    '<span class="cpe-qdict-fab-line">Quick</span>' +
+    '<span class="cpe-qdict-fab-line">dictionary</span>' +
+    "</span>";
+
+  var backdrop = document.createElement("div");
+  backdrop.id = "p4-qdict-backdrop";
+  backdrop.className = "cpe-qdict-backdrop";
+  backdrop.hidden = true;
+
+  var drawer = document.createElement("aside");
+  drawer.id = "p4-qdict-drawer";
+  drawer.className = "cpe-qdict-drawer";
+  drawer.setAttribute("aria-label", "Quick dictionary — Word Bank phrases");
+  drawer.hidden = true;
+  drawer.innerHTML =
+    '<div class="cpe-qdict-drawer-head">' +
+    '<span class="cpe-qdict-drawer-title">Quick dictionary</span>' +
+    '<button type="button" class="cpe-qdict-drawer-x" aria-label="Close">\u00d7</button>' +
+    "</div>" +
+    '<div class="cpe-qdict-drawer-body">' +
+    '<p class="cpe-qdict-lede">English gloss (<strong>hint</strong>) plus the exact chunk from the transcript (<strong>ans</strong>) — same rows as <code>U10_P4_LEXIS_GAME_ROWS</code>.</p>' +
+    '<label class="cpe-qdict-sr-only" for="p4-qdict-filter">Filter by phrase or gloss</label>' +
+    '<input type="search" id="p4-qdict-filter" class="cpe-qdict-filter" placeholder="Filter by phrase or gloss…" autocomplete="off" spellcheck="false" />' +
+    '<div id="p4-qdict-list" class="cpe-qdict-list-host"></div>' +
+    "</div>";
+
+  document.body.appendChild(backdrop);
+  document.body.appendChild(drawer);
+  document.body.appendChild(fab);
+
+  var host = document.getElementById("p4-qdict-list");
+  var inp = document.getElementById("p4-qdict-filter");
+  var btnX = drawer.querySelector(".cpe-qdict-drawer-x");
+
+  function render(filter) {
+    if (!host) return;
+    var f = (filter || "").trim().toLowerCase();
+    host.innerHTML = "";
+    var shown = 0;
+    rows.forEach(function (row) {
+      var hay = (String(row.ans || "") + " " + String(row.hint || "")).toLowerCase();
+      if (f && hay.indexOf(f) < 0) return;
+      shown++;
+      var div = document.createElement("div");
+      div.className = "cpe-qdict-entry";
+      div.innerHTML =
+        '<p class="cpe-qdict-phrase">' + esc(row.ans) + "</p>" +
+        '<p class="cpe-qdict-def">' + esc(row.hint) + "</p>";
+      host.appendChild(div);
+    });
+    if (!shown) {
+      host.innerHTML = '<p class="cpe-qdict-empty">No matches.</p>';
+    }
+  }
+
+  function setOpen(on) {
+    var open = !!on;
+    document.body.classList.toggle("cpe-qdict-open", open);
+    backdrop.hidden = !open;
+    drawer.hidden = !open;
+    drawer.classList.toggle("is-visible", open);
+    fab.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function closeDict() {
+    setOpen(false);
+  }
+
+  fab.addEventListener("click", function () {
+    setOpen(backdrop.hidden);
+  });
+  backdrop.addEventListener("click", closeDict);
+  if (btnX) btnX.addEventListener("click", closeDict);
+
+  document.addEventListener(
+    "keydown",
+    function (e) {
+      if (e.key !== "Escape") return;
+      if (!document.body.classList.contains("cpe-qdict-open")) return;
+      e.preventDefault();
+      closeDict();
+    },
+    true
+  );
+
+  if (inp) inp.addEventListener("input", function () { render(inp.value); });
+  render("");
+})();
+  </script>
   <script src="../../js/prep-link-back.js"></script>
   <script src="../listening-p4-hunt-data.js"></script>
   <script src="../listening-p4-hunt.js"></script>
@@ -923,6 +1045,126 @@
 
         5: "We wanted to stimulate good discussions amongst professionals in order to get the most accurate translation, so we had our translators work in mini groups of three for each language. We expected them to self-manage and were pretty hands off at the beginning. What we did not predict however, was such vastly different team dynamics and so our schedule went out the window as some teams got on with it while others went round in circles. Anyway, we acted fast and got two of our in-house project managers to step in and impose some kind of order. No sooner had they started coordinating the discussions than the production schedule got back on track, and we managed to publish the translations simultaneously in China, Brazil, Germany and Turkey."
       };
+
+      var DATASET = new URLSearchParams(window.location.search || "").get("set") === "wb11" ? "wb11" : "sb10";
+      var PAGE_META = {
+        title: "Listening Part 4 &middot; Multiple matching",
+        lead:
+          "<strong>Student&apos;s Book</strong> class audio (RF_C2_SB Track 10.1). <strong>While you listen you must complete both tasks.</strong> Five extracts, two questions per speaker. " +
+          "Choose <strong>one letter (A&ndash;H)</strong> for each gap; three letters are not used in each task. " +
+          "Phrase help: use the <strong>Quick dictionary</strong> control on the right (same Word Bank as SB 10.1 &mdash; <code>U10_P4_LEXIS_GAME_ROWS</code>).",
+        trackLabel: "Audio &mdash; RF_C2_SB Track 10.1 (Student&apos;s Book &mdash; Part 4)",
+        audioSrc: "https://storage.yandexcloud.net/cpeaudio/RF_C2_SB_Track%2010.1.mp3",
+        task1Summary: "Task 1 &mdash; all options (A&ndash;H) &middot; reason for the issue",
+        task2Summary: "Task 2 &mdash; all options (A&ndash;H) &middot; what they learnt",
+        task1Stem: "choose from the list (A&ndash;H) <strong>the reason for the issue</strong> this speaker describes.",
+        task2Stem: "choose from the list (A&ndash;H) <strong>what they learnt from their challenges</strong> (same speaker).",
+        huntEnabled: true
+      };
+
+      if (DATASET === "wb11") {
+        ANSWER_KEY = { q1: "F", q2: "B", q3: "A", q4: "H", q5: "E", q6: "E", q7: "H", q8: "A", q9: "C", q10: "F" };
+        TASK1_OPTS = [
+          ["A", "to go along with persuasion from others"],
+          ["B", "to take advantage of prior experience"],
+          ["C", "to disprove hostile allegations"],
+          ["D", "to earn a sustained living"],
+          ["E", "to develop a half-baked idea that had been rejected"],
+          ["F", "to experience the satisfaction of doing something personal"],
+          ["G", "to complete a longstanding obligation"],
+          ["H", "to store and manage complex thoughts"]
+        ];
+        TASK2_OPTS = [
+          ["A", "losing access to unfinished work"],
+          ["B", "jeopardising their writing by making mistakes"],
+          ["C", "lacking confidence in their abilities"],
+          ["D", "needing to alter facts to acquiesce to market demands"],
+          ["E", "questioning the broader appeal of their work"],
+          ["F", "struggling with time constraints"],
+          ["G", "requiring substantial support to see the project through"],
+          ["H", "underestimating the difficulty of a transition"]
+        ];
+        SPEAKER_TRANSCRIPTS = {
+          1: "The idea of passive income, which comes in regardless of whether you're working, has always been appealing. That's how I got into self-publishing, initially with a set of instruction manuals, of all things. Once that stream was flowing, after some wrong turns that nearly ended my career, I could finally turn to something that would give me a sense of fulfilment: a fictionalised account of my childhood, which had been on my to-do list for ages. You might call it self-indulgent to put my younger self at the forefront of my work, potentially putting readers off, and I was wracked with self-doubt in this respect, but now I realise that all fiction is to some extent autobiographical, and I'm relieved to have found a ready audience for my work.",
+          2: "I've been making a decent income as a ghost writer of celebrity autobiographies for years, so you might say I've been writing fiction all along - there's certainly plenty of embellishment of the truth to make it more sensational. Having honed my talent for engaging narratives in other people's names, it felt like the natural next step to apply those skills to something more creative. I'd assumed it was a matter of coming up with a strong plot, then following the well-trodden path of turning it into a full-blown novel, but I couldn't have been further from the truth. When it finally came out, after countless revisions, it was universally panned by the critics, for good reason. Hence my decision to revert to what I know best!",
+          3: "It very nearly didn't happen at all, after hackers took control of my computer and corrupted my files, including my almost-complete manuscript. Fortunately, I had printouts of earlier versions, so I was able to painstakingly reconstruct most of it eventually and may even have added improvements along the way. My publishers were certainly relieved, after the sizable advance they'd paid me, and although I'd originally agreed to write the thing on a whim - flattery having been a major influence - I felt a strong sense of commitment to see it through. I still have a nagging doubt that the book's success is more about my earlier reputation as an actor, rather than any inherent quality in the writing, but I'm prepared to let that go!",
+          4: "As a person with dyslexia, I struggled in English lessons at school, and was told in no uncertain terms that my writing was dreadful. But I used to have such a vivid imagination, such that I could create entire worlds in my mind, with dozens of characters and intertwining plotlines. So as not to lose track of who had said what to whom, I started committing my stories to paper, and eventually, after a lot of encouragement from friends and family, I decided to take the plunge and get them professionally edited, despite my being continually racked by self-doubt. They still needed a lot of refinement before being fit to publish, but my editors provided invaluable guidance along the way.",
+          5: "It started out as an accident, when I was still a drama student. Some friends and I put on a comedy show, and I was tasked with scripting some sketches. One of my early drafts involved an overly complex dialogue between a plaintive alien and the earthling he encounters during an accidental visit to Earth. That particular script was too shallow and didn't make the cut, but I kind of identified with the grumpy space traveller character I'd created and ended up writing a lengthy backstory for him, which gradually morphed into a sci-fi trilogy! Despite frantic work commitments, I was driven by an uncontrollable urge to get it out of my system. Gratifyingly, when it finally came out, it seems to have caught the vibe within a certain niche."
+        };
+        PAGE_META = {
+          title: "Listening Part 4 &middot; Multiple matching (WB Track 11)",
+          lead:
+            "<strong>Workbook</strong> class audio (RF_C2_WB Track 11). <strong>While you listen you must complete both tasks.</strong> Five extracts, two questions per speaker. " +
+            "Choose <strong>one letter (A&ndash;H)</strong> for each gap; three letters are not used in each task.",
+          trackLabel: "Audio &mdash; RF_C2_WB Track 11 (Workbook &mdash; Part 4)",
+          audioSrc: "https://storage.yandexcloud.net/cpeaudio/cpe/RF_C2_WB_Track%2011.mp3",
+          task1Summary: "Task 1 &mdash; all options (A&ndash;H) &middot; author&apos;s main motivation",
+          task2Summary: "Task 2 &mdash; all options (A&ndash;H) &middot; problem during writing",
+          task1Stem: "choose from the list (A&ndash;H) <strong>each author&apos;s main motivation for writing the story</strong>.",
+          task2Stem: "choose from the list (A&ndash;H) <strong>a problem each author experienced during the writing process</strong>.",
+          huntEnabled: false
+        };
+      }
+
+      function renderBank(hostId, rows) {
+        var host = document.getElementById(hostId);
+        if (!host) return;
+        host.innerHTML = "";
+        rows.forEach(function (row) {
+          var li = document.createElement("li");
+          var l = document.createElement("span");
+          l.className = "ltr";
+          l.textContent = row[0];
+          li.appendChild(l);
+          li.appendChild(document.createTextNode(" " + row[1]));
+          host.appendChild(li);
+        });
+      }
+
+      function applyDatasetMeta() {
+        var title = document.getElementById("p4-page-title");
+        var lead = document.getElementById("p4-page-lead");
+        var tr = document.getElementById("p4-track-label");
+        var s1 = document.getElementById("p4-task1-summary");
+        var s2 = document.getElementById("p4-task2-summary");
+        var src = document.getElementById("p4-audio-source");
+        var dl = document.getElementById("p4-audio-download");
+        var audio = document.getElementById("main-audio");
+        if (title) title.innerHTML = PAGE_META.title;
+        if (lead) lead.innerHTML = PAGE_META.lead;
+        if (tr) tr.innerHTML = PAGE_META.trackLabel;
+        if (s1) s1.innerHTML = PAGE_META.task1Summary;
+        if (s2) s2.innerHTML = PAGE_META.task2Summary;
+        if (src) src.src = PAGE_META.audioSrc;
+        if (dl) dl.href = PAGE_META.audioSrc;
+        if (audio && typeof audio.load === "function") audio.load();
+        renderBank("p4-task1-bank", TASK1_OPTS);
+        renderBank("p4-task2-bank", TASK2_OPTS);
+        if (DATASET === "wb11") {
+          var backHref = "../index.html";
+          var prepBack = document.querySelector(".prep-link-back");
+          if (prepBack) prepBack.setAttribute("href", backHref);
+        }
+      }
+
+      function rewriteTaskPrompts() {
+        document.querySelectorAll(".task-card").forEach(function (card) {
+          var q = card.querySelector(".choice-mount");
+          var p = card.querySelector(".task-question");
+          if (!q || !p) return;
+          var task = Number(q.getAttribute("data-task"));
+          var qid = q.getAttribute("data-q");
+          var qn = Number(String(qid || "").replace(/^q/, "")) || 1;
+          var stem = task === 1 ? PAGE_META.task1Stem : PAGE_META.task2Stem;
+          p.innerHTML =
+            "<strong>Task " +
+            (task === 1 ? "ONE" : "TWO") +
+            "</strong> &mdash; For <strong>question " +
+            qn +
+            "</strong>, " +
+            stem;
+        });
+      }
 
       function optionLabel(qid, letter) {
         var n = Number(String(qid).replace(/^q/, ""));
@@ -1072,7 +1314,7 @@
           panel.classList.toggle("is-active", match);
           panel.hidden = !match;
         });
-        if (typeof window.__p4HuntSetSpeaker === "function") {
+        if (PAGE_META.huntEnabled && typeof window.__p4HuntSetSpeaker === "function") {
           window.__p4HuntSetSpeaker(Number(spk));
         }
         syncBackOneStepButton();
@@ -1254,7 +1496,7 @@
       }
 
       document.getElementById("btn-back-one-step").addEventListener("click", function () {
-        if (typeof window.__p4HuntGoPrevSpeaker === "function") {
+        if (PAGE_META.huntEnabled && typeof window.__p4HuntGoPrevSpeaker === "function") {
           window.__p4HuntGoPrevSpeaker();
         } else {
           var spk = Number(currentSpeakerNum());
@@ -1294,6 +1536,17 @@
         clearSummaryPanel();
       });
 
+      applyDatasetMeta();
+      rewriteTaskPrompts();
+      if (!PAGE_META.huntEnabled) {
+        var hunt = document.getElementById("p4-hunt-root");
+        if (hunt) hunt.hidden = true;
+        var note = document.querySelector(".note");
+        if (note) {
+          note.innerHTML =
+            "Lists A&ndash;H differ between Task 1 and Task 2. Checking compares your answers with the workbook key.";
+        }
+      }
       mountTranscripts();
       mountChoiceLists();
       setActiveTab("1");

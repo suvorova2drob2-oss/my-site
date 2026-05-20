@@ -120,9 +120,23 @@
 (function () {
   var q = new URLSearchParams(window.location.search);
   var bh = document.getElementById("backHub");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
   var rawBack = q.get("back");
   if (rawBack) {
     var t = String(rawBack).trim();
+    var candidate = t;
     if (
       t &&
       !/^[a-z][a-z0-9+.-]*:/i.test(t) &&
@@ -130,10 +144,9 @@
       t.indexOf("\\") === -1 &&
       /\.html?$/i.test(t)
     ) {
-      bh.href = "../../" + t.replace(/^\.\//, "");
-    } else {
-      bh.href = t;
+      candidate = "../../" + t.replace(/^\.\//, "");
     }
+    bh.href = sanitizeReturnHref(candidate, bh.getAttribute("href") || "");
   }
   if (q.get("backLabel")) {
     try {

@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pictionary &mdash; Confronting issues</title>
+  <title>Pictionary &mdash; Unit 10 CPE word bank</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --p-red: #c41e3a;
-      --p-blue: #1e5a8c;
-      --p-ink: #1a1a1a;
-      --panel: #f3f0e8;
-      --shadow: 0 4px 14px rgba(0,0,0,0.12);
+      --p-red: #7c3aed;
+      --p-blue: #0891b2;
+      --p-ink: #e2e8f0;
+      --panel: #0f172a;
+      --shadow: 0 12px 30px rgba(0,0,0,0.35);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
-      background: linear-gradient(165deg, #2a5a7a 0%, #1a3a50 50%, #0f2433 100%);
+      background: radial-gradient(1200px 600px at 20% 0%, #1a1030 0%, transparent 50%), #020617;
       color: var(--p-ink);
       min-height: 100dvh;
       padding: 16px;
@@ -27,23 +27,23 @@
     .board {
       background: var(--panel);
       border-radius: 20px;
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.5);
+      box-shadow: var(--shadow);
       padding: 20px 18px 24px;
-      border: 3px solid #d4cfc3;
+      border: 1px solid #334155;
     }
     .topbar {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px dashed #c4b8a8;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #334155;
     }
-    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #2c2418; }
-    .topbar .sub { font-size: 0.85rem; color: #5c5346; line-height: 1.4; max-width: 35rem; }
+    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #e2e8f0; }
+    .topbar .sub { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; max-width: 35rem; }
     .nav { font-size: 0.8rem; }
-    .nav a { color: #1e5a8c; font-weight: 700; }
+    .nav a { color: #22d3ee; font-weight: 700; }
     .setup textarea {
-      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 2px solid #b8a990;
-      font-size: 0.95rem; background: #fff; resize: vertical; font-family: inherit;
+      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #334155;
+      font-size: 0.95rem; background: #020617; color: #e2e8f0; resize: vertical; font-family: inherit;
     }
-    .setup .hint { font-size: 0.8rem; color: #5c5346; margin-bottom: 8px; }
+    .setup .hint { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; }
     .err { color: #b91c1c; font-size: 0.85rem; min-height: 1.2em; }
     .btn {
       display: inline-block; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
@@ -51,47 +51,47 @@
     }
     .btn-go { background: var(--p-red); color: #fff; }
     .btn-go:hover { filter: brightness(1.08); }
-    .btn-sec { background: #3d4f5c; color: #fff; }
+    .btn-sec { background: #334155; color: #fff; }
     .btn-blue { background: var(--p-blue); color: #fff; }
     .btn-ok { background: #2d6a4f; color: #fff; }
     .hud {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
     }
     .turn-pill { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .turn-pill .label { font-size: 0.75rem; color: #5c5346; text-transform: uppercase; letter-spacing: 0.06em; }
+    .turn-pill .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
     .turn-pill .name {
-      background: #fff; border: 3px solid var(--p-red); color: #8b1538; padding: 6px 14px; border-radius: 999px;
+      background: #020617; border: 2px solid var(--p-red); color: #e9d5ff; padding: 6px 14px; border-radius: 999px;
       font-size: 1.05rem; font-weight: 900;
     }
-    .turn-pill .name.b { border-color: var(--p-blue); color: #134060; }
+    .turn-pill .name.b { border-color: var(--p-blue); color: #a5f3fc; }
     .timer {
       font-variant-numeric: tabular-nums; font-size: 1.8rem; font-weight: 900; color: #1a1a1a;
-      min-width: 5ch; text-align: center; padding: 4px 12px; background: #fff; border-radius: 12px; border: 2px solid #b8a990;
+      min-width: 5ch; text-align: center; padding: 4px 12px; background: #020617; border-radius: 12px; border: 1px solid #334155;
     }
     .timer.warn { color: #b91c1c; border-color: #f87171; animation: pulse 0.8s ease infinite; }
     @keyframes pulse { 50% { opacity: 0.75; } }
-    .round-tag { background: #e0dccf; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; }
+    .round-tag { background: #1e293b; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; color: #cbd5e1; }
     .p-text {
-      font-size: 0.95rem; font-weight: 800; line-height: 1.35; color: #1a1a1a; min-height: 2.6em;
+      font-size: 0.95rem; font-weight: 800; line-height: 1.35; color: #e2e8f0; min-height: 2.6em;
     }
     .p-text.is-hidden { color: #9c9488; user-select: none; font-style: italic; }
-    .hide-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 0.78rem; color: #5c5346; }
+    .hide-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 0.78rem; color: #94a3b8; }
     .hide-row input { width: 1.1em; height: 1.1em; }
     .draw-tools {
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px;
     }
-    .draw-tools label { font-size: 0.75rem; color: #5c5346; }
+    .draw-tools label { font-size: 0.75rem; color: #94a3b8; }
     .draw-tools input[type="color"] { width: 40px; height: 32px; border: none; border-radius: 6px; cursor: pointer; }
     .draw-tools input[type="range"] { width: 100px; }
     .canvas-wrap {
-      background: #fff; border: 3px solid #1a1a1a; border-radius: 12px; overflow: hidden;
+      background: #fff; border: 1px solid #334155; border-radius: 12px; overflow: hidden;
       touch-action: none;
     }
     .canvas-wrap canvas { display: block; width: 100%; height: min(48vh, 420px); cursor: crosshair; vertical-align: top; }
     .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
-    .row-actions span { font-size: 0.8rem; color: #5c5346; }
+    .row-actions span { font-size: 0.8rem; color: #94a3b8; }
     .lb { margin-top: 18px; }
-    .lb h3 { font-size: 0.9rem; color: #2c2418; margin-bottom: 8px; }
+    .lb h3 { font-size: 0.9rem; color: #e2e8f0; margin-bottom: 8px; }
     .lb ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
     .ov {
       position: fixed; inset: 0; background: rgba(15, 36, 51, 0.88); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
@@ -101,41 +101,80 @@
       background: var(--panel); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; border: 3px solid #b8a990;
       text-align: center; box-shadow: var(--shadow);
     }
-    .ov-in h2 { color: #2c2418; margin-bottom: 8px; font-size: 1.1rem; }
-    .ov-in p { color: #5c5346; font-size: 0.9rem; }
+    .ov-in h2 { color: #e2e8f0; margin-bottom: 8px; font-size: 1.1rem; }
+    .ov-in p { color: #94a3b8; font-size: 0.9rem; }
     .game { display: none; }
     .game.on { display: block; }
-    .host-pick h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5c5346; margin-bottom: 6px; }
-    .host-pick .host-hint { font-size: 0.78rem; color: #5c5346; line-height: 1.4; margin-bottom: 8px; }
-    .host-pick { background: #fff; border: 3px solid #1e5a8c; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+    .host-pick h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 6px; }
+    .host-pick .host-hint { font-size: 0.78rem; color: #94a3b8; line-height: 1.4; margin-bottom: 8px; }
+    .host-pick { background: #020617; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
     .choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
     .choice-btn {
       min-height: 64px; padding: 8px 10px; border-radius: 10px; background: #fffef8;
-      border: 2px solid #b8a990; box-shadow: 0 2px 0 #a89878; cursor: pointer;
-      font-size: 0.68rem; font-weight: 800; line-height: 1.25; text-align: center; color: #1a1a1a;
+      border: 1px solid #334155; box-shadow: none; cursor: pointer;
+      font-size: 0.68rem; font-weight: 800; line-height: 1.25; text-align: center; color: #e2e8f0;
       font-family: inherit; transition: 0.12s;
     }
     .choice-btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
     .choice-wrong { color: #b91c1c; font-size: 0.8rem; font-weight: 700; min-height: 1.3em; margin-top: 8px; }
-    .drawer-box { background: #fff; border: 3px solid #b8a990; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
-    .drawer-box h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #5c5346; margin-bottom: 6px; }
+    .drawer-box { background: #020617; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+    .drawer-box h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 6px; }
+    .pack-box {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #020617;
+    }
+    .pack-legend {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
+    .pack-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 6px 0;
+      font-size: 0.83rem;
+      color: #dbeafe;
+      cursor: pointer;
+    }
+    .pack-row input { margin-top: 3px; accent-color: #22d3ee; }
+    .pack-hint { color: #93c5fd; font-size: 0.74rem; line-height: 1.4; margin-top: 8px; }
+    .deck-meta { color: #7dd3fc; font-size: 0.78rem; margin-top: 8px; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="shell">
     <div class="board">
       <div class="topbar">
         <div>
-          <h1>Pictionary: Confronting issues</h1>
-          <p class="sub">Same <strong>23 phrases</strong> as Alias. <strong>On top: several options</strong> (one is the real card + decoys) &mdash; you, the <strong>host</strong>, <strong>click the phrase the team just guessed</strong>. Right option &rarr; <strong>+1</strong> for the <strong>drawer</strong>, new card, clear canvas. Wrong option &rarr; no point, keep drawing. <strong>Drawer</strong> uses the line below the grid (or conceal it for the class). <strong>Pass</strong> = word to the back. <strong>Timer</strong> 1:30 per turn, then next drawer. <strong>Round</strong> ends when the queue is cleared by correct picks.</p>
+          <h1>Pictionary: CPE speaking sprint</h1>
+          <p class="sub">Choose Unit 10 packs, add player names, and run 1:30 drawing turns. Host marks guessed phrase from options; points go to the current drawer.</p>
         </div>
-        <p class="nav"><a href="index.html">&larr; Hub</a> &middot; <a href="alias-confronting-issues.html">Alias</a> &middot; <a href="../unit11.html">Unit 11</a></p>
+        <p class="nav"><a href="index.html" id="hubLink">&larr; Hub</a> &middot; <a href="alias-confronting-issues.html">Alias</a> &middot; <a href="../unit11.html">Unit 11</a></p>
       </div>
 
       <div id="setup" class="setup">
         <p class="hint">Player names, <strong>one per line</strong> (at least 2 &mdash; one draws, the rest guess).</p>
+        <div class="pack-box" id="packBox">
+          <div class="pack-legend">Unit 10 word bank</div>
+          <div id="picTopicChecks"></div>
+          <p class="pack-hint" id="picTopicHint">Choose one or more packs before start.</p>
+        </div>
         <textarea id="namesIn" placeholder="Alex&#10;Bo&#10;Cara" autocomplete="off"></textarea>
         <p class="err" id="err"></p>
+        <p class="deck-meta" id="deckMeta">Deck: all packs</p>
         <button type="button" class="btn btn-go" id="btnGo">Start game</button>
       </div>
 
@@ -212,9 +251,12 @@
   <script src="../js/u11-must-know-lexis.js"></script>
   <script>
 (function () {
-  var DECK = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length)
-    ? U11_CONFRONTING_MUST_KNOW.slice()
-    : [];
+  var CPE_HUB = "../games/cpe/unit10/index.html?course=cpe";
+  var course = new URLSearchParams(window.location.search).get("course");
+  var DECK = [];
+  var BASE_DECK_ENTRIES = [];
+  var selectedTopicIds = null;
+  var labelByTopic = {};
   var SEC = 90;
   var names = [];
   var scores = {};
@@ -228,6 +270,12 @@
 
   function el(id) { return document.getElementById(id); }
 
+  function setLinks() {
+    if (!(window.PREP_U10_PG_CPE || course === "cpe")) return;
+    var hub = el("hubLink");
+    if (hub) hub.href = CPE_HUB;
+  }
+
   function shuffle(a) {
     var x = a.slice();
     for (var i = x.length - 1; i > 0; i--) {
@@ -235,6 +283,109 @@
       var t = x[i]; x[i] = x[j]; x[j] = t;
     }
     return x;
+  }
+
+  function buildBaseDeckEntries() {
+    var entries = [];
+    var seen = Object.create(null);
+    var rows = Array.isArray(window.VOCAB_TTT_WORDS) ? window.VOCAB_TTT_WORDS : [];
+    var topics = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    var i;
+    for (i = 0; i < topics.length; i++) {
+      if (topics[i] && topics[i].id) labelByTopic[topics[i].id] = topics[i].label || topics[i].id;
+    }
+    for (i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      if (!row) continue;
+      var phrase = String(row.phrase != null ? row.phrase : row.ans || "").trim();
+      if (!phrase) continue;
+      var key = phrase.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+      entries.push({ phrase: phrase, topicId: row.topic || "u10_misc" });
+    }
+    if (entries.length) return entries;
+
+    var fallback = (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" && U11_CONFRONTING_MUST_KNOW.length)
+      ? U11_CONFRONTING_MUST_KNOW.slice()
+      : [];
+    if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && typeof PREP_U10_PG_STUB.phrasesDeckMustKnow === "function") {
+      fallback = PREP_U10_PG_STUB.phrasesDeckMustKnow();
+    }
+    for (i = 0; i < fallback.length; i++) {
+      var t = String(fallback[i] || "").trim();
+      if (!t) continue;
+      entries.push({ phrase: t, topicId: "legacy" });
+    }
+    return entries;
+  }
+
+  function allTopicIds() {
+    var list = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    var out = [];
+    for (var i = 0; i < list.length; i++) if (list[i] && list[i].id) out.push(list[i].id);
+    return out;
+  }
+
+  function selectedTopicLabel() {
+    if (!selectedTopicIds || !selectedTopicIds.length) return "all packs";
+    var labels = [];
+    for (var i = 0; i < selectedTopicIds.length; i++) labels.push(labelByTopic[selectedTopicIds[i]] || selectedTopicIds[i]);
+    return labels.join(" + ");
+  }
+
+  function applySelectedDeck() {
+    var out = [];
+    for (var i = 0; i < BASE_DECK_ENTRIES.length; i++) {
+      var e = BASE_DECK_ENTRIES[i];
+      if (selectedTopicIds && selectedTopicIds.length && selectedTopicIds.indexOf(e.topicId) === -1) continue;
+      out.push(e.phrase);
+    }
+    DECK = out;
+    el("deckMeta").textContent = "Deck: " + selectedTopicLabel() + " (" + DECK.length + ")";
+  }
+
+  function initTopicPicker() {
+    var wrap = el("picTopicChecks");
+    var box = el("packBox");
+    if (!wrap || !box) return;
+    wrap.innerHTML = "";
+    var list = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    if (!list.length) {
+      box.style.display = "none";
+      applySelectedDeck();
+      return;
+    }
+    box.style.display = "";
+    for (var i = 0; i < list.length; i++) {
+      var t = list[i];
+      var row = document.createElement("label");
+      row.className = "pack-row";
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = t.id;
+      cb.checked = true;
+      cb.addEventListener("change", onTopicChange);
+      var sp = document.createElement("span");
+      sp.textContent = t.label;
+      row.appendChild(cb);
+      row.appendChild(sp);
+      wrap.appendChild(row);
+    }
+  }
+
+  function onTopicChange() {
+    var inputs = document.querySelectorAll("#picTopicChecks input[type=checkbox]");
+    var picked = [];
+    for (var i = 0; i < inputs.length; i++) if (inputs[i].checked) picked.push(inputs[i].value);
+    if (!picked.length) {
+      el("picTopicHint").textContent = "Pick at least one pack.";
+      return;
+    }
+    var all = allTopicIds();
+    selectedTopicIds = (all.length && picked.length >= all.length) ? null : picked;
+    el("picTopicHint").textContent = "Choose one or more packs before start.";
+    applySelectedDeck();
   }
 
   function updateLeftN() { el("leftN").textContent = String(queue.length); }
@@ -407,7 +558,7 @@
 
   el("btnGo").addEventListener("click", function () {
     if (!DECK.length) {
-      el("err").textContent = "Word list failed to load. Check that js/u11-must-know-lexis.js is available.";
+      el("err").textContent = "Word list is empty for selected pack(s).";
       return;
     }
     var p = parseNames();
@@ -525,6 +676,11 @@
   window.addEventListener("resize", function () {
     if (el("game").classList.contains("on")) fitCanvas();
   });
+
+  setLinks();
+  BASE_DECK_ENTRIES = buildBaseDeckEntries();
+  initTopicPicker();
+  applySelectedDeck();
 })();
   </script>
   <script src="../js/prep-course-profile.js"></script>

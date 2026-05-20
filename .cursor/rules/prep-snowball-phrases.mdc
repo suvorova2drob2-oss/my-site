@@ -1,0 +1,33 @@
+---
+description: Snowball / «снежный ком» фраз — только общий движок PREP_SNOWBALL_PHRASES; новые юниты через wordbank-модуль + mount, без второго движка
+globs: games/cpe/**/*.html,js/prep-snowball-phrases-engine.js,js/unit*-snowball*.js,unit11-reading-confronting-issues/snowball*.html,.cursor/rules/prep-snowball-phrases.mdc
+alwaysApply: true
+---
+
+# Snowball phrases — что имеется в виду
+
+Если пользователь пишет **snowball**, **Snowball phrases**, **снежный ком** (в значении **цепочка имён + фраз из банка**), речь о **одном** общем движке и паттерне ниже. **Не** заводить параллельный «движок цепочки» на новой странице без явной задачи заменить архитектуру.
+
+## Якорь — общий JS
+
+- **`js/prep-snowball-phrases-engine.js`** → глобально **`PREP_SNOWBALL_PHRASES`**
+  - **`mount({ loadPhrases })`** — вся логика игры (имена, раунды, экраны, Next / Back / Stop). **`loadPhrases()`** при каждом Start возвращает **`string[]`** (перемешивание — ответственность вызывающей стороны или внутри `loadPhrases`).
+  - **`fillThemeRail(container, options)`** — опционально: радио-темы + счётчик слов в колоде через **`countPhrases(themeId)`**.
+  - **`shuffleInPlace`**, **`escAttr`** — утилиты для страниц.
+
+## Контент по юнитам — только модули данных
+
+- Фразы **не** копировать в HTML ради игры: брать из уже существующих `*_LEXIS_GAME_ROWS` (или аналог), как в **`js/unit10-snowball-wordbank.js`** (`U10_SNOWBALL_getPhrases`, темы, combined deck).
+- Новый юнит: добавить **`js/unitN-snowball-wordbank.js`** (или расширить реестр), подключить лексику **до** движка, страница вызывает **`mount`** + при необходимости **`fillThemeRail`**.
+
+## Где страница для Unit 10 CPE
+
+- **`games/cpe/unit10/snowball-phrases.html`** — эталонная оболочка: лексика юнита → **`unit10-snowball-wordbank.js`** → **`prep-snowball-phrases-engine.js`**.
+
+## Legacy / FCE Confronting
+
+- **`unit11-reading-confronting-issues/snowball-phrases-confronting-issues.html`** — отдельная страница под колоду U11 / заглушку CPE **`prep-u10-playground-shell.js`**. Для **расширяемого CPE Word Bank по темам** использовать **Unit 10 путь выше**, а не дублировать движок в Confronting-папке.
+
+## Манифест
+
+- **`js/lexical-games-source-manifest.js`**: поля **`snowballPhrasesEngineFile`**, **`unit10SnowballWordBankFile`** — ориентир для агентов.

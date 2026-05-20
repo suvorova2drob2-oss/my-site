@@ -6,8 +6,9 @@
  * Схема юнита:
  * - id, unitOrder, title, examSection?, instructionHtml
  * - paragraphs: [{ segments: [{ t: "текст" } | { g: "A" }] }, ...]
- * - fragments: [{ num: 1, text: "..." }, ...]  // num — номер в задании
+ * - fragments: [{ num: 1, text: "..." }, ...]  // num — номер в задании (ключ / разбор)
  * - key: { A: 3, B: 1, ... }  // какой num фрагмента в какой пропуск
+ *   На карточках в UI при решении показывается перестановка этих num (см. ege-gapped-text-app.js).
  * - extraFragmentNum: число лишнего фрагмента
  * - explainRu?: { A: "html или текст", ... }
  * - lifehackRu?: HTML — «соль» задания (показывается только после отправки на проверку).

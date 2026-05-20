@@ -66,6 +66,12 @@
     .lights { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; color: #444; font-size: 1.2rem; font-weight: 800; }
     .hidden { display: none !important; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -117,6 +123,9 @@
   var POOL = (typeof U11_KEY_PHRASES_MISSING !== "undefined" && U11_KEY_PHRASES_MISSING.length)
     ? U11_KEY_PHRASES_MISSING.slice()
     : (typeof U11_WHAT_MISSING_DECK !== "undefined" && U11_WHAT_MISSING_DECK.length) ? U11_WHAT_MISSING_DECK.slice() : (typeof U11_CONFRONTING_MUST_KNOW !== "undefined" ? U11_CONFRONTING_MUST_KNOW.slice() : []);
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && typeof PREP_U10_PG_STUB.phrasesDeckMustKnow === "function") {
+    POOL = PREP_U10_PG_STUB.phrasesDeckMustKnow();
+  }
   var play = [];
   var hideOrder = [];
   var step = 0;

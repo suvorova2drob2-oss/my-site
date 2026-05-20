@@ -30,33 +30,47 @@
   var pageTitle = String(boot.pageTitle || "Part 2 — Open Cloze").trim();
   var docTitle = String(boot.documentTitle || pageTitle).trim();
 
+  function sanitizeSameOriginHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.href;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+
   function resolveBackHref() {
     var raw = String(backHref || "").trim();
     var loc = window.location;
-    if (!raw) {
-      try {
-        return new URL("../../index.html", loc.href).href;
-      } catch (e) {
-        return "../../index.html";
-      }
+    var fallback;
+    try {
+      fallback = new URL("../../index.html", loc.href).href;
+    } catch (eF) {
+      fallback = "../../index.html";
     }
+    if (!raw) {
+      return fallback;
+    }
+    var candidate = raw;
     var simpleRootHtml =
       /^[a-z0-9._-]+\.html$/i.test(raw) && raw.indexOf("/") === -1 && raw.indexOf("\\") === -1;
     if (simpleRootHtml && /\/use-of-english\//i.test(loc.pathname)) {
       try {
         if (loc.protocol === "http:" || loc.protocol === "https:") {
-          return new URL("/" + raw, loc.origin).href;
+          candidate = "/" + raw;
+        } else {
+          candidate = "../../" + raw;
         }
-      } catch (e0) {}
-      try {
-        return new URL("../../" + raw, loc.href).href;
-      } catch (e1) {}
+      } catch (e0) {
+        candidate = "../../" + raw;
+      }
     }
-    try {
-      return new URL(raw, loc.href).href;
-    } catch (e2) {
-      return raw;
-    }
+    return sanitizeSameOriginHref(candidate, fallback);
   }
 
   function wireBackNav() {
@@ -80,15 +94,16 @@
   function resolveChainNextHref(raw) {
     var s = String(raw || "").trim();
     if (!s) return "";
+    var candidate = s;
     try {
-      if (/^https?:\/\//i.test(s)) return s;
       var pathPart = s.split(/[?#]/)[0] || "";
       // Hub passes site-root paths without a leading "/" (e.g. use-of-english/…). Resolving
       // against the current file would nest under part2-open-cloze/ and break (http + file).
       if (/^use-of-english\//.test(pathPart)) {
         var proto = window.location.protocol;
         if (proto === "http:" || proto === "https:") {
-          return new URL("/" + s.replace(/^\//, ""), window.location.origin).href;
+          candidate = "/" + s.replace(/^\//, "");
+          return sanitizeSameOriginHref(candidate, "");
         }
         if (proto === "file:") {
           var cur = window.location.href.split(/[?#]/)[0].replace(/\\/g, "/");
@@ -96,13 +111,13 @@
           var pos = cur.toLowerCase().indexOf(key);
           if (pos !== -1) {
             var baseDir = cur.slice(0, pos).replace(/\/?$/, "") + "/";
-            return new URL(s, baseDir).href;
+            return sanitizeSameOriginHref(new URL(s, baseDir).href, "");
           }
         }
       }
-      return new URL(s, window.location.href).href;
+      return sanitizeSameOriginHref(candidate, "");
     } catch (e) {
-      return s;
+      return "";
     }
   }
 

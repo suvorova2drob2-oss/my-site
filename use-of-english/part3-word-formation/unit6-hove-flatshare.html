@@ -264,9 +264,20 @@
 
   var q = new URLSearchParams(window.location.search);
   var bl = document.getElementById("backLink");
-  if (q.get("back")) {
-    bl.href = q.get("back");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
   }
+  bl.href = sanitizeReturnHref(q.get("back"), bl.getAttribute("href") || "");
   if (q.get("backLabel")) {
     try {
       bl.textContent =

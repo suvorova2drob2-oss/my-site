@@ -12,6 +12,9 @@
     "Featuring a remarkable star-studded cast of some of Hollywood's finest, the new film from director Christopher Nolan is nothing short of a masterpiece, with critically acclaimed performances from its main protagonists, some of whom are hotly tipped to be amongst this year's Oscar nominees. In particular, Cillian Murphy's portrayal of a physicist grappling with the devastating effects of science on the world is so utterly spellbinding that you'll be mesmerised throughout."
   ];
 
+  /** Four review paragraphs (Exercise-style texts) — retell chain / reading scripts. */
+  W.U10_BOOKS_FILMS_REVIEW_PARAS = PARAS.slice();
+
   W.U10_BOOKS_FILMS_LEXIS_PLAIN = PARAS.join(" ")
     .replace(/\r\n/g, "\n")
     .replace(/\n+/g, " ")

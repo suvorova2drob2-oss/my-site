@@ -127,7 +127,7 @@
         href="../../part4-key-word-transformation/unit10.html?u10uoe=cpe&amp;back=..%2Funit10%2Fcpe%2Findex.html&amp;backLabel=Use%20of%20English%20%E2%80%94%20Unit%2010"
       >
         <h2>Part 4 — Key word transformation</h2>
-        <p>Six items: FREE, GIVEN, PAID, LEFT, DESERVE, BLAME — one gap at a time; same UI as Unit 11 Part 4.</p>
+        <p>Six items: FOR, IN, NARROW, COMMON, OUT, HANG — one gap at a time; same UI as Unit 11 Part 4.</p>
         <span class="go">Open Part 4 →</span>
       </a>
     </section>
@@ -145,15 +145,39 @@
     return /unit10\.html/i.test(x) || /unit10%2Ehtml/i.test(x) || /unit10%2f/i.test(x.toLowerCase());
   }
 
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+
+  function decodeLabel(raw, fallback) {
+    if (!raw) return fallback || "";
+    try {
+      return decodeURIComponent(String(raw).replace(/\+/g, " "));
+    } catch (e) {
+      return String(raw);
+    }
+  }
+
   if (!bh) return;
 
   if (!rawBack || looksLikeFceUnitSheet(rawBack)) {
     bh.href = cpeLevelsHref;
-    bh.innerHTML = "&larr; Levels hub";
+    bh.textContent = "← Levels hub";
     return;
   }
 
   var tC = String(rawBack).trim();
+  var candidate = tC;
   if (
     tC &&
     !/^[a-z][a-z0-9+.-]*:/i.test(tC) &&
@@ -161,20 +185,16 @@
     tC.indexOf("\\") === -1 &&
     /\.html?$/i.test(tC)
   ) {
-    bh.href = "../../../" + tC.replace(/^\.\//, "");
-  } else {
-    bh.href = tC;
+    candidate = "../../../" + tC.replace(/^\.\//, "");
   }
+  bh.href = sanitizeReturnHref(candidate, cpeLevelsHref);
   if (looksLikeFceUnitSheet(bh.getAttribute("href") || "")) {
     bh.href = cpeLevelsHref;
-    bh.innerHTML = "&larr; Levels hub";
+    bh.textContent = "← Levels hub";
   } else if (q.get("backLabel")) {
-    try {
-      bh.innerHTML =
-        "&larr; " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
-    } catch (e) {}
+    bh.textContent = "← " + decodeLabel(q.get("backLabel"), "Back");
   } else {
-    bh.innerHTML = "&larr; Back";
+    bh.textContent = "← Back";
   }
 })();
   </script>

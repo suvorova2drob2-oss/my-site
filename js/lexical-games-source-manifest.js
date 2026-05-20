@@ -41,6 +41,15 @@
                 plainGlobal: "U10_UOE_SHAKESPEARE_LEXIS_PLAIN",
                 speakerGlobal: "LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL",
                 wordBankThemeId: "u10_uoe_shakespeare"
+            },
+            {
+                id: "u10_similes_vocab",
+                description: "Unit 10 Similes · vocabulary folder (CPE) · keyed plain row kit",
+                dataFile: "js/u10-similes-lexis.js",
+                rowsGlobal: "U10_SIMILES_LEXIS_GAME_ROWS",
+                plainGlobal: "U10_SIMILES_LEXIS_PLAIN",
+                speakerGlobal: "LEX_U10_SIMILES_SPEAKER_LABEL",
+                wordBankThemeId: "u10_similes"
             }
         ],
         /** Куски ensureU9FallPool() со своей логикой (reading scrape, idioms, env, prep, interior, art, minds eye…) */
@@ -57,6 +66,22 @@
         ],
         /** Отдельный билдер слов для Tic-Tac-Toe — при новой теме дополнить unit9-ttt-word-bank.js */
         ticTacToeBuilderFile: "js/unit9-ttt-word-bank.js",
+        /** Unit 10 playground Snowball — темы = те же plainAnchoredRowPacks (см. unit10-snowball-wordbank.js) */
+        unit10SnowballWordBankFile: "js/unit10-snowball-wordbank.js",
+        /** Эталон порядка подключения лексики на страницах playground: listening-p4-wb10-pack → books → shakespeare → similes → unit10-snowball-wordbank (как в echo-minute.html). */
+        unit10PlaygroundLexisScriptOrderHint: "games/cpe/unit10/echo-minute.html — блок из пяти скриптов перед движком",
+        /** Общий движок цепочки фраз (mount + fillThemeRail); страницы юнитов подключают свой wordbank-модуль */
+        snowballPhrasesEngineFile: "js/prep-snowball-phrases-engine.js",
+        /** Playground Unit 10 · голосовое бинго 3×3 (prep-retell-chain-speech-match + этот движок) */
+        voiceBingoEngineFile: "js/prep-voice-bingo-engine.js",
+        /** Playground · Echo Minute — 60s sprint: TTS definition (hidden text), voice/type answer + skip */
+        echoMinuteEngineFile: "js/prep-echo-minute-engine.js",
+        /** Playground · Shadowing Star — shadowing with class audio + runner-style mic feedback */
+        shadowingStarEngineFile: "js/prep-shadowing-star-engine.js",
+        /** Playground · Gap Audio Round — SB 10.1 full track + typed gaps per sentence (see js/unit10-gap-audio-round-data.js) */
+        gapAudioRoundEngineFile: "js/prep-gap-audio-round-engine.js",
+        /** Unit 10 Millionaire — passage facts + text gaps + synonym MCQs · games/cpe/unit10/millionaire/index.html */
+        millionaireU10LexisBuilderFile: "js/prep-millionaire-u10-lexis.js",
         hubWordBankScreen: "index.html · cpeWordBankRender / cpeWbItems",
         fallPoolBuilder: "index.html · ensureU9FallPool"
     };

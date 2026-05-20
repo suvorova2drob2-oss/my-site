@@ -1,0 +1,54 @@
+---
+description: Echo Minute («Минута на слух») — общий движок для юнитов; 60s спринт TTS + микрофон; см. также prep-voice-bingo-engine.mdc (Voice Bingo).
+globs: "**/prep-echo-minute-engine.js,**/echo-minute.html,**/prep-retell-chain-speech-match.js,**/lexical-games-source-manifest.js,**/unit*-vocabulary/**/*.html"
+alwaysApply: false
+---
+
+# Echo Minute · переиспользуемый движок для любых юнитов
+
+**Имя в UI:** **Echo Minute** / «Минута на слух». Для новых юнитов подключайте тот же патерн, что в **`games/cpe/unit10/echo-minute.html`**: данные `{ ans, hint }`, один **`PREP_ECHO_MINUTE.mount`**.
+
+**Рядом в экосистеме:** голосовое бинго — см. **`prep-voice-bingo-engine.mdc`** (`PREP_VOICE_BINGO`).
+
+## Файлы
+
+| Роль | Путь |
+|------|------|
+| Движок | `js/prep-echo-minute-engine.js` → **`PREP_ECHO_MINUTE.mount`** |
+| Матчинг / skip-триггеры | `js/prep-retell-chain-speech-match.js` — **`phraseMatchesVoiceBingo`**, **`typedMatchesPhrase`**, **`buildHaystack`**, **`voiceBlitzSkipHeard`** |
+| Эталон страницы | `games/cpe/unit10/echo-minute.html` |
+| Манифест проекта | `js/lexical-games-source-manifest.js` → **`echoMinuteEngineFile`** |
+
+## Экспорты `PREP_ECHO_MINUTE` (для своих страниц)
+
+- **`mount`** — основной вход.
+- **`pickVoiceForLangGender(synth, lang, gender)`** — выбор голоса под авто-режим.
+- **`voiceOptionToken(v)`**, **`findVoiceByPickerToken(synth, token)`** — строка в `<select>` и обратный поиск голоса.
+
+## Порядок скриптов
+
+Как у Voice Bingo: сначала **`prep-retell-chain-speech-match.js`**, затем **`prep-echo-minute-engine.js`**, затем данные (**`getLexRows`** из Snowball / свой JS с массивом **`{ ans, hint }`**).
+
+## Поведение
+
+- Раунд **60 с** с **`speechSynthesis`**: читается поле **`hint`**, текст определения **не показывается**.
+- **Голос TTS:** переключатель **женский / мужской**; выпадающий список **`voicePickSelect`** — все голоса под `ttsLang`, отсортированные по качеству (облачные **`localService === false`** получают бонус и метку ☁). Выбор сохраняется в **`sessionStorage`** (`voicePickStorageKey`). **`PREP_ECHO_MINUTE.voiceOptionToken`**, **`findVoiceByPickerToken`** для своих страниц.
+- Таймер **ставится на паузу** на время TTS и на время показа ответа (чтобы секунды «горели» только когда можно отвечать).
+- Ответ: голос (**`phraseMatchesVoiceBingo`**) или ввод (**`typedMatchesPhrase`**).
+- **Skip:** голосом или текстом по **`voiceBlitzSkipHeard`** (в т.ч. *I don't know*, *skip*, *pass*, …) — показать **`ans`**, очко не начислять, следующая карточка.
+- После успеха показывается кратко **`ans`**, затем следующее озвучивание.
+- Колода перемешивается заново, когда карты закончились, но время ещё есть (**минимум `minDeck` карточек в теме**).
+- **Не перезапускать SR каждый раз полным циклом** после каждого слова — тот же принцип, что у Voice Bingo (микрофон один сеанс в фазе `listening`).
+- Внутри раунда между озвучкой и показом ответа используется **`pauseMicListening`** (тот же `SpeechRecognition`), полный **`stopMic`** только в конце раунда / перед новым стартом — меньше запросов разрешения, особенно не на `https`.
+
+## Новый юнит — чеклист
+
+1. Данные: минимум **`minDeck`** уникальных строк (по умолчанию **5**); поля **`hint`** (озвучивается), **`ans`** (цель игрока).
+2. **`PREP_ECHO_MINUTE.mount({`**  
+   **`getLexRows`**, **`themeDefinitions`**, **`radioName`**, **`els`** (stage, timer, score, summary, status, transcript, type/check/start/replay/skip, опционально **`voicePickSelect`**), **`voiceGenderRadioName`**, **`voicePickStorageKey`**, **`roundSeconds`**, **`ttsLang`** / **`speechLang`**. См. JSDOC в **`prep-echo-minute-engine.js`**.
+3. При необходимости скопировать блок UI озвучки (женский/мужской + список голосов ☁) из **`echo-minute.html`**.
+4. Для стабильного разрешения микрофона предпочтительнее **`http://localhost`** или **`https`**, не **`file://`** (см. подсказку в эталонной странице).
+
+## Новый юнит — опции
+
+Передать при желании **`copy`**, **`ttsRate`**, **`ttsPitchFemale` / `ttsPitchMale`**, **`revealAnswerMs`**.

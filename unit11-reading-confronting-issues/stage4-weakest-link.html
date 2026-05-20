@@ -37,8 +37,9 @@
     .nav-back a { color: var(--wl-gold); font-size: 0.8rem; text-decoration: none; }
     .nav-back a:hover { text-decoration: underline; }
     .setup {
-      max-width: 480px; margin: 0 auto; background: var(--wl-panel);
-      border: 1px solid var(--wl-line); border-radius: 12px; padding: 18px 20px;
+      max-width: 620px; margin: 0 auto; background: linear-gradient(180deg, #111425 0%, #0b0d18 100%);
+      border: 1px solid #2f3e63; border-radius: 14px; padding: 20px 22px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
     }
     .setup h2 { font-size: 0.9rem; color: var(--wl-silver); margin-bottom: 4px; }
     .setup .sub { color: #6b7280; font-size: 0.8rem; line-height: 1.5; margin-bottom: 16px; }
@@ -48,6 +49,32 @@
       width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #3f3f4f; background: #0c0c10; color: #f3f4f6; font-size: 0.9rem;
     }
     .name-grid input::placeholder { color: #4b5563; }
+    .pack-box {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #2f3e63;
+      background: rgba(7, 12, 24, 0.72);
+    }
+    .pack-legend {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
+    .pack-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 6px 0;
+      font-size: 0.85rem;
+      color: #dbe6f5;
+      cursor: pointer;
+    }
+    .pack-row input { margin-top: 3px; accent-color: #38bdf8; }
+    .pack-hint { color: #7b89a5; font-size: 0.74rem; line-height: 1.4; margin-top: 8px; }
     .err { color: #fb7185; font-size: 0.8rem; min-height: 1.2em; margin-bottom: 8px; }
     .btn-start {
       width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.75rem;
@@ -135,6 +162,12 @@
     .hud-teams2 .b2 { color: #fdba74; }
     .hud-teams2 .sum { grid-column: 1 / -1; font-size: 0.7rem; color: #6b7280; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="app">
@@ -159,6 +192,11 @@
         <div class="name-row" data-i="5"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 6" /><div class="team-sel"><span>К</span><label><input type="radio" name="p5" value="0" />1</label><label><input type="radio" name="p5" value="1" checked />2</label></div></div>
         <div class="name-row" data-i="6"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 7" /><div class="team-sel"><span>К</span><label><input type="radio" name="p6" value="0" checked />1</label><label><input type="radio" name="p6" value="1" />2</label></div></div>
         <div class="name-row" data-i="7"><input class="n-in" type="text" maxlength="32" placeholder="Игрок 8" /><div class="team-sel"><span>К</span><label><input type="radio" name="p7" value="0" />1</label><label><input type="radio" name="p7" value="1" checked />2</label></div></div>
+      </div>
+      <div class="pack-box" id="packBox">
+        <div class="pack-legend">Банк слов Unit 10</div>
+        <div id="wlTopicChecks"></div>
+        <p class="pack-hint" id="wlTopicHint">Выберите один или несколько паков перед стартом: Listening / books-films / Shakespeare / similes.</p>
       </div>
       <p class="err" id="setupErr"></p>
       <button type="button" class="btn-start" id="btnStart">Начать игру</button>
@@ -237,8 +275,13 @@
     { t: "D", q: "In the biodigester, the waste is broken down to produce:", o: ["oxygen", "methane", "helium", "sulphur only"], a: 1 }
   ];
 
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && PREP_U10_PG_STUB.weakestPool && PREP_U10_PG_STUB.weakestPool.length) {
+    POOL = PREP_U10_PG_STUB.weakestPool.slice();
+  }
+
   var game = {
     twoTeams: false,
+    topicIds: null,
     names: [],
     pl: [],
     out: {},
@@ -257,6 +300,55 @@
   };
 
   function el(id) { return document.getElementById(id); }
+
+  function allTopicIds() {
+    if (!Array.isArray(window.VOCAB_TTT_TOPIC_LIST)) return [];
+    return window.VOCAB_TTT_TOPIC_LIST.map(function (t) { return t.id; });
+  }
+
+  function readSelectedTopicIds() {
+    var inputs = document.querySelectorAll("#wlTopicChecks input[type=checkbox]");
+    if (!inputs.length) return null;
+    var out = [];
+    for (var i = 0; i < inputs.length; i++) if (inputs[i].checked) out.push(inputs[i].value);
+    if (!out.length) return [];
+    var all = allTopicIds();
+    if (all.length && out.length >= all.length) return null;
+    return out;
+  }
+
+  function topicFromQuestion(q) {
+    if (q && q.topicId) return q.topicId;
+    if (!q || !q.t) return "";
+    var t = String(q.t).toUpperCase().trim();
+    if (t === "A" || t === "B" || t === "C" || t === "D") return "u10_p4";
+    return "";
+  }
+
+  function initTopicPicker() {
+    var wrap = el("wlTopicChecks");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    var list = Array.isArray(window.VOCAB_TTT_TOPIC_LIST) ? window.VOCAB_TTT_TOPIC_LIST : [];
+    if (!list.length) {
+      wrap.innerHTML = "<span style=\"color:#94a3b8;font-size:0.82rem\">Список паков не загружен.</span>";
+      return;
+    }
+    for (var i = 0; i < list.length; i++) {
+      var t = list[i];
+      var row = document.createElement("label");
+      row.className = "pack-row";
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = t.id;
+      cb.checked = true;
+      var sp = document.createElement("span");
+      sp.textContent = t.label;
+      row.appendChild(cb);
+      row.appendChild(sp);
+      wrap.appendChild(row);
+    }
+  }
 
   function readNames() {
     var rows = el("nameRows").querySelectorAll(".name-row");
@@ -300,7 +392,17 @@
 
   function buildPool() {
     var x = [];
-    for (var c = 0; c < POOL.length; c++) x.push(c);
+    for (var c = 0; c < POOL.length; c++) {
+      var q = POOL[c];
+      if (game.topicIds && game.topicIds.length) {
+        var qt = topicFromQuestion(q);
+        if (!qt || game.topicIds.indexOf(qt) === -1) continue;
+      }
+      x.push(c);
+    }
+    if (!x.length) {
+      for (var z = 0; z < POOL.length; z++) x.push(z);
+    }
     shuffle(x);
     game.qOrder = x;
     game.qIdx = 0;
@@ -516,7 +618,13 @@
   el("btnStart").addEventListener("click", function () {
     var res = readNames();
     if (!res) return;
+    var topicIds = readSelectedTopicIds();
+    if (topicIds && topicIds.length === 0) {
+      el("setupErr").textContent = "Выберите хотя бы один пак слов Unit 10.";
+      return;
+    }
     game.twoTeams = res.twoTeams;
+    game.topicIds = topicIds;
     game.pl = res.names.map(function (name, j) { return { name: name, team: res.twoTeams ? res.teams[j] : 0, out: false, cR: 0, wR: 0, cTot: 0, wTot: 0 }; });
     game.order = res.names.map(function (_, i) { return i; });
     game.turnI = 0;
@@ -533,6 +641,8 @@
     el("screenGame").setAttribute("aria-hidden", "false");
     showQ();
   });
+
+  initTopicPicker();
 })();
   </script>
   <script src="../js/prep-course-profile.js"></script>

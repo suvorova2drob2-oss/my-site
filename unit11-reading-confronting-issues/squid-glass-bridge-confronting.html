@@ -95,6 +95,12 @@
     .m-close { background: #27272a; border: 1px solid #52525b; color: #fff; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; }
     .m-in iframe { display: block; width: 100%; height: min(65vh, 640px); border: 0; }
   </style>
+  <script src="../js/listening-p4-wb10-pack.js"></script>
+  <script src="../js/u10-books-films-lexis.js"></script>
+  <script src="../js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+  <script src="../js/u10-similes-lexis.js"></script>
+  <script src="../js/unit10-ttt-word-bank.js"></script>
+  <script src="../js/prep-u10-playground-shell.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -152,6 +158,10 @@
     { text: "Text C: year the idea was born on a diving holiday (Gamberini)", good: "2012", bad: "2015", source: "text-03.html" },
     { text: "Text D: the inventor&rsquo;s first name (streetlamp, UK)", good: "Brian", bad: "Bryan", source: "text-04.html" }
   ];
+
+  if (window.PREP_U10_PG_CPE && window.PREP_U10_PG_STUB && PREP_U10_PG_STUB.squidGlassSteps && PREP_U10_PG_STUB.squidGlassSteps.length) {
+    STEPS = PREP_U10_PG_STUB.squidGlassSteps.slice();
+  }
 
   var s = { i: 0, busy: false };
 
@@ -240,6 +250,15 @@
   el("btnHint").addEventListener("click", function () {
     if (s.i >= STEPS.length) return;
     var href = STEPS[s.i].source;
+    if (!href) {
+      el("mHintT").textContent = "CPE Prep · шаблон";
+      try {
+        el("fHint").removeAttribute("src");
+        el("fHint").srcdoc = "<!DOCTYPE html><html><head><meta charset=utf-8><style>body{font-family:system-ui,sans-serif;padding:14px;background:#0f172a;color:#94a3b8;line-height:1.45}</style></head><body><p>Подсказка с текстом Confronting здесь не подключается. Добавьте <code>source</code> в шагах колоды.</p></body></html>";
+      } catch (e1) {}
+      el("mHint").classList.add("open");
+      return;
+    }
     el("mHintT").textContent = href;
     el("fHint").src = href + (/\?/.test(href) ? "&" : "?") + "embed=1";
     el("mHint").classList.add("open");
