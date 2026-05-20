@@ -34,8 +34,9 @@ Release is **blocked** if any of these fail:
      - `writing/unit10/cpe/**`
      - `unit10-vocabulary/cpe/**`
      - `unit10-vocabulary/similes/**`
+     - `unit11-reading-confronting-issues/**`
      - `use-of-english/unit10/cpe/**`
-     - selected CPE learner files (for example Unit 11/12 pages and CPE-only Unit 10 UoE pages routed from CPE flow).
+     - selected CPE learner files (for example Unit 12 pages and CPE-only Unit 10 UoE pages routed from CPE flow).
 
 ## Build policy
 

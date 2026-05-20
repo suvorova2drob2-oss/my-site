@@ -25,6 +25,7 @@ const CPE_LEARNER_PREFIXES = [
   "writing/unit10/cpe/",
   "unit10-vocabulary/cpe/",
   "unit10-vocabulary/similes/",
+  "unit11-reading-confronting-issues/",
   "use-of-english/unit10/cpe/",
 ];
 
@@ -33,8 +34,6 @@ const CPE_LEARNER_FILES = new Set([
   "vocabulary-tic-tac-toe-unit10.html",
   "audio practice/unit12-shadowing.html",
   "use-of-english/unit10/word-formation/literary-translation-pitfalls.html",
-  "unit11-reading-confronting-issues/exam-mode-part7-confronting-issues.html",
-  "unit11-reading-confronting-issues/stage2-retell.html",
 ]);
 
 /**
