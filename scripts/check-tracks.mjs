@@ -24,6 +24,7 @@ const CPE_LEARNER_PREFIXES = [
   "speaking/unit10/cpe/",
   "writing/unit10/cpe/",
   "unit10-vocabulary/cpe/",
+  "unit10-vocabulary/similes/",
   "use-of-english/unit10/cpe/",
 ];
 

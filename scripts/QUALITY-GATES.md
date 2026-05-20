@@ -33,6 +33,7 @@ Release is **blocked** if any of these fail:
      - `speaking/unit10/cpe/**`
      - `writing/unit10/cpe/**`
      - `unit10-vocabulary/cpe/**`
+     - `unit10-vocabulary/similes/**`
      - `use-of-english/unit10/cpe/**`
      - selected CPE learner files (for example Unit 11/12 pages and CPE-only Unit 10 UoE pages routed from CPE flow).
 
