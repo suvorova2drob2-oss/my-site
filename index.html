@@ -142,6 +142,80 @@
             width: 100%;
             max-width: 100%;
         }
+        /* Level 10 — Vocab Gym / Playground strip above textbook folders */
+        .hub-u10-practice-zone {
+            margin: 0 0 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--primary-border);
+            background: linear-gradient(145deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.35));
+        }
+        .hub-u10-practice-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin: 0 0 4px;
+        }
+        .hub-u10-practice-sub {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.45;
+            margin: 0 0 12px;
+        }
+        .hub-u10-practice-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .hub-u10-practice-chip {
+            flex: 1 1 220px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-strong);
+            background: var(--surface-inset);
+            color: var(--text);
+            font: inherit;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .hub-u10-practice-chip:hover {
+            border-color: var(--primary-border);
+            background: rgba(30, 41, 59, 0.95);
+        }
+        .hub-u10-practice-chip:focus-visible {
+            outline: 2px solid var(--primary-ui);
+            outline-offset: 2px;
+        }
+        .hub-u10-practice-chip__title {
+            display: block;
+            font-weight: 800;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .hub-u10-practice-chip__desc {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .hub-u10-practice-chip__go {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .hub-u10-materials-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 4px 0 10px;
+        }
         .hub-main-grid-tile--dnd[draggable="true"] {
             cursor: grab;
         }
@@ -2043,7 +2117,7 @@
             }
         }
 
-        /* Prep vault — escape-room style digital lock + door (Lexical games) */
+        /* Prep vault — escape-room style digital lock + door (Vocab Gym flow) */
         #screen-unit9-prep-escape {
             text-align: left;
             overflow-x: hidden;
@@ -2168,8 +2242,8 @@
             background: var(--primary);
             color: #0f172a;
         }
-        /* Unit 10 lexical games: vault pool is Part 4 + books/films + Shakespeare UoE — hide Level 9 pack buttons */
-        #screen-unit9-prep-escape.prep-escape-scope-u10 .prep-escape-pack-btn[data-pack]:not([data-pack='u10_p4']):not([data-pack='u10_books']):not([data-pack='u10_uoe_shakespeare']):not([data-pack='all']) {
+        /* Unit 10 Vocab Gym: vault pool is Part 4 + books/films + Shakespeare UoE + similes — hide Level 9 pack buttons */
+        #screen-unit9-prep-escape.prep-escape-scope-u10 .prep-escape-pack-btn[data-pack]:not([data-pack='u10_p4']):not([data-pack='u10_books']):not([data-pack='u10_uoe_shakespeare']):not([data-pack='u10_similes']):not([data-pack='all']) {
             display: none !important;
         }
         #screen-unit9-prep-escape.prep-escape-lockout .prep-escape-pack-bar {
@@ -5313,7 +5387,7 @@
     </div>
 
     <div id="screen-uoe-wf-detail" class="screen">
-        <button type="button" class="hub-back" onclick="showScreen('screen-uoe')">&larr; Use of English</button>
+        <button id="uoe-wf-back-btn" type="button" class="hub-back" onclick="backFromUoeWordFormationDetail()">&larr; Use of English</button>
         <div class="user-stats" style="margin-top:0;">
             <span>🏆 <b id="display-score-uoe-wf" style="color:var(--success)">0</b></span>
         </div>
@@ -5349,7 +5423,40 @@
             <span style="color:var(--muted);font-size:13px;">Future Tech / exam focus</span>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Level 9</h2>
-        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);"><strong>Reading</strong> and <strong>Listening</strong> gather every exam folder on disk for Level 9; other sections stay on this menu.</p>
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">
+            At the top: <strong>Practice tools</strong> (Vocab Gym + Playground). Under <strong>Unit materials</strong>: Prep folders (when added), Reading, Listening, Vocabulary on disk, Use of English, Grammar, Writing.
+        </p>
+        <div class="hub-u10-practice-zone" aria-label="Practice tools">
+            <div class="hub-u10-practice-label">Practice tools</div>
+            <div class="hub-u10-practice-sub">
+                Vocab Gym (Word Bank &amp; modes) and Playground (lesson decks &amp; group formats) — separate from textbook folders below.
+            </div>
+            <div class="hub-u10-practice-chips">
+                <button
+                    type="button"
+                    class="hub-u10-practice-chip"
+                    data-legacy-folder="u9-lexgames"
+                    onclick="unitFolderRowNav(event,this,'fn','u9lexgames')"
+                    onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u9lexgames')"
+                >
+                    <span class="hub-u10-practice-chip__title">Vocab Gym</span>
+                    <span class="hub-u10-practice-chip__desc">Lexical drop + paraphrase pick &middot; Level 9 lexis &middot; Word Bank &amp; modes</span>
+                    <span class="hub-u10-practice-chip__go">Open &rarr;</span>
+                </button>
+                <button
+                    type="button"
+                    class="hub-u10-practice-chip"
+                    data-legacy-folder="u9-playground"
+                    onclick="unitFolderRowNav(event,this,'href','games/cpe/unit9/index.html?course=cpe')"
+                    onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','games/cpe/unit9/index.html?course=cpe')"
+                >
+                    <span class="hub-u10-practice-chip__title">Playground</span>
+                    <span class="hub-u10-practice-chip__desc">Unit 9 &middot; CPE &middot; lesson decks &amp; group formats (off-scriptbook hub)</span>
+                    <span class="hub-u10-practice-chip__go">Open &rarr;</span>
+                </button>
+            </div>
+        </div>
+        <div class="hub-u10-materials-label">Unit materials</div>
         <div id="unit9-dynamic-folders" class="unit-dynamic-folders" aria-live="polite"></div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-reading-all" onclick="openUnit9ReadingFolderHub()" onkeydown="if(event.key==='Enter')openUnit9ReadingFolderHub()">
             <strong>Reading</strong>
@@ -5363,13 +5470,8 @@
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-vocab" onclick="unitFolderRowNav(event,this,'href','Vocabulary/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Vocabulary/index.html')">
             <strong>Vocabulary</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Vocabulary/</code> &rarr; <code>idioms/</code>; <code>prepositional-phrases/</code>; <code>describing-art-architecture/</code> (hub for art &amp; architecture lexis). List: <code>Vocabulary/disk-folders.js</code>. Typed gaps stay in the app Lexical trainer.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Vocabulary/</code> &rarr; <code>idioms/</code>; <code>prepositional-phrases/</code>; <code>describing-art-architecture/</code> (hub for art &amp; architecture lexis). List: <code>Vocabulary/disk-folders.js</code>. Typed gaps stay in the app lexical trainer / Vocab Gym.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-lexgames" onclick="unitFolderRowNav(event,this,'fn','u9lexgames')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u9lexgames')">
-            <strong>Lexical games</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; Level 9 lexis.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-uoe" onclick="openUnit9UoeFolderHub(event)" onkeydown="if(event.key==='Enter')openUnit9UoeFolderHub(event)">
             <strong>Use of English</strong>
@@ -5378,7 +5480,7 @@
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-grammar" onclick="unitFolderRowNav(event,this,'href','Grammar/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','Grammar/index.html')">
             <strong>Grammar</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Grammar/</code> &rarr; speaking drills, then written tasks in <code>Grammar/exercises/</code>. On-disk only; not in-app lexical games.</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Level 9 disk <code>Grammar/</code> &rarr; speaking drills, then written tasks in <code>Grammar/exercises/</code>. On-disk only; not in-app Vocab Gym modes.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
         </div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u9-writing" onclick="unitFolderRowNav(event,this,'href','unit9-writing/index.html')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','unit9-writing/index.html')">
@@ -5441,7 +5543,7 @@
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Course hub on disk &middot; exam trainer first, then lexical / speaking / audio.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
         </div>
-        <div class="folder" role="button" tabindex="0" onclick="unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,&quot;href&quot;,&quot;Listening Part 2 Sentence completion - Painting with the mind's eye/index.html&quot;)">
+        <div class="folder" role="button" tabindex="0" data-folder-href="Listening Part 2 Sentence completion - Painting with the mind's eye/index.html" onclick="unitFolderRowNavFromData(event,this)" onkeydown="if(event.key==='Enter')unitFolderRowNavFromData(event,this)">
             <strong>Listening Part 2 &mdash; Sentence completion &mdash; Painting with the mind&rsquo;s eye</strong>
             <div style="color:var(--muted);font-size:12px;margin-top:6px;">Workbook Track 10 (RF C2) on disk &middot; exam-style gaps; accepts slash-marked key variants.</div>
             <div style="color:var(--primary);font-size:11px;margin-top:5px;">Folder &rarr; open</div>
@@ -5605,10 +5707,43 @@
         <button type="button" class="hub-back" onclick="showHub()">&larr; Back to units</button>
         <div class="user-stats" style="margin-top:0;">
             <span>Level 8</span>
-            <span style="color:var(--muted);font-size:13px;">Environment collocations &middot; lexical games</span>
+            <span style="color:var(--muted);font-size:13px;">Environment collocations &middot; Vocab Gym</span>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Level 8</h2>
-        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Open a folder, then choose a reading. You can add more readings under each activity later.</p>
+        <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">
+            At the top: <strong>Practice tools</strong> (Vocab Gym + Playground). Under <strong>Unit materials</strong>: Prep folders (when added), Listening, Speaking, Use of English, Treasure Hunt.
+        </p>
+        <div class="hub-u10-practice-zone" aria-label="Practice tools">
+            <div class="hub-u10-practice-label">Practice tools</div>
+            <div class="hub-u10-practice-sub">
+                Vocab Gym (environment collocations) and Playground (lesson decks &amp; group formats) — separate from exam-style folders below.
+            </div>
+            <div class="hub-u10-practice-chips">
+                <button
+                    type="button"
+                    class="hub-u10-practice-chip"
+                    data-legacy-folder="u8-lexgames"
+                    onclick="unitFolderRowNav(event,this,'fn','u8lexgames')"
+                    onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u8lexgames')"
+                >
+                    <span class="hub-u10-practice-chip__title">Vocab Gym</span>
+                    <span class="hub-u10-practice-chip__desc">Lexical drop + paraphrase pick &middot; same modes as Level 9</span>
+                    <span class="hub-u10-practice-chip__go">Open &rarr;</span>
+                </button>
+                <button
+                    type="button"
+                    class="hub-u10-practice-chip"
+                    data-legacy-folder="u8-playground"
+                    onclick="unitFolderRowNav(event,this,'href','games/cpe/unit8/index.html?course=cpe')"
+                    onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'href','games/cpe/unit8/index.html?course=cpe')"
+                >
+                    <span class="hub-u10-practice-chip__title">Playground</span>
+                    <span class="hub-u10-practice-chip__desc">Unit 8 &middot; CPE &middot; lesson decks &amp; group formats (off-scriptbook hub)</span>
+                    <span class="hub-u10-practice-chip__go">Open &rarr;</span>
+                </button>
+            </div>
+        </div>
+        <div class="hub-u10-materials-label">Unit materials</div>
         <div id="unit8-dynamic-folders" class="unit-dynamic-folders" aria-live="polite"></div>
         <div class="folder" role="button" tabindex="0" data-legacy-folder="u8-listening" onclick="unitFolderRowNav(event,this,'fn','u8exams')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u8exams')">
             <strong>Listening</strong>
@@ -5617,13 +5752,8 @@
         </div>
         <div class="folder folder-disabled">
             <strong>Reading</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical trainer moved to Lexical games.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open Lexical games &rarr; Lexical trainer</div>
-        </div>
-        <div class="folder" role="button" tabindex="0" data-legacy-folder="u8-lexgames" onclick="unitFolderRowNav(event,this,'fn','u8lexgames')" onkeydown="if(event.key==='Enter')unitFolderRowNav(event,this,'fn','u8lexgames')">
-            <strong>Lexical games</strong>
-            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical drop + paraphrase pick &middot; same modes as Level 9.</div>
-            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Choose a game &rarr; tick reading theme</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px;">Lexical trainer moved to Vocab Gym.</div>
+            <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open Vocab Gym &rarr; Lexical trainer</div>
         </div>
         <div class="folder folder-disabled">
             <strong>Audio practice</strong>
@@ -5715,7 +5845,7 @@
 
     <div id="screen-unit8-lexgames-hub" class="screen">
         <button type="button" class="hub-back" onclick="showScreen('screen-unit8')">&larr; Level 8 menu</button>
-        <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical games</h2>
+        <h2 style="margin:0 0 8px;font-size:1.2rem;">Vocab Gym</h2>
         <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). On the next screen tick <b>Environment collocations</b> and/or <b>Environment collocations 2</b> (same engine as Level 9).</p>
         <div class="folder" role="button" tabindex="0" onclick="openUnit8ActivityHub('lexical')" onkeydown="if(event.key==='Enter')openUnit8ActivityHub('lexical')">
             <strong>Lexical trainer</strong>
@@ -5765,7 +5895,7 @@
     </div>
 
     <div id="screen-unit8-lex-reading-pick" class="screen">
-        <button type="button" class="hub-back" onclick="openUnit8LexGamesHub()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openUnit8LexGamesHub()">&larr; Vocab Gym</button>
         <h2 id="u8-lex-pick-title" style="margin:0 0 6px;font-size:1.2rem;">Choose reading</h2>
         <p class="lex-reading-tag">Level 8 &middot; Environment collocations</p>
         <div class="u8-fall-pick-box">
@@ -5774,7 +5904,7 @@
         </div>
         <p style="color:var(--muted);font-size:12px;margin:0 0 14px;line-height:1.45;">Tick one or both packs, then <b>Continue</b>. The same Level 9 game screens are used; only items from the ticked packs are in the pool.</p>
         <button type="button" class="btn" onclick="u8LexReadingPickContinue()">Continue</button>
-        <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="openUnit8LexGamesHub()">Back to Lexical games</button>
+        <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="openUnit8LexGamesHub()">Back to Vocab Gym</button>
     </div>
 
     <div id="screen-unit8-reading-hub" class="screen">
@@ -6058,7 +6188,7 @@
 
     <div id="screen-unit9-lexgames-hub" class="screen">
         <button type="button" class="hub-back" onclick="showScreen('screen-unit9')">&larr; Level 9 menu</button>
-        <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical games</h2>
+        <h2 style="margin:0 0 8px;font-size:1.2rem;">Vocab Gym</h2>
         <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). Tick your <b>Reading 7 / Contemporary art / idioms / listening (Making a mark) / Painting with the mind&rsquo;s eye (Track 10) / P3 art restoration / prepositional phrases / art &amp; architecture (disk)</b> packs on the next screen.</p>
         <div class="folder" role="button" tabindex="0" onclick="openUnit9WordBank()" onkeydown="if(event.key==='Enter')openUnit9WordBank()">
             <strong>Word Bank (Memrise style)</strong>
@@ -6134,7 +6264,7 @@
 
     <div id="screen-unit9-prep-escape" class="screen">
         <div id="prep-live-game-started-flash" hidden role="status">Game on!</div>
-        <button type="button" class="hub-back" onclick="prepEscapeHubBack()">&larr; Lexical games</button>
+        <button type="button" id="prep-escape-hub-back" class="hub-back" onclick="prepEscapeHubBack()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <div class="prep-escape-timer" id="prep-escape-timer" aria-live="polite">3:00</div>
         <div id="prep-escape-zoom-scope" class="prep-escape-zoom-scope">
             <h2 style="margin:0 0 6px;font-size:1.2rem;">Prep vault &mdash; escape room</h2>
@@ -6156,6 +6286,7 @@
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_p4">U10 Part 4</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_books">U10 books</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_uoe_shakespeare">Shakespeare UoE</button>
+                    <button type="button" class="prep-escape-pack-btn" data-pack="u10_similes">U10 similes</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="all">Choose all</button>
                 </div>
             </div>
@@ -6178,7 +6309,7 @@
                             <div>
                                 <p>All six channels match &mdash; vault disengaged.</p>
                                 <button type="button" class="btn" onclick="prepEscapeNewRun()">New shuffle</button>
-                                <button type="button" class="btn btn-secondary" style="margin-top:8px;" onclick="prepEscapeHubBack()">Back to Lexical games</button>
+                                <button type="button" id="prep-escape-hub-back-inner" class="btn btn-secondary" style="margin-top:8px;" onclick="prepEscapeHubBack()" data-lexgames-back="plain">Back to Vocab Gym</button>
                             </div>
                         </div>
                     </div>
@@ -6281,19 +6412,20 @@
     <div id="prep-live-student-ranks" hidden aria-live="polite"></div>
 
     <div id="screen-unit9-wordbank" class="screen">
-        <button type="button" id="cpe-wb-hub-back" class="hub-back" onclick="cpeWordBankHubBack()">&larr; Lexical games</button>
+        <button type="button" id="cpe-wb-hub-back" class="hub-back" onclick="cpeWordBankHubBack()">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Word Bank (Memrise style)</h2>
         <p id="cpe-wb-lead-default" class="u9-hub-lead" style="margin-bottom:12px;">Topic packs, searchable list, and spaced repetition review status.</p>
         <p id="cpe-wb-lead-u10" class="u9-hub-lead" style="margin-bottom:12px;" hidden>
-            <strong>Unit 10 lexical flow.</strong> The <b>tabs</b> above choose <b>Listening Part 4</b> (multiple matching), <b>Describing books &amp; films</b>, or <b>Shakespeare &middot; Use of English</b> (<em>Was Shakespeare a woman?</em>). The list and every folder below use that pack until you switch. <b>Back</b> returns to the Level 10 folder.
+            <strong>Unit 10 &mdash; how to use this screen.</strong> <b>(1)</b> Tap a <b>pack tab</b> (Part 4, books &amp; films, Shakespeare &middot; Use of English, Similes). <b>(2)</b> Scroll to the <b>phrase list</b> or tap a <b>game folder</b> below &mdash; trainer, flip, drop, etc. all follow that tab until you change it (default is Part 4). <b>Back</b> returns to the <b>Level 10</b> folder in Prep.
         </p>
         <div id="cpe-wb-u10-tabs" class="wb-u10-tabs" role="tablist" aria-label="Unit 10 Word Bank packs" hidden>
             <button type="button" role="tab" class="wb-u10-tab active" id="cpe-wb-u10-tab-p4" data-u10-wb-tab="p4" aria-selected="true" aria-controls="cpe-wb-list">Listening multiple matching</button>
             <button type="button" role="tab" class="wb-u10-tab" id="cpe-wb-u10-tab-books" data-u10-wb-tab="books" aria-selected="false" aria-controls="cpe-wb-list">Vocabulary &middot; describing books &amp; films</button>
             <button type="button" role="tab" class="wb-u10-tab" id="cpe-wb-u10-tab-shakespeare" data-u10-wb-tab="shakespeare" aria-selected="false" aria-controls="cpe-wb-list">Shakespeare &middot; Use of English</button>
+            <button type="button" role="tab" class="wb-u10-tab" id="cpe-wb-u10-tab-similes" data-u10-wb-tab="similes" aria-selected="false" aria-controls="cpe-wb-list">Similes (Unit 10 vocabulary)</button>
         </div>
         <div id="cpe-wb-u10-modes" class="u10-wb-lexgames-strip" hidden>
-            <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;"><b>Definition cards</b> are first: flip to see the phrase, mark what you know. Other modes use up to <b>ten</b> chunks per round; wrong answers often go to the <b>end of the line</b> until the line is clear &mdash; then you can earn a <b>checkmark</b> (where shown). <b>Pack</b> for Unit 10 comes from the <b>tabs</b> above (Part 4, books &amp; films, or Shakespeare &middot; Use of English).</p>
+            <p class="u9-lexgames-lead" style="color:var(--muted);font-size:14px;line-height:1.5;margin:0;">These folders open the games &mdash; they always use whichever pack tab is <b>active above</b>. <b>Definition cards</b> first if you like flip review; other modes use up to <b>ten</b> chunks per round and often queue wrong answers to the <b>end of the line</b> until you clear the round (checkmarks where shown).</p>
             <div class="folder" role="button" tabindex="0" onclick="cpeU10WbScrollToList()" onkeydown="if(event.key==='Enter')cpeU10WbScrollToList()">
                 <strong>Word Bank list (below)</strong>
                 <div style="color:var(--muted);font-size:12px;margin-top:6px;">Search, filters, and Memrise-style rows for the pack you picked on the tabs.</div>
@@ -6344,19 +6476,19 @@
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Up to 10 pairs &middot; multi-grids &middot; timer</div>
                 <span class="u9-lex-ticks" id="u10-wb-lex-tick-match" title=""></span>
             </div>
-            <a class="folder" href="vocabulary-tic-tac-toe.html" style="text-decoration:none;color:inherit;">
+            <a class="folder" href="vocabulary-tic-tac-toe-unit10.html" style="text-decoration:none;color:inherit;">
                 <strong>Vocabulary Tic-Tac-Toe</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">Two teams <b>X</b> and <b>O</b> online: definitions from your Word Bank packs &mdash; correct claims the cell, wrong passes the turn.</div>
-                <div style="color:var(--primary);font-size:11px;margin-top:5px;">Multiplayer &middot; DECIPHER THE CODE</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;">Unit 10 · офлайн: Part 4, books &amp; films, Shakespeare UoE, similes &mdash; подсказка и точная фраза; без комнаты.</div>
+                <div style="color:var(--primary);font-size:11px;margin-top:5px;">Открыть &middot; соло</div>
             </a>
             <div class="folder" role="button" tabindex="0" onclick="openUnit10StickyGame()" onkeydown="if(event.key==='Enter')openUnit10StickyGame()">
                 <strong>Sticky notes board</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;"><b>Sticky notes</b> use the same phrases as the active tab: Part 4, books &amp; films, or Shakespeare &middot; Use of English.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;"><b>Sticky notes</b> use the same phrases as the active tab: Part 4, books &amp; films, Shakespeare &middot; Use of English, or Similes.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Missing-word sticky drills</div>
             </div>
             <button type="button" class="folder" onclick="openUnit10PrepEscapeRoom()">
                 <strong>Prep vault (escape room)</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run can start on <b>U10 Part 4</b>, <b>U10 books</b>, or <b>Shakespeare UoE</b> from the tab you chose. Six phrases, <b>3:00</b> clock; hints and lockout as on Level 9.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run can start on <b>U10 Part 4</b>, <b>U10 books</b>, <b>Shakespeare UoE</b>, or <b>U10 similes</b> from the tab you chose. Six phrases, <b>3:00</b> clock; hints and lockout as on Level 9.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Timed &middot; pack picker on vault screen</div>
             </button>
             <a class="folder" href="live-room-supabase-demo.html" style="text-decoration:none;color:inherit;">
@@ -6389,7 +6521,7 @@
     </div>
 
     <div id="screen-unit9-lex-reading-pick" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 id="u9-lex-pick-title" style="margin:0 0 6px;font-size:1.2rem;">Choose reading</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
         <p class="u9-hub-lead" style="margin-bottom:12px;">Tick <b>Reading 7</b>, <b>Contemporary art</b>, <b>Idioms</b>, <b>Listening Part 2 (Making a mark)</b>, <b>Listening Part 2 (Painting with the mind&rsquo;s eye, Track 10)</b>, <b>Listening P3 Art restoration</b>, <b>Prepositional phrases</b>, and/or <b>Art &amp; architecture (disk)</b> &mdash; same gap / flip / drop mechanics; the trainer uses one pack at a time.</p>
@@ -6408,7 +6540,7 @@
 
     <div id="screen-unit9-fall" class="screen">
         <div class="u9-fall-top">
-            <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+            <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
             <span class="u9-fall-hud" id="u9-fall-hud-mini" style="font-size:12px;"></span>
         </div>
         <h2 style="margin:0 0 8px;font-size:1.2rem;">Lexical drop</h2>
@@ -6448,7 +6580,7 @@
     </div>
 
     <div id="screen-unit9-lex-mcq" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Paraphrase pick</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
         <div id="u9-mcq-intro">
@@ -6472,7 +6604,7 @@
     </div>
 
     <div id="screen-unit9-lex-express" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">60-second express</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
         <div id="u9-express-intro">
@@ -6509,7 +6641,7 @@
     </div>
 
     <div id="screen-unit9-lex-flip" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Definition cards</h2>
         <p class="lex-reading-tag">Level 9 &middot; vocabulary</p>
         <div id="u9-flip-intro">
@@ -6561,7 +6693,7 @@
     </div>
 
     <div id="screen-unit9-hear" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Echo Run</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
         <div id="u9-hear-intro">
@@ -6591,7 +6723,7 @@
     </div>
 
     <div id="screen-unit9-hear-par" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Paraphrase Playback</h2>
         <p class="lex-reading-tag">Level 9 &middot; The robots are taking over</p>
         <div id="u9-hpar-intro">
@@ -6620,7 +6752,7 @@
     </div>
 
     <div id="screen-unit9-lex-match" class="screen">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <div class="u9-lex-live-bar" id="u9-lex-live-bar-match">
             <button
                 type="button"
@@ -6659,7 +6791,7 @@
     </div>
 
     <div id="screen-unit9-lex-sticky" class="screen u9-sticky-hub-l9">
-        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()">&larr; Lexical games</button>
+        <button type="button" class="hub-back" onclick="openLexGamesHubReturn()" data-lexgames-back="arrow">&larr; Vocab Gym</button>
         <div class="u9-lex-live-bar" id="u9-lex-live-bar-sticky">
             <button
                 type="button"
@@ -6672,12 +6804,12 @@
                 <span class="u9-lex-live-ico" aria-hidden="true">▼</span>
             </button>
             <div id="u9-lex-live-body-sticky" class="u9-lex-live-body" hidden>
-                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (Level 9 tasks 1&ndash;9, or Unit 10 Part 4 / books &amp; films / Shakespeare UoE), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
+                Expand the green <strong>Live session</strong> bar: create room, pick <strong>Students only see</strong> (Level 9 tasks 1&ndash;9, or Unit 10 Part 4 / books &amp; films / Shakespeare UoE / similes), copy the link. Students open Sticky with that single task &mdash; no Prep vault choice on this screen.
             </div>
         </div>
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Sticky notes board</h2>
         <p class="lex-reading-tag u9-sticky-tag-l9">Level 9 &middot; nine sticky tasks</p>
-        <p class="lex-reading-tag u9-sticky-tag-u10" style="display:none;">Unit 10 &middot; three packs (Part 4 · books &amp; films · Shakespeare UoE)</p>
+        <p class="lex-reading-tag u9-sticky-tag-u10" style="display:none;">Unit 10 &middot; four packs (Part 4 · books &amp; films · Shakespeare UoE · similes)</p>
         <div class="u9-sticky-tabs">
             <button type="button" id="u9-sticky-tab-idiom" class="u9-sticky-tab u9-sticky-pack-l9 active" onclick="u9StickyShowTask('idiom')">Task 1: Idioms</button>
             <button type="button" id="u9-sticky-tab-prep" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('prep')">Task 2: at / in / on / under</button>
@@ -7128,30 +7260,24 @@
 <script src="js/prep-listening-pack-registry.js"></script>
 <script src="js/prep-hub-seeds-unit10-listening.js"></script>
 <script src="js/prep-hub-seeds-unit10-uoe.js"></script>
+<script src="js/prep-hub-seeds-unit10-games.js"></script>
 <script src="js/prep-hub-unit10-nests.js"></script>
 <script src="js/prep-boxed.js"></script>
-<script src="js/prep-remote-defaults.js"></script>
-<script src="live-supabase-local.js"></script>
-<script src="js/prep-cloud-client.js"></script>
-<script>
-(function () {
-  function go() {
-    try {
-      if (window.PrepSiteContent && typeof PrepSiteContent.hydrateFromCloud === "function") {
-        PrepSiteContent.hydrateFromCloud();
-      }
-    } catch (e) {}
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go);
-  else go();
-})();
-</script>
 <script src="js/prepositional-phrases-core.js"></script>
 <script src="js/interior-design-vocab-core.js"></script>
 <script src="js/prep-content-tools-gate.js"></script>
 <script>
 (function (W) {
     var loadStarted = false;
+    function hasLiveConfig() {
+        try {
+            var url = String(W.__LIVE_SUPABASE_URL__ || "").trim();
+            var key = String(W.__LIVE_SUPABASE_KEY__ || "").trim();
+            return !!url && !!key;
+        } catch (eCfg) {
+            return false;
+        }
+    }
     function loadScript(src, cb) {
         var s = document.createElement("script");
         s.src = src;
@@ -7166,6 +7292,7 @@
     }
     function beginLoad() {
         if (loadStarted) return;
+        if (!hasLiveConfig()) return;
         loadStarted = true;
         loadScript("js/vendor/supabase.min.js", function () {
             loadScript("js/live-game-api.js", function () {
@@ -7197,6 +7324,7 @@
 <script src="js/listening-p4-wb10-pack.js"></script>
 <script src="js/u10-books-films-lexis.js"></script>
 <script src="js/use-of-english/u10-uoe-shakespeare-lexicon.js"></script>
+<script src="js/u10-similes-lexis.js"></script>
 <script src="js/unit10-sticky-registry.js"></script>
 <script src="js/unit10-plain-sticky-kit.js"></script>
     <script src="js/u9-contemporary-art-reading-data.js"></script>
@@ -7576,6 +7704,7 @@ var currentIdx = 0;
 var lives = 3;
 var roundErrors = 0;
 var sessionPoints = 0;
+var gameReturnTarget = 'hub';
 
 /** Level 8–9 hub tiles if js/units-data.js failed to load (wrong path, file opened alone, etc.). */
 var HUB_TILES_FALLBACK = {
@@ -7583,7 +7712,7 @@ var HUB_TILES_FALLBACK = {
         screen: 'screen-unit8',
         cls: 'unit-tile unit-8',
         html:
-            '<strong>Level 8</strong><span>Environment collocations</span><span style="display:block;color:var(--muted);font-size:10px;margin-top:6px;line-height:1.3;">Lexical trainer + lexical games (Level 9 engine) + Use of English &middot; Word formation</span>'
+            '<strong>Level 8</strong><span>Environment collocations</span><span style="display:block;color:var(--muted);font-size:10px;margin-top:6px;line-height:1.3;">Lexical trainer + Vocab Gym (Level 9 engine) + Use of English &middot; Word formation</span>'
     },
     9: {
         screen: 'screen-unit9',
@@ -7917,7 +8046,7 @@ var U9_PREP2_PHRASES = (function () {
     }
     return out;
 })();
-/** Same speaker string as Word Bank prep theme — used by lexical games tick filters. */
+/** Same speaker string as Word Bank prep theme — used by Vocab Gym tick filters. */
 var LEX_PREP_SPEAKER_LABEL = 'Prepositional phrases';
 
 var LEX_PREP_TRIPLES = (LEX_PREP_PHRASE_DATA || []).map(function (d) {
@@ -8382,6 +8511,10 @@ var LEX_U10_BOOKS_SECTION_STEPS = [];
 var LEX_U10_SHAKESPEARE_TYPE_TASKS = [];
 var LEX_U10_SHAKESPEARE_HINTS = [];
 var LEX_U10_SHAKESPEARE_SECTION_STEPS = [];
+/** Unit 10 · Similes vocabulary folder (see {@link lexU10SimilesBuildTasks}). */
+var LEX_U10_SIMILES_TYPE_TASKS = [];
+var LEX_U10_SIMILES_HINTS = [];
+var LEX_U10_SIMILES_SECTION_STEPS = [];
 
 function lexTrainerIsUnit8EnvLex() {
     return lexTrainerPack === 'environment' || lexTrainerPack === 'environment2';
@@ -8396,6 +8529,7 @@ function lexTypeTasksNow() {
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_TYPE_TASKS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_TYPE_TASKS;
     if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_TYPE_TASKS;
+    if (lexTrainerPack === 'u10_similes') return LEX_U10_SIMILES_TYPE_TASKS;
     if (lexTrainerPack === 'environment') return LEX_ENV_TYPE_TASKS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_TYPE_TASKS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_TYPE_TASKS.length) {
@@ -8412,6 +8546,7 @@ function lexTypeHintsNow() {
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_HINTS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_HINTS;
     if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_HINTS;
+    if (lexTrainerPack === 'u10_similes') return LEX_U10_SIMILES_HINTS;
     if (lexTrainerPack === 'environment') return LEX_ENV_HINTS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_HINTS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_HINTS.length) {
@@ -8428,6 +8563,7 @@ function lexSectionStepsNow() {
     if (lexTrainerPack === 'u10_p4') return LEX_U10_P4_SECTION_STEPS;
     if (lexTrainerPack === 'u10_books') return LEX_U10_BOOKS_SECTION_STEPS;
     if (lexTrainerPack === 'u10_shakespeare') return LEX_U10_SHAKESPEARE_SECTION_STEPS;
+    if (lexTrainerPack === 'u10_similes') return LEX_U10_SIMILES_SECTION_STEPS;
     if (lexTrainerPack === 'environment') return LEX_ENV_SECTION_STEPS;
     if (lexTrainerPack === 'environment2') return LEX_ENV2_SECTION_STEPS;
     if (lexTrainerPack === 'robots' && u9LexReadingPack === 'contemporary_art' && LEX_CONTEMP_SECTION_STEPS.length) {
@@ -8561,13 +8697,13 @@ function u9LexRefreshTreasureHuntMythHeadings() {
 var u9ActivityHubMode = 'lexical';
 /** Last Level 8 activity-hub mode (treasure | lexical | speaking | exams) for refresh after Prep save. */
 var u8ActivityHubRenderMode = 'treasure';
-/** When true, Lexical trainer hub was opened from Lexical games — back returns there, not to Level 9 menu. */
+/** When true, Lexical trainer hub was opened from Vocab Gym — back returns there, not to Level 9 menu. */
 var u9LexActivityReturnToLexGames = false;
-/** When true, Lexical trainer hub was opened from Unit 10 Lexical games — back returns to that hub. */
+/** When true, Lexical trainer hub was opened from Unit 10 Vocab Gym — back returns to that hub. */
 var u9LexActivityReturnToUnit10LexGames = false;
-/** When true, top-level back targets Unit 10 Lexical games hub (Word Bank / flip / fall…) instead of Level 9. */
+/** When true, top-level back targets Unit 10 Vocab Gym hub (Word Bank / flip / fall…) instead of Level 9. */
 var u10LexGamesActive = false;
-/** <code>p4</code> · <code>books</code> · <code>shakespeare</code> — Shakespeare · Use of English (<em>Was Shakespeare a woman?</em>). */
+/** Active Unit 10 lexical tab pack: <code>p4</code> · <code>books</code> · <code>shakespeare</code> · <code>similes</code>. */
 var u10LexGamesPack = 'p4';
 /** Typed-gap trainer opened from Unit 10 lexical trainer list — back to readings → Unit 10 hub. */
 var u10LexTrainerReturnToHub = false;
@@ -8596,11 +8732,14 @@ function u10LexPackTabsSyncUI() {
 function u10LexThemeFromPack() {
     if (u10LexGamesPack === 'books') return 'u10_books';
     if (u10LexGamesPack === 'shakespeare') return 'u10_uoe_shakespeare';
+    if (u10LexGamesPack === 'similes') return 'u10_similes';
     return 'u10_p4';
 }
 
 function u10LexPackTabSelect(pack) {
-    u10LexSetPack(pack === 'books' ? 'books' : pack === 'shakespeare' ? 'shakespeare' : 'p4');
+    u10LexSetPack(
+        pack === 'books' ? 'books' : pack === 'shakespeare' ? 'shakespeare' : pack === 'similes' ? 'similes' : 'p4'
+    );
     var wbScr = document.getElementById('screen-unit9-wordbank');
     if (wbScr && wbScr.classList.contains('u10-wb-only') && wbScr.classList.contains('active')) {
         cpeWbTheme = u10LexThemeFromPack();
@@ -8609,11 +8748,18 @@ function u10LexPackTabSelect(pack) {
 }
 
 function u10LexSetPack(pack) {
-    u10LexGamesPack = pack === 'books' ? 'books' : pack === 'shakespeare' ? 'shakespeare' : 'p4';
+    u10LexGamesPack =
+        pack === 'books'
+            ? 'books'
+            : pack === 'shakespeare'
+              ? 'shakespeare'
+              : pack === 'similes'
+                ? 'similes'
+                : 'p4';
     u10LexGamesApplyPoolFilter();
     u10LexPackTabsSyncUI();
 }
-/** Prep vault back button returns to Unit 10 Lexical games instead of Level 9. */
+/** Prep vault back button returns to Unit 10 Vocab Gym instead of Level 9. */
 var prepEscapeReturnToUnit10LexGames = false;
 /** null | 'freer' | 'retell' — nested folder inside Level 9 Speaking trainer hub */
 var u9SpeakHubFolder = null;
@@ -8830,27 +8976,35 @@ function openUnit9ActivityHub(mode, opt) {
     if (mode === 'lexical' && opt.fromUnit10LexGames) {
         var u10TrainerBooks = u10LexGamesPack === 'books';
         var u10TrainerShake = u10LexGamesPack === 'shakespeare';
-        var packLead =
-            u10TrainerBooks
-                ? '<b>Describing books &amp; films</b> only (Unit 10 vocabulary). Same bank as the Word Bank theme · <b>three hearts</b> for the run.'
-                : u10TrainerShake
-                  ? '<b>Shakespeare · Use of English</b> only (<em>Was Shakespeare a woman?</em>). Same phrases as the Word Bank tab · <b>three hearts</b> for the run.'
-                  : '<b>Listening Part 4</b> (SB 10.1) only. Same bank as the Part 4 Word Bank theme · <b>three hearts</b> for the run.';
+        var u10TrainerSim = u10LexGamesPack === 'similes';
+        var packLead = u10TrainerBooks
+            ? '<b>Describing books &amp; films</b> only (Unit 10 vocabulary). Same bank as the Word Bank theme · <b>three hearts</b> for the run.'
+            : u10TrainerShake
+              ? '<b>Shakespeare · Use of English</b> only (<em>Was Shakespeare a woman?</em>). Same phrases as the Word Bank tab · <b>three hearts</b> for the run.'
+              : u10TrainerSim
+                ? '<b>Similes</b> only (Unit 10 vocabulary folder). Same twelve phrases as the Similes Word Bank tab · <b>three hearts</b> for the run.'
+                : '<b>Listening Part 4</b> (SB 10.1) only. Same bank as the Part 4 Word Bank theme · <b>three hearts</b> for the run.';
         var tileTitle = u10TrainerBooks
             ? 'Unit 10 · Describing books & films'
             : u10TrainerShake
               ? 'Unit 10 · Shakespeare · Use of English'
-              : 'Unit 10 · Listening Part 4';
+              : u10TrainerSim
+                ? 'Unit 10 · Similes'
+                : 'Unit 10 · Listening Part 4';
         var tileLine = u10TrainerBooks
             ? 'Review lines from the books &amp; films pack — paraphrase hints, then type the exact chunk.'
             : u10TrainerShake
               ? 'Review collocations from <em>Was Shakespeare a woman?</em> — paraphrase hints, then type the exact chunk from the passage.'
-              : 'Monologues from Track 10.1 — paraphrase hints, then type the exact chunk.';
+              : u10TrainerSim
+                ? 'Review sentences from the similes pack — paraphrase hints, then type the exact chunk.'
+                : 'Monologues from Track 10.1 — paraphrase hints, then type the exact chunk.';
         var openTrainerFn = u10TrainerBooks
             ? openLexicalTrainerU10Books
             : u10TrainerShake
               ? openLexicalTrainerU10Shakespeare
-              : openLexicalTrainerU10P4;
+              : u10TrainerSim
+                ? openLexicalTrainerU10Similes
+                : openLexicalTrainerU10P4;
         cfg = {
             title: 'Lexical trainer',
             lead: packLead,
@@ -8872,9 +9026,9 @@ function openUnit9ActivityHub(mode, opt) {
         if (mode === 'speaking' && (u9SpeakHubFolder === 'freer' || u9SpeakHubFolder === 'retell')) {
             backBtn.textContent = '\u2190 Speaking trainer';
         } else if (mode === 'lexical' && u9LexActivityReturnToUnit10LexGames) {
-            backBtn.textContent = '\u2190 Lexical games (Unit 10)';
+            backBtn.textContent = '\u2190 Vocab Gym (Unit 10)';
         } else if (mode === 'lexical' && u9LexActivityReturnToLexGames) {
-            backBtn.textContent = '\u2190 Lexical games';
+            backBtn.textContent = '\u2190 Vocab Gym';
         } else {
             backBtn.textContent = '\u2190 Level 9 menu';
         }
@@ -10052,6 +10206,59 @@ function lexU10ShakespeareBuildTasks() {
     lexU10ShakespeareBuildTasks.__runOnce = true;
 }
 
+/**
+ * Typed-gap tasks for Unit 10 · Similes vocabulary folder only.
+ */
+function lexU10SimilesBuildTasks() {
+    if (lexU10SimilesBuildTasks.__ver !== 1) {
+        lexU10SimilesBuildTasks.__runOnce = false;
+        lexU10SimilesBuildTasks.__ver = 1;
+    }
+    if (lexU10SimilesBuildTasks.__runOnce) return;
+    LEX_U10_SIMILES_TYPE_TASKS = [];
+    LEX_U10_SIMILES_HINTS = [];
+    LEX_U10_SIMILES_SECTION_STEPS = [];
+    var speakerSi =
+        typeof LEX_U10_SIMILES_SPEAKER_LABEL === 'string'
+            ? LEX_U10_SIMILES_SPEAKER_LABEL
+            : 'Unit 10 · Similes';
+    var plainSi = typeof U10_SIMILES_LEXIS_PLAIN === 'string' ? U10_SIMILES_LEXIS_PLAIN : '';
+    if (
+        !plainSi ||
+        typeof U10_SIMILES_LEXIS_GAME_ROWS === 'undefined' ||
+        !U10_SIMILES_LEXIS_GAME_ROWS ||
+        !U10_SIMILES_LEXIS_GAME_ROWS.length
+    ) {
+        lexU10SimilesBuildTasks.__runOnce = true;
+        return;
+    }
+    var tasksSi = [];
+    var hintsSi = [];
+    var gapMarkSi = ' ____ ';
+    var kz;
+    for (kz = 0; kz < U10_SIMILES_LEXIS_GAME_ROWS.length; kz++) {
+        var bitSi = U10_SIMILES_LEXIS_GAME_ROWS[kz];
+        if (!bitSi || !bitSi.ans) continue;
+        var phraseSi = String(bitSi.ans).trim();
+        if (!phraseSi || u9FallFindAnsSpan(plainSi, phraseSi) == null) continue;
+        var gapLineSi = u9FallBuildGapLine(plainSi, phraseSi, speakerSi);
+        var gi = gapLineSi.indexOf(gapMarkSi);
+        if (gi === -1) continue;
+        tasksSi.push({
+            speaker: speakerSi,
+            before: gapLineSi.slice(0, gi),
+            after: gapLineSi.slice(gi + gapMarkSi.length),
+            ans: phraseSi
+        });
+        hintsSi.push(bitSi.hint || '');
+    }
+    LEX_U10_SIMILES_TYPE_TASKS = tasksSi;
+    LEX_U10_SIMILES_HINTS = hintsSi;
+    LEX_U10_SIMILES_SECTION_STEPS =
+        tasksSi.length > 0 ? [{ label: speakerSi, start: 0, end: tasksSi.length - 1 }] : [];
+    lexU10SimilesBuildTasks.__runOnce = true;
+}
+
 function u9FallAnsWordCount(ans) {
     var t = u9FallNormFind(ans).trim();
     if (!t) {
@@ -10291,7 +10498,8 @@ function ensureU9FallPool() {
         .concat(mindsEyeItems)
         .concat(u10P4LexFallItems())
         .concat(u10BooksFilmsLexFallItems())
-        .concat(u10ShakespeareLexFallItems());
+        .concat(u10ShakespeareLexFallItems())
+        .concat(u10SimilesLexFallItems());
 }
 
 function u10BooksFilmsLexPlainText() {
@@ -10341,6 +10549,22 @@ function u10ShakespeareLexFallItems() {
     return lexicalGamesHintAnsRowsToFallPoolRows(plainS, U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS, spS);
 }
 
+function u10SimilesLexPlainText() {
+    return typeof U10_SIMILES_LEXIS_PLAIN === 'string' ? U10_SIMILES_LEXIS_PLAIN : '';
+}
+
+function u10SimilesLexFallItems() {
+    var plainZ = u10SimilesLexPlainText();
+    var spZ =
+        typeof LEX_U10_SIMILES_SPEAKER_LABEL === 'string'
+            ? LEX_U10_SIMILES_SPEAKER_LABEL
+            : 'Unit 10 · Similes';
+    if (!plainZ || typeof U10_SIMILES_LEXIS_GAME_ROWS === 'undefined' || !U10_SIMILES_LEXIS_GAME_ROWS.length) {
+        return [];
+    }
+    return lexicalGamesHintAnsRowsToFallPoolRows(plainZ, U10_SIMILES_LEXIS_GAME_ROWS, spZ);
+}
+
 function u10P4LexFallItems() {
     var plain = u10P4LexPlainText();
     var sp =
@@ -10387,6 +10611,45 @@ function unitFolderRowNav(ev, el, navType, navPayload) {
     }
 }
 
+function unitFolderRowNavFromData(ev, el) {
+    var href = el && el.getAttribute('data-folder-href');
+    if (!href) return;
+    unitFolderRowNav(ev, el, 'href', href);
+}
+
+/** Arrow prefix on hub backs for shared lexical-flow screens (Levels 8–10): «Vocab Gym». */
+function hubLexGamesBackArrowText() {
+    return '\u2190 Vocab Gym';
+}
+
+/** Modal / secondary buttons — plain «Back to Vocab Gym». */
+function hubLexGamesBackPlainText() {
+    return 'Back to Vocab Gym';
+}
+
+/** Keeps shared Prep screens in sync when Unit 10 Vocab Gym flow is active (hidden DOM updated too). */
+function hubSyncLexGamesNavLabels() {
+    var arrow = hubLexGamesBackArrowText();
+    var plain = hubLexGamesBackPlainText();
+    var ar = document.querySelectorAll('[data-lexgames-back="arrow"]');
+    for (var ai = 0; ai < ar.length; ai++) {
+        ar[ai].textContent = arrow;
+    }
+    var pr = document.querySelectorAll('[data-lexgames-back="plain"]');
+    for (var pj = 0; pj < pr.length; pj++) {
+        pr[pj].textContent = plain;
+    }
+    var wbBack = document.getElementById('cpe-wb-hub-back');
+    if (wbBack && getActivePrepScreenId() === 'screen-unit9-wordbank') {
+        var wbScrSync = document.getElementById('screen-unit9-wordbank');
+        if (wbScrSync && wbScrSync.classList.contains('u10-wb-only')) {
+            wbBack.textContent = '\u2190 Level 10 folder';
+        } else {
+            wbBack.textContent = arrow;
+        }
+    }
+}
+
 function cpeWordBankHubBack() {
     var wb = document.getElementById('screen-unit9-wordbank');
     if (wb && wb.classList.contains('u10-wb-only')) {
@@ -10414,7 +10677,7 @@ function openLexGamesHubReturn() {
     if (lexGamesHubIsUnit8) {
         openUnit8LexGamesHub();
     } else if (u10LexGamesActive) {
-        openUnit10WordBank();
+        openUnit10LexGamesHub();
     } else {
         openUnit9LexGamesHub();
     }
@@ -10449,8 +10712,13 @@ function u10LexGamesApplyPoolFilter() {
         typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
             ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
             : 'Shakespeare · Use of English';
+    var spSim =
+        typeof LEX_U10_SIMILES_SPEAKER_LABEL === 'string'
+            ? LEX_U10_SIMILES_SPEAKER_LABEL
+            : 'Unit 10 · Similes';
     if (u10LexGamesPack === 'books') u9FallSpeakerFilter = [spBf];
     else if (u10LexGamesPack === 'shakespeare') u9FallSpeakerFilter = [spShake];
+    else if (u10LexGamesPack === 'similes') u9FallSpeakerFilter = [spSim];
     else u9FallSpeakerFilter = [spP4];
 }
 
@@ -10474,18 +10742,25 @@ function openUnit10LexReadingPick(mode) {
 
 function openUnit10WordBank(theme) {
     u10LexGamesActive = true;
-    /* Lexicon loads before cpeWbCache is filled; if that script ever failed to parse, Shakespeare rows cached as []. Rebuild when entering this hub. */
-    cpeWbCache = null;
+    /* Keep lazy cpeWbCache warm — nuking it here forced a full rebuild of the active Unit 10 pack on every open and blocked the main thread before paint. */
     var th =
         theme === 'u10_books'
             ? 'u10_books'
             : theme === 'u10_uoe_shakespeare'
               ? 'u10_uoe_shakespeare'
+              : theme === 'u10_similes'
+                ? 'u10_similes'
               : theme === 'u10_p4'
                 ? 'u10_p4'
                 : u10LexThemeFromPack();
     u10LexSetPack(
-        th === 'u10_books' ? 'books' : th === 'u10_uoe_shakespeare' ? 'shakespeare' : 'p4'
+        th === 'u10_books'
+            ? 'books'
+            : th === 'u10_uoe_shakespeare'
+              ? 'shakespeare'
+              : th === 'u10_similes'
+                ? 'similes'
+              : 'p4'
     );
     cpeWbTheme = th;
     cpeWordBankEnsureBind();
@@ -10501,9 +10776,16 @@ function openUnit10WordBank(theme) {
     if (u10m) u10m.hidden = false;
     var wbBack = document.getElementById('cpe-wb-hub-back');
     if (wbBack) wbBack.textContent = '\u2190 Level 10 folder';
-    cpeWordBankRender();
+    /* Shell paints before phrase rows fill on the next frame (Word Bank list lives below tabs when opened from Unit 10 menu). */
+    var listShell = document.getElementById('cpe-wb-list');
+    var statsShell = document.getElementById('cpe-wb-stats');
+    if (listShell) listShell.innerHTML = '';
+    if (statsShell) statsShell.textContent = '';
     showScreen('screen-unit9-wordbank');
     u9LexRefreshHubTicks();
+    window.requestAnimationFrame(function () {
+        cpeWordBankRender();
+    });
 }
 
 function openUnit10StickyGame() {
@@ -10535,6 +10817,8 @@ function openUnit10PrepEscapeRoom() {
             ? 'u10_books'
             : u10LexGamesPack === 'shakespeare'
               ? 'u10_uoe_shakespeare'
+              : u10LexGamesPack === 'similes'
+                ? 'u10_similes'
               : 'u10_p4';
     openUnit9PrepEscapeRoom();
 }
@@ -10559,6 +10843,11 @@ function hubReturnToUnit10LexicalGamesFolder() {
     u10LexGamesActive = false;
     u9FallSpeakerFilter = null;
     openHubUnitWorkspace(10);
+}
+
+/** Return to Unit 10 Word Bank without running full lexical-shell reset (e.g. after Prep vault). */
+function openUnit10LexGamesHubResume() {
+    openUnit10WordBank();
 }
 
 function openUnit10LexGamesHub() {
@@ -10597,8 +10886,6 @@ function openUnit10LexGamesHub() {
     u9LexProgressSet('u9-fall-prog-label', 'u9-fall-prog-fill', 0, 0);
     u10LexGamesApplyPoolFilter();
     openUnit10WordBank();
-    u10LexPackTabsSyncUI();
-    u9LexRefreshHubTicks();
 }
 
 function openUnit9LexGamesHub() {
@@ -10638,15 +10925,9 @@ function openUnit9LexGamesHub() {
     showScreen('screen-unit9-lexgames-hub');
     u9LexRefreshHubTicks();
     (function prewarmCpeWbInIdle() {
-        try {
-            if (cpeWbCache) return;
-        } catch (eC) {
-            return;
-        }
         var run = function () {
             try {
-                if (cpeWbCache) return;
-                cpeWbItems('robots');
+                cpeWbEnsureThemeBuilt('robots');
             } catch (eP) {}
         };
         if (window.requestIdleCallback) {
@@ -10905,23 +11186,74 @@ function cpeWbBuildU10ShakespeareItems() {
     return lexicalGamesHintAnsRowsToWordBankItems(plainSh, U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS, spSh, 'u10shak');
 }
 
-function cpeWbItems(theme) {
-    if (!cpeWbCache) {
-        cpeWbCache = {
-            robots: cpeWbBuildRobotsItems(),
-            idioms: cpeWbBuildIdiomsItems(),
-            listening: cpeWbBuildListeningItems(),
-            minds_eye: cpeWbBuildMindsEyeItems(),
-            prep: cpeWbBuildPrepItems(),
-            interior: cpeWbBuildInteriorItems(),
-            art_restoration: cpeWbBuildArtRestItems(),
-            contemporary_art: cpeWbBuildContemporaryArtItems(),
-            u10_p4: cpeWbBuildU10P4Items(),
-            u10_books: cpeWbBuildU10BooksItems(),
-            u10_uoe_shakespeare: cpeWbBuildU10ShakespeareItems()
-        };
+function cpeWbBuildU10SimilesItems() {
+    var spSm =
+        typeof LEX_U10_SIMILES_SPEAKER_LABEL === 'string'
+            ? LEX_U10_SIMILES_SPEAKER_LABEL
+            : 'Unit 10 · Similes';
+    var plainSm = u10SimilesLexPlainText();
+    if (!plainSm || typeof U10_SIMILES_LEXIS_GAME_ROWS === 'undefined' || !U10_SIMILES_LEXIS_GAME_ROWS.length) {
+        return [];
     }
-    return (cpeWbCache[theme] || []).slice();
+    return lexicalGamesHintAnsRowsToWordBankItems(plainSm, U10_SIMILES_LEXIS_GAME_ROWS, spSm, 'u10sim');
+}
+
+/** Lazy Word Bank rows — build only the theme requested (opening lexical hub used to block on every theme at once). */
+function cpeWbEnsureThemeBuilt(theme) {
+    var t = theme || 'robots';
+    if (!cpeWbCache) {
+        cpeWbCache = {};
+    }
+    if (Object.prototype.hasOwnProperty.call(cpeWbCache, t)) {
+        return;
+    }
+    var rows;
+    switch (t) {
+        case 'robots':
+            rows = cpeWbBuildRobotsItems();
+            break;
+        case 'idioms':
+            rows = cpeWbBuildIdiomsItems();
+            break;
+        case 'listening':
+            rows = cpeWbBuildListeningItems();
+            break;
+        case 'minds_eye':
+            rows = cpeWbBuildMindsEyeItems();
+            break;
+        case 'prep':
+            rows = cpeWbBuildPrepItems();
+            break;
+        case 'interior':
+            rows = cpeWbBuildInteriorItems();
+            break;
+        case 'art_restoration':
+            rows = cpeWbBuildArtRestItems();
+            break;
+        case 'contemporary_art':
+            rows = cpeWbBuildContemporaryArtItems();
+            break;
+        case 'u10_p4':
+            rows = cpeWbBuildU10P4Items();
+            break;
+        case 'u10_books':
+            rows = cpeWbBuildU10BooksItems();
+            break;
+        case 'u10_uoe_shakespeare':
+            rows = cpeWbBuildU10ShakespeareItems();
+            break;
+        case 'u10_similes':
+            rows = cpeWbBuildU10SimilesItems();
+            break;
+        default:
+            rows = [];
+    }
+    cpeWbCache[t] = rows;
+}
+
+function cpeWbItems(theme) {
+    cpeWbEnsureThemeBuilt(theme);
+    return (cpeWbCache[theme || 'robots'] || []).slice();
 }
 
 function cpeWordBankRender() {
@@ -10986,7 +11318,9 @@ function cpeWordBankRender() {
                           ? 'Unit 10 · Describing books & films'
                           : cpeWbTheme === 'u10_uoe_shakespeare'
                             ? 'Unit 10 · Shakespeare · Use of English'
-                            : 'Idioms: Art and creativity') +
+                            : cpeWbTheme === 'u10_similes'
+                              ? 'Unit 10 · Similes'
+                              : 'Idioms: Art and creativity') +
         ' · Total: ' +
         filtered.length +
         ' · Due now: ' +
@@ -11041,7 +11375,7 @@ function cpeWordBankEnsureBind() {
         var u10Tab = e.target.closest('#cpe-wb-u10-tabs .wb-u10-tab');
         if (u10Tab) {
             var pack = u10Tab.getAttribute('data-u10-wb-tab');
-            if (pack === 'p4' || pack === 'books' || pack === 'shakespeare') {
+            if (pack === 'p4' || pack === 'books' || pack === 'shakespeare' || pack === 'similes') {
                 u10LexPackTabSelect(pack);
                 cpeWordBankRender();
             }
@@ -11101,7 +11435,7 @@ function openUnit9WordBank() {
     var u10m = document.getElementById('cpe-wb-u10-modes');
     if (u10m) u10m.hidden = true;
     var wbBack = document.getElementById('cpe-wb-hub-back');
-    if (wbBack) wbBack.textContent = '\u2190 Lexical games';
+    if (wbBack) wbBack.textContent = '\u2190 Vocab Gym';
     var leadDef = document.getElementById('cpe-wb-lead-default');
     var leadU10 = document.getElementById('cpe-wb-lead-u10');
     if (leadDef) leadDef.hidden = false;
@@ -11368,7 +11702,7 @@ function u9FallShowRoundCompleteModal() {
         function () {
             u9FallStartNextRoundFromModal();
         },
-        'Back to Lexical games',
+        hubLexGamesBackPlainText(),
         function () {
             u9FallQuitToHubFromFall();
         }
@@ -11385,7 +11719,7 @@ function u9FallShowSessionCompleteModal() {
         function () {
             u9FallResetSessionAndReplay();
         },
-        'Back to Lexical games',
+        hubLexGamesBackPlainText(),
         function () {
             u9FallQuitToHubFromFall();
         }
@@ -13451,7 +13785,7 @@ function u9Prep2ResetUI() {
     u9Prep2RenderBoard();
 }
 
-/** Lexical games — Prep vault escape room (six items, full Word Bank pool, timer, hints, lockout). */
+/** Prep vault escape room (Vocab Gym flow): six items, full Word Bank pool, timer, hints, lockout. */
 var prepEscapeDeck = [];
 var prepEscapeSolved = [];
 var prepEscapeHintUsed = [];
@@ -13463,7 +13797,7 @@ var PREP_ESCAPE_SKIP_HOLD_MS = 2600;
 var PREP_ESCAPE_DURATION_SEC = 180;
 var PREP_ESCAPE_HINT_PENALTY_SEC = 20;
 var prepEscapePackFilter = 'all';
-/** When set, openUnit9PrepEscapeRoom applies this pack once (e.g. from Unit 10 lexical games). */
+/** When set, openUnit9PrepEscapeRoom applies this pack once (e.g. from Unit 10 Vocab Gym). */
 var prepEscapeInitialPack = null;
 var prepEscapePackBarBound = false;
 var prepEscapeFilterApplyTimer = null;
@@ -13537,7 +13871,7 @@ function prepEscapeApplyTimePenalty(sec) {
 function prepEscapeBuildUnifiedPool() {
     cpeWbItems('robots');
     var themes = u10LexGamesActive
-        ? ['u10_p4', 'u10_books', 'u10_uoe_shakespeare']
+        ? ['u10_p4', 'u10_books', 'u10_uoe_shakespeare', 'u10_similes']
         : [
               'minds_eye',
               'robots',
@@ -13547,6 +13881,7 @@ function prepEscapeBuildUnifiedPool() {
               'u10_p4',
               'u10_books',
               'u10_uoe_shakespeare',
+              'u10_similes',
               'prep',
               'interior',
               'art_restoration'
@@ -13616,7 +13951,7 @@ function prepEscapeSyncVaultScopeUi() {
     var tag = document.querySelector('#screen-unit9-prep-escape .lex-reading-tag');
     if (tag) {
         tag.textContent = u10LexGamesActive
-            ? 'Unit 10 · Part 4 + books & films + Shakespeare UoE'
+            ? 'Unit 10 · Part 4 + books & films + Shakespeare UoE + similes'
             : 'Level 9 · Word Bank packs (pick one or Choose all)';
     }
     var bar = document.getElementById('prep-escape-pack-bar');
@@ -13926,6 +14261,28 @@ function prepEscapeEnrichFromU10ShakespeareRow(row) {
     return null;
 }
 
+function prepEscapeEnrichFromU10SimilesRow(row) {
+    var keySm = normalizeLexAns(row.ans);
+    if (!keySm) return null;
+    lexU10SimilesBuildTasks();
+    if (!LEX_U10_SIMILES_TYPE_TASKS || !LEX_U10_SIMILES_TYPE_TASKS.length) return null;
+    var tasksSm = LEX_U10_SIMILES_TYPE_TASKS;
+    for (var sm = 0; sm < tasksSm.length; sm++) {
+        var tm = tasksSm[sm];
+        if (!tm || !tm.ans) continue;
+        if (normalizeLexAns(tm.ans) !== keySm) continue;
+        return {
+            before: tm.before,
+            after: tm.after,
+            ans: tm.ans,
+            hint: row.hint,
+            speaker: row.speaker,
+            wbId: row.wbId
+        };
+    }
+    return null;
+}
+
 function prepEscapeEnrichRowFull(row) {
     var r = prepEscapeEnrichFromPrepCore(row);
     if (prepEscapeRowHasSentenceFrame(r)) return r;
@@ -13955,6 +14312,11 @@ function prepEscapeEnrichRowFull(row) {
     }
     if (sp.indexOf('shakespeare') !== -1 && sp.indexOf('english') !== -1) {
         a = prepEscapeEnrichFromU10ShakespeareRow(row);
+        if (a) return a;
+        return r;
+    }
+    if (sp.indexOf('similes') !== -1) {
+        a = prepEscapeEnrichFromU10SimilesRow(row);
         if (a) return a;
         return r;
     }
@@ -17277,7 +17639,7 @@ function u9FallOnMiss() {
             function () {
                 u9FallRetryRunFromLivesLoss();
             },
-            'Back to Lexical games',
+            hubLexGamesBackPlainText(),
             function () {
                 u9FallRunQueue = [];
                 u9FallRunTarget = 0;
@@ -17485,7 +17847,9 @@ function updateLexLocalLine() {
                           ? 'Unit 10 · Describing books & films review lines only.'
                           : lexTrainerPack === 'u10_shakespeare'
                             ? 'Shakespeare · Use of English only — collocations from Was Shakespeare a woman?'
-                            : lexTrainerPack === 'environment'
+                            : lexTrainerPack === 'u10_similes'
+                              ? 'Unit 10 · Similes only — phrases from the vocabulary folder review lines.'
+                              : lexTrainerPack === 'environment'
                             ? 'Environment collocations only \u2014 seven chunks in example sentences.'
                             : lexTrainerPack === 'environment2'
                               ? 'Environment collocations 2 only \u2014 seven sentence gaps from the vocabulary box task.'
@@ -17588,7 +17952,7 @@ function lexTypeApplyScreenCopy() {
     var backLab = lexTrainerFromUnit8
         ? 'Back to Level 8 menu'
         : u10LexTrainerReturnToHub
-          ? 'Back to Lexical games (Unit 10)'
+          ? 'Back to Vocab Gym (Unit 10)'
           : 'Back to Level 9 menu';
     if (buGo) buGo.textContent = backLab;
     if (buWin) buWin.textContent = backLab;
@@ -17665,6 +18029,15 @@ function lexTypeApplyScreenCopy() {
         if (winSub) winSub.textContent = 'Shakespeare · Use of English';
         if (winBody) winBody.textContent = 'You cleared every gap in the Shakespeare · Use of English pack.';
         if (goFull) goFull.textContent = 'Restart Shakespeare · Use of English pack';
+    } else if (lexTrainerPack === 'u10_similes') {
+        if (tag) tag.textContent = 'Unit 10 · Similes';
+        if (lead) {
+            lead.innerHTML =
+                'Use each <b>hint</b> (English gloss), then <b>type the exact chunk</b> from the similes practice lines (same wording as the Unit&nbsp;10 Similes Word Bank tab). <b>Three hearts</b> for the run; after a wrong check, the answer appears and you <b>must type it</b> to continue.';
+        }
+        if (winSub) winSub.textContent = 'Unit 10 · Similes';
+        if (winBody) winBody.textContent = 'You cleared every gap in the Similes pack.';
+        if (goFull) goFull.textContent = 'Restart Similes pack';
     } else if (lexTrainerPack === 'environment') {
         if (tag) tag.textContent = 'Environment collocations';
         if (lead) {
@@ -17725,6 +18098,8 @@ function lexTrainerRestartFull() {
         openLexicalTrainerU10Books();
     } else if (lexTrainerPack === 'u10_shakespeare') {
         openLexicalTrainerU10Shakespeare();
+    } else if (lexTrainerPack === 'u10_similes') {
+        openLexicalTrainerU10Similes();
     } else if (lexTrainerPack === 'environment') {
         openLexicalTrainerEnvironment();
     } else if (lexTrainerPack === 'environment2') {
@@ -17738,7 +18113,7 @@ function lexTrainerRestartFull() {
 function lexTrainerBackToReadings() {
     if (lexTrainerFromUnit8) {
         openUnit8ActivityHub('lexical');
-    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare') && u10LexTrainerReturnToHub) {
+    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare' || lexTrainerPack === 'u10_similes') && u10LexTrainerReturnToHub) {
         openUnit9ActivityHub('lexical', { fromUnit10LexGames: true });
     } else {
         openUnit9ActivityHub('lexical');
@@ -17748,7 +18123,7 @@ function lexTrainerBackToReadings() {
 function lexTrainerBackToUnitMenu() {
     if (lexTrainerFromUnit8) {
         showScreen('screen-unit8');
-    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare') && u10LexTrainerReturnToHub) {
+    } else if ((lexTrainerPack === 'u10_p4' || lexTrainerPack === 'u10_books' || lexTrainerPack === 'u10_shakespeare' || lexTrainerPack === 'u10_similes') && u10LexTrainerReturnToHub) {
         u10LexTrainerReturnToHub = false;
         openUnit10WordBank();
     } else {
@@ -18109,6 +18484,42 @@ function openLexicalTrainer(readingKey) {
     renderLexicalTrainerItem();
 }
 
+function openLexicalTrainerU10Similes() {
+    lexU10SimilesBuildTasks();
+    if (!LEX_U10_SIMILES_TYPE_TASKS.length) {
+        alert(
+            'Could not load the Unit 10 Similes pack. Check that js/u10-similes-lexis.js is included.'
+        );
+        return;
+    }
+    lexTrainerFromUnit8 = false;
+    u10LexTrainerReturnToHub = !!(u10LexGamesActive || u9LexActivityReturnToUnit10LexGames);
+    lexTrainerPack = 'u10_similes';
+    lexTypeIdx = 0;
+    lexTypeLives = 3;
+    lexAwaitingRetype = false;
+    var revSi = document.getElementById('lex-type-reveal');
+    if (revSi) {
+        revSi.style.display = 'none';
+        revSi.innerHTML = '';
+    }
+    var gaSi = document.getElementById('lex-type-go-answer');
+    if (gaSi) {
+        gaSi.style.display = 'none';
+        gaSi.textContent = '';
+    }
+    var goSi = document.getElementById('lex-type-gameover');
+    var winSi = document.getElementById('lex-type-win');
+    var actSi = document.getElementById('lex-type-active');
+    if (goSi) goSi.classList.remove('active');
+    if (winSi) winSi.classList.remove('active');
+    if (actSi) actSi.style.display = '';
+    lexTypeApplyScreenCopy();
+    updateLexTypeLivesDisplay();
+    showScreen('screen-unit9-lexical-type');
+    renderLexicalTrainerItem();
+}
+
 function openLexicalTrainerContemporaryArt() {
     if (typeof LEX_CONTEMP_TYPE_TASKS === 'undefined' || !LEX_CONTEMP_TYPE_TASKS.length) {
         alert('The Contemporary art reading pack is not available. Check that js/u9-contemporary-art-reading-data.js is included.');
@@ -18156,7 +18567,9 @@ function lexAdvanceAfterCorrect() {
                           ? 'Pack complete \u2014 you\'ve finished every books & films gap. Brilliant work!'
                           : lexTrainerPack === 'u10_shakespeare'
                             ? 'Pack complete \u2014 you\'ve finished every Shakespeare · Use of English gap. Brilliant work!'
-                            : lexTrainerIsUnit8EnvLex()
+                            : lexTrainerPack === 'u10_similes'
+                              ? 'Pack complete \u2014 you\'ve finished every Similes gap. Brilliant work!'
+                              : lexTrainerIsUnit8EnvLex()
                               ? 'Pack complete \u2014 you\'ve finished every gap in this environment pack. Brilliant work!'
                               : 'E Kiki complete \u2014 you\'ve finished every speaker. Brilliant work!',
             'ok'
@@ -18232,7 +18645,9 @@ function checkLexicalTrainer() {
                                     ? 'Out of lives in the books & films pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
                                     : lexTrainerPack === 'u10_shakespeare'
                                       ? 'Out of lives in the Shakespeare · Use of English pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
-                                      : lexTrainerIsUnit8EnvLex()
+                                      : lexTrainerPack === 'u10_similes'
+                                        ? 'Out of lives in the Similes pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
+                                        : lexTrainerIsUnit8EnvLex()
                                         ? 'Out of lives in this environment pack. Retry from phrase 1, restart the whole pack, or go back to the menu.'
                                         : 'Out of lives in ' +
                                           (failSec ? failSec.label : 'this') +
@@ -20958,7 +21373,22 @@ function updatePrepGlobalHubVmForScreen(screenId) {
     } catch (eRail) {}
 }
 
+var legacyProtectedScreenNavArmed = false;
+
+function isLegacyProtectedScreen(id) {
+    return id === "screen-uoe" || id === "screen-uoe-wf-detail" || id === "screen-unit-detail";
+}
+
+function showLegacyProtectedScreen(id) {
+    legacyProtectedScreenNavArmed = true;
+    showScreen(id);
+}
+
 function showScreen(id) {
+    if (isLegacyProtectedScreen(id) && !legacyProtectedScreenNavArmed) {
+        id = "screen-hub";
+    }
+    legacyProtectedScreenNavArmed = false;
     var screens = document.querySelectorAll('.screen');
     for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
     document.getElementById(id).classList.add('active');
@@ -21052,6 +21482,9 @@ function showScreen(id) {
         } catch (eLfG) {}
     }
     updatePrepGlobalHubVmForScreen(id);
+    try {
+        hubSyncLexGamesNavLabels();
+    } catch (eLfLbl) {}
 }
 
 function saveData() {
@@ -21427,7 +21860,7 @@ function activityHubPrepScopeKey(unit, mode) {
 
 function hubBuiltinSubtitle(unit) {
     if (unit === 6) return "Word-formation \u00b7 Key-word transformation";
-    if (unit === 7) return "Use of English \u00b7 word formation";
+    if (unit === 7) return "";
     if (unit === 8) return "Environment collocations";
     if (unit === 9) return "Vocabulary \u00b7 Exam only";
     return "";
@@ -21442,8 +21875,8 @@ function hubBuiltinDefaultTitle(unit) {
 /** Default blurb for the description row when the teacher has not set one (subtitle stays optional). */
 function hubBuiltinDefaultDescription(unit) {
     if (unit === 6) return "Word formation, key-word transformation, and classic Level 6 menus.";
-    if (unit === 7) return "Use of English \u2014 word formation tunnel and related tasks.";
-    if (unit === 8) return "Environment collocations \u00b7 lexical trainer, games, and Use of English.";
+    if (unit === 7) return "Practice materials and activities for this level.";
+    if (unit === 8) return "Environment collocations \u00b7 Vocab Gym, lexical trainer, and Use of English.";
     if (unit === 9) return "Reading: The robots are taking over \u00b7 exam vocabulary and skills.";
     if ((unit >= 1 && unit <= 5) || (unit >= 10 && unit <= 12))
         return "Practice materials and activities for this level.";
@@ -21778,6 +22211,36 @@ function saveHubBuiltinOrder(order) {
 
 function hubDefaultBuiltinOrder() {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+}
+
+/**
+ * Main hub can store a custom tile order. If the grid currently contains only built-in levels
+ * (no teacher folders), keep it canonical 1..12 to avoid confusing level-number jumps.
+ * This does not touch PrepSiteContent folders/tasks; only the local tile-order preference.
+ */
+function hubIsBuiltinOnlyMainGridOrder(order) {
+    if (!Array.isArray(order) || !order.length) return false;
+    for (var i = 0; i < order.length; i++) {
+        var e = order[i];
+        if (!e || e.t !== "b") return false;
+    }
+    return true;
+}
+
+function hubIsDefaultBuiltinOnlyMainGridOrder(order) {
+    if (!hubIsBuiltinOnlyMainGridOrder(order)) return false;
+    var def = hubDefaultBuiltinOrder();
+    if (order.length !== def.length) return false;
+    for (var i = 0; i < def.length; i++) {
+        if (Number(order[i].u) !== def[i]) return false;
+    }
+    return true;
+}
+
+function hubBuildCanonicalBuiltinMainGridOrder() {
+    return hubDefaultBuiltinOrder().map(function (u) {
+        return { t: "b", u: Number(u) };
+    });
 }
 
 function hubAfterPrepFoldersMutated() {
@@ -22604,6 +23067,11 @@ function hubGetOrBuildMainGridOrder(folders) {
         return norm;
     }
     var norm2 = hubNormalizeMainGridOrder(raw, folders);
+    if (hubIsBuiltinOnlyMainGridOrder(norm2) && !hubIsDefaultBuiltinOnlyMainGridOrder(norm2)) {
+        var canonical = hubBuildCanonicalBuiltinMainGridOrder();
+        saveHubMainGridOrder(canonical);
+        return canonical;
+    }
     try {
         if (JSON.stringify(norm2) !== JSON.stringify(raw)) saveHubMainGridOrder(norm2);
     } catch (ePrune) {}
@@ -22613,8 +23081,8 @@ function hubGetOrBuildMainGridOrder(folders) {
 function hubMainGridEntryLabel(e, folderById, slot1Based) {
     folderById = folderById || {};
     var slotN = Number(slot1Based);
-    if (isFinite(slotN) && slotN >= 1) return HUB_I18N.unitKickerPrefix + " " + slotN;
     if (e.t === "b") return HUB_I18N.unitKickerPrefix + " " + e.u;
+    if (isFinite(slotN) && slotN >= 1) return HUB_I18N.unitKickerPrefix + " " + slotN;
     var f = folderById[e.id];
     if (!f) return "\u2014";
     if (f.type === "activity")
@@ -22835,9 +23303,7 @@ function hubMountBuiltinHubTile(g, unit, tileMetaAll, subs, edit, mainGridSlotLe
         var defTitle = hubBuiltinDefaultTitle(unit);
         if (defTitle) customTitle = defTitle;
     }
-    var slotLab = Number(mainGridSlotLevel);
-    var kicker =
-        HUB_I18N.unitKickerPrefix + " " + (isFinite(slotLab) && slotLab >= 1 ? slotLab : unit);
+    var kicker = HUB_I18N.unitKickerPrefix + " " + unit;
     var descTrim = meta.description != null && String(meta.description).trim() ? String(meta.description).trim() : "";
     var hasDesc = !!descTrim;
     var descAccent = (unit === 8 || unit === 9 || unit === 10) && hasDesc;
@@ -22886,25 +23352,7 @@ function hubMountBuiltinHubTile(g, unit, tileMetaAll, subs, edit, mainGridSlotLe
                 hubToastShow(HUB_I18N.lockedUnit, { tile: btn });
                 return;
             }
-            if (u === 6) {
-                openUnitDetail(6);
-                return;
-            }
-            if (u === 7) {
-                openUnitDetail(7);
-                return;
-            }
-            if (u === 8) {
-                renderLinkedFoldersInto("unit8-dynamic-folders", 8);
-                showScreen("screen-unit8");
-                return;
-            }
-            if (u === 9) {
-                renderLinkedFoldersInto("unit9-dynamic-folders", 9);
-                showScreen("screen-unit9");
-                return;
-            }
-            openGenericUnitMenu(u);
+            openBuiltInUnitMenu(u);
         };
     })(unit, b);
     if (edit) {
@@ -23053,7 +23501,12 @@ function renderLinkedFoldersInto(containerId, unitNum) {
     var folders = PrepSiteContent.load().folders || [];
     var linked = folders.filter(function (x) {
         if (x.id === PREP_LEGACY_U9_UOE_FOLDER_ID) return false;
-        return Number(x.linkedUnit) === unitNum && !x.parentFolderId && !isActivityHubScopedPrep(x);
+        return (
+            Number(x.linkedUnit) === unitNum &&
+            !x.parentFolderId &&
+            !isActivityHubScopedPrep(x) &&
+            !hubShouldHideFolderInUnit(x, unitNum)
+        );
     });
     linked.sort(function (a, b) {
         if (unitNum === 10) {
@@ -23064,8 +23517,32 @@ function renderLinkedFoldersInto(containerId, unitNum) {
         return folders.indexOf(a) - folders.indexOf(b);
     });
     var edit = typeof getHubViewMode === "function" && getHubViewMode() === "edit";
-    for (var i = 0; i < linked.length; i++) {
-        var f = linked[i];
+    var lexId =
+        typeof PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID !== "undefined"
+            ? String(PREP_LEGACY_U10_LEXICAL_GAMES_FOLDER_ID)
+            : "";
+    var playId =
+        typeof PREP_LEGACY_U10_GAMES_FOLDER_ID !== "undefined" ? String(PREP_LEGACY_U10_GAMES_FOLDER_ID) : "";
+    var splitU10 =
+        unitNum === 10 &&
+        !edit &&
+        lexId &&
+        playId &&
+        typeof hubLegacyU10LinkedFolderSortKey === "function";
+    var practiceFolders = [];
+    var contentFolders = linked;
+    if (splitU10) {
+        practiceFolders = [];
+        contentFolders = [];
+        for (var pi = 0; pi < linked.length; pi++) {
+            var pfold = linked[pi];
+            var pid = String(pfold.id || "");
+            if (pid === lexId || pid === playId) practiceFolders.push(pfold);
+            else contentFolders.push(pfold);
+        }
+    }
+
+    function appendFolderCard(f) {
         var Lf = hubPrepFolderHeadSub(f);
         var card = document.createElement("div");
         var lfLinked = hubIsPrepFolderStudentLocked(f) && hubHubNavBlockedForStudent();
@@ -23084,7 +23561,9 @@ function renderLinkedFoldersInto(containerId, unitNum) {
                 if (
                     tg &&
                     typeof tg.closest === "function" &&
-                    (tg.closest(".hub-tile-overflow-wrap") || tg.closest(".hub-dyn-ren") || tg.closest(".hub-dyn-del"))
+                    (tg.closest(".hub-tile-overflow-wrap") ||
+                        tg.closest(".hub-dyn-ren") ||
+                        tg.closest(".hub-dyn-del"))
                 )
                     return;
                 if (hubHubNavBlockedForStudent() && hubIsPrepFolderStudentLocked(folderRec)) {
@@ -23110,6 +23589,79 @@ function renderLinkedFoldersInto(containerId, unitNum) {
             hubInstallPrepFolderTileControls(card, f, { moveMode: "linked", unit: unitNum });
         }
         root.appendChild(card);
+    }
+
+    if (splitU10 && practiceFolders.length) {
+        var wrap = document.createElement("div");
+        wrap.className = "hub-u10-practice-zone";
+        wrap.setAttribute("aria-label", "Practice tools");
+        var labEl = document.createElement("div");
+        labEl.className = "hub-u10-practice-label";
+        labEl.textContent = "Practice tools";
+        var subEl = document.createElement("div");
+        subEl.className = "hub-u10-practice-sub";
+        subEl.textContent =
+            "Vocab Gym (phrase bank / Word Bank) and Playground (lesson decks) — separate from textbook folders.";
+        var chips = document.createElement("div");
+        chips.className = "hub-u10-practice-chips";
+        for (var ci = 0; ci < practiceFolders.length; ci++) {
+            (function (folderRec) {
+                var L = hubPrepFolderHeadSub(folderRec);
+                var btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "hub-u10-practice-chip";
+                var lfLinkedChip = hubIsPrepFolderStudentLocked(folderRec) && hubHubNavBlockedForStudent();
+                if (lfLinkedChip) btn.classList.add("hub-tile--student-locked");
+                var ttl = document.createElement("span");
+                ttl.className = "hub-u10-practice-chip__title";
+                ttl.textContent = L.head;
+                btn.appendChild(ttl);
+                var descStr = hubPrepFolderLegacyDescription(folderRec, L);
+                if (descStr) {
+                    var ds = document.createElement("span");
+                    ds.className = "hub-u10-practice-chip__desc";
+                    ds.textContent = descStr;
+                    btn.appendChild(ds);
+                }
+                var go = document.createElement("span");
+                go.className = "hub-u10-practice-chip__go";
+                go.textContent = "Open \u2192";
+                btn.appendChild(go);
+                btn.onclick = function (ev) {
+                    if (hubHubNavBlockedForStudent() && hubIsPrepFolderStudentLocked(folderRec)) {
+                        hubToastShow(HUB_I18N.lockedFolder, { tile: btn });
+                        return;
+                    }
+                    if (ev && ev.shiftKey) {
+                        openHubFolderWorkspace(folderRec.id);
+                        return;
+                    }
+                    if (folderRec.type === "activity" && folderRec.uoeEngine === "part1-mc-cloze") {
+                        hubNavigateToPrepActivity(folderRec);
+                        return;
+                    }
+                    hubNavigateToCmsFolder(folderRec.id);
+                };
+                btn.onkeydown = function (ev) {
+                    if (ev.key !== "Enter") return;
+                    btn.click();
+                };
+                chips.appendChild(btn);
+            })(practiceFolders[ci]);
+        }
+        wrap.appendChild(labEl);
+        wrap.appendChild(subEl);
+        wrap.appendChild(chips);
+        root.appendChild(wrap);
+        var sep = document.createElement("div");
+        sep.className = "hub-u10-materials-label";
+        sep.textContent = "Unit materials";
+        root.appendChild(sep);
+    }
+
+    var list = splitU10 ? contentFolders : linked;
+    for (var i = 0; i < list.length; i++) {
+        appendFolderCard(list[i]);
     }
 }
 
@@ -23222,8 +23774,43 @@ function openGenericUnitMenu(unitNum) {
     if (lab) lab.textContent = "Level " + unitNum;
     if (ss) ss.textContent = subLine;
     if (h2) h2.textContent = "Level " + unitNum;
+    var leadEl = document.getElementById("generic-unit-lead");
+    if (leadEl) {
+        leadEl.textContent =
+            unitNum === 10
+                ? "At the top: Practice tools (Vocab Gym + Playground). Under Unit materials: vocabulary pages, grammar, Use of English, listening — the textbook-side folders."
+                : "Open a folder, then choose a reading. You can add more readings under each activity later. In Edit mode, use the cards below to add a folder or an activity.";
+    }
     renderLinkedFoldersInto("generic-unit-dynamic-folders", unitNum);
     showScreen("screen-unit-generic");
+}
+
+/**
+ * Single router for built-in Level tiles (1–12).
+ * Keeps entry behavior in one place so Level links cannot drift into mixed legacy screens.
+ */
+function openBuiltInUnitMenu(unitNum) {
+    unitNum = Number(unitNum);
+    if (!unitNum || unitNum < 1) return;
+    if (unitNum === 6) {
+        openUnitDetail(6);
+        return;
+    }
+    if (unitNum === 7) {
+        openGenericUnitMenu(7);
+        return;
+    }
+    if (unitNum === 8) {
+        renderLinkedFoldersInto("unit8-dynamic-folders", 8);
+        showScreen("screen-unit8");
+        return;
+    }
+    if (unitNum === 9) {
+        renderLinkedFoldersInto("unit9-dynamic-folders", 9);
+        showScreen("screen-unit9");
+        return;
+    }
+    openGenericUnitMenu(unitNum);
 }
 
 function syncPrepUnitAddStrips(screenId) {
@@ -23265,6 +23852,12 @@ function ensureHubBuilt() {
     try {
         ensurePrepLegacyU9UoeFolder();
     } catch (eLegU9) {}
+    try {
+        hubNormalizeLegacyU9UoeLinkedUnit();
+    } catch (eU9Fix) {}
+    try {
+        hubNormalizeLinkedUnitsByTaskLinks();
+    } catch (eLinkUnitFix) {}
     try {
         ensurePrepUnit10LinkedShells();
     } catch (eLegU10All) {}
@@ -23695,6 +24288,30 @@ function hubCmsBackParams() {
     return { back: back, label: encodeURIComponent(HUB_I18N.backToUnits) };
 }
 
+/** Standalone URL for Level 10 Prep «Playground» (games hub). Seed href wins when present. */
+function hubPrepPlaygroundHref() {
+    var pgHref = "games/cpe/unit10/index.html?course=cpe";
+    try {
+        if (typeof PREP_HUB_U10_GAMES_SEEDS !== "undefined" && PREP_HUB_U10_GAMES_SEEDS.hubTask && PREP_HUB_U10_GAMES_SEEDS.hubTask.href) {
+            var h = String(PREP_HUB_U10_GAMES_SEEDS.hubTask.href || "").trim();
+            if (h) pgHref = h;
+        }
+    } catch (ePg) {}
+    return pgHref;
+}
+
+/**
+ * Level 10 Prep Playground folder (prep_legacy_u10_games): learners go straight to the games page —
+ * no folder workspace / CMS hop. Edit mode keeps the in-app folder workspace for teachers (rename, hide task, etc.).
+ */
+function hubTryNavigatePrepPlaygroundFolder(folderId) {
+    if (typeof PREP_LEGACY_U10_GAMES_FOLDER_ID === "undefined") return false;
+    if (String(folderId) !== String(PREP_LEGACY_U10_GAMES_FOLDER_ID)) return false;
+    if (typeof getHubViewMode === "function" && getHubViewMode() === "edit") return false;
+    window.location.href = hubPrepPlaygroundHref();
+    return true;
+}
+
 function hubNavigateToCmsFolder(folderId) {
     if (typeof PrepSiteContent !== "undefined" && PrepSiteContent.load) {
         var fd = (PrepSiteContent.load().folders || []).find(function (x) {
@@ -23705,6 +24322,7 @@ function hubNavigateToCmsFolder(folderId) {
             return;
         }
     }
+    if (hubTryNavigatePrepPlaygroundFolder(folderId)) return;
     if (typeof prepCourseCmsAvailable === "function" && !prepCourseCmsAvailable()) {
         openHubFolderWorkspace(folderId);
         return;
@@ -23954,6 +24572,7 @@ function openHubFolderWorkspace(fid) {
         openUnit10LexGamesHub();
         return;
     }
+    if (hubTryNavigatePrepPlaygroundFolder(fid)) return;
     hubWorkspace = { kind: "folder", folderId: fid };
     var oid = document.getElementById("hub-unit-screen-title");
     if (oid) oid.textContent = hubDynamicTileLabel(f);
@@ -23976,11 +24595,17 @@ function ensurePrepLegacyU9UoeFolder() {
     for (var i = 0; i < d.folders.length; i++) {
         if (String(d.folders[i].id == null ? "" : d.folders[i].id) !== String(id)) continue;
         var f = d.folders[i];
+        var changed = false;
+        if (Number(f.linkedUnit) !== 9) {
+            f.linkedUnit = 9;
+            changed = true;
+        }
         f.tasks = Array.isArray(f.tasks) ? f.tasks : [];
         if (f.tasks.length === 0) {
             f.tasks.push(seedTask);
-            PrepSiteContent.save(d);
+            changed = true;
         }
+        if (changed) PrepSiteContent.save(d);
         return;
     }
     d.folders.push({
@@ -23994,6 +24619,140 @@ function ensurePrepLegacyU9UoeFolder() {
         tasks: [seedTask]
     });
     PrepSiteContent.save(d);
+}
+
+function hubIsLegacyU9UoeSeedTask(t) {
+    if (!t) return false;
+    return (
+        String(t.id == null ? "" : t.id) === "u9_interior_design_seed" ||
+        String(t.dataSrc == null ? "" : t.dataSrc) === "published-unit9-interior-design.json"
+    );
+}
+
+function hubLooksLikeLegacyU9UoeShell(f) {
+    if (!f || f.type === "activity") return false;
+    var title = String(f.title == null ? "" : f.title).trim();
+    var subtitle = String(f.subtitle == null ? "" : f.subtitle).trim();
+    if (title !== "Use of English") return false;
+    return subtitle === "Part 1 multiple-choice cloze — add your own activities inside.";
+}
+
+function hubInferUnitFromHref(rawHref) {
+    var s = String(rawHref == null ? "" : rawHref).trim();
+    if (!s) return null;
+    var m = s.match(/[?&]screen=unit(1[0-2]|[1-9])\b/i);
+    if (m) return Number(m[1]);
+    m = s.match(/(?:^|[\/._-])unit(1[0-2]|[1-9])(?:[\/._-]|\.html|$)/i);
+    if (m) return Number(m[1]);
+    m = s.match(/(?:^|[\/._-])level(1[0-2]|[1-9])(?:[\/._-]|\.html|$)/i);
+    if (m) return Number(m[1]);
+    return null;
+}
+
+function hubInferUnitFromFolderContentLinks(f) {
+    if (!f) return null;
+    var votes = {};
+    function addHref(rawHref) {
+        var u = hubInferUnitFromHref(rawHref);
+        if (!u || u < 1 || u > 12) return;
+        votes[u] = (votes[u] || 0) + 1;
+    }
+    var tasks = Array.isArray(f.tasks) ? f.tasks : [];
+    for (var i = 0; i < tasks.length; i++) {
+        var t = tasks[i];
+        if (t && t.href != null) addHref(t.href);
+    }
+    var sections = Array.isArray(f.sections) ? f.sections : [];
+    for (var si = 0; si < sections.length; si++) {
+        var s = sections[si];
+        var st = s && Array.isArray(s.tasks) ? s.tasks : [];
+        for (var ti = 0; ti < st.length; ti++) {
+            var tt = st[ti];
+            if (tt && tt.href != null) addHref(tt.href);
+        }
+    }
+    var best = null;
+    var bestN = 0;
+    for (var k in votes) {
+        if (!Object.prototype.hasOwnProperty.call(votes, k)) continue;
+        if (votes[k] > bestN) {
+            bestN = votes[k];
+            best = Number(k);
+        }
+    }
+    return bestN > 0 ? best : null;
+}
+
+function hubShouldHideFolderInUnit(f, unitNum) {
+    unitNum = Number(unitNum);
+    if (!f || !unitNum) return false;
+    if (hubLooksLikeLegacyU9UoeShell(f) && unitNum !== 9) return true;
+    var linked = Number(f.linkedUnit);
+    if (linked >= 1 && linked <= 12 && linked !== unitNum) return true;
+    var inferred = hubInferUnitFromFolderContentLinks(f);
+    return !!(inferred && inferred !== unitNum);
+}
+
+function hubShouldHideUnitTask(tk, unitNum) {
+    unitNum = Number(unitNum);
+    if (!tk || !unitNum) return false;
+    var kind = String(tk.kind || "").trim();
+    if (kind !== "prep-link") return false;
+    if (tk.href == null) return false;
+    var inferred = hubInferUnitFromHref(tk.href);
+    return !!(inferred && inferred !== unitNum);
+}
+
+/**
+ * Safety migration: if legacy Unit 9 UoE seed was accidentally moved to another level,
+ * pin it back to Level 9 so Unit 7/12 do not show misplaced UoE folders.
+ */
+function hubNormalizeLegacyU9UoeLinkedUnit() {
+    if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
+    var d = PrepSiteContent.load();
+    var folders = d.folders || [];
+    var changed = false;
+    for (var i = 0; i < folders.length; i++) {
+        var f = folders[i];
+        if (!f || f.type === "activity") continue;
+        var isLegacyId = String(f.id == null ? "" : f.id) === String(PREP_LEGACY_U9_UOE_FOLDER_ID);
+        var tasks = Array.isArray(f.tasks) ? f.tasks : [];
+        var hasU9Seed = tasks.some(function (t) {
+            return hubIsLegacyU9UoeSeedTask(t);
+        });
+        var looksLegacyShell = hubLooksLikeLegacyU9UoeShell(f);
+        if (!isLegacyId && !hasU9Seed && !looksLegacyShell) continue;
+        if (Number(f.linkedUnit) !== 9) {
+            f.linkedUnit = 9;
+            changed = true;
+        }
+    }
+    if (changed) PrepSiteContent.save(d);
+}
+
+/**
+ * If a folder is linked to one level but its own task links clearly point to another unit,
+ * sync linkedUnit to the inferred target unit (e.g. Level 7 card containing Unit 8 links).
+ */
+function hubNormalizeLinkedUnitsByTaskLinks() {
+    if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
+    var d = PrepSiteContent.load();
+    var folders = d.folders || [];
+    var changed = false;
+    for (var i = 0; i < folders.length; i++) {
+        var f = folders[i];
+        if (!f || f.type === "activity") continue;
+        if (f.parentFolderId) continue;
+        if (isActivityHubScopedPrep(f)) continue;
+        var cur = Number(f.linkedUnit);
+        var inferred = hubInferUnitFromFolderContentLinks(f);
+        if (!inferred) continue;
+        if (!cur || cur < 1 || cur > 12 || inferred !== cur) {
+            f.linkedUnit = inferred;
+            changed = true;
+        }
+    }
+    if (changed) PrepSiteContent.save(d);
 }
 
 /** Level 9 — экран-папка «Use of English» со списком Part 1 заданий (пока одно + плейсхолдер). */
@@ -24316,8 +25075,17 @@ function legacyApplyUnitFolderDom(unit) {
         if (meta[k]) {
             var strong = node.querySelector("strong");
             var desc = strong ? strong.nextElementSibling : null;
-            if (meta[k].title && strong) strong.textContent = meta[k].title;
-            if (meta[k].subtitle != null && desc) desc.textContent = meta[k].subtitle || "";
+            var chipTitle = node.querySelector(".hub-u10-practice-chip__title");
+            var chipDesc = node.querySelector(".hub-u10-practice-chip__desc");
+            if (meta[k].title) {
+                if (strong) strong.textContent = meta[k].title;
+                else if (chipTitle) chipTitle.textContent = meta[k].title;
+            }
+            if (meta[k].subtitle != null) {
+                var st = meta[k].subtitle || "";
+                if (desc) desc.textContent = st;
+                else if (chipDesc) chipDesc.textContent = st;
+            }
         }
     }
 }
@@ -24338,7 +25106,7 @@ function legacyInjectOverflows(unit) {
     if (!root) return;
     legacyRemoveOverflows(unit);
     if (typeof getHubViewMode !== "function" || getHubViewMode() !== "edit") return;
-    var nodes = root.querySelectorAll(".folder[data-legacy-folder]");
+    var nodes = root.querySelectorAll(".folder[data-legacy-folder], button.hub-u10-practice-chip[data-legacy-folder]");
     for (var i = 0; i < nodes.length; i++) {
         var node = nodes[i];
         if (node.classList.contains("folder-disabled")) continue;
@@ -24504,6 +25272,34 @@ function legacyFolderDelete(key, unit) {
 function legacyRefreshUnitScreen(unit) {
     legacyApplyUnitFolderDom(unit);
     legacyInjectOverflows(unit);
+    hubPracticeToolsZoneSyncLegacy(unit);
+}
+
+/** Hide Practice tools strip when every chip inside is legacy-hidden (teacher Edit mode). Level 8–9 only. */
+function hubPracticeToolsZoneSyncLegacy(unit) {
+    var sid = unit === 9 ? "screen-unit9" : unit === 8 ? "screen-unit8" : "";
+    if (!sid) return;
+    var root = document.getElementById(sid);
+    if (!root) return;
+    var zone = root.querySelector(".hub-u10-practice-zone");
+    var mats =
+        zone.nextElementSibling &&
+        zone.nextElementSibling.classList &&
+        zone.nextElementSibling.classList.contains("hub-u10-materials-label")
+            ? zone.nextElementSibling
+            : null;
+    if (!zone) return;
+    var chips = zone.querySelectorAll("button.hub-u10-practice-chip[data-legacy-folder]");
+    var vis = false;
+    var ci;
+    for (ci = 0; ci < chips.length; ci++) {
+        if (!chips[ci].hidden) {
+            vis = true;
+            break;
+        }
+    }
+    zone.hidden = !vis;
+    if (mats) mats.hidden = !vis;
 }
 
 function renderHubUnitTasksContent() {
@@ -24551,24 +25347,16 @@ function renderHubUnitTasksContent() {
         var u = hubWorkspace.unit;
         if (u === 6)
             appendLegacy("Classic Level 6", "Word-work menu", "Classic menus and word-work entry points", function () {
-                openUnitDetail(6);
+                openBuiltInUnitMenu(6);
             });
-        if (u === 7)
-            appendLegacy(
-                "Classic Level 7",
-                "Word formation tunnel",
-                "Tunnel-style word formation practice",
-                function () {
-                    openUnitDetail(7);
-                }
-            );
+        /* Level 7 legacy tunnel reused the same flow as Level 8 UoE and caused cross-unit confusion. Hide it until dedicated Unit 7 content is attached. */
         if (u === 8)
             appendLegacy("Classic Level 8", "Full activity hub", "Lexical trainer, games, and Use of English hub", function () {
-                showScreen("screen-unit8");
+                openBuiltInUnitMenu(8);
             });
         if (u === 9)
             appendLegacy("Classic Level 9", "Full activity hub", "Reading hub and linked prep content", function () {
-                showScreen("screen-unit9");
+                openBuiltInUnitMenu(9);
             });
         var prepFolders = [];
         var allOrder = [];
@@ -24577,9 +25365,10 @@ function renderHubUnitTasksContent() {
             prepFolders = allOrder.filter(function (x) {
                 if (x.id === PREP_LEGACY_U9_UOE_FOLDER_ID) return false;
                 return (
-                    (hubFolderShowsOnMainHub(x) || Number(x.linkedUnit) === Number(u)) &&
+                    Number(x.linkedUnit) === Number(u) &&
                     !x.parentFolderId &&
-                    !isActivityHubScopedPrep(x)
+                    !isActivityHubScopedPrep(x) &&
+                    !hubShouldHideFolderInUnit(x, u)
                 );
             });
             prepFolders.sort(function (a, b) {
@@ -24598,7 +25387,9 @@ function renderHubUnitTasksContent() {
         for (var pf = 0; pf < prepFolders.length; pf++) {
             hubAppendPrepFolderTileToGrid(grid, prepFolders[pf]);
         }
-        var tasks = hubLoadTasksForUnit(u);
+        var tasks = hubLoadTasksForUnit(u).filter(function (tk) {
+            return !hubShouldHideUnitTask(tk, u);
+        });
         for (var i = 0; i < tasks.length; i++) {
             hubAppendTaskTile(grid, tasks[i], { kind: "unit", unit: u, index: i }, edit, back);
         }
@@ -25001,23 +25792,46 @@ function showHub() {
     refreshHubMeta();
 }
 
-function openUseOfEnglish() {
-    var s = document.getElementById('display-score-uoe');
-    if (s) s.innerText = userData.score;
-    showScreen('screen-uoe');
+var uoeWfBackContext = "uoe";
+
+function backFromUoeWordFormationDetail() {
+    if (uoeWfBackContext === "level7") {
+        openGenericUnitMenu(7);
+        return;
+    }
+    showLegacyProtectedScreen("screen-uoe");
 }
 
-function openUoeWordFormationFolder() {
+function openUseOfEnglish() {
+    uoeWfBackContext = "uoe";
+    var s = document.getElementById('display-score-uoe');
+    if (s) s.innerText = userData.score;
+    showLegacyProtectedScreen('screen-uoe');
+}
+
+function openUoeWordFormationFolder(opts) {
+    opts = opts || {};
+    var fromLevel = Number(opts.fromLevel || 8);
+    uoeWfBackContext = fromLevel === 7 ? "level7" : "uoe";
     var sw = document.getElementById('display-score-uoe-wf');
     if (sw) sw.innerText = userData.score;
+    var backBtn = document.getElementById('uoe-wf-back-btn');
+    if (backBtn) {
+        if (fromLevel === 7) {
+            backBtn.textContent = '\u2190 Level 7';
+        } else {
+            backBtn.textContent = '\u2190 Use of English';
+        }
+    }
     var sub = document.getElementById('uoe-wf-sub');
     if (sub) {
-        sub.innerText =
-            'MORE THAN A TUNNEL \u00b7 Use the word in capitals to form one word for each gap \u00b7 same rules as Level 6';
+        sub.innerText = fromLevel === 7
+            ? 'Level 7 \u00b7 MORE THAN A TUNNEL \u00b7 Use the word in capitals to form one word for each gap.'
+            : 'MORE THAN A TUNNEL \u00b7 Use the word in capitals to form one word for each gap \u00b7 same rules as Level 6';
     }
     var ch = document.getElementById('checks-uoe-wordform');
     if (ch) ch.innerText = '\u2705'.repeat(userData.wins[winKey(7, 'wordform')] || 0);
-    showScreen('screen-uoe-wf-detail');
+    showLegacyProtectedScreen('screen-uoe-wf-detail');
 }
 
 function startUoeTunnelWordform() {
@@ -25026,12 +25840,11 @@ function startUoeTunnelWordform() {
 }
 
 function openUnitDetail(unit) {
-    if (unit === 7) {
-        currentUnit = 7;
-        openUoeWordFormationFolder();
+    unit = Number(unit);
+    if (unit !== 6) {
+        openBuiltInUnitMenu(unit);
         return;
     }
-    if (unit !== 6) return;
     currentUnit = unit;
     var title = document.getElementById('unit-detail-title');
     var sub = document.getElementById('unit-detail-sub');
@@ -25041,7 +25854,7 @@ function openUnitDetail(unit) {
     if (su) su.innerText = userData.score;
     document.getElementById('checks-keyword-detail').innerText = '\u2705'.repeat(userData.wins[winKey(unit, 'keyword')] || 0);
     document.getElementById('checks-wordform-detail').innerText = '\u2705'.repeat(userData.wins[winKey(unit, 'wordform')] || 0);
-    showScreen('screen-unit-detail');
+    showLegacyProtectedScreen('screen-unit-detail');
 }
 
 /** Teachers: unlocks the right-hand “My courses” rail. Change this string to your own secret. */
@@ -25360,17 +26173,42 @@ function startGame(m) {
     lives = 3;
     roundErrors = 0;
     sessionPoints = 0;
+    if (document.getElementById('screen-uoe-wf-detail').classList.contains('active')) {
+        gameReturnTarget = 'uoe-wf-detail';
+    } else if (document.getElementById('screen-unit-detail').classList.contains('active')) {
+        gameReturnTarget = 'unit-detail';
+    } else {
+        gameReturnTarget = 'hub';
+    }
     updateLives();
     showScreen('screen-game');
     loadQuestion();
 }
 
 function backFromGame() {
-    openUnitDetail(currentUnit);
+    if (gameReturnTarget === 'uoe-wf-detail') {
+        showLegacyProtectedScreen('screen-uoe-wf-detail');
+        return;
+    }
+    if (gameReturnTarget === 'unit-detail') {
+        if (Number(currentUnit) === 6) openUnitDetail(6);
+        else openBuiltInUnitMenu(currentUnit);
+        return;
+    }
+    showHub();
 }
 
 function backFromResult() {
-    openUnitDetail(currentUnit);
+    if (gameReturnTarget === 'uoe-wf-detail') {
+        showLegacyProtectedScreen('screen-uoe-wf-detail');
+        return;
+    }
+    if (gameReturnTarget === 'unit-detail') {
+        if (Number(currentUnit) === 6) openUnitDetail(6);
+        else openBuiltInUnitMenu(currentUnit);
+        return;
+    }
+    showHub();
 }
 
 function updateLives() {
@@ -25803,7 +26641,17 @@ window.onload = function () {
     } else if (targetScreen === 'unit10-lexgames') {
         openUnit10LexGamesHub();
     } else if (targetScreen === 'unit8') {
-        showScreen('screen-unit8');
+        openBuiltInUnitMenu(8);
+    } else if (targetScreen === 'unit7') {
+        openBuiltInUnitMenu(7);
+    } else if (targetScreen === 'unit6') {
+        openBuiltInUnitMenu(6);
+    } else if (targetScreen === 'unit12') {
+        openBuiltInUnitMenu(12);
+    } else if (targetScreen === 'unit11') {
+        openBuiltInUnitMenu(11);
+    } else if (targetScreen === 'unit10') {
+        openBuiltInUnitMenu(10);
     } else {
         showScreen('screen-hub');
     }

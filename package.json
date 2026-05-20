@@ -4,15 +4,18 @@
   "private": true,
   "scripts": {
     "check:tracks": "node scripts/check-tracks.mjs",
+    "check:routing": "node scripts/check-hub-routing.mjs",
+    "check:security-guards": "node scripts/check-security-guards.mjs",
+    "check:all": "npm run check:routing && npm run check:security-guards && npm run check:tracks",
     "start": "node server.js",
     "dev": "vite",
     "vite:build": "vite build --mode cpe",
     "vite:build:ege": "vite build --mode ege",
     "vite:build:fce": "vite build --mode fce",
-    "build": "npm run vite:build && node scripts/build-netlify-track.mjs cpe",
-    "build:cpe": "npm run vite:build && node scripts/build-netlify-track.mjs cpe",
-    "build:ege": "npm run vite:build:ege && node scripts/build-netlify-track.mjs ege",
-    "build:fce": "npm run vite:build:fce && node scripts/build-netlify-track.mjs fce"
+    "build": "npm run check:routing && npm run check:security-guards && npm run vite:build && node scripts/build-netlify-track.mjs cpe",
+    "build:cpe": "npm run check:routing && npm run check:security-guards && npm run vite:build && node scripts/build-netlify-track.mjs cpe",
+    "build:ege": "npm run check:routing && npm run check:security-guards && npm run vite:build:ege && node scripts/build-netlify-track.mjs ege",
+    "build:fce": "npm run check:routing && npm run check:security-guards && npm run vite:build:fce && node scripts/build-netlify-track.mjs fce"
   },
   "dependencies": {
     "express": "^4.21.2",
