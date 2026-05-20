@@ -25886,6 +25886,37 @@ var PREP_LINK_CLASS_PASSWORDS = {
     "u8": ""
 };
 
+function prepForcedDeployTrack() {
+    try {
+        var t = String(window.__PREP_DEPLOY_TRACK__ || "").trim().toLowerCase();
+        if (t === "cpe" || t === "ege" || t === "fce") return t;
+    } catch (eT) {}
+    return "";
+}
+
+function prepNormalizeTrackForScope(track) {
+    var t = String(track || "cpe").toLowerCase();
+    if (!/^(cpe|ege|fce|creator)$/.test(t)) t = "cpe";
+    var forced = prepForcedDeployTrack();
+    if (forced && t !== forced) return forced;
+    return t;
+}
+
+function prepApplyLoginTrackPickerVisibility() {
+    var forced = prepForcedDeployTrack();
+    var btns = document.querySelectorAll("[data-login-course]");
+    var anyVisible = false;
+    for (var i = 0; i < btns.length; i++) {
+        var b = btns[i];
+        var tr = String(b.getAttribute("data-login-course") || "").toLowerCase();
+        var show = !forced || tr === forced;
+        b.hidden = !show;
+        if (show) anyVisible = true;
+    }
+    var wrap = document.querySelector(".login-course-pick");
+    if (wrap && forced) wrap.hidden = !anyVisible;
+}
+
 function prepQuickLinkPasswordOk(password, classSlug) {
     var p = String(password || "").trim();
     if (p === PREP_ADMIN_LOGIN_PASSWORD) return { admin: true };
@@ -25914,8 +25945,7 @@ function prepApplyLoginFromQuickParams(params) {
     var name = String(params.get("prep_name") || "").trim();
     if (!name) name = "Guest";
     name = name.slice(0, 60);
-    var track = params.get("prep_track") || params.get("prep_exam") || "cpe";
-    if (!/^(cpe|ege|fce|creator)$/.test(track)) track = "cpe";
+    var track = prepNormalizeTrackForScope(params.get("prep_track") || params.get("prep_exam") || "cpe");
     var roleParam = params.get("prep_role");
     var wantTeacher = gate.admin === true || roleParam === "teacher" || track === "creator";
 
@@ -25963,6 +25993,7 @@ function prepStripQuickLoginParamsFromUrl() {
 }
 
 function prepSyncProfileAfterLogin(track) {
+    track = prepNormalizeTrackForScope(track);
     try {
         if (typeof prepCourseProfile === "undefined" || !prepCourseProfile.save) return;
         if (track === "creator") {
@@ -25994,8 +26025,9 @@ function prepSyncProfileAfterLogin(track) {
 /** ?prep_track= / ?prep_exam= — switch workspace from nav links (e.g. ege.html → CPE). */
 function prepApplyPrepTrackFromQuery(params) {
     if (!params || typeof params.get !== "function") return;
-    var tr = params.get("prep_track") || params.get("prep_exam");
-    if (!tr || !/^(cpe|ege|fce|creator)$/.test(tr)) return;
+    var trRaw = params.get("prep_track") || params.get("prep_exam");
+    if (!trRaw) return;
+    var tr = prepNormalizeTrackForScope(trRaw);
     try {
         prepSyncProfileAfterLogin(tr);
     } catch (e0) {}
@@ -26012,7 +26044,7 @@ function prepApplyPrepTrackFromQuery(params) {
 }
 
 function setLoginCourseTrack(track) {
-    loginCourseTrackPick = track || "cpe";
+    loginCourseTrackPick = prepNormalizeTrackForScope(track || "cpe");
     var buttons = document.querySelectorAll("[data-login-course]");
     for (var i = 0; i < buttons.length; i++) {
         var b = buttons[i];
@@ -26027,6 +26059,7 @@ function setLoginCourseTrack(track) {
     if (hint) {
         hint.textContent = "Use the password your teacher gave you.";
     }
+    prepApplyLoginTrackPickerVisibility();
 }
 
 function setLoginLiveRole(role) {
@@ -26066,9 +26099,13 @@ function wireLoginScreenPickersOnce() {
     });
 }
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", wireLoginScreenPickersOnce);
+    document.addEventListener("DOMContentLoaded", function () {
+        wireLoginScreenPickersOnce();
+        setLoginCourseTrack(loginCourseTrackPick);
+    });
 } else {
     wireLoginScreenPickersOnce();
+    setLoginCourseTrack(loginCourseTrackPick);
 }
 
 function registerUser() {
@@ -26082,11 +26119,11 @@ function registerUser() {
     if (n.length > 60) n = n.slice(0, 60);
     var pwEl = document.getElementById('login-password-input');
     var password = pwEl ? String(pwEl.value || '').trim() : '';
-    var track = loginCourseTrackPick || 'cpe';
+    var track = prepNormalizeTrackForScope(loginCourseTrackPick || 'cpe');
     try {
         if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
             var pt = prepCourseProfile.load().courseTrack;
-            if (pt && /^(cpe|ege|fce|creator)$/.test(pt)) track = pt;
+            if (pt && /^(cpe|ege|fce|creator)$/.test(pt)) track = prepNormalizeTrackForScope(pt);
         }
     } catch (eTr) {}
 
