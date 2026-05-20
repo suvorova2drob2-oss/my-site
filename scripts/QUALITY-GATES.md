@@ -26,6 +26,12 @@ Release is **blocked** if any of these fail:
 
 3. **Track separation**
    - Forbidden cross-track path/content patterns from `check-tracks.mjs`.
+   - `cpe-learner-cross-course-copy`: learner-facing CPE pages must not expose `FCE`/`EGE` wording.
+     Current guarded scope includes:
+     - `games/cpe/**`
+     - `unit10-vocabulary/cpe/**`
+     - `use-of-english/unit10/cpe/**`
+     - selected CPE learner files (for example Unit 11/12 pages routed from CPE flow).
 
 ## Build policy
 
