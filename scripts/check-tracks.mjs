@@ -43,6 +43,17 @@ const RULES = [
       return matchLines(text, re);
     },
   },
+  {
+    id: "cpe-games-cross-course-copy",
+    message:
+      "games/cpe/** learner-facing copy should not mention other tracks (FCE/EGE). Keep course text CPE-local.",
+    test(rel, text) {
+      const lower = rel.replace(/\\/g, "/").toLowerCase();
+      if (!lower.startsWith("games/cpe/")) return [];
+      const re = />[^<]*(FCE|EGE)[^<]*</g;
+      return matchLines(text, re);
+    },
+  },
 ];
 
 /**
