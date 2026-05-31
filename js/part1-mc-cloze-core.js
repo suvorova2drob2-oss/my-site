@@ -519,10 +519,17 @@
       }
       dupSeen[dn] = true;
     }
-    var maxq = qnums[qnums.length - 1];
-    for (var i = 1; i <= maxq; i++) {
-      if (qnums.indexOf(i) === -1) {
-        errs.push("Пропуски должны идти подряд без дыр: есть [[1]]…[[" + maxq + "]], но нет [[" + i + "]].");
+    for (var qi = 1; qi < qnums.length; qi++) {
+      if (qnums[qi] !== qnums[qi - 1] + 1) {
+        errs.push(
+          "Пропуски должны идти подряд без дыр: после [[" +
+            qnums[qi - 1] +
+            "]] ожидается [[" +
+            (qnums[qi - 1] + 1) +
+            "]], а в тексте — [[" +
+            qnums[qi] +
+            "]]."
+        );
         break;
       }
     }

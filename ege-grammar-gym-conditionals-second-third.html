@@ -906,6 +906,123 @@
       );
     }
 
+    .boost-hero-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .boost-hero-head .boost-track {
+      margin-bottom: 0;
+      flex: 1 1 auto;
+    }
+
+    .boost-rules-btn {
+      flex-shrink: 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      background: rgba(167, 139, 250, 0.12);
+      color: #c4b5fd;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .boost-rules-btn:hover {
+      background: rgba(167, 139, 250, 0.22);
+      border-color: rgba(167, 139, 250, 0.65);
+      color: #ddd6fe;
+    }
+
+    .rules-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(165deg, #060a12 0%, #0f172a 50%, #0c1222 100%);
+      color: #f1f5f9;
+      padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 16px)
+        env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 16px);
+      animation: ex1-fade-in 0.2s ease;
+    }
+
+    .rules-overlay[hidden] {
+      display: none !important;
+    }
+
+    .rules-overlay-top {
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+    }
+
+    .rules-overlay-top-inner {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 16px;
+    }
+
+    .rules-overlay-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .rules-overlay-inner {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding-bottom: 24px;
+    }
+
+    .rules-overlay-scroll .block {
+      scroll-margin-top: 12px;
+    }
+
+    .rules-overlay-scroll .block:first-child {
+      margin-top: 0;
+    }
+
+    .rules-overlay-scroll .grid-use-ex {
+      grid-template-columns: 1fr;
+    }
+
+    .rules-overlay-scroll .grid-use-ex .cell + .cell {
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .rules-overlay-scroll .grid-use-ex + .grid-use-ex {
+      margin-top: 12px;
+    }
+
+    .rules-overlay-scroll .table-wrap {
+      overflow-x: auto;
+    }
+
+    .block--reference {
+      margin-top: 18px;
+      scroll-margin-top: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .boost-rules-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
     .boost-pill {
       display: inline-block;
       font-size: 10px;
@@ -3116,41 +3233,40 @@
     <div class="nav-top">
       <a class="back" href="ege-grammar-gym-conditionals-stretch.html">&larr; К Conditionals Stretch</a>
       <div class="jump" aria-label="Быстрый переход">
+        <a href="#practice">Практика</a>
         <a href="#second">Second</a>
-        <a href="#ex1">Зад. B</a>
-        <a href="#ex-mixed-third">GF · Mixed/3rd</a>
-        <a href="#b2-gloss">Словарь B</a>
         <a href="#third">Third</a>
-        <a href="#watch-out">W.O. (II)</a>
-        <a href="#watch-out-third">W.O. (III)</a>
         <a href="#mix-1">Mix 1</a>
         <a href="#mix-2">Mix 2</a>
-        <a href="#third-drill">Цепочка</a>
-        <a href="#third-blitz">Блиц</a>
-        <a href="#third-fails">Истории</a>
+        <a href="#b2-gloss">Словарь B</a>
       </div>
     </div>
 
     <h1>Second &amp; Third conditional</h1>
     <p class="subtitle">Imagination / воображение — нереальные, маловероятные или воображаемые условия и советы.</p>
 
-    <div class="boost-hero" role="region" aria-label="Быстрая практика">
+    <div class="boost-hero" id="practice" role="region" aria-label="Быстрая практика">
       <div class="boost-hero-inner">
-        <div class="boost-track" id="boost-track-2nd" aria-label="Прогресс в Boost">
-          <div class="boost-coin" id="boost-coin-b" title="Задание B — Second conditional, flip cards">
-            <span class="boost-coin-mark" aria-hidden="true">⚡</span>
-            <span>B</span>
+        <div class="boost-hero-head">
+          <div class="boost-track" id="boost-track-2nd" aria-label="Прогресс в Boost">
+            <div class="boost-coin" id="boost-coin-b" title="Задание B — Second conditional, flip cards">
+              <span class="boost-coin-mark" aria-hidden="true">⚡</span>
+              <span>B</span>
+            </div>
+            <div
+              class="boost-coin boost-coin--gf"
+              id="boost-coin-gf"
+              title="Grammar Focus — Mixed &amp; Third, впечатывание"
+              role="button"
+              tabindex="0"
+            >
+              <span class="boost-coin-mark" aria-hidden="true">✎</span>
+              <span>GF</span>
+            </div>
           </div>
-          <div
-            class="boost-coin boost-coin--gf"
-            id="boost-coin-gf"
-            title="Grammar Focus — Mixed &amp; Third, впечатывание"
-            role="button"
-            tabindex="0"
-          >
-            <span class="boost-coin-mark" aria-hidden="true">✎</span>
-            <span>GF</span>
-          </div>
+          <button type="button" class="boost-rules-btn" id="rules-open" aria-controls="rules-overlay">
+            Правила
+          </button>
         </div>
         <span class="boost-pill">Quick challenge</span>
         <p class="boost-title">Second conditional · Grammar Focus (Mixed / Third)</p>
@@ -3184,6 +3300,58 @@
       </div>
     </div>
 
+    <section class="block block--reference" id="b2-gloss-wrap">
+      <details class="b2-gloss" id="b2-gloss">
+        <summary>Быстрый словарь — жизненные ситуации (к заданию B)</summary>
+        <div class="b2-gloss-inner">
+          <h4>Жизненные ситуации (collocations)</h4>
+          <dl>
+            <dt>Live alone</dt>
+            <dd>жить одному (самостоятельно).</dd>
+            <dt>Get lonely</dt>
+            <dd>чувствовать себя одиноко (стать одиноким).</dd>
+            <dt>Go scuba diving</dt>
+            <dd>заниматься дайвингом (погружаться с аквалангом).</dd>
+            <dt>Order a pizza</dt>
+            <dd>заказать пиццу (классика для эссе о хобби / еде).</dd>
+            <dt>Share a room</dt>
+            <dd>делить комнату с кем-то (жить в одном номере).</dd>
+            <dt>Stay in a hotel</dt>
+            <dd>остановиться в отеле.</dd>
+            <dt>Get up early</dt>
+            <dd>вставать рано (база для темы <em>Daily routine</em>).</dd>
+          </dl>
+          <h4>Продвинутые обороты</h4>
+          <dl>
+            <dt>Such a lot of homework</dt>
+            <dd>так много домашней работы — <strong>such</strong>, потому что дальше идёт существительное.</dd>
+            <dt>Enough money</dt>
+            <dd>достаточно денег — <strong>enough</strong> стоит <em>перед</em> существительным.</dd>
+            <dt>Help somebody with something</dt>
+            <dd>помогать кому-то с чем-то — предлог <strong>with</strong> часто забывают.</dd>
+            <dt>Right now!</dt>
+            <dd>прямо сейчас! — усилитель для разговорной речи.</dd>
+          </dl>
+        </div>
+      </details>
+    </section>
+
+    <p class="note-foot">
+      Правила Second / Third / Mixed — кнопка <strong>«Правила»</strong> в Boost-блоке. Тесты на все типы условных:
+      <a href="all-conditionals-tests/index.html">All conditionals — tests</a>.
+      Возврат: Grammar Gym → Conditionals Stretch.
+    </p>
+  </div>
+
+  <div class="rules-overlay" id="rules-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="rules-overlay-title">
+    <div class="rules-overlay-top">
+      <div class="rules-overlay-top-inner">
+        <button type="button" class="ex1-close" id="rules-close">← К заданиям</button>
+        <span class="ex1-badge" id="rules-overlay-title">Правила · Second / Third / Mixed</span>
+      </div>
+    </div>
+    <div class="rules-overlay-scroll" id="rules-scroll">
+      <div class="rules-overlay-inner">
     <section class="block" id="second">
       <div class="section-head">
         <h2>Second conditional</h2>
@@ -3243,52 +3411,6 @@
       </div>
     </section>
 
-    <section class="block" id="ex1">
-      <div class="ex1-head">
-        <h2>Задание B — Second conditional (как в учебнике)</h2>
-      </div>
-      <p class="ex1-instr">
-        <strong>E · Write sentences using the second conditional.</strong> На карточке — ситуация в настоящем (что есть на самом деле).
-        Сформулируй гипотетическое предложение, обычно начиная с <em>If&hellip;</em>, с прошедшим в условии и <strong>would / could</strong> в результате.
-      </p>
-      <p class="ex1-hint" id="ex1-page-hint-dynamic">
-        Полноэкранный режим: под формулой — пункты 1–9 и блок <strong>«Бонус · 2 дриллинга»</strong> (как в задании D на Zero &amp; First). Зелёные галочки B сохраняются в этой сессии.
-      </p>
-      <button type="button" class="ex1-open-btn" id="ex1-open">Открыть задание B на весь экран</button>
-      <details class="b2-gloss" id="b2-gloss">
-        <summary>Быстрый словарь — жизненные ситуации (к заданию B)</summary>
-        <div class="b2-gloss-inner">
-          <h4>Жизненные ситуации (collocations)</h4>
-          <dl>
-            <dt>Live alone</dt>
-            <dd>жить одному (самостоятельно).</dd>
-            <dt>Get lonely</dt>
-            <dd>чувствовать себя одиноко (стать одиноким).</dd>
-            <dt>Go scuba diving</dt>
-            <dd>заниматься дайвингом (погружаться с аквалангом).</dd>
-            <dt>Order a pizza</dt>
-            <dd>заказать пиццу (классика для эссе о хобби / еде).</dd>
-            <dt>Share a room</dt>
-            <dd>делить комнату с кем-то (жить в одном номере).</dd>
-            <dt>Stay in a hotel</dt>
-            <dd>остановиться в отеле.</dd>
-            <dt>Get up early</dt>
-            <dd>вставать рано (база для темы <em>Daily routine</em>).</dd>
-          </dl>
-          <h4>Продвинутые обороты</h4>
-          <dl>
-            <dt>Such a lot of homework</dt>
-            <dd>так много домашней работы — <strong>such</strong>, потому что дальше идёт существительное.</dd>
-            <dt>Enough money</dt>
-            <dd>достаточно денег — <strong>enough</strong> стоит <em>перед</em> существительным.</dd>
-            <dt>Help somebody with something</dt>
-            <dd>помогать кому-то с чем-то — предлог <strong>with</strong> часто забывают.</dd>
-            <dt>Right now!</dt>
-            <dd>прямо сейчас! — усилитель для разговорной речи.</dd>
-          </dl>
-        </div>
-      </details>
-    </section>
 
     <section class="block" id="third">
       <div class="section-head section-head--warm">
@@ -3329,37 +3451,6 @@
         </ul>
       </div>
 
-      <div class="third-drill-grid">
-        <div class="third-drill-callout" id="third-drill">
-          <p class="third-drill-callout-text">
-            <strong>Дриллинг «Цепочка неудач» (The Chain of Regrets)</strong> — тренируем <strong>third conditional</strong> между звеньями одной истории.
-            Вверху всегда видна <strong>вся цепочка фактов</strong> в прошлом; подсвечено текущее звено. На карточке — только
-            <strong>первая часть</strong> предложения (<em>If I hadn&rsquo;t …</em>); после переворота — <strong>полный образец</strong>.
-          </p>
-          <button type="button" class="ex1-open-btn third-drill-open" id="cond3-chain-open">
-            Открыть дриллинг · Third · цепочка
-          </button>
-        </div>
-        <div class="third-drill-callout third-drill-callout--blitz" id="third-blitz">
-          <p class="third-drill-callout-text">
-            <strong>Блиц «Short Reactions»</strong> — учитель даёт <strong>плохую новость в прошлом</strong> (часто <em>I &hellip;</em>),
-            ученик <strong>мгновенно</strong> отвечает контрфактом: <em>If you had &hellip;, you wouldn&rsquo;t have &hellip;</em>
-            Карточки <strong>в случайном порядке</strong> при каждом заходе — хорошо для повторения.
-          </p>
-          <button type="button" class="ex1-open-btn third-drill-open--blitz" id="cond3-blitz-open">
-            Открыть блиц · Short Reactions
-          </button>
-        </div>
-        <div class="third-drill-callout third-drill-callout--fails" id="third-fails">
-          <p class="third-drill-callout-text">
-            <strong>«Famous Fails» — теневой дриллинг</strong>: известные исторические сюжеты и контрфакты в third conditional.
-            Нужно вписать <strong>только две глагольные формы</strong> — <em>Past Perfect</em> в <em>if</em> и <em>would(n&rsquo;t) have + V3</em> в главной части.
-          </p>
-          <button type="button" class="ex1-open-btn third-drill-open--fails" id="cond3-fails-open">
-            Открыть Famous Fails · ввод форм
-          </button>
-        </div>
-      </div>
     </section>
 
     <section class="block" id="mix-1">
@@ -3408,25 +3499,9 @@
       </div>
     </section>
 
-    <section class="block" id="ex-mixed-third">
-      <div class="ex1-head" style="background: rgba(251, 146, 60, 0.12); border-color: rgba(249, 115, 22, 0.42)">
-        <h2>Grammar Focus: Mixed &amp; Third conditional — впечатывание</h2>
-      </div>
-      <p class="ex1-instr">
-        <strong>Тренажёр:</strong> по одному предложению с пропуском. Впечатай недостающую часть (глагол / цепочка с <em>would</em>).
-        Три «сердца»: после третьей ошибки раунд начнётся заново. Если ответ неверный — откроется окно с <strong>правильным вариантом</strong> и коротким объяснением.
-      </p>
-      <p class="ex1-hint">Удобнее в полноэкранном режиме. Сокращения (<em>wouldn&rsquo;t</em>) и полная форма (<em>would not</em>) обычно обе засчитываются.</p>
-      <button type="button" class="ex1-open-btn" id="m3t-open" style="border-color: rgba(249, 115, 22, 0.55); background: rgba(251, 146, 60, 0.16); color: #ffedd5">
-        Открыть Grammar Focus (Mixed / Third)
-      </button>
-    </section>
 
-    <p class="note-foot">
-      Правила <strong>mixed conditionals</strong> — блоки Mix 1–2 выше. Тесты на все типы условных:
-      <a href="all-conditionals-tests/index.html">All conditionals — tests</a>.
-      Возврат: Grammar Gym → Conditionals Stretch.
-    </p>
+      </div>
+    </div>
   </div>
 
   <div
@@ -4129,6 +4204,118 @@
   </script>
   <script>
     (function () {
+      var overlay = document.getElementById("rules-overlay");
+      var scrollEl = document.getElementById("rules-scroll");
+      var openBtn = document.getElementById("rules-open");
+      var closeBtn = document.getElementById("rules-close");
+      var ruleHashes = ["#second", "#third", "#watch-out", "#watch-out-third", "#mix-1", "#mix-2"];
+
+      function isRulesOpen() {
+        return overlay && !overlay.hidden;
+      }
+
+      function anyExerciseOverlayOpen() {
+        var ids = [
+          "ex1-overlay",
+          "m3t-overlay",
+          "cond2-drill-overlay",
+          "cond2-drill2-overlay",
+          "cond3-chain-overlay",
+          "cond3-blitz-overlay",
+          "cond3-fails-overlay",
+        ];
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (el && !el.hidden && !el.hasAttribute("hidden")) return true;
+        }
+        return false;
+      }
+
+      function syncBodyOverflow() {
+        if (isRulesOpen() || anyExerciseOverlayOpen()) {
+          document.body.style.overflow = "hidden";
+        } else {
+          document.body.style.overflow = "";
+        }
+      }
+
+      function hideRulesSilent() {
+        if (!overlay || overlay.hidden) return;
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      function openRules(hash) {
+        if (!overlay) return;
+        overlay.hidden = false;
+        overlay.removeAttribute("hidden");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (hash && scrollEl) {
+          var target = overlay.querySelector(hash);
+          if (target) {
+            requestAnimationFrame(function () {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          }
+        } else if (scrollEl) {
+          scrollEl.scrollTop = 0;
+        }
+        try {
+          if (closeBtn) closeBtn.focus();
+        } catch (e) {}
+      }
+
+      function closeRules() {
+        if (!overlay) return;
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+        syncBodyOverflow();
+        try {
+          if (openBtn) openBtn.focus();
+        } catch (e) {}
+      }
+
+      window.__egeSecondThirdOpenRules = openRules;
+      window.__egeSecondThirdHideRulesSilent = hideRulesSilent;
+      window.__egeSecondThirdCloseRules = closeRules;
+      window.__egeSecondThirdSyncPageOverflow = syncBodyOverflow;
+
+      if (openBtn) {
+        openBtn.addEventListener("click", function () {
+          openRules();
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener("click", closeRules);
+
+      document.querySelectorAll(".jump a[href]").forEach(function (a) {
+        var href = a.getAttribute("href");
+        if (ruleHashes.indexOf(href) === -1) return;
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          openRules(href);
+        });
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (!isRulesOpen() || anyExerciseOverlayOpen()) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeRules();
+        }
+      });
+
+      if (ruleHashes.indexOf(location.hash) !== -1) {
+        document.addEventListener("DOMContentLoaded", function () {
+          openRules(location.hash);
+        });
+      }
+    })();
+  </script>
+  <script>
+    (function () {
       var STORAGE_KEY = "egeCond2ndExB_done_v1";
       var pack = window.__EGE_CONDITIONALS_SECOND_THIRD__;
       var CARDS = pack && pack.ex1FlipCards;
@@ -4359,6 +4546,7 @@
       }
 
       function openOverlay() {
+        if (window.__egeSecondThirdHideRulesSilent) window.__egeSecondThirdHideRulesSilent();
         loadDone();
         overlay.hidden = false;
         overlay.removeAttribute("hidden");
@@ -4375,17 +4563,29 @@
         } catch (e) {}
       }
 
-      function closeOverlay() {
+      function hideEx1(showRules) {
         closeDictDrawer();
         overlay.hidden = true;
         overlay.setAttribute("hidden", "");
         overlay.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
         saveDone();
         if (window.__egeSecondThirdSyncBoost) window.__egeSecondThirdSyncBoost();
+        if (showRules && window.__egeSecondThirdOpenRules) {
+          window.__egeSecondThirdOpenRules();
+        } else if (window.__egeSecondThirdSyncPageOverflow) {
+          window.__egeSecondThirdSyncPageOverflow();
+        }
       }
 
-      openBtn.addEventListener("click", openOverlay);
+      function closeOverlay() {
+        hideEx1(true);
+      }
+
+      function closeOverlayToPractice() {
+        hideEx1(false);
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openOverlay);
       if (boostBtn) boostBtn.addEventListener("click", openOverlay);
       closeBtn.addEventListener("click", closeOverlay);
 
@@ -4400,7 +4600,7 @@
 
       nextBtn.addEventListener("click", function () {
         if (!allDoneEl.hidden) {
-          closeOverlay();
+          closeOverlayToPractice();
           return;
         }
         if (!sawBack) return;
@@ -5709,27 +5909,22 @@
         }
       }
 
-      function closeOverlay() {
+      function closeOverlay(showRules) {
         if (!overlay) return;
         closeWrong();
         closeEnd();
         overlay.hidden = true;
         overlay.setAttribute("hidden", "");
         overlay.setAttribute("aria-hidden", "true");
-        var ex1 = document.getElementById("ex1-overlay");
-        var d2 = document.getElementById("cond2-drill2-overlay");
-        var c3ch = document.getElementById("cond3-chain-overlay");
-        var c3bz = document.getElementById("cond3-blitz-overlay");
-        var c3fl = document.getElementById("cond3-fails-overlay");
-        function hid(el) {
-          return !el || el.hidden || el.hasAttribute("hidden");
-        }
-        if (hid(ex1) && hid(d2) && hid(c3ch) && hid(c3bz) && hid(c3fl)) {
-          document.body.style.overflow = "";
+        if (showRules && window.__egeSecondThirdOpenRules) {
+          window.__egeSecondThirdOpenRules();
+        } else if (window.__egeSecondThirdSyncPageOverflow) {
+          window.__egeSecondThirdSyncPageOverflow();
         }
       }
 
       function openOverlay() {
+        if (window.__egeSecondThirdHideRulesSilent) window.__egeSecondThirdHideRulesSilent();
         if (!overlay) return;
         idx = 0;
         lives = MAX_LIVES;
@@ -5802,7 +5997,7 @@
       var c3Boost = document.getElementById("c3-boost");
 
       function switchFromM3tToChain() {
-        closeOverlay();
+        closeOverlay(false);
         window.requestAnimationFrame(function () {
           if (typeof window.__egeOpenCond3Chain === "function") {
             window.__egeOpenCond3Chain();
@@ -5842,7 +6037,7 @@
       }
 
       function switchFromM3tToBlitz() {
-        closeOverlay();
+        closeOverlay(false);
         window.requestAnimationFrame(function () {
           if (typeof window.__egeOpenCond3Blitz === "function") {
             window.__egeOpenCond3Blitz();
@@ -5856,7 +6051,7 @@
       }
 
       function switchFromM3tToFails() {
-        closeOverlay();
+        closeOverlay(false);
         window.requestAnimationFrame(function () {
           if (typeof window.__egeOpenCond3Fails === "function") {
             window.__egeOpenCond3Fails();
@@ -5868,7 +6063,11 @@
       for (var fi = 0; fi < failsBtns.length; fi++) {
         failsBtns[fi].addEventListener("click", switchFromM3tToFails);
       }
-      if (closeBtn) closeBtn.addEventListener("click", closeOverlay);
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+          closeOverlay(true);
+        });
+      }
       if (checkBtn) checkBtn.addEventListener("click", onCheck);
       if (inputEl) {
         inputEl.addEventListener("keydown", function (ev) {
@@ -5894,7 +6093,7 @@
       }
       if (winClose) {
         winClose.addEventListener("click", function () {
-          closeOverlay();
+          closeOverlay(false);
         });
       }
       if (loseRestart) {
@@ -5909,11 +6108,11 @@
         if (ev.key !== "Escape") return;
         ev.preventDefault();
         if (winOverlay && !winOverlay.hasAttribute("hidden")) {
-          closeOverlay();
+          closeOverlay(false);
           return;
         }
         if (loseOverlay && !loseOverlay.hasAttribute("hidden")) {
-          closeOverlay();
+          closeOverlay(false);
           return;
         }
         if (wrongOverlay && !wrongOverlay.hasAttribute("hidden")) {
@@ -5928,7 +6127,7 @@
           }
           return;
         }
-        closeOverlay();
+        closeOverlay(true);
       });
 
       document.addEventListener("DOMContentLoaded", function () {

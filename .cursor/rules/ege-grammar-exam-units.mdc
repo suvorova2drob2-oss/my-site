@@ -1,0 +1,42 @@
+---
+description: ЕГЭ Grammar Exam (§19–24) — общий движок, юниты только данными, раскладка «строка + CAPS справа»
+globs: js/ege-grammar/ege-grammar-exam*.js, js/ege-grammar/grammar-exam-units/**/*, ege-grammar-exam.html, css/ege-grammar-exam.css
+alwaysApply: false
+---
+
+# Grammar Exam · §19–24 (преобразование слова)
+
+## Архитектура (контент ≠ движок)
+
+- **Движок (не трогать под каждый текст):** `js/ege-grammar/ege-grammar-exam-data.js`, `ege-grammar-exam-app.js`, `ege-grammar-exam-stats-bridge.js`, `css/ege-grammar-exam.css`, `ege-grammar-exam.html` (оболочка + список скриптов юнитов).
+- **Контент:** только `js/ege-grammar/grammar-exam-units/uN-*.js` — внутри один `pack.units.push({...})`.
+- **Новый юнит:** создать файл → подключить в `ege-grammar-exam.html` **после** `ege-grammar-exam-data.js`, **до** stats-bridge и app.
+
+## Поля юнита
+
+Обязательно: `id`, `unitOrder`, `title`, `examSection`, `headerTitle`, `instructionHtml`, `items[]`.
+
+Каждый `item`:
+
+- `examNum` (19–24), `paragraph` (группа абзацев), `before`, `cue`, `answers[]`, `keyShow`, `grammarTag`, `explainRu`, `explainOkRu`, `explainWrongRu`.
+- **Раскладка бланка:** `afterInline` (в одной строке с пропуском и CAPS) + `afterTail` (продолжение текста ниже, без CAPS). Legacy `after` — только если не делите; движок сам режет по первому предложению.
+- **`plainRu`** — одна фраза «коротко, по-русски» (без терминов).
+- **`examplesRu[]`** — 2–3 мини-примера (✓/✗ или короткие фразы); показываются в разборе.
+- Тон **`explainRu` / `explainOkRu` / `explainWrongRu` / `wrongIf.hintRu`**: простой русский, как объяснение другу; термины только если нужны, сразу с переводом («пассив = «им говорят»»).
+
+Опционально: `lifehackRu`, `timerSec`.
+
+## UX (зафиксировано в движке)
+
+- Сетка: **№ | текст + input | CAPS**; фокус подсвечивает строку и «мостик» к cue.
+- Проверка → блоки «Почему верно» / «Что не так» + «Нужно было» + «Почему так»; статистика `ege_grammar_exam_scores` → навык **Grammar Exam**.
+- После проверки — панель **← предыдущая | следующая →** (`renderUnitNavAfterCheck` в app): при 100% кнопка «вперёд» зелёная; при ошибках — ghost, но переход доступен. На последнем юните — ссылка в Grammar.
+
+## При добавлении юнита от пользователя (скрин / текст)
+
+1. Не дублировать HTML и не писать новый движок.
+2. Сохранить точный английский текст; CAPS только в `cue`.
+3. Разнести длинный хвост в `afterTail`, чтобы CAPS не «уезжал» к следующему номеру.
+4. Заполнить все четыре поля разбора + 2–4 `wrongIf` на типичные ошибки.
+
+Эталон: `grammar-exam-units/u1-books-and-reading.js`, `u2-stay-safe-walking.js`, `u3-simple-questions.js`.

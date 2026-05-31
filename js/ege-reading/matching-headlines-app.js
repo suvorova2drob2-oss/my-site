@@ -27,6 +27,7 @@
 
   var U = units[unitIndex];
   var checked = false;
+  var cheerEl = null;
   var isSheetView = false;
   var tapModeActive = false;
   var tapLexMap = null;
@@ -382,6 +383,33 @@
         sel.value = has ? okv : "";
       } else {
         sel.value = "";
+      }
+    });
+    updateHeadlinesRail();
+  }
+
+  function updateHeadlinesRail() {
+    var map = snapshotMap();
+    var byNum = {};
+    var L;
+    for (L in map) {
+      if (map[L] != null) byNum[map[L]] = L;
+    }
+    root.querySelectorAll(".ege-mh-hl-item").forEach(function (li) {
+      var num = parseInt(li.getAttribute("data-num"), 10);
+      var letter = byNum[num];
+      var used = letter != null;
+      li.classList.toggle("ege-mh-hl-item--used", used);
+      var tag = li.querySelector(".ege-mh-hl-tag");
+      if (!tag) return;
+      if (used) {
+        tag.hidden = false;
+        tag.textContent = "→ " + letter;
+        tag.setAttribute("aria-label", "Выбран для текста " + letter);
+      } else {
+        tag.hidden = true;
+        tag.textContent = "";
+        tag.removeAttribute("aria-label");
       }
     });
   }
@@ -851,6 +879,8 @@
       var ui;
       var un;
       var ord;
+      var mhStats = window.__egeReadingMatchingStats;
+      var mhPerfect = window.__egeExamUnitPerfectMark;
       for (ui = 0; ui < units.length; ui++) {
         un = units[ui];
         ord = typeof un.unitOrder === "number" ? un.unitOrder : ui + 1;
@@ -859,6 +889,9 @@
           esc(un.id) +
           '"' +
           (un.id === U.id ? " selected" : "") +
+          (mhPerfect && mhPerfect.optionPerfectClassAttr
+            ? mhPerfect.optionPerfectClassAttr(mhStats, un.id)
+            : "") +
           ">Юнит " +
           esc(String(ord)) +
           "</option>";
@@ -1017,6 +1050,40 @@
     resetTimerFully();
   }
 
+  function cheerFilled() {
+    var n = 0;
+    root.querySelectorAll(".ege-mh-select").forEach(function (sel) {
+      if (sel.value) n++;
+    });
+    return n;
+  }
+
+  function refreshCheer(opts) {
+    var rc = window.__EGE_READING_CHEER__;
+    if (!rc || !cheerEl) return;
+    opts = opts || {};
+    rc.refresh(
+      cheerEl,
+      {
+        phase: opts.phase || (checked ? "checked" : "working"),
+        filled: cheerFilled(),
+        total: U.paragraphs.length,
+        percent: opts.percent
+      },
+      !!(opts && opts.force)
+    );
+  }
+
+  function mountCheerRail() {
+    cheerEl = null;
+    var rc = window.__EGE_READING_CHEER__;
+    if (!rc) return;
+    cheerEl = rc.mount(root, {
+      total: U.paragraphs.length,
+      insertAfter: ".ege-reading-stats-bar"
+    });
+  }
+
   function build() {
     var paras = [];
     var p;
@@ -1062,11 +1129,13 @@
     for (j = 0; j < U.headlines.length; j++) {
       y = U.headlines[j];
       hlList.push(
-        '<li><span class="ege-mh-hl-num">' +
+        '<li class="ege-mh-hl-item" data-num="' +
           y.num +
-          "</span> " +
+          '"><span class="ege-mh-hl-num">' +
+          y.num +
+          '</span> <span class="ege-mh-hl-text">' +
           esc(y.text) +
-          "</li>"
+          '</span><span class="ege-mh-hl-tag" hidden></span></li>'
       );
     }
 
@@ -1078,15 +1147,16 @@
     root.innerHTML =
       '<div class="ege-mh-unit-strip" id="ege-mh-unit-strip"></div>' +
       '<div class="ege-reading-stats-bar" id="ege-mh-stats-bar" role="region" aria-label="Статистика по этой теме"></div>' +
-      '<header class="ege-mh-head">' +
+      '<div class="ege-mh-work">' +
       '<p class="ege-mh-inst">' +
       U.instructionHtml +
       "</p>" +
       '<aside class="ege-mh-headlines" aria-label="Заголовки">' +
       '<h2 class="ege-mh-h2">Заголовки</h2>' +
-      '<ol class="ege-mh-hl-list">' +
+      '<ul class="ege-mh-hl-list">' +
       hlList.join("") +
-      "</ol></aside></header>" +
+      "</ul></aside>" +
+      '<div class="ege-mh-work-body">' +
       '<div class="ege-mh-toolbar">' +
       '<p class="ege-mh-remain" id="ege-mh-remain" aria-live="polite"></p>' +
       '<div class="ege-mh-timer" role="group" aria-labelledby="ege-mh-timer-label">' +
@@ -1126,6 +1196,7 @@
       "</label>" +
       "</div>" +
       '<p class="ege-mh-extra-note" id="ege-mh-extra" hidden></p>' +
+      "</div></div>" +
       '<dialog class="ege-mh-frag-dlg" id="ege-mh-frag-dlg" aria-labelledby="ege-mh-frag-dlg-title">' +
       '<div class="ege-mh-frag-dlg-box">' +
       '<div class="ege-mh-frag-dlg-head">' +
@@ -1200,9 +1271,10 @@
     }
     initDictUi();
     bindDictDocEvents();
+    mountCheerRail();
     tryStartTimerOnInteraction();
     refreshPassageDisplay();
-    updateRemainCounter();
+    refreshCheer();
   }
 
   function onPickChange() {
@@ -1217,6 +1289,7 @@
     }
     tryStartTimerOnInteraction();
     refreshPassageDisplay();
+    refreshCheer();
   }
 
   function clearMarks() {
@@ -1259,6 +1332,7 @@
     if (hb) hb.hidden = true;
     var ht = document.getElementById("ege-mh-hunt-toggle");
     if (ht) ht.checked = true;
+    refreshCheer({ phase: "working", force: true });
   }
 
   function onCheck() {
@@ -1376,6 +1450,19 @@
     ) {
       window.__egeReadingMatchingStats.recordAttempt(U.id, mhPct);
     }
+    var mhSel = document.getElementById("ege-mh-unit-jump");
+    if (
+      mhSel &&
+      window.__egeExamUnitPerfectMark &&
+      typeof window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks ===
+        "function"
+    ) {
+      window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks(
+        mhSel,
+        units,
+        window.__egeReadingMatchingStats
+      );
+    }
     refreshMhStatsBar();
 
     var extraEl = document.getElementById("ege-mh-extra");
@@ -1389,6 +1476,7 @@
       huntBar.hidden = !unitHasEvidence() || isSheetView;
     }
     refreshPassageDisplay();
+    refreshCheer({ phase: "checked", percent: mhPct, force: true });
   }
 
   window.addEventListener("pagehide", function () {

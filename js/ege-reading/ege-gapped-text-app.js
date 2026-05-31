@@ -37,10 +37,47 @@
     "<p><strong>В чём соль задания 11:</strong> каждый фрагмент должен <strong>стыковаться</strong> с текстом <em>сразу до и после</em> пропуска — по грамматике и логике (местоимение, союз, время).</p>" +
     "<p><strong>Лайфхак:</strong> найди <strong>опорное слово</strong> перед пропуском и проверь: твоя вставка продолжает именно его или уже «уводит» мысль в сторону.</p>";
 
+  function cheerFilled() {
+    var n = 0;
+    [].forEach.call(document.querySelectorAll(".ege-gt-drop"), function (z) {
+      if (z.querySelector(".ege-gt-chip")) n++;
+    });
+    return n;
+  }
+
+  function refreshCheer(opts) {
+    var rc = window.__EGE_READING_CHEER__;
+    if (!rc || !cheerEl) return;
+    opts = opts || {};
+    var letters = collectGapLetters();
+    rc.refresh(
+      cheerEl,
+      {
+        phase: opts.phase || (gtSubmitted ? "checked" : "working"),
+        filled: cheerFilled(),
+        total: letters.length,
+        percent: opts.percent
+      },
+      !!(opts && opts.force)
+    );
+  }
+
+  function mountCheerRail(total) {
+    cheerEl = null;
+    var rc = window.__EGE_READING_CHEER__;
+    var wrap = root.querySelector(".ege-gt-wrap");
+    if (!rc || !wrap) return;
+    cheerEl = rc.mount(wrap, {
+      total: total,
+      insertAfter: ".ege-reading-stats-bar"
+    });
+  }
+
   function clearPostSubmitUI() {
     var fb = root.querySelector("#ege-gt-feedback");
     var body = root.querySelector("#ege-gt-feedback-body");
     var kw = root.querySelector("#ege-gt-key-wrap");
+    if (fb && !fb.hasAttribute("hidden")) gtSubmitted = false;
     if (fb) fb.setAttribute("hidden", "");
     if (body) body.innerHTML = "";
     if (kw) kw.setAttribute("hidden", "");
@@ -315,6 +352,8 @@
   var U = units[unitIndex];
   var bankEl = null;
   var msgEl = null;
+  var cheerEl = null;
+  var gtSubmitted = false;
   var selectedChip = null;
   var timerEl = null;
   var timerIntervalId = null;
@@ -549,6 +588,7 @@
     zone.appendChild(chip);
     fixEmptyZones();
     saveLayout();
+    if (!gtSubmitted) refreshCheer();
   }
 
   function moveToBank(chip) {
@@ -557,6 +597,7 @@
     bankEl.appendChild(chip);
     fixEmptyZones();
     saveLayout();
+    if (!gtSubmitted) refreshCheer();
   }
 
   function hookChip(chip) {
@@ -791,6 +832,7 @@
   function mountUnit() {
     stopExamTimer();
     clearPick();
+    gtSubmitted = false;
     U = units[unitIndex];
     var letters = collectGapLetters();
     var gapsCount = letters.length;
@@ -802,12 +844,17 @@
     html += '<label><span>Тема</span> ';
     html += '<select id="ege-gt-unit-select" class="ege-gt-select">';
     var ui;
+    var gtStats = window.__egeReadingGappedTextStats;
+    var gtPerfect = window.__egeExamUnitPerfectMark;
     for (ui = 0; ui < units.length; ui++) {
       html +=
         '<option value="' +
         esc(units[ui].id) +
         '"' +
         (ui === unitIndex ? " selected" : "") +
+        (gtPerfect && gtPerfect.optionPerfectClassAttr
+          ? gtPerfect.optionPerfectClassAttr(gtStats, units[ui].id)
+          : "") +
         ">" +
         esc(units[ui].title) +
         "</option>";
@@ -959,6 +1006,7 @@
 
     document.getElementById("ege-gt-reset").addEventListener("click", function () {
       clearPostSubmitUI();
+      gtSubmitted = false;
       [].forEach.call(document.querySelectorAll(".ege-gt-drop"), function (z) {
         var c = z.querySelector(".ege-gt-chip");
         if (c) bankEl.appendChild(c);
@@ -974,6 +1022,7 @@
         msgEl.className = "ege-gt-msg";
       }
       startExamTimer();
+      refreshCheer({ phase: "working", force: true });
     });
 
     document.getElementById("ege-gt-check").addEventListener("click", function () {
@@ -1058,12 +1107,29 @@
       ) {
         window.__egeReadingGappedTextStats.recordAttempt(U.id, pct);
       }
+      var gtSel = document.getElementById("ege-gt-unit-select");
+      if (
+        gtSel &&
+        window.__egeExamUnitPerfectMark &&
+        typeof window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks ===
+          "function"
+      ) {
+        window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks(
+          gtSel,
+          units,
+          window.__egeReadingGappedTextStats
+        );
+      }
       refreshGtStatsBar();
       saveLayout();
+      gtSubmitted = true;
+      refreshCheer({ phase: "checked", percent: pct, force: true });
     });
 
     restoreLayout();
     startExamTimer();
+    mountCheerRail(gapsCount);
+    refreshCheer({ force: true });
 
     if (!root.dataset.egeGtUiBound) {
       root.dataset.egeGtUiBound = "1";

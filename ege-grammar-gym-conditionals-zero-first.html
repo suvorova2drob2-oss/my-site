@@ -798,6 +798,118 @@
       );
     }
 
+    .boost-hero-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .boost-hero-head .boost-track {
+      margin-bottom: 0;
+      flex: 1 1 auto;
+    }
+
+    .boost-rules-btn {
+      flex-shrink: 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .boost-rules-btn:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: rgba(56, 189, 248, 0.65);
+      color: #bae6fd;
+    }
+
+    .rules-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(165deg, #060a12 0%, #0f172a 50%, #0c1222 100%);
+      color: #f1f5f9;
+      padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 16px)
+        env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 16px);
+      animation: ex1-fade-in 0.2s ease;
+    }
+
+    .rules-overlay[hidden] {
+      display: none !important;
+    }
+
+    .rules-overlay-top {
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+    }
+
+    .rules-overlay-top-inner {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 16px;
+    }
+
+    .rules-overlay-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .rules-overlay-inner {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding-bottom: 24px;
+    }
+
+    .rules-overlay-scroll .block {
+      scroll-margin-top: 12px;
+    }
+
+    .rules-overlay-scroll .block:first-child {
+      margin-top: 0;
+    }
+
+    .rules-overlay-scroll .grid-use-ex {
+      grid-template-columns: 1fr;
+    }
+
+    .rules-overlay-scroll .grid-use-ex .cell + .cell {
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .rules-overlay-scroll .grid-use-ex + .grid-use-ex {
+      margin-top: 12px;
+    }
+
+    .rules-overlay-scroll .table-wrap {
+      overflow-x: auto;
+    }
+
+    @media (max-width: 480px) {
+      .boost-rules-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
     .boost-pill {
       display: inline-block;
       font-size: 11px;
@@ -2394,8 +2506,15 @@
       border-top: none;
       max-height: none;
     }
+
+    .block--reference {
       margin-top: 18px;
       scroll-margin-top: 24px;
+    }
+
+    .ex1-hint--compact {
+      margin-top: 12px;
+      font-size: 14px;
     }
 
     .d-gloss-section > summary {
@@ -2833,12 +2952,10 @@
     <div class="nav-top">
       <a class="back" href="ege-grammar-gym-conditionals-stretch.html">&larr; К Conditionals Stretch</a>
       <div class="jump" aria-label="Быстрый переход">
+        <a href="#practice">Практика</a>
         <a href="#zero">Zero</a>
         <a href="#first">First</a>
         <a href="#unless-etc">unless, in case…</a>
-        <a href="#ex1">Зад. B</a>
-        <a href="#ex2">Зад. C</a>
-        <a href="#ex3">Зад. D</a>
         <a href="#d-gloss">Словарь D</a>
         <a href="#ex-icif">In case / if</a>
       </div>
@@ -2847,21 +2964,26 @@
     <h1>Zero &amp; First conditional</h1>
     <p class="subtitle">Реальность — факты, научные обобщения и реальные / вероятные ситуации. Удобно возвращаться к правилу перед тренировкой.</p>
 
-    <div class="boost-hero" role="region" aria-label="Быстрая практика">
+    <div class="boost-hero" id="practice" role="region" aria-label="Быстрая практика">
       <div class="boost-hero-inner">
-        <div class="boost-track" id="boost-track" aria-label="Что уже сделано в Boost">
-          <div class="boost-coin" id="boost-coin-b" title="Задание B — flip cards">
-            <span class="boost-coin-mark" aria-hidden="true">⚡</span>
-            <span>B</span>
+        <div class="boost-hero-head">
+          <div class="boost-track" id="boost-track" aria-label="Что уже сделано в Boost">
+            <div class="boost-coin" id="boost-coin-b" title="Задание B — flip cards">
+              <span class="boost-coin-mark" aria-hidden="true">⚡</span>
+              <span>B</span>
+            </div>
+            <div class="boost-coin" id="boost-coin-c" title="Задание C — формы глаголов">
+              <span class="boost-coin-mark" aria-hidden="true">✏</span>
+              <span>C</span>
+            </div>
+            <div class="boost-coin" id="boost-coin-d" title="Задание D — выбери союз / фразу">
+              <span class="boost-coin-mark" aria-hidden="true">🎯</span>
+              <span>D</span>
+            </div>
           </div>
-          <div class="boost-coin" id="boost-coin-c" title="Задание C — формы глаголов">
-            <span class="boost-coin-mark" aria-hidden="true">✏</span>
-            <span>C</span>
-          </div>
-          <div class="boost-coin" id="boost-coin-d" title="Задание D — выбери союз / фразу">
-            <span class="boost-coin-mark" aria-hidden="true">🎯</span>
-            <span>D</span>
-          </div>
+          <button type="button" class="boost-rules-btn" id="rules-open" aria-controls="rules-overlay">
+            Правила
+          </button>
         </div>
         <span class="boost-pill">Quick challenge</span>
         <p class="boost-title">Boost your Zero &amp; First conditional</p>
@@ -2885,130 +3007,7 @@
       </div>
     </div>
 
-    <section class="block" id="zero">
-      <div class="section-head">
-        <h2>Zero conditional</h2>
-      </div>
-      <div class="form-row">
-        <div class="form-label">Form</div>
-        <div class="form-rule">if + present simple, present simple</div>
-      </div>
-      <div class="grid-use-ex">
-        <div class="cell">
-          <h3>Use</h3>
-          <p>General or scientific facts and definitions.</p>
-        </div>
-        <div class="cell">
-          <h3>Example</h3>
-          <p>If you <strong class="v">have</strong> faith in something, you <strong class="v">believe</strong> in something you cannot prove.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="first">
-      <div class="section-head">
-        <h2>First conditional</h2>
-      </div>
-      <div class="form-row">
-        <div class="form-label">Form</div>
-        <div class="form-rule">if + a present tense, will + bare infinitive</div>
-      </div>
-      <div class="grid-use-ex">
-        <div class="cell">
-          <h3>Use</h3>
-          <p>Real or likely conditions in the present or future and their results in the present and future.</p>
-        </div>
-        <div class="cell">
-          <h3>Examples</h3>
-          <ul class="examples">
-            <li>If you <strong class="v">have</strong> a birthday party, you&rsquo;ll <strong class="v">get</strong> loads of cool presents!</li>
-            <li>If you&rsquo;re <strong class="v">working</strong> till half past six, we&rsquo;ll <strong class="v">have</strong> dinner at about eight.</li>
-            <li>If you <strong class="v">have revised</strong> properly, you <strong class="v">won&rsquo;t have</strong> any problems in the test next week.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="unless-etc">
-      <div class="section-head section-head--wide">
-        <h2>unless, in case, as/so long as, provided (that)</h2>
-      </div>
-      <p class="link-hint">Часто встречаются вместо <strong class="v">if</strong> в реальных и вероятных условиях (особенно с first conditional).</p>
-      <div class="table-wrap">
-        <table class="rule-table">
-          <thead>
-            <tr>
-              <th>Word / phrase</th>
-              <th>Meaning</th>
-              <th>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>unless</td>
-              <td>&lsquo;except if&rsquo; or &lsquo;if&hellip; not&rsquo;</td>
-              <td>I&rsquo;ll be there at six <strong class="v">unless</strong> I get delayed. <span class="ex-plain">(= except if I get delayed / if I don&rsquo;t get delayed)</span></td>
-            </tr>
-            <tr>
-              <td>in case</td>
-              <td>&lsquo;because he/she/it/etc might&rsquo;</td>
-              <td>Let&rsquo;s take our wellies <strong class="v">in case</strong> it&rsquo;s muddy. <span class="ex-plain">(= because it might be muddy)</span></td>
-            </tr>
-            <tr>
-              <td>as/so long as</td>
-              <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
-              <td><strong class="v">As / So long as</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
-            </tr>
-            <tr>
-              <td>provided (that)</td>
-              <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
-              <td><strong class="v">Provided (that)</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="block" id="ex1">
-      <div class="ex1-head">
-        <h2>Задание B — дополни определения</h2>
-      </div>
-      <p class="ex1-instr">
-        Как в учебнике: на экране только начало условного предложения (<em>If you&hellip;</em>).
-        Сформулируй продолжение своими словами, затем переверн карточку и сверься с образцом.
-      </p>
-      <p class="ex1-hint">Упражнение открывается <strong>на весь экран</strong>: так проще сосредоточиться. К следующему пункту можно перейти только после переворота карточки; готовые пункты отмечаются зелёной галочкой.</p>
-      <button type="button" class="ex1-open-btn" id="ex1-open">Открыть задание B на весь экран</button>
-    </section>
-
-    <section class="block" id="ex2">
-      <div class="ex1-head">
-        <h2>Задание C — формы глаголов</h2>
-      </div>
-      <p class="ex1-instr">
-        <strong>C · Complete using the correct form of the verbs in the box.</strong> Десять предложений, банк из учебника.
-        Больше <strong>трёх</strong> ошибок в одной попытке — задание сбрасывается; перед новым заходом показываем, что пошло не так.
-      </p>
-      <p class="ex1-hint">Лимит: до <strong>3 ошибок</strong> включительно — попытка засчитывается как успех (с разбором промахов). 4+ ошибки — только объяснения и «с чистого листа».</p>
-      <button type="button" class="ex1-open-btn" id="ex2-open">Открыть задание C на весь экран</button>
-    </section>
-
-    <section class="block" id="ex3">
-      <div class="ex1-head">
-        <h2>Задание D — Circle the correct word</h2>
-      </div>
-      <p class="ex1-instr">
-        Как в учебнике: в каждом предложении два варианта (<strong>unless / if</strong>, <strong>in case</strong> и т.д.).
-        Тапай по правильному слову — сразу видно результат. До <strong>трёх</strong> неверных ответов за попытку; можно вернуться к номерам сверху.
-      </p>
-      <p class="ex1-hint">
-        Мини-словарь из карточек B: <strong>look up to</strong> — восхищаться кем-то, уважать; <strong>look down on</strong> — смотреть свысока, презирать.
-      </p>
-      <button type="button" class="ex1-open-btn" id="ex3-open">Открыть задание D на весь экран</button>
-      <p class="ex1-hint" id="ex-icif">
-        Бонусный дриллинг <em>in case / if</em> — кнопка <strong>«Дриллинг»</strong> под номерами 1–8 внутри полноэкранного D. Можно также
-        <button type="button" class="ex3-mini-link" id="icif-open">открыть дриллинг отсюда</button>.
-      </p>
+    <section class="block block--reference" id="d-gloss-wrap">
       <details class="d-gloss-section" id="d-gloss">
         <summary>Словарь к заданию D — фразы и связки</summary>
         <div class="ex3-glossary-inner">
@@ -3046,9 +3045,110 @@
           </dl>
         </div>
       </details>
+      <p class="ex1-hint ex1-hint--compact" id="ex-icif">
+        Бонусный дриллинг <em>in case / if</em> — кнопка <strong>«Дриллинг»</strong> внутри полноэкранного задания D.
+        Можно также
+        <button type="button" class="ex3-mini-link" id="icif-open">открыть дриллинг отсюда</button>.
+      </p>
     </section>
 
     <p class="note">Совет: держи эту вкладку в закладках или возвращайся через Grammar Gym → Conditionals Stretch → Zero and First conditional.</p>
+  </div>
+
+  <div class="rules-overlay" id="rules-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="rules-overlay-title">
+    <div class="rules-overlay-top">
+      <div class="rules-overlay-top-inner">
+        <button type="button" class="ex1-close" id="rules-close">← К заданиям</button>
+        <span class="ex1-badge" id="rules-overlay-title">Правила · Zero &amp; First</span>
+      </div>
+    </div>
+    <div class="rules-overlay-scroll" id="rules-scroll">
+      <div class="rules-overlay-inner">
+      <section class="block" id="zero">
+        <div class="section-head">
+          <h2>Zero conditional</h2>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Form</div>
+          <div class="form-rule">if + present simple, present simple</div>
+        </div>
+        <div class="grid-use-ex">
+          <div class="cell">
+            <h3>Use</h3>
+            <p>General or scientific facts and definitions.</p>
+          </div>
+          <div class="cell">
+            <h3>Example</h3>
+            <p>If you <strong class="v">have</strong> faith in something, you <strong class="v">believe</strong> in something you cannot prove.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="first">
+        <div class="section-head">
+          <h2>First conditional</h2>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Form</div>
+          <div class="form-rule">if + a present tense, will + bare infinitive</div>
+        </div>
+        <div class="grid-use-ex">
+          <div class="cell">
+            <h3>Use</h3>
+            <p>Real or likely conditions in the present or future and their results in the present and future.</p>
+          </div>
+          <div class="cell">
+            <h3>Examples</h3>
+            <ul class="examples">
+              <li>If you <strong class="v">have</strong> a birthday party, you&rsquo;ll <strong class="v">get</strong> loads of cool presents!</li>
+              <li>If you&rsquo;re <strong class="v">working</strong> till half past six, we&rsquo;ll <strong class="v">have</strong> dinner at about eight.</li>
+              <li>If you <strong class="v">have revised</strong> properly, you <strong class="v">won&rsquo;t have</strong> any problems in the test next week.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="unless-etc">
+        <div class="section-head section-head--wide">
+          <h2>unless, in case, as/so long as, provided (that)</h2>
+        </div>
+        <p class="link-hint">Часто встречаются вместо <strong class="v">if</strong> в реальных и вероятных условиях (особенно с first conditional).</p>
+        <div class="table-wrap">
+          <table class="rule-table">
+            <thead>
+              <tr>
+                <th>Word / phrase</th>
+                <th>Meaning</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>unless</td>
+                <td>&lsquo;except if&rsquo; or &lsquo;if&hellip; not&rsquo;</td>
+                <td>I&rsquo;ll be there at six <strong class="v">unless</strong> I get delayed. <span class="ex-plain">(= except if I get delayed / if I don&rsquo;t get delayed)</span></td>
+              </tr>
+              <tr>
+                <td>in case</td>
+                <td>&lsquo;because he/she/it/etc might&rsquo;</td>
+                <td>Let&rsquo;s take our wellies <strong class="v">in case</strong> it&rsquo;s muddy. <span class="ex-plain">(= because it might be muddy)</span></td>
+              </tr>
+              <tr>
+                <td>as/so long as</td>
+                <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
+                <td><strong class="v">As / So long as</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
+              </tr>
+              <tr>
+                <td>provided (that)</td>
+                <td>&lsquo;if&rsquo; or &lsquo;only if&rsquo;</td>
+                <td><strong class="v">Provided (that)</strong> I&rsquo;m happy, my parents don&rsquo;t care what job I do.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </div>
+    </div>
   </div>
 
   <div class="ex1-overlay" id="ex1-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ex1-overlay-title">
@@ -3691,6 +3791,116 @@
   <script src="js/ege-conditionals/zero-first-page-data.js" vite-ignore></script>
   <script>
     (function () {
+      var overlay = document.getElementById("rules-overlay");
+      var scrollEl = document.getElementById("rules-scroll");
+      var openBtn = document.getElementById("rules-open");
+      var closeBtn = document.getElementById("rules-close");
+      var ruleHashes = ["#zero", "#first", "#unless-etc"];
+
+      function isRulesOpen() {
+        return overlay && !overlay.hidden;
+      }
+
+      function anyExerciseOverlayOpen() {
+        var ids = [
+          "ex1-overlay",
+          "ex2-overlay",
+          "ex3-overlay",
+          "icif-overlay",
+          "dr2-overlay",
+          "dr3-overlay",
+        ];
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (el && !el.hidden && !el.hasAttribute("hidden")) return true;
+        }
+        return false;
+      }
+
+      function syncBodyOverflow() {
+        if (isRulesOpen() || anyExerciseOverlayOpen()) {
+          document.body.style.overflow = "hidden";
+        } else {
+          document.body.style.overflow = "";
+        }
+      }
+
+      function hideRulesSilent() {
+        if (!overlay || overlay.hidden) return;
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      function openRules(hash) {
+        if (!overlay) return;
+        overlay.hidden = false;
+        overlay.removeAttribute("hidden");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (hash && scrollEl) {
+          var target = overlay.querySelector(hash);
+          if (target) {
+            requestAnimationFrame(function () {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          }
+        } else if (scrollEl) {
+          scrollEl.scrollTop = 0;
+        }
+        try {
+          if (closeBtn) closeBtn.focus();
+        } catch (e) {}
+      }
+
+      function closeRules() {
+        if (!overlay) return;
+        overlay.hidden = true;
+        overlay.setAttribute("hidden", "");
+        overlay.setAttribute("aria-hidden", "true");
+        syncBodyOverflow();
+        try {
+          if (openBtn) openBtn.focus();
+        } catch (e) {}
+      }
+
+      window.__egeZeroFirstOpenRules = openRules;
+      window.__egeZeroFirstHideRulesSilent = hideRulesSilent;
+      window.__egeZeroFirstCloseRules = closeRules;
+      window.__egeZeroFirstSyncPageOverflow = syncBodyOverflow;
+
+      if (openBtn) {
+        openBtn.addEventListener("click", function () {
+          openRules();
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener("click", closeRules);
+
+      document.querySelectorAll(".jump a[href]").forEach(function (a) {
+        var href = a.getAttribute("href");
+        if (ruleHashes.indexOf(href) === -1) return;
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          openRules(href);
+        });
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (!isRulesOpen() || anyExerciseOverlayOpen()) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeRules();
+        }
+      });
+
+      if (ruleHashes.indexOf(location.hash) !== -1) {
+        document.addEventListener("DOMContentLoaded", function () {
+          openRules(location.hash);
+        });
+      }
+    })();
+
+    (function () {
       var STORAGE_KEY = "egeCondExB_done_v1";
       var pack = window.__EGE_CONDITIONALS_ZERO_FIRST__;
       var CARDS = pack && pack.ex1FlipCards;
@@ -3866,6 +4076,7 @@
       }
 
       function openOverlay() {
+        if (window.__egeZeroFirstHideRulesSilent) window.__egeZeroFirstHideRulesSilent();
         loadDone();
         overlay.hidden = false;
         overlay.setAttribute("aria-hidden", "false");
@@ -3881,27 +4092,27 @@
         } catch (e) {}
       }
 
-      function closeOverlay() {
+      function hideEx1(showRules) {
         overlay.hidden = true;
         overlay.setAttribute("aria-hidden", "true");
-        var ex2ov = document.getElementById("ex2-overlay");
-        var ex3ov = document.getElementById("ex3-overlay");
-        var icifov = document.getElementById("icif-overlay");
-        var dr2ov = document.getElementById("dr2-overlay");
-        var dr3ov = document.getElementById("dr3-overlay");
-        var ex2Open = ex2ov && !ex2ov.hasAttribute("hidden") && !ex2ov.hidden;
-        var ex3Open = ex3ov && !ex3ov.hasAttribute("hidden") && !ex3ov.hidden;
-        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
-        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
-        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
-        if (!ex2Open && !ex3Open && !icifOpen && !dr2Open && !dr3Open) {
-          document.body.style.overflow = "";
-        }
         saveDone();
         if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+        if (showRules && window.__egeZeroFirstOpenRules) {
+          window.__egeZeroFirstOpenRules();
+        } else if (window.__egeZeroFirstSyncPageOverflow) {
+          window.__egeZeroFirstSyncPageOverflow();
+        }
       }
 
-      openBtn.addEventListener("click", openOverlay);
+      function closeOverlay() {
+        hideEx1(true);
+      }
+
+      function closeOverlayToPractice() {
+        hideEx1(false);
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openOverlay);
       if (boostBtn) boostBtn.addEventListener("click", openOverlay);
       closeBtn.addEventListener("click", closeOverlay);
 
@@ -3916,7 +4127,7 @@
 
       nextBtn.addEventListener("click", function () {
         if (!allDoneEl.hidden) {
-          closeOverlay();
+          closeOverlayToPractice();
           return;
         }
         if (!sawBack) return;
@@ -4328,6 +4539,7 @@
       }
 
       function openEx2() {
+        if (window.__egeZeroFirstHideRulesSilent) window.__egeZeroFirstHideRulesSilent();
         buildBankOnce();
         clearAttempt();
         overlay.hidden = false;
@@ -4340,24 +4552,16 @@
         } catch (e1) {}
       }
 
-      function closeEx2() {
+      function closeEx2(showRules) {
         overlay.hidden = true;
         overlay.setAttribute("hidden", "");
         overlay.setAttribute("aria-hidden", "true");
-        var ex1 = document.getElementById("ex1-overlay");
-        var ex3 = document.getElementById("ex3-overlay");
-        var icifov = document.getElementById("icif-overlay");
-        var dr2ov = document.getElementById("dr2-overlay");
-        var dr3ov = document.getElementById("dr3-overlay");
-        var ex1Open = ex1 && !ex1.hidden;
-        var ex3Open = ex3 && !ex3.hasAttribute("hidden") && !ex3.hidden;
-        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
-        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
-        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
-        if (!ex1Open && !ex3Open && !icifOpen && !dr2Open && !dr3Open) {
-          document.body.style.overflow = "";
-        }
         if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+        if (showRules && window.__egeZeroFirstOpenRules) {
+          window.__egeZeroFirstOpenRules();
+        } else if (window.__egeZeroFirstSyncPageOverflow) {
+          window.__egeZeroFirstSyncPageOverflow();
+        }
       }
 
       function escapeHtml(t) {
@@ -4370,14 +4574,18 @@
 
       if (openBtn) openBtn.addEventListener("click", openEx2);
       if (boostOpen) boostOpen.addEventListener("click", openEx2);
-      closeBtn.addEventListener("click", closeEx2);
+      closeBtn.addEventListener("click", function () {
+        closeEx2(true);
+      });
       retryBtn.addEventListener("click", function () {
         clearAttempt();
         try {
           singleIn.focus();
         } catch (e2) {}
       });
-      passCloseBtn.addEventListener("click", closeEx2);
+      passCloseBtn.addEventListener("click", function () {
+        closeEx2(false);
+      });
 
       if (prevBtn) {
         prevBtn.addEventListener("click", function () {
@@ -4403,7 +4611,7 @@
         if (overlay.hidden) return;
         if (ev.key === "Escape") {
           ev.preventDefault();
-          closeEx2();
+          closeEx2(true);
         }
       });
     })();
@@ -4731,6 +4939,7 @@
       }
 
       function openEx3() {
+        if (window.__egeZeroFirstHideRulesSilent) window.__egeZeroFirstHideRulesSilent();
         clearAttempt();
         overlay.hidden = false;
         overlay.removeAttribute("hidden");
@@ -4739,34 +4948,30 @@
         if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
       }
 
-      function closeEx3() {
+      function closeEx3(showRules) {
         closeDictDrawer();
         overlay.hidden = true;
         overlay.setAttribute("hidden", "");
         overlay.setAttribute("aria-hidden", "true");
-        var ex1 = document.getElementById("ex1-overlay");
-        var ex2 = document.getElementById("ex2-overlay");
-        var icifov = document.getElementById("icif-overlay");
-        var dr2ov = document.getElementById("dr2-overlay");
-        var dr3ov = document.getElementById("dr3-overlay");
-        var ex1Open = ex1 && !ex1.hidden;
-        var ex2Open = ex2 && !ex2.hasAttribute("hidden") && !ex2.hidden;
-        var icifOpen = icifov && !icifov.hasAttribute("hidden") && !icifov.hidden;
-        var dr2Open = dr2ov && !dr2ov.hasAttribute("hidden") && !dr2ov.hidden;
-        var dr3Open = dr3ov && !dr3ov.hasAttribute("hidden") && !dr3ov.hidden;
-        if (!ex1Open && !ex2Open && !icifOpen && !dr2Open && !dr3Open) {
-          document.body.style.overflow = "";
-        }
         if (window.__egeZeroFirstSyncBoost) window.__egeZeroFirstSyncBoost();
+        if (showRules && window.__egeZeroFirstOpenRules) {
+          window.__egeZeroFirstOpenRules();
+        } else if (window.__egeZeroFirstSyncPageOverflow) {
+          window.__egeZeroFirstSyncPageOverflow();
+        }
       }
 
       if (openBtn) openBtn.addEventListener("click", openEx3);
       if (boostOpen) boostOpen.addEventListener("click", openEx3);
-      closeBtn.addEventListener("click", closeEx3);
+      closeBtn.addEventListener("click", function () {
+        closeEx3(true);
+      });
       retryBtn.addEventListener("click", function () {
         clearAttempt();
       });
-      passCloseBtn.addEventListener("click", closeEx3);
+      passCloseBtn.addEventListener("click", function () {
+        closeEx3(false);
+      });
       prevBtn.addEventListener("click", function () {
         goTo(idx - 1);
       });
@@ -4785,7 +4990,7 @@
             closeDictDrawer();
             return;
           }
-          closeEx3();
+          closeEx3(true);
         }
       });
 

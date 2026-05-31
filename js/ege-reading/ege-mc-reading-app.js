@@ -27,6 +27,7 @@
 
   var U = units[unitIndex];
   var checked = false;
+  var cheerEl = null;
   var tapModeActive = false;
   var tapPhraseCache = null;
   var dictDocBound = false;
@@ -526,6 +527,40 @@
     if (closeB) closeB.addEventListener("click", closeDictDrawer);
   }
 
+  function cheerFilled() {
+    var n = 0;
+    U.questions.forEach(function (q) {
+      if (root.querySelector('input[name="q' + q.examNum + '"]:checked')) n++;
+    });
+    return n;
+  }
+
+  function refreshCheer(opts) {
+    var rc = window.__EGE_READING_CHEER__;
+    if (!rc || !cheerEl) return;
+    opts = opts || {};
+    rc.refresh(
+      cheerEl,
+      {
+        phase: opts.phase || (checked ? "checked" : "working"),
+        filled: cheerFilled(),
+        total: U.questions.length,
+        percent: opts.percent
+      },
+      !!(opts && opts.force)
+    );
+  }
+
+  function mountCheerRail() {
+    cheerEl = null;
+    var rc = window.__EGE_READING_CHEER__;
+    if (!rc) return;
+    cheerEl = rc.mount(root, {
+      total: U.questions.length,
+      insertAfter: ".ege-mcr-toolbar"
+    });
+  }
+
   function renderStatsBar() {
     var el = document.getElementById("ege-mcr-stats");
     if (!el || !window.__egeReadingMcStats || typeof window.__egeReadingMcStats.getUnitStats !== "function") {
@@ -602,12 +637,17 @@
       html +=
         '<label class="ege-mcr-unit-sel">Пакет <select id="ege-mcr-unit-jump" class="ege-mh-unit-jump">';
       var uu;
+      var mcrStats = window.__egeReadingMcStats;
+      var mcrPerfect = window.__egeExamUnitPerfectMark;
       for (uu = 0; uu < units.length; uu++) {
         html +=
           '<option value="' +
           esc(units[uu].id) +
           '"' +
           (uu === unitIndex ? " selected" : "") +
+          (mcrPerfect && mcrPerfect.optionPerfectClassAttr
+            ? mcrPerfect.optionPerfectClassAttr(mcrStats, units[uu].id)
+            : "") +
           ">" +
           esc(units[uu].title || units[uu].id) +
           "</option>";
@@ -727,6 +767,7 @@
       inp.addEventListener("change", function () {
         if (checked) return;
         saveAnswers();
+        refreshCheer();
       });
     });
 
@@ -749,6 +790,7 @@
     if (tapCb0) tapCb0.checked = tapModeActive;
     refreshPassageDisplay();
     renderStatsBar();
+    mountCheerRail();
   }
 
   function onReset() {
@@ -783,6 +825,7 @@
       sum.innerHTML = "";
     }
     refreshPassageDisplay();
+    refreshCheer({ phase: "working", force: true });
   }
 
   function onCheck() {
@@ -883,6 +926,19 @@
     ) {
       window.__egeReadingMcStats.recordAttempt(U.id, pct);
     }
+    var mcrSel = document.getElementById("ege-mcr-unit-jump");
+    if (
+      mcrSel &&
+      window.__egeExamUnitPerfectMark &&
+      typeof window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks ===
+        "function"
+    ) {
+      window.__egeExamUnitPerfectMark.paintUnitSelectPerfectMarks(
+        mcrSel,
+        units,
+        window.__egeReadingMcStats
+      );
+    }
     renderStatsBar();
 
     var hb = document.getElementById("ege-mcr-hunt-bar");
@@ -890,6 +946,7 @@
 
     closeDictDrawer();
     refreshPassageDisplay();
+    refreshCheer({ phase: "checked", percent: pct, force: true });
   }
 
   render();
