@@ -1,61 +1,26 @@
 ---
-description: ЕГЭ Listening — три отдельных движка (Matching, TFNS, MC); не сливать; новые юниты только данными
+description: ЕГЭ-only · индекс трёх listening-движков; детали — в отдельных правилах; не CPE/FCE
 globs:
   - ege-listening.html
   - ege-listening-*.html
   - js/ege-listening/**
   - css/ege-listening-*.css
-  - js/ege/ege-listening-shadowing-engine.js
-  - js/ege/ege-quick-dictionary-drawer.js
-  - js/ege/ege-guided-transcript-hunt.js
 ---
 
-# ЕГЭ Listening · три движка (не один)
+# ЕГЭ Listening · индекс (не смешивать с CPE / FCE)
 
-Hub: **`ege-listening.html`** — три плитки. **Три отдельных продукта**, общие только shadow + словарь.
+> **Только трек ЕГЭ.** Hub `ege-listening.html` → домой **`ege.html`**. Deploy **`publish-ege`**.  
+> **Не** для CPE (`index.html`) и **не** для FCE (`fce.html`). Storage / stats / cheer — префикс **`ege_`**.  
+> См. `ege-track-focus-and-reuse.mdc`, `course-tracks-hub-separation.mdc`.
 
-| Задание | Страница | App | Hunt | Units | Rule |
-|---------|----------|-----|------|-------|------|
-| **1 Matching** | `ege-listening-matching.html` | `ege-listening-matching-app.js` | `ege-guided-transcript-hunt.js` | `listening-matching-units/` | `ege-listening-three-stage-matching.mdc` |
-| **2 TFNS** | `ege-listening-tfns.html` | `ege-listening-tfns-app.js` | `ege-listening-tfns-hunt.js` | `listening-tfns-units/` | `ege-listening-tfns.mdc` |
-| **3 MC** | `ege-listening-mc.html` | `ege-listening-mc-app.js` | `ege-listening-mc-hunt.js` | `listening-mc-units/` | **`ege-listening-mc.mdc`** |
+**Этот файл — только указатель.** Детали каждого задания — в **своём** правиле (не дублировать сюда).
 
-**Не** объединять app/hunt/data в один «универсальный listening». **Не** подключать MC-логику к TFNS/Matching без явной задачи.
+| Задание | Правило (источник истины) |
+|---------|---------------------------|
+| 1 Matching | **`ege-listening-three-stage-matching.mdc`** |
+| 2 TFNS | **`ege-listening-tfns.mdc`** |
+| 3 MC | **`ege-listening-mc.mdc`** |
 
----
+Три **отдельных** app + hunt + `listening-*-units/` — **не** один «унiversal listening».
 
-## Общие модули (этап 3 + словарь)
-
-- **`js/ege/ege-listening-shadowing-engine.js`** → `__EGE_LISTENING_SHADOWING__`
-- **`js/ege/ege-quick-dictionary-drawer.js`** → `__EGE_QUICK_DICTIONARY__` · FAB `ex3-dict-*`
-- **`js/ege/ege-exam-cheer-rail.js`** · контексты `listening` / `listening-tfns` / `listening-mc`
-
-Shadow CSS базово в **`css/ege-listening-matching.css`** (`ege-lm-sh-*`); страницы TFNS/MC подключают его + свой CSS.
-
----
-
-## Rollout нового юнита
-
-1. Скопировать **золотой юнит** нужного задания → `uN-slug.js` в соответствующей `listening-*-units/`.
-2. Добавить `<script>` на **свою** HTML-страницу (после bootstrap data).
-3. Заполнить контент; **не** форкать app/hunt без UX-задачи.
-4. Манифест: `__EGE_LISTENING_*_MANIFEST__` в `js/ege-listening/ege-listening-*-manifest.js`.
-
----
-
-## Задание 3 · MC (эталон сохранён)
-
-**Золотой юнит:** `listening-mc-units/u1-maya-artist.js`  
-**Манифест:** `ege-listening-mc-manifest.js`
-
-Три этапа на одной странице:
-
-1. **MC 1/2/3** (вопросы 3–9) · check + feedback по каждому пункту.
-2. **Hunt** после проверки · слева: правильный вариант + **«Неправильные · можно подумать, что…»** + парафраз; справа: зелёная опора, красная ловушка с **≠ N**.
-3. **Shadow + быстрый словарь** · 20–30+ фраз на спикера.
-
-Ловушки в hunt: `sol:"d"` **только** с `distractExplainRu` (+ `wrongOption`). Без объяснения — не показывать и не проверять.
-
-Stats: `ege_listening_mc_scores` · skill **Listening: Multiple Choice**.
-
-Подробности — **`ege-listening-mc.mdc`**.
+**Запрещено без явной задачи:** плитки/ссылки на `ege-listening*.html` в CPE/FCE-хабах; общие stats-ключи с другими треками; форк MC-логики в TFNS/Matching.

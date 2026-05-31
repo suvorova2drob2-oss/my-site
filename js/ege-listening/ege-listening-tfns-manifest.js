@@ -9,8 +9,14 @@
 (function (w) {
   w.__EGE_LISTENING_TFNS_MANIFEST__ = {
     version: 2,
-    goldenUnit: "js/ege-listening/listening-tfns-units/u1-summer-volunteer.js",
+    track: "ege",
+    trackOnly: true,
+    notForTracks: ["cpe", "fce"],
+    learnerHome: "ege.html",
+    deployTrack: "ege",
     agentRule: ".cursor/rules/ege-listening-tfns.mdc",
+    trackIndexRule: ".cursor/rules/ege-listening-three-engines.mdc",
+    goldenUnit: "js/ege-listening/listening-tfns-units/u1-summer-volunteer.js",
     pageShell: "ege-listening-tfns.html",
     hubLink: "ege-listening.html",
     css: ["css/ege-listening-tfns.css", "css/ege-listening-matching.css"],

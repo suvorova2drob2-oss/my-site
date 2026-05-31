@@ -6,12 +6,17 @@
   w.__EGE_LISTENING_MC_MANIFEST__ = {
     version: 1,
     locked: true,
+    track: "ege",
+    trackOnly: true,
+    notForTracks: ["cpe", "fce"],
+    learnerHome: "ege.html",
+    deployTrack: "ege",
     taskLabel: "ЕГЭ Listening · задание 3 · Multiple Choice · вопросы 3–9",
     siblingEngines: {
       matching: "js/ege-listening/ege-listening-matching-manifest.js",
       tfns: "js/ege-listening/ege-listening-tfns-manifest.js"
     },
-    umbrellaRule: ".cursor/rules/ege-listening-three-engines.mdc",
+    trackIndexRule: ".cursor/rules/ege-listening-three-engines.mdc",
     goldenUnit: "js/ege-listening/listening-mc-units/u1-maya-artist.js",
     agentRule: ".cursor/rules/ege-listening-mc.mdc",
     pageShell: "ege-listening-mc.html",

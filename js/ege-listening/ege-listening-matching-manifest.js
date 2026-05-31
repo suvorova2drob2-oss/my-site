@@ -5,6 +5,13 @@
 (function (w) {
   w.__EGE_LISTENING_MATCHING_MANIFEST__ = {
     version: 1,
+    track: "ege",
+    trackOnly: true,
+    notForTracks: ["cpe", "fce"],
+    learnerHome: "ege.html",
+    deployTrack: "ege",
+    agentRule: ".cursor/rules/ege-listening-three-stage-matching.mdc",
+    trackIndexRule: ".cursor/rules/ege-listening-three-engines.mdc",
     pageShell: "ege-listening-matching.html",
     css: "css/ege-listening-matching.css",
     dataBootstrap: "js/ege-listening/ege-listening-matching-data.js",
