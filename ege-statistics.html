@@ -779,6 +779,12 @@
   <script src="js/ege-reading/ege-reading-mh-stats-bridge.js" vite-ignore></script>
   <script src="js/ege-reading/ege-gapped-text-stats-bridge.js" vite-ignore></script>
   <script src="js/ege-reading/ege-mc-reading-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-grammar/ege-grammar-exam-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-word-formation/ege-word-formation-exam-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-lexis/ege-lexis-exam-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-listening/ege-listening-matching-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-listening/ege-listening-tfns-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-listening/ege-listening-mc-stats-bridge.js" vite-ignore></script>
   <script src="js/ege/ege-full-pack-stats.js" vite-ignore></script>
   <script>
     const UNLOCK_THRESHOLD = 60;
@@ -803,6 +809,7 @@
           score: 0,
           skills: [
             { name: "Listening: Matching", score: 0 },
+            { name: "Listening: True / False / Not Stated", score: 0 },
             { name: "Lexis Exam", score: 0 },
             { name: "Speaking Exam", score: 0 }
           ]
@@ -848,7 +855,7 @@
           "Mixed Reading"
         ]
       },
-      { name: "Listening", sources: ["Listening: Matching", "Listening: Multiple Choice"] },
+      { name: "Listening", sources: ["Listening: Matching", "Listening: True / False / Not Stated", "Listening: Multiple Choice"] },
       { name: "Grammar", sources: ["Grammar Exam", "Grammar Exam Advanced", "The Verb Pump", "Passive Power"] },
       { name: "Word Formation", sources: ["Word Formation Exam", "Word Formation Nouns"] },
       { name: "Lexis 30-36", sources: ["Lexis Exam", "Lexis Sniper: synonym-trap", "Mixed Lexis"] },
@@ -859,12 +866,13 @@
       "Reading: Matching Headlines": "ege-reading-matching-headlines.html",
       "Reading: Gapped Text": "ege-reading-gapped-text.html",
       "Reading: Multiple Choice": "ege-reading-multiple-choice.html",
-      "Grammar Exam": "ege-grammar.html",
-      "Listening: Matching": "ege-listening.html",
-      "Lexis Exam": "ege-lexical-games.html",
+      "Grammar Exam": "ege-grammar-exam.html",
+      "Listening: Matching": "ege-listening-matching.html",
+      "Listening: True / False / Not Stated": "ege-listening-tfns.html",
+      "Lexis Exam": "ege-lexis-exam.html",
       "Speaking Exam": "ege-speaking.html",
-      "Listening: Multiple Choice": "ege-listening.html",
-      "Word Formation Exam": "ege-word-formation.html",
+      "Listening: Multiple Choice": "ege-listening-mc.html",
+      "Word Formation Exam": "ege-word-formation-exam.html",
       "Grammar Exam Advanced": "ege-grammar.html",
       "Mixed Reading": "ege-reading.html",
       "Mixed Speaking": "ege-speaking.html",
@@ -936,6 +944,19 @@
         u0.skills.splice(gi, 0, { name: "Reading: Multiple Choice", score: 0 });
         recalculateUnitScore(u0);
       } catch (eMc) {}
+    }
+
+    /** Добавить TFNS в Unit 2 после Matching (старые сохранения). */
+    function migrateAddListeningTfns(s) {
+      try {
+        const u1 = s.examUnits[1];
+        if (!u1 || !Array.isArray(u1.skills)) return;
+        if (u1.skills.some((sk) => sk.name === "Listening: True / False / Not Stated")) return;
+        const mi = u1.skills.findIndex((sk) => sk.name === "Listening: Matching");
+        if (mi === -1) return;
+        u1.skills.splice(mi + 1, 0, { name: "Listening: True / False / Not Stated", score: 0 });
+        recalculateUnitScore(u1);
+      } catch (eTfns) {}
     }
 
     /** Старые сохранения: Gapped Text был во 2-м unit — переносим в Unit 1 рядом с §10. */
@@ -1393,6 +1414,7 @@
     let state = loadState();
     migrateReadingSkillsToUnit1(state);
     migrateAddReadingMultipleChoice(state);
+    migrateAddListeningTfns(state);
     if (window.__egeReadingMatchingStats) {
       window.__egeReadingMatchingStats.mergeIntoExamStatisticsState(state, clampScore);
     }
@@ -1401,6 +1423,24 @@
     }
     if (window.__egeReadingMcStats) {
       window.__egeReadingMcStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeGrammarExamStats) {
+      window.__egeGrammarExamStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeWordFormationExamStats) {
+      window.__egeWordFormationExamStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeLexisExamStats) {
+      window.__egeLexisExamStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeListeningMatchingStats) {
+      window.__egeListeningMatchingStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeListeningTfnsStats) {
+      window.__egeListeningTfnsStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeListeningMcStats) {
+      window.__egeListeningMcStats.mergeIntoExamStatisticsState(state, clampScore);
     }
 
     renderAll();

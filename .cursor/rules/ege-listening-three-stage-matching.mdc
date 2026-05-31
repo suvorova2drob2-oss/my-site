@@ -1,0 +1,54 @@
+---
+description: ЕГЭ Listening Matching — 3 этапа (matching, hunt, shadowing + быстрый словарь)
+---
+
+# ЕГЭ Listening · Matching (3 этапа) — переиспользуемые движки
+
+Новое задание 1 (Matching + разбор + суфлирование) — **не копировать HTML**, а новый **`listening-matching-units/uN-….js`** + эталон **`ege-listening-matching.html`**.
+
+## Файлы
+
+| Роль | Путь |
+|---|---|
+| Страница | `ege-listening-matching.html` |
+| Стили | `css/ege-listening-matching.css` |
+| Bootstrap данных | `js/ege-listening/ege-listening-matching-data.js` |
+| Контент юнита | `js/ege-listening/listening-matching-units/uN-….js` |
+| Shell 3 этапов | `js/ege-listening/ege-listening-matching-app.js` |
+| Этап 2 hunt | `js/ege/ege-guided-transcript-hunt.js` |
+| **Этап 3 shadowing** | `js/ege/ege-listening-shadowing-engine.js` → `__EGE_LISTENING_SHADOWING__` |
+| **Быстрый словарь** | `js/ege/ege-quick-dictionary-drawer.js` → `__EGE_QUICK_DICTIONARY__` |
+| Манифест | `js/ege-listening/ege-listening-matching-manifest.js` |
+
+## Порядок скриптов
+
+См. `__EGE_LISTENING_MATCHING_MANIFEST__.scriptOrder`. **Словарь до shadowing.**
+
+## Этап 3 · shadowing
+
+- `mount({ rootId, prefix, audioSrc, speakers, repeatMode })`
+- **Без микрофона** — полоска = **позиция аудиo 0→100%** (зелёная при воспроизведении).
+- Фразы: `chunks[]`, кнопка «Дальше», пробел.
+- Режимы «С текстом» / «На слух» (на слух — **без текста**).
+
+## Быстрый словарь (подробный контент)
+
+**Всегда подробный, состоит из фраз** — см. `ege-quick-dictionary-phrases-policy.mdc`.
+
+На каждого спикера в данных:
+
+```javascript
+phrases: [
+  { en: "…", ru: "…", tip: "парафраз №2" }  // tip опционально
+]
+```
+
+**~20–30+** фраз/коллокаций на спикера — норма (не 8–10 одиночных слов). Drawer: выбор спикера + список + tap в тексте.
+
+`__EGE_QUICK_DICTIONARY__.mount({ prefix, mountId, speakers, triggerBtnId, … })`
+
+## Новый юнит — чеклист
+
+1. Скопировать `u1-physical-activity.js` → `uN-….js`, заменить контент (audio, statements, key, huntLabs, shadowSpeakers).
+2. Подключить в `ege-listening-matching.html` после bootstrap.
+3. Не дублировать движки в HTML — только данные.

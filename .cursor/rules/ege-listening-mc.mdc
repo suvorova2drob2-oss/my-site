@@ -1,0 +1,94 @@
+---
+description: ЕГЭ Listening Multiple Choice (задание 3) — эталонный 3-этапный движок; новые юниты только данными
+globs:
+  - ege-listening-mc.html
+  - js/ege-listening/ege-listening-mc*.js
+  - js/ege-listening/listening-mc-units/**
+  - css/ege-listening-mc.css
+---
+
+# ЕГЭ Listening · MC — эталонный движок (задание 3)
+
+**Золотой юнит:** `js/ege-listening/listening-mc-units/u1-maya-artist.js`  
+**Манифест:** `js/ege-listening/ege-listening-mc-manifest.js`
+
+Новое задание 3 = **только новый `listening-mc-units/uN-….js` + `<script>` в HTML**. **Не** форкать app/hunt/shadow/CSS.
+
+---
+
+## Архитектура (3 этапа)
+
+| # | Этап | Движок | Когда |
+|---|------|--------|-------|
+| 1 | **MC 1/2/3** · вопросы 3–9 | `ege-listening-mc-app.js` | сразу |
+| 2 | **Разбор в тексте** | `ege-listening-mc-hunt.js` | после «Отправить на проверку» |
+| 3 | **Аудиосуфлирование** | `ege-listening-shadowing-engine.js` + dict | сразу (ниже на странице) |
+
+---
+
+## Этап 1 · проверка
+
+- **3 варианта (1 / 2 / 3)** — кнопки, не select.
+- Feedback под пунктом:
+  - **Твой вариант:** …
+  - ошибка → **Правильный вариант:** … — **потому что** … (`explainRu` / `huntLabs`)
+  - ошибка → **Почему твой неверный:** … (`distractorWrongRu[num]` в данных)
+  - верно → **Потому что:** …
+- **Сводка** — компактно: `3 · 2` или `3 · твой 1 → 2`.
+
+---
+
+## Этап 2 · hunt
+
+- Слева: **Правильный вариант** (зелёный) → **Неправильные · можно подумать, что…** (красные блоки на каждый неверный 1/2/3) → **Найди парафраз**.
+- Шаблон ловушки: **Можно подумать:** вариант → **В записи:** «фраза» → **Но это другое:** объяснение.
+- Справа: зелёная опора; красная — фраза с меткой **≠ N** (номер неверного варианта).
+- Красная кисть только если есть `sol:"d"` + `distractExplainRu`.
+
+---
+
+## Этап 3 · shadow + словарь
+
+- Как TFNS: один абзац, «Проговорил → следующий», кнопка «Быстрый словарь» + drawer (`ex3-dict-*`).
+- **CSS drawer** обязателен в `css/ege-listening-mc.css` под `body.ege-shell-page--lmc` (как `--tfns` / `--lm`).
+- `phrases[]` **20–30+ фраз** на спикера, `tip` для связи с вопросами hunt.
+
+---
+
+## Данные юнита
+
+```javascript
+pack.units.push({
+  id: "uN-slug",
+  audioSrc: "…",
+  questions: [{ examNum: 3, prompt, key: 1|2|3, choices, explainRu, distractorWrongRu: { 1: "…" } }],
+  dialogueParagraphs: [{ turns: [{ speaker, text }] }],
+  huntLabs: [{ examNum: 3, key: 2, paragraphIndex, segments: [
+    { kind:"hit", sol:"e", text },
+    { kind:"hit", sol:"d", text, wrongOption: 1, distractExplainRu: "…" }
+  ]}],
+  shadowSpeakers: [{ id, label, fullText, phrases: [{ en, ru, tip? }], chunks }]
+});
+```
+
+---
+
+## Stats / cheer
+
+- `ege_listening_mc_scores` → **Listening: Multiple Choice**
+- Cheer: `context: "listening-mc"`
+
+---
+
+## Сохранённый эталон (не ломать без задачи)
+
+- **Третий** listening-движок ЕГЭ — отдельно от Matching и TFNS.
+- Манифест: `window.__EGE_LISTENING_MC_MANIFEST__` · `locked: true`.
+- Общая карта трёх движков: `.cursor/rules/ege-listening-three-engines.mdc`.
+- Ловушки hunt: без `distractExplainRu` сегмент `sol:"d"` не рендерится.
+
+---
+
+## Порядок скриптов
+
+См. `ege-listening-mc-manifest.js` → `scriptOrder`.

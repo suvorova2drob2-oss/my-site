@@ -1,0 +1,130 @@
+---
+description: ЕГЭ Listening TFNS (задание 2) — эталонный 3-этапный движок; новые юниты только данными, без форка UI
+globs:
+  - ege-listening-tfns.html
+  - js/ege-listening/ege-listening-tfns*.js
+  - js/ege-listening/listening-tfns-units/**
+  - css/ege-listening-tfns.css
+---
+
+# ЕГЭ Listening · TFNS — эталонный движок (задание 2)
+
+**Золотой юнит:** `js/ege-listening/listening-tfns-units/u1-summer-volunteer.js`  
+**Манифест:** `js/ege-listening/ege-listening-tfns-manifest.js` → `window.__EGE_LISTENING_TFNS_MANIFEST__`
+
+Новое задание 2 = **только новый `listening-tfns-units/uN-….js` + `<script>` в HTML**. **Не** форкать app/hunt/shadowing/CSS.
+
+---
+
+## Архитектура (3 этапа на одной странице)
+
+| # | Этап | Движок | Когда показывается |
+|---|------|--------|-------------------|
+| 1 | **+/−/?** · A–G | `ege-listening-tfns-app.js` | сразу |
+| 2 | **Разбор в тексте** | `ege-listening-tfns-hunt.js` | после «Отправить на проверку» |
+| 3 | **Аудиосуфлирование** | `ege-listening-shadowing-engine.js` + `ege-quick-dictionary-drawer.js` | сразу (этап 2 ниже на странице) |
+
+---
+
+## Файлы (не трогать без явной задачи)
+
+| Файл | Роль |
+|------|------|
+| `ege-listening-tfns.html` | оболочка, порядок скриптов |
+| `css/ege-listening-tfns.css` | TFNS + hunt + feedback |
+| `css/ege-listening-matching.css` | shadow `ege-lm-sh-*`, dict drawer |
+| `ege-listening-tfns-data.js` | bootstrap `__EGE_LISTENING_TFNS__` |
+| `listening-tfns-units/uN-*.js` | **контент** |
+| `ege-listening-tfns-app.js` | shell: audio, кнопки, check, cheer, mount hunt/shadow |
+| `ege-listening-tfns-hunt.js` | вкладки A–G, диалог-пузыри, зелёная кисть |
+| `ege-listening-tfns-stats-bridge.js` | `ege_listening_tfns_scores` |
+| `ege-exam-cheer-rail.js` | `context: "listening-tfns"` → `LISTENING_TFNS` |
+
+---
+
+## Этап 1 · проверка (идеальный UX — не менять логику)
+
+- Кнопки **+ / − / ?** (не select).
+- После check: ✓/✗ у буквы, подсветка **твой** / **ключ** на кнопках.
+- **Под пунктом** (без дубля мыслей):
+  - **Твой вариант:** …
+  - если ошибка → **Правильный вариант:** … — **потому что** … (`explainRu` / `nsExplainRu` из `huntLabs`)
+  - если ошибка → **Почему твой неверный:** одна строка — **какую кнопку перепутал** (логика в app, не в данных)
+  - если верно → **Потому что:** …
+- **Сводка** внизу — только `A · + True` или `A · твой − → + True`, без длинных текстов.
+
+---
+
+## Этап 2 · hunt
+
+- Общий **`dialogueParagraphs[]`**: `{ turns: [{ speaker, text }] }` — абзацы диалога (Kate/Alex и т.д.).
+- Каждый **`huntLabs[]`**: `paragraphIndex`, `key`, `keyLineRu`, `explainRu` / `nsExplainRu`, `evidencePromptRu`, `segments: [{ kind:"hit", text }]`.
+- Рендер: **целый абзац** (оба спикера в пузырях), hit — кликабельная опора.
+- **NS:** `segments: []`, только чтение абзаца + пояснение при «Проверить фразу».
+
+---
+
+## Этап 3 · shadowing + словарь
+
+- `mount({ dialogueParagraphs, speakers, prefix: "ege-lm-sh", … })` — **режим диалога**.
+- **Один абзац на экран**, «Проговорил → следующий абзац»; **без** полоски прогресса и точек в dialogue mode.
+- Реплики: имя + bubble (Kate / Alex).
+- **Быстрый словарь:** `phrases[]` **20–30+ фраз** на спикера, только коллокации — см. `ege-quick-dictionary-phrases-policy.mdc`.
+
+---
+
+## Схема данных юнита (минимум)
+
+```javascript
+pack.units.push({
+  id: "uN-slug",
+  title: "Unit N · …",
+  audioSrc: "…",
+  instructionHtml: "…",
+  listenTipsRu: "…",
+  statements: [{ letter: "A", text: "…" }, …], // 7 шт.
+  key: { A: "t", B: "f", C: "ns", … },
+  dialogueParagraphs: [{ turns: [{ speaker: "Kate", text: "…" }, …] }, …],
+  huntLabs: [{ letter: "A", key: "t", paragraphIndex: 1, explainRu: "…", segments: [{ kind: "hit", text: "…" }] }, …],
+  shadowSpeakers: [{ id: "Kate", label: "Kate", fullText: "…", phrases: [{ en, ru, tip? }], chunks: [] }]
+});
+```
+
+`dialogueParagraphs` — **единый источник** для hunt (абзац по `paragraphIndex`) и shadow (шаги «Дальше»).
+
+---
+
+## Новый юнит — чеклист (быстрый rollout)
+
+1. Скопировать `u1-summer-volunteer.js` → `uN-….js`.
+2. Заполнить: audio, 7 statements, key, `dialogueParagraphs`, 7 `huntLabs`, `shadowSpeakers` + **подробный** `phrases`.
+3. Подключить скрипт в `ege-listening-tfns.html` после `ege-listening-tfns-data.js`.
+4. **Не** менять app/hunt/shadow/CSS, если пользователь не просит другой UX.
+5. Stats / cheer / hub уже подключены.
+
+---
+
+## Порядок скриптов
+
+```
+ege-listening-tfns-data.js
+→ listening-tfns-units/uN-….js
+→ ege-exam-cheer-rail.js
+→ ege-listening-tfns-stats-bridge.js
+→ ege-quick-dictionary-drawer.js
+→ ege-listening-shadowing-engine.js
+→ ege-listening-tfns-hunt.js
+→ ege-listening-tfns-manifest.js   (опционально, для агентов)
+→ ege-listening-tfns-app.js
+```
+
+---
+
+## Анти-паттерны
+
+- ❌ Новая HTML-страница с копией hunt/app на каждый юнит
+- ❌ Одиночные слова в быстром словаре
+- ❌ Hunt — одна строка без абзаца диалога
+- ❌ Shadow — простыня текста или ползунок абзацев
+- ❌ Дублировать «потому что» и «почему неверный» одним и тем же текстом
+- ❌ Длинная «Сводка» — повтор разбора под пунктами
