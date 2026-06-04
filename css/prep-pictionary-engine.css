@@ -1,0 +1,204 @@
+/**
+ * Prep Pictionary — drawing + host guess grid.
+ * Scope: .prep-pictionary on page shell.
+ */
+.prep-pictionary .shell-wide {
+  max-width: min(1080px, 100%);
+}
+.prep-pictionary .pic-timer {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fef3c7;
+  min-width: 5ch;
+  text-align: center;
+  padding: 6px 14px;
+  background: #1c1917;
+  border-radius: 12px;
+  border: 2px solid #fbbf24;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.06);
+}
+.prep-pictionary .pic-timer.warn {
+  color: #fecaca;
+  border-color: #ef4444;
+  animation: prep-pic-pulse 0.8s ease infinite;
+}
+@keyframes prep-pic-pulse {
+  50% { opacity: 0.75; }
+}
+.prep-pictionary .p-text {
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+  font-weight: 800;
+  line-height: 1.4;
+  color: #f8fafc;
+  min-height: 2.4em;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid #334155;
+}
+.prep-pictionary .p-text.is-hidden {
+  color: #94a3b8;
+  user-select: none;
+  font-style: italic;
+  background: rgba(15, 23, 42, 0.35);
+}
+.prep-pictionary .host-pick {
+  background: #0f172a;
+  border: 1px solid #475569;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.prep-pictionary .host-pick h2 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7dd3fc;
+  margin-bottom: 6px;
+}
+.prep-pictionary .host-pick .host-hint {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.prep-pictionary .choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 10px;
+}
+.prep-pictionary .choice-btn {
+  min-height: 72px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(165deg, #fffef8 0%, #f5f0e6 48%, #ebe4d6 100%);
+  border: 2px solid #c2410c;
+  box-shadow: 0 4px 0 #9a3412, 0 8px 18px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  font-size: clamp(0.72rem, 2vw, 0.84rem);
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  color: #1c1917;
+  font-family: inherit;
+  transition: transform 0.12s ease;
+}
+.prep-pictionary .choice-btn:nth-child(even) {
+  border-color: #0e7490;
+  box-shadow: 0 4px 0 #155e75, 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+.prep-pictionary .choice-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.02);
+}
+.prep-pictionary .choice-wrong {
+  color: #fca5a5;
+  font-size: 0.82rem;
+  font-weight: 700;
+  min-height: 1.3em;
+  margin-top: 8px;
+}
+.prep-pictionary .drawer-box {
+  background: #0f172a;
+  border: 1px solid #475569;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.prep-pictionary .drawer-box h2 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a78bfa;
+  margin-bottom: 8px;
+}
+.prep-pictionary .hide-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+.prep-pictionary .draw-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+}
+.prep-pictionary .draw-tools label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.prep-pictionary .draw-tools input[type="color"] {
+  width: 44px;
+  height: 36px;
+  border: 2px solid #475569;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+}
+.prep-pictionary .draw-tools input[type="range"] {
+  width: 110px;
+  accent-color: #38bdf8;
+}
+.prep-pictionary .canvas-wrap {
+  background: #fafaf8;
+  border: 3px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  touch-action: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(15, 23, 42, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.prep-pictionary .canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: min(62vh, 560px);
+  min-height: 320px;
+  cursor: crosshair;
+  vertical-align: top;
+}
+@media (min-width: 900px) {
+  .prep-pictionary .canvas-wrap canvas {
+    height: min(68vh, 620px);
+    min-height: 400px;
+  }
+}
+.prep-pictionary .pic-setup-opts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.prep-pictionary .pic-setup-opts label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+.prep-pictionary .pic-setup-opts select {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #e2e8f0;
+}

@@ -1,0 +1,63 @@
+---
+description: CPE Reading Part 5 — split layout (text left, MCQ right) + mandatory Evidence hunt; cpe-reading-part5-engine.js + shell CSS.
+globs: unit*-reading/**/*.html,games/cpe/unit*/reading/**/*.html,js/unit*-reading*.js,js/cpe-reading-part5*.js,css/cpe-reading-part5*.css
+alwaysApply: false
+---
+
+# CPE Reading · Part 5 (multiple choice) — canonical engine
+
+## Тип задания
+
+**Part 5 = один текст + 6 вопросов A–D** (multiple choice), не Part 7 multiple matching.
+
+**Эталон UI:** `games/cpe/unit10/reading/` (Gen Z) — текст **слева**, вопросы **справа**, под сеткой **Evidence vs Distractor Hunt** (6 вкладок Q1–Q6).
+
+## Единственный движок
+
+| Роль | Путь |
+|------|------|
+| **Engine** | `js/cpe-reading-part5-engine.js` → `CPE_READING_PART5.mountPage({ pack })` |
+| **Styles** | `css/cpe-reading-part5-shell.css` |
+| **Данные** | `js/unit{N}-reading-*-data.js` |
+| **Страница** | shell из `unit12-reading/cpe/the-road-to-betterment/index.html` |
+
+Shell **всегда** содержит блок `#hunt-section` (не `hidden`). Движок монтирует hunt из `pack.hunts`.
+
+## Data pack (обязательные поля)
+
+```javascript
+{
+  title, unitTag, lead, passageHead, passageHeadHint, blurb,
+  passage: ["<p>…</p>", …],   // дословно из учебника
+  mcq: [{ q, options: { A, B, C, D } }, …],  // 6 items
+  correct: ["B", "B", "A", "D", "A", "C"],    // printed key
+  hunts: [                                    // ОБЯЗАТЕЛЬНО — 6 элементов
+    {
+      prompt: "Q1 focus: …",
+      chunks: [
+        { text: "…verbatim from passage…", sol: "e"|"d", why: "…" },
+        // 3–5 chunks per question; mix evidence + distractor
+      ]
+    },
+    // … Q2–Q6
+  ]
+}
+```
+
+- **`hunts.length === 6`** — одна вкладка на каждый MCQ.
+- Цитаты в `chunks[].text` — **из passage**, без перефраза (см. `coursebook-text-fidelity-screenshots.mdc`).
+- `sol: "e"` = evidence (supports keyed answer); `sol: "d"` = distractor (other paragraph / wrong question).
+
+Текст уже в HTML (Unit 10): `mountPage({ pack, skipPassage: true })` — **`hunts` всё равно обязателен**.
+
+## Содержимое из учебника
+
+**Никогда не переписывать** текст/вопросы со скринов — `.cursor/rules/coursebook-text-fidelity-screenshots.mdc`.
+
+## Новый текст — чеклист
+
+- [ ] Shell: `cpe-r5-body` + `css/cpe-reading-part5-shell.css` + `#hunt-section` в разметке
+- [ ] `CPE_READING_PART5.mountPage({ pack })`
+- [ ] 6× MCQ + `correct[]` из printed key
+- [ ] **`hunts[]` — 6 tabs**, Evidence + Distractor на каждый вопрос
+- [ ] Back → `index.html?prep_stay=1&screen=unit{N}&prep_open_folder=prep_legacy_u{N}_reading`

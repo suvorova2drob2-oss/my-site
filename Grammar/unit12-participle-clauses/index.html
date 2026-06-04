@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Participle clauses</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #1a2744;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --teal: #5eead4;
+      --teal-dim: #0f766e;
+      --title: #fda4af;
+      --phrase: #7dd3fc;
+      --nb-bg: rgba(15, 118, 110, 0.12);
+      --nb-line: rgba(45, 212, 191, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(165deg, #09122a 0%, #0f1f3d 45%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: clamp(12px, 3vw, 24px);
+      line-height: 1.6;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(18px, 3vw, 26px) clamp(18px, 3vw, 28px) 30px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .unit-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--title);
+      margin-bottom: 4px;
+    }
+    .top h1 {
+      font-size: clamp(1.2rem, 3.2vw, 1.55rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .back {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .back:hover { text-decoration: underline; }
+
+    .gram-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .gram-nav a:hover { text-decoration: underline; }
+
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+    @media (min-width: 820px) {
+      .cols { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+      .col-b { grid-column: 1; }
+      .col-c { grid-column: 2; grid-row: 1 / span 2; }
+    }
+
+    .section {
+      background: linear-gradient(180deg, rgba(26, 39, 68, 0.55) 0%, rgba(20, 32, 58, 0.35) 100%);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(50, 74, 113, 0.65);
+    }
+    .section-letter {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #042f2e;
+      background: linear-gradient(145deg, var(--teal), #14b8a6);
+    }
+    .section-head h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--teal);
+      line-height: 1.3;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 12px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+    .row:last-child { margin-bottom: 0; }
+    .row-num {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding-top: 2px;
+      min-width: 1.1rem;
+    }
+    .row-body { min-width: 0; }
+    .row-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #dbeafe;
+      margin-bottom: 6px;
+    }
+    .example {
+      font-style: italic;
+      font-size: 0.94rem;
+      color: #f1f5ff;
+      line-height: 1.55;
+    }
+    .pc {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--phrase);
+    }
+    .equiv {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      font-style: normal;
+      color: #a5b4d6;
+      background: rgba(8, 22, 48, 0.55);
+      border: 1px solid rgba(61, 86, 128, 0.65);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+    .equiv em { font-style: italic; color: #c4d4f5; }
+
+    .nb {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px dashed var(--nb-line);
+      background: var(--nb-bg);
+      font-size: 0.84rem;
+      color: #b8f5ee;
+      line-height: 1.5;
+    }
+    .nb strong {
+      font-weight: 800;
+      color: var(--teal);
+      margin-right: 4px;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.28);
+      background: rgba(15, 23, 42, 0.35);
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .footer-note strong { color: #cbd5e1; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="unit-num">12</p>
+        <h1>Participle clauses</h1>
+        <span class="badge">Language focus &middot; textbook reference</span>
+      </div>
+      <a class="back" href="../unit12-grammar/index.html">&larr; Unit 12 Grammar</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Unit 12 grammar">
+      <span style="font-weight:700;color:var(--text);">Reference A&ndash;C</span>
+      <span>&middot;</span>
+      <a href="exercise-1-corrections.html">Exercise 1 &mdash; correct the mistakes</a>
+      <span>&middot;</span>
+      <a href="exercise-2-options.html">Exercise 2 &mdash; multiple choice</a>
+      <span>&middot;</span>
+      <a href="../unit12-quantifiers/index.html">Quantifiers</a>
+    </nav>
+
+    <div class="cols">
+      <section class="section col-a" aria-labelledby="sec-a-title">
+        <div class="section-head">
+          <span class="section-letter" aria-hidden="true">A</span>
+          <h2 id="sec-a-title">Types of participle clause</h2>
+        </div>
+
+        <div class="row">
+          <span class="row-num">1.</span>
+          <div class="row-body">
+            <p class="row-title">Present participle clauses</p>
+            <p class="example"><span class="pc">Hoping to learn more about eating healthily</span>, I signed up to a vegetarian cooking course.</p>
+            <p class="nb"><strong>NB:</strong> Stative verbs can be used in present participle clauses.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">2.</span>
+          <div class="row-body">
+            <p class="row-title">Perfect participle clauses</p>
+            <p class="example"><span class="pc">Having researched all the options</span>, she settled on the yoga retreat in Corsica as it had the best reviews.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">3.</span>
+          <div class="row-body">
+            <p class="row-title">Passive participle clauses</p>
+            <p class="example"><span class="pc">Having been given a stark warning by his doctor</span>, Jim realised he had to make serious lifestyle changes.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">4.</span>
+          <div class="row-body">
+            <p class="row-title">Verbless clauses</p>
+            <p class="example"><span class="pc">Alone and afraid</span>, she wrapped herself in a blanket.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section col-b" aria-labelledby="sec-b-title">
+        <div class="section-head">
+          <span class="section-letter" aria-hidden="true">B</span>
+          <h2 id="sec-b-title">Use of participle clause</h2>
+        </div>
+
+        <div class="row">
+          <span class="row-num">1.</span>
+          <div class="row-body">
+            <p class="row-title">To refer to simultaneous events</p>
+            <p class="example"><span class="pc">Running down the street for the bus</span>, I tripped over.</p>
+            <span class="equiv">replaces a <em>while</em> clause</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">2.</span>
+          <div class="row-body">
+            <p class="row-title">To refer to earlier events</p>
+            <p class="example"><span class="pc">Having spoken to the fitness instructor</span>, I have a clearer idea of what his classes will involve.</p>
+            <span class="equiv">replaces an <em>after</em> clause</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">3.</span>
+          <div class="row-body">
+            <p class="row-title">To refer to a reason</p>
+            <p class="example"><span class="pc">Not wanting to wake anyone else up</span>, I snuck out of the room and quietly closed the door.</p>
+            <span class="equiv">replaces a <em>because</em> clause</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">4.</span>
+          <div class="row-body">
+            <p class="row-title">To refer to a condition</p>
+            <p class="example"><span class="pc">Given a choice</span>, I&rsquo;d rather dance than go to the gym.</p>
+            <span class="equiv">replaces an <em>if</em> clause</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">5.</span>
+          <div class="row-body">
+            <p class="row-title">To provide information about a noun phrase</p>
+            <p class="example">The message <span class="pc">posted today</span> was about meditation techniques.</p>
+            <span class="equiv">replaces a defining or non-defining relative clause</span>
+            <p class="nb"><strong>NB:</strong> Unlike relative clauses, these can often come before the noun phrase: <em>Built in 1066, the castle is a major tourist attraction.</em></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section col-c" aria-labelledby="sec-c-title">
+        <div class="section-head">
+          <span class="section-letter" aria-hidden="true">C</span>
+          <h2 id="sec-c-title">Adding a subject to a participle clause</h2>
+        </div>
+
+        <div class="row">
+          <span class="row-num">1.</span>
+          <div class="row-body">
+            <p class="row-title">If actions happen at the same time or give extra information</p>
+            <p class="example"><span class="pc">Her eyes filling with tears</span>, Yasmin was clearly overwhelmed at her gold medal win.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">2.</span>
+          <div class="row-body">
+            <p class="row-title">When <em>with</em> is used to introduce a different subject</p>
+            <p class="example"><span class="pc">With exercise classes running throughout the day</span>, the centre is perfect for everyone&rsquo;s schedule.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row-num">3.</span>
+          <div class="row-body">
+            <p class="row-title">To add a subject without <em>with</em></p>
+            <p class="example"><span class="pc">There being no further matters to discuss</span>, we closed the meeting early.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <p class="footer-note">
+      <strong>How to use on screen:</strong> read section by section; the blue chunks are the participle clauses to spot in exam transformations. Then try <a href="exercise-1-corrections.html" style="color:var(--accent);font-weight:600;">Exercise 1</a> (fix the mistakes) and <a href="exercise-2-options.html" style="color:var(--accent);font-weight:600;">Exercise 2</a> (choose the correct form).
+    </p>
+  </main>
+</body>
+</html>

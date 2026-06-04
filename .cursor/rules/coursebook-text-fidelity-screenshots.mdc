@@ -1,0 +1,42 @@
+---
+description: When the user sends textbook screenshots or pasted coursebook text — transcribe verbatim; never paraphrase, shorten, or “fix” wording.
+globs: js/**/*-data.js,js/unit*-*.js,unit*-reading/**/*,unit*-vocabulary/**/*,games/**/*,ege-*.html
+alwaysApply: true
+---
+
+# Coursebook text fidelity (screenshots & pasted source)
+
+## Hard rule
+
+When the user supplies **screenshots**, **photos**, or **pasted text** from a textbook, exam paper, or workbook:
+
+1. **Transcribe verbatim** — same words, punctuation, paragraph breaks, British/American spelling as printed.
+2. **Do not paraphrase** — no “cleaner” rewrites, no summarising, no merging/splitting paragraphs unless the book does.
+3. **Do not “fix”** typos, grammar, or awkward phrasing from the book (e.g. option A *“Their is an element…”* stays as printed).
+4. **Do not invent** missing sentences because something “reads better”; if the scan is cut off, use only what is visible and say what is missing.
+5. **MCQ items** — question stems and options A–D **character-for-character** from the source (typographic quotes/apostrophes may become HTML entities in data files only).
+
+## Allowed transforms (data files only)
+
+- Wrap passage paragraphs in `<p>…</p>` for HTML display.
+- `&rsquo;` / `&mdash;` / `&nbsp;` for typography in JS strings — **same visible text**.
+- Split one long column into `<p>` blocks **only** where the book has paragraph breaks.
+
+## Forbidden
+
+- Replacing the passage with an earlier draft, memory, or a “similar” text from another unit.
+- Changing *caliber* → *calibre* (or vice versa) unless the screenshot shows it.
+- Adding `<strong>` / glosses on key phrases unless the book highlights them.
+- Rewriting instructions unless the user asks for a Russian gloss **in addition** to the English original.
+
+## Workflow for agents
+
+1. Read every supplied image/paste first.
+2. Update the **shared data object** (`js/unit*-…-data.js` or equivalent) — not only one HTML page.
+3. If an older wrong version exists in the repo, **replace with the screenshot text**, do not merge.
+4. After edit, note briefly: “текст сверен со скрином; опечатки книги сохранены”.
+
+## Related
+
+- Vocabulary lists: `.cursor/rules/vocab-lists-and-flip-cards.mdc` (same source-of-truth idea for lexis).
+- CPE Reading Part 5 layout: `.cursor/rules/cpe-reading-part5-mcq-rollout.mdc` (engine only — **content** still follows this rule).

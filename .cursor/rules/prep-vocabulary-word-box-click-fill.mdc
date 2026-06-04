@@ -1,0 +1,82 @@
+---
+description: Vocabulary gap-fill with word box — clickable bank chips fill the active gap (tap gap, then chip, or type).
+globs: unit*-vocabulary/**/*.html,Vocabulary/**/*.html
+alwaysApply: false
+---
+
+# Vocabulary · word box — click to fill gaps
+
+## Когда применять
+
+Любое упражнение **word bank + пропуски** в папках `unit*-vocabulary/`, `unit*-vocabulary/cpe/`, `Vocabulary/` — не только gap-fill «напечатай», но и **клик по слову в боксе**.
+
+## Обязательный UX
+
+1. **Hint** над боксом (одна строка):  
+   `Click a gap, then click a word in the bank — or type in the box.`
+2. **Word box:** слова — `<button type="button" class="bank-chip" data-word="…">…</button>`, не `<span>`.
+3. **Контейнер бокса:** `id="word-bank"` (или другой id, переданный в mount).
+4. **Пропуски:** `<input>` с классом **`gap-word`** или **`gap-input`**; уникальный `id` (`gap-1`, `g1`, …).
+5. **Подключить движок:** `js/prep-vocab-word-box-gaps.js` → **`PREP_VOCAB_WORD_BOX_GAPS.mount({ … })`**.
+
+## Эталон в коде
+
+| Роль | Путь |
+|------|------|
+| Движок | `js/prep-vocab-word-box-gaps.js` |
+| Старый inline-эталон | `unit7-vocabulary/shopping-paragraph-gaps/index.html` |
+| CPE Unit 12 | `unit12-vocabulary/cpe/idioms-word-box/index.html` |
+
+## Mount (минимум)
+
+```html
+<div class="word-box" id="word-bank" aria-label="Word bank">
+  <strong>Word box</strong>
+  <div class="word-box-line">
+    <button type="button" class="bank-chip" data-word="target">target</button>
+  </div>
+</div>
+<input type="text" class="gap-word" id="gap-1" … />
+<script src="…/js/prep-vocab-word-box-gaps.js"></script>
+<script>
+PREP_VOCAB_WORD_BOX_GAPS.mount({
+  bankRoot: "#word-bank",
+  gapIds: [1, 2, 3, 4, 5],
+  gapIdPrefix: "gap-",
+  onFill: function () {
+    document.getElementById("feedback").classList.remove("show");
+  }
+});
+</script>
+```
+
+## Поведение (не ломать)
+
+- Клик по **gap** → класс **`is-active`** (подсветка рамки).
+- Клик по **chip** → слово в **активный** gap; если нет активного — в **первый пустой**; иначе в первый gap.
+- **Печать с клавиатуры** по-прежнему работает.
+- Повторное использование слова из бокса **разрешено** (перезапись другого gap), если учебник не требует иного.
+
+## Стили (scoped на странице)
+
+```css
+.bank-chip {
+  cursor: pointer;
+  font: inherit;
+}
+.gap-word.is-active,
+.gap-input.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+}
+```
+
+Копировать токены с соседних Unit 12 / Unit 7 vocabulary-страниц — не вводить новую цветовую схему.
+
+## Новое упражнение — чеклист
+
+- [ ] Phrase bank / intro сверху (если есть в учебнике)
+- [ ] Hint-bar + clickable `bank-chip` + `data-word`
+- [ ] `prep-vocab-word-box-gaps.js` + `mount`
+- [ ] Check / Reset без изменения логики проверки страницы
+- [ ] Prep-link в seeds, если это CPE Level N Vocabulary folder

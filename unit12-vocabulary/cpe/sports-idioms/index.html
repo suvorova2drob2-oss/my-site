@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Sports idioms (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --phrase-bg: rgba(12, 28, 58, 0.72);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+
+    .intro {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 22px;
+    }
+    .intro em { color: #bae6fd; font-style: normal; font-weight: 600; }
+
+    /* —— Phrase bank —— */
+    .phrase-bank {
+      border: 1px solid #3d5a86;
+      border-radius: 16px;
+      padding: 20px 18px 22px;
+      background: linear-gradient(165deg, rgba(15, 36, 68, 0.55) 0%, rgba(8, 22, 48, 0.35) 100%);
+      margin-bottom: 28px;
+    }
+    .phrase-bank__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 16px;
+    }
+    .phrase-bank__head h2 {
+      font-size: 1.02rem;
+      color: #bae6fd;
+      letter-spacing: 0.02em;
+    }
+    .phrase-bank__head p {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .phrase-grid {
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .phrase-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .phrase-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      background: var(--phrase-bg);
+      border-left: 4px solid var(--card-accent, var(--accent));
+    }
+    .sport-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(86, 204, 242, 0.12);
+      color: #7dd3fc;
+      margin-bottom: 10px;
+    }
+    .phrase-idm {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fef08a;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+    .phrase-dl { font-size: 0.86rem; line-height: 1.5; }
+    .phrase-dl dt {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .phrase-dl dd { color: #d5e2f8; margin-bottom: 10px; }
+    .phrase-dl dd:last-child { margin-bottom: 0; }
+    .phrase-dl dd.meta { color: #e0f2fe; }
+
+    /* —— Practice zone —— */
+    .practice-zone { margin-top: 8px; }
+    .practice-zone > h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task:last-child { margin-bottom: 0; }
+    .task__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .task h3 { font-size: 1.02rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 9px 14px;
+      min-height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .toolbar button:hover:not(:disabled) { border-color: var(--accent); }
+    .toolbar button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .match-grid {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .match-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .col-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .sen-list, .def-list { display: flex; flex-direction: column; gap: 10px; }
+    .sen, .def {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(8, 22, 48, 0.5);
+      padding: 12px 36px 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      border-left: 4px solid transparent;
+    }
+    .sen:hover:not(.dim), .def:hover:not(.dim):not(.used) { border-color: #4a6898; }
+    .sen.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .sen.matched { background: rgba(86, 204, 242, 0.08); }
+    .def.used { background: rgba(54, 211, 153, 0.12); }
+    .def.dim { opacity: 0.55; pointer-events: none; }
+    .sen .num, .def .letter { font-weight: 800; color: var(--accent); margin-right: 8px; }
+    .sen .txt, .def .txt { font-size: 0.9rem; line-height: 1.45; }
+    .badge { margin-top: 8px; font-size: 12px; color: var(--muted); }
+    .badge.empty { font-style: italic; }
+    .unpair {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .unpair:hover { border-color: var(--bad); color: #fecaca; }
+
+    .gap-list { display: flex; flex-direction: column; gap: 12px; }
+    .gap-sent {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-sent strong.num { color: var(--accent); margin-right: 6px; }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 11rem;
+      max-width: min(100%, 26rem);
+      width: 18rem;
+      margin: 0 3px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.88rem;
+    }
+    .gap-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-input.is-ok { border-color: #22c55e; }
+    .gap-input.is-bad { border-color: #f87171; }
+
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .feedback {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      min-height: 20px;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: #fca5a5; }
+    .fb-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .fb-panel.show { display: block; }
+
+    @media (max-width: 600px) {
+      .page { padding: 18px 14px; }
+      .gap-input { width: 100%; max-width: 100%; min-width: 0; display: block; margin: 6px 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Sports idioms &mdash; phrase bank &amp; practice</h1>
+      <a class="back" id="back-link" href="../../index.html?prep_stay=1&amp;screen=unit12">&larr; Level 12</a>
+    </header>
+
+    <p class="intro">
+      Many idioms come from sport. In baseball, <em>step up to the plate</em> means standing ready to bat; in everyday English it means taking action when something needs doing. Study the six phrases below, then try the three short tasks.
+    </p>
+
+    <section class="phrase-bank" aria-label="Idiom phrase bank">
+      <div class="phrase-bank__head">
+        <h2>Phrase bank</h2>
+        <p>Sport &middot; idiom &middot; literal &amp; metaphorical meaning</p>
+      </div>
+      <div class="phrase-grid" id="phrase-grid"></div>
+    </section>
+
+    <section class="practice-zone" aria-label="Practice tasks">
+      <h2>Practice</h2>
+
+      <article class="task" id="task-meanings">
+        <p class="task__label">Task 1</p>
+        <h3>Match each idiom to its metaphorical meaning</h3>
+        <p class="instr">Use the phrase bank above. Tap an idiom on the left, then tap a meaning on the right.</p>
+        <div class="toolbar">
+          <button type="button" id="m-shuffle">Shuffle meanings</button>
+          <button type="button" id="m-clear">Clear pairs</button>
+        </div>
+        <div class="match-grid">
+          <div>
+            <div class="col-title">Idioms (1&ndash;6)</div>
+            <div class="sen-list" id="m-sen-list"></div>
+          </div>
+          <div>
+            <div class="col-title">Meanings (a&ndash;f)</div>
+            <div class="def-list" id="m-def-list"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="m-check" disabled>Check</button>
+          <button type="button" class="btn-secondary" id="m-reveal" style="display:none;">Show solution</button>
+        </div>
+        <p class="feedback" id="m-feedback" aria-live="polite"></p>
+      </article>
+
+      <article class="task" id="task-gaps">
+        <p class="task__label">Task 2</p>
+        <h3>Complete the sentences</h3>
+        <p class="instr">Type the idiom from the phrase bank in the <strong>correct form</strong> (tense / pronoun must fit).</p>
+        <div class="gap-list" id="gap-list"></div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="g-check">Check answers</button>
+          <button type="button" class="btn-secondary" id="g-reset">Reset</button>
+        </div>
+        <div class="fb-panel" id="g-feedback" aria-live="polite"></div>
+      </article>
+
+      <article class="task" id="task-sports">
+        <p class="task__label">Task 3</p>
+        <h3>Match each sport to its idiom</h3>
+        <p class="instr">Which idiom comes from which sport? Link each sport with one idiom.</p>
+        <div class="toolbar">
+          <button type="button" id="s-shuffle">Shuffle idioms</button>
+          <button type="button" id="s-clear">Clear pairs</button>
+        </div>
+        <div class="match-grid">
+          <div>
+            <div class="col-title">Sport</div>
+            <div class="sen-list" id="s-sen-list"></div>
+          </div>
+          <div>
+            <div class="col-title">Idiom</div>
+            <div class="def-list" id="s-def-list"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="s-check" disabled>Check</button>
+          <button type="button" class="btn-secondary" id="s-reveal" style="display:none;">Show solution</button>
+        </div>
+        <p class="feedback" id="s-feedback" aria-live="polite"></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var PHRASES = [
+    {
+      id: 1,
+      sport: "Sailing",
+      idiom: "learn the ropes",
+      literal: "To learn about tying knots in ropes on a boat",
+      meta: "To learn how to do a new job or activity properly",
+      accent: "#38bdf8"
+    },
+    {
+      id: 2,
+      sport: "Athletics",
+      idiom: "jump the gun",
+      literal: "To start running before the sound of the starting gun",
+      meta: "To do something too soon, before the right time",
+      accent: "#fbbf24"
+    },
+    {
+      id: 3,
+      sport: "Boxing",
+      idiom: "throw in the towel",
+      literal: "To throw the towel on the floor to quit a fight",
+      meta: "To give up; to stop trying",
+      accent: "#f87171"
+    },
+    {
+      id: 4,
+      sport: "Football",
+      idiom: "move the goalposts",
+      literal: "To change the position of the posts and make the game easier or harder",
+      meta: "To change the rules or standards unfairly",
+      accent: "#4ade80"
+    },
+    {
+      id: 5,
+      sport: "Cards",
+      idiom: "have / give the upper hand",
+      literal: "To have good cards and therefore a better chance of winning",
+      meta: "To have an advantage over someone",
+      accent: "#a78bfa"
+    },
+    {
+      id: 6,
+      sport: "Horse racing",
+      idiom: "have a head start",
+      literal: "A horse that has its head slightly in front of the others at the start of a race",
+      meta: "To start with an advantage",
+      accent: "#fb923c"
+    }
+  ];
+
+  var MEANINGS = [
+    { id: "a", text: "To learn how to do a new job or activity properly" },
+    { id: "b", text: "To do something too soon, before the right time" },
+    { id: "c", text: "To give up; to stop trying" },
+    { id: "d", text: "To change the rules or standards unfairly" },
+    { id: "e", text: "To have an advantage over someone" },
+    { id: "f", text: "To start with an advantage" }
+  ];
+
+  var MEAN_KEY = { 1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f" };
+
+  var GAPS = [
+    {
+      n: 1,
+      before: "Once you've ",
+      after: " and settled in, you'll feel far less anxious about your new job.",
+      display: "learned the ropes",
+      accept: ["learned the ropes", "learnt the ropes"]
+    },
+    {
+      n: 2,
+      before: "Make sure you train gently at first — don't ",
+      after: " and sign up for a marathon!",
+      display: "jump the gun",
+      accept: ["jump the gun"]
+    },
+    {
+      n: 3,
+      before: "Sara ",
+      after: " halfway through the marathon because she pulled a muscle.",
+      display: "threw in the towel",
+      accept: ["threw in the towel"]
+    },
+    {
+      n: 4,
+      before: "My boss is always ",
+      after: ", so I never end up looking good no matter what I do.",
+      display: "moving the goalposts",
+      accept: ["moving the goalposts"]
+    },
+    {
+      n: 5,
+      before: "Johan's resolve and determination are what ",
+      after: " when negotiating deals.",
+      display: "give him the upper hand",
+      accept: ["give him the upper hand", "gives him the upper hand"]
+    },
+    {
+      n: 6,
+      before: "Making sure your children's diet is full of nutritional value means they'll ",
+      after: " in life.",
+      display: "have a head start",
+      accept: ["have a head start"]
+    }
+  ];
+
+  var SPORT_KEY = {
+    1: "learn the ropes",
+    2: "jump the gun",
+    3: "throw in the towel",
+    4: "move the goalposts",
+    5: "have / give the upper hand",
+    6: "have a head start"
+  };
+
+  var COLORS = ["#56ccf2", "#a78bfa", "#36d399", "#f472b6", "#fbbf24", "#2dd4bf"];
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function colorForLetter(L) {
+    var i = String(L).toLowerCase().charCodeAt(0) - 97;
+    return i >= 0 && i < 6 ? COLORS[i] : "#64748b";
+  }
+
+  /* Phrase bank */
+  var grid = document.getElementById("phrase-grid");
+  PHRASES.forEach(function (p) {
+    var card = document.createElement("article");
+    card.className = "phrase-card";
+    card.style.setProperty("--card-accent", p.accent);
+    card.innerHTML =
+      '<span class="sport-pill">' +
+      esc(p.sport) +
+      "</span>" +
+      '<h3 class="phrase-idm">' +
+      esc(p.idiom) +
+      "</h3>" +
+      '<dl class="phrase-dl">' +
+      "<dt>Literal</dt><dd>" +
+      esc(p.literal) +
+      "</dd>" +
+      "<dt>Metaphorical</dt><dd class=\"meta\">" +
+      esc(p.meta) +
+      "</dd></dl>";
+    grid.appendChild(card);
+  });
+
+  /* Generic matching engine */
+  function makeMatcher(opts) {
+    var matches = {};
+    var selected = null;
+    var locked = false;
+    var defOrder = shuffle(opts.defs);
+
+    function pairCount() {
+      var n = 0;
+      for (var k in matches) if (matches[k]) n++;
+      return n;
+    }
+
+    function assign(senId, letter) {
+      var sid = senId;
+      for (var k in matches) {
+        if (matches[k] === letter && k !== sid) delete matches[k];
+      }
+      matches[sid] = letter;
+    }
+
+    function render() {
+      opts.elSen.innerHTML = "";
+      opts.elDef.innerHTML = "";
+
+      opts.sens.forEach(function (w) {
+        var sid = opts.senId(w);
+        var letter = matches[sid];
+        var row = document.createElement("div");
+        row.className =
+          "sen" +
+          (selected === sid ? " selected" : "") +
+          (letter ? " matched" : "") +
+          (locked && letter && letter !== opts.key[sid] ? " dim" : "");
+        row.dataset.sen = String(sid);
+        if (letter) row.style.borderLeftColor = opts.colorFor ? opts.colorFor(letter) : colorForLetter(letter);
+        row.innerHTML =
+          '<button type="button" class="unpair" aria-label="Remove pair">&times;</button>' +
+          '<span class="num">' +
+          esc(opts.senNum(w)) +
+          '.</span><span class="txt"></span>' +
+          '<div class="badge' +
+          (letter ? "" : " empty") +
+          '">' +
+          (letter ? "\u2192 " + opts.defLabel(letter) : "\u2014 pick a match") +
+          "</div>";
+        row.querySelector(".txt").textContent = opts.senText(w);
+        row.addEventListener("click", function (e) {
+          if (locked || e.target.closest(".unpair")) return;
+          selected = selected === sid ? null : sid;
+          render();
+        });
+        row.querySelector(".unpair").addEventListener("click", function (e) {
+          e.stopPropagation();
+          if (locked) return;
+          delete matches[sid];
+          selected = null;
+          opts.elFb.textContent = "";
+          opts.elFb.className = "feedback";
+          opts.elReveal.style.display = "none";
+          render();
+        });
+        opts.elSen.appendChild(row);
+      });
+
+      defOrder.forEach(function (d, di) {
+        var did = opts.defId(d);
+        var usedBy = null;
+        for (var mk in matches) {
+          if (matches[mk] === did) usedBy = mk;
+        }
+        var drow = document.createElement("div");
+        drow.className = "def" + (usedBy != null ? " used" : "");
+        drow.dataset.def = did;
+        if (usedBy != null) drow.style.borderLeftColor = opts.colorFor ? opts.colorFor(did) : colorForLetter(did);
+        if (locked && !usedBy) drow.classList.add("dim");
+        drow.innerHTML =
+          '<span class="letter">' +
+          esc(opts.defNum(d, di)) +
+          '.</span><span class="txt"></span>' +
+          '<div class="badge">' +
+          (usedBy != null
+            ? "\u2190 " + opts.senBackLabel(usedBy)
+            : selected != null
+              ? "Tap to link"
+              : "Select on the left first") +
+          "</div>";
+        drow.querySelector(".txt").textContent = opts.defText(d);
+        drow.addEventListener("click", function () {
+          if (locked) return;
+          if (selected == null) {
+            opts.elFb.textContent = "Select an item on the left first.";
+            opts.elFb.className = "feedback bad";
+            return;
+          }
+          assign(selected, did);
+          selected = null;
+          opts.elFb.textContent = "";
+          opts.elFb.className = "feedback";
+          render();
+        });
+        opts.elDef.appendChild(drow);
+      });
+
+      opts.elCheck.disabled = pairCount() !== opts.sens.length;
+      if (opts.elShuffle) opts.elShuffle.disabled = locked;
+      if (opts.elClear) opts.elClear.disabled = locked;
+    }
+
+    if (opts.elShuffle) {
+      opts.elShuffle.addEventListener("click", function () {
+        if (locked) return;
+        defOrder = shuffle(opts.defs);
+        opts.elFb.textContent = "";
+        render();
+      });
+    }
+    if (opts.elClear) {
+      opts.elClear.addEventListener("click", function () {
+        if (locked) return;
+        matches = {};
+        selected = null;
+        opts.elFb.textContent = "";
+        opts.elReveal.style.display = "none";
+        render();
+      });
+    }
+    opts.elCheck.addEventListener("click", function () {
+      if (pairCount() !== opts.sens.length) return;
+      var ok = 0;
+      var wrong = [];
+      opts.sens.forEach(function (w) {
+        var sid = opts.senId(w);
+        if (matches[sid] === opts.key[sid]) ok++;
+        else wrong.push(sid);
+      });
+      if (ok === opts.sens.length) {
+        opts.elFb.textContent = "Perfect \u2014 " + ok + " / " + opts.sens.length + ".";
+        opts.elFb.className = "feedback ok";
+        locked = true;
+        opts.elReveal.style.display = "none";
+      } else {
+        opts.elFb.textContent =
+          ok +
+          " / " +
+          opts.sens.length +
+          " correct." +
+          (wrong.length ? " Check: " + wrong.join(", ") + "." : "");
+        opts.elFb.className = "feedback bad";
+        opts.elReveal.style.display = "block";
+      }
+      render();
+    });
+    opts.elReveal.addEventListener("click", function () {
+      opts.sens.forEach(function (w) {
+        var sid = opts.senId(w);
+        matches[sid] = opts.key[sid];
+      });
+      selected = null;
+      locked = true;
+      opts.elFb.textContent = "Solution shown.";
+      opts.elFb.className = "feedback ok";
+      opts.elReveal.style.display = "none";
+      render();
+    });
+
+    render();
+  }
+
+  makeMatcher({
+    sens: PHRASES,
+    defs: MEANINGS,
+    key: MEAN_KEY,
+    senId: function (w) {
+      return w.id;
+    },
+    senNum: function (w) {
+      return w.id;
+    },
+    senText: function (w) {
+      return w.idiom;
+    },
+    defId: function (d) {
+      return d.id;
+    },
+    defNum: function (d) {
+      return d.id;
+    },
+    defText: function (d) {
+      return d.text;
+    },
+    defLabel: function (L) {
+      return "Meaning " + L;
+    },
+    senBackLabel: function (sid) {
+      return "Idiom " + sid;
+    },
+    elSen: document.getElementById("m-sen-list"),
+    elDef: document.getElementById("m-def-list"),
+    elCheck: document.getElementById("m-check"),
+    elReveal: document.getElementById("m-reveal"),
+    elFb: document.getElementById("m-feedback"),
+    elShuffle: document.getElementById("m-shuffle"),
+    elClear: document.getElementById("m-clear")
+  });
+
+  var sportIdioms = PHRASES.map(function (p) {
+    return { id: p.idiom, text: p.idiom };
+  });
+  var sportKeyBySport = {};
+  PHRASES.forEach(function (p) {
+    sportKeyBySport[p.id] = p.idiom;
+  });
+
+  makeMatcher({
+    sens: PHRASES,
+    defs: sportIdioms,
+    key: sportKeyBySport,
+    senId: function (w) {
+      return w.id;
+    },
+    senNum: function (w) {
+      return w.sport;
+    },
+    senText: function (w) {
+      return w.sport;
+    },
+    defId: function (d) {
+      return d.id;
+    },
+    defNum: function (d, i) {
+      return String.fromCharCode(97 + i);
+    },
+    defText: function (d) {
+      return d.text;
+    },
+    defLabel: function (L) {
+      return L;
+    },
+    senBackLabel: function (sid) {
+      var p = PHRASES.find(function (x) {
+        return x.id === sid;
+      });
+      return p ? p.sport : sid;
+    },
+    colorFor: function () {
+      return "#56ccf2";
+    },
+    elSen: document.getElementById("s-sen-list"),
+    elDef: document.getElementById("s-def-list"),
+    elCheck: document.getElementById("s-check"),
+    elReveal: document.getElementById("s-reveal"),
+    elFb: document.getElementById("s-feedback"),
+    elShuffle: document.getElementById("s-shuffle"),
+    elClear: document.getElementById("s-clear")
+  });
+
+  /* Gap-fill */
+  var gapRoot = document.getElementById("gap-list");
+  GAPS.forEach(function (g) {
+    var p = document.createElement("p");
+    p.className = "gap-sent";
+    p.innerHTML =
+      "<strong class=\"num\">" +
+      g.n +
+      ".</strong>" +
+      esc(g.before) +
+      '<input type="text" class="gap-input" id="gap-' +
+      g.n +
+      '" autocomplete="off" spellcheck="false" aria-label="Gap ' +
+      g.n +
+      '" />' +
+      esc(g.after);
+    gapRoot.appendChild(p);
+  });
+
+  function gapMatches(g, raw) {
+    var u = norm(raw);
+    if (!u) return false;
+    for (var i = 0; i < g.accept.length; i++) {
+      if (norm(g.accept[i]) === u) return true;
+    }
+    return false;
+  }
+
+  GAPS.forEach(function (g) {
+    document.getElementById("gap-" + g.n).addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      document.getElementById("g-feedback").classList.remove("show");
+    });
+  });
+
+  document.getElementById("g-check").addEventListener("click", function () {
+    var fb = document.getElementById("g-feedback");
+    var correct = 0;
+    var html = "";
+    GAPS.forEach(function (g) {
+      var el = document.getElementById("gap-" + g.n);
+      var raw = el.value;
+      var ok = gapMatches(g, raw);
+      if (raw.trim() && ok) correct++;
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(!raw.trim() ? "is-bad" : ok ? "is-ok" : "is-bad");
+      html +=
+        "<p><strong>" +
+        (ok && raw.trim() ? "\u2713" : "\u2717") +
+        " " +
+        g.n +
+        ".</strong> Key: <em>" +
+        esc(g.display) +
+        "</em></p>";
+    });
+    html =
+      "<p style=\"margin-bottom:10px;font-weight:700;\">Score: " +
+      correct +
+      " / " +
+      GAPS.length +
+      "</p>" +
+      html;
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("g-reset").addEventListener("click", function () {
+    GAPS.forEach(function (g) {
+      var el = document.getElementById("gap-" + g.n);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+    });
+    document.getElementById("g-feedback").classList.remove("show");
+  });
+})();
+  </script>
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script>
+(function wireBack() {
+  var back = document.getElementById("back-link");
+  if (!back) return;
+  var params = new URLSearchParams(location.search);
+  if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
+    var folderId =
+      typeof PREP_LEGACY_U12_VOCAB_FOLDER_ID !== "undefined"
+        ? PREP_LEGACY_U12_VOCAB_FOLDER_ID
+        : "prep_legacy_u12_vocab";
+    back.href =
+      "../../../index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
+      encodeURIComponent(folderId);
+    var lbl = params.get("backLabel");
+    back.textContent = lbl ? "\u2190 " + lbl : "\u2190 Vocabulary \u00b7 Level 12";
+  }
+})();
+  </script>
+</body>
+</html>

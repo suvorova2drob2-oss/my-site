@@ -38,6 +38,86 @@
     }
   ];
 
+  var speakerPhrases = {
+    A: [
+      { en: "smarter than most humans think", ru: "умнее, чем думает большинство людей", tip: "№2" },
+      { en: "cute little minds", ru: "милые маленькие умы" },
+      { en: "a lot smarter than most humans think", ru: "намного умнее, чем думает большинство людей", tip: "№2" },
+      { en: "a clear way to communicate", ru: "ясный способ общаться" },
+      { en: "it would probably be astonishing", ru: "это, вероятно, было бы поразительно" },
+      { en: "what's going on", ru: "что происходит" },
+      { en: "a long list of really smart animals", ru: "длинный список действительно умных животных" },
+      { en: "from chimpanzees to whales, ants and even sheep", ru: "от шимпанзе до китов, муравьёв и даже овец" },
+      { en: "more to the animal kingdom than meets the eye", ru: "в животном мире больше, чем кажется" },
+      { en: "studies were conducted", ru: "проводились исследования" },
+      { en: "rather intelligent creatures", ru: "довольно умные существа" }
+    ],
+    B: [
+      { en: "object-location memory", ru: "память на расположение объектов", tip: "№6" },
+      { en: "find their way home", ru: "найти дорогу домой", tip: "№6" },
+      { en: "some of the smartest animals in the world", ru: "одни из самых умных животных в мире" },
+      { en: "smarter than chimps", ru: "умнее шимпанзе" },
+      { en: "video games more successfully than chimps", ru: "играть в видеоигры успешнее, чем шимпанзе" },
+      { en: "It's hard to argue with that logic", ru: "с такой логикой трудно спорить" },
+      { en: "phenomenal", ru: "феноменальный" },
+      { en: "find food in a location", ru: "находить еду в определённом месте" },
+      { en: "go back to the same area", ru: "возвращаться в то же место" },
+      { en: "expecting food to be there", ru: "ожидая, что еда будет там" },
+      { en: "from a long distance away", ru: "с большого расстояния" }
+    ],
+    C: [
+      { en: "excellent hunting ability", ru: "отличная способность охотиться", tip: "№5" },
+      { en: "solve problems", ru: "решать проблемы", tip: "№5" },
+      { en: "supreme sensory abilities", ru: "выдающиеся сенсорные способности" },
+      { en: "doesn't come from luck", ru: "не берётся из удачи" },
+      { en: "intelligence", ru: "интеллект" },
+      { en: "aren't as trainable as dogs", ru: "не так хорошо поддаются дрессировке, как собаки" },
+      { en: "doesn't mean they aren't as smart", ru: "это не значит, что они не такие умные" },
+      { en: "twice as many neurons", ru: "вдвое больше нейронов" },
+      { en: "extensive brain power", ru: "большая мощность мозга" },
+      { en: "rational thought", ru: "рациональное мышление" },
+      { en: "make smart decisions", ru: "принимать умные решения" },
+      { en: "recognize if objects change places", ru: "замечать, если предметы поменяли место" }
+    ],
+    D: [
+      { en: "tell humans whether or not they wanted", ru: "сообщать людям, хотят они этого или нет", tip: "№3" },
+      { en: "good farmworkers", ru: "хорошие сельскохозяйственные работники" },
+      { en: "not their only merit", ru: "не единственное их достоинство" },
+      { en: "sensitive by nature", ru: "чуткие по природе" },
+      { en: "respond to human emotions", ru: "реагировать на человеческие эмоции" },
+      { en: "in appealing ways", ru: "привлекательным / приятным образом" },
+      { en: "communicate with us in a sort of sign language", ru: "общаться с нами своего рода языком жестов" },
+      { en: "An experiment showed", ru: "эксперимент показал" },
+      { en: "wear a rug", ru: "носить попону" },
+      { en: "when it was cold or wet", ru: "когда было холодно или сыро" },
+      { en: "Perfectly logical", ru: "совершенно логично" }
+    ],
+    E: [
+      { en: "we've got sheep all wrong", ru: "мы неправильно думаем об овцах", tip: "№7" },
+      { en: "lacking intelligence", ru: "лишённые ума" },
+      { en: "downright stupid", ru: "совсем глупые" },
+      { en: "follow someone mindlessly", ru: "бездумно следовать за кем-то" },
+      { en: "actually pretty smart", ru: "на самом деле довольно умные" },
+      { en: "Their memories are outstanding", ru: "их память выдающаяся" },
+      { en: "recognize faces", ru: "узнавать лица" },
+      { en: "get out of a difficult maze", ru: "выбраться из сложного лабиринта" },
+      { en: "waited at the exit", ru: "ждали у выхода" },
+      { en: "help the others get out too", ru: "помогать другим тоже выбраться" }
+    ],
+    F: [
+      { en: "group decision-making skills", ru: "навыки группового принятия решений", tip: "№1" },
+      { en: "tell the difference between a Picasso and a Monet painting", ru: "отличать картину Пикассо от картины Моне" },
+      { en: "visual processing skills", ru: "навыки визуальной обработки" },
+      { en: "learning and performing tasks", ru: "учиться и выполнять задания" },
+      { en: "to get a reward", ru: "чтобы получить награду" },
+      { en: "communicate with each other by dancing", ru: "общаться друг с другом с помощью танца" },
+      { en: "jostling and head-butting", ru: "подталкивания и толчков головой" },
+      { en: "on point", ru: "на высоте / очень сильные" },
+      { en: "choose the new hive location together", ru: "вместе выбирать место для нового улья" },
+      { en: "through a vote", ru: "путём голосования" }
+    ]
+  };
+
   pack.units.push({
     id: "u14-animal-intelligence",
     unitOrder: 14,
@@ -87,7 +167,7 @@
         id: sp.id,
         label: "Speaker " + sp.id,
         fullText: sp.text,
-        phrases: [],
+        phrases: speakerPhrases[sp.id] || [],
         chunks: [{ text: sp.text, showText: true }]
       };
     }),

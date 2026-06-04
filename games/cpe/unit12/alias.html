@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alias &mdash; Unit 12 CPE word bank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../css/prep-alias-engine.css" />
+  <style>
+    :root {
+      --alias-red: #7c3aed;
+      --alias-blue: #0891b2;
+      --alias-ink: #e2e8f0;
+      --panel: #0f172a;
+      --shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #1a1030 0%, transparent 50%), #020617;
+      color: var(--alias-ink);
+      min-height: 100dvh;
+      padding: 16px;
+    }
+    .shell { max-width: 920px; margin: 0 auto; }
+    .board {
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 20px 18px 24px;
+      border: 1px solid #334155;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #334155;
+    }
+    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #e2e8f0; }
+    .topbar .sub { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; max-width: 32rem; }
+    .nav { font-size: 0.8rem; }
+    .nav a { color: #22d3ee; font-weight: 700; }
+    .setup textarea {
+      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #334155;
+      font-size: 0.95rem; background: #020617; color: #e2e8f0; resize: vertical; font-family: inherit;
+    }
+    .setup .hint { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; }
+    .err { color: #b91c1c; font-size: 0.85rem; min-height: 1.2em; }
+    .btn {
+      display: inline-block; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .btn-go { background: var(--alias-red); color: #fff; }
+    .btn-go:hover { filter: brightness(1.08); }
+    .btn-sec { background: #334155; color: #fff; }
+    .btn-blue { background: var(--alias-blue); color: #fff; }
+    .hud {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px;
+    }
+    .turn-pill { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .turn-pill .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+    .turn-pill .name {
+      background: #020617; border: 2px solid var(--alias-red); color: #e9d5ff; padding: 6px 14px; border-radius: 999px;
+      font-size: 1.05rem; font-weight: 900;
+    }
+    .turn-pill .name.b { border-color: var(--alias-blue); color: #a5f3fc; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+    .round-tag { background: #1e293b; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; color: #cbd5e1; }
+    .lb { margin-top: 20px; }
+    .lb h3 { font-size: 0.9rem; color: #e2e8f0; margin-bottom: 8px; }
+    .lb ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
+    .ov {
+      position: fixed; inset: 0; background: rgba(15, 36, 51, 0.88); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
+    }
+    .ov.open { display: flex; }
+    .ov-in {
+      background: var(--panel); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; border: 3px solid #b8a990;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .ov-in h2 { color: #e2e8f0; margin-bottom: 8px; font-size: 1.1rem; }
+    .ov-in p { color: #94a3b8; font-size: 0.9rem; }
+    .game { display: none; }
+    .game.on { display: block; }
+    .pack-box {
+      margin: 10px 0 12px; padding: 10px 12px; border-radius: 10px; border: 1px solid #334155; background: #020617;
+    }
+    .pack-legend {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7dd3fc; margin-bottom: 8px;
+    }
+    .pack-row {
+      display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; font-size: 0.83rem; color: #dbeafe; cursor: pointer;
+    }
+    .pack-row input { margin-top: 3px; accent-color: #22d3ee; }
+    .pack-hint { color: #93c5fd; font-size: 0.74rem; line-height: 1.4; margin-top: 8px; }
+    .deck-meta { color: #7dd3fc; font-size: 0.78rem; margin-top: 8px; }
+  </style>
+  <script src="../../../js/unit12-reading-road-to-betterment-lexicon.js"></script>
+  <script src="../../../js/unit12-sports-idioms-lexicon.js"></script>
+  <script src="../../../js/unit12-listening-sb12-1-disabled-access-lexicon.js"></script>
+  <script src="../../../js/unit12-ttt-word-bank.js"></script>
+  <script src="../../../js/prep-u12-playground-shell.js"></script>
+</head>
+<body>
+  <div class="shell prep-alias">
+    <div class="board">
+      <div class="topbar">
+        <div>
+          <h1>Alias: CPE speaking sprint</h1>
+          <p class="sub">Classic Alias flow: <strong>one block of cards</strong> on the table (you choose how many), then the next block if time is left. Host taps guessed cards.</p>
+        </div>
+        <p class="nav"><a href="index.html?course=cpe" id="hubLink">&larr; Playground</a></p>
+      </div>
+
+      <div id="setup" class="setup">
+        <p class="hint">Player names, <strong>one per line</strong> (at least 2). Order = turn order around the table.</p>
+        <div class="pack-box" id="packBox">
+          <div class="pack-legend">Unit 12 word bank</div>
+          <div id="aliasTopicChecks"></div>
+          <p class="pack-hint" id="aliasTopicHint">Choose one or more packs before start.</p>
+        </div>
+        <div class="alias-setup-opts">
+          <label>Cards per block
+            <select id="optBlock">
+              <option value="8">8</option>
+              <option value="10" selected>10</option>
+              <option value="12">12</option>
+              <option value="15">15</option>
+            </select>
+          </label>
+          <label>Rounds (full table cycles)
+            <select id="optRounds">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <label>Turn timer
+            <select id="optTimer">
+              <option value="45">0:45</option>
+              <option value="60" selected>1:00</option>
+              <option value="90">1:30</option>
+            </select>
+          </label>
+        </div>
+        <textarea id="namesIn" placeholder="Alex&#10;Bo&#10;Cara" autocomplete="off"></textarea>
+        <p class="err" id="err"></p>
+        <p class="deck-meta" id="deckMeta">Deck: all packs</p>
+        <button type="button" class="btn btn-go" id="btnGo">Start game</button>
+      </div>
+
+      <div id="game" class="game">
+        <div class="hud">
+          <div class="turn-pill">
+            <span class="label">Explaining</span>
+            <span class="name" id="curName" role="status">—</span>
+            <span class="round-tag">Round <span id="rn">1</span> / <span id="rnMax">2</span></span>
+          </div>
+          <div class="alias-timer" id="timer">1:00</div>
+        </div>
+        <div class="block-meta">
+          <span>Block <strong id="blockNum">1</strong> · <span id="blockLeft">0</span> left in block</span>
+          <span class="block-pill" id="queueMeta">— in queue</span>
+        </div>
+        <p style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px">Host: tap a card when guessed. When the block is clear, the next one appears automatically if time remains.</p>
+        <div class="alias-grid" id="grid"></div>
+        <div class="row-actions">
+          <button type="button" class="btn btn-blue" id="btnNextBlock" style="display:none">Next block (skip rest)</button>
+          <button type="button" class="btn btn-sec" id="btnEndTurn">End turn</button>
+        </div>
+        <div class="lb" id="lb">
+          <h3>Score (cards to each explainer on their turns)</h3>
+          <ol id="lbList"></ol>
+        </div>
+        <p style="margin-top:12px">
+          <button type="button" class="btn btn-sec" id="btnFinal">Show leaderboard</button>
+          <button type="button" class="btn btn-sec" id="btnReset">New game</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovR">
+    <div class="ov-in">
+      <h2>Round complete</h2>
+      <p id="ovRMsg">Round complete.</p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovRok">Next round</button></p>
+    </div>
+  </div>
+  <div class="ov" id="ovF">
+    <div class="ov-in">
+      <h2>Leaderboard</h2>
+      <p style="text-align:left" id="ovFList"></p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovFok">Close</button></p>
+    </div>
+  </div>
+
+  <script src="../../../js/prep-alias-engine.js"></script>
+  <script>
+(function () {
+  var hub = document.getElementById("hubLink");
+  if (hub && window.PREP_U12_PG_CPE) hub.href = "index.html?course=cpe";
+
+  if (!window.PREP_ALIAS || typeof window.PREP_ALIAS.mount !== "function") return;
+
+  window.PREP_ALIAS.mount({
+    loadDeckEntries: function () {
+      return window.PREP_ALIAS.buildDeckFromVocabTtt({
+        defaultTopicId: "u12_misc",
+        stubPhrases: function () {
+          if (window.PREP_U12_PG_STUB && typeof window.PREP_U12_PG_STUB.phrasesDeckMustKnow === "function") {
+            return window.PREP_U12_PG_STUB.phrasesDeckMustKnow();
+          }
+          return [];
+        },
+      });
+    },
+    getTopicList: function () {
+      return window.VOCAB_TTT_TOPIC_LIST || [];
+    },
+    els: {
+      topicChecks: document.getElementById("aliasTopicChecks"),
+      packBox: document.getElementById("packBox"),
+      topicHint: document.getElementById("aliasTopicHint"),
+      deckMeta: document.getElementById("deckMeta"),
+      optBlock: document.getElementById("optBlock"),
+      optRounds: document.getElementById("optRounds"),
+      optTimer: document.getElementById("optTimer"),
+      namesIn: document.getElementById("namesIn"),
+      err: document.getElementById("err"),
+      btnGo: document.getElementById("btnGo"),
+      game: document.getElementById("game"),
+      setup: document.getElementById("setup"),
+      curName: document.getElementById("curName"),
+      rn: document.getElementById("rn"),
+      rnMax: document.getElementById("rnMax"),
+      timer: document.getElementById("timer"),
+      blockNum: document.getElementById("blockNum"),
+      blockLeft: document.getElementById("blockLeft"),
+      queueMeta: document.getElementById("queueMeta"),
+      grid: document.getElementById("grid"),
+      btnNextBlock: document.getElementById("btnNextBlock"),
+      btnEndTurn: document.getElementById("btnEndTurn"),
+      lbList: document.getElementById("lbList"),
+      btnFinal: document.getElementById("btnFinal"),
+      btnReset: document.getElementById("btnReset"),
+      ovR: document.getElementById("ovR"),
+      ovRMsg: document.getElementById("ovRMsg"),
+      ovRok: document.getElementById("ovRok"),
+      ovF: document.getElementById("ovF"),
+      ovFList: document.getElementById("ovFList"),
+      ovFok: document.getElementById("ovFok"),
+    },
+  });
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

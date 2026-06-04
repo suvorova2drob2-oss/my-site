@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snowball phrases · Unit 12 · CPE Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../../../js/prep-u12-playground-shell.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a30;
+      --card2: #0d1324;
+      --line: #2a3555;
+      --text: #e8ecff;
+      --dim: #8b95b8;
+      --accent: #38bdf8;
+      --accent2: #a78bfa;
+      --ok: #86efac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 520px at 80% -15%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(700px 420px at 10% 0%, rgba(167, 139, 250, 0.1), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 18px clamp(14px, 3vw, 22px) 28px;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .bar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 8px 4px;
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+    .bar a:hover { background: rgba(56, 189, 248, 0.08); }
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      margin-bottom: 4px;
+    }
+    h1 { font-size: clamp(1.2rem, 3.8vw, 1.45rem); font-weight: 800; letter-spacing: -0.02em; }
+    .sub {
+      color: var(--dim);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin: 10px 0 18px;
+      max-width: 52rem;
+    }
+    .card {
+      background: linear-gradient(165deg, rgba(24, 33, 58, 0.95), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(18px, 3vw, 22px);
+      box-shadow: 0 20px 56px rgba(0, 0, 0, 0.38);
+    }
+    .card + .card { margin-top: 14px; }
+
+    .wb-head {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+      gap: 10px;
+    }
+    .theme-cell { position: relative; }
+    .theme-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .theme-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: 86px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.85);
+      cursor: pointer;
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.15s ease,
+        background 0.18s ease;
+    }
+    .theme-pill:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-1px);
+    }
+    .theme-input:focus-visible + .theme-pill {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .theme-input:checked + .theme-pill {
+      border-color: rgba(56, 189, 248, 0.65);
+      background: linear-gradient(155deg, rgba(56, 189, 248, 0.14), rgba(167, 139, 250, 0.08));
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.25),
+        0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+    .theme-ico { font-size: 1.35rem; line-height: 1; }
+    .theme-title { font-weight: 800; font-size: 0.82rem; line-height: 1.28; color: #f1f5ff; }
+    .theme-tag { font-size: 0.68rem; color: var(--dim); line-height: 1.35; font-weight: 600; }
+
+    label.field-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      margin-top: 18px;
+    }
+    label.field-label:first-of-type { margin-top: 0; }
+    textarea#namesIn {
+      width: 100%;
+      min-height: 7.5rem;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--card2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      resize: vertical;
+    }
+    .rowline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+      margin: 14px 0;
+      font-size: 0.88rem;
+      color: var(--dim);
+    }
+    .rowline fieldset.rounds-fs {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+    }
+    .rowline fieldset.rounds-fs legend {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      padding: 0 6px;
+    }
+    .rowline label.chk,
+    .rowline fieldset.rounds-fs label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+    }
+    button {
+      font-family: inherit;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.78rem;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      cursor: pointer;
+      transition: filter 0.15s ease, opacity 0.15s ease;
+    }
+    button:hover:not(:disabled) { filter: brightness(1.06); }
+    .b-main {
+      background: linear-gradient(135deg, #0369a1, #7c3aed);
+      color: #fff;
+      width: 100%;
+      max-width: 100%;
+      margin-top: 6px;
+    }
+    .b-sec { background: #2d3a5e; color: var(--text); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .meta {
+      text-align: center;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .name-big {
+      text-align: center;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      font-weight: 800;
+      margin: 4px 0 14px;
+    }
+    .phrase-big {
+      text-align: center;
+      font-size: clamp(1.05rem, 2.8vw, 1.48rem);
+      font-weight: 800;
+      line-height: 1.42;
+      padding: 20px;
+      border-radius: 16px;
+      background: var(--card2);
+      border: 2px solid #3d4d7a;
+      color: #f1f5ff;
+    }
+    .inst {
+      text-align: center;
+      font-size: 0.87rem;
+      color: var(--dim);
+      line-height: 1.48;
+      margin: 14px 0;
+      max-width: 42em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .chain {
+      font-size: 0.78rem;
+      color: #8b9bc4;
+      line-height: 1.45;
+      max-height: 6.8em;
+      overflow-y: auto;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(13, 19, 36, 0.65);
+      border: 1px solid var(--line);
+    }
+    .chain strong { color: #c4b5fd; }
+    .done { text-align: center; font-size: 1.08rem; color: var(--ok); font-weight: 700; }
+    .hidden { display: none !important; }
+    .row-btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+    .row-btns button { width: auto; }
+    #setupErr { color: #fb7185; min-height: 1.25em; font-weight: 600; text-align: center; margin-top: 8px; }
+    .deck-meta {
+      font-size: 0.75rem;
+      color: var(--dim);
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">CPE Prep · Level 12 · Playground</p>
+        <h1>Snowball phrases</h1>
+      </div>
+      <a id="navBack" href="index.html?course=cpe">&larr; Playground</a>
+    </div>
+    <p class="sub">
+      One name per line &rarr; choose how many <strong>rounds</strong> the chain runs (1&ndash;4).
+      Tap <strong>Next</strong> to reveal whose turn it is and the next chunk from the Unit&nbsp;12 word bank you selected.
+      Echo what came before, then weave in the new phrase in a natural English sentence.
+    </p>
+
+    <div class="card" id="setupCard">
+      <p class="wb-head">Word bank theme</p>
+      <div class="theme-grid" id="themeRail" role="radiogroup" aria-label="Word bank theme"></div>
+      <p class="deck-meta" id="deckMeta"></p>
+
+      <label class="field-label" for="namesIn">Names (turn order)</label>
+      <textarea id="namesIn" placeholder="Alex&#10;Sam&#10;Jordan&#10;…"></textarea>
+
+      <div class="rowline">
+        <fieldset class="rounds-fs">
+          <legend>Rounds</legend>
+          <label><input type="radio" name="rounds" value="1" /> 1</label>
+          <label><input type="radio" name="rounds" value="2" checked /> 2</label>
+          <label><input type="radio" name="rounds" value="3" /> 3</label>
+          <label><input type="radio" name="rounds" value="4" /> 4</label>
+        </fieldset>
+      </div>
+      <div class="rowline">
+        <label class="chk"><input type="checkbox" id="shuffleNames" /> Shuffle turn order</label>
+        <label class="chk"><input type="checkbox" id="shufflePhrases" /> Shuffle phrase order</label>
+      </div>
+
+      <p id="setupErr"></p>
+      <button type="button" class="b-main" id="btnStart">Start chain</button>
+    </div>
+
+    <div class="card hidden" id="playCard">
+      <p class="meta" id="turnMeta">&mdash;</p>
+      <p class="name-big" id="turnName">&mdash;</p>
+      <p class="phrase-big" id="turnPhrase">&mdash;</p>
+      <p class="inst" id="turnInst">&mdash;</p>
+      <p class="inst" id="turnChainHead" style="font-size: 0.74rem; opacity: 0.88">
+        Chain so far (sense, not verbatim):
+      </p>
+      <div class="chain" id="chainList" style="min-height: 2.5em"></div>
+      <div class="row-btns">
+        <button type="button" class="b-main" id="btnNext">Next</button>
+        <button type="button" class="b-sec" id="btnBack" title="Undo one step">Back</button>
+        <button type="button" class="b-sec" id="btnStop">Stop</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="doneCard">
+      <p class="done" id="doneText">Rounds complete — spin up another chain whenever you like.</p>
+      <button type="button" class="b-main" id="btnAgain" style="width: 100%; max-width: 100%; margin-top: 12px">
+        New setup
+      </button>
+    </div>
+  </div>
+
+  <script src="../../../js/unit12-reading-road-to-betterment-lexicon.js"></script>
+  <script src="../../../js/unit12-sports-idioms-lexicon.js"></script>
+  <script src="../../../js/unit12-listening-sb12-1-disabled-access-lexicon.js"></script>
+  <script src="../../../js/unit12-snowball-wordbank.js"></script>
+  <script src="../../../js/prep-snowball-phrases-engine.js"></script>
+  <script>
+(function () {
+  var hub = document.getElementById("navBack");
+  if (hub && window.PREP_U12_PG_CPE) hub.href = "index.html?course=cpe";
+
+  var defs = window.U12_SNOWBALL_THEME_DEFINITIONS || [];
+  var combined = window.U12_SNOWBALL_THEME_DEFINITIONS_COMBINED;
+  var rail = document.getElementById("themeRail");
+  var deckMeta = document.getElementById("deckMeta");
+
+  if (rail && window.PREP_SNOWBALL_PHRASES && typeof window.PREP_SNOWBALL_PHRASES.fillThemeRail === "function") {
+    window.PREP_SNOWBALL_PHRASES.fillThemeRail(rail, {
+      definitions: defs,
+      combined: combined || null,
+      radioName: "snowTheme",
+      inputClass: "theme-input",
+      deckMetaEl: deckMeta,
+      countPhrases: function (id) {
+        return typeof window.U12_SNOWBALL_getPhrases === "function"
+          ? window.U12_SNOWBALL_getPhrases(id).length
+          : 0;
+      }
+    });
+  }
+
+  function selectedThemeId() {
+    var sel = document.querySelector('input[name="snowTheme"]:checked');
+    if (sel && sel.value) return sel.value;
+    return defs[0] ? defs[0].id : "";
+  }
+
+  function loadPhrasesForPlay() {
+    var id = selectedThemeId();
+    var raw =
+      typeof window.U12_SNOWBALL_getPhrases === "function"
+        ? window.U12_SNOWBALL_getPhrases(id)
+        : [];
+    var copy = raw.slice();
+    var sh = document.getElementById("shufflePhrases");
+    if (sh && sh.checked && window.PREP_SNOWBALL_PHRASES && typeof window.PREP_SNOWBALL_PHRASES.shuffleInPlace === "function") {
+      window.PREP_SNOWBALL_PHRASES.shuffleInPlace(copy);
+    }
+    return copy;
+  }
+
+  if (window.PREP_SNOWBALL_PHRASES && typeof window.PREP_SNOWBALL_PHRASES.mount === "function") {
+    window.PREP_SNOWBALL_PHRASES.mount({
+      loadPhrases: loadPhrasesForPlay
+    });
+  }
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

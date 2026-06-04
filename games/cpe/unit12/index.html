@@ -1,0 +1,743 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <script>
+
+    (function () {
+
+      try {
+
+        sessionStorage.removeItem("mb2FceSession");
+
+        sessionStorage.setItem("prepU12GamesIntent", "cpe");
+
+      } catch (e) {}
+
+    })();
+
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Playground · Unit 12 · CPE Prep</title>
+
+  <style>
+
+    :root {
+
+      --panel: #1e293b;
+
+      --panel-soft: #334155;
+
+      --line: rgba(148, 163, 184, 0.22);
+
+      --text: #f8fafc;
+
+      --muted: #94a3b8;
+
+      --accent: #38bdf8;
+
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, sans-serif; }
+
+    body {
+
+      background: radial-gradient(120% 85% at 50% 0%, #111827 0%, #0d1117 50%);
+
+      color: var(--text);
+
+      min-height: 100vh;
+
+      padding: 24px;
+
+    }
+
+    .page {
+
+      width: min(960px, 100%);
+
+      margin: 0 auto;
+
+      background: var(--panel);
+
+      border: 1px solid var(--line);
+
+      border-radius: 20px;
+
+      padding: 24px;
+
+    }
+
+    .top {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: flex-start;
+
+      gap: 12px;
+
+      flex-wrap: wrap;
+
+      border-bottom: 1px solid var(--line);
+
+      padding-bottom: 16px;
+
+      margin-bottom: 16px;
+
+    }
+
+    h1 { font-size: 1.35rem; line-height: 1.25; }
+
+    .tag {
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+
+      color: var(--muted);
+
+      margin-top: 6px;
+
+    }
+
+    .back { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+    .back:hover { text-decoration: underline; }
+
+    .section-head {
+
+      margin: 22px 0 14px;
+
+      padding: 0 0 2px 14px;
+
+      border-left: 3px solid rgba(56, 189, 248, 0.45);
+
+    }
+
+    .section-head:first-of-type { margin-top: 0; }
+
+    .section-head .section-title { margin: 0; }
+
+    .section-lede {
+
+      font-size: 0.84rem;
+
+      color: var(--muted);
+
+      line-height: 1.48;
+
+      margin-top: 8px;
+
+      max-width: 54rem;
+
+    }
+
+    .section-title {
+
+      font-size: 0.72rem;
+
+      font-weight: 800;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.1em;
+
+      color: var(--accent);
+
+      margin: 22px 0 12px;
+
+    }
+
+    .section-title:first-of-type { margin-top: 0; }
+
+    .games-grid {
+
+      display: grid;
+
+      grid-template-columns: 1fr;
+
+      gap: 14px;
+
+    }
+
+    @media (min-width: 560px) {
+
+      .games-grid { grid-template-columns: repeat(2, 1fr); }
+
+    }
+
+    @media (min-width: 860px) {
+
+      .games-grid { grid-template-columns: repeat(3, 1fr); }
+
+    }
+
+    a.game-tile {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 10px;
+
+      min-height: 128px;
+
+      padding: 15px 15px 13px;
+
+      border-radius: 14px;
+
+      border: 1px solid var(--line);
+
+      background: linear-gradient(145deg, rgba(51, 65, 85, 0.92) 0%, rgba(30, 41, 59, 0.55) 100%);
+
+      text-decoration: none;
+
+      color: inherit;
+
+      transition: border-color 0.15s ease, transform 0.15s ease;
+
+    }
+
+    a.game-tile:hover {
+
+      border-color: rgba(56, 189, 248, 0.38);
+
+      transform: translateY(-2px);
+
+    }
+
+    .tile-row {
+
+      display: flex;
+
+      gap: 12px;
+
+      align-items: flex-start;
+
+      flex: 1;
+
+    }
+
+    .tile-icon {
+
+      font-size: 1.5rem;
+
+      line-height: 1;
+
+      flex-shrink: 0;
+
+      width: 2rem;
+
+      text-align: center;
+
+    }
+
+    .tile-copy { flex: 1; min-width: 0; }
+
+    a.game-tile h2 {
+
+      font-size: 0.98rem;
+
+      margin-bottom: 6px;
+
+      color: #f1f5f9;
+
+      font-weight: 700;
+
+      line-height: 1.25;
+
+    }
+
+    a.game-tile p {
+
+      font-size: 0.82rem;
+
+      color: var(--muted);
+
+      line-height: 1.42;
+
+    }
+
+    a.game-tile .go {
+
+      margin-top: auto;
+
+      padding-top: 4px;
+
+      font-size: 0.78rem;
+
+      font-weight: 700;
+
+      color: var(--accent);
+
+    }
+
+    .note {
+
+      font-size: 0.82rem;
+
+      color: var(--muted);
+
+      line-height: 1.45;
+
+      margin-top: 18px;
+
+      padding: 12px 14px;
+
+      border-radius: 12px;
+
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+
+      background: rgba(15, 23, 42, 0.35);
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <main class="page">
+
+    <header class="top">
+
+      <div>
+
+        <p class="tag">CPE Prep · Level 12</p>
+
+        <h1>Playground</h1>
+
+        <p class="tag">Shared engines · with <code>?course=cpe</code>, decks match the three Vocab Gym tabs (<em>The Road to Betterment</em> + <em>Sports idioms</em> + <em>Listening · Track 12.1</em>).</p>
+
+      </div>
+
+      <a class="back" id="nav-home" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Level 12</a>
+
+    </header>
+
+
+
+    <div class="section-head">
+
+      <p class="section-title">Chains · phrases</p>
+
+      <p class="section-lede">Turn-taking buildup on the same Unit&nbsp;12 packs as the Word Bank — not the disk reading or vocabulary folders.</p>
+
+    </div>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="snowball-phrases.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">❄️</span>
+
+          <div class="tile-copy">
+
+            <h2>Snowball phrases</h2>
+
+            <p>Turn-taking chain — pick Reading, Sports idioms, Listening, or blend all three Word Bank tabs.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <div class="section-head">
+
+      <p class="section-title">Sound booth · mic warm-ups</p>
+
+      <p class="section-lede">Mic-first recall on Unit&nbsp;12 phrase decks — sprint and bingo (pronunciation &amp; listening, not retelling).</p>
+
+    </div>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="voice-bingo.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🎙️</span>
+
+          <div class="tile-copy">
+
+            <h2>Voice bingo</h2>
+
+            <p>3×3 grid from hints; say or type the chunk. Forgiving mic match; &ldquo;I don&rsquo;t know&rdquo; reveals without a point.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="echo-minute.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">⏱️</span>
+
+          <div class="tile-copy">
+
+            <h2>Echo Minute</h2>
+
+            <p>60-second sprint: definition played aloud only — name as many target phrases as you can; skip reveals and advances.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <div class="section-head">
+
+      <p class="section-title">Grid duel · vocabulary tic-tac-toe</p>
+
+      <p class="section-lede">Classic 3×3: pick a square, read the cue, type the exact phrase — same three Unit&nbsp;12 packs as Vocab Gym. Offline solo on this build.</p>
+
+    </div>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="../../../vocabulary-tic-tac-toe-unit12.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">⭕</span>
+
+          <div class="tile-copy">
+
+            <h2>Vocabulary Tic-Tac-Toe</h2>
+
+            <p>Phrase prompts vs X/O — win a line on the board. Reading + sports idioms + listening packs.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <p class="section-title">Reading · quiz</p>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="millionaire/index.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">💰</span>
+
+          <div class="tile-copy">
+
+            <h2>Millionaire</h2>
+
+            <p>Facts / gaps / paraphrase — reading MCQs + phrase cloze + definition picks from all three Unit&nbsp;12 packs.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="hundred-to-one.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">💯</span>
+
+          <div class="tile-copy">
+
+            <h2>100 to 1</h2>
+
+            <p>Family-feud board — top phrases from <em>Betterment</em> and <em>Sports idioms</em> word banks.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="what-missing.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">💡</span>
+
+          <div class="tile-copy">
+
+            <h2>What is missing?</h2>
+
+            <p>Memory canvas — Unit&nbsp;12 phrase pool (reading + sports idioms + listening).</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <p class="section-title">Teams · shows</p>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="weakest-link.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">⛓️</span>
+
+          <div class="tile-copy">
+
+            <h2>The Weakest Link</h2>
+
+            <p>MCQs built from Unit&nbsp;12 hint→phrase pairs — three packs, host picks who is out.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="speaking-squad.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🎤</span>
+
+          <div class="tile-copy">
+
+            <h2>Speaking Squad</h2>
+
+            <p>Phrase + side-mission prompts from the same Unit&nbsp;12 word banks.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <p class="section-title">Squid</p>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="glass-bridge.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🪟</span>
+
+          <div class="tile-copy">
+
+            <h2>Glass bridge</h2>
+
+            <p>Nine steps — pick the phrase that fits each Unit&nbsp;12 definition clue.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="squid-red-green.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🟢</span>
+
+          <div class="tile-copy">
+
+            <h2>Red / Green</h2>
+
+            <p>Binary sort: real Unit&nbsp;12 phrase vs decoy hint — green / red lamp, 12 rounds, 3 lives.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <p class="section-title">Cards · drawing</p>
+
+    <div class="games-grid">
+
+      <a class="game-tile" href="alias.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🎭</span>
+
+          <div class="tile-copy">
+
+            <h2>Alias</h2>
+
+            <p>1:00 explainer rounds — deck from all Unit&nbsp;12 word banks.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+      <a class="game-tile" href="pictionary.html?course=cpe">
+
+        <div class="tile-row">
+
+          <span class="tile-icon" aria-hidden="true">🖍️</span>
+
+          <div class="tile-copy">
+
+            <h2>Pictionary</h2>
+
+            <p>Big canvas + readable host cards. Unit 12 word bank.</p>
+
+          </div>
+
+        </div>
+
+        <span class="go">Open →</span>
+
+      </a>
+
+    </div>
+
+
+
+    <p class="note">
+
+      <strong>Deck scope:</strong> Mic games, Millionaire, 100&nbsp;to&nbsp;1, What is missing?, Weakest Link, Speaking Squad, Alias, and Glass bridge load <code>unit12-reading-road-to-betterment-lexicon.js</code> + <code>unit12-sports-idioms-lexicon.js</code> + <code>unit12-listening-sb12-1-disabled-access-lexicon.js</code> — the same three tabs as <strong>Vocab Gym</strong>. Shared engines only; content is Unit&nbsp;12–specific.
+
+    </p>
+
+    <p class="note">
+
+      <strong>Not here:</strong> Whisper, Dominoes, and Eco-Uno stay off this Unit&nbsp;12 hub. Word Bank trainers (flip, drop, MCQ, sticky, Prep vault), the Part&nbsp;5 reading task, and vocabulary disk pages live under <strong>Vocab Gym</strong> and <strong>Unit materials</strong> on Level&nbsp;12.
+
+    </p>
+
+  </main>
+
+
+
+  <script>
+
+(function () {
+
+  var q = new URLSearchParams(window.location.search || "");
+
+  var rawBack = q.get("back");
+
+  var nav = document.getElementById("nav-home");
+
+  function sanitizeReturnHref(raw, fallback) {
+
+    var s = String(raw || "").trim();
+
+    if (!s) return fallback || "";
+
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+
+    if (/^\s*\/\//.test(s)) return fallback || "";
+
+    try {
+
+      var u = new URL(s, window.location.href);
+
+      if (u.origin !== window.location.origin) return fallback || "";
+
+      if (/fce\.html|ege\.html/i.test(u.pathname)) return fallback || "";
+
+      return u.pathname + u.search + u.hash;
+
+    } catch (e) {
+
+      return fallback || "";
+
+    }
+
+  }
+
+  if (nav && rawBack) {
+
+    var decoded = rawBack;
+
+    try {
+
+      decoded = decodeURIComponent(rawBack.replace(/\+/g, " "));
+
+    } catch (e0) {}
+
+    nav.href = sanitizeReturnHref(decoded, nav.getAttribute("href"));
+
+  }
+
+})();
+
+  </script>
+
+</body>
+
+</html>
+
+

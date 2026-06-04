@@ -38,6 +38,90 @@
     }
   ];
 
+  var speakerPhrases = {
+    A: [
+      { en: "teamwork aims at a company's accomplishments", ru: "командная работа нацелена на достижения компании", tip: "№7" },
+      { en: "cooperate with colleagues", ru: "сотрудничать с коллегами", tip: "№7" },
+      { en: "too much competition at work", ru: "слишком большая конкуренция на работе" },
+      { en: "longing for promotion", ru: "стремятся к повышению" },
+      { en: "move on to a better position", ru: "перейти на лучшую должность" },
+      { en: "another company", ru: "другая компания" },
+      { en: "a company's accomplishments", ru: "достижения компании" },
+      { en: "get ahead", ru: "продвигаться вперёд" },
+      { en: "their own company", ru: "их собственная компания" },
+      { en: "work more effectively", ru: "работать эффективнее" },
+      { en: "better common and personal results", ru: "лучшие общие и личные результаты" }
+    ],
+    B: [
+      { en: "listen to your colleagues", ru: "слушать коллег", tip: "№6" },
+      { en: "non-verbal ways of communication", ru: "невербальные способы общения", tip: "№6" },
+      { en: "understand people around you", ru: "понимать людей вокруг себя" },
+      { en: "take time", ru: "найти время" },
+      { en: "face to face", ru: "лично, с глазу на глаз" },
+      { en: "Pay attention to", ru: "обращать внимание на" },
+      { en: "appropriate gestures and eye contact", ru: "уместные жесты и зрительный контакт" },
+      { en: "words of praise or criticism", ru: "слова похвалы или критики" },
+      { en: "The same piece of advice", ru: "тот же совет" },
+      { en: "Explain to your management your decisions in detail", ru: "подробно объяснять руководству свои решения" },
+      { en: "a well-balanced person", ru: "уравновешенный человек" },
+      { en: "career prospects", ru: "карьерные перспективы" }
+    ],
+    C: [
+      { en: "men and women working separately", ru: "мужчины и женщины работают отдельно", tip: "№3" },
+      { en: "difficult for men and women to work in the same space", ru: "мужчинам и женщинам трудно работать в одном пространстве" },
+      { en: "more creative and emotional", ru: "более творческие и эмоциональные" },
+      { en: "more logical and better organized", ru: "более логичные и лучше организованные" },
+      { en: "Women want to feel", ru: "женщины хотят чувствовать" },
+      { en: "men want to think", ru: "мужчины хотят думать" },
+      { en: "considers these differences", ru: "учитывает эти различия" },
+      { en: "much better off", ru: "в гораздо лучшем положении" },
+      { en: "without distracting each other", ru: "не отвлекая друг друга" },
+      { en: "conflicts and misunderstandings", ru: "конфликты и недопонимание" }
+    ],
+    D: [
+      { en: "too much gossip", ru: "слишком много сплетен", tip: "№2" },
+      { en: "distracts me", ru: "отвлекает меня", tip: "№2" },
+      { en: "gets on my nerves", ru: "действует мне на нервы" },
+      { en: "domestic affairs", ru: "домашние дела" },
+      { en: "some offices", ru: "некоторые офисы" },
+      { en: "does not depend on who dominates there", ru: "это не зависит от того, кто там преобладает" },
+      { en: "men are sometimes even worse", ru: "мужчины иногда даже хуже" },
+      { en: "discuss their manager", ru: "обсуждать своего начальника" },
+      { en: "the latest teambuilding activity", ru: "последний тимбилдинг" },
+      { en: "simply unpleasant", ru: "просто неприятно" },
+      { en: "create some personal space", ru: "создать немного личного пространства" },
+      { en: "work effectively", ru: "работать эффективно" },
+      { en: "listen to music instead", ru: "вместо этого слушать музыку" }
+    ],
+    E: [
+      { en: "not to go to work if they are ill or upset", ru: "не ходить на работу больными или расстроенными", tip: "№4" },
+      { en: "there should be a law", ru: "должен быть закон" },
+      { en: "to work effectively is simply impossible", ru: "эффективно работать просто невозможно" },
+      { en: "someone is coughing", ru: "кто-то кашляет" },
+      { en: "wants to scream at you", ru: "хочет накричать на тебя" },
+      { en: "instead of listening to your requests or suggestions", ru: "вместо того чтобы слушать ваши просьбы или предложения" },
+      { en: "Any manager must ensure", ru: "любой руководитель должен обеспечить" },
+      { en: "the office environment is calm", ru: "офисная атмосфера спокойная" },
+      { en: "appropriate for work", ru: "подходящая для работы" },
+      { en: "introduce some relaxation techniques", ru: "ввести какие-то техники расслабления" },
+      { en: "a good idea", ru: "хорошая идея" }
+    ],
+    F: [
+      { en: "clear explanation", ru: "чёткое объяснение", tip: "№1" },
+      { en: "written form", ru: "письменная форма", tip: "№1" },
+      { en: "What is important in any office", ru: "что важно в любом офисе" },
+      { en: "what exactly to do", ru: "что именно делать" },
+      { en: "from your management", ru: "от руководства" },
+      { en: "room for confusion", ru: "пространство для путаницы" },
+      { en: "misinterpretation", ru: "неверное толкование" },
+      { en: "understood as suggestions", ru: "восприниматься как предложения, а не указания" },
+      { en: "there will not be any result", ru: "не будет никакого результата" },
+      { en: "Instructions in the written form are simply perfect", ru: "инструкции в письменной форме просто идеальны" },
+      { en: "details of a desirable result", ru: "детали желаемого результата" },
+      { en: "completing the task successfully", ru: "успешное выполнение задачи" }
+    ]
+  };
+
   pack.units.push({
     id: "u15-office-work",
     unitOrder: 15,
@@ -89,7 +173,7 @@
         id: sp.id,
         label: "Speaker " + sp.id,
         fullText: sp.text,
-        phrases: [],
+        phrases: speakerPhrases[sp.id] || [],
         chunks: [{ text: sp.text, showText: true }]
       };
     }),

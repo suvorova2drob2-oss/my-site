@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice bingo · Unit 12 · CPE Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../../../js/prep-u12-playground-shell.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a30;
+      --line: #2a3555;
+      --text: #e8ecff;
+      --dim: #8b95b8;
+      --accent: #38bdf8;
+      --accent2: #a78bfa;
+      --ok: #86efac;
+      --back: linear-gradient(145deg, #1e293b 0%, #0f172a 48%, #172554 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 520px at 80% -15%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(700px 420px at 10% 0%, rgba(167, 139, 250, 0.1), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 8px clamp(10px, 2.5vw, 16px) 12px;
+    }
+    .wrap { max-width: 680px; margin: 0 auto; }
+
+    .howfold {
+      margin-bottom: 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.4);
+      padding: 6px 10px;
+    }
+    .howfold summary {
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      list-style: none;
+      padding: 4px 0;
+    }
+    .howfold summary::-webkit-details-marker { display: none; }
+    .howfold .sub {
+      margin: 8px 0 4px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+    .bar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 8px 4px;
+      border-radius: 10px;
+    }
+    .bar a:hover { background: rgba(56, 189, 248, 0.08); }
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      margin-bottom: 4px;
+    }
+    h1 {
+      font-size: clamp(1.05rem, 3.2vw, 1.3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .card {
+      background: linear-gradient(165deg, rgba(24, 33, 58, 0.95), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: clamp(12px, 2.5vw, 16px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+    }
+    .card + .card { margin-top: 14px; }
+
+    .wb-head {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .theme-cell { position: relative; }
+    .theme-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .theme-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 68px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.85);
+      cursor: pointer;
+      transition: border-color 0.18s ease, transform 0.15s ease;
+    }
+    .theme-pill:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-1px);
+    }
+    .theme-input:focus-visible + .theme-pill {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .theme-input:checked + .theme-pill {
+      border-color: rgba(56, 189, 248, 0.65);
+      background: linear-gradient(155deg, rgba(56, 189, 248, 0.14), rgba(167, 139, 250, 0.07));
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.22);
+    }
+    .theme-ico { font-size: 1.28rem; line-height: 1; }
+    .theme-title { font-weight: 800; font-size: 0.78rem; color: #f1f5ff; }
+    .theme-tag { font-size: 0.66rem; color: var(--dim); font-weight: 600; }
+
+    .deck-meta {
+      font-size: 0.72rem;
+      color: var(--dim);
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .vb-actions-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .vb-actions-top button {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 10px 16px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+    .vb-actions-top button:hover { transform: translateY(-1px); }
+
+    .clue-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+    #bingoClue {
+      font-size: clamp(0.85rem, 2.4vw, 1rem);
+      line-height: 1.4;
+      font-weight: 600;
+      color: #f1f5ff;
+      min-height: 2.6em;
+      max-height: 5.2em;
+      overflow-y: auto;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(13, 19, 36, 0.72);
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+
+    .vb-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      width: min(92vw, 340px);
+      max-width: 340px;
+      margin: 0 auto 10px;
+    }
+    .vb-cell {
+      aspect-ratio: 1;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .vb-cell--back {
+      background: var(--back);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .vb-cell--back.vb-cell--idle {
+      opacity: 0.45;
+    }
+    .vb-cell-back {
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      font-weight: 800;
+      color: rgba(148, 163, 184, 0.55);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+    .vb-cell--open {
+      background: rgba(22, 33, 62, 0.96);
+      border-color: rgba(134, 239, 172, 0.35);
+      box-shadow: 0 0 0 1px rgba(134, 239, 172, 0.12);
+    }
+    .vb-cell-phrase {
+      font-size: clamp(0.62rem, 2.1vw, 0.78rem);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ok);
+      hyphens: auto;
+      overflow-wrap: anywhere;
+    }
+
+    .status-row {
+      font-size: 0.78rem;
+      color: var(--dim);
+      text-align: center;
+      margin-bottom: 6px;
+      min-height: 1.2em;
+      font-weight: 600;
+    }
+    .progress-row {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .mic-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .vb-transcript {
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: #c8d4f0;
+      text-align: center;
+      min-height: 1.45em;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(13, 19, 36, 0.55);
+      border: 1px solid rgba(42, 53, 85, 0.85);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .vb-type-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+    .vb-type-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 8px;
+    }
+    .vb-type-row input {
+      flex: 1;
+      min-width: 140px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(13, 19, 36, 0.72);
+      color: var(--text);
+    }
+    .vb-type-row input::placeholder { color: rgba(148, 163, 184, 0.65); }
+    .vb-type-row input:focus {
+      outline: 2px solid rgba(56, 189, 248, 0.45);
+      outline-offset: 2px;
+    }
+    .vb-type-row .b-main {
+      flex-shrink: 0;
+      align-self: center;
+      padding: 9px 14px;
+      border-radius: 10px;
+    }
+    .win-banner {
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--ok);
+      margin-bottom: 8px;
+    }
+    .win-banner[hidden] { display: none !important; }
+
+    .b-main {
+      background: linear-gradient(165deg, rgba(56, 189, 248, 0.28), rgba(56, 189, 248, 0.12));
+      border-color: rgba(56, 189, 248, 0.45);
+      color: var(--text);
+    }
+    .b-dontknow {
+      background: rgba(251, 113, 133, 0.08);
+      border-color: rgba(251, 113, 133, 0.35);
+      color: #fecdd3;
+    }
+    .b-sec {
+      background: rgba(13, 19, 36, 0.65);
+      color: var(--text);
+    }
+
+    @media (max-height: 760px) {
+      body { padding-top: 6px; padding-bottom: 8px; }
+      .howfold { margin-bottom: 6px; padding: 4px 8px; }
+      .vb-grid {
+        width: min(90vw, 300px);
+        max-width: 300px;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      #bingoClue {
+        min-height: 2.2em;
+        max-height: 3.8em;
+        padding: 8px 10px;
+      }
+      .vb-cell { padding: 5px; }
+      .vb-cell-phrase {
+        font-size: clamp(0.54rem, 1.75vw, 0.72rem);
+      }
+      .vb-cell-back {
+        font-size: clamp(1rem, 4vw, 1.45rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">CPE Prep · Level 12 · Playground</p>
+        <h1>Voice bingo · 3×3</h1>
+      </div>
+      <a id="navBack" href="index.html?course=cpe">&larr; Playground</a>
+    </div>
+    <details class="howfold">
+      <summary>Правила и подсказки</summary>
+      <p class="sub">
+        Девять клеток закрыты рубашками; сверху — <strong>определение</strong> из Word Bank Unit&nbsp;12.
+        Речь в фоне сравнивается с ответом <strong>очень мягко</strong> (в т.ч. «битые» слова от STT).
+        <strong>Транскрипт не показывается</strong>; можно ввести фразу вручную.
+        <strong>I don't know</strong> — без очка.
+      </p>
+    </details>
+
+    <div class="card">
+      <p class="wb-head">Тема Word Bank</p>
+      <div class="theme-grid" id="bingoThemeRail" role="radiogroup" aria-label="Тема Word Bank"></div>
+      <p class="deck-meta" id="bingoDeckMeta"></p>
+
+      <div class="vb-actions-top">
+        <button type="button" class="b-main" id="bingoNew">Новая игра</button>
+        <button type="button" class="b-sec b-dontknow" id="bingoDontKnow">I don't know / Не знаю</button>
+      </div>
+
+      <p class="clue-label">Определение (цель — произнести фразу)</p>
+      <p id="bingoClue" aria-live="polite"></p>
+
+      <div class="vb-grid" id="bingoGrid" aria-label="Сетка бинго"></div>
+
+      <p class="progress-row" id="bingoProgress" aria-live="polite"></p>
+
+      <p class="mic-label">Микрофон · распознавание скрыто</p>
+      <p class="vb-transcript" id="bingoTranscript" aria-live="polite"></p>
+
+      <p class="vb-type-label">Или введите ответ</p>
+      <div class="vb-type-row">
+        <input
+          type="text"
+          id="bingoType"
+          enterkeyhint="done"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Type the phrase…"
+        />
+        <button type="button" class="b-main" id="bingoCheck">Проверить</button>
+      </div>
+
+      <p class="status-row" id="bingoStatus" aria-live="polite"></p>
+      <p class="win-banner" id="bingoWin" hidden></p>
+    </div>
+  </div>
+
+  <script src="../../../js/unit12-reading-road-to-betterment-lexicon.js"></script>
+  <script src="../../../js/unit12-sports-idioms-lexicon.js"></script>
+  <script src="../../../js/unit12-listening-sb12-1-disabled-access-lexicon.js"></script>
+  <script src="../../../js/unit12-snowball-wordbank.js"></script>
+  <script src="../../../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../../../js/prep-snowball-phrases-engine.js"></script>
+  <script src="../../../js/prep-voice-bingo-engine.js"></script>
+  <script>
+(function () {
+  var hub = document.getElementById("navBack");
+  if (hub && window.PREP_U12_PG_CPE) hub.href = "index.html?course=cpe";
+
+  var defs = window.U12_SNOWBALL_THEME_DEFINITIONS || [];
+  var combined = window.U12_SNOWBALL_THEME_DEFINITIONS_COMBINED;
+  var rail = document.getElementById("bingoThemeRail");
+  var deckMeta = document.getElementById("bingoDeckMeta");
+
+  function countLex(id) {
+    if (typeof window.U12_SNOWBALL_getLexRows !== "function") return 0;
+    return window.U12_SNOWBALL_getLexRows(id).length;
+  }
+
+  if (rail && window.PREP_SNOWBALL_PHRASES && typeof window.PREP_SNOWBALL_PHRASES.fillThemeRail === "function") {
+    window.PREP_SNOWBALL_PHRASES.fillThemeRail(rail, {
+      definitions: defs,
+      combined: combined || null,
+      radioName: "bingoTheme",
+      inputClass: "theme-input",
+      deckMetaEl: deckMeta,
+      countPhrases: countLex,
+      formatDeckMeta: function (n) {
+        return (
+          n +
+          " уникальных пар hint→phrase · нужно минимум 9 для игры."
+        );
+      }
+    });
+  }
+
+  if (window.PREP_VOICE_BINGO && typeof window.PREP_VOICE_BINGO.mount === "function") {
+    window.PREP_VOICE_BINGO.mount({
+      els: {
+        grid: document.getElementById("bingoGrid"),
+        clue: document.getElementById("bingoClue"),
+        progress: document.getElementById("bingoProgress"),
+        status: document.getElementById("bingoStatus"),
+        transcript: document.getElementById("bingoTranscript"),
+        typeInput: document.getElementById("bingoType"),
+        btnCheck: document.getElementById("bingoCheck"),
+        btnDontKnow: document.getElementById("bingoDontKnow"),
+        btnNew: document.getElementById("bingoNew"),
+        winBanner: document.getElementById("bingoWin")
+      },
+      themeDefinitions: defs,
+      radioName: "bingoTheme",
+      getLexRows: function (themeId) {
+        return typeof window.U12_SNOWBALL_getLexRows === "function"
+          ? window.U12_SNOWBALL_getLexRows(themeId)
+          : [];
+      }
+    });
+  }
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

@@ -78,7 +78,8 @@
                 id: idPrefix + "::" + wi + "::" + phrase,
                 phrase: phrase,
                 hint: String(row[hintKey] != null ? row[hintKey] : "").trim(),
-                speaker: speaker
+                speaker: speaker,
+                group: row.group ? String(row.group).trim() : ""
             });
         }
         return out;

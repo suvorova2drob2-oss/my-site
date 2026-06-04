@@ -50,6 +50,35 @@
                 plainGlobal: "U10_SIMILES_LEXIS_PLAIN",
                 speakerGlobal: "LEX_U10_SIMILES_SPEAKER_LABEL",
                 wordBankThemeId: "u10_similes"
+            },
+            {
+                id: "u12_reading_road_to_betterment",
+                description: "Unit 12 Reading · The Road to Betterment (Part 5) · phrase deck + quick dictionary",
+                dataFile: "js/unit12-reading-road-to-betterment-lexicon.js",
+                rowsGlobal: "U12_READING_ROAD_TO_BETTERMENT_LEXIS_GAME_ROWS",
+                plainGlobal: "U12_READING_ROAD_TO_BETTERMENT_LEXIS_PLAIN",
+                speakerGlobal: "LEX_U12_READING_ROAD_TO_BETTERMENT_LABEL",
+                wordBankThemeId: "u12_reading_road_to_betterment",
+                quickDictionaryEngine: "js/cpe-quick-dictionary-drawer.js"
+            },
+            {
+                id: "u12_sports_idioms",
+                description: "Unit 12 Vocabulary · Sports idioms · phrase deck",
+                dataFile: "js/unit12-sports-idioms-lexicon.js",
+                rowsGlobal: "U12_SPORTS_IDIOMS_LEXIS_GAME_ROWS",
+                plainGlobal: "U12_SPORTS_IDIOMS_LEXIS_PLAIN",
+                speakerGlobal: "LEX_U12_SPORTS_IDIOMS_LABEL",
+                wordBankThemeId: "u12_sports_idioms"
+            },
+            {
+                id: "u12_listening_disabled_access",
+                description: "Unit 12 Listening · SB Track 12.1 Disabled access · phrase deck + quick dictionary",
+                dataFile: "js/unit12-listening-sb12-1-disabled-access-lexicon.js",
+                rowsGlobal: "U12_LISTENING_DISABLED_ACCESS_LEXIS_GAME_ROWS",
+                plainGlobal: "U12_LISTENING_DISABLED_ACCESS_LEXIS_PLAIN",
+                speakerGlobal: "LEX_U12_LISTENING_DISABLED_ACCESS_LABEL",
+                wordBankThemeId: "u12_listening_disabled_access",
+                quickDictionaryEngine: "js/cpe-quick-dictionary-drawer.js"
             }
         ],
         /** Куски ensureU9FallPool() со своей логикой (reading scrape, idioms, env, prep, interior, art, minds eye…) */
@@ -66,6 +95,34 @@
         ],
         /** Отдельный билдер слов для Tic-Tac-Toe — при новой теме дополнить unit9-ttt-word-bank.js */
         ticTacToeBuilderFile: "js/unit9-ttt-word-bank.js",
+        unit10TttWordBankFile: "js/unit10-ttt-word-bank.js",
+        unit10TttPage: "vocabulary-tic-tac-toe-unit10.html",
+        unit12TttWordBankFile: "js/unit12-ttt-word-bank.js",
+        unit12TttPage: "vocabulary-tic-tac-toe-unit12.html",
+        unit12SnowballWordBankFile: "js/unit12-snowball-wordbank.js",
+        unit12PlaygroundShellFile: "js/prep-u12-playground-shell.js",
+        unit12PlaygroundHub: "games/cpe/unit12/index.html",
+        unit12PlaygroundLexisScriptOrderHint:
+            "games/cpe/unit12/echo-minute.html — unit12-reading + sports-idioms + listening lexicon → unit12-snowball-wordbank → engine",
+        /** Vocab Gym hub bridge (Unit 10 / 12): tabs → Word Bank + fall pool filter + sticky / vault / TTT */
+        /** Unit 10 Vocab Gym bridge — inline in index.html (u10LexGamesActive, openUnit10LexGamesHub, …) */
+        unit12LexGamesBridgeFile: "js/prep-hub-unit12-lexgames.js",
+        unit10StickyRegistryFile: "js/unit10-sticky-registry.js",
+        unit12StickyRegistryFile: "js/unit12-sticky-registry.js",
+        unit12StickyPacksFile: "js/unit12-sticky-packs.js",
+        vocabGymGameSurfaces: [
+            "wordBank",
+            "flip",
+            "fall",
+            "mcq",
+            "express",
+            "hear",
+            "hearPar",
+            "match",
+            "sticky",
+            "ticTacToe",
+            "prepVault"
+        ],
         /** Unit 10 playground Snowball — темы = те же plainAnchoredRowPacks (см. unit10-snowball-wordbank.js) */
         unit10SnowballWordBankFile: "js/unit10-snowball-wordbank.js",
         /** Эталон порядка подключения лексики на страницах playground: listening-p4-wb10-pack → books → shakespeare → similes → unit10-snowball-wordbank (как в echo-minute.html). */
@@ -76,6 +133,21 @@
         voiceBingoEngineFile: "js/prep-voice-bingo-engine.js",
         /** Playground · Echo Minute — 60s sprint: TTS definition (hidden text), voice/type answer + skip */
         echoMinuteEngineFile: "js/prep-echo-minute-engine.js",
+        /** Playground · Alias — block-based card grid (prep-alias-engine.css + mount) */
+        aliasEngineFile: "js/prep-alias-engine.js",
+        aliasEngineCssFile: "css/prep-alias-engine.css",
+        unit12AliasPageFile: "games/cpe/unit12/alias.html",
+        /** Playground · Pictionary — canvas draw + host guess grid (prep-pictionary-engine.css + mount) */
+        pictionaryEngineFile: "js/prep-pictionary-engine.js",
+        pictionaryEngineCssFile: "css/prep-pictionary-engine.css",
+        unit12PictionaryPageFile: "games/cpe/unit12/pictionary.html",
+        /** CPE Listening Part 3 MC — 2-stage (MC + hunt), grey shell */
+        cpeListeningP3McEngineFile: "js/cpe-listening-p3-mc-engine.js",
+        cpeListeningP3McHuntFile: "js/cpe-listening-p3-mc-hunt.js",
+        cpeListeningP3McCssFile: "css/cpe-listening-p3-mc-shell.css",
+        unit12ListeningP3PageFile: "unit12-listening/part3-disabled-access/index.html",
+        unit12Listening121LexiconFile: "js/unit12-listening-sb12-1-disabled-access-lexicon.js",
+        cpeListeningTranscriptPhrasesFile: "js/cpe-listening-transcript-phrases.js",
         /** Playground · Shadowing Star — shadowing with class audio + runner-style mic feedback */
         shadowingStarEngineFile: "js/prep-shadowing-star-engine.js",
         /** Playground · Gap Audio Round — SB 10.1 full track + typed gaps per sentence (see js/unit10-gap-audio-round-data.js) */

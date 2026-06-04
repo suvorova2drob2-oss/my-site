@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Idioms word box (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --phrase-bg: rgba(12, 28, 58, 0.72);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.26rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 22px;
+    }
+
+    .phrase-bank {
+      border: 1px solid #3d5a86;
+      border-radius: 16px;
+      padding: 20px 18px 22px;
+      background: linear-gradient(165deg, rgba(15, 36, 68, 0.55) 0%, rgba(8, 22, 48, 0.35) 100%);
+      margin-bottom: 28px;
+    }
+    .phrase-bank__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 16px;
+    }
+    .phrase-bank__head h2 { font-size: 1.02rem; color: #bae6fd; }
+    .phrase-bank__head p { font-size: 0.84rem; color: var(--muted); }
+    .phrase-grid {
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .phrase-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .phrase-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      background: var(--phrase-bg);
+      border-left: 4px solid var(--accent);
+    }
+    .phrase-card:nth-child(2) { border-left-color: #fbbf24; }
+    .phrase-card:nth-child(3) { border-left-color: #f87171; }
+    .phrase-card:nth-child(4) { border-left-color: #4ade80; }
+    .phrase-card:nth-child(5) { border-left-color: #a78bfa; }
+    .phrase-idm {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: #fef08a;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .phrase-meta {
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+
+    .practice-zone > h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .task h3 { font-size: 1.02rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.92rem;
+    }
+    .word-box strong { color: #bae6fd; display: block; margin-bottom: 10px; }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+    }
+    .bank-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(254, 240, 138, 0.45);
+      background: rgba(8, 22, 48, 0.55);
+      font-size: 0.88rem;
+      color: #fef08a;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      touch-action: manipulation;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .bank-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.14);
+    }
+    .bank-chip:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .bank-note {
+      width: 100%;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 14px;
+    }
+
+    .gap-list { display: flex; flex-direction: column; gap: 12px; }
+    .gap-sent {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-sent .num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .gap-sent .ctx { color: #bae6fd; font-weight: 600; }
+    .gap-word {
+      display: inline-block;
+      vertical-align: baseline;
+      width: 7.5rem;
+      max-width: 100%;
+      margin: 0 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+    .gap-word:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.3);
+    }
+    .gap-word.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-word.is-ok { border-color: #22c55e; }
+    .gap-word.is-bad { border-color: #f87171; }
+
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .btn-secondary {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .fb-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .fb-panel.show { display: block; }
+
+    @media (max-width: 600px) {
+      .page { padding: 18px 14px; }
+      .gap-word { display: block; margin: 6px 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Idioms &mdash; word box (Exercise 2)</h1>
+      <a class="back" id="back-link" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Level 12</a>
+    </header>
+
+    <p class="intro">
+      Five more sport-linked idioms. Read the phrase bank first, then complete each gap with <strong>one word</strong> from the box. Use each word once.
+    </p>
+
+    <section class="phrase-bank" aria-label="Idiom phrase bank">
+      <div class="phrase-bank__head">
+        <h2>Phrase bank</h2>
+        <p>Full idiom &middot; meaning in everyday English</p>
+      </div>
+      <div class="phrase-grid">
+        <article class="phrase-card">
+          <p class="phrase-idm">in the same ballpark</p>
+          <p class="phrase-meta">Approximately the same amount or range (origin: baseball).</p>
+        </article>
+        <article class="phrase-card">
+          <p class="phrase-idm">on target</p>
+          <p class="phrase-meta">On course to achieve something; proceeding as planned.</p>
+        </article>
+        <article class="phrase-card">
+          <p class="phrase-idm">no holds barred</p>
+          <p class="phrase-meta">With no limits or restrictions; completely frank.</p>
+        </article>
+        <article class="phrase-card">
+          <p class="phrase-idm">bowl someone over</p>
+          <p class="phrase-meta">To surprise or impress someone greatly (origin: cricket / bowling).</p>
+        </article>
+        <article class="phrase-card">
+          <p class="phrase-idm">take it on the chin</p>
+          <p class="phrase-meta">To accept criticism or bad news without complaining (origin: boxing).</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="practice-zone" aria-label="Exercise">
+      <h2>Practice</h2>
+
+      <article class="task">
+        <p class="task__label">Exercise 2</p>
+        <h3>Complete the idioms with a word from the box</h3>
+        <p class="instr">Complete each gap with <strong>one word</strong> from the box. The highlighted words around each gap are part of the idiom.</p>
+
+        <p class="hint-bar">
+          <strong>How:</strong> click a gap, then click a word in the bank &mdash; or type in the box.
+        </p>
+
+        <div class="word-box" id="word-bank" aria-label="Word box">
+          <strong>Word box</strong>
+          <div class="word-box-line">
+            <button type="button" class="bank-chip" data-word="ballpark">ballpark</button>
+            <button type="button" class="bank-chip" data-word="barred">barred</button>
+            <button type="button" class="bank-chip" data-word="chin">chin</button>
+            <button type="button" class="bank-chip" data-word="bowled">bowled</button>
+            <button type="button" class="bank-chip" data-word="target">target</button>
+          </div>
+          <p class="bank-note">Each word is used once. Clicking a chip again can move it to another gap.</p>
+        </div>
+
+        <div class="gap-list">
+          <p class="gap-sent">
+            <span class="num">1.</span>
+            The first company quoted us a fee of $400,000 to redesign the complex. I can&rsquo;t remember the exact figure given by the second company, but it was <span class="ctx">in the same</span>
+            <input type="text" class="gap-word" id="gap-1" autocomplete="off" spellcheck="false" aria-label="Gap 1" />.
+          </p>
+          <p class="gap-sent">
+            <span class="num">2.</span>
+            James has put a great deal of practice into his chess game, and if he continues like this, he&rsquo;ll be <span class="ctx">on</span>
+            <input type="text" class="gap-word" id="gap-2" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+            to win the national championship.
+          </p>
+          <p class="gap-sent">
+            <span class="num">3.</span>
+            Her autobiography was quite shocking really. There were <span class="ctx">no holds</span>
+            <input type="text" class="gap-word" id="gap-3" autocomplete="off" spellcheck="false" aria-label="Gap 3" />
+            when it came to what she thought about her teammates.
+          </p>
+          <p class="gap-sent">
+            <span class="num">4.</span>
+            The generosity of his co-workers
+            <input type="text" class="gap-word" id="gap-4" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+            <span class="ctx">him over</span> as he&rsquo;s only been there for a year and his leaving present was incredible.
+          </p>
+          <p class="gap-sent">
+            <span class="num">5.</span>
+            He knew he was to blame for his team losing the match, and when the coach ranted and raved at him, he <span class="ctx">took it on the</span>
+            <input type="text" class="gap-word" id="gap-5" autocomplete="off" spellcheck="false" aria-label="Gap 5" />
+            and didn&rsquo;t complain.
+          </p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-primary" id="btn-check">Check answers</button>
+          <button type="button" class="btn-secondary" id="btn-reset">Reset</button>
+        </div>
+        <div class="fb-panel" id="feedback" aria-live="polite"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../../js/prep-vocab-word-box-gaps.js"></script>
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script>
+(function () {
+  var KEY = {
+    1: { word: "ballpark", idiom: "in the same ballpark" },
+    2: { word: "target", idiom: "on target" },
+    3: { word: "barred", idiom: "no holds barred" },
+    4: { word: "bowled", idiom: "bowl someone over" },
+    5: { word: "chin", idiom: "take it on the chin" }
+  };
+
+  var fb = document.getElementById("feedback");
+
+  PREP_VOCAB_WORD_BOX_GAPS.mount({
+    bankRoot: "#word-bank",
+    gapIds: [1, 2, 3, 4, 5],
+    gapIdPrefix: "gap-",
+    onFill: function () {
+      if (fb) fb.classList.remove("show");
+    },
+  });
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  for (var n = 1; n <= 5; n++) {
+    document.getElementById("gap-" + n).addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      if (fb) fb.classList.remove("show");
+    });
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+    for (var i = 1; i <= 5; i++) {
+      var el = document.getElementById("gap-" + i);
+      var raw = el.value;
+      var ok = norm(raw) === norm(KEY[i].word);
+      if (raw.trim() && ok) correct++;
+      el.classList.remove("is-ok", "is-bad", "is-active");
+      el.classList.add(!raw.trim() ? "is-bad" : ok ? "is-ok" : "is-bad");
+      html +=
+        "<p><strong>" +
+        (ok && raw.trim() ? "\u2713" : "\u2717") +
+        " " +
+        i +
+        ".</strong> Key: <em>" +
+        esc(KEY[i].word) +
+        "</em> &middot; <em>" +
+        esc(KEY[i].idiom) +
+        "</em></p>";
+    }
+    fb.innerHTML =
+      "<p style=\"margin-bottom:10px;font-weight:700;\">Score: " +
+      correct +
+      " / 5</p>" +
+      html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    for (var j = 1; j <= 5; j++) {
+      var el = document.getElementById("gap-" + j);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad", "is-active");
+    }
+    if (fb) fb.classList.remove("show");
+  });
+
+  var back = document.getElementById("back-link");
+  if (back) {
+    var params = new URLSearchParams(location.search);
+    if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
+      var folderId =
+        typeof PREP_LEGACY_U12_VOCAB_FOLDER_ID !== "undefined"
+          ? PREP_LEGACY_U12_VOCAB_FOLDER_ID
+          : "prep_legacy_u12_vocab";
+      back.href =
+        "../../../index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
+        encodeURIComponent(folderId);
+      var lbl = params.get("backLabel");
+      back.textContent = lbl ? "\u2190 " + lbl : "\u2190 Vocabulary \u00b7 Level 12";
+    }
+  }
+})();
+  </script>
+</body>
+</html>

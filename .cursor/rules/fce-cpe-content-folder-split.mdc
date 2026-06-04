@@ -1,0 +1,43 @@
+---
+description: FCE vs CPE — separate folder trees; never mix topics, links, or UI copy across tracks
+alwaysApply: true
+---
+
+# FCE / CPE — жёсткое разделение контента
+
+Два **разных продукта** для ученика. В одном репозитории — **разные деревья папок** и **разные точки входа**. Агент **не смешивает** курсы на экране и в навигации.
+
+## Куда класть новый материал
+
+| Трек | Вход ученика | Папки контента (примеры) |
+|------|----------------|---------------------------|
+| **FCE / Mastering B2** | `fce.html` → `unitN.html` | `Grammar/unitN-*`, `unitN-vocabulary/` (без `cpe/`), корневые `unitN-…` под FCE |
+| **CPE Prep** | `index.html` (Levels hub) → Level N | `unitN-reading/cpe/`, `unitN-vocabulary/cpe/`, `unitN-grammar/cpe/`, `unitN-listening/`, `games/cpe/unitN/`, `prep-hub-seeds-unitN-*.js` |
+
+**Правило:** тема для **только CPE** (например Unit 12 **Participle clauses**) живёт **только** в `unit12-grammar/cpe/participle-clauses/` и в seeds Prep hub — **не** в `Grammar/`, **не** на `unit12.html`.
+
+**Правило:** тема для **только FCE** — **не** добавлять в `unitN-*/cpe/` и **не** вешать на Levels hub без явной просьбы.
+
+## Запрещено на learner-facing страницах
+
+1. **На FCE** (`unitN.html`, `Grammar/`, ссылки с `fce.html`): **никаких** упоминаний CPE, Levels hub, `index.html?prep_stay`, `unitN-*/cpe/`, participle и прочего CPE-only контента в меню.
+2. **На CPE** (`unitN-*/cpe/`, Prep tiles): **никаких** ссылок «домой» на `unitN.html` / `fce.html` как основной возврат; только Levels hub / `prep_open_folder`.
+3. **Не** вешать CPE-тему на FCE-хаб и наоборот, даже «для удобства» одной плиткой.
+4. **Не** копировать упражнение в `Grammar/` и считать, что оно «и для CPE» — у CPE свой путь в `unitN-*/cpe/`.
+
+## Unit 12 Grammar (эталон — не смешивать темы)
+
+- **FCE:** `unit12.html` → `Grammar/unit12-quantifiers/` — **только Quantifiers** (Ex. 1–4).
+- **CPE:** Prep folder Grammar → `unit12-grammar/cpe/` — **только Participle clauses** (reference + Ex. 1–2).
+- **Quantifiers не класть в CPE** (`unit12-grammar/cpe/quantifiers/` не линковать из hub/seeds).
+- **Participle clauses не класть в FCE** (`Grammar/unit12-participle-clauses/` не линковать с `unit12.html`).
+- `Grammar/unit12-grammar/index.html` — редирект на Quantifiers (FCE).
+
+## Перед сдачей задачи — чеклист
+
+- [ ] Новые ссылки с FCE-страницы ведут только в FCE-дерево?
+- [ ] На FCE-экране нет слов CPE / Levels hub / prep?
+- [ ] CPE-страница не открывается с плитки `unitN.html`?
+- [ ] Если тема уже есть в другом треке — **дублируем файл в правильную папку**, а не одну общую плитку на оба курса?
+
+Общие **движки** (`js/*-engine.js`) — можно переиспользовать; **данные и HTML-маршруты** — раздельно по треку.

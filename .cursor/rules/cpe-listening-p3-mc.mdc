@@ -1,0 +1,82 @@
+---
+description: CPE Listening Part 3 MC (A–D) — 2-stage engine; grey shell; not EGE/FCE hub
+globs:
+  - unit12-listening/**
+  - js/cpe-listening-p3-mc*.js
+  - css/cpe-listening-p3-mc-shell.css
+---
+
+# CPE Listening · Part 3 Multiple choice (A–D)
+
+> **CPE Prep only** — Levels hub / `unit12-listening/`. **Не** смешивать с `ege-listening-mc.html` (варианты 1/2/3, рус. разбор).
+
+**Эталон юнита:** `js/unit12-listening-sb12-1-disabled-access-data.js`  
+**Страница:** `unit12-listening/part3-disabled-access/index.html`
+
+Новое задание = **новый data-модуль** + тонкая HTML-оболочка. **Не** форкать логику MC/hunt в HTML.
+
+---
+
+## Архитектура (2 этапа, как ЕГЭ MC)
+
+| # | Этап | Движок | Когда |
+|---|------|--------|-------|
+| 1 | **MC A–D** | `cpe-listening-p3-mc-engine.js` | сразу |
+| 2 | **Разбор в тексте** | `cpe-listening-p3-mc-hunt.js` | после **Check answers** (по умолчанию) |
+
+Стили: `css/cpe-listening-p3-mc-shell.css` (серый CPE, токены как `cpe-reading-part5-shell.css`).
+
+---
+
+## Порядок скриптов на странице
+
+1. `cpe-listening-p3-mc-data.js` — bootstrap `__CPE_LISTENING_P3_MC__`
+2. `unit{N}-listening-….js` — `pack.units.push({…})`
+3. `cpe-listening-p3-mc-hunt.js`
+4. `cpe-listening-p3-mc-engine.js` — `CPE_LISTENING_P3_MC.mount({ rootId, pack })`
+
+---
+
+## Данные юнита
+
+```javascript
+pack.units.push({
+  id: "u12-…",
+  audioSrc: "…",
+  instructionHtml: "…",
+  questions: [{
+    num: 1,
+    prompt, key: "C",
+    choices: [{ letter: "A", text }],
+    explainEn,
+    distractorWrongEn: { A: "…" }
+  }],
+  dialogueParagraphs: [{ turns: [{ speaker, text }] }],
+  huntLabs: [{
+    num: 1, key: "C", paragraphIndex: 0,
+    evidencePromptEn, explainEn,
+    segments: [
+      { kind: "hit", sol: "e", text: "…" },
+      { kind: "hit", sol: "d", text: "…", wrongOption: "A", distractExplainEn: "…" }
+    ]
+  }],
+  transcriptParagraphs: […] // опционально для study/transcript.html
+});
+```
+
+**Transcript + quick dictionary:** `unit12-listening/…/transcript.html`  
+- Лексика: `unit12-listening-sb12-1-disabled-access-lexicon.js` → `U12_LISTENING_121_DICT_ROWS`  
+- Кликабельные фразы: `cpe-listening-transcript-phrases.js`  
+- Drawer справа: `cpe-quick-dictionary-drawer.js` (на десктопе открыт по умолчанию)
+
+Prep hub Listening — **одна** плитка (exam task), без отдельного «Listening folder».
+
+- **Кисти hunt:** Evidence · green, Distractor · red, Erase — классы `.lies-hit`, `.is-green`, `.is-red` (как ЕГЭ / SB 10.2 lies).
+- Красный сегмент `sol:"d"` **обязан** иметь `distractExplainEn`, иначе не рендерится.
+
+---
+
+## Prep hub
+
+- Сиды: `js/prep-hub-seeds-unit12-listening.js`
+- Folder id: `PREP_LEGACY_U12_LISTENING_FOLDER_ID` в `prep-hub-unit12-nests.js`

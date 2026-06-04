@@ -1,0 +1,49 @@
+# Vocab Gym — движок (Unit 10+ / Level 12)
+
+**Vocab Gym** — не отдельная страница, а **режим hub**: Word Bank + полоска игр на `#screen-unit9-wordbank` с классом `.u10-wb-only` / `.u12-wb-only`.
+
+## Обязательный состав Vocab Gym
+
+Для каждого юнита с Vocab Gym (эталон **Unit 10**, с **Level 12** — два таба) в полоске режимов должны быть **все** поверхности:
+
+| Поверхность | Unit 10 | Unit 12 |
+|-------------|---------|---------|
+| Word Bank + вкладки паков | `cpe-wb-u10-tabs` | `cpe-wb-u12-tabs` |
+| Flip / drop / MCQ / express / echo / paraphrase playback / match | `openLexReadingPickNav` + фильтр пула | `openUnit12LexReadingPick` + `u12LexGamesApplyPoolFilter` |
+| **Sticky notes** | `openUnit10StickyGame` → `UNIT10_STICKY_PACKS` | `openUnit12StickyGame` → `UNIT12_STICKY_PACKS` |
+| **Tic-Tac-Toe** | `vocabulary-tic-tac-toe-unit10.html` + `unit10-ttt-word-bank.js` | `vocabulary-tic-tac-toe-unit12.html` + `unit12-ttt-word-bank.js` |
+| **Prep vault** | `openUnit10PrepEscapeRoom` · scope `prep-escape-scope-u10` | `openUnit12PrepEscapeRoom` · scope `prep-escape-scope-u12` |
+
+**Не дублировать** в Vocab Gym ссылки на disk-страницы (Reading / Vocabulary folders) — они живут в **Unit materials** ниже на Level N.
+
+## Разнесение лексики по играм
+
+1. **Вкладки Word Bank** = источник правды (`u10LexGamesPack` / `u12LexGamesPack` → `cpeWbTheme` → `u9FallSpeakerFilter`).
+2. **Sticky + Prep vault** следуют **активной вкладке** при открытии (`unit10LexGamesPackToStickyMode` / `u12LexGamesPackToStickyMode`, `u12LexGamesPackToVaultPack`).
+3. **Tic-Tac-Toe** — отдельная offline-страница с **теми же паками**, что вкладки (чекбоксы тем на странице).
+4. **Sports idioms (U12)** — в `U12_SPORTS_IDIOMS_LEXIS_GAME_ROWS` поле `group` для Word Bank (phrase bank · word box · discussing pairs); строки должны якориться в `U12_SPORTS_IDIOMS_LEXIS_PLAIN`.
+
+## Файлы-якоря
+
+- Мост: `js/prep-hub-unit12-lexgames.js` (`U12_VOCAB_GYM_GAME_MODES`, `openUnit12LexGamesHub`, …)
+- Sticky: `js/unit12-sticky-registry.js` + `js/unit12-sticky-packs.js` (через `unit10RegisterPlainStickyPack`)
+- TTT: `js/unit12-ttt-word-bank.js`
+- Манифест: `js/lexical-games-source-manifest.js` → `vocabGymGameSurfaces`, `unit12LexGamesBridgeFile`
+
+## Playground (Unit 10+ / Level 12)
+
+- **Отдельный хаб:** `games/cpe/unit{N}/index.html` — сетка `game-tile` по секциям (как Unit 10).
+- **Лексика playground-игр** = те же паки, что вкладки Vocab Gym (`unit12-snowball-wordbank.js` для U12).
+- **Не класть** в Playground: ссылки на Vocab Gym, disk Reading, disk Vocabulary — только class-format движки (Snowball, Echo Minute, Voice bingo, TTT, shared quiz/show stubs).
+- **Alias:** общий движок `js/prep-alias-engine.js` + `css/prep-alias-engine.css` (`PREP_ALIAS.mount`); эталон страницы `games/cpe/unit12/alias.html`. Контент — `loadDeckEntries` / `PREP_ALIAS.buildDeckFromVocabTtt` из word-bank паков юнита; логика блоков (N карт → следующий блок) в движке, не в HTML.
+- **Pictionary:** общий движок `js/prep-pictionary-engine.js` + `css/prep-pictionary-engine.css` (`PREP_PICTORY.mount`); эталон `games/cpe/unit12/pictionary.html`. Кремовые кнопки хоста с тёмным текстом, крупный canvas; контент — те же U12 word-bank паки.
+
+## Новый юнит — чеклист
+
+- [ ] Prep nest: `prep_legacy_u{N}_lexical_games` + Playground folder
+- [ ] Lexicon `*_LEXIS_GAME_ROWS` + `*_LEXIS_PLAIN` на пак
+- [ ] Вкладки + `.u{N}-wb-only` CSS как U10/U12
+- [ ] Sticky registry + plain sticky packs
+- [ ] TTT page + word-bank module
+- [ ] Prep vault pack buttons + `prep-escape-scope-u{N}`
+- [ ] **Без** disk-task карточек внутри Vocab Gym strip

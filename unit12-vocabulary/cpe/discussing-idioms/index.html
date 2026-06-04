@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Discussing idioms (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --phrase-bg: rgba(12, 28, 58, 0.72);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.26rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro { font-size: 0.94rem; line-height: 1.6; color: #c5d4ef; margin-bottom: 22px; }
+
+    .phrase-bank {
+      border: 1px solid #3d5a86;
+      border-radius: 16px;
+      padding: 20px 18px 22px;
+      background: linear-gradient(165deg, rgba(15, 36, 68, 0.55) 0%, rgba(8, 22, 48, 0.35) 100%);
+      margin-bottom: 28px;
+    }
+    .phrase-bank__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 16px;
+    }
+    .phrase-bank__head h2 { font-size: 1.02rem; color: #bae6fd; }
+    .phrase-bank__head p { font-size: 0.84rem; color: var(--muted); }
+
+    .pair-block {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 6px;
+      background: rgba(8, 22, 48, 0.35);
+      margin-bottom: 14px;
+    }
+    .pair-block:last-child { margin-bottom: 0; }
+    .pair-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .pair-grid {
+      display: grid;
+      gap: 10px;
+    }
+    @media (min-width: 620px) {
+      .pair-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .phrase-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px 14px;
+      background: var(--phrase-bg);
+      border-left: 4px solid var(--accent);
+    }
+    .phrase-card--b { border-left-color: #fbbf24; }
+    .phrase-idm {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #fef08a;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .phrase-meta { font-size: 0.85rem; line-height: 1.5; color: #d5e2f8; }
+    .contrast-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.82rem;
+      color: #93c5fd;
+      line-height: 1.45;
+    }
+
+    .practice-zone > h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task:last-child { margin-bottom: 0; }
+    .task__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .task h3 { font-size: 1.02rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr { font-size: 0.92rem; line-height: 1.6; color: #d5e2f8; margin-bottom: 14px; }
+
+    .pick-list { display: flex; flex-direction: column; gap: 14px; }
+    .pick-row {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .pick-row .num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .pick-text { font-size: 0.92rem; line-height: 1.55; margin-bottom: 12px; color: #e8f0ff; }
+    .pick-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pick-btn {
+      flex: 1 1 12rem;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: #e8f0ff;
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      touch-action: manipulation;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .pick-btn:hover { border-color: #4a6898; }
+    .pick-btn.is-picked { border-color: var(--accent); background: rgba(86, 204, 242, 0.12); }
+    .pick-btn.is-ok { border-color: #22c55e; background: rgba(34, 197, 94, 0.12); }
+    .pick-btn.is-bad { border-color: #f87171; background: rgba(248, 113, 113, 0.1); }
+
+    .discuss-list { display: flex; flex-direction: column; gap: 14px; }
+    .discuss-pair {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .discuss-pair h4 {
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .discuss-pair ul {
+      padding-left: 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .discuss-pair li { margin-bottom: 6px; }
+    .discuss-pair li:last-child { margin-bottom: 0; }
+
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .btn-secondary {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .fb-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .fb-panel.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Discussing idioms</h1>
+      <a class="back" id="back-link" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Level 12</a>
+    </header>
+
+    <p class="intro">
+      These pairs sound similar but mean different things. Read the phrase bank, then check you can tell them apart before you discuss with a partner.
+    </p>
+
+    <section class="phrase-bank" aria-label="Idiom pairs phrase bank">
+      <div class="phrase-bank__head">
+        <h2>Phrase bank</h2>
+        <p>Two pairs &middot; compare the meanings</p>
+      </div>
+
+      <div class="pair-block">
+        <p class="pair-label">Pair 1</p>
+        <div class="pair-grid">
+          <article class="phrase-card">
+            <p class="phrase-idm">jump the gun</p>
+            <p class="phrase-meta">Act too soon; do something before the right time (origin: athletics).</p>
+          </article>
+          <article class="phrase-card phrase-card--b">
+            <p class="phrase-idm">jump on the bandwagon</p>
+            <p class="phrase-meta">Join others in doing something popular, often without thinking it through.</p>
+          </article>
+        </div>
+        <p class="contrast-note"><strong>Contrast:</strong> one is about <em>timing</em> (too early); the other is about <em>following the crowd</em>.</p>
+      </div>
+
+      <div class="pair-block">
+        <p class="pair-label">Pair 2</p>
+        <div class="pair-grid">
+          <article class="phrase-card">
+            <p class="phrase-idm">throw in the towel</p>
+            <p class="phrase-meta">Give up; stop trying because you accept defeat (origin: boxing).</p>
+          </article>
+          <article class="phrase-card phrase-card--b">
+            <p class="phrase-idm">throw your hat in the ring</p>
+            <p class="phrase-meta">Announce that you want to take part in a competition or challenge (origin: boxing).</p>
+          </article>
+        </div>
+        <p class="contrast-note"><strong>Contrast:</strong> one means <em>quit</em>; the other means <em>enter the fight</em>.</p>
+      </div>
+    </section>
+
+    <section class="practice-zone" aria-label="Practice">
+      <h2>Practice</h2>
+
+      <article class="task">
+        <p class="task__label">Quick check</p>
+        <h3>Which idiom fits?</h3>
+        <p class="instr">Each sentence matches <strong>one</strong> idiom from a pair above. Tap your answer.</p>
+
+        <div class="pick-list" id="pick-list"></div>
+
+        <div class="actions">
+          <button type="button" class="btn-primary" id="btn-check">Check answers</button>
+          <button type="button" class="btn-secondary" id="btn-reset">Reset</button>
+        </div>
+        <div class="fb-panel" id="feedback" aria-live="polite"></div>
+      </article>
+
+      <article class="task">
+        <p class="task__label">Speaking</p>
+        <h3>Discuss the differences</h3>
+        <p class="instr">As in the coursebook &mdash; compare the two idioms in each pair. Use the phrase bank if you need support.</p>
+
+        <div class="discuss-list">
+          <div class="discuss-pair">
+            <h4>jump the gun / jump on the bandwagon</h4>
+            <ul>
+              <li>When might someone <strong>jump the gun</strong> at work or with a project?</li>
+              <li>When have you (or people you know) <strong>jumped on the bandwagon</strong>?</li>
+              <li>Can you follow a trend <em>without</em> jumping on the bandwagon?</li>
+            </ul>
+          </div>
+          <div class="discuss-pair">
+            <h4>throw in the towel / throw your hat in the ring</h4>
+            <ul>
+              <li>What is the difference between <strong>giving up</strong> and <strong>stepping forward</strong> to compete?</li>
+              <li>Describe a situation where someone threw in the towel too soon.</li>
+              <li>When would throwing your hat in the ring be a brave thing to do?</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      text: "Don't sign up for the marathon yet \u2014 that would mean acting far too soon.",
+      options: ["jump the gun", "jump on the bandwagon"],
+      key: "jump the gun"
+    },
+    {
+      id: 2,
+      text: "When everyone started buying that phone, I got one too without really thinking about it.",
+      options: ["jump the gun", "jump on the bandwagon"],
+      key: "jump on the bandwagon"
+    },
+    {
+      id: 3,
+      text: "After months of rejections, the team gave up completely and cancelled the product launch.",
+      options: ["throw in the towel", "throw your hat in the ring"],
+      key: "throw in the towel"
+    },
+    {
+      id: 4,
+      text: "She announced that she wanted to enter the race for chair of the committee.",
+      options: ["throw in the towel", "throw your hat in the ring"],
+      key: "throw your hat in the ring"
+    }
+  ];
+
+  var picks = {};
+  var locked = false;
+  var list = document.getElementById("pick-list");
+  var fb = document.getElementById("feedback");
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function matchesKey(choice, key) {
+    var c = norm(choice);
+    var k = norm(key);
+    if (c === k) return true;
+    if (k.indexOf("your hat") >= 0 && c.indexOf("hat") >= 0 && c.indexOf("ring") >= 0) return true;
+    if (k.indexOf("the towel") >= 0 && c.indexOf("towel") >= 0) return true;
+    return false;
+  }
+
+  function render() {
+    list.innerHTML = "";
+    ITEMS.forEach(function (item) {
+      var row = document.createElement("div");
+      row.className = "pick-row";
+      row.dataset.id = String(item.id);
+
+      var text = document.createElement("p");
+      text.className = "pick-text";
+      text.innerHTML = '<span class="num">' + item.id + ".</span>" + item.text;
+      row.appendChild(text);
+
+      var btns = document.createElement("div");
+      btns.className = "pick-btns";
+      item.options.forEach(function (opt) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "pick-btn";
+        b.textContent = opt;
+        if (picks[item.id] === opt) b.classList.add("is-picked");
+        if (locked) {
+          b.disabled = true;
+          if (picks[item.id] === opt) {
+            b.classList.add(matchesKey(opt, item.key) ? "is-ok" : "is-bad");
+          }
+        }
+        b.addEventListener("click", function () {
+          if (locked) return;
+          picks[item.id] = opt;
+          if (fb) fb.classList.remove("show");
+          render();
+        });
+        btns.appendChild(b);
+      });
+      row.appendChild(btns);
+      list.appendChild(row);
+    });
+  }
+
+  render();
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+    ITEMS.forEach(function (item) {
+      var choice = picks[item.id];
+      var ok = choice && matchesKey(choice, item.key);
+      if (ok) correct++;
+      html +=
+        "<p><strong>" +
+        (ok ? "\u2713" : "\u2717") +
+        " " +
+        item.id +
+        ".</strong> Key: <em>" +
+        item.key +
+        "</em>" +
+        (choice ? "" : " &mdash; pick an answer") +
+        "</p>";
+    });
+    fb.innerHTML =
+      "<p style=\"margin-bottom:10px;font-weight:700;\">Score: " +
+      correct +
+      " / " +
+      ITEMS.length +
+      "</p>" +
+      html;
+    fb.classList.add("show");
+    locked = true;
+    render();
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    picks = {};
+    locked = false;
+    if (fb) fb.classList.remove("show");
+    render();
+  });
+
+  var back = document.getElementById("back-link");
+  if (back) {
+    var params = new URLSearchParams(location.search);
+    if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
+      var folderId =
+        typeof PREP_LEGACY_U12_VOCAB_FOLDER_ID !== "undefined"
+          ? PREP_LEGACY_U12_VOCAB_FOLDER_ID
+          : "prep_legacy_u12_vocab";
+      back.href =
+        "../../../index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
+        encodeURIComponent(folderId);
+      var lbl = params.get("backLabel");
+      back.textContent = lbl ? "\u2190 " + lbl : "\u2190 Vocabulary \u00b7 Level 12";
+    }
+  }
+})();
+  </script>
+</body>
+</html>

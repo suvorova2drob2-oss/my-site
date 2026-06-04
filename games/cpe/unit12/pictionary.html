@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pictionary &mdash; Unit 12 CPE word bank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../css/prep-pictionary-engine.css" />
+  <style>
+    :root {
+      --pic-red: #7c3aed;
+      --pic-blue: #0891b2;
+      --pic-ink: #e2e8f0;
+      --panel: #0f172a;
+      --shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #1a1030 0%, transparent 50%), #020617;
+      color: var(--pic-ink);
+      min-height: 100dvh;
+      padding: 16px;
+    }
+    .shell { max-width: 920px; margin: 0 auto; }
+    .board {
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 20px 18px 24px;
+      border: 1px solid #334155;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #334155;
+    }
+    .topbar h1 { font-size: 1.25rem; font-weight: 900; color: #e2e8f0; }
+    .topbar .sub { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; max-width: 35rem; }
+    .nav { font-size: 0.8rem; }
+    .nav a { color: #22d3ee; font-weight: 700; }
+    .setup textarea {
+      width: 100%; min-height: 120px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #334155;
+      font-size: 0.95rem; background: #020617; color: #e2e8f0; resize: vertical; font-family: inherit;
+    }
+    .setup .hint { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; }
+    .err { color: #fca5a5; font-size: 0.85rem; min-height: 1.2em; }
+    .btn {
+      display: inline-block; padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .btn-go { background: var(--pic-red); color: #fff; }
+    .btn-go:hover { filter: brightness(1.08); }
+    .btn-sec { background: #334155; color: #fff; }
+    .btn-blue { background: var(--pic-blue); color: #fff; }
+    .hud {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
+    }
+    .turn-pill { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .turn-pill .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+    .turn-pill .name {
+      background: #020617; border: 2px solid var(--pic-red); color: #e9d5ff; padding: 6px 14px; border-radius: 999px;
+      font-size: 1.05rem; font-weight: 900;
+    }
+    .turn-pill .name.b { border-color: var(--pic-blue); color: #a5f3fc; }
+    .round-tag { background: #1e293b; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; color: #cbd5e1; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+    .lb { margin-top: 18px; }
+    .lb h3 { font-size: 0.9rem; color: #e2e8f0; margin-bottom: 8px; }
+    .lb ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
+    .ov {
+      position: fixed; inset: 0; background: rgba(15, 36, 51, 0.88); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
+    }
+    .ov.open { display: flex; }
+    .ov-in {
+      background: var(--panel); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; border: 3px solid #b8a990;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .ov-in h2 { color: #e2e8f0; margin-bottom: 8px; font-size: 1.1rem; }
+    .ov-in p { color: #94a3b8; font-size: 0.9rem; }
+    .game { display: none; }
+    .game.on { display: block; }
+    .pack-box {
+      margin: 10px 0 12px; padding: 10px 12px; border-radius: 10px; border: 1px solid #334155; background: #020617;
+    }
+    .pack-legend {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7dd3fc; margin-bottom: 8px;
+    }
+    .pack-row {
+      display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; font-size: 0.83rem; color: #dbeafe; cursor: pointer;
+    }
+    .pack-row input { margin-top: 3px; accent-color: #22d3ee; }
+    .pack-hint { color: #93c5fd; font-size: 0.74rem; line-height: 1.4; margin-top: 8px; }
+    .deck-meta { color: #7dd3fc; font-size: 0.78rem; margin-top: 8px; }
+  </style>
+  <script src="../../../js/unit12-reading-road-to-betterment-lexicon.js"></script>
+  <script src="../../../js/unit12-sports-idioms-lexicon.js"></script>
+  <script src="../../../js/unit12-listening-sb12-1-disabled-access-lexicon.js"></script>
+  <script src="../../../js/unit12-ttt-word-bank.js"></script>
+  <script src="../../../js/prep-u12-playground-shell.js"></script>
+</head>
+<body>
+  <div class="shell shell-wide prep-pictionary">
+    <div class="board">
+      <div class="topbar">
+        <div>
+          <h1>Pictionary: CPE speaking sprint</h1>
+          <p class="sub">Unit 12 word bank — draw on the big canvas; host taps the guessed phrase. Cream option cards stay readable on the dark board.</p>
+        </div>
+        <p class="nav"><a href="index.html?course=cpe" id="hubLink">&larr; Playground</a></p>
+      </div>
+
+      <div id="setup" class="setup">
+        <p class="hint">Player names, <strong>one per line</strong> (at least 2 — one draws, the rest guess).</p>
+        <div class="pack-box" id="packBox">
+          <div class="pack-legend">Unit 12 word bank</div>
+          <div id="picTopicChecks"></div>
+          <p class="pack-hint" id="picTopicHint">Choose one or more packs before start.</p>
+        </div>
+        <div class="pic-setup-opts">
+          <label>Turn timer
+            <select id="optTimer">
+              <option value="60">1:00</option>
+              <option value="90" selected>1:30</option>
+              <option value="120">2:00</option>
+            </select>
+          </label>
+        </div>
+        <textarea id="namesIn" placeholder="Alex&#10;Bo&#10;Cara" autocomplete="off"></textarea>
+        <p class="err" id="err"></p>
+        <p class="deck-meta" id="deckMeta">Deck: all packs</p>
+        <button type="button" class="btn btn-go" id="btnGo">Start game</button>
+      </div>
+
+      <div id="game" class="game">
+        <div class="hud">
+          <div class="turn-pill">
+            <span class="label">Drawing</span>
+            <span class="name" id="curName" role="status">—</span>
+            <span class="round-tag">Round <span id="rn">1</span> &middot; <span id="leftN">0</span> left</span>
+          </div>
+          <div class="pic-timer" id="timer">1:30</div>
+        </div>
+
+        <div class="host-pick" id="hostPick">
+          <h2>Host: mark the guess</h2>
+          <p class="host-hint">The team shouts a phrase. Click the option that matches <strong>this turn&rsquo;s</strong> card. One button is the real prompt; the rest are decoys. Right = point to the drawer. Wrong = no point, try again.</p>
+          <div class="choice-grid" id="choiceGrid" role="group" aria-label="Guessed phrase"></div>
+          <p class="choice-wrong" id="hostMsg" role="status"></p>
+        </div>
+
+        <div class="drawer-box">
+          <h2>Drawer: your phrase only</h2>
+          <p class="p-text" id="promptText" aria-live="polite">—</p>
+          <div class="hide-row">
+            <input type="checkbox" id="hidePrompt" />
+            <label for="hidePrompt">Conceal this line for the class (projector = canvas only)</label>
+          </div>
+        </div>
+
+        <div class="draw-tools">
+          <label>Pen</label>
+          <input type="color" id="penColor" value="#1a1a1a" title="Colour" />
+          <label>Size <span id="sizeLab">4</span></label>
+          <input type="range" id="penSize" min="2" max="16" value="4" />
+          <button type="button" class="btn btn-sec" id="btnClearCanvas">Clear drawing</button>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="draw" width="800" height="500" aria-label="Drawing area"></canvas>
+        </div>
+
+        <div class="row-actions">
+          <button type="button" class="btn btn-blue" id="btnPass">Pass (word to back of round)</button>
+          <button type="button" class="btn btn-sec" id="btnEndTurn">End turn (skip timer)</button>
+          <button type="button" class="btn btn-sec" id="btnNextRound" style="display:none">Next round (full deck)</button>
+        </div>
+
+        <div class="lb" id="lb">
+          <h3>Score (successful draws)</h3>
+          <ol id="lbList"></ol>
+        </div>
+        <p style="margin-top:12px">
+          <button type="button" class="btn btn-sec" id="btnFinal">Show leaderboard</button>
+          <button type="button" class="btn btn-sec" id="btnReset">New game</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovR">
+    <div class="ov-in">
+      <h2>Round complete</h2>
+      <p>All phrases in this round were guessed. Next round: same set, shuffled again.</p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovRok">Next round</button></p>
+    </div>
+  </div>
+  <div class="ov" id="ovF">
+    <div class="ov-in">
+      <h2>Leaderboard</h2>
+      <p style="text-align:left" id="ovFList"></p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-go" id="ovFok">Close</button></p>
+    </div>
+  </div>
+
+  <script src="../../../js/prep-pictionary-engine.js"></script>
+  <script>
+(function () {
+  var hub = document.getElementById("hubLink");
+  if (hub && window.PREP_U12_PG_CPE) hub.href = "index.html?course=cpe";
+
+  if (!window.PREP_PICTORY || typeof window.PREP_PICTORY.mount !== "function") return;
+
+  window.PREP_PICTORY.mount({
+    loadDeckEntries: function () {
+      return window.PREP_PICTORY.buildDeckFromVocabTtt({
+        defaultTopicId: "u12_misc",
+        stubPhrases: function () {
+          if (window.PREP_U12_PG_STUB && typeof window.PREP_U12_PG_STUB.phrasesDeckMustKnow === "function") {
+            return window.PREP_U12_PG_STUB.phrasesDeckMustKnow();
+          }
+          return [];
+        },
+      });
+    },
+    getTopicList: function () {
+      return window.VOCAB_TTT_TOPIC_LIST || [];
+    },
+    els: {
+      topicChecks: document.getElementById("picTopicChecks"),
+      packBox: document.getElementById("packBox"),
+      topicHint: document.getElementById("picTopicHint"),
+      deckMeta: document.getElementById("deckMeta"),
+      optTimer: document.getElementById("optTimer"),
+      namesIn: document.getElementById("namesIn"),
+      err: document.getElementById("err"),
+      btnGo: document.getElementById("btnGo"),
+      game: document.getElementById("game"),
+      setup: document.getElementById("setup"),
+      curName: document.getElementById("curName"),
+      rn: document.getElementById("rn"),
+      leftN: document.getElementById("leftN"),
+      timer: document.getElementById("timer"),
+      choiceGrid: document.getElementById("choiceGrid"),
+      hostMsg: document.getElementById("hostMsg"),
+      promptText: document.getElementById("promptText"),
+      hidePrompt: document.getElementById("hidePrompt"),
+      penColor: document.getElementById("penColor"),
+      penSize: document.getElementById("penSize"),
+      sizeLab: document.getElementById("sizeLab"),
+      btnClearCanvas: document.getElementById("btnClearCanvas"),
+      canvasWrap: document.getElementById("canvasWrap"),
+      draw: document.getElementById("draw"),
+      btnPass: document.getElementById("btnPass"),
+      btnEndTurn: document.getElementById("btnEndTurn"),
+      btnNextRound: document.getElementById("btnNextRound"),
+      lbList: document.getElementById("lbList"),
+      btnFinal: document.getElementById("btnFinal"),
+      btnReset: document.getElementById("btnReset"),
+      ovR: document.getElementById("ovR"),
+      ovRok: document.getElementById("ovRok"),
+      ovF: document.getElementById("ovF"),
+      ovFList: document.getElementById("ovFList"),
+      ovFok: document.getElementById("ovFok"),
+    },
+  });
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

@@ -38,6 +38,9 @@
   if (!dataSrc && contextId === "unit10-uoe") {
     dataSrc = "ex-athlete-taken-in/published.json";
   }
+  if (!dataSrc && contextId === "unit12-uoe-food-supplements") {
+    dataSrc = "published-unit12-food-supplements.json";
+  }
   /** Level 9 Workbook Part 1: вшитый JSON в part1-mc-cloze/index.html (без fetch / file://). */
   var unit9InteriorHardwired =
     String(contextId) === "unit9-uoe" ||
@@ -64,6 +67,8 @@
     /ex-athlete-taken-in\/published\.json\s*$/i.test(dataSrc);
   /** Unit 10 — Was Shakespeare a woman? — JSON in #part1-mc-bundled-unit10-shakespeare-woman. */
   var unit10ShakespeareBundled = String(contextId) === "unit10-uoe-shakespeare";
+  /** Unit 12 CPE — Food supplements — JSON in #part1-mc-bundled-unit12-food-supplements. */
+  var unit12FoodSupplementsBundled = String(contextId) === "unit12-uoe-food-supplements";
   /** Unit 5 FCE · Summer jobs — JSON in #part1-mc-bundled-unit5-summer-jobs (works file://). */
   var unit5UoeBundled = String(contextId) === "unit5-uoe";
   var studentOnly =
@@ -77,6 +82,7 @@
     unit9BundledPart1 ||
     unit10ExAthleteBundled ||
     unit10ShakespeareBundled ||
+    unit12FoodSupplementsBundled ||
     unit5UoeBundled ||
     unit8UoeSevilleBundled;
   var boxedSite =
@@ -1932,6 +1938,16 @@
         try {
           return JSON.parse(el10sha.textContent.trim());
         } catch (e10sha) {
+          return null;
+        }
+      }
+    }
+    if (unit12FoodSupplementsBundled) {
+      var el12fs = document.getElementById("part1-mc-bundled-unit12-food-supplements");
+      if (el12fs) {
+        try {
+          return JSON.parse(el12fs.textContent.trim());
+        } catch (e12fs) {
           return null;
         }
       }

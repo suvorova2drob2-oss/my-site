@@ -32,7 +32,7 @@
   cursor: pointer;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
   touch-action: manipulation;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, right 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, right 0.18s ease, left 0.18s ease;
 }
 
 .cpe-qdict-fab-inner {
@@ -49,14 +49,31 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
-body.cpe-qdict-open .cpe-qdict-fab {
+body.cpe-qdict-open .cpe-qdict-fab:not(.cpe-qdict-fab--left) {
   right: calc(min(400px, 92vw) + 18px);
   transform: translateY(-50%);
 }
 
+/* Left-side FAB (reading split layout — passage on the right) */
+.cpe-qdict-fab--left {
+  right: auto;
+  left: max(12px, env(safe-area-inset-left, 0px));
+}
+
+body.cpe-qdict-open .cpe-qdict-fab--left {
+  left: calc(min(400px, 92vw) + 18px);
+  right: auto;
+  transform: translateY(-50%);
+}
+
 @media (max-width: 520px) {
-  body.cpe-qdict-open .cpe-qdict-fab {
+  body.cpe-qdict-open .cpe-qdict-fab:not(.cpe-qdict-fab--left) {
     right: calc(92vw + 10px);
+    opacity: 0.92;
+  }
+
+  body.cpe-qdict-open .cpe-qdict-fab--left {
+    left: calc(92vw + 10px);
     opacity: 0.92;
   }
 }
@@ -84,6 +101,15 @@ body.cpe-qdict-open .cpe-qdict-fab {
   transform: translateX(104%);
   transition: transform 0.22s ease;
   visibility: hidden;
+}
+
+.cpe-qdict-drawer--left {
+  left: 0;
+  right: auto;
+  border-left: none;
+  border-right: 1px solid var(--line, rgba(148, 163, 184, 0.22));
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
+  transform: translateX(-104%);
 }
 
 .cpe-qdict-drawer.is-visible {
@@ -193,6 +219,21 @@ body.cpe-qdict-open .cpe-qdict-fab {
   padding: 10px 6px 6px;
   color: var(--muted, #94a3b8);
   font-size: 0.86rem;
+}
+
+.cpe-qdict-group {
+  margin: 18px 0 10px;
+  padding: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--cpe-qdict-title, #bae6fd);
+  border-bottom: 1px solid var(--cpe-qdict-entry-border, rgba(96, 165, 250, 0.22));
+}
+
+.cpe-qdict-group:first-child {
+  margin-top: 4px;
 }
 
 .cpe-qdict-sr-only {

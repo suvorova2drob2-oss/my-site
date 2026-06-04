@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Participle clauses · Exercise 2</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --teal: #14b8a6;
+      --teal-bright: #5eead4;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+
+    .gram-nav {
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .gram-nav a:hover { text-decoration: underline; }
+
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 18px;
+    }
+
+    .mcq-stack { display: grid; gap: 14px; }
+
+    .mcq-card {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      border-radius: 14px;
+      border: 2px solid var(--teal);
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+    .mcq-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #0f766e 0%, #115e59 100%);
+      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+    .mcq-body {
+      padding: 14px 16px 12px;
+      background: rgba(20, 32, 58, 0.72);
+    }
+    .mcq-stem {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #f1f5ff;
+      margin-bottom: 10px;
+    }
+    .pick-row {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+      vertical-align: baseline;
+      margin: 0 4px;
+    }
+    .pick-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 2px solid rgba(94, 234, 212, 0.35);
+      background: rgba(8, 22, 48, 0.45);
+      cursor: pointer;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+    .pick-opt:hover { border-color: var(--teal-bright); }
+    .pick-opt input {
+      accent-color: var(--teal-bright);
+      margin: 0;
+    }
+    .pick-opt span {
+      font-style: italic;
+      font-weight: 600;
+      color: var(--teal-bright);
+      font-size: 0.9rem;
+    }
+    .pick-opt.is-ok {
+      border-color: #4ade80;
+      background: rgba(34, 197, 94, 0.2);
+    }
+    .pick-opt.is-bad {
+      border-color: var(--bad);
+      background: rgba(239, 68, 68, 0.16);
+    }
+    .pick-opt.is-ok span,
+    .pick-opt.is-bad span { font-style: normal; }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 1.5em;
+    }
+
+    @media (max-width: 520px) {
+      .mcq-card { grid-template-columns: 44px 1fr; }
+      .mcq-num { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Grammar &mdash; Participle clauses &middot; Exercise 2</h1>
+        <p class="badge">Language focus &middot; Unit 12</p>
+      </div>
+      <a class="back" id="back-link" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Grammar · Level 12</a>
+    </header>
+
+    <nav class="gram-nav" aria-label="Participle clauses">
+      <a href="index.html">Reference A&ndash;C</a>
+      <span> &middot; </span>
+      <a href="exercise-1-corrections.html">Exercise 1 &mdash; flip cards</a>
+      <span> &middot; </span>
+      <span style="font-weight:700;color:var(--text);">Exercise 2 &mdash; multiple choice</span>
+    </nav>
+
+    <p class="instr"><strong>2</strong> For sentences <strong>1&ndash;6</strong>, choose the correct alternative (coursebook layout).</p>
+
+    <div class="mcq-stack" id="mcq-root" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var CORRECT = [
+    'Having posted up',
+    'having seen',
+    'Used',
+    'Having been taught',
+    'talking',
+    'Plans made'
+  ];
+
+  var MCQ = [
+    {
+      num: 1,
+      before: '',
+      after: ' flyers all around town for her new nutritional therapist business, she was disappointed not to receive even a single call from them.',
+      options: [
+        { value: 'Posting up', label: 'Posting up' },
+        { value: 'Having posted up', label: 'Having posted up' }
+      ]
+    },
+    {
+      num: 2,
+      before: 'She had really hoped to be able to make a go of it, ',
+      after: ' a number of her friends from college all manage to jump straight into jobs, but there weren\u2019t the same opportunities in her town.',
+      options: [
+        { value: 'to see', label: 'to see' },
+        { value: 'having seen', label: 'having seen' }
+      ]
+    },
+    {
+      num: 3,
+      before: '',
+      after: ' for short evening classes as well as full-time courses, the local college always had rooms available, and, even more importantly, there were a couple of classrooms for catering studies, fully equipped with kitchens.',
+      options: [
+        { value: 'Using', label: 'Using' },
+        { value: 'Used', label: 'Used' }
+      ]
+    },
+    {
+      num: 4,
+      before: '',
+      after: ' in the very same college, she was sure that she might be able to get some special rate for classroom hire too.',
+      options: [
+        { value: 'With being teaching', label: 'With being teaching' },
+        { value: 'Having been taught', label: 'Having been taught' }
+      ]
+    },
+    {
+      num: 5,
+      before: 'As a teacher, the participants would listen to her ',
+      after: ' about foods and their nutritional values.',
+      options: [
+        { value: 'talking', label: 'talking' },
+        { value: 'talked', label: 'talked' }
+      ]
+    },
+    {
+      num: 6,
+      before: '',
+      after: ', she decided she\u2019d go into the college first thing in the morning.',
+      options: [
+        { value: 'Plans making', label: 'Plans making' },
+        { value: 'Plans made', label: 'Plans made' }
+      ]
+    }
+  ];
+
+  var NOTES = [
+    'Earlier completed action before the main clause &mdash; <strong>Having posted up</strong>.',
+    'She had already seen friends succeed &mdash; perfect participle <strong>having seen</strong>.',
+    'Passive meaning (the college was used) &mdash; past participle <strong>Used</strong>.',
+    'She was taught there in the past &mdash; <strong>Having been taught</strong> (passive perfect).',
+    'After <em>listen to</em> + object, ongoing action &mdash; <strong>talking</strong>.',
+    'Completed prior step &mdash; verbless / reduced clause <strong>Plans made</strong>.'
+  ];
+
+  function esc(t) {
+    return String(t)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  var root = document.getElementById('mcq-root');
+  var fb = document.getElementById('feedback');
+
+  function render() {
+    root.innerHTML = MCQ.map(function (item, idx) {
+      var picks = item.options.map(function (o, oi) {
+        var id = 'mq-' + idx + '-' + oi;
+        return (
+          '<label class="pick-opt" data-qidx="' + idx + '" data-val="' + esc(o.value) + '">' +
+          '<input type="radio" name="mq' + idx + '" value="' + esc(o.value) + '" id="' + id + '" />' +
+          '<span>' + esc(o.label) + '</span></label>'
+        );
+      }).join('');
+
+      return (
+        '<article class="mcq-card">' +
+        '<div class="mcq-num" aria-hidden="true">' + item.num + '</div>' +
+        '<div class="mcq-body">' +
+        '<p class="mcq-stem">' + esc(item.before) + '<span class="pick-row">' + picks + '</span>' + esc(item.after) + '</p>' +
+        '</div></article>'
+      );
+    }).join('');
+
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        root.querySelectorAll('.pick-opt').forEach(function (line) {
+          line.classList.remove('is-ok', 'is-bad');
+        });
+        fb.textContent = '';
+      });
+    });
+  }
+
+  function optByValue(qidx, val) {
+    var lines = root.querySelectorAll('.pick-opt[data-qidx="' + qidx + '"]');
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].getAttribute('data-val') === val) return lines[i];
+    }
+    return null;
+  }
+
+  function getPick(idx) {
+    var el = root.querySelector('input[name="mq' + idx + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  render();
+
+  document.getElementById('btnCheck').addEventListener('click', function () {
+    root.querySelectorAll('.pick-opt').forEach(function (line) {
+      line.classList.remove('is-ok', 'is-bad');
+    });
+
+    var n = MCQ.length;
+    for (var i = 0; i < n; i++) {
+      if (!getPick(i)) {
+        fb.textContent = 'Choose one option in each sentence (1\u20136), then check again.';
+        return;
+      }
+    }
+
+    var score = 0;
+    var detail = '';
+    for (var j = 0; j < n; j++) {
+      var pick = getPick(j);
+      var ok = pick === CORRECT[j];
+      if (ok) score++;
+      var pickLine = optByValue(j, pick);
+      if (pickLine) pickLine.classList.add(ok ? 'is-ok' : 'is-bad');
+      if (!ok) {
+        var okLine = optByValue(j, CORRECT[j]);
+        if (okLine) okLine.classList.add('is-ok');
+      }
+      detail += '<p style="margin:8px 0 0;font-size:0.84rem;color:#c5d4ef;"><strong>' + MCQ[j].num + '.</strong> ' + NOTES[j] + '</p>';
+    }
+
+    fb.innerHTML =
+      (score === n
+        ? '<strong>All 6 correct.</strong>'
+        : 'Score: <strong>' + score + '</strong> / 6. Green = correct; red = your wrong choice.') +
+      detail;
+  });
+
+  document.getElementById('btnClear').addEventListener('click', function () {
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.checked = false;
+    });
+    root.querySelectorAll('.pick-opt').forEach(function (line) {
+      line.classList.remove('is-ok', 'is-bad');
+    });
+    fb.textContent = '';
+  });
+})();
+  </script>
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script src="../../../js/unit12-cpe-grammar-back.js"></script>
+  <script>wireUnit12CpeGrammarBack();</script>
+</body>
+</html>
