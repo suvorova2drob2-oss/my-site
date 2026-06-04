@@ -48,8 +48,18 @@
     }
 
     function wrapTapForSpeaker(text, speakerName) {
+      if (dictApi && dictApi.wrapTurnHTML) {
+        return dictApi.wrapTurnHTML({ text: text }, phrasesForSpeaker(speakerName));
+      }
       if (dictApi) return dictApi.wrapTapHTML(text, phrasesForSpeaker(speakerName));
       return esc(text);
+    }
+
+    function wrapTurnForSpeaker(turn, speakerName) {
+      if (dictApi && dictApi.wrapTurnHTML) {
+        return dictApi.wrapTurnHTML(turn, phrasesForSpeaker(speakerName));
+      }
+      return esc(turn && turn.text != null ? turn.text : "");
     }
 
     function currentSpeaker() {
@@ -62,6 +72,9 @@
     }
 
     function wrapTap(text) {
+      if (dictApi && dictApi.wrapTurnHTML) {
+        return dictApi.wrapTurnHTML({ text: text }, speakerPhrases(currentSpeaker()));
+      }
       if (dictApi) return dictApi.wrapTapHTML(text, speakerPhrases(currentSpeaker()));
       return esc(text);
     }
@@ -252,7 +265,7 @@
           '<div class="' +
           prefix +
           '-turn-bubble">' +
-          wrapTapForSpeaker(turn.text, turn.speaker) +
+          wrapTurnForSpeaker(turn, turn.speaker) +
           "</div></div>";
       });
       html += "</div></div>";

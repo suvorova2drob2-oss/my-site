@@ -1,0 +1,37 @@
+---
+description: Absolute safety rule: never delete or overwrite user work
+alwaysApply: true
+---
+
+# Absolute No-Delete / No-Overwrite Rule
+
+This project has a hard safety rule: **do not delete files, do not remove content, and do not overwrite existing work** unless the user gives explicit, specific permission for the exact file/content in the current turn.
+
+## Non-negotiable Rules
+
+1. **Never delete files** with `Delete`, shell commands, cleanup scripts, generated restore scripts, or “temporary fix” logic unless the user explicitly says: “delete `<exact path>`”.
+2. **Never remove script tags, unit links, data rows, task objects, translations, or content blocks** as a way to fix errors. Disable only by adding a clear non-destructive comment or ask first.
+3. **Never replace a real unit with a guessed/generated substitute.** If exact source text, tasks, audio, and keys are missing, stop and say what is missing.
+4. **Never use git history as proof that user work did not exist.** Uncommitted local files and chat-generated files are valid project work.
+5. **Before editing any existing content file**, read the current file and preserve all unrelated content.
+6. **Before running any script that writes files**, state exactly which files it will create or update. The script must not delete anything.
+7. **If a page has broken references**, do not remove them by default. First look for the missing file/source; if not found, ask whether to keep the reference, stub it, or remove it.
+8. **If uncertain, pause and ask.** Do not “reconstruct” from similar materials.
+
+## Allowed Without Extra Permission
+
+- Add a new file when the user asks to add content.
+- Append a new script tag for a file that has just been created from exact user-provided content.
+- Fix syntax errors in a file you just created, without changing the teaching content.
+
+## Required Recovery Behavior
+
+If something appears missing or broken, first do read-only investigation across:
+
+- current workspace files,
+- current chat/transcripts,
+- Cursor-provided attachments,
+- existing generated banks/manifests,
+- terminal outputs if relevant.
+
+Then report findings before destructive or replacement actions.

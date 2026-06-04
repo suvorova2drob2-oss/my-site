@@ -40,7 +40,7 @@ globs:
 
 ## Быстрый словарь (подробный контент)
 
-**Всегда подробный, состоит из фраз** — см. `ege-quick-dictionary-phrases-policy.mdc`.
+**Всегда подробный, состоит из фраз** — см. `ege-quick-dictionary-phrases-policy.mdc` (полный `ru`, hover по предложению в «С текстом»).
 
 На каждого спикера в данных:
 
@@ -50,12 +50,16 @@ phrases: [
 ]
 ```
 
-**~20–30+** фраз/коллокаций на спикера — норма (не 8–10 одиночных слов). Drawer: выбор спикера + список + tap в тексте.
+**~20–30+** фраз/коллокаций на спикера — норма (не 8–10 одиночных слов). Drawer: выбор спикера + список + **hover/click** по предложению и фразам в тексте (`wrapTurnHTML`).
 
 `__EGE_QUICK_DICTIONARY__.mount({ prefix, mountId, speakers, triggerBtnId, … })`
 
 ## Новый юнит — чеклист
 
 1. Скопировать `u1-physical-activity.js` → `uN-….js`, заменить контент (audio, statements, key, huntLabs, shadowSpeakers).
-2. Подключить в `ege-listening-matching.html` после bootstrap.
-3. Не дублировать движки в HTML — только данные.
+2. **`shadowSpeakers[].phrases[]`** — **~20–30+** на спикера; **`ru` только по-русски**, без английских вставок; не CV/частоты/случайные куски (см. `ege-quick-dictionary-phrases-policy.mdc`).
+3. Hover по **каждому предложению** в «С текстом» — через движок (`wrapTurnHTML`); если пусто — добавить фразу в `phrases[]` или `sentences[]` в данных.
+4. Подключить в `ege-listening-matching.html` после bootstrap.
+5. Не дублировать движки в HTML — только данные.
+
+**Эталон качества словаря:** `u6-gap-year.js`.

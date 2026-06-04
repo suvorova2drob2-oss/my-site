@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+  />
+  <title>ЕГЭ — Writing</title>
+  <link rel="stylesheet" href="css/ege-shell.css" />
+  <link rel="stylesheet" href="css/ege-writing.css" />
+</head>
+<body class="ege-shell-page ege-shell-page--writing">
+  <div class="ege-shell">
+    <a class="ege-back" href="ege.html">&larr; Writing</a>
+
+    <header class="ew-hero">
+      <div class="ew-task-badge" id="writingType">Writing</div>
+      <h1 id="writingTitle">EGE Writing</h1>
+      <p class="ege-lead" id="writingLead"></p>
+      <div class="ew-theme-row">
+        <label class="ew-theme-label" for="unitSelect">Тема</label>
+        <select class="ew-theme-select" id="unitSelect"></select>
+      </div>
+      <div class="ew-task-switch" id="taskSwitch"></div>
+    </header>
+
+    <div class="ew-grid">
+      <main class="ew-subgrid">
+        <section class="ew-panel">
+          <h2 id="mainTaskLabel">Задание</h2>
+          <div class="ew-exam-task" id="taskPromptCard"></div>
+        </section>
+
+        <section class="ew-panel">
+          <div class="ew-meta">
+            <div><strong>Live count:</strong> <span id="liveCount">0</span></div>
+            <div class="ew-badge ew-badge--below" id="wordCountBadge">0 words</div>
+          </div>
+
+          <label class="ew-field-label" for="essayInput">Ваш ответ</label>
+          <p class="ew-muted ew-field-note" id="writingFieldNote">Сюда ученик вставляет или пишет свой ответ. Пример ниже открывается отдельно и это поле не заполняет.</p>
+
+          <textarea
+            id="essayInput"
+            class="ew-textarea"
+            placeholder="Write your email here."
+          ></textarea>
+          <div id="inputPlaceholder" hidden>Write your email here.</div>
+          <div class="ew-detect-box" id="detectBox" hidden>
+            <div class="ew-detect-head">
+              <strong>Как система читает ваш текст</strong>
+              <span class="ew-detect-note">Это умная подсветка-подсказка, не финальная экспертная проверка.</span>
+            </div>
+            <div class="ew-detect-legend" id="detectLegend"></div>
+            <div class="ew-detect-preview" id="detectPreview"></div>
+          </div>
+
+          <div class="ew-selfcheck">
+            <h3>Чеклист перед проверкой</h3>
+            <p class="ew-muted">Сначала ученик сам отмечает, что всё добавил, и только потом отправляет текст на проверку.</p>
+            <div class="ew-checks" id="precheckList"></div>
+            <div class="ew-precheck-note" id="precheckNote">Отметьте чеклист и потом нажмите кнопку проверки.</div>
+          </div>
+
+          <div class="ew-actions" style="margin-top:12px;">
+            <button type="button" class="ew-btn" id="runLocalCheck"><span id="mainActionLabel">Отправить на проверку</span></button>
+            <button type="button" class="ew-btn ew-btn--ghost" id="insertSample">Показать пример</button>
+            <button type="button" class="ew-btn ew-btn--ghost" id="clearEssay">Сбросить</button>
+          </div>
+          <div class="ew-inline-report" id="inlineReport" hidden>
+            <div class="ew-inline-report-head">
+              <strong>Результат проверки</strong>
+              <span id="inlineTotal">0 / 6</span>
+            </div>
+            <p class="ew-inline-report-text" id="inlineSummary">Нажмите кнопку проверки, чтобы получить оценку.</p>
+            <ul class="ew-list" id="inlineFindings"></ul>
+          </div>
+          <div class="ew-sample-box" id="sampleBox" hidden>
+            <div class="ew-sample-head">
+              <strong>Пример ответа</strong>
+              <button type="button" class="ew-sample-close" id="hideSample">Скрыть</button>
+            </div>
+            <pre class="ew-sample-text" id="sampleText"></pre>
+          </div>
+        </section>
+
+        <section class="ew-panel">
+          <h2>Подсказки по частям</h2>
+          <p class="ew-muted">Нажмите на нужную часть, чтобы быстро увидеть требования и рекомендации именно для неё.</p>
+          <div class="ew-help-tabs" id="helpTabs"></div>
+          <div class="ew-help-panel" id="helpPanel">
+            <h3 id="helpTitle">Что здесь проверяется</h3>
+            <ul class="ew-list" id="helpList"></ul>
+          </div>
+        </section>
+      </main>
+
+      <aside class="ew-subgrid">
+        <section class="ew-panel">
+          <h2>Локальная оценка</h2>
+          <div class="ew-score-total" id="localTotal">0 / 6</div>
+          <p class="ew-muted"><strong>Максимум за задание:</strong> <span id="maxScoreText">6</span> баллов</p>
+          <p class="ew-muted"><strong>Word count:</strong> <span id="wcInline">0</span> · <span id="wordStateText"></span></p>
+          <div class="ew-score-grid" id="scoreGrid"></div>
+          <p class="ew-muted" id="localSummary" style="margin-top:12px;"></p>
+        </section>
+
+        <details class="ew-panel ew-mobile-accordion" data-mobile-accordion data-accordion-key="structure" open>
+          <summary class="ew-accordion-summary"><span id="structurePanelTitle">Структура email</span></summary>
+          <div class="ew-accordion-body">
+            <ul class="ew-list" id="structureChecklist"></ul>
+            <h3 style="margin-top:14px;">Что найдено в вашем тексте</h3>
+            <ul class="ew-list" id="structureStatus"></ul>
+          </div>
+        </details>
+
+        <details class="ew-panel ew-mobile-accordion" data-mobile-accordion data-accordion-key="warnings" open>
+          <summary class="ew-accordion-summary">Warnings</summary>
+          <div class="ew-accordion-body">
+            <ul class="ew-list" id="warningList"></ul>
+          </div>
+        </details>
+
+        <details class="ew-panel ew-mobile-accordion" data-mobile-accordion data-accordion-key="phrases" open>
+          <summary class="ew-accordion-summary">Useful phrases</summary>
+          <div class="ew-accordion-body">
+            <div class="ew-bank" id="phraseBank"></div>
+          </div>
+        </details>
+
+        <details class="ew-panel ew-mobile-accordion" data-mobile-accordion data-accordion-key="criteria" open>
+          <summary class="ew-accordion-summary">Критерии ЕГЭ</summary>
+          <div class="ew-accordion-body">
+            <ul class="ew-list ew-criteria-legend" id="criteriaLegend"></ul>
+          </div>
+        </details>
+      </aside>
+    </div>
+  </div>
+
+  <script src="js/prep-course-profile.js"></script>
+  <script src="js/prep-site-content.js"></script>
+  <script src="js/prep-ege-track.js" vite-ignore></script>
+  <script src="js/ege-writing/ege-writing-data-v2.js" vite-ignore></script>
+  <script src="js/ege-writing/ege-writing-engine-v2.js" vite-ignore></script>
+</body>
+</html>

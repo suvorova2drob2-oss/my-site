@@ -59,7 +59,7 @@ globs:
 
 ## Этап 2 · hunt
 
-- Общий **`dialogueParagraphs[]`**: `{ turns: [{ speaker, text }] }` — абзацы диалога (Kate/Alex и т.д.).
+- Общий **`dialogueParagraphs[]`**: `{ turns: [{ speaker, text, ru?, sentences? }] }` — абзацы диалога (Kate/Alex и т.д.).
 - Каждый **`huntLabs[]`**: `paragraphIndex`, `key`, `keyLineRu`, `explainRu` / `nsExplainRu`, `evidencePromptRu`, `segments: [{ kind:"hit", text }]`.
 - Рендер: **целый абзац** (оба спикера в пузырях), hit — кликабельная опора.
 - **NS:** `segments: []`, только чтение абзаца + пояснение при «Проверить фразу».
@@ -71,7 +71,8 @@ globs:
 - `mount({ dialogueParagraphs, speakers, prefix: "ege-lm-sh", … })` — **режим диалога**.
 - **Один абзац на экран**, «Проговорил → следующий абзац»; **без** полоски прогресса и точек в dialogue mode.
 - Реплики: имя + bubble (Kate / Alex).
-- **Быстрый словарь:** `phrases[]` **20–30+ фраз** на спикера, только коллокации — см. `ege-quick-dictionary-phrases-policy.mdc`.
+- **Быстрый словарь:** `phrases[]` **20–30+ фраз** на спикера — см. `ege-quick-dictionary-phrases-policy.mdc` (качество `ru`, анти-паттерны).
+- **Перевод предложений:** движок `wrapTurnHTML` — на **любое предложение** в режиме «С текстом» можно **навести** (hover) или кликнуть по фразе; данные: `turn.sentences[]` / `turn.ru` / совпадение из `phrases[]`.
 
 ---
 
@@ -86,7 +87,7 @@ pack.units.push({
   listenTipsRu: "…",
   statements: [{ letter: "A", text: "…" }, …], // 7 шт.
   key: { A: "t", B: "f", C: "ns", … },
-  dialogueParagraphs: [{ turns: [{ speaker: "Kate", text: "…" }, …] }, …],
+  dialogueParagraphs: [{ turns: [{ speaker: "Kate", text: "…", ru?: "…", sentences?: [{ en, ru }] }] }, …],
   huntLabs: [{ letter: "A", key: "t", paragraphIndex: 1, explainRu: "…", segments: [{ kind: "hit", text: "…" }] }, …],
   shadowSpeakers: [{ id: "Kate", label: "Kate", fullText: "…", phrases: [{ en, ru, tip? }], chunks: [] }]
 });
@@ -99,7 +100,7 @@ pack.units.push({
 ## Новый юнит — чеклист (быстрый rollout)
 
 1. Скопировать `u1-summer-volunteer.js` → `uN-….js`.
-2. Заполнить: audio, 7 statements, key, `dialogueParagraphs`, 7 `huntLabs`, `shadowSpeakers` + **подробный** `phrases`.
+2. Заполнить: audio, 7 statements, key, `dialogueParagraphs` (+ `turn.sentences`/`turn.ru` для hover), 7 `huntLabs`, `shadowSpeakers` + **подробный** `phrases` (полный русский в `ru`).
 3. Подключить скрипт в `ege-listening-tfns.html` после `ege-listening-tfns-data.js`.
 4. **Не** менять app/hunt/shadow/CSS, если пользователь не просит другой UX.
 5. Stats / cheer / hub уже подключены.
@@ -126,6 +127,7 @@ ege-listening-tfns-data.js
 
 - ❌ Новая HTML-страница с копией hunt/app на каждый юнит
 - ❌ Одиночные слова в быстром словаре
+- ❌ «Ленивый» перевод: английские слова внутри `ru`, бессмысленные «фразы» (частота FM, должность без контекста)
 - ❌ Hunt — одна строка без абзаца диалога
 - ❌ Shadow — простыня текста или ползунок абзацев
 - ❌ Дублировать «потому что» и «почему неверный» одним и тем же текстом

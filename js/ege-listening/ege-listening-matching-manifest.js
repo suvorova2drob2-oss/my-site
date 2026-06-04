@@ -37,6 +37,8 @@
       "js/ege/ege-exam-cheer-rail.js",
       "js/ege-listening/ege-listening-matching-stats-bridge.js",
       "js/ege/ege-guided-transcript-hunt.js",
+      "js/ege-listening/ege-listening-sentence-ru-loader.js",
+      "js/ege-listening/ege-listening-sentence-ru-bank.js",
       "js/ege/ege-quick-dictionary-drawer.js",
       "js/ege/ege-listening-shadowing-engine.js",
       "js/ege-listening/ege-listening-matching-evidence-hunt.js",

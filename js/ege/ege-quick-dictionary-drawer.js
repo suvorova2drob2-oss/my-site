@@ -29,6 +29,88 @@
     });
   }
 
+  function splitSentences(text) {
+    var s = String(text || "").trim();
+    if (!s) return [];
+    var out = [];
+    var re = /([^.!?]+[.!?]+)|([^.!?]+$)/g;
+    var m;
+    while ((m = re.exec(s)) !== null) {
+      var chunk = String(m[1] || m[2] || "").trim();
+      if (chunk) out.push(chunk);
+    }
+    if (!out.length) out.push(s);
+    return out;
+  }
+
+  function normSent(s) {
+    return String(s || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function ruForSentence(sentText, sentenceEntry, turnRu, sentenceBank) {
+    if (sentenceEntry && sentenceEntry.ru) return String(sentenceEntry.ru);
+    if (turnRu) return String(turnRu);
+    var bankApi =
+      typeof w !== "undefined" && w.__EGE_LISTENING_SENTENCE_RU__
+        ? w.__EGE_LISTENING_SENTENCE_RU__
+        : null;
+    if (bankApi && bankApi.lookup) {
+      var fromBank = bankApi.lookup(sentText, sentenceBank);
+      if (fromBank) return fromBank;
+    }
+    return "";
+  }
+
+  function findSentenceEntry(sentText, sentences) {
+    if (!sentences || !sentences.length) return null;
+    var n = normSent(sentText);
+    var i;
+    for (i = 0; i < sentences.length; i++) {
+      if (normSent(sentences[i].en) === n) return sentences[i];
+    }
+    return null;
+  }
+
+  /** turn: { text, ru?, sentences?: [{ en, ru }] } */
+  function wrapTurnHTML(turn, phrases, tapClass, sentClass) {
+    var text = turn && turn.text != null ? String(turn.text) : String(turn || "");
+    var tapSorted = sortPhrases(phrases);
+    var sents = splitSentences(text);
+    var turnRu = turn && turn.ru ? String(turn.ru) : "";
+    var turnSentences = turn && turn.sentences ? turn.sentences : null;
+    if (!sents.length) return esc(text);
+    var html = "";
+    var j;
+    for (j = 0; j < sents.length; j++) {
+      var sentText = sents[j];
+      var entry = findSentenceEntry(sentText, turnSentences);
+      var ru = ruForSentence(
+        sentText,
+        entry,
+        sents.length === 1 ? turnRu : "",
+        turn && turn.sentenceBank ? turn.sentenceBank : null
+      );
+      var inner = wrapTapHTML(sentText, tapSorted, tapClass);
+      if (ru) {
+        html +=
+          '<span class="' +
+          sentClass +
+          '" tabindex="0" role="button" data-ru="' +
+          escAttr(ru) +
+          '">' +
+          inner +
+          "</span>";
+      } else {
+        html += inner;
+      }
+      if (j < sents.length - 1) html += " ";
+    }
+    return html;
+  }
+
   function wrapTapHTML(text, tapSorted, tapClass) {
     if (!tapSorted.length) return esc(text);
     var s = String(text);
@@ -109,9 +191,9 @@
     return (
       '<p class="' +
       noteClass +
-      '">Все важные фразы <strong>' +
+      '">Фразы <strong>' +
       esc(sp.label || sp.id) +
-      '</strong> · кликай по <strong>подсвеченным</strong> словам в тексте.</p>' +
+      '</strong> · наведи на <strong>предложение</strong> (полный перевод) или кликни <strong>фразу</strong> в тексте.</p>' +
       dl
     );
   }
@@ -122,6 +204,7 @@
     var speakers = opts.speakers;
     var spkIx = opts.initialSpeakerIndex || 0;
     var tapClass = opts.tapClass || "ege-lm-sh-tap";
+    var sentClass = opts.sentClass || "ege-lm-sh-sent";
     var noteClass = opts.noteClass || "ege-lm-sh-dict-note";
     var bodyOpenClass = opts.bodyOpenClass || "ege-lm-sh--dict-open";
     var mountEl = document.getElementById(opts.mountId || prefix + "-dict-mount");
@@ -215,11 +298,13 @@
 
     function showWtip(el) {
       if (!wtipHost) return;
+      var ru = el.getAttribute("data-ru") || "";
+      if (!ru) return;
       wtipHost.innerHTML =
         '<strong class="ege-lm-sh-wtip-en">' +
         esc(el.textContent) +
         '</strong><span class="ege-lm-sh-wtip-ru">' +
-        esc(el.getAttribute("data-ru")) +
+        esc(ru) +
         "</span>";
       wtipHost.hidden = false;
       var r = el.getBoundingClientRect();
@@ -265,18 +350,38 @@
       wrapTapHTML: function (text, phrases) {
         return wrapTapHTML(text, sortPhrases(phrases || currentSpeaker().phrases || []), tapClass);
       },
+      wrapTurnHTML: function (turn, phrases) {
+        return wrapTurnHTML(
+          turn,
+          sortPhrases(phrases || currentSpeaker().phrases || []),
+          tapClass,
+          sentClass
+        );
+      },
       bindTapOnRoot: function (root) {
         if (!root) return;
+        function pickTipTarget(el) {
+          if (!el || !el.closest) return null;
+          var tap = el.closest("." + tapClass);
+          if (tap && tap.getAttribute("data-ru")) return tap;
+          var sent = el.closest("." + sentClass);
+          if (sent && sent.getAttribute("data-ru")) return sent;
+          return null;
+        }
         root.addEventListener("click", function (e) {
-          var tap = e.target.closest("." + tapClass);
-          if (tap) {
+          var tip = pickTipTarget(e.target);
+          if (tip) {
             e.preventDefault();
-            showWtip(tap);
+            showWtip(tip);
             return;
           }
           if (!e.target.closest("." + prefix + "-wtip") && !e.target.closest(".ege-lm-sh-wtip")) {
             closeWtip();
           }
+        });
+        root.addEventListener("mouseover", function (e) {
+          var tip = pickTipTarget(e.target);
+          if (tip) showWtip(tip);
         });
       },
       bindEscape: function (extraClose) {
@@ -290,5 +395,11 @@
     };
   }
 
-  w.__EGE_QUICK_DICTIONARY__ = { mount: mount, wrapTapHTML: wrapTapHTML, esc: esc };
+  w.__EGE_QUICK_DICTIONARY__ = {
+    mount: mount,
+    wrapTapHTML: wrapTapHTML,
+    wrapTurnHTML: wrapTurnHTML,
+    splitSentences: splitSentences,
+    esc: esc
+  };
 })(typeof window !== "undefined" ? window : this);

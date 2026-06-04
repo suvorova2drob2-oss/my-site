@@ -63,6 +63,8 @@
       "js/ege-listening/listening-tfns-units/uN-….js",
       "js/ege/ege-exam-cheer-rail.js",
       "js/ege-listening/ege-listening-tfns-stats-bridge.js",
+      "js/ege-listening/ege-listening-sentence-ru-loader.js",
+      "js/ege-listening/ege-listening-sentence-ru-bank.js",
       "js/ege/ege-quick-dictionary-drawer.js",
       "js/ege/ege-listening-shadowing-engine.js",
       "js/ege-listening/ege-listening-tfns-hunt.js",
@@ -72,6 +74,7 @@
     newUnitSteps: [
       "Copy u1-summer-volunteer.js → uN-slug.js",
       "Fill statements (7), key, dialogueParagraphs, huntLabs (7), shadowSpeakers + phrases (20–30+ each)",
+      "Add full sentence ru to sentence-ru-bank (merge + build JS scripts)",
       "Add script tag in ege-listening-tfns.html after bootstrap",
       "Do not fork app/hunt/shadow/CSS"
     ],

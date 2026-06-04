@@ -1,0 +1,29 @@
+---
+description: EGE writing engine pattern for Task 37 and future tasks
+globs: {ege-writing.html,js/ege-writing/*.js,css/ege-writing.css}
+alwaysApply: false
+---
+
+# EGE Writing Engine
+
+- Treat `ege-writing.html` + `js/ege-writing/*.js` + `css/ege-writing.css` as one reusable EGE-only writing engine, not a one-off page.
+- Keep writing tasks in a task registry / selector inside the same engine when possible (`Task 37`, `Task 38`, future units), instead of cloning whole pages for each new prompt.
+- Keep learner UX student-facing: one clear input area, live word count, pre-check checklist, local score, human-readable warnings, and no raw AI prompt/JSON blocks in the visible student flow.
+- For `Task 37` use the real rubric only: `6` primary points total, `3` criteria only:
+  - `РКЗ` up to `2`
+  - `Организация текста` up to `2`
+  - `Языковое оформление` up to `2`
+- Prefer `Dear Mark,` as the safest greeting recommendation for EGE email, even if the engine also recognizes `Hello/Hi + name`.
+- Keep the smart pre-check readable: say what is missing in plain Russian (`распознано 2 ответа из 3`, `нужен ещё 1 question back`) instead of generic `Fix`.
+- Preserve the visual detection preview under the textarea: highlight greeting, opening, answers, questions back, closing, and sign-off so the learner sees how the engine interpreted the text.
+- For `Task 38`, preserve the same student-facing shell but switch the content model: opening statement, facts from table/chart, comparisons, problem, required solution, opinion, and the proper `14`-point `K1-K5` rubric.
+- When adding a new writing task, extend the task data object rather than hardcoding logic into HTML:
+  - prompt meta
+  - word limits
+  - checklist rows
+  - prompt-question keywords
+  - useful phrases
+  - scoring criteria
+- If a future task is `Task 38`, do **not** reuse Task 37 scoring: switch to the proper `14`-point / `K1-K5` rubric in data and UI.
+- For `Task 38`, treat `problem + solution` as one mandatory plan point, and prefer **exactly 5 paragraphs** matching the 5 official plan points.
+- Prefer adding each new prompt as a new task object in the shared data file first, then teach the engine how to score / highlight that mode.

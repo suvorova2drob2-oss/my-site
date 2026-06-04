@@ -37,6 +37,8 @@
       "js/ege-listening/listening-mc-units/uN-….js",
       "js/ege/ege-exam-cheer-rail.js",
       "js/ege-listening/ege-listening-mc-stats-bridge.js",
+      "js/ege-listening/ege-listening-sentence-ru-loader.js",
+      "js/ege-listening/ege-listening-sentence-ru-bank.js",
       "js/ege/ege-quick-dictionary-drawer.js",
       "js/ege/ege-listening-shadowing-engine.js",
       "js/ege-listening/ege-listening-mc-hunt.js",
@@ -48,6 +50,7 @@
       "Fill audio, questions 3–9 (key 1|2|3, explainRu, distractorWrongRu)",
       "huntLabs: sol:e evidence + sol:d only with distractExplainRu + wrongOption",
       "dialogueParagraphs + shadowSpeakers (20–30+ phrases per speaker)",
+      "Add full sentence translations to sentence-ru-bank (see ege-quick-dictionary-phrases-policy.mdc)",
       "Add script tag in ege-listening-mc.html after bootstrap",
       "Do not fork app/hunt/CSS unless UX change requested"
     ],
