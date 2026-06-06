@@ -96,6 +96,10 @@
     return getWords(text).length;
   }
 
+  function isBlankDraft(text) {
+    return wordCount(text) === 0;
+  }
+
   function sentenceChunks(text) {
     return String(text || "")
       .split(/[.!?]+/)
@@ -230,6 +234,30 @@
     return lines.length ? lines[0] : "";
   }
 
+  function penFriendName() {
+    var blocks = task.requiredBlocks || {};
+    var greeting = (blocks.greeting && blocks.greeting[0]) || "";
+    var match = greeting.match(/dear\s+(\w+)/i);
+    if (match) {
+      return match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+    }
+    var from = (task.promptMeta && task.promptMeta.from) || "";
+    match = from.match(/^(\w+)@/);
+    if (match) {
+      return match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+    }
+    return "Mark";
+  }
+
+  function requiredPromptAnswerCount() {
+    var qs = task.promptQuestions || [];
+    return qs.length ? qs.length : 3;
+  }
+
+  function questionBackHint() {
+    return task.questionBackHint || "the second part of the email";
+  }
+
   function endingLine(text) {
     var lines = String(text || "")
       .split(/\n+/)
@@ -241,13 +269,18 @@
   }
 
   function isGreetingLine(line) {
-    return /^\s*(dear|hello|hi)\s*,?\s*mark\s*[!,]?\s*$/i.test(String(line || "").trim());
+    var name = penFriendName().toLowerCase();
+    return new RegExp(
+      "^\\s*(dear|hello|hi)\\s*,?\\s*" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*[!,]?\\s*$",
+      "i"
+    ).test(String(line || "").trim());
   }
 
   function greetingKind(line) {
     var src = String(line || "").trim();
-    if (/^\s*dear\s*,?\s*mark\s*[!,]?\s*$/i.test(src)) return "dear";
-    if (/^\s*(hello|hi)\s*,?\s*mark\s*[!,]?\s*$/i.test(src)) return "informal";
+    var name = penFriendName().toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp("^\\s*dear\\s*,?\\s*" + name + "\\s*[!,]?\\s*$", "i").test(src)) return "dear";
+    if (new RegExp("^\\s*(hello|hi)\\s*,?\\s*" + name + "\\s*[!,]?\\s*$", "i").test(src)) return "informal";
     return "missing";
   }
 
@@ -303,7 +336,7 @@
     return {
       greeting: isGreetingLine(greetingLine(text)) || hasAny(greetingLine(text), blocks.greeting || []),
       thanks: hasAny(text, blocks.thanks || []),
-      answers3: countAnsweredPromptQuestions(text) >= 3,
+      answers3: countAnsweredPromptQuestions(text) >= requiredPromptAnswerCount(),
       questionBack3: questionBackCount(text) >= 3,
       closing: hasAny(text, blocks.closing || []),
       signoff: hasAny(endingLine(text), blocks.signoff || []) || lines.length >= 2
@@ -409,11 +442,17 @@
     if (metrics.answeredPromptQuestions === 0) return 0;
     var score = 0;
     if (metrics.answeredPromptQuestions >= 2 || metrics.questionBacks >= 2) score = 1;
-    if (metrics.answeredPromptQuestions >= 3 && metrics.questionBacks >= 3) score = 2;
+    if (
+      metrics.answeredPromptQuestions >= requiredPromptAnswerCount() &&
+      metrics.questionBacks >= 3
+    ) {
+      score = 2;
+    }
     return score;
   }
 
   function scoreEmailOrganisation(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.structure.greeting && metrics.structure.signoff) score++;
     if ((metrics.structure.thanks || metrics.structure.closing) && metrics.paragraphs >= 3) score++;
@@ -422,6 +461,7 @@
   }
 
   function scoreEmailLanguage(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.sentences >= 5 && metrics.commonMistakes.length <= 2 && metrics.lowercaseStarts === 0) score++;
     if (metrics.repeatedPunctuation === 0 && metrics.doubleSpaces === 0 && metrics.topicHits >= 3 && metrics.repeatFlags <= 1) score++;
@@ -430,6 +470,7 @@
   }
 
   function scoreReportK1(metrics) {
+    if (!metrics.words) return 0;
     if (metrics.wordState === "critical") return 0;
     var score = 0;
     if (metrics.structure.opening) score++;
@@ -440,6 +481,7 @@
   }
 
   function scoreReportK2(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.paragraphs === 5) score++;
     if (metrics.structure.conclusion && metrics.comparisonCount >= 1) score++;
@@ -449,6 +491,7 @@
   }
 
   function scoreReportK3(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.topicHits >= 5) score++;
     if (metrics.uniqueRatio >= 0.45) score++;
@@ -458,6 +501,7 @@
   }
 
   function scoreReportK4(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.sentences >= 8) score++;
     if (metrics.commonMistakes.length <= 2) score++;
@@ -467,6 +511,7 @@
   }
 
   function scoreReportK5(metrics) {
+    if (!metrics.words) return 0;
     var score = 0;
     if (metrics.repeatedPunctuation === 0) score++;
     if (metrics.doubleSpaces === 0 && metrics.lowercaseStarts === 0) score++;
@@ -921,16 +966,27 @@
     });
     if (!metrics.structure.greeting) {
       var liA = D.createElement("li");
-      liA.textContent = "Добавь обращение в начале письма. Самый безопасный вариант для ЕГЭ: `Dear Mark,`.";
+      liA.textContent =
+        "Добавь обращение в начале письма. Самый безопасный вариант для ЕГЭ: `Dear " +
+        penFriendName() +
+        ",`.";
       findings.appendChild(liA);
     } else if (metrics.greetingKind !== "dear") {
       var liB = D.createElement("li");
-      liB.textContent = "Обращение распознано, но для ЕГЭ лучше выбрать `Dear Mark,`.";
+      liB.textContent =
+        "Обращение распознано, но для ЕГЭ лучше выбрать `Dear " + penFriendName() + ",`.";
       findings.appendChild(liB);
     }
-    if (metrics.answeredPromptQuestions < 3) {
+    if (metrics.answeredPromptQuestions < requiredPromptAnswerCount()) {
       var liC = D.createElement("li");
-      liC.textContent = "Пока распознано ответов Mark: " + metrics.answeredPromptQuestions + " из 3.";
+      liC.textContent =
+        "Пока распознано ответов " +
+        penFriendName() +
+        ": " +
+        metrics.answeredPromptQuestions +
+        " из " +
+        requiredPromptAnswerCount() +
+        ".";
       findings.appendChild(liC);
     }
     if (metrics.questionBacks < 3) {
@@ -968,7 +1024,10 @@
       rows = [
         { label: "Обращение", ok: metrics.structure.greeting },
         { label: "Thanks / opening", ok: metrics.structure.thanks },
-        { label: "Ответы на 3 вопроса", ok: metrics.answeredPromptQuestions >= 3 },
+        {
+          label: "Ответы на " + requiredPromptAnswerCount() + " вопроса",
+          ok: metrics.answeredPromptQuestions >= requiredPromptAnswerCount()
+        },
         { label: "3 questions back", ok: metrics.questionBacks >= 3 },
         { label: "Closing phrase", ok: metrics.structure.closing },
         { label: "Подпись", ok: metrics.structure.signoff },
@@ -999,12 +1058,30 @@
       if (!metrics.structure.opinion) rows.push("Не распознан финальный opinion paragraph.");
       if (metrics.paragraphs !== 5) rows.push("Для Task 38 лучше держать ровно 5 отдельных абзацев по официальному плану.");
     } else {
-      if (metrics.questionBacks < 3) rows.push("Нужно задать 3 вопроса Mark о его school project.");
-      if (metrics.answeredPromptQuestions < 3) rows.push("Не все 3 вопроса Mark раскрыты явно.");
+      if (metrics.questionBacks < 3) {
+        rows.push(
+          "Нужно задать 3 вопроса " + penFriendName() + " о " + questionBackHint() + "."
+        );
+      }
+      if (metrics.answeredPromptQuestions < requiredPromptAnswerCount()) {
+        rows.push(
+          "Не все " +
+            requiredPromptAnswerCount() +
+            " вопроса " +
+            penFriendName() +
+            " раскрыты явно."
+        );
+      }
       if (!metrics.structure.greeting) {
-        rows.push("Нет корректного обращения. Самый безопасный вариант для ЕГЭ: `Dear Mark,`.");
+        rows.push(
+          "Нет корректного обращения. Самый безопасный вариант для ЕГЭ: `Dear " +
+            penFriendName() +
+            ",`."
+        );
       } else if (metrics.greetingKind !== "dear") {
-        rows.push("Обращение есть, но для ЕГЭ лучше использовать `Dear Mark,`.");
+        rows.push(
+          "Обращение есть, но для ЕГЭ лучше использовать `Dear " + penFriendName() + ",`."
+        );
       }
       if (!metrics.structure.signoff) rows.push("Проверьте завершающую подпись письма.");
     }
@@ -1233,7 +1310,7 @@
       structureHasIssues =
         !metrics.structure.greeting ||
         !metrics.structure.thanks ||
-        metrics.answeredPromptQuestions < 3 ||
+        metrics.answeredPromptQuestions < requiredPromptAnswerCount() ||
         metrics.questionBacks < 3 ||
         !metrics.structure.closing ||
         !metrics.structure.signoff ||
