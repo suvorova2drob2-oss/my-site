@@ -785,6 +785,10 @@
   <script src="js/ege-listening/ege-listening-matching-stats-bridge.js" vite-ignore></script>
   <script src="js/ege-listening/ege-listening-tfns-stats-bridge.js" vite-ignore></script>
   <script src="js/ege-listening/ege-listening-mc-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-speaking/ege-speaking-phonetic-flow-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-speaking/ege-speaking-question-master-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-speaking/ege-speaking-interview-stats-bridge.js" vite-ignore></script>
+  <script src="js/ege-speaking/ege-speaking-logic-comparison-stats-bridge.js" vite-ignore></script>
   <script src="js/ege/ege-full-pack-stats.js" vite-ignore></script>
   <script>
     const UNLOCK_THRESHOLD = 60;
@@ -841,6 +845,8 @@
         "Word Formation Nouns": 0,
         "Lexis Sniper: synonym-trap": 0,
         "phonetic-flow": 0,
+        "question-master": 0,
+        "interview-reply": 0,
         "logic-comparison": 0
       }
     };
@@ -859,7 +865,7 @@
       { name: "Grammar", sources: ["Grammar Exam", "Grammar Exam Advanced", "The Verb Pump", "Passive Power"] },
       { name: "Word Formation", sources: ["Word Formation Exam", "Word Formation Nouns"] },
       { name: "Lexis 30-36", sources: ["Lexis Exam", "Lexis Sniper: synonym-trap", "Mixed Lexis"] },
-      { name: "Speaking", sources: ["Speaking Exam", "phonetic-flow", "logic-comparison", "Mixed Speaking"] }
+      { name: "Speaking", sources: ["Speaking Exam", "phonetic-flow", "question-master", "interview-reply", "logic-comparison", "Mixed Speaking"] }
     ];
 
     const SKILL_HREF = {
@@ -881,8 +887,10 @@
       "Passive Power": "ege-grammar-gym.html",
       "Word Formation Nouns": "ege-word-factory.html",
       "Lexis Sniper: synonym-trap": "ege-lexis-sniper.html",
-      "phonetic-flow": "ege-speaking-gym.html",
-      "logic-comparison": "ege-speaking-gym.html"
+      "phonetic-flow": "ege-speaking-phonetic-flow.html",
+      "question-master": "ege-speaking-question-master.html",
+      "interview-reply": "ege-speaking-interview-reply.html",
+      "logic-comparison": "ege-speaking-logic-comparison.html"
     };
 
     const unitsGrid = document.getElementById("unitsGrid");
@@ -1441,6 +1449,18 @@
     }
     if (window.__egeListeningMcStats) {
       window.__egeListeningMcStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeSpeakingPhoneticFlowStats) {
+      window.__egeSpeakingPhoneticFlowStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeSpeakingQuestionMasterStats) {
+      window.__egeSpeakingQuestionMasterStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeSpeakingInterviewStats) {
+      window.__egeSpeakingInterviewStats.mergeIntoExamStatisticsState(state, clampScore);
+    }
+    if (window.__egeSpeakingTask4Stats) {
+      window.__egeSpeakingTask4Stats.mergeIntoExamStatisticsState(state, clampScore);
     }
 
     renderAll();
