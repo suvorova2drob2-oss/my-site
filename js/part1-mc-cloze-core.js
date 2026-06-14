@@ -70,6 +70,8 @@
     /published-unit9-solving-mystery\.json\s*$/i.test(dataSrc);
   /** Unit 8 FCE · Seville — JSON in #part1-mc-bundled-unit8-seville. */
   var unit8UoeSevilleBundled = String(contextId) === "unit8-uoe-seville";
+  /** Unit 7 FCE · Buy Me Once — JSON in #part1-mc-bundled-unit7-buy-me-once. */
+  var unit7BuyMeOnceBundled = String(contextId) === "unit7-uoe-buy-me-once";
   var unit9BundledPart1 =
     unit9InteriorHardwired ||
     unit9ArtisticTalentHardwired ||
@@ -100,6 +102,7 @@
     boot.studentOnly === true ||
     sp.get("part1Student") === "1" ||
     unit9BundledPart1 ||
+    unit7BuyMeOnceBundled ||
     unit8UoeSevilleBundled;
   var useEmbeddedExercise =
     boot.embeddedOnly === true ||
@@ -112,6 +115,7 @@
     unit2AnotherWorldBundled ||
     unit5UoeBundled ||
     unit11BritishWeatherBundled ||
+    unit7BuyMeOnceBundled ||
     unit8UoeSevilleBundled;
   var boxedSite =
     (typeof window !== "undefined" && window.__PREP_BOXED_SITE__ === true) ||
@@ -1947,6 +1951,16 @@
         try {
           return JSON.parse(elU8s.textContent.trim());
         } catch (eU8s) {
+          return null;
+        }
+      }
+    }
+    if (unit7BuyMeOnceBundled) {
+      var elU7bmo = document.getElementById("part1-mc-bundled-unit7-buy-me-once");
+      if (elU7bmo) {
+        try {
+          return JSON.parse(elU7bmo.textContent.trim());
+        } catch (eU7bmo) {
           return null;
         }
       }
