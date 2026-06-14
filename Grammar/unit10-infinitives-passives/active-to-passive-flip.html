@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Grammar &mdash; Active &rarr; passive (flip cards)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.55;
+    }
+    .page {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .top h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.35; max-width: 420px; }
+    .badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      font-size: 0.93rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+    .example-box {
+      font-size: 0.9rem;
+      color: #dbeafe;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.45);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .example-box em { font-style: italic; }
+    .hud {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-align: center;
+      line-height: 1.45;
+    }
+    .hud strong { color: var(--accent); }
+    .flip-scene {
+      perspective: 1100px;
+      max-width: 560px;
+      margin: 0 auto 8px;
+      cursor: pointer;
+      outline: none;
+    }
+    .flip-scene:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 20px;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: min(280px, 46vh);
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+    }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+    }
+    .flip-front {
+      background: linear-gradient(165deg, rgba(34, 54, 87, 0.98), rgba(15, 23, 42, 0.98));
+    }
+    .flip-back {
+      background: linear-gradient(165deg, rgba(86, 204, 242, 0.14), rgba(24, 45, 82, 0.98));
+      transform: rotateY(180deg);
+    }
+    .flip-kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin-bottom: 10px;
+    }
+    .flip-q, .flip-a {
+      font-size: 1.02rem;
+      line-height: 1.55;
+      max-width: 34rem;
+    }
+    .flip-a strong { color: #86efac; font-weight: 700; }
+    .flip-note {
+      margin-top: 14px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      max-width: 32rem;
+      line-height: 1.45;
+    }
+    .tap-hint {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 8px 0 14px;
+    }
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .nav-row button {
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.65);
+      color: var(--accent);
+      cursor: pointer;
+    }
+    .nav-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .mark-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .mark-row button {
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .mark-know {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+    .mark-learn {
+      background: rgba(251, 191, 36, 0.12);
+      color: #fde68a;
+      border-color: rgba(251, 191, 36, 0.35);
+    }
+    .hub-link {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Infinitives after passives &mdash; active &rarr; passive</h1>
+        <span class="badge">Flip cards</span>
+      </div>
+      <a class="back" href="index.html">&larr; Grammar hub</a>
+    </header>
+
+    <p class="instr">
+      Make passive sentences with the same meaning as the following active sentences. There is an example at the beginning (0).
+    </p>
+    <p class="example-box">
+      <strong>0</strong> The police took away the youths in a police car.<br />
+      <em>&rarr; The youths were taken away in a police car.</em>
+    </p>
+
+    <p class="hud" id="hud" aria-live="polite"></p>
+
+    <div class="flip-scene" id="scene" role="button" tabindex="0" aria-label="Flip card">
+      <div class="flip-inner" id="inner">
+        <div class="flip-face flip-front">
+          <span class="flip-kicker" id="kicker-front">Active sentence</span>
+          <p class="flip-q" id="front"></p>
+        </div>
+        <div class="flip-face flip-back">
+          <span class="flip-kicker">Passive answer</span>
+          <p class="flip-a" id="back"></p>
+          <p class="flip-note" id="note"></p>
+        </div>
+      </div>
+    </div>
+    <p class="tap-hint">Tap the card or press Space / Enter</p>
+
+    <div class="nav-row">
+      <button type="button" id="btn-prev">&larr; Back</button>
+      <button type="button" id="btn-next">Next &rarr;</button>
+    </div>
+    <div class="mark-row">
+      <button type="button" class="mark-know" id="btn-know">I know this</button>
+      <button type="button" class="mark-learn" id="btn-learn">Still learning</button>
+    </div>
+
+    <p class="hub-link">
+      <a href="index.html">&larr; Grammar hub</a>
+      &nbsp;&middot;&nbsp;
+      <a href="passives-forms-flip.html">Passive forms in brackets</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  var STORAGE_KEY = "u10ActivePassiveFlipMarks";
+  var CARDS = [
+    {
+      n: 1,
+      active: "We know that the suspect is in the community.",
+      passive: "The suspect <strong>is known to be</strong> in the community.",
+      note: "Passive + infinitive after <em>know</em> (shared belief)."
+    },
+    {
+      n: 2,
+      active: "They expect that the Prime Minister will give a speech later.",
+      passive: "The Prime Minister <strong>is expected to give</strong> a speech later.",
+      note: "After <em>expect</em>: <em>is expected to</em> + infinitive."
+    },
+    {
+      n: 3,
+      active: "Someone had mugged the man in the city centre.",
+      passive: "The man <strong>had been mugged</strong> in the city centre.",
+      note: "Past perfect passive; agent optional."
+    },
+    {
+      n: 4,
+      active: "The police have released images of the thieves.",
+      passive: "Images of the thieves <strong>have been released</strong> by the police.",
+      note: "Present perfect passive."
+    },
+    {
+      n: 5,
+      active: "We think that the financial crisis will end soon.",
+      passive: "The financial crisis <strong>is thought to end</strong> soon.",
+      note: "Passive + infinitive after <em>think</em>."
+    },
+    {
+      n: 6,
+      active: "They are holding the young woman at the police station.",
+      passive: "The young woman <strong>is being held</strong> at the police station.",
+      note: "Present continuous passive."
+    },
+    {
+      n: 7,
+      active: "We believe that the shop will close down next week.",
+      passive: "The shop <strong>is believed to close down</strong> next week.",
+      note: "Passive + infinitive after <em>believe</em>."
+    },
+    {
+      n: 8,
+      active: "We will search all visitors to the museum.",
+      passive: "All visitors to the museum <strong>will be searched</strong>.",
+      note: "Future simple passive."
+    }
+  ];
+
+  var idx = 0;
+  var flipped = false;
+  var marks = {};
+
+  function loadMarks() {
+    try {
+      marks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) {
+      marks = {};
+    }
+  }
+  function saveMarks() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(marks));
+    } catch (e) {}
+  }
+
+  function stats() {
+    var know = 0, learn = 0, none = 0;
+    CARDS.forEach(function (_, i) {
+      var m = marks[String(i)];
+      if (m === "know") know++;
+      else if (m === "learn") learn++;
+      else none++;
+    });
+    return { know: know, learn: learn, none: none };
+  }
+
+  function render() {
+    var c = CARDS[idx];
+    document.getElementById("kicker-front").textContent = "Item " + c.n + " — active";
+    document.getElementById("front").textContent = c.active;
+    document.getElementById("back").innerHTML = c.passive;
+    document.getElementById("note").innerHTML = c.note;
+    document.getElementById("inner").classList.toggle("flipped", flipped);
+    var st = stats();
+    document.getElementById("hud").innerHTML =
+      "Card <strong>" + (idx + 1) + "</strong> / <strong>" + CARDS.length +
+      "</strong> &middot; I know: <strong>" + st.know + "</strong> &middot; Still learning: <strong>" +
+      st.learn + "</strong>";
+    document.getElementById("btn-prev").disabled = idx <= 0;
+    document.getElementById("btn-next").disabled = idx >= CARDS.length - 1;
+  }
+
+  function flip() {
+    flipped = !flipped;
+    render();
+  }
+
+  document.getElementById("scene").addEventListener("click", flip);
+  document.getElementById("scene").addEventListener("keydown", function (e) {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      flip();
+    }
+  });
+  document.getElementById("btn-prev").addEventListener("click", function () {
+    if (idx <= 0) return;
+    idx--;
+    flipped = false;
+    render();
+  });
+  document.getElementById("btn-next").addEventListener("click", function () {
+    if (idx >= CARDS.length - 1) return;
+    idx++;
+    flipped = false;
+    render();
+  });
+  document.getElementById("btn-know").addEventListener("click", function () {
+    marks[String(idx)] = "know";
+    saveMarks();
+    render();
+  });
+  document.getElementById("btn-learn").addEventListener("click", function () {
+    marks[String(idx)] = "learn";
+    saveMarks();
+    render();
+  });
+
+  loadMarks();
+  render();
+})();
+  </script>
+</body>
+</html>

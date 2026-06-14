@@ -1,0 +1,35 @@
+---
+description: Lexicon rows — headword in base/dictionary form; ans anchors the plain transcript.
+alwaysApply: true
+---
+
+# Lexicon headwords — base form, not inflected transcript
+
+When adding or editing rows in `*_LEXIS_GAME_ROWS`, **Word Bank**, **flip back**, **MCQ**, **match**, and **typed games** must show the **dictionary / base form** of the phrase — not the inflected shape copied from the listening script or reading sentence.
+
+## Pattern (plain-anchored packs)
+
+Use two fields in each row:
+
+| Field | Purpose | Example |
+|--------|---------|--------|
+| **`headword`** | What the learner learns and recalls in games | `catch up with someone`, `take action`, `mount up` |
+| **`ans`** | Verbatim chunk that appears in `*_LEXIS_PLAIN` (drop / gap anchoring) | `caught up with him`, `mounting up` |
+
+`LexicalGamesPlainRowKit` (`js/lexical-games-plain-row-kit.js`) uses **`headword`** for Word Bank `phrase` and fall-pool `ans`; **`ans`** still anchors gaps in the plain text.
+
+If there is no inflection difference, set **`headword`** and **`ans`** to the same string (or omit `headword`).
+
+## Wording rules
+
+- **Multi-word verbs:** infinitive without *to* — `catch on`, `get through`, `count someone in` (not `caught on`, `count him in`).
+- **Objects:** prefer generic **someone / something** in `headword`, not **him / them / it** from the script (unless fixed idiom: `keep at it`, `go through with it`).
+- **Nouns / collocations:** singular/base where natural — `take action` not `took actions`.
+- **Fixed idioms** that only exist in one form: one string for both fields (`keep at it`).
+- **`tap`** on coursebook HTML pages may stay inflected for “tap the phrase in the sentence”; Vocab Gym / TTT / snowball should prefer **`headword`** when mapped.
+
+## Rollout
+
+When you change `headword` / `ans` in a lexicon file, the same row propagates via the shared object to **Word Bank**, **Vocab Gym**, **Playground**, **sticky**, **TTT**, **snowball**, **Prep vault** — no duplicate lists.
+
+See also: `vocab-lists-and-flip-cards.mdc` (flip front = no spoiler; flip back = headword + context line).

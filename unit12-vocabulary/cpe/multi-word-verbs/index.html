@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Multi-word verbs (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --phrase-bg: rgba(12, 28, 58, 0.72);
+      --pink: #f472b6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 22px;
+    }
+    .intro em { color: #bae6fd; font-style: normal; font-weight: 600; }
+
+    .listen-strip {
+      border: 1px solid #3d5a86;
+      border-radius: 16px;
+      padding: 18px 16px 20px;
+      background: linear-gradient(165deg, rgba(244, 114, 182, 0.08) 0%, rgba(8, 22, 48, 0.45) 100%);
+      margin-bottom: 28px;
+    }
+    .listen-strip__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 14px;
+    }
+    .listen-strip__head h2 { font-size: 1.02rem; color: #fbcfe8; }
+    .listen-strip__head p { font-size: 0.84rem; color: var(--muted); }
+    .verb-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .verb-chip {
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(244, 114, 182, 0.1);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fce7f3;
+    }
+    .verb-chip small {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #f9a8d4;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .practice-zone > h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task:last-child { margin-bottom: 0; }
+    .task__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pink);
+      margin-bottom: 6px;
+    }
+    .task h3 { font-size: 1.02rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 9px 14px;
+      min-height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .toolbar button:hover:not(:disabled) { border-color: var(--accent); }
+
+    .match-grid {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .match-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .col-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bae6fd;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .sen-list, .def-list { display: flex; flex-direction: column; gap: 10px; }
+    .sen, .def, .type-bucket {
+      position: relative;
+      border: 1px solid #4a6898;
+      border-radius: 12px;
+      background: #152a4d;
+      padding: 14px 16px;
+      text-align: left;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .sen, .def {
+      width: 100%;
+      color: #eef4ff;
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      border-left: 4px solid #3d5a86;
+    }
+    .sen:hover:not(.dim), .def:hover:not(.dim):not(.used) {
+      border-color: #7dd3fc;
+      background: #1a3358;
+    }
+    .sen.selected {
+      border-color: #38bdf8;
+      border-left-color: #0ea5e9;
+      background: rgba(14, 165, 233, 0.22);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.5);
+    }
+    .sen.matched {
+      background: rgba(54, 211, 153, 0.14);
+      border-left-color: var(--ok);
+    }
+    .def.used { background: rgba(54, 211, 153, 0.18); border-left-color: var(--ok); }
+    .def.dim { opacity: 0.45; pointer-events: none; }
+    .sen .num, .def .letter {
+      font-weight: 800;
+      color: #7dd3fc;
+      margin-right: 8px;
+      font-size: 0.95rem;
+    }
+    .sen .txt, .def .txt {
+      font-size: 0.96rem;
+      line-height: 1.55;
+      color: #f1f5f9;
+    }
+    .sen .pv {
+      color: #fffbeb;
+      font-weight: 800;
+      background: rgba(234, 179, 8, 0.28);
+      box-shadow: inset 0 -2px 0 #facc15;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .badge {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+    .badge.empty { font-style: normal; color: #7dd3fc; }
+    .badge.pick-hint { color: #fde047; }
+    #task-meanings.task-matching--ready .def:not(.used):not(.dim) {
+      border-color: #67e8f9;
+    }
+    #task-meanings.task-matching--ready .def:not(.used):not(.dim):hover {
+      background: rgba(14, 165, 233, 0.2);
+      box-shadow: 0 0 0 2px rgba(103, 232, 249, 0.45);
+    }
+    .unpair {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .unpair:hover { border-color: var(--bad); color: #fecaca; }
+
+    .sort-grid {
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 700px) {
+      .sort-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .type-bucket {
+      min-height: 88px;
+      border-left: 4px solid var(--accent);
+      cursor: pointer;
+    }
+    .type-bucket.is-target {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .type-bucket.has-item { background: rgba(54, 211, 153, 0.08); }
+    .type-bucket.is-bad { border-color: var(--bad); }
+    .type-bucket.is-ok { border-color: var(--ok); }
+    .type-bucket__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #7dd3fc;
+      margin-bottom: 4px;
+    }
+    .type-bucket__struct {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .type-bucket__slot {
+      min-height: 36px;
+      border: 1px dashed #4a6898;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: #fef08a;
+      font-weight: 700;
+    }
+    .type-bucket__slot.empty {
+      color: var(--muted);
+      font-weight: 500;
+      font-style: italic;
+    }
+    .verb-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .pool-chip {
+      border: 1px solid #3d5680;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(8, 22, 48, 0.65);
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #fef08a;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .pool-chip:hover { border-color: var(--accent); }
+    .pool-chip.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .pool-chip.placed { opacity: 0.35; pointer-events: none; }
+
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed rgba(244, 114, 182, 0.55);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(244, 114, 182, 0.08);
+    }
+    .word-box strong { color: #fbcfe8; display: block; margin-bottom: 10px; }
+    .bank-line { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+    .bank-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(8, 22, 48, 0.55);
+      font-size: 0.86rem;
+      color: #fce7f3;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .bank-chip:hover:not(.used) { border-color: #f9a8d4; }
+    .bank-chip.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .bank-chip.used { opacity: 0.35; pointer-events: none; }
+
+    .gap-list { display: flex; flex-direction: column; gap: 12px; }
+    .gap-sent {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-sent strong.num { color: var(--accent); margin-right: 6px; }
+    .gap-sent--example {
+      border-color: rgba(244, 114, 182, 0.5);
+      background: rgba(244, 114, 182, 0.1);
+      line-height: 1.75;
+    }
+    .gap-sent--example .ex-label {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #f9a8d4;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .gap-sent--example .pv {
+      color: #fffbeb;
+      font-weight: 800;
+      background: rgba(234, 179, 8, 0.28);
+      box-shadow: inset 0 -2px 0 #facc15;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .gap-slot {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 9rem;
+      max-width: min(100%, 20rem);
+      width: 14rem;
+      margin: 0 3px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: #132544;
+      color: #fef08a;
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .gap-slot:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .gap-slot.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .gap-slot.is-ok { border-color: #22c55e; border-style: solid; }
+    .gap-slot.is-bad { border-color: #f87171; border-style: solid; }
+
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: var(--ok);
+      color: #05271a;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .feedback {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      min-height: 20px;
+    }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: #fca5a5; }
+    .fb-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .fb-panel.show { display: block; }
+
+    @media (max-width: 600px) {
+      .page { padding: 18px 14px; }
+      .gap-slot { min-width: 100%; display: flex; margin: 6px 0; }
+    }
+
+    .workbook-zone {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .workbook-zone h2 {
+      font-size: 1.02rem;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .workbook-link {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      background: rgba(244, 114, 182, 0.1);
+      color: #fbcfe8;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    .workbook-link:hover {
+      background: rgba(244, 114, 182, 0.18);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Multi-word verbs &mdash; phrase lab &amp; practice</h1>
+      <a class="back" id="back-link" data-u12-levels-depth="3" data-u12-vocab-hub-depth="1" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Vocabulary &middot; Level 12</a>
+    </header>
+
+    <p class="intro">
+      Four verbs from <em>SB Track 12.1</em> (disabled access) head the page. Match meanings, sort them by grammatical type, then complete new sentences from the verb box.
+    </p>
+
+    <section class="listen-strip" aria-label="Verbs from the listening">
+      <div class="listen-strip__head">
+        <h2>From the listening</h2>
+        <p>Track 12.1 &middot; Alex &amp; Nadiya on park access</p>
+      </div>
+      <div class="verb-chips">
+        <span class="verb-chip">mounting up<small>intransitive phrasal</small></span>
+        <span class="verb-chip">keep at it<small>prepositional verb</small></span>
+        <span class="verb-chip">urge them on<small>transitive phrasal</small></span>
+        <span class="verb-chip">go through with it<small>phrasal prepositional</small></span>
+      </div>
+    </section>
+
+    <section class="practice-zone" aria-label="Practice tasks">
+      <h2>Practice</h2>
+
+      <article class="task" id="task-meanings">
+        <p class="task__label">Exercise 1</p>
+        <h3>Match verb to meaning</h3>
+        <p class="instr">Tap a sentence on the left (it glows blue), then tap a meaning on the right. Unpair with &times; if you change your mind.</p>
+        <div class="toolbar">
+          <button type="button" id="m-shuffle">Shuffle meanings</button>
+          <button type="button" id="m-clear">Clear pairs</button>
+        </div>
+        <div class="match-grid">
+          <div>
+            <div class="col-title">Sentences (1&ndash;4)</div>
+            <div class="sen-list" id="m-sen-list"></div>
+          </div>
+          <div>
+            <div class="col-title">Meanings (a&ndash;d)</div>
+            <div class="def-list" id="m-def-list"></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="m-check" disabled>Check</button>
+          <button type="button" class="btn-secondary" id="m-reveal" style="display:none;">Show solution</button>
+        </div>
+        <p class="feedback" id="m-feedback" aria-live="polite"></p>
+      </article>
+
+      <article class="task" id="task-types">
+        <p class="task__label">Exercise 2</p>
+        <h3>Sort by grammatical type</h3>
+        <p class="instr">Tap a verb chip, then tap the bucket (a&ndash;d) where it belongs. Each verb fits one type only.</p>
+        <div class="verb-pool" id="type-pool"></div>
+        <div class="sort-grid" id="type-grid"></div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="t-check">Check types</button>
+          <button type="button" class="btn-secondary" id="t-reset">Reset sorter</button>
+        </div>
+        <p class="feedback" id="t-feedback" aria-live="polite"></p>
+      </article>
+
+      <article class="task" id="task-gaps">
+        <p class="task__label">Exercise 3</p>
+        <h3>Complete the sentences with a verb from the box</h3>
+        <p class="instr">Complete items <strong>1&ndash;7</strong> with the <strong>correct form</strong> of a multi-word verb from the box. You may need to include a relevant object (see the worked example 0).</p>
+        <div class="word-box">
+          <strong>Verb box</strong>
+          <div class="bank-line" id="verb-bank"></div>
+        </div>
+        <div class="gap-list" id="gap-list"></div>
+        <div class="actions">
+          <button type="button" class="btn-primary" id="g-check">Check answers</button>
+          <button type="button" class="btn-secondary" id="g-reset">Reset</button>
+        </div>
+        <div class="fb-panel" id="g-feedback" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="workbook-zone" aria-label="Multi-word verbs workbook">
+      <h2>Workbook &mdash; dialogue &amp; matching</h2>
+      <p class="intro" style="margin-bottom: 14px;">
+        Coursebook Exercises 1&ndash;2: complete the exam-prep conversation with verb + particle combinations from two boxes, then match statements to responses.
+      </p>
+      <a class="workbook-link u12-cpe-sibling" href="workbook.html?course=cpe">Open workbook exercises &rarr;</a>
+    </section>
+  </main>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+  <script>
+(function () {
+  var SENTENCES = [
+    {
+      id: 1,
+      html: "In recent years complaints have been <span class=\"pv\">mounting up</span> from groups such as yours.",
+      verb: "mounting up"
+    },
+    {
+      id: 2,
+      html: "Community action groups like mine have to <span class=\"pv\">keep at it</span> in order for change to happen.",
+      verb: "keep at it"
+    },
+    {
+      id: 3,
+      html: "We want to <span class=\"pv\">urge them on</span> to be more adventurous and challenge themselves.",
+      verb: "urge them on"
+    },
+    {
+      id: 4,
+      html: "We have to actually <span class=\"pv\">go through with it</span> and not just pay them lip service.",
+      verb: "go through with it"
+    }
+  ];
+
+  var MEANINGS = [
+    { id: "a", text: "continue trying to do something" },
+    { id: "b", text: "encourage someone" },
+    { id: "c", text: "increase gradually" },
+    { id: "d", text: "complete something agreed (usually difficult)" }
+  ];
+
+  var MEAN_KEY = { 1: "c", 2: "a", 3: "b", 4: "d" };
+
+  var TYPES = [
+    {
+      id: "a",
+      label: "a · Intransitive phrasal verb",
+      struct: "verb + particle (no object)",
+      answer: "mounting up"
+    },
+    {
+      id: "b",
+      label: "b · Transitive phrasal verb",
+      struct: "verb + object + particle",
+      answer: "urge them on"
+    },
+    {
+      id: "c",
+      label: "c · Prepositional verb",
+      struct: "verb + preposition + object",
+      answer: "keep at it"
+    },
+    {
+      id: "d",
+      label: "d · Phrasal prepositional verb",
+      struct: "verb + particle + preposition + object",
+      answer: "go through with it"
+    }
+  ];
+
+  var VERB_BANK = [
+    "bottle up",
+    "catch on",
+    "catch up with",
+    "cling on to",
+    "count in",
+    "get through",
+    "get to",
+    "go without"
+  ];
+
+  var GAPS = [
+    {
+      n: 1,
+      before:
+        "All his days of sitting in front of the TV, mindlessly eating fast or processed food finally ",
+      after:
+        " when his doctor told him how much damage he'd done to his body.",
+      display: "caught up with him",
+      accept: ["caught up with him", "catch up with him"]
+    },
+    {
+      n: 2,
+      before: "Just ",
+      afterHtml:
+        " <strong>the hope</strong> that your forefather's longevity will be passed on to you.",
+      display: "cling on to",
+      accept: ["cling on to", "cling to"]
+    },
+    {
+      n: 3,
+      before:
+        "Perfectionism, which may seem like a positive quality, can actually be incredibly damaging as <strong>the stress</strong> of trying to attain such levels can really ",
+      after: " you.",
+      display: "get to",
+      accept: ["get to", "gets to"]
+    },
+    {
+      n: 4,
+      before: "It ",
+      afterHtml:
+        " <strong>saying</strong> that enjoying nature does wonders for our general wellbeing.",
+      display: "goes without",
+      accept: ["goes without", "go without"]
+    },
+    {
+      n: 5,
+      before:
+        "In many countries, travelling by scooter or bike has really ",
+      after:
+        " and is now a popular and convenient way to get around in the city centre.",
+      display: "caught on",
+      accept: ["caught on", "catch on"]
+    },
+    {
+      n: 6,
+      before: "As long as I can ",
+      afterHtml:
+        " <strong>my speech</strong> without any mistakes, my parents' anniversary dinner should be a thoroughly enjoyable occasion.",
+      display: "get through",
+      accept: ["get through"]
+    },
+    {
+      n: 7,
+      before: "Joaquin said to ",
+      after: " for the camping trip next weekend.",
+      display: "count him in",
+      accept: ["count him in", "count me in", "count us in", "count in"]
+    }
+  ];
+
+  var GAP_EXPLAIN = {
+    1: "<strong>catch up with</strong> &mdash; negative consequences finally affect someone after a long time.",
+    2: "<strong>cling on to</strong> &mdash; continue to believe or hope (often unrealistically).",
+    3: "<strong>get to</strong> &mdash; annoy or upset someone.",
+    4: "<strong>go without saying</strong> &mdash; it is obvious; no need to say it.",
+    5: "<strong>catch on</strong> &mdash; become popular or fashionable.",
+    6: "<strong>get through</strong> &mdash; finish or survive a difficult activity.",
+    7: "<strong>count in</strong> &mdash; include someone in a plan (+ object: him / me / us)."
+  };
+
+  var mPairs = {};
+  var mSelected = null;
+  var mDefOrder = [];
+
+  var typePlacementsByBucket = {};
+  var typeSelected = null;
+
+  var gapSelected = null;
+  var bankSelected = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  /* —— Exercise 1 —— */
+  function mAllPaired() {
+    return Object.keys(mPairs).length === 4;
+  }
+
+  function mUpdateCheckBtn() {
+    document.getElementById("m-check").disabled = !mAllPaired();
+  }
+
+  function mRenderSentences() {
+    var list = document.getElementById("m-sen-list");
+    list.innerHTML = "";
+    SENTENCES.forEach(function (s) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sen";
+      btn.dataset.id = String(s.id);
+      if (mSelected === s.id) btn.classList.add("selected");
+      if (mPairs[s.id]) btn.classList.add("matched");
+      var badge = mPairs[s.id]
+        ? "Paired with " + mPairs[s.id]
+        : mSelected === s.id
+          ? "Selected \u2014 now tap a meaning \u2192"
+          : "Tap to select";
+      btn.innerHTML =
+        '<span class="num">' +
+        s.id +
+        ".</span><span class=\"txt\">" +
+        s.html +
+        '</span><div class="badge' +
+        (mPairs[s.id] ? "" : mSelected === s.id ? " pick-hint" : " empty") +
+        '">' +
+        esc(badge) +
+        "</div>";
+      if (mPairs[s.id]) {
+        var x = document.createElement("button");
+        x.type = "button";
+        x.className = "unpair";
+        x.setAttribute("aria-label", "Unpair sentence " + s.id);
+        x.textContent = "\u00d7";
+        x.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          delete mPairs[s.id];
+          mSelected = null;
+          mRenderAll();
+        });
+        btn.appendChild(x);
+      }
+      btn.addEventListener("click", function () {
+        if (mPairs[s.id]) return;
+        mSelected = mSelected === s.id ? null : s.id;
+        mRenderAll();
+      });
+      list.appendChild(btn);
+    });
+  }
+
+  function mRenderDefs() {
+    var list = document.getElementById("m-def-list");
+    list.innerHTML = "";
+    var used = {};
+    Object.keys(mPairs).forEach(function (k) {
+      used[mPairs[k]] = true;
+    });
+    mDefOrder.forEach(function (d) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "def";
+      btn.dataset.id = d.id;
+      if (used[d.id]) btn.classList.add("used");
+      if (used[d.id]) btn.classList.add("dim");
+      btn.innerHTML =
+        '<span class="letter">' +
+        d.id +
+        ".</span><span class=\"txt\">" +
+        esc(d.text) +
+        "</span>";
+      btn.addEventListener("click", function () {
+        if (used[d.id]) return;
+        if (!mSelected) return;
+        mPairs[mSelected] = d.id;
+        mSelected = null;
+        mRenderAll();
+      });
+      list.appendChild(btn);
+    });
+  }
+
+  function mRenderAll() {
+    mRenderSentences();
+    mRenderDefs();
+    mUpdateCheckBtn();
+    var task = document.getElementById("task-meanings");
+    if (task) task.classList.toggle("task-matching--ready", !!mSelected);
+    document.getElementById("m-feedback").textContent = "";
+    document.getElementById("m-feedback").className = "feedback";
+    document.getElementById("m-reveal").style.display = "none";
+  }
+
+  document.getElementById("m-shuffle").addEventListener("click", function () {
+    mDefOrder = shuffle(MEANINGS);
+    mRenderDefs();
+  });
+
+  document.getElementById("m-clear").addEventListener("click", function () {
+    mPairs = {};
+    mSelected = null;
+    mRenderAll();
+  });
+
+  document.getElementById("m-check").addEventListener("click", function () {
+    var ok = 0;
+    SENTENCES.forEach(function (s) {
+      if (mPairs[s.id] === MEAN_KEY[s.id]) ok++;
+    });
+    var fb = document.getElementById("m-feedback");
+    fb.className = "feedback " + (ok === 4 ? "ok" : "bad");
+    fb.textContent =
+      ok === 4
+        ? "Perfect — all four matched."
+        : ok + " / 4 correct. Adjust your pairs or reveal the key.";
+    document.getElementById("m-reveal").style.display = ok === 4 ? "none" : "inline-flex";
+  });
+
+  document.getElementById("m-reveal").addEventListener("click", function () {
+    mPairs = {};
+    SENTENCES.forEach(function (s) {
+      mPairs[s.id] = MEAN_KEY[s.id];
+    });
+    mSelected = null;
+    mRenderAll();
+    var fb = document.getElementById("m-feedback");
+    fb.className = "feedback ok";
+    fb.textContent = "Solution shown — 1\u2192c, 2\u2192a, 3\u2192b, 4\u2192d.";
+  });
+
+  mDefOrder = shuffle(MEANINGS);
+  mRenderAll();
+
+  /* —— Exercise 2 —— */
+  function tVerbPlaced(verb) {
+    return Object.keys(typePlacementsByBucket).some(function (k) {
+      return typePlacementsByBucket[k] === verb;
+    });
+  }
+
+  function tRenderPool() {
+    var pool = document.getElementById("type-pool");
+    pool.innerHTML = "";
+    TYPES.forEach(function (t) {
+      var placed = tVerbPlaced(t.answer);
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "pool-chip";
+      chip.textContent = t.answer;
+      chip.dataset.verb = t.answer;
+      if (placed) chip.classList.add("placed");
+      if (typeSelected === t.answer) chip.classList.add("selected");
+      chip.addEventListener("click", function () {
+        if (placed) return;
+        typeSelected = typeSelected === t.answer ? null : t.answer;
+        tRenderAll();
+      });
+      pool.appendChild(chip);
+    });
+  }
+
+  function tRenderBuckets() {
+    var grid = document.getElementById("type-grid");
+    grid.innerHTML = "";
+    TYPES.forEach(function (t) {
+      var bucket = document.createElement("div");
+      bucket.className = "type-bucket";
+      bucket.dataset.type = t.id;
+      var slotText = typePlacementsByBucket[t.id] || "";
+      if (slotText) bucket.classList.add("has-item");
+      if (typeSelected) bucket.classList.add("is-target");
+      bucket.innerHTML =
+        '<div class="type-bucket__label">' +
+        esc(t.label) +
+        '</div><div class="type-bucket__struct">' +
+        esc(t.struct) +
+        '</div><div class="type-bucket__slot' +
+        (slotText ? "" : " empty") +
+        '">' +
+        (slotText ? esc(slotText) : "Drop verb here") +
+        "</div>";
+      bucket.addEventListener("click", function () {
+        if (!typeSelected) return;
+        Object.keys(typePlacementsByBucket).forEach(function (bid) {
+          if (typePlacementsByBucket[bid] === typeSelected) {
+            delete typePlacementsByBucket[bid];
+          }
+        });
+        typePlacementsByBucket[t.id] = typeSelected;
+        typeSelected = null;
+        tRenderAll();
+        document.getElementById("t-feedback").textContent = "";
+      });
+      grid.appendChild(bucket);
+    });
+  }
+
+  function tRenderAll() {
+    tRenderPool();
+    tRenderBuckets();
+  }
+
+  document.getElementById("t-check").addEventListener("click", function () {
+    var ok = 0;
+    TYPES.forEach(function (t) {
+      if (typePlacementsByBucket[t.id] === t.answer) ok++;
+    });
+    var fb = document.getElementById("t-feedback");
+    fb.className = "feedback " + (ok === 4 ? "ok" : "bad");
+    fb.textContent =
+      ok === 4
+        ? "All four types sorted correctly."
+        : ok + " / 4 correct. mounting up \u2192 a · urge them on \u2192 b · keep at it \u2192 c · go through with it \u2192 d.";
+    document.querySelectorAll(".type-bucket").forEach(function (b) {
+      var tid = b.dataset.type;
+      var t = TYPES.filter(function (x) { return x.id === tid; })[0];
+      b.classList.remove("is-ok", "is-bad");
+      if (typePlacementsByBucket[tid] === t.answer) b.classList.add("is-ok");
+      else if (typePlacementsByBucket[tid]) b.classList.add("is-bad");
+    });
+  });
+
+  document.getElementById("t-reset").addEventListener("click", function () {
+    typePlacementsByBucket = {};
+    typeSelected = null;
+    tRenderAll();
+    document.getElementById("t-feedback").textContent = "";
+    document.querySelectorAll(".type-bucket").forEach(function (b) {
+      b.classList.remove("is-ok", "is-bad");
+    });
+  });
+
+  tRenderAll();
+
+  /* —— Exercise 3 —— */
+  function gRenderBank() {
+    var bank = document.getElementById("verb-bank");
+    bank.innerHTML = "";
+    VERB_BANK.forEach(function (v) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "bank-chip";
+      chip.textContent = v;
+      if (bankSelected === v) chip.classList.add("selected");
+      chip.addEventListener("click", function () {
+        bankSelected = bankSelected === v ? null : v;
+        if (bankSelected && gapSelected) {
+          var inp = document.getElementById("gap-" + gapSelected);
+          if (inp) {
+            inp.value = v;
+            inp.focus();
+          }
+          bankSelected = null;
+          gapSelected = null;
+        }
+        gRenderBank();
+        gMarkActiveGap();
+        document.getElementById("g-feedback").classList.remove("show");
+      });
+      bank.appendChild(chip);
+    });
+  }
+
+  function gMarkActiveGap() {
+    GAPS.forEach(function (g) {
+      var el = document.getElementById("gap-" + g.n);
+      if (!el) return;
+      el.classList.toggle("is-active", gapSelected === g.n);
+    });
+  }
+
+  function gAppendHtml(parent, html) {
+    var wrap = document.createElement("span");
+    wrap.innerHTML = html;
+    while (wrap.firstChild) parent.appendChild(wrap.firstChild);
+  }
+
+  function gRenderGaps() {
+    var list = document.getElementById("gap-list");
+    list.innerHTML = "";
+
+    var ex = document.createElement("p");
+    ex.className = "gap-sent gap-sent--example";
+    ex.innerHTML =
+      '<strong class="num">0.</strong><span class="ex-label">Example</span> People should be encouraged to process their <strong>emotions</strong> as there is plenty of evidence that <span class="pv">bottling them up</span> can lead to mental and physical health issues.';
+    list.appendChild(ex);
+
+    GAPS.forEach(function (g) {
+      var p = document.createElement("p");
+      p.className = "gap-sent";
+      var inp = document.createElement("input");
+      inp.type = "text";
+      inp.className = "gap-slot";
+      inp.id = "gap-" + g.n;
+      inp.dataset.n = String(g.n);
+      inp.setAttribute("autocomplete", "off");
+      inp.setAttribute("spellcheck", "false");
+      inp.setAttribute("aria-label", "Gap " + g.n);
+      inp.placeholder = "…";
+      inp.addEventListener("focus", function () {
+        gapSelected = g.n;
+        gRenderBank();
+        gMarkActiveGap();
+      });
+      inp.addEventListener("input", function () {
+        inp.classList.remove("is-ok", "is-bad");
+        document.getElementById("g-feedback").classList.remove("show");
+      });
+      inp.addEventListener("click", function () {
+        if (bankSelected) {
+          inp.value = bankSelected;
+          bankSelected = null;
+          gapSelected = null;
+          gRenderBank();
+          gMarkActiveGap();
+          inp.focus();
+          document.getElementById("g-feedback").classList.remove("show");
+        }
+      });
+      p.innerHTML = "<strong class=\"num\">" + g.n + ".</strong>";
+      if (g.before.indexOf("<") !== -1) {
+        gAppendHtml(p, g.before);
+      } else {
+        p.appendChild(document.createTextNode(g.before));
+      }
+      p.appendChild(inp);
+      if (g.afterHtml) {
+        gAppendHtml(p, g.afterHtml);
+      } else {
+        p.appendChild(document.createTextNode(g.after));
+      }
+      list.appendChild(p);
+    });
+  }
+
+  function gRenderAll() {
+    gRenderBank();
+    gRenderGaps();
+  }
+
+  document.getElementById("g-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+    GAPS.forEach(function (g) {
+      var el = document.getElementById("gap-" + g.n);
+      var ans = el ? el.value : "";
+      var ok = false;
+      if (ans.trim()) {
+        var u = norm(ans);
+        for (var i = 0; i < g.accept.length; i++) {
+          if (norm(g.accept[i]) === u) {
+            ok = true;
+            break;
+          }
+        }
+        if (ok) correct++;
+      }
+      if (el) {
+        el.classList.remove("is-ok", "is-bad");
+        if (ans.trim()) el.classList.add(ok ? "is-ok" : "is-bad");
+      }
+      html +=
+        '<div class="fb-item ' +
+        (ok ? "ok" : "bad") +
+        '" style="margin-bottom:12px;">' +
+        "<p><strong>" +
+        (ok ? "\u2713" : "\u2717") +
+        " " +
+        g.n +
+        ".</strong> Key: <em>" +
+        esc(g.display) +
+        "</em></p>" +
+        (GAP_EXPLAIN[g.n] ? "<p>" + GAP_EXPLAIN[g.n] + "</p>" : "") +
+        "</div>";
+    });
+    var fb = document.getElementById("g-feedback");
+    fb.innerHTML =
+      "<p style=\"margin-bottom:14px;font-weight:700;\">Score: " +
+      correct +
+      " / 7</p>" +
+      html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("g-reset").addEventListener("click", function () {
+    bankSelected = null;
+    gapSelected = null;
+    GAPS.forEach(function (g) {
+      var el = document.getElementById("gap-" + g.n);
+      if (el) {
+        el.value = "";
+        el.classList.remove("is-ok", "is-bad", "is-active");
+      }
+    });
+    gRenderBank();
+    document.getElementById("g-feedback").classList.remove("show");
+    document.getElementById("g-feedback").innerHTML = "";
+  });
+
+  gRenderAll();
+})();
+  </script>
+</body>
+</html>

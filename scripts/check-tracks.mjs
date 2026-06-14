@@ -25,6 +25,7 @@ const CPE_LEARNER_PREFIXES = [
   "writing/unit10/cpe/",
   "unit10-vocabulary/cpe/",
   "unit10-vocabulary/similes/",
+  "unit12-vocabulary/cpe/",
   "unit11-reading-confronting-issues/",
   "use-of-english/unit10/cpe/",
 ];

@@ -1046,7 +1046,9 @@
         5: "We wanted to stimulate good discussions amongst professionals in order to get the most accurate translation, so we had our translators work in mini groups of three for each language. We expected them to self-manage and were pretty hands off at the beginning. What we did not predict however, was such vastly different team dynamics and so our schedule went out the window as some teams got on with it while others went round in circles. Anyway, we acted fast and got two of our in-house project managers to step in and impose some kind of order. No sooner had they started coordinating the discussions than the production schedule got back on track, and we managed to publish the translations simultaneously in China, Brazil, Germany and Turkey."
       };
 
-      var DATASET = new URLSearchParams(window.location.search || "").get("set") === "wb11" ? "wb11" : "sb10";
+      var setParam = new URLSearchParams(window.location.search || "").get("set");
+      var DATASET =
+        setParam === "wb11" ? "wb11" : setParam === "u3" ? "u3" : "sb10";
       var PAGE_META = {
         title: "Listening Part 4 &middot; Multiple matching",
         lead:
@@ -1104,6 +1106,49 @@
           task2Stem: "choose from the list (A&ndash;H) <strong>a problem each author experienced during the writing process</strong>.",
           huntEnabled: false
         };
+      } else if (DATASET === "u3") {
+        ANSWER_KEY = {};
+        TASK1_OPTS = [
+          ["A", "to become more sustainable"],
+          ["B", "to increase motivation"],
+          ["C", "to reduce expenses"],
+          ["D", "to facilitate collaboration"],
+          ["E", "to improve communication"],
+          ["F", "to compensate for human limitations"],
+          ["G", "to stay ahead of the competition"],
+          ["H", "to speed up an existing process"]
+        ];
+        TASK2_OPTS = [
+          ["A", "resigned to using it"],
+          ["B", "discouraged by its shortcomings"],
+          ["C", "surprised by how well it works in practice"],
+          ["D", "sceptical of its supposed benefits"],
+          ["E", "concerned about a growing overreliance on it"],
+          ["F", "optimistic about its future potential"],
+          ["G", "impressed by its widespread acceptance"],
+          ["H", "worried about its inevitable misuse"]
+        ];
+        SPEAKER_TRANSCRIPTS = {
+          1: "Transcript for Speaker 1 will be added when the Unit 3 audio is ready.",
+          2: "Transcript for Speaker 2 will be added when the Unit 3 audio is ready.",
+          3: "Transcript for Speaker 3 will be added when the Unit 3 audio is ready.",
+          4: "Transcript for Speaker 4 will be added when the Unit 3 audio is ready.",
+          5: "Transcript for Speaker 5 will be added when the Unit 3 audio is ready."
+        };
+        PAGE_META = {
+          title: "Listening Part 4 &middot; Multiple matching (Unit 3)",
+          lead:
+            "<strong>Unit 3 &middot; CPE Prep.</strong> <strong>While you listen you must complete both tasks.</strong> Five speakers, two questions per speaker. " +
+            "Choose <strong>one letter (A&ndash;H)</strong> for each gap; three letters are not used in each task. " +
+            "<em>Audio and answer key pending.</em>",
+          trackLabel: "Audio &mdash; Unit 3 Track (pending)",
+          audioSrc: "",
+          task1Summary: "Task ONE &mdash; all options (A&ndash;H) &middot; reason for adopting new technology",
+          task2Summary: "Task TWO &mdash; all options (A&ndash;H) &middot; how the speaker feels now",
+          task1Stem: "choose from the list (A&ndash;H) <strong>what reason each speaker gives for the adoption of new technology</strong>.",
+          task2Stem: "choose from the list (A&ndash;H) <strong>how each speaker feels now about the technology</strong> (same speaker).",
+          huntEnabled: false
+        };
       }
 
       function renderBank(hostId, rows) {
@@ -1144,6 +1189,15 @@
           var backHref = "../index.html";
           var prepBack = document.querySelector(".prep-link-back");
           if (prepBack) prepBack.setAttribute("href", backHref);
+        }
+        if (DATASET === "u3") {
+          var u3Back =
+            "../../../unit3-listening/cpe/index.html?course=cpe&backLabel=" +
+            encodeURIComponent("Listening — Level 3");
+          var prepBackU3 = document.querySelector(".prep-link-back");
+          if (prepBackU3) prepBackU3.setAttribute("href", u3Back);
+          var bl = new URLSearchParams(window.location.search || "").get("backLabel");
+          if (bl && prepBackU3) prepBackU3.textContent = "\u2190 " + bl;
         }
       }
 

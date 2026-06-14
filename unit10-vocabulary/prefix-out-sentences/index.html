@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Vocabulary &mdash; Words with <em>out-</em></title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.25rem; line-height: 1.35; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .voc-nav a:hover { text-decoration: underline; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: #bae6fd;
+    }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+    .instr em { font-style: italic; color: #c5d4ef; }
+    .ref-box {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .ref-box strong { color: #bae6fd; }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .reorder-item {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .reorder-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .reorder-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .reorder-num {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 0.88rem;
+    }
+    .btn-line-clear {
+      border: 1px solid var(--line);
+      background: rgba(61, 79, 111, 0.55);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-line-clear:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .sentence-build {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      min-height: 48px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 2px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(8, 22, 48, 0.45);
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .sentence-build:empty::before {
+      content: "Click or drag words here\u2026";
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .sentence-build.is-drag-over {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.1);
+    }
+    .sentence-build.is-ok {
+      border-color: #22c55e;
+      border-style: solid;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .sentence-build.is-bad {
+      border-color: #f87171;
+      border-style: solid;
+      background: rgba(248, 113, 113, 0.08);
+    }
+    .word-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+      background: rgba(15, 36, 68, 0.55);
+      min-height: 44px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .word-pool.is-drag-over {
+      border-color: #a78bfa;
+      background: rgba(167, 139, 250, 0.12);
+    }
+    .word-chip {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      background: rgba(86, 204, 242, 0.14);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      font-family: inherit;
+      line-height: 1.35;
+    }
+    .word-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .word-chip:active { cursor: grabbing; }
+    .word-chip.is-selected {
+      box-shadow: 0 0 0 2px #a78bfa;
+      border-color: #a78bfa;
+    }
+    .word-chip.in-build {
+      border-color: rgba(167, 139, 250, 0.5);
+      background: rgba(76, 29, 149, 0.22);
+    }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.82rem; margin-bottom: 6px; color: #e0e8f8; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+
+    .voc-next {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+    .voc-next a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .voc-next a:hover { text-decoration: underline; }
+
+    .task + .task { margin-top: 20px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .match-board {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .match-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .match-toolbar .btn-row {
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
+    .match-score-strip {
+      flex: 1 1 auto;
+      min-width: 10rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e8f0ff;
+      line-height: 1.4;
+    }
+    .match-score-strip:empty {
+      display: none;
+    }
+    .match-score-strip.is-perfect {
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+    }
+    .match-score-strip.is-mixed {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: rgba(251, 191, 36, 0.1);
+      color: #fde68a;
+    }
+    .match-bank-head {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      margin-bottom: 6px;
+    }
+    .match-bank-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .match-bank-dock {
+      margin-top: 12px;
+      padding: 12px 12px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(96, 165, 250, 0.32);
+      background: rgba(96, 165, 250, 0.1);
+    }
+    @media (min-height: 520px) {
+      .match-bank-dock {
+        position: sticky;
+        bottom: 10px;
+        z-index: 3;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+      }
+    }
+    .match-bank {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0;
+      min-height: 0;
+      border: none;
+      background: transparent;
+      transition: none;
+    }
+    @media (max-width: 520px) {
+      .match-bank { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .match-bank.is-drag-over {
+      outline: 2px dashed #60a5fa;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+    .match-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .match-line-wrap {
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+    .match-line {
+      display: grid;
+      grid-template-columns: 1.35rem 1.4rem 1fr auto minmax(7.5rem, 9rem);
+      align-items: center;
+      gap: 8px 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: rgba(15, 23, 42, 0.4);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    @media (max-width: 640px) {
+      .match-line {
+        grid-template-columns: 1.35rem 1.4rem 1fr minmax(7rem, 9rem);
+        grid-template-areas:
+          "mark num def slot"
+          "mark arrow arrow slot";
+        gap: 4px 8px;
+      }
+      .match-line .match-mark { grid-area: mark; }
+      .match-line .match-num { grid-area: num; }
+      .match-line .match-def { grid-area: def; }
+      .match-line .match-arrow { grid-area: arrow; justify-self: start; padding-left: 0; }
+      .match-line .match-slot { grid-area: slot; }
+    }
+    .match-line.is-focused {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.22);
+    }
+    .match-line-wrap.is-checked-ok .match-line {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .match-line-wrap.is-checked-bad .match-line {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.08);
+    }
+    .match-mark {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-align: center;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .match-line-wrap.is-checked .match-mark {
+      opacity: 1;
+    }
+    .match-line-wrap.is-checked-ok .match-mark { color: #86efac; }
+    .match-line-wrap.is-checked-bad .match-mark { color: #fca5a5; }
+    .match-inline-note {
+      display: none;
+      padding: 2px 10px 8px 3.2rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #bae6fd;
+    }
+    .match-line-wrap.is-checked-bad .match-inline-note {
+      display: block;
+    }
+    .match-inline-note .key-pill {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86efac;
+      font-weight: 800;
+    }
+    .match-num {
+      font-weight: 800;
+      color: #fcd34d;
+      font-size: 0.88rem;
+    }
+    .match-def {
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: #e8f0ff;
+    }
+    .match-arrow {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 0 2px;
+    }
+    .match-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 2px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(8, 22, 48, 0.5);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .match-slot:hover {
+      border-color: rgba(86, 204, 242, 0.55);
+    }
+    .match-slot.is-drag-over {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.12);
+    }
+    .match-slot:empty::before {
+      content: "\2014";
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .match-slot.has-word {
+      border-style: solid;
+      border-color: rgba(167, 139, 250, 0.45);
+      background: rgba(76, 29, 149, 0.18);
+      justify-content: stretch;
+    }
+    .match-chip {
+      display: inline-block;
+      width: 100%;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      background: rgba(86, 204, 242, 0.14);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      font-family: inherit;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .match-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .match-chip.is-selected {
+      box-shadow: 0 0 0 2px #a78bfa;
+      border-color: #a78bfa;
+    }
+    .match-chip:active { cursor: grabbing; }
+    .match-chip.is-chip-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+      color: #ecfdf5;
+    }
+    .match-chip.is-chip-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.18);
+      color: #fef2f2;
+    }
+    .match-slot.is-slot-empty-checked {
+      border-color: #f87171;
+      border-style: solid;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Vocabulary &mdash; Words beginning with <em style="font-style:italic;color:#bae6fd;">out-</em></h1>
+      </div>
+      <a class="back u10-back-vocab-index" href="../fce/index.html">&larr; Vocabulary hub</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Vocabulary tasks">
+      <a href="../phrasal-out-exercise-1/index.html" class="u10-nav-sibling">Task 1 &mdash; Phrasal <em>out</em></a>
+      <span>|</span>
+      <span>Task 2 &mdash; <em>out-</em> words</span>
+      <span>|</span>
+      <a href="../phrasal-out-exercise-2/index.html" class="u10-nav-sibling">Task 3 &mdash; Phrasal <em>up</em></a>
+      <span>|</span>
+      <a href="../crimes-and-criminals/index.html" class="u10-nav-sibling">Task 4 &mdash; Crimes</a>
+      <span>|</span>
+      <a href="../criminal-titles-exercise-3/index.html" class="u10-nav-sibling">Task 5 &mdash; Titles</a>
+    </nav>
+
+    <section class="task">
+      <h2>Task 2 &mdash; Reorder the words</h2>
+      <p class="instr">
+        <span class="instr-num">2</span>
+        In the article, the prefix <em>out-</em> can be found in the following sentence.
+      </p>
+      <p class="ref-box">
+        <em>The thing is, the fear of our wrongdoing becoming common knowledge <strong>outweighs</strong> our desire to get some free cash.</em>
+        <span style="display:block;margin-top:10px;font-size:0.85rem;color:var(--muted);">
+          From Reading &mdash; <a href="../../unit10-reading-honesty-is-the-best-policy/index.html" style="color:var(--accent);font-weight:700;">Honesty is the best policy</a>.
+        </span>
+      </p>
+      <p class="instr">
+        Reorder the words below to make sentences containing words beginning with <em>out-</em>.
+        <strong>Click</strong> each word in order, or <strong>drag</strong> it into the sentence line. Click a word in your sentence to send it back.
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> build the sentence in the dashed line &mdash; tap words below, or drag them. <strong>Clear</strong> resets one line. On a phone, tapping is enough (no drag needed).
+      </p>
+
+      <div id="reorder-root"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="task">
+      <h2>Exercise 3 &mdash; Match the definitions</h2>
+      <p class="instr">
+        <span class="instr-num">3</span>
+        Match the definitions to the words beginning with <em>out-</em> from Exercise 2. Use the base form of the verbs.
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> read the line, pick a word from the <strong>bank below</strong> (or drag it up), drop it in the slot. Check shows ✓/✗ on each line. The bank stays at the bottom while you work.
+      </p>
+
+      <div class="match-board">
+        <div class="match-lines" id="match-lines" aria-label="Definitions with word slots"></div>
+
+        <div class="match-bank-dock">
+          <div class="match-bank-head">Word bank</div>
+          <p class="match-bank-hint">Tap a word, then tap a slot above — or drag the word up to the line.</p>
+          <div class="match-bank" id="match-word-bank" aria-label="Word bank"></div>
+        </div>
+
+        <div class="match-toolbar">
+          <div class="btn-row">
+            <button type="button" class="btn-check" id="btn-match-check">Check matching</button>
+            <button type="button" class="btn-reset" id="btn-match-reset">Reset matching</button>
+          </div>
+          <div class="match-score-strip" id="match-score-strip" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <p id="match-hint" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <p class="voc-next">
+      <a class="u10-nav-sibling" href="../phrasal-out-exercise-2/index.html">Next: Task 3 &mdash; Phrasal verbs + <em>up</em> &rarr;</a>
+      <span style="color:var(--muted);margin:0 8px;">|</span>
+      <a class="u10-nav-sibling" href="../phrasal-out-exercise-1/index.html">&larr; Task 1</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    { n: 1, scramble: "satisfactory. / negotiations / the / outcome / was / of / The" },
+    { n: 2, scramble: "outlook / tomorrow / sunny. / remains / for / The" },
+    { n: 3, scramble: "outgoing / Sarah / personality. / has / such / an" },
+    { n: 4, scramble: "document / policy. / This / recycling/ outlines / our" },
+    { n: 5, scramble: "outplayed / match. / We / lost / we / so / were / the" },
+    { n: 6, scramble: "uniform. / his / outgrown / son / My / has" }
+  ];
+
+  var ACCEPT = {
+    1: ["The outcome of the negotiations was satisfactory."],
+    2: ["The outlook for tomorrow remains sunny."],
+    3: ["Sarah has such an outgoing personality."],
+    4: ["This document outlines our recycling policy."],
+    5: [
+      "We were outplayed so we lost the match.",
+      "We lost the match so we were outplayed."
+    ],
+    6: ["My son has outgrown his uniform."]
+  };
+
+  var OUT_WORD = {
+    1: "outcome",
+    2: "outlook",
+    3: "outgoing",
+    4: "outlines",
+    5: "outplayed",
+    6: "outgrown"
+  };
+
+  var EXPLAIN = {
+    1: "<strong>outcome</strong> &mdash; the result of the negotiations.",
+    2: "<strong>outlook</strong> &mdash; the weather forecast for tomorrow.",
+    3: "<strong>outgoing</strong> &mdash; sociable, friendly (personality).",
+    4: "<strong>outlines</strong> &mdash; summarises / presents the main points of the policy.",
+    5: "<strong>outplayed</strong> &mdash; the other team performed better in the match.",
+    6: "<strong>outgrown</strong> &mdash; grown too big for the uniform."
+  };
+
+  var selectedChip = null;
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/[.?!]+$/g, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function parseScramble(str) {
+    return String(str || "")
+      .split("/")
+      .map(function (w) {
+        return w.trim();
+      })
+      .filter(Boolean);
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function clearSelect() {
+    if (selectedChip) {
+      selectedChip.classList.remove("is-selected");
+      selectedChip = null;
+    }
+  }
+
+  function getBuild(n) {
+    return document.getElementById("build-" + n);
+  }
+
+  function getPool(n) {
+    return document.getElementById("pool-" + n);
+  }
+
+  function builtSentence(n) {
+    var build = getBuild(n);
+    if (!build) return "";
+    var parts = [];
+    build.querySelectorAll(".word-chip").forEach(function (chip) {
+      parts.push(chip.getAttribute("data-word") || chip.textContent);
+    });
+    return parts.join(" ");
+  }
+
+  function matches(n, raw) {
+    var v = norm(raw);
+    var list = ACCEPT[n] || [];
+    for (var i = 0; i < list.length; i++) {
+      if (v === norm(list[i])) return true;
+    }
+    return false;
+  }
+
+  function displayKey(n) {
+    var list = ACCEPT[n] || [];
+    return list[0] || "";
+  }
+
+  function makeChip(word, itemN, chipId) {
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "word-chip";
+    chip.id = chipId;
+    chip.setAttribute("data-word", word);
+    chip.setAttribute("data-item", String(itemN));
+    chip.textContent = word;
+    chip.draggable = true;
+
+    chip.addEventListener("dragstart", function (e) {
+      clearSelect();
+      if (e.dataTransfer) {
+        e.dataTransfer.setData("text/plain", chipId);
+        e.dataTransfer.effectAllowed = "move";
+      }
+      chip.classList.add("is-dragging");
+    });
+    chip.addEventListener("dragend", function () {
+      chip.classList.remove("is-dragging");
+    });
+    chip.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var pool = getPool(itemN);
+      var build = getBuild(itemN);
+      if (chip.parentElement === pool) {
+        clearSelect();
+        build.appendChild(chip);
+        chip.classList.add("in-build");
+        chip.classList.remove("is-selected");
+        hideFeedback();
+        return;
+      }
+      if (chip.parentElement === build) {
+        pool.appendChild(chip);
+        chip.classList.remove("in-build", "is-selected");
+        if (selectedChip === chip) selectedChip = null;
+        hideFeedback();
+      }
+    });
+    return chip;
+  }
+
+  function insertChipBefore(chip, targetChip) {
+    if (!chip || !targetChip || chip === targetChip) return;
+    var parent = targetChip.parentElement;
+    parent.insertBefore(chip, targetChip);
+    var itemN = Number(chip.getAttribute("data-item"));
+    if (parent === getBuild(itemN)) {
+      chip.classList.add("in-build");
+    } else {
+      chip.classList.remove("in-build");
+    }
+  }
+
+  function wireDropZone(zone, itemN, isBuild) {
+    zone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      zone.classList.add("is-drag-over");
+    });
+    zone.addEventListener("dragleave", function (e) {
+      if (e.target === zone) zone.classList.remove("is-drag-over");
+    });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      zone.classList.remove("is-drag-over");
+      var id = e.dataTransfer ? e.dataTransfer.getData("text/plain") : "";
+      var chip = id ? document.getElementById(id) : null;
+      if (!chip) return;
+      if (isBuild) {
+        var overChip = e.target.closest(".word-chip");
+        if (overChip && overChip.parentElement === zone && overChip !== chip) {
+          insertChipBefore(chip, overChip);
+        } else {
+          zone.appendChild(chip);
+          chip.classList.add("in-build");
+        }
+      } else {
+        zone.appendChild(chip);
+        chip.classList.remove("in-build");
+      }
+      clearSelect();
+      hideFeedback();
+    });
+    zone.addEventListener("click", function () {
+      if (!selectedChip) return;
+      if (Number(selectedChip.getAttribute("data-item")) !== itemN) return;
+      if (isBuild) {
+        getBuild(itemN).appendChild(selectedChip);
+        selectedChip.classList.add("in-build");
+      } else {
+        getPool(itemN).appendChild(selectedChip);
+        selectedChip.classList.remove("in-build");
+      }
+      clearSelect();
+      hideFeedback();
+    });
+  }
+
+  function mountItem(item) {
+    var n = item.n;
+    var wrap = document.createElement("div");
+    wrap.className = "reorder-item";
+    wrap.innerHTML =
+      '<div class="reorder-head">' +
+      '<span class="reorder-num">' + n + "</span>" +
+      '<button type="button" class="btn-line-clear" data-clear="' + n + '">Clear</button>' +
+      "</div>" +
+      '<div class="sentence-build" id="build-' + n + '" aria-label="Sentence ' + n + '"></div>' +
+      '<div class="word-pool" id="pool-' + n + '" aria-label="Word bank for sentence ' + n + '"></div>';
+
+    var pool = wrap.querySelector("#pool-" + n);
+    var words = shuffle(parseScramble(item.scramble));
+    words.forEach(function (word, idx) {
+      pool.appendChild(makeChip(word, n, "chip-" + n + "-" + idx));
+    });
+
+    document.getElementById("reorder-root").appendChild(wrap);
+
+    wireDropZone(getBuild(n), n, true);
+    wireDropZone(getPool(n), n, false);
+
+    wrap.querySelector("[data-clear]").addEventListener("click", function () {
+      resetItem(n);
+      hideFeedback();
+    });
+  }
+
+  function resetItem(n) {
+    var build = getBuild(n);
+    var pool = getPool(n);
+    if (!build || !pool) return;
+    build.classList.remove("is-ok", "is-bad", "is-drag-over");
+    pool.classList.remove("is-drag-over");
+    var chips = [];
+    build.querySelectorAll(".word-chip").forEach(function (c) {
+      chips.push(c);
+    });
+    pool.querySelectorAll(".word-chip").forEach(function (c) {
+      chips.push(c);
+    });
+    chips.forEach(function (c) {
+      c.classList.remove("in-build", "is-selected", "is-ok", "is-bad");
+      pool.appendChild(c);
+    });
+    shuffleChildren(pool);
+    clearSelect();
+  }
+
+  function shuffleChildren(container) {
+    var nodes = [];
+    container.querySelectorAll(".word-chip").forEach(function (c) {
+      nodes.push(c);
+    });
+    shuffle(nodes).forEach(function (c) {
+      container.appendChild(c);
+    });
+  }
+
+  function hideFeedback() {
+    var fb = document.getElementById("feedback");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+    for (var n = 1; n <= 6; n++) {
+      var b = getBuild(n);
+      if (b) b.classList.remove("is-ok", "is-bad");
+    }
+  }
+
+  ITEMS.forEach(mountItem);
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 6; n++) {
+      var build = getBuild(n);
+      var raw = builtSentence(n);
+      var ok = matches(n, raw);
+      if (ok) correct++;
+
+      build.classList.remove("is-ok", "is-bad");
+      build.classList.add(ok ? "is-ok" : "is-bad");
+
+      html += '<div class="fb-item ' + (ok ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok ? "\u2713" : "\u2717") + " Sentence " + n + "</h4>";
+      html +=
+        '<p class="fb-meta">Target word: <strong>' +
+        esc(OUT_WORD[n]) +
+        "</strong> &middot; Key: <em>" +
+        esc(displayKey(n)) +
+        "</em></p>";
+      if (!ok && raw.trim()) {
+        html += "<p>Your sentence: <em>" + esc(raw.trim()) + "</em></p>";
+      } else if (!ok && !raw.trim()) {
+        html += "<p>Sentence not complete &mdash; use all words from the bank.</p>";
+      }
+      html += "<p>" + EXPLAIN[n] + "</p>";
+      html += "</div>";
+    }
+
+    var fb = document.getElementById("feedback");
+    fb.innerHTML =
+      '<p style="margin-bottom:14px;font-weight:700;color:#e8f0ff;">Score: ' +
+      correct +
+      " / 6</p>" +
+      html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    hideFeedback();
+    for (var n = 1; n <= 6; n++) {
+      resetItem(n);
+    }
+  });
+})();
+  </script>
+  <script>
+(function () {
+  var DEFS = [
+    { n: 1, text: "to do better than, especially in sport" },
+    { n: 2, text: "a forecast or a prediction for the future" },
+    { n: 3, text: "to give the main facts about something" },
+    { n: 4, text: "a result of something" },
+    { n: 5, text: "to become larger so that the previous space is no longer big enough" },
+    { n: 6, text: "friendly and energetic" }
+  ];
+
+  var WORDS = ["outplay", "outlook", "outline", "outcome", "outgrow", "outgoing"];
+
+  var KEY = {
+    1: "outplay",
+    2: "outlook",
+    3: "outline",
+    4: "outcome",
+    5: "outgrow",
+    6: "outgoing"
+  };
+
+  var EXPLAIN = {
+    1: "<strong>outplay</strong> &mdash; perform better than another player or team.",
+    2: "<strong>outlook</strong> &mdash; a view of what is likely to happen (e.g. weather forecast).",
+    3: "<strong>outline</strong> &mdash; summarise the main points of something.",
+    4: "<strong>outcome</strong> &mdash; the result of an action or process.",
+    5: "<strong>outgrow</strong> &mdash; grow too big for clothes, space, etc.",
+    6: "<strong>outgoing</strong> &mdash; sociable and lively (personality)."
+  };
+
+  var bankEl = document.getElementById("match-word-bank");
+  var linesEl = document.getElementById("match-lines");
+  var selectedChip = null;
+  var focusedLine = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function announce(msg) {
+    var h = document.getElementById("match-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  function clearSelect() {
+    if (selectedChip) {
+      selectedChip.classList.remove("is-selected");
+      selectedChip = null;
+    }
+  }
+
+  function clearFocus() {
+    focusedLine = null;
+    document.querySelectorAll(".match-line").forEach(function (line) {
+      line.classList.remove("is-focused");
+    });
+  }
+
+  function clearMatchFeedback() {
+    var scoreStrip = document.getElementById("match-score-strip");
+    scoreStrip.textContent = "";
+    scoreStrip.className = "match-score-strip";
+    document.querySelectorAll(".match-line-wrap").forEach(function (wrap) {
+      wrap.className = "match-line-wrap";
+      var mark = wrap.querySelector(".match-mark");
+      if (mark) mark.textContent = "";
+      var note = wrap.querySelector(".match-inline-note");
+      if (note) note.innerHTML = "";
+      var line = wrap.querySelector(".match-line");
+      if (line) line.classList.remove("is-focused");
+    });
+    document.querySelectorAll(".match-chip").forEach(function (chip) {
+      chip.classList.remove("is-chip-ok", "is-chip-bad");
+    });
+    document.querySelectorAll(".match-slot").forEach(function (slot) {
+      slot.classList.remove("is-slot-empty-checked");
+    });
+  }
+
+  function getSlot(n) {
+    return document.getElementById("slot-" + n);
+  }
+
+  function syncSlotState(slot) {
+    var has = slot.querySelector(".match-chip");
+    slot.classList.toggle("has-word", !!has);
+    slot.setAttribute("aria-label", has
+      ? "Slot for definition " + slot.getAttribute("data-def") + " — " + has.getAttribute("data-word")
+      : "Empty slot for definition " + slot.getAttribute("data-def"));
+  }
+
+  function findSlotWithWord(word) {
+    for (var n = 1; n <= 6; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip && chip.getAttribute("data-word") === word) return slot;
+    }
+    return null;
+  }
+
+  function moveChipToSlot(chip, slot) {
+    var word = chip.getAttribute("data-word");
+    var other = findSlotWithWord(word);
+    if (other && other !== slot) {
+      bankEl.appendChild(other.querySelector(".match-chip"));
+      syncSlotState(other);
+    }
+    var inSlot = slot.querySelector(".match-chip");
+    if (inSlot && inSlot !== chip) {
+      bankEl.appendChild(inSlot);
+    }
+    slot.appendChild(chip);
+    clearSelect();
+    syncSlotState(slot);
+    clearMatchFeedback();
+  }
+
+  function returnChipToBank(chip) {
+    var parent = chip.parentElement;
+    bankEl.appendChild(chip);
+    if (parent && parent.classList.contains("match-slot")) {
+      syncSlotState(parent);
+    }
+    clearSelect();
+    clearMatchFeedback();
+  }
+
+  function makeChip(word, id) {
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "match-chip";
+    chip.id = id;
+    chip.setAttribute("data-word", word);
+    chip.textContent = word;
+    chip.draggable = true;
+
+    chip.addEventListener("dragstart", function (e) {
+      clearSelect();
+      if (e.dataTransfer) {
+        e.dataTransfer.setData("text/plain", id);
+        e.dataTransfer.effectAllowed = "move";
+      }
+    });
+
+    chip.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var inBank = chip.parentElement === bankEl;
+      var slot = chip.parentElement.classList.contains("match-slot") ? chip.parentElement : null;
+
+      if (inBank) {
+        if (focusedLine) {
+          moveChipToSlot(chip, getSlot(focusedLine));
+          announce("");
+          return;
+        }
+        clearSelect();
+        chip.classList.add("is-selected");
+        selectedChip = chip;
+        announce("Now tap a slot on the line above.");
+        return;
+      }
+
+      if (slot) {
+        returnChipToBank(chip);
+        announce("");
+      }
+    });
+
+    return chip;
+  }
+
+  function wireDropZone(zone, onDrop) {
+    zone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      zone.classList.add("is-drag-over");
+    });
+    zone.addEventListener("dragleave", function (e) {
+      if (e.target === zone) zone.classList.remove("is-drag-over");
+    });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      zone.classList.remove("is-drag-over");
+      var id = e.dataTransfer ? e.dataTransfer.getData("text/plain") : "";
+      var chip = id ? document.getElementById(id) : null;
+      if (!chip) return;
+      onDrop(chip);
+    });
+  }
+
+  function mountLines() {
+    linesEl.innerHTML = "";
+    DEFS.forEach(function (def) {
+      var wrap = document.createElement("div");
+      wrap.className = "match-line-wrap";
+      wrap.setAttribute("data-def", String(def.n));
+
+      var line = document.createElement("div");
+      line.className = "match-line";
+
+      var mark = document.createElement("span");
+      mark.className = "match-mark";
+      mark.setAttribute("aria-hidden", "true");
+
+      var num = document.createElement("span");
+      num.className = "match-num";
+      num.textContent = def.n + ".";
+
+      var text = document.createElement("span");
+      text.className = "match-def";
+      text.textContent = def.text;
+
+      var arrow = document.createElement("span");
+      arrow.className = "match-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "\u2192";
+
+      var slot = document.createElement("div");
+      slot.className = "match-slot";
+      slot.id = "slot-" + def.n;
+      slot.setAttribute("data-def", String(def.n));
+      slot.setAttribute("role", "button");
+      slot.setAttribute("tabindex", "0");
+
+      wireDropZone(slot, function (chip) {
+        moveChipToSlot(chip, slot);
+        clearFocus();
+      });
+
+      slot.addEventListener("click", function () {
+        clearMatchFeedback();
+        if (selectedChip && selectedChip.parentElement === bankEl) {
+          moveChipToSlot(selectedChip, slot);
+          clearFocus();
+          announce("");
+          return;
+        }
+        focusedLine = def.n;
+        document.querySelectorAll(".match-line").forEach(function (l) {
+          l.classList.toggle("is-focused", l === line);
+        });
+        announce("Tap a word in the bank below, then this slot.");
+      });
+
+      line.addEventListener("click", function (e) {
+        if (e.target.closest(".match-chip")) return;
+        slot.click();
+      });
+
+      line.appendChild(mark);
+      line.appendChild(num);
+      line.appendChild(text);
+      line.appendChild(arrow);
+      line.appendChild(slot);
+
+      var note = document.createElement("div");
+      note.className = "match-inline-note";
+
+      wrap.appendChild(line);
+      wrap.appendChild(note);
+      linesEl.appendChild(wrap);
+      syncSlotState(slot);
+    });
+  }
+
+  function mountBank() {
+    bankEl.innerHTML = "";
+    shuffle(WORDS).forEach(function (word, i) {
+      bankEl.appendChild(makeChip(word, "match-chip-" + i));
+    });
+  }
+
+  wireDropZone(bankEl, function (chip) {
+    returnChipToBank(chip);
+  });
+
+  function getAssignedWord(n) {
+    var chip = getSlot(n).querySelector(".match-chip");
+    return chip ? chip.getAttribute("data-word") : null;
+  }
+
+  document.getElementById("btn-match-check").addEventListener("click", function () {
+    var correct = 0;
+
+    for (var n = 1; n <= 6; n++) {
+      var user = getAssignedWord(n);
+      var ok = user != null && user === KEY[n];
+      if (ok) correct++;
+
+      var wrap = document.querySelector(".match-line-wrap[data-def=\"" + n + "\"]");
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      var mark = wrap.querySelector(".match-mark");
+      var note = wrap.querySelector(".match-inline-note");
+
+      wrap.className = "match-line-wrap is-checked " + (ok ? "is-checked-ok" : "is-checked-bad");
+      mark.textContent = ok ? "\u2713" : "\u2717";
+      mark.setAttribute("aria-label", ok ? "Correct" : "Incorrect");
+
+      if (chip) {
+        chip.classList.toggle("is-chip-ok", ok);
+        chip.classList.toggle("is-chip-bad", !ok);
+      }
+      slot.classList.toggle("is-slot-empty-checked", !user);
+
+      if (!ok) {
+        if (!user) {
+          note.innerHTML =
+            "No word chosen. Key: <span class=\"key-pill\">" + esc(KEY[n]) + "</span>";
+        } else {
+          note.innerHTML =
+            "Should be: <span class=\"key-pill\">" + esc(KEY[n]) + "</span>";
+        }
+      } else {
+        note.innerHTML = "";
+      }
+    }
+
+    var scoreStrip = document.getElementById("match-score-strip");
+    if (correct === 6) {
+      scoreStrip.textContent = "Perfect \u2014 6 / 6. All pairs correct.";
+      scoreStrip.className = "match-score-strip is-perfect";
+    } else {
+      scoreStrip.textContent =
+        correct + " / 6 correct. Red lines need fixing \u2014 green pill shows the key word.";
+      scoreStrip.className = "match-score-strip is-mixed";
+    }
+
+    clearFocus();
+    clearSelect();
+  });
+
+  document.getElementById("btn-match-reset").addEventListener("click", function () {
+    clearMatchFeedback();
+    clearFocus();
+    clearSelect();
+    announce("");
+    for (var n = 1; n <= 6; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip) bankEl.appendChild(chip);
+      syncSlotState(slot);
+    }
+    mountBank();
+  });
+
+  mountLines();
+  mountBank();
+})();
+  </script>
+  <script src="../../js/u10-vocab-course-context.js"></script>
+</body>
+</html>

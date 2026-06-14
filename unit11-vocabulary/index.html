@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 11 &mdash; Vocabulary</title>
+  <script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search || "");
+    var course = String(q.get("course") || "").toLowerCase();
+    var fromCpe =
+      course === "cpe" ||
+      q.get("prep_stay") === "1" ||
+      !!q.get("backLabel") ||
+      /level\s*11/i.test(String(q.get("backLabel") || ""));
+    if (fromCpe) {
+      q.set("course", "cpe");
+      var tail = q.toString();
+      location.replace("cpe/index.html" + (tail ? "?" + tail : "?course=cpe"));
+    }
+  } catch (e) {
+    location.replace("cpe/index.html?course=cpe");
+  }
+})();
+  </script>
   <style>
     :root {
       --panel: #1d2b4a;
@@ -240,6 +260,112 @@
     }
     .voc-nav a:hover { text-decoration: underline; }
     .voc-nav span { color: var(--muted); }
+
+    .task--trial {
+      border-color: rgba(167, 139, 250, 0.35);
+      background: rgba(76, 29, 149, 0.08);
+    }
+    .task--trial h2 { color: #c4b5fd; }
+    .pic-match-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .pic-card {
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #0f1f3d;
+      text-align: left;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .pic-card.is-focused {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.35);
+    }
+    .pic-card.is-ok { border-color: #22c55e; box-shadow: none; }
+    .pic-card.is-bad { border-color: #f87171; box-shadow: none; }
+    .pic-card-visual {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      color: inherit;
+    }
+    .pic-card-visual img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: #1a2c49;
+    }
+    .pic-card-body { padding: 10px 12px 12px; }
+    .pic-card-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .pic-card-slot {
+      min-height: 36px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px dashed var(--line);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .pic-card.is-matched .pic-card-slot {
+      border-style: solid;
+      border-color: rgba(167, 139, 250, 0.55);
+      color: #e9d5ff;
+      background: rgba(76, 29, 149, 0.2);
+    }
+    .pic-card-pick {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .pic-card.is-focused .pic-card-pick {
+      display: flex;
+    }
+    .pic-pick-hint {
+      width: 100%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #c4b5fd;
+      margin-bottom: 2px;
+    }
+    .pic-pick-noun {
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: rgba(167, 139, 250, 0.18);
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      color: #f3e8ff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .pic-pick-noun:hover {
+      background: rgba(167, 139, 250, 0.32);
+      border-color: #c4b5fd;
+    }
+    .pic-speak {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #94a3b8;
+    }
+    .pic-speak strong { color: #bae6fd; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -280,6 +406,7 @@
       </p>
       <p class="instr hint-bar">
         <strong>How to fill:</strong> click the empty box for a group (it highlights), then click one of the nouns below. Click a filled box again if you want to replace the word.
+        <span style="display:block;margin-top:8px;"><a href="#task-pic-match" style="color:#c4b5fd;font-weight:700;">Picture matching &darr;</a> — say the collocations aloud after Task 1.</span>
       </p>
 
       <div class="word-box" id="word-bank" aria-label="Nouns for collocations — click after selecting a box">
@@ -399,6 +526,121 @@
       </div>
 
       <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="task task--trial" id="task-pic-match">
+      <h2>Picture matching &mdash; speak</h2>
+      <p class="instr">
+        <strong>9 pictures · 9 nouns.</strong> Click a picture &mdash; the nouns appear <strong>on that card</strong>. Pick the match, then say the three collocations aloud (whisper &rarr; normal voice) before <strong>Check</strong>.
+      </p>
+
+      <div class="pic-match-grid" id="pic-match-grid">
+        <article class="pic-card" data-answer="sky">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-sky.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture A</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> an overcast sky · a clear sky · a stormy sky</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="storm">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-storm.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture B</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> a lightning storm · a severe storm · a tropical storm</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="rain">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-rain.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture C</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> heavy rain · torrential rain · light rain</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="winds">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-winds.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture D</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> strong winds · gale-force winds · light winds</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="sunshine">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-sunshine.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture E</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> warm sunshine · bright sunshine · glorious sunshine</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="sea">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-sea.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture F</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> a rough sea · a calm sea · a choppy sea</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="clouds">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-clouds.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture G</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> thick clouds · storm clouds · fluffy clouds</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="showers">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-showers.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture H</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> thundery showers · scattered showers · snow showers</p>
+          </div>
+        </article>
+        <article class="pic-card" data-answer="breeze">
+          <button type="button" class="pic-card-visual">
+            <img src="img/weather-pic-breeze.png" alt="" width="400" height="300" loading="lazy" />
+          </button>
+          <div class="pic-card-body">
+            <div class="pic-card-label">Picture I</div>
+            <div class="pic-card-slot" aria-live="polite">&mdash; click picture, then noun</div>
+            <div class="pic-card-pick" aria-label="Choose noun"></div>
+            <p class="pic-speak"><strong>Say:</strong> a gentle breeze · a cool breeze · a stiff breeze</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-pic-check">Check matching</button>
+        <button type="button" class="btn-reset" id="btn-pic-reset">Reset pictures</button>
+      </div>
+      <div class="feedback" id="feedback-pic" aria-live="polite"></div>
     </section>
   </main>
 
@@ -582,6 +824,130 @@
       clearSlot(el, n);
       el.classList.remove("is-ok", "is-bad", "is-focused");
     }
+  });
+})();
+  </script>
+  <script>
+(function () {
+  var PIC_NOUNS = [
+    "sky",
+    "storm",
+    "rain",
+    "winds",
+    "sunshine",
+    "sea",
+    "clouds",
+    "showers",
+    "breeze"
+  ];
+  var PIC_TOTAL = PIC_NOUNS.length;
+  var focusedPic = null;
+  var PH = "\u2014";
+
+  function picCards() {
+    return [].slice.call(document.querySelectorAll(".pic-card"));
+  }
+
+  function clearPicFeedback() {
+    var fb = document.getElementById("feedback-pic");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+    picCards().forEach(function (c) {
+      c.classList.remove("is-ok", "is-bad");
+    });
+  }
+
+  function setPicFocus(card) {
+    focusedPic = card;
+    picCards().forEach(function (c) {
+      c.classList.toggle("is-focused", c === card);
+    });
+  }
+
+  function fillPickRow(container) {
+    var hint = document.createElement("span");
+    hint.className = "pic-pick-hint";
+    hint.textContent = "Pick noun:";
+    container.appendChild(hint);
+    PIC_NOUNS.forEach(function (word) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pic-pick-noun";
+      btn.textContent = word;
+      btn.dataset.word = word;
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (!focusedPic || focusedPic !== container.closest(".pic-card")) return;
+        clearPicFeedback();
+        var slot = focusedPic.querySelector(".pic-card-slot");
+        slot.textContent = word;
+        focusedPic.classList.add("is-matched");
+        focusedPic.dataset.user = word;
+        setPicFocus(null);
+        focusedPic = null;
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  document.querySelectorAll(".pic-card-pick").forEach(fillPickRow);
+
+  picCards().forEach(function (card) {
+    var visual = card.querySelector(".pic-card-visual");
+    if (visual) {
+      visual.addEventListener("click", function () {
+        clearPicFeedback();
+        setPicFocus(card);
+      });
+    }
+    card.querySelector(".pic-card-slot").addEventListener("click", function () {
+      clearPicFeedback();
+      setPicFocus(card);
+    });
+  });
+
+  document.getElementById("btn-pic-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+    picCards().forEach(function (card) {
+      var ans = card.getAttribute("data-answer");
+      var user = card.dataset.user || "";
+      var ok = user === ans;
+      if (ok) correct++;
+      card.classList.remove("is-ok", "is-bad");
+      card.classList.add(ok ? "is-ok" : "is-bad");
+      html +=
+        '<p style="margin:0 0 8px;">' +
+        (ok ? "\u2713" : "\u2717") +
+        " <strong>" +
+        card.querySelector(".pic-card-label").textContent +
+        "</strong>: " +
+        (user || "\u2014") +
+        (ok ? "" : " \u2192 <strong>" + ans + "</strong>") +
+        "</p>";
+    });
+    var fb = document.getElementById("feedback-pic");
+    fb.innerHTML =
+      '<p style="margin-bottom:10px;font-weight:700;">Score: ' +
+      correct +
+      " / " +
+      PIC_TOTAL +
+      "</p>" +
+      html +
+      (correct === PIC_TOTAL
+        ? "<p style=\"margin-top:10px;color:#86efac;\">Well done &mdash; now say all nine phrase groups again, without looking.</p>"
+        : "");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-pic-reset").addEventListener("click", function () {
+    clearPicFeedback();
+    focusedPic = null;
+    picCards().forEach(function (card) {
+      card.classList.remove("is-focused", "is-matched");
+      delete card.dataset.user;
+      card.querySelector(".pic-card-slot").textContent = PH + " click picture, then noun";
+    });
   });
 })();
   </script>

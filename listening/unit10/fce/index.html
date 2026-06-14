@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening — Unit 10 (Mastering B2)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 1.35rem; }
+    .back { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .lead {
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 560px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    a.tile {
+      display: flex;
+      flex-direction: column;
+      min-height: 150px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    a.tile:hover {
+      border-color: #5a7ab0;
+      transform: translateY(-2px);
+    }
+    a.tile h2 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #bae6fd;
+    }
+    a.tile p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.45;
+      flex: 1;
+    }
+    .tile .go {
+      margin-top: auto;
+      padding-top: 10px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Listening — Unit 10</h1>
+      <a class="back" href="../../../unit10.html">&larr; Unit 10 hub</a>
+    </header>
+    <p class="lead">
+      Mastering B2 &mdash; Student&rsquo;s Book tracks <strong>10.1</strong> and <strong>10.2</strong>, plus Workbook Track <strong>10</strong>.
+    </p>
+    <section class="grid">
+      <a class="tile" href="justin-crime-writer/index.html?back=..%2Findex.html&amp;backLabel=Listening%20%E2%80%94%20Unit%2010">
+        <h2>SB 10.1 — Justin (crime writer)</h2>
+        <p>Interview &mdash; seven questions, <strong>A</strong> / <strong>B</strong> / <strong>C</strong>. Audio: <code>RfB2First_SB_Track 10.1</code>.</p>
+        <span class="go">Open 10.1 →</span>
+      </a>
+      <a class="tile" href="telling-lies/part3-multiple-matching.html?back=..%2Findex.html&amp;backLabel=Listening%20%E2%80%94%20Unit%2010">
+        <h2>SB 10.2 — Telling lies</h2>
+        <p>Part 3 multiple matching &mdash; five speakers, statements A&ndash;H, three extra. Audio: <code>RfB2First_SB_Track 10.2</code>.</p>
+        <span class="go">Open 10.2 →</span>
+      </a>
+      <a class="tile" href="thomas-barker-ex-criminal/index.html?back=..%2Findex.html&amp;backLabel=Listening%20%E2%80%94%20Unit%2010">
+        <h2>WB Track 10 — Thomas Barker</h2>
+        <p>Part 4 multiple choice &mdash; radio interview with an ex-criminal, seven questions, <strong>A</strong> / <strong>B</strong> / <strong>C</strong>.</p>
+        <span class="go">Open WB Track 10 →</span>
+      </a>
+    </section>
+  </main>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var bh = document.querySelector(".top .back");
+  var rawBack = q.get("back");
+  if (!bh) return;
+
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+
+  function decodeLabel(raw, fallback) {
+    if (!raw) return fallback || "";
+    try {
+      return decodeURIComponent(String(raw).replace(/\+/g, " "));
+    } catch (e) {
+      return String(raw);
+    }
+  }
+
+  if (!rawBack) {
+    bh.setAttribute("href", "../../../unit10.html");
+    bh.textContent = "← Unit 10 hub";
+    return;
+  }
+
+  var tF = String(rawBack).trim();
+  var candidate = tF;
+  if (
+    tF &&
+    !/^[a-z][a-z0-9+.-]*:/i.test(tF) &&
+    tF.indexOf("/") === -1 &&
+    tF.indexOf("\\") === -1 &&
+    /\.html?$/i.test(tF)
+  ) {
+    candidate = "../../../" + tF.replace(/^\.\//, "");
+  }
+  bh.href = sanitizeReturnHref(candidate, "../../../unit10.html");
+  if (q.get("backLabel")) {
+    bh.textContent = "← " + decodeLabel(q.get("backLabel"), "Back");
+  } else {
+    bh.textContent = "← Back";
+  }
+})();
+  </script>
+</body>
+</html>

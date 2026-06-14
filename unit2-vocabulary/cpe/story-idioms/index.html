@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Unit 2 &mdash; Idioms: making stories interesting (CPE Prep)</title>
+
+  <style>
+
+    :root {
+
+      --panel: #1d2b4a;
+
+      --panel-soft: #223657;
+
+      --line: #324a71;
+
+      --text: #e8f0ff;
+
+      --muted: #9bb0d3;
+
+      --accent: #56ccf2;
+
+      --ok: #36d399;
+
+      --bad: #f87171;
+
+      --rose: #fda4af;
+
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+
+      color: var(--text);
+
+      min-height: 100vh;
+
+      padding: 24px 16px 40px;
+
+    }
+
+    .page {
+
+      width: min(920px, 100%);
+
+      margin: 0 auto;
+
+      background: var(--panel);
+
+      border: 1px solid var(--line);
+
+      border-radius: 20px;
+
+      padding: 24px;
+
+    }
+
+    .top {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: flex-start;
+
+      gap: 12px;
+
+      flex-wrap: wrap;
+
+      border-bottom: 1px solid var(--line);
+
+      padding-bottom: 16px;
+
+      margin-bottom: 20px;
+
+    }
+
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+
+    .back:hover { text-decoration: underline; }
+
+    .kicker {
+
+      font-size: 0.72rem;
+
+      font-weight: 800;
+
+      letter-spacing: 0.1em;
+
+      text-transform: uppercase;
+
+      color: var(--rose);
+
+      margin-bottom: 8px;
+
+    }
+
+    .section-head {
+
+      font-size: 0.94rem;
+
+      line-height: 1.6;
+
+      color: #c5d4ef;
+
+      margin-bottom: 16px;
+
+    }
+
+    .item {
+
+      border: 1px solid var(--line);
+
+      border-radius: 14px;
+
+      padding: 16px 18px;
+
+      background: var(--panel-soft);
+
+      margin-bottom: 14px;
+
+    }
+
+    .item:last-child { margin-bottom: 0; }
+
+    .item__n {
+
+      font-size: 0.72rem;
+
+      font-weight: 800;
+
+      letter-spacing: 0.08em;
+
+      text-transform: uppercase;
+
+      color: var(--muted);
+
+      margin-bottom: 8px;
+
+    }
+
+    .item__sent { font-size: 0.94rem; line-height: 1.75; }
+
+    .phrase-bold { font-weight: 800; color: #e8f0ff; }
+
+    .gap-inp {
+
+      display: inline-block;
+
+      vertical-align: baseline;
+
+      width: min(9rem, 36vw);
+
+      margin: 0 3px;
+
+      padding: 6px 10px;
+
+      border-radius: 8px;
+
+      border: 2px solid #4d6fa1;
+
+      background: #12264b;
+
+      color: #fff;
+
+      font-family: inherit;
+
+      font-size: 0.92rem;
+
+    }
+
+    .gap-inp:focus {
+
+      outline: none;
+
+      border-color: var(--accent);
+
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.22);
+
+    }
+
+    .gap-inp.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); }
+
+    .gap-inp.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+
+    .toolbar {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      margin-top: 20px;
+
+      padding-top: 16px;
+
+      border-top: 1px solid var(--line);
+
+    }
+
+    .btn {
+
+      border: none;
+
+      border-radius: 10px;
+
+      padding: 10px 18px;
+
+      font-size: 0.9rem;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      touch-action: manipulation;
+
+    }
+
+    .btn--primary { background: var(--accent); color: #0b1a33; }
+
+    .btn--primary:hover { filter: brightness(1.08); }
+
+    .btn--ghost {
+
+      background: transparent;
+
+      color: var(--muted);
+
+      border: 1px solid var(--line);
+
+    }
+
+    .btn--sol {
+
+      background: rgba(254, 240, 138, 0.15);
+
+      color: #fef08a;
+
+      border: 1px solid rgba(254, 240, 138, 0.35);
+
+      display: none;
+
+    }
+
+    .feedback {
+
+      margin-top: 16px;
+
+      padding: 12px 14px;
+
+      border-radius: 10px;
+
+      font-size: 0.92rem;
+
+      line-height: 1.5;
+
+      display: none;
+
+    }
+
+    .feedback.show { display: block; }
+
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+
+  </style>
+
+</head>
+
+<body>
+
+  <main class="page">
+
+    <header class="top">
+
+      <div>
+
+        <p class="kicker">Idioms &middot; Making stories interesting</p>
+
+        <h1>Guess the missing words in idioms 1&ndash;10</h1>
+
+      </div>
+
+      <a class="back" id="back-link" data-u2-vocab-hub-depth="1" data-u2-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%202">&larr; Vocabulary</a>
+
+    </header>
+
+
+
+    <p class="section-head">
+
+      <strong>1</strong> Guess the missing words in idioms 1&ndash;10 used for making stories interesting. The first two are from the listening on page 21.
+
+    </p>
+
+
+
+    <div id="items"></div>
+
+
+
+    <div class="toolbar">
+
+      <button type="button" class="btn btn--primary" id="btn-check">Check</button>
+
+      <button type="button" class="btn btn--ghost" id="btn-reset">Reset</button>
+
+      <button type="button" class="btn btn--sol" id="btn-solution">Show solution</button>
+
+    </div>
+
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+
+  </main>
+
+
+
+  <script src="../../../js/u2-vocab-course-context.js"></script>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+
+  <script>
+
+(function () {
+
+  "use strict";
+
+
+
+  var ITEMS = [
+
+    {
+
+      n: 1,
+
+      html:
+
+        'I did see a scorpion. I almost stepped on it &ndash; and it <strong class="phrase-bold">scared the</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-1" autocomplete="off" spellcheck="false" aria-label="Gap 1" /> ' +
+
+        '<strong class="phrase-bold">out of me!</strong>',
+
+      accept: ["life"]
+
+    },
+
+    {
+
+      n: 2,
+
+      html:
+
+        'It is estimated that the current population living in the wild could be in the low hundreds ... <strong class="phrase-bold">Time will</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-2" autocomplete="off" spellcheck="false" aria-label="Gap 2" /> ' +
+
+        '<strong class="phrase-bold">whether or not they can be saved.</strong>',
+
+      accept: ["tell"]
+
+    },
+
+    {
+
+      n: 3,
+
+      html:
+
+        'I like my little car &ndash; <strong class="phrase-bold">don&rsquo;t get me</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-3" autocomplete="off" spellcheck="false" aria-label="Gap 3" /> ' +
+
+        '<strong class="phrase-bold">&ndash; but it&rsquo;s getting a bit old.</strong>',
+
+      accept: ["wrong"]
+
+    },
+
+    {
+
+      n: 4,
+
+      html:
+
+        'And can you believe Megan met her favourite footballer in Lisbon airport. What <strong class="phrase-bold">a stroke of good</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-4" autocomplete="off" spellcheck="false" aria-label="Gap 4" /> ' +
+
+        '<strong class="phrase-bold">!</strong>',
+
+      accept: ["luck"]
+
+    },
+
+    {
+
+      n: 5,
+
+      html:
+
+        'A wave of dizziness came over me and, <strong class="phrase-bold">for a split</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-5" autocomplete="off" spellcheck="false" aria-label="Gap 5" /> ' +
+
+        '<strong class="phrase-bold">, I thought I might need to sit down, but then it passed.</strong>',
+
+      accept: ["second"]
+
+    },
+
+    {
+
+      n: 6,
+
+      html:
+
+        'It can&rsquo;t be easy for Mark and Ruth to share such a small space on such a long journey. They&rsquo;re both quite demanding people, <strong class="phrase-bold">to put it</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-6" autocomplete="off" spellcheck="false" aria-label="Gap 6" /> ' +
+
+        '<strong class="phrase-bold">.</strong>',
+
+      accept: ["mildly"]
+
+    },
+
+    {
+
+      n: 7,
+
+      html:
+
+        'I got the camera repaired and never told Juliet what happened. That&rsquo;s strictly <strong class="phrase-bold">between you and</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-7" autocomplete="off" spellcheck="false" aria-label="Gap 7" /> ' +
+
+        '<strong class="phrase-bold">, though.</strong>',
+
+      accept: ["me"]
+
+    },
+
+    {
+
+      n: 8,
+
+      html:
+
+        'I travelled around the world in just 38 days. It was ' +
+
+        '<input type="text" class="gap-inp" id="gap-8" autocomplete="off" spellcheck="false" aria-label="Gap 8" /> ' +
+
+        '<strong class="phrase-bold">down the best thing</strong> I&rsquo;ve ever done.',
+
+      accept: ["hands"]
+
+    },
+
+    {
+
+      n: 9,
+
+      html:
+
+        'I&rsquo;ve started taking my holidays in September. <strong class="phrase-bold">There&rsquo;s a lot to be</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-9" autocomplete="off" spellcheck="false" aria-label="Gap 9" /> ' +
+
+        '<strong class="phrase-bold">for it.</strong> Prices are so much lower.',
+
+      accept: ["said"]
+
+    },
+
+    {
+
+      n: 10,
+
+      html:
+
+        'He claims he can&rsquo;t go because he has to catch up on work &ndash; <strong class="phrase-bold">a likely</strong> ' +
+
+        '<input type="text" class="gap-inp" id="gap-10" autocomplete="off" spellcheck="false" aria-label="Gap 10" /> ' +
+
+        '<strong class="phrase-bold">!</strong> Tom&aacute;s is always cancelling plans.',
+
+      accept: ["story"]
+
+    }
+
+  ];
+
+
+
+  var TOTAL = ITEMS.length;
+
+  var locked = false;
+
+  var elItems = document.getElementById("items");
+
+  var elFb = document.getElementById("feedback");
+
+  var btnSol = document.getElementById("btn-solution");
+
+
+
+  function norm(s) {
+
+    return String(s || "")
+
+      .trim()
+
+      .toLowerCase()
+
+      .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+
+      .replace(/\s+/g, " ");
+
+  }
+
+
+
+  function matches(item, raw) {
+
+    var u = norm(raw);
+
+    if (!u) return false;
+
+    for (var i = 0; i < item.accept.length; i++) {
+
+      if (norm(item.accept[i]) === u) return true;
+
+    }
+
+    return false;
+
+  }
+
+
+
+  function render() {
+
+    elItems.innerHTML = ITEMS.map(function (it) {
+
+      return (
+
+        '<article class="item">' +
+
+        '<div class="item__n">' + it.n + "</div>" +
+
+        '<p class="item__sent">' + it.html + "</p>" +
+
+        "</article>"
+
+      );
+
+    }).join("");
+
+
+
+    ITEMS.forEach(function (it) {
+
+      document.getElementById("gap-" + it.n).addEventListener("input", function () {
+
+        if (locked) return;
+
+        this.classList.remove("is-ok", "is-bad");
+
+        elFb.className = "feedback";
+
+        elFb.textContent = "";
+
+        btnSol.style.display = "none";
+
+      });
+
+    });
+
+  }
+
+
+
+  function clearFeedback() {
+
+    elFb.className = "feedback";
+
+    elFb.textContent = "";
+
+    btnSol.style.display = "none";
+
+  }
+
+
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+
+    if (locked) return;
+
+    clearFeedback();
+
+    var ok = 0;
+
+    var missing = [];
+
+
+
+    ITEMS.forEach(function (it) {
+
+      var inp = document.getElementById("gap-" + it.n);
+
+      inp.classList.remove("is-ok", "is-bad");
+
+      var raw = inp.value;
+
+      if (!norm(raw)) {
+
+        missing.push(it.n);
+
+        return;
+
+      }
+
+      if (matches(it, raw)) {
+
+        inp.classList.add("is-ok");
+
+        ok++;
+
+      } else {
+
+        inp.classList.add("is-bad");
+
+      }
+
+    });
+
+
+
+    if (missing.length) {
+
+      elFb.textContent = "Fill gap(s): " + missing.join(", ") + ".";
+
+      elFb.className = "feedback show bad";
+
+      return;
+
+    }
+
+
+
+    if (ok === TOTAL) {
+
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+
+      elFb.className = "feedback show ok";
+
+      locked = true;
+
+      ITEMS.forEach(function (it) {
+
+        document.getElementById("gap-" + it.n).disabled = true;
+
+      });
+
+    } else {
+
+      elFb.innerHTML =
+
+        "<strong>Score: " + ok + " / " + TOTAL + ".</strong> Fix the red gaps or tap Show solution.";
+
+      elFb.className = "feedback show bad";
+
+      btnSol.style.display = "inline-block";
+
+    }
+
+  });
+
+
+
+  btnSol.addEventListener("click", function () {
+
+    ITEMS.forEach(function (it) {
+
+      var inp = document.getElementById("gap-" + it.n);
+
+      inp.value = it.accept[0];
+
+      inp.classList.remove("is-bad");
+
+      inp.classList.add("is-ok");
+
+      inp.disabled = true;
+
+    });
+
+    locked = true;
+
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+
+    elFb.className = "feedback show ok";
+
+    btnSol.style.display = "none";
+
+  });
+
+
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+
+    locked = false;
+
+    clearFeedback();
+
+    ITEMS.forEach(function (it) {
+
+      var inp = document.getElementById("gap-" + it.n);
+
+      inp.value = "";
+
+      inp.disabled = false;
+
+      inp.classList.remove("is-ok", "is-bad");
+
+    });
+
+  });
+
+
+
+  render();
+
+})();
+
+  </script>
+
+</body>
+
+</html>
+

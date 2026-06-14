@@ -57,7 +57,8 @@
         },
         {
             group: "Vivid Metaphors & Descriptive Language",
-            ans: "Groaning under the weight of...",
+            headword: "groan under the weight of",
+            ans: "groaning under the weight of",
             hint:
                 "Literally bending or making a straining sound because it is completely overloaded with something.",
             tap: "groaning under the weight of",
@@ -78,7 +79,8 @@
         },
         {
             group: "Vivid Metaphors & Descriptive Language",
-            ans: "Churning out dubious advice",
+            headword: "churn out dubious advice",
+            ans: "churning out dubious advice",
             hint:
                 "Producing a large quantity of low-quality, untrustworthy, or questionable advice rapidly and automatically.",
             tap: "churning out dubious advice",
@@ -92,21 +94,24 @@
         },
         {
             group: "Vivid Metaphors & Descriptive Language",
-            ans: "Vying to be the one",
+            headword: "vie to be the one",
+            ans: "vying to be the one",
             hint:
                 "Competing fiercely with others to achieve a specific position or status.",
             tap: "vying to be the one",
         },
         {
             group: "Vivid Metaphors & Descriptive Language",
-            ans: "To part with some hard-earned cash",
+            headword: "part with hard-earned cash",
+            ans: "part with some hard-earned cash",
             hint:
                 "To spend or give away money that you worked very hard to earn.",
             tap: "part with some hard-earned cash",
         },
         {
             group: "Business, Trends & Society",
-            ans: "Preys upon [something]",
+            headword: "prey upon",
+            ans: "preys upon",
             hint:
                 "To exploit, take advantage of, or profit from someone's weakness, vulnerability, or insecurity.",
             tap: "preys upon",
@@ -134,14 +139,16 @@
         },
         {
             group: "Business, Trends & Society",
-            ans: "Bore out these claims",
+            headword: "bear out these claims",
+            ans: "bore out these claims",
             hint:
                 "Proved that the claims were true. (From the phrasal verb bear out — to support or confirm a statement).",
             tap: "bore out these claims",
         },
         {
             group: "Business, Trends & Society",
-            ans: "Jumped on the bandwagon",
+            headword: "jump on the bandwagon",
+            ans: "jumped on the bandwagon",
             hint:
                 "Joined a popular trend or activity simply because it became successful, to benefit from it.",
             tap: "jumped on the bandwagon",
@@ -169,21 +176,24 @@
         },
         {
             group: "Psychology & Perception",
-            ans: "Vigorously refuting all sorts of claims",
+            headword: "vigorously refute claims",
+            ans: "vigorously refuting all sorts of claims",
             hint:
                 "Strongly, energetically, and forcefully denying or proving that certain statements are false.",
             tap: "vigorously refuting all sorts of claims",
         },
         {
             group: "Psychology & Perception",
-            ans: "The observations that struck a chord were...",
+            headword: "strike a chord",
+            ans: "struck a chord",
             hint:
                 "The specific points that created an emotional reaction, resonated with me, or felt deeply relevant to my own experience.",
             tap: "the observations that struck a chord were",
         },
         {
             group: "Psychology & Perception",
-            ans: "To shed some light on this",
+            headword: "shed light on something",
+            ans: "shed some light on this",
             hint:
                 "To provide new information or explanations that make a confusing situation easier to understand.",
             tap: "shed some light on this",
@@ -199,7 +209,7 @@
 
     W.U12_READING_ROAD_TO_BETTERMENT_TAP_PHRASES = W.U12_READING_ROAD_TO_BETTERMENT_LEXIS_GAME_ROWS.map(
         function (row) {
-            return { en: row.tap, hint: row.hint };
+            return { en: row.headword || row.tap || row.ans, hint: row.hint };
         }
     ).filter(function (p) {
         return p.en;

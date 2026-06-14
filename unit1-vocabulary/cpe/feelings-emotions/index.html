@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &mdash; Feelings and emotions (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --rose: #fda4af;
+      --rose-bg: rgba(244, 114, 182, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 18px;
+    }
+    .ex-workspace {
+      display: grid;
+      grid-template-columns: minmax(168px, 210px) 1fr;
+      gap: 16px 20px;
+      align-items: start;
+    }
+    .bank-col--side {
+      position: sticky;
+      top: 12px;
+    }
+    .pairs-col {
+      min-width: 0;
+    }
+    .word-box-wrap {
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--rose-bg);
+    }
+    .word-box-wrap--inline { margin-bottom: 0; }
+    .word-box-wrap h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .word-box--dock {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+    .bank-dock {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(9, 18, 42, 0.97);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    .bank-dock__label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 6px;
+    }
+    .bank-dock__status {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      min-height: 1.1em;
+    }
+    .bank-dock__status.is-active {
+      color: #bae6fd;
+      font-weight: 700;
+    }
+    .word-chip {
+      font-size: 0.88rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffe4e6;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+    }
+    .word-chip:hover:not(.is-used):not(.is-selected) { border-color: var(--accent); }
+    .word-chip.is-selected {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.18);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .word-chip.is-used {
+      opacity: 0.35;
+      cursor: default;
+      text-decoration: line-through;
+    }
+    .bank-hint {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .pair {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .pair.is-example { border-color: rgba(244, 114, 182, 0.35); }
+    .pair__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .pair__n .ex-tag {
+      color: var(--rose);
+      margin-left: 6px;
+    }
+    .sent {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .sent:last-child { margin-bottom: 0; }
+    .sent-label {
+      font-weight: 800;
+      color: #bae6fd;
+      margin-right: 4px;
+    }
+    .phrase-bold {
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .gap {
+      display: inline-block;
+      min-width: 7.5rem;
+      padding: 2px 10px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: rgba(8, 22, 48, 0.55);
+      color: #bae6fd;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .gap:hover:not(.is-locked) { border-color: var(--accent); }
+    .gap.is-filled { border-style: solid; border-color: #6ee7b7; color: #d1fae5; }
+    .gap.is-example-filled {
+      border-style: solid;
+      border-color: rgba(244, 114, 182, 0.5);
+      color: #fecdd3;
+      cursor: default;
+    }
+    .gap.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); color: #bbf7d0; }
+    .gap.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+    .gap.is-locked { cursor: default; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; }
+    .btn-reset { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--line); }
+    .btn-sol { background: rgba(254, 240, 138, 0.15); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); display: none; }
+    .feedback {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+    @media (max-width: 720px) {
+      body { padding-bottom: 130px; }
+      .ex-workspace { grid-template-columns: 1fr; }
+      .bank-col--side { display: none; }
+      .bank-dock { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary</p>
+        <h1>Feelings and emotions</h1>
+      </div>
+      <a class="back" id="back-link" data-u1-vocab-hub-depth="1" data-u1-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%201">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      <strong>1</strong> Complete sentence B with a word from the box so it has a similar meaning to sentence A.
+      There is an example at the beginning (0).
+      <span class="bank-hint" style="display:block;margin-top:8px;">Word box stays on the left while you scroll (on phone &mdash; fixed at the bottom).</span>
+    </p>
+
+    <div class="ex-workspace">
+      <aside class="bank-col bank-col--side" aria-label="Word box sidebar">
+        <div class="word-box-wrap word-box-wrap--inline">
+          <h2>Word box</h2>
+          <div class="word-box" id="word-box" aria-label="Word box"></div>
+          <p class="bank-hint">Tap a word, then a gap in B. Each word once.</p>
+        </div>
+      </aside>
+
+      <div class="pairs-col">
+        <div id="pairs"></div>
+
+        <div class="toolbar">
+          <button type="button" class="btn btn-check" id="btn-check">Check</button>
+          <button type="button" class="btn btn-reset" id="btn-reset">Reset</button>
+          <button type="button" class="btn btn-sol" id="btn-solution">Show solution</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bank-dock" id="bank-dock" aria-label="Word box dock">
+    <div class="bank-dock__label">Word box</div>
+    <div class="bank-dock__status" id="dock-status">Tap a word, then a gap in sentence B.</div>
+    <div class="word-box word-box--dock" id="word-box-dock"></div>
+  </div>
+
+  <script src="../../../js/u1-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  var BOX = [
+    "ballistic",
+    "besotted",
+    "despondent",
+    "elated",
+    "engrossed",
+    "flabbergasted",
+    "grossed",
+    "petrified"
+  ];
+
+  var KEY = {
+    1: "despondent",
+    2: "ballistic",
+    3: "elated",
+    4: "besotted",
+    5: "grossed",
+    6: "flabbergasted",
+    7: "engrossed"
+  };
+
+  var PAIRS = [
+    {
+      n: 0,
+      example: true,
+      a: 'I didn&rsquo;t find the monster too convincing, but the film still <span class="phrase-bold">scared me out of my wits</span>.',
+      b: 'The monster wasn&rsquo;t given the benefit of depth, but the film still left me absolutely <span class="gap is-example-filled" aria-hidden="true">petrified</span>.'
+    },
+    {
+      n: 1,
+      a: 'Loads of people start to feel <span class="phrase-bold">a bit down in the dumps</span> over the winter season, what with so little sunlight and so many colds around to keep us all miserable.',
+      b: 'Due to reduced sunlight and the prevalence of the common cold, it&rsquo;s not unusual for people to feel somewhat <button type="button" class="gap" data-n="1" aria-label="Gap 1">&mdash;</button> during the winter season.'
+    },
+    {
+      n: 2,
+      a: 'Strangely, there are certain customers who <span class="phrase-bold">go apoplectic with rage</span> when notified of the store&rsquo;s no-return policy, while most others are left unperturbed.',
+      b: 'It&rsquo;s so strange &ndash; there are some customers who go <button type="button" class="gap" data-n="2" aria-label="Gap 2">&mdash;</button> at the mere mention of our no-return policy, while most others take it in their stride.'
+    },
+    {
+      n: 3,
+      a: '&lsquo;We&rsquo;re <span class="phrase-bold">chuffed to bits</span>,&rsquo; said the team captain, holding the award. &lsquo;It&rsquo;s something that we feel we deserve, and we&rsquo;ve worked hard to get it.&rsquo;',
+      b: 'At the ceremony, the team captain was visibly <button type="button" class="gap" data-n="3" aria-label="Gap 3">&mdash;</button> as she collected the award, saying that she felt it was hard won and well deserved.'
+    },
+    {
+      n: 4,
+      a: 'Liam is clearly <span class="phrase-bold">head over heels in love</span> with Nora because he immediately goes along with anything she thinks is cool.',
+      b: 'It&rsquo;s obvious that Liam is absolutely <button type="button" class="gap" data-n="4" aria-label="Gap 4">&mdash;</button> with Nora, as he is happy to indulge in her every whim at a moment&rsquo;s notice.'
+    },
+    {
+      n: 5,
+      a: 'Her &lsquo;food idiosyncrasy&rsquo;, as she calls it, is to feel <span class="phrase-bold">completely repulsed by</span> the mere sight of certain white foods, such as milk or mayonnaise.',
+      b: 'The poor girl can&rsquo;t even look at white food &ndash; things like milk and mayonnaise &ndash; without getting totally <button type="button" class="gap" data-n="5" aria-label="Gap 5">&mdash;</button> out. Who ever heard of such a thing?'
+    },
+    {
+      n: 6,
+      a: 'I was <span class="phrase-bold">completely dumbfounded</span> &ndash; my chances of winning the scholarship had seemed all but guaranteed, but I did not even make the shortlist.',
+      b: 'When I applied for the scholarship, I thought I was a shoo-in, so I was utterly <button type="button" class="gap" data-n="6" aria-label="Gap 6">&mdash;</button> to find that I wasn&rsquo;t even short-listed.'
+    },
+    {
+      n: 7,
+      a: 'I couldn&rsquo;t believe it. Instead of watching the children up on stage, one of the fathers spent the entire end-of-year recital <span class="phrase-bold">literally glued to</span> his mobile phone.',
+      b: 'While the children performed, one father spent the entire end-of-year recital wholly <button type="button" class="gap" data-n="7" aria-label="Gap 7">&mdash;</button> in his mobile phone. I was in disbelief.'
+    }
+  ];
+
+  var answers = {};
+  var selectedWord = null;
+  var locked = false;
+  var elBox = document.getElementById("word-box");
+  var elBoxDock = document.getElementById("word-box-dock");
+  var elDockStatus = document.getElementById("dock-status");
+  var elPairs = document.getElementById("pairs");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+
+  function renderBoxInto(container) {
+    if (!container) return;
+    container.innerHTML = "";
+    BOX.forEach(function (w) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "word-chip";
+      chip.textContent = w;
+      chip.setAttribute("data-word", w);
+      if (w === "petrified") chip.classList.add("is-used");
+      container.appendChild(chip);
+    });
+  }
+
+  function syncBoxInto(container) {
+    if (!container) return;
+    var used = usedWords();
+    container.querySelectorAll(".word-chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-word");
+      chip.classList.toggle("is-used", !!used[w] && selectedWord !== w);
+      chip.classList.toggle("is-selected", selectedWord === w);
+      chip.disabled = locked || (!!used[w] && selectedWord !== w);
+    });
+  }
+
+  function updateDockStatus() {
+    if (!elDockStatus) return;
+    if (selectedWord) {
+      elDockStatus.textContent = "Selected: " + selectedWord + " \u2014 now tap a gap";
+      elDockStatus.className = "bank-dock__status is-active";
+    } else {
+      elDockStatus.textContent = "Tap a word, then a gap in sentence B.";
+      elDockStatus.className = "bank-dock__status";
+    }
+  }
+
+  function renderPairs() {
+    elPairs.innerHTML = PAIRS.map(function (p) {
+      var ex = p.example ? ' is-example' : "";
+      var tag = p.example ? '<span class="ex-tag">Example</span>' : "";
+      return (
+        '<article class="pair' + ex + '">' +
+        '<div class="pair__n">Item ' + p.n + tag + "</div>" +
+        '<p class="sent"><span class="sent-label">A</span>' + p.a + "</p>" +
+        '<p class="sent"><span class="sent-label">B</span>' + p.b + "</p>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
+  function renderBox() {
+    renderBoxInto(elBox);
+    renderBoxInto(elBoxDock);
+  }
+
+  function usedWords() {
+    var used = { petrified: true };
+    Object.keys(answers).forEach(function (k) {
+      if (answers[k]) used[answers[k]] = true;
+    });
+    return used;
+  }
+
+  function syncBox() {
+    syncBoxInto(elBox);
+    syncBoxInto(elBoxDock);
+    updateDockStatus();
+  }
+
+  function syncGaps() {
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      var n = gap.getAttribute("data-n");
+      var val = answers[n] || "";
+      gap.textContent = val || "\u2014";
+      gap.classList.toggle("is-filled", !!val);
+      gap.classList.toggle("is-ok", false);
+      gap.classList.toggle("is-bad", false);
+      gap.classList.toggle("is-locked", locked);
+    });
+  }
+
+  function clearFeedback() {
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+  }
+
+  function handleBoxClick(e) {
+    if (locked) return;
+    var chip = e.target.closest(".word-chip");
+    if (!chip || chip.classList.contains("is-used")) return;
+    var w = chip.getAttribute("data-word");
+    selectedWord = selectedWord === w ? null : w;
+    syncBox();
+  }
+
+  elBox.addEventListener("click", handleBoxClick);
+  elBoxDock.addEventListener("click", handleBoxClick);
+
+  elPairs.addEventListener("click", function (e) {
+    if (locked) return;
+    var gap = e.target.closest(".gap[data-n]");
+    if (!gap) return;
+    var n = gap.getAttribute("data-n");
+    if (answers[n]) {
+      delete answers[n];
+      selectedWord = null;
+      syncGaps();
+      syncBox();
+      clearFeedback();
+      return;
+    }
+    if (!selectedWord) return;
+    answers[n] = selectedWord;
+    selectedWord = null;
+    syncGaps();
+    syncBox();
+    clearFeedback();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearFeedback();
+
+    var missing = [];
+    var wrong = [];
+    var ok = 0;
+
+    for (var n = 1; n <= 7; n++) {
+      var gap = document.querySelector('.gap[data-n="' + n + '"]');
+      if (!answers[n]) {
+        missing.push(n);
+        continue;
+      }
+      if (answers[n] === KEY[n]) {
+        ok++;
+        gap.classList.add("is-ok");
+      } else {
+        wrong.push(n);
+        gap.classList.add("is-bad");
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Fill gap(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === 7) {
+      elFb.innerHTML = "<strong>Excellent &mdash; 7 / 7.</strong>";
+      elFb.className = "feedback show ok";
+      locked = true;
+      syncBox();
+    } else {
+      elFb.innerHTML =
+        "<strong>Score: " + ok + " / 7.</strong> Green = correct; red = try again (tap a gap to clear it).";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= 7; n++) answers[n] = KEY[n];
+    locked = true;
+    selectedWord = null;
+    syncGaps();
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      gap.classList.add("is-ok");
+    });
+    syncBox();
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    answers = {};
+    selectedWord = null;
+    locked = false;
+    clearFeedback();
+    syncGaps();
+    syncBox();
+  });
+
+  renderPairs();
+  renderBox();
+  syncGaps();
+})();
+  </script>
+</body>
+</html>

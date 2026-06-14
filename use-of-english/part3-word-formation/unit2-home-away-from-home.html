@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Part 3 Word formation · Home away from home (Unit 2 CPE)</title>
+
+    <link rel="stylesheet" href="../../css/cpe-uoe-part3-wf-shell.css" />
+</head>
+
+<body class="cpe-p3-body">
+
+  <main class="page">
+
+    <header class="top">
+
+      <div>
+
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+
+        <p class="tag">Unit 2 &middot; CPE Prep &middot; Home away from home</p>
+
+      </div>
+
+      <a class="back" id="backLink" href="../../index.html?prep_stay=1&amp;screen=unit2&amp;prep_open_folder=prep_legacy_u2_uoe">&larr; Use of English &mdash; Level 2</a>
+
+    </header>
+
+
+
+    <p class="instr">
+
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the space in the same line. There is an example at the beginning <strong>(0)</strong>.
+
+    </p>
+
+
+
+    <div class="example">
+
+      <div class="lab">(0) &mdash; Example</div>
+
+      <p>
+
+        For some, home swapping may not be worth serious <span class="done">CONSIDERATION</span>, but there are many travellers who enjoy this type of budget holiday option every year.
+
+        <span class="root">CONSIDER</span>
+
+      </p>
+
+    </div>
+
+
+
+    <section class="block">
+
+      <div class="block-title">HOME AWAY FROM HOME</div>
+
+      <p class="line">
+
+        Indeed, this trend is currently seeing
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unprecedented" aria-label="Gap 1 PRECEDENT" /> <span class="root">PRECEDENT</span></span>
+
+        growth. Ideal for flexible travellers, home swapping
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="prevents" aria-label="Gap 2 VENT" /> <span class="root">VENT</span></span>
+
+        the need to book hotels, and avid home-swappers rave about the range of
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="far-flung|farflung" aria-label="Gap 3 FAR" /> <span class="root">FAR</span></span>
+
+        places they&rsquo;ve stayed in.
+
+      </p>
+
+      <p class="line" style="margin-top:14px;">
+
+        As you might expect, people with
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="picturesque" aria-label="Gap 4 PICTURE" /> <span class="root">PICTURE</span></span>
+
+        beachside villas or swanky flats in the city centre
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="invariably" aria-label="Gap 5 VARIABLE" /> <span class="root">VARIABLE</span></span>
+
+        get first pick of the available options, but don&rsquo;t worry: many swappers are just looking for a decent place that&rsquo;s available when they are.
+
+      </p>
+
+      <p class="line" style="margin-top:14px;">
+
+        To get started,
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="compile" aria-label="Gap 6 PILE" /> <span class="root">PILE</span></span>
+
+        a list of enticing details about your home to include on the house exchange site. Remember to provide personal references and, of course, lots of photos. After you have uploaded everything, check the site
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="periodically" aria-label="Gap 7 PERIOD" /> <span class="root">PERIOD</span></span>
+
+        for any new listings. Once you find a potential swap, be clear about your expectations. Agree on how to handle worst-case
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="scenarios" aria-label="Gap 8 SCENE" /> <span class="root">SCENE</span></span>
+
+        and pin down all the details before you leave. Then, all that is left is to hope for the best!
+
+      </p>
+
+    </section>
+
+
+
+    <div class="actions">
+
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+
+    </div>
+
+  </main>
+
+
+
+  <script>
+
+(function () {
+
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+
+  var hubDefault =
+
+    "../../index.html?prep_stay=1&screen=unit2&prep_open_folder=prep_legacy_u2_uoe";
+
+
+
+  function norm(s) {
+
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+
+  }
+
+
+
+  function accepts(el) {
+
+    return (el.getAttribute("data-accept") || "")
+
+      .split("|")
+
+      .map(norm)
+
+      .filter(Boolean);
+
+  }
+
+
+
+  function check() {
+
+    var ok = 0;
+
+    inputs.forEach(function (el) {
+
+      el.classList.remove("ok", "bad");
+
+      var got = norm(el.value);
+
+      if (!got) {
+
+        el.classList.add("bad");
+
+        return;
+
+      }
+
+      if (accepts(el).indexOf(got) >= 0) {
+
+        el.classList.add("ok");
+
+        ok++;
+
+      } else {
+
+        el.classList.add("bad");
+
+      }
+
+    });
+
+    document.getElementById("scoreNum").textContent = String(ok);
+
+    document.getElementById("scoreLine").hidden = false;
+
+  }
+
+
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+
+  inputs.forEach(function (el) {
+
+    el.addEventListener("input", function () {
+
+      el.classList.remove("ok", "bad");
+
+    });
+
+  });
+
+
+
+  var q = new URLSearchParams(window.location.search);
+
+  var bl = document.getElementById("backLink");
+
+  function sanitizeReturnHref(raw, fallback) {
+
+    var s = String(raw || "").trim();
+
+    if (!s) return fallback || "";
+
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+
+    if (/^\s*\/\//.test(s)) return fallback || "";
+
+    try {
+
+      var u = new URL(s, window.location.href);
+
+      if (u.origin !== window.location.origin) return fallback || "";
+
+      return u.pathname + u.search + u.hash;
+
+    } catch (e) {
+
+      return fallback || "";
+
+    }
+
+  }
+
+  if (bl) {
+
+    bl.href = sanitizeReturnHref(q.get("back"), hubDefault);
+
+    if (q.get("backLabel")) {
+
+      try {
+
+        bl.textContent =
+
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+
+      } catch (e) {}
+
+    }
+
+  }
+
+})();
+
+  </script>
+
+</body>
+
+</html>
+

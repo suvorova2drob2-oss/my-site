@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 7 &mdash; Vocabulary</title>
+  <script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search || "");
+    var course = String(q.get("course") || "").toLowerCase();
+    var fromCpe =
+      course === "cpe" ||
+      q.get("prep_stay") === "1" ||
+      !!q.get("backLabel") ||
+      /level\s*7/i.test(String(q.get("backLabel") || ""));
+    if (fromCpe) {
+      q.set("course", "cpe");
+      var tail = q.toString();
+      location.replace("cpe/index.html" + (tail ? "?" + tail : "?course=cpe"));
+    }
+  } catch (e) {
+    location.replace("cpe/index.html?course=cpe");
+  }
+})();
+  </script>
   <style>
     :root {
       --panel: #1d2b4a;

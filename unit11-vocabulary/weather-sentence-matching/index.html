@@ -221,6 +221,130 @@
     .fb-item.ok h4 { color: #86efac; }
     .fb-item.bad h4 { color: #fca5a5; }
     .fb-item h4 { font-size: 0.8rem; margin-bottom: 6px; }
+
+    .task-flip {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+    .task-flip h2 {
+      font-size: 1.02rem;
+      color: #bae6fd;
+      margin-bottom: 10px;
+    }
+    .sent-flip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .sent-flip {
+      perspective: 1100px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .sent-flip:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+    .sent-flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      min-height: 220px;
+      transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .sent-flip.is-flipped .sent-flip-inner {
+      transform: rotateY(180deg);
+    }
+    .sent-flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .sent-flip-front {
+      background: #0f1f3d;
+      position: relative;
+    }
+    .sent-flip-front img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: #1a2c49;
+    }
+    .sent-flip-num {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      min-width: 1.6rem;
+      height: 1.6rem;
+      padding: 0 6px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: #fcd34d;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sent-flip-tap {
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .sent-flip-back {
+      background: rgba(15, 23, 42, 0.95);
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 14px 14px 12px;
+    }
+    .sent-flip-back p {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+    }
+    .sent-flip-back strong {
+      color: #fde68a;
+      font-weight: 700;
+    }
+    .sent-flip-back .sent-flip-tap {
+      margin-top: auto;
+      padding-top: 10px;
+    }
+    .sent-flip-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-flip-all {
+      background: #3d4f6f;
+      color: var(--text);
+      border: none;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
   </style>
 </head>
 <body>
@@ -258,6 +382,7 @@
     </p>
     <p class="hint-bar">
       <strong>How:</strong> click a sentence on the left (it highlights), then click an ending on the right. Each ending is used once. <strong>Change a pair:</strong> click that sentence again and pick another ending.
+      <span style="display:block;margin-top:8px;"><a href="#task-flip-sentences" style="color:#fde68a;font-weight:700;">Picture flip cards &darr;</a> — after matching, say each sentence from the image.</span>
     </p>
 
     <div class="match-grid">
@@ -326,6 +451,124 @@
     </div>
 
     <div class="feedback" id="feedback" aria-live="polite"></div>
+
+    <section class="task-flip" id="task-flip-sentences" aria-labelledby="flip-heading">
+      <h2 id="flip-heading">Picture flip &mdash; check the sentence</h2>
+      <p class="instr">
+        Look at the picture and say the <strong>full sentence</strong> from memory (include the weather collocation). Then <strong>flip</strong> the card to check in English. Tap again to return to the picture.
+      </p>
+
+      <div class="sent-flip-grid" id="sent-flip-grid">
+        <button type="button" class="sent-flip" data-num="1" aria-label="Sentence 1 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">1</span>
+              <img src="../img/weather-pic-breeze.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>She opened the door and a <strong>gentle breeze</strong> blew into the room.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="2" aria-label="Sentence 2 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">2</span>
+              <img src="../img/weather-pic-rain.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>Northern areas suffered <strong>torrential rain</strong>, which caused heavy flooding.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="3" aria-label="Sentence 3 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">3</span>
+              <img src="../img/weather-pic-winds.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>A tree blown down by <strong>gale-force winds</strong> blocked the road, holding up traffic.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="4" aria-label="Sentence 4 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">4</span>
+              <img src="../img/weather-pic-showers.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>There is a possibility of <strong>scattered showers</strong> in the region tomorrow.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="5" aria-label="Sentence 5 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">5</span>
+              <img src="../img/weather-pic-sunshine.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>The valley was bathed in <strong>bright sunshine</strong>, like a scene from a painting.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="6" aria-label="Sentence 6 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">6</span>
+              <img src="../img/weather-pic-sea.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>The boat struggled through <strong>rough seas</strong> to reach the safety of the port.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="7" aria-label="Sentence 7 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">7</span>
+              <img src="../img/weather-pic-clouds.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>The appearance of very <strong>thick, dark clouds</strong> told us a storm was on its way.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="sent-flip" data-num="8" aria-label="Sentence 8 — flip card">
+          <div class="sent-flip-inner">
+            <div class="sent-flip-face sent-flip-front">
+              <span class="sent-flip-num">8</span>
+              <img src="../img/weather-pic-overcast.png" alt="" width="400" height="300" loading="lazy" />
+              <div class="sent-flip-tap">Tap to flip</div>
+            </div>
+            <div class="sent-flip-face sent-flip-back">
+              <p>It will be a grey day with <strong>overcast skies</strong> and occasional showers.</p>
+              <div class="sent-flip-tap">Tap to see picture again</div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sent-flip-actions">
+        <button type="button" class="btn-flip-all" id="btn-flip-reset">Show all pictures (flip back)</button>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -537,6 +780,24 @@
   wireEnds();
   updatePickLines();
   refreshEndButtons();
+})();
+  </script>
+  <script>
+(function () {
+  document.querySelectorAll(".sent-flip").forEach(function (card) {
+    card.addEventListener("click", function () {
+      card.classList.toggle("is-flipped");
+      var flipped = card.classList.contains("is-flipped");
+      card.setAttribute("aria-pressed", flipped ? "true" : "false");
+    });
+  });
+
+  document.getElementById("btn-flip-reset").addEventListener("click", function () {
+    document.querySelectorAll(".sent-flip.is-flipped").forEach(function (card) {
+      card.classList.remove("is-flipped");
+      card.setAttribute("aria-pressed", "false");
+    });
+  });
 })();
   </script>
 </body>

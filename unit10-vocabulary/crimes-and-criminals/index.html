@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unit 10 Vocabulary — Crimes and criminals (Exercise 2)</title>
+  <title>Unit 10 Vocabulary &mdash; Crimes and criminals</title>
   <style>
     :root {
       --panel: #1d2b4a;
@@ -13,7 +13,6 @@
       --muted: #9bb0d3;
       --accent: #56ccf2;
       --ok: #36d399;
-      --bad: #f87171;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
     body {
@@ -23,7 +22,7 @@
       padding: 24px;
     }
     .page {
-      width: min(880px, 100%);
+      width: min(900px, 100%);
       margin: 0 auto;
       background: var(--panel);
       border: 1px solid var(--line);
@@ -43,103 +42,283 @@
     .top h1 { font-size: 1.15rem; line-height: 1.35; }
     .back { color: var(--accent); text-decoration: none; font-weight: 600; }
     .back:hover { text-decoration: underline; }
-
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
     .instr {
       font-size: 0.95rem;
       line-height: 1.65;
       color: #d5e2f8;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
-
-    .word-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 14px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      border: 1px dashed var(--line);
+    .hint-bar {
+      padding: 10px 12px;
       border-radius: 10px;
-      background: rgba(15, 36, 68, 0.45);
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: #fef9c3;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+      line-height: 1.5;
     }
-    .word-box-note {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 18px;
-      line-height: 1.45;
-    }
-
     .task {
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 18px;
+      padding: 18px 18px 22px;
       background: var(--panel-soft);
     }
     .task h2 { font-size: 1.05rem; margin-bottom: 12px; color: #bae6fd; }
-
-    .row {
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(8, 22, 48, 0.35);
-      font-size: 0.93rem;
-      line-height: 1.65;
-    }
-    .row.example-row {
-      border-color: rgba(86, 204, 242, 0.35);
-      background: rgba(56, 189, 248, 0.06);
-    }
-    .row-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
-    .row-line {
-      display: flex;
-      flex-wrap: wrap;
+    .example-row {
+      display: grid;
+      grid-template-columns: 1.4rem 1fr auto;
       align-items: center;
-      gap: 8px;
+      gap: 8px 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(56, 189, 248, 0.06);
+      font-size: 0.9rem;
+      line-height: 1.45;
     }
-    .gap-in {
-      width: min(220px, 100%);
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 2px solid #4d6fa1;
-      background: #12264b;
-      color: #fff;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-    .gap-in:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
-    }
-    .gap-in.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.1); }
-    .gap-in.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); }
+    .example-num { font-weight: 800; color: var(--accent); }
     .gap-example {
-      display: inline-block;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 8px;
       background: rgba(34, 197, 94, 0.15);
       border: 1px solid rgba(74, 222, 128, 0.4);
       color: #86efac;
       font-weight: 700;
-    }
-
-    .row-key {
-      display: none;
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 8px;
       font-size: 0.85rem;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .match-board {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .match-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .match-toolbar .btn-row { margin-top: 0; flex: 0 0 auto; }
+    .match-score-strip {
+      flex: 1 1 auto;
+      min-width: 10rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .match-score-strip:empty { display: none; }
+    .match-score-strip.is-perfect {
+      border-color: rgba(34, 197, 94, 0.45);
       background: rgba(34, 197, 94, 0.12);
-      border: 1px solid rgba(74, 222, 128, 0.35);
       color: #86efac;
     }
-    .row-key.show { display: block; }
-
-    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .match-score-strip.is-mixed {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: rgba(251, 191, 36, 0.1);
+      color: #fde68a;
+    }
+    .match-bank-head {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      margin-bottom: 6px;
+    }
+    .match-bank-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .match-bank-dock {
+      margin-top: 12px;
+      padding: 12px 12px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(96, 165, 250, 0.32);
+      background: rgba(96, 165, 250, 0.1);
+    }
+    @media (min-height: 520px) {
+      .match-bank-dock {
+        position: sticky;
+        bottom: 10px;
+        z-index: 3;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+      }
+    }
+    .match-bank {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .match-bank { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    .match-bank.is-drag-over {
+      outline: 2px dashed #60a5fa;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+    .match-lines { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+    .match-line {
+      display: grid;
+      grid-template-columns: 1.35rem 1.4rem 1fr auto minmax(8.5rem, 11rem);
+      align-items: center;
+      gap: 8px 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: rgba(15, 23, 42, 0.4);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    @media (max-width: 720px) {
+      .match-line {
+        grid-template-columns: 1.35rem 1.4rem 1fr minmax(7.5rem, 1fr);
+        grid-template-areas:
+          "mark num def slot"
+          "mark arrow arrow slot";
+        gap: 4px 8px;
+      }
+      .match-line .match-mark { grid-area: mark; }
+      .match-line .match-num { grid-area: num; }
+      .match-line .match-def { grid-area: def; }
+      .match-line .match-arrow { grid-area: arrow; justify-self: start; }
+      .match-line .match-slot { grid-area: slot; }
+    }
+    .match-line.is-focused {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.22);
+    }
+    .match-line-wrap.is-checked-ok .match-line {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .match-line-wrap.is-checked-bad .match-line {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.08);
+    }
+    .match-mark {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .match-line-wrap.is-checked .match-mark { opacity: 1; }
+    .match-line-wrap.is-checked-ok .match-mark { color: #86efac; }
+    .match-line-wrap.is-checked-bad .match-mark { color: #fca5a5; }
+    .match-inline-note {
+      display: none;
+      padding: 2px 10px 8px 3.2rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #bae6fd;
+    }
+    .match-line-wrap.is-checked-bad .match-inline-note { display: block; }
+    .match-inline-note .key-pill {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86efac;
+      font-weight: 800;
+    }
+    .match-num { font-weight: 800; color: #fcd34d; font-size: 0.88rem; }
+    .match-def { font-size: 0.9rem; line-height: 1.45; color: #e8f0ff; }
+    .match-arrow { color: var(--muted); font-weight: 800; font-size: 0.95rem; }
+    .match-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 2px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(8, 22, 48, 0.5);
+      cursor: pointer;
+    }
+    .match-slot:hover { border-color: rgba(86, 204, 242, 0.55); }
+    .match-slot.is-drag-over {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.12);
+    }
+    .match-slot:empty::before {
+      content: "\2014";
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .match-slot.has-word {
+      border-style: solid;
+      border-color: rgba(167, 139, 250, 0.45);
+      background: rgba(76, 29, 149, 0.18);
+      justify-content: stretch;
+    }
+    .match-chip {
+      display: block;
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      background: rgba(86, 204, 242, 0.14);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      font-family: inherit;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .match-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .match-chip.is-selected {
+      box-shadow: 0 0 0 2px #a78bfa;
+      border-color: #a78bfa;
+    }
+    .match-chip.is-chip-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+    }
+    .match-chip.is-chip-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.18);
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
     button {
       border: none;
       border-radius: 10px;
@@ -150,45 +329,20 @@
     }
     .btn-check { background: var(--ok); color: #05271a; }
     .btn-reset { background: #3d4f6f; color: var(--text); }
-
-    .score {
-      margin-top: 14px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-    .score strong { color: #e8f0ff; }
-
     .voc-next {
       margin-top: 22px;
       padding-top: 18px;
       border-top: 1px solid var(--line);
       font-size: 0.88rem;
     }
-    .voc-next a {
-      color: var(--accent);
-      font-weight: 700;
-      text-decoration: none;
-    }
+    .voc-next a { color: var(--accent); font-weight: 700; text-decoration: none; }
     .voc-next a:hover { text-decoration: underline; }
-
-    .hint {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-      line-height: 1.45;
-    }
-
     .seq-note {
       font-size: 0.88rem;
       margin-bottom: 14px;
       color: var(--muted);
     }
-    .seq-note a {
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .seq-note a:hover { text-decoration: underline; }
+    .seq-note a { color: var(--accent); font-weight: 600; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -198,187 +352,407 @@
         <h1>Crimes and criminals</h1>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:flex-end;font-size:0.92rem;">
-        <a class="back u10-back-vocab-index" href="../index.html">&larr; Vocabulary hub</a>
-        <a class="back" href="../../index.html" data-u10-levels-depth="2">&larr; Levels hub</a>
+        <a class="back u10-back-vocab-index" href="../fce/index.html">&larr; Vocabulary hub</a>
+        <a class="back" href="../../fce.html">&larr; Course home</a>
       </div>
     </header>
 
-    <p class="seq-note">After <a class="u10-nav-sibling" href="../phrasal-out-exercise-2/index.html">Phrasal verbs — Exercise 2</a> (<em>up</em>) in this vocabulary folder.</p>
+    <nav class="voc-nav" aria-label="Vocabulary tasks">
+      <a href="../phrasal-out-exercise-1/index.html" class="u10-nav-sibling">Task 1 &mdash; Phrasal <em>out</em></a>
+      <span>|</span>
+      <a href="../prefix-out-sentences/index.html" class="u10-nav-sibling">Task 2 &mdash; <em>out-</em></a>
+      <span>|</span>
+      <a href="../phrasal-out-exercise-2/index.html" class="u10-nav-sibling">Task 3 &mdash; Phrasal <em>up</em></a>
+      <span>|</span>
+      <span>Task 4 &mdash; Crimes</span>
+      <span>|</span>
+      <a href="../criminal-titles-exercise-3/index.html" class="u10-nav-sibling">Task 5 &mdash; Titles</a>
+    </nav>
+
+    <p class="seq-note">After <a class="u10-nav-sibling" href="../phrasal-out-exercise-2/index.html">Task 3</a> (phrasal <em>up</em>).</p>
 
     <p class="instr">
       <span class="instr-num">2</span>
       Match the crimes in the box with each of the people in sentences 1&ndash;8. The first one has been done for you.
     </p>
-
-    <div class="word-box" aria-label="Crimes word bank — all eight terms">
-      <span>burglary</span><span>&middot;</span>
-      <span>drink-driving</span><span>&middot;</span>
-      <span>identity fraud</span><span>&middot;</span>
-      <span>internet piracy</span><span>&middot;</span>
-      <span>mugging</span><span>&middot;</span>
-      <span>shoplifting</span><span>&middot;</span>
-      <span>drug trafficking</span><span>&middot;</span>
-      <span>vandalism</span>
-    </div>
-    <p class="word-box-note">The same eight crimes appear in the box; sentence&nbsp;1 shows how to match one crime to a scenario.</p>
+    <p class="hint-bar">
+      <strong>How:</strong> each sentence &rarr; crime chip on the right. Pick from the <strong>sticky bank below</strong> (tap or drag). Example&nbsp;1 is already <em>mugging</em>.
+    </p>
 
     <section class="task">
       <h2>Sentences</h2>
-      <p class="hint">Type the crime for sentences 2&ndash;8. Hyphens and spacing are ignored when checking (e.g. <em>drink-driving</em> or <em>drink driving</em>).</p>
 
-      <div class="row example-row">
-        <div class="row-line">
-          <span class="row-num">1.</span>
-          <span>A young man attacks another and robs him of his wallet.</span>
-          <span class="gap-example" aria-hidden="true">mugging</span>
+      <div class="example-row">
+        <span class="example-num">1.</span>
+        <span>A young man attacks another and robs him of his wallet.</span>
+        <span class="gap-example">mugging</span>
+      </div>
+
+      <div class="match-board">
+        <div class="match-lines" id="match-lines" aria-label="Sentences 2 to 8"></div>
+
+        <div class="match-bank-dock">
+          <div class="match-bank-head">Crimes to use (2&ndash;8)</div>
+          <p class="match-bank-hint">Seven crimes left &mdash; tap one, then tap the slot on a sentence (or drag).</p>
+          <div class="match-bank" id="match-word-bank" aria-label="Crime word bank"></div>
+        </div>
+
+        <div class="match-toolbar">
+          <div class="btn-row">
+            <button type="button" class="btn-check" id="btn-match-check">Check answers</button>
+            <button type="button" class="btn-reset" id="btn-match-reset">Reset</button>
+          </div>
+          <div class="match-score-strip" id="match-score-strip" aria-live="polite"></div>
         </div>
       </div>
-
-      <div class="row" data-i="0">
-        <div class="row-line">
-          <span class="row-num">2.</span>
-          <span>A 78-year-old woman steals a scarf from a department store.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="0" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 2" />
-        </div>
-        <div class="row-key" data-key-for="0"></div>
-      </div>
-
-      <div class="row" data-i="1">
-        <div class="row-line">
-          <span class="row-num">3.</span>
-          <span>A 14-year-old sets fire to litter bins and breaks car windows.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="1" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 3" />
-        </div>
-        <div class="row-key" data-key-for="1"></div>
-      </div>
-
-      <div class="row" data-i="2">
-        <div class="row-line">
-          <span class="row-num">4.</span>
-          <span>A driver stops to sleep in his car; he has had three glasses of wine.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="2" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 4" />
-        </div>
-        <div class="row-key" data-key-for="2"></div>
-      </div>
-
-      <div class="row" data-i="3">
-        <div class="row-line">
-          <span class="row-num">5.</span>
-          <span>A criminal gang earns millions from buying and selling narcotics.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="3" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 5" />
-        </div>
-        <div class="row-key" data-key-for="3"></div>
-      </div>
-
-      <div class="row" data-i="4">
-        <div class="row-line">
-          <span class="row-num">6.</span>
-          <span>A group of teenagers illegally distributes films online.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="4" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 6" />
-        </div>
-        <div class="row-key" data-key-for="4"></div>
-      </div>
-
-      <div class="row" data-i="5">
-        <div class="row-line">
-          <span class="row-num">7.</span>
-          <span>A man has tricked people into emailing him their bank details; he uses this information to take money from their accounts.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="5" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 7" />
-        </div>
-        <div class="row-key" data-key-for="5"></div>
-      </div>
-
-      <div class="row" data-i="6">
-        <div class="row-line">
-          <span class="row-num">8.</span>
-          <span>A journalist breaks into the town hall to steal documents that will prove the mayor is guilty of corruption.</span>
-          <input type="text" class="gap-in" maxlength="48" data-i="6" autocomplete="off" spellcheck="false" aria-label="Answer for sentence 8" />
-        </div>
-        <div class="row-key" data-key-for="6"></div>
-      </div>
-
-      <div class="btn-row">
-        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
-        <button type="button" class="btn-reset" id="btnReset">Reset</button>
-      </div>
-      <p class="score" id="elScore" hidden>Correct: <strong id="elScoreN">0</strong> / 7</p>
     </section>
 
+    <p id="match-hint" class="sr-only" aria-live="polite"></p>
+
     <p class="voc-next">
-      <a class="u10-nav-sibling" href="../criminal-titles-exercise-3/index.html">Next: Exercise 3 — criminals&rsquo; titles (<em>mugger</em>, <em>burglar</em>, …) →</a>
+      <a class="u10-nav-sibling" href="../crime-punishment-matching/index.html">Also: Crime and punishment matching &rarr;</a>
+      <span style="color:var(--muted);margin:0 8px;">|</span>
+      <a class="u10-nav-sibling" href="../criminal-titles-exercise-3/index.html">Next: Task 5 &mdash; criminals&rsquo; titles &rarr;</a>
     </p>
   </main>
 
   <script>
 (function () {
-  var KEYS = [
-    "shoplifting",
-    "vandalism",
-    "drink-driving",
-    "drug trafficking",
-    "internet piracy",
-    "identity fraud",
-    "burglary"
-  ];
-  var KEY_DISPLAY = [
-    "<strong>shoplifting</strong>",
-    "<strong>vandalism</strong>",
-    "<strong>drink-driving</strong>",
-    "<strong>drug trafficking</strong>",
-    "<strong>internet piracy</strong>",
-    "<strong>identity fraud</strong>",
-    "<strong>burglary</strong>"
+  var DEFS = [
+    { n: 2, text: "A 78-year-old woman steals a scarf from a department store." },
+    { n: 3, text: "A 14-year-old sets fire to litter bins and breaks car windows." },
+    { n: 4, text: "A driver stops to sleep in his car; he has had three glasses of wine." },
+    { n: 5, text: "A criminal gang earns millions from buying and selling narcotics." },
+    { n: 6, text: "A group of teenagers illegally distributes films online." },
+    { n: 7, text: "A man has tricked people into emailing him their bank details; he uses this information to take money from their accounts." },
+    { n: 8, text: "A journalist breaks into the town hall to steal documents that will prove the mayor is guilty of corruption." }
   ];
 
-  function norm(s) {
-    return String(s || "")
-      .trim()
-      .toLowerCase()
-      .replace(/[-\s]+/g, "");
-  }
+  var CRIMES = [
+    { id: "shoplifting", label: "shoplifting" },
+    { id: "vandalism", label: "vandalism" },
+    { id: "drink-driving", label: "drink-driving" },
+    { id: "drug trafficking", label: "drug trafficking" },
+    { id: "internet piracy", label: "internet piracy" },
+    { id: "identity fraud", label: "identity fraud" },
+    { id: "burglary", label: "burglary" }
+  ];
 
-  function inp(i) {
-    return document.querySelector('.gap-in[data-i="' + i + '"]');
-  }
-  function kb(i) {
-    return document.querySelector('[data-key-for="' + i + '"]');
-  }
+  var KEY = {
+    2: "shoplifting",
+    3: "vandalism",
+    4: "drink-driving",
+    5: "drug trafficking",
+    6: "internet piracy",
+    7: "identity fraud",
+    8: "burglary"
+  };
 
-  document.getElementById("btnCheck").addEventListener("click", function () {
-    var ok = 0;
-    for (var i = 0; i < 7; i++) {
-      var el = inp(i);
-      var v = norm(el.value);
-      var good = v === norm(KEYS[i]);
-      el.classList.remove("is-ok", "is-bad");
-      el.classList.add(good ? "is-ok" : "is-bad");
-      var box = kb(i);
-      box.classList.toggle("show", !good);
-      box.innerHTML = good ? "" : "Key: " + KEY_DISPLAY[i];
-      if (good) ok++;
+  var bankEl = document.getElementById("match-word-bank");
+  var linesEl = document.getElementById("match-lines");
+  var selectedChip = null;
+  var focusedLine = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
     }
-    document.getElementById("elScoreN").textContent = String(ok);
-    document.getElementById("elScore").hidden = false;
-  });
+    return a;
+  }
 
-  document.getElementById("btnReset").addEventListener("click", function () {
-    for (var i = 0; i < 7; i++) {
-      inp(i).value = "";
-      inp(i).classList.remove("is-ok", "is-bad");
-      kb(i).classList.remove("show");
-      kb(i).innerHTML = "";
+  function announce(msg) {
+    var h = document.getElementById("match-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  function clearSelect() {
+    if (selectedChip) {
+      selectedChip.classList.remove("is-selected");
+      selectedChip = null;
     }
-    document.getElementById("elScore").hidden = true;
-  });
+  }
 
-  document.querySelectorAll(".gap-in").forEach(function (el) {
-    el.addEventListener("input", function () {
-      var i = el.getAttribute("data-i");
-      el.classList.remove("is-ok", "is-bad");
-      kb(i).classList.remove("show");
-      document.getElementById("elScore").hidden = true;
+  function clearFocus() {
+    focusedLine = null;
+    document.querySelectorAll(".match-line").forEach(function (line) {
+      line.classList.remove("is-focused");
     });
+  }
+
+  function clearMatchFeedback() {
+    var scoreStrip = document.getElementById("match-score-strip");
+    scoreStrip.textContent = "";
+    scoreStrip.className = "match-score-strip";
+    document.querySelectorAll(".match-line-wrap").forEach(function (wrap) {
+      wrap.className = "match-line-wrap";
+      var mark = wrap.querySelector(".match-mark");
+      if (mark) mark.textContent = "";
+      var note = wrap.querySelector(".match-inline-note");
+      if (note) note.innerHTML = "";
+      var line = wrap.querySelector(".match-line");
+      if (line) line.classList.remove("is-focused");
+    });
+    document.querySelectorAll(".match-chip").forEach(function (chip) {
+      chip.classList.remove("is-chip-ok", "is-chip-bad", "is-selected");
+    });
+    document.querySelectorAll(".match-slot").forEach(function (slot) {
+      slot.classList.remove("is-drag-over");
+    });
+  }
+
+  function getSlot(n) {
+    return document.getElementById("slot-" + n);
+  }
+
+  function syncSlotState(slot) {
+    slot.classList.toggle("has-word", !!slot.querySelector(".match-chip"));
+  }
+
+  function findSlotWithWord(wordId) {
+    for (var n = 2; n <= 8; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip && chip.getAttribute("data-word") === wordId) return slot;
+    }
+    return null;
+  }
+
+  function moveChipToSlot(chip, slot) {
+    var wordId = chip.getAttribute("data-word");
+    var other = findSlotWithWord(wordId);
+    if (other && other !== slot) {
+      bankEl.appendChild(other.querySelector(".match-chip"));
+      syncSlotState(other);
+    }
+    var inSlot = slot.querySelector(".match-chip");
+    if (inSlot && inSlot !== chip) {
+      bankEl.appendChild(inSlot);
+    }
+    slot.appendChild(chip);
+    clearSelect();
+    syncSlotState(slot);
+    clearMatchFeedback();
+  }
+
+  function returnChipToBank(chip) {
+    bankEl.appendChild(chip);
+    var parent = chip.parentElement;
+    if (parent && parent.classList.contains("match-slot")) {
+      syncSlotState(parent);
+    }
+    clearSelect();
+    clearMatchFeedback();
+  }
+
+  function makeChip(crime, chipId) {
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "match-chip";
+    chip.id = chipId;
+    chip.setAttribute("data-word", crime.id);
+    chip.textContent = crime.label;
+    chip.draggable = true;
+
+    chip.addEventListener("dragstart", function (e) {
+      clearSelect();
+      if (e.dataTransfer) {
+        e.dataTransfer.setData("text/plain", chipId);
+        e.dataTransfer.effectAllowed = "move";
+      }
+    });
+
+    chip.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var inBank = chip.parentElement === bankEl;
+      if (inBank) {
+        if (focusedLine) {
+          moveChipToSlot(chip, getSlot(focusedLine));
+          announce("");
+          return;
+        }
+        clearSelect();
+        chip.classList.add("is-selected");
+        selectedChip = chip;
+        announce("Now tap a slot on a sentence above.");
+        return;
+      }
+      if (chip.parentElement.classList.contains("match-slot")) {
+        returnChipToBank(chip);
+        announce("");
+      }
+    });
+
+    return chip;
+  }
+
+  function wireDropZone(zone, onDrop) {
+    zone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      zone.classList.add("is-drag-over");
+    });
+    zone.addEventListener("dragleave", function (e) {
+      if (e.target === zone) zone.classList.remove("is-drag-over");
+    });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      zone.classList.remove("is-drag-over");
+      var id = e.dataTransfer ? e.dataTransfer.getData("text/plain") : "";
+      var chip = id ? document.getElementById(id) : null;
+      if (chip) onDrop(chip);
+    });
+  }
+
+  function mountLines() {
+    linesEl.innerHTML = "";
+    DEFS.forEach(function (def) {
+      var wrap = document.createElement("div");
+      wrap.className = "match-line-wrap";
+      wrap.setAttribute("data-def", String(def.n));
+
+      var line = document.createElement("div");
+      line.className = "match-line";
+
+      var mark = document.createElement("span");
+      mark.className = "match-mark";
+      mark.setAttribute("aria-hidden", "true");
+
+      var num = document.createElement("span");
+      num.className = "match-num";
+      num.textContent = def.n + ".";
+
+      var text = document.createElement("span");
+      text.className = "match-def";
+      text.textContent = def.text;
+
+      var arrow = document.createElement("span");
+      arrow.className = "match-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "\u2192";
+
+      var slot = document.createElement("div");
+      slot.className = "match-slot";
+      slot.id = "slot-" + def.n;
+      slot.setAttribute("data-def", String(def.n));
+      slot.setAttribute("role", "button");
+      slot.setAttribute("tabindex", "0");
+
+      wireDropZone(slot, function (chip) {
+        moveChipToSlot(chip, slot);
+        clearFocus();
+      });
+
+      slot.addEventListener("click", function () {
+        clearMatchFeedback();
+        if (selectedChip && selectedChip.parentElement === bankEl) {
+          moveChipToSlot(selectedChip, slot);
+          clearFocus();
+          announce("");
+          return;
+        }
+        focusedLine = def.n;
+        document.querySelectorAll(".match-line").forEach(function (l) {
+          l.classList.toggle("is-focused", l === line);
+        });
+        announce("Tap a crime in the bank below.");
+      });
+
+      line.appendChild(mark);
+      line.appendChild(num);
+      line.appendChild(text);
+      line.appendChild(arrow);
+      line.appendChild(slot);
+
+      var note = document.createElement("div");
+      note.className = "match-inline-note";
+
+      wrap.appendChild(line);
+      wrap.appendChild(note);
+      linesEl.appendChild(wrap);
+      syncSlotState(slot);
+    });
+  }
+
+  function mountBank() {
+    bankEl.innerHTML = "";
+    shuffle(CRIMES).forEach(function (crime, i) {
+      bankEl.appendChild(makeChip(crime, "crime-chip-" + i));
+    });
+  }
+
+  wireDropZone(bankEl, function (chip) {
+    returnChipToBank(chip);
   });
+
+  function getAssignedWord(n) {
+    var chip = getSlot(n).querySelector(".match-chip");
+    return chip ? chip.getAttribute("data-word") : null;
+  }
+
+  document.getElementById("btn-match-check").addEventListener("click", function () {
+    var correct = 0;
+
+    for (var n = 2; n <= 8; n++) {
+      var user = getAssignedWord(n);
+      var ok = user != null && user === KEY[n];
+      if (ok) correct++;
+
+      var wrap = document.querySelector(".match-line-wrap[data-def=\"" + n + "\"]");
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      var mark = wrap.querySelector(".match-mark");
+      var note = wrap.querySelector(".match-inline-note");
+
+      wrap.className = "match-line-wrap is-checked " + (ok ? "is-checked-ok" : "is-checked-bad");
+      mark.textContent = ok ? "\u2713" : "\u2717";
+
+      if (chip) {
+        chip.classList.toggle("is-chip-ok", ok);
+        chip.classList.toggle("is-chip-bad", !ok);
+      }
+
+      if (!ok) {
+        note.innerHTML = user
+          ? "Should be: <span class=\"key-pill\">" + KEY[n] + "</span>"
+          : "No crime chosen. Key: <span class=\"key-pill\">" + KEY[n] + "</span>";
+      } else {
+        note.innerHTML = "";
+      }
+    }
+
+    var scoreStrip = document.getElementById("match-score-strip");
+    if (correct === 7) {
+      scoreStrip.textContent = "Perfect \u2014 7 / 7.";
+      scoreStrip.className = "match-score-strip is-perfect";
+    } else {
+      scoreStrip.textContent = correct + " / 7 correct. Red rows show the key crime.";
+      scoreStrip.className = "match-score-strip is-mixed";
+    }
+
+    clearFocus();
+    clearSelect();
+  });
+
+  document.getElementById("btn-match-reset").addEventListener("click", function () {
+    clearMatchFeedback();
+    clearFocus();
+    clearSelect();
+    announce("");
+    for (var n = 2; n <= 8; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip) bankEl.appendChild(chip);
+      syncSlotState(slot);
+    }
+    mountBank();
+  });
+
+  mountLines();
+  mountBank();
 })();
   </script>
   <script src="../../js/u10-vocab-course-context.js"></script>

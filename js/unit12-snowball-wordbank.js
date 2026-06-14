@@ -1,6 +1,6 @@
 /**
  * Unit 12 CPE playground — Snowball / Echo Minute / Voice bingo decks (three Word Bank tabs).
- * Depends on: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js
+ * Depends on: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js, unit12-multi-word-verbs-lexicon.js
  */
 (function (W) {
     "use strict";
@@ -11,6 +11,12 @@
             title: "The Road to Betterment",
             tagline: "Reading Part 5 · phrase bank",
             icon: "\uD83D\uDCD6",
+        },
+        {
+            id: "multi-word-verbs",
+            title: "Multi-word verbs",
+            tagline: "Vocabulary · listening + verb box",
+            icon: "\uD83D\uDD04",
         },
         {
             id: "sports-idioms",
@@ -32,6 +38,8 @@
         switch (themeId) {
             case "reading-betterment":
                 return W.U12_READING_ROAD_TO_BETTERMENT_LEXIS_GAME_ROWS;
+            case "multi-word-verbs":
+                return W.U12_MULTI_WORD_VERBS_LEXIS_GAME_ROWS;
             case "sports-idioms":
                 return W.U12_SPORTS_IDIOMS_LEXIS_GAME_ROWS;
             case "listening-disabled-access":
@@ -41,14 +49,18 @@
         }
     }
 
+    function phraseFromRow(r) {
+        if (!r) return "";
+        return String(r.headword != null && String(r.headword).trim() ? r.headword : r.ans != null ? r.ans : "")
+            .trim();
+    }
+
     function ansFromRows(rows) {
         var out = [];
         if (!rows || !rows.length) return out;
         var i;
         for (i = 0; i < rows.length; i++) {
-            var r = rows[i];
-            if (!r) continue;
-            var a = String(r.ans != null ? r.ans : "").trim();
+            var a = phraseFromRow(rows[i]);
             if (a) out.push(a);
         }
         return out;
@@ -81,7 +93,7 @@
 
     function lexPairFromRow(r) {
         if (!r) return null;
-        var ans = String(r.ans != null ? r.ans : "").trim();
+        var ans = phraseFromRow(r);
         if (!ans) return null;
         var hint = String(r.hint != null ? r.hint : "").trim();
         return { ans: ans, hint: hint || ans };
@@ -115,7 +127,7 @@
     W.U12_SNOWBALL_THEME_DEFINITIONS_COMBINED = {
         id: COMBINED_ID,
         title: "All word banks",
-        tagline: "Reading · sports idioms · listening",
+        tagline: "Reading · multi-word verbs · sports idioms · listening",
         icon: "\u2728",
     };
 

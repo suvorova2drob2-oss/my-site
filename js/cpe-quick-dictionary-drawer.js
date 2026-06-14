@@ -42,7 +42,7 @@
                 var ga = String(a.group || "");
                 var gb = String(b.group || "");
                 if (ga !== gb) return ga.localeCompare(gb);
-                return String(a.ans || "").localeCompare(String(b.ans || ""));
+                return String(a.headword || a.ans || "").localeCompare(String(b.headword || b.ans || ""));
             });
         }
 
@@ -111,8 +111,13 @@
             var lastGroup = null;
 
             rows.forEach(function (row) {
+                var title = String(row.headword || row.ans || "").trim();
                 var hay = (
+                    title +
+                    " " +
                     String(row.ans || "") +
+                    " " +
+                    String(row.tap || "") +
                     " " +
                     String(row.hint || "") +
                     " " +
@@ -133,7 +138,7 @@
                 div.className = "cpe-qdict-entry";
                 div.innerHTML =
                     '<p class="cpe-qdict-phrase">' +
-                    esc(row.ans) +
+                    esc(title) +
                     "</p>" +
                     '<p class="cpe-qdict-def">' +
                     esc(row.hint) +

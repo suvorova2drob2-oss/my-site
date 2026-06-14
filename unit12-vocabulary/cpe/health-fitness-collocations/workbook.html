@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Vocabulary &middot; Health and fitness (workbook)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --mint: #6ee7b7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 22px;
+    }
+    .section-gap { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
+    h2 { font-size: 1.05rem; color: #bae6fd; margin-bottom: 10px; }
+    .instr {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .instr em { color: #fef08a; font-style: italic; }
+
+    .ex1-list { display: flex; flex-direction: column; gap: 14px; }
+    .ex1-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      font-size: 0.96rem;
+      line-height: 1.75;
+    }
+    .ex1-item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 6px;
+    }
+    .pick {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+      margin: 0 2px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px dashed rgba(86, 204, 242, 0.35);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .pick label {
+      cursor: pointer;
+      font-style: italic;
+      color: #e2e8f0;
+      padding: 2px 4px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .pick label:hover { background: rgba(86, 204, 242, 0.12); }
+    .pick input { margin-right: 4px; accent-color: var(--accent); }
+    .pick .sep { color: var(--muted); font-style: normal; }
+    .pick.is-ok { border-color: rgba(54, 211, 153, 0.55); }
+    .pick.is-bad { border-color: rgba(248, 113, 113, 0.55); }
+    .pick label.is-key { color: var(--ok); font-weight: 700; font-style: italic; }
+    .pick label.is-your-wrong { color: var(--bad); text-decoration: line-through; }
+    .pick-hint { font-size: 0.82rem; margin-top: 8px; color: #c5d4ef; }
+    .hint-ok { color: var(--ok); }
+    .hint-bad { color: var(--bad); }
+
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #4a6288;
+      background: rgba(8, 22, 48, 0.55);
+      margin-bottom: 18px;
+    }
+    .word-box__label {
+      width: 100%;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .word-chip {
+      font-size: 0.88rem;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(86, 204, 242, 0.45);
+      background: rgba(86, 204, 242, 0.1);
+      color: #e0f2fe;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .word-chip:hover { background: rgba(86, 204, 242, 0.2); }
+    .word-chip.is-armed {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.28);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+
+    .ex2-workspace {
+      display: grid;
+      grid-template-columns: minmax(160px, 220px) 1fr;
+      gap: 16px 20px;
+      align-items: start;
+    }
+    .ex2-bank-sticky {
+      position: sticky;
+      top: 16px;
+    }
+    .ex2-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 16px;
+    }
+    .ex2-row {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: var(--panel-soft);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    .ex2-row.is-ok { border-color: rgba(54, 211, 153, 0.5); }
+    .ex2-row.is-bad { border-color: rgba(248, 113, 113, 0.5); }
+    .ex2-row__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--mint);
+      margin-bottom: 4px;
+    }
+    .adj-bold {
+      font-weight: 700;
+      color: #fef08a;
+    }
+    .ex2-gap {
+      display: inline-block;
+      min-width: 7.5rem;
+      padding: 2px 10px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: 1px dashed rgba(86, 204, 242, 0.5);
+      background: rgba(8, 22, 48, 0.45);
+      color: #bae6fd;
+      font-size: 0.9rem;
+      cursor: pointer;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .ex2-gap.is-filled { border-style: solid; font-weight: 600; }
+    .ex2-gap.is-target { box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35); }
+    .ex2-gap.is-ok { border-color: var(--ok); color: var(--ok); }
+    .ex2-gap.is-bad { border-color: var(--bad); color: var(--bad); }
+    .ex2-row-hint { font-size: 0.8rem; margin-top: 6px; color: #c5d4ef; }
+    .hint-key { color: var(--ok); font-weight: 700; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .btn-check, .btn-reset, .btn-sol {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-check {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border-color: #0284c7;
+      color: #fff;
+    }
+    .btn-reset { background: var(--panel-soft); color: var(--text); }
+    .btn-sol { background: rgba(110, 231, 183, 0.12); color: var(--mint); border-color: rgba(110, 231, 183, 0.35); }
+    .btn-check:hover { filter: brightness(1.06); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.08); color: #bbf7d0; }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); color: #fecaca; }
+    .fb-line { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(50, 74, 113, 0.6); }
+    .fb-line:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    @media (max-width: 720px) {
+      .ex2-workspace { grid-template-columns: 1fr; }
+      .ex2-bank-sticky { position: static; }
+      .ex2-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &middot; Health and fitness</h1>
+      <a class="back" id="back-link" href="../index.html?course=cpe">&larr; Health and fitness</a>
+    </header>
+
+    <p class="intro">
+      Workbook exercises from the coursebook unit on health and fitness vocabulary. Choose the correct word in each definition, then complete the collocations with nouns from the box.
+    </p>
+
+    <section aria-labelledby="ex1-head">
+      <h2 id="ex1-head">1 Choose the correct word to complete each definition.</h2>
+      <div class="ex1-list">
+        <div class="ex1-item">
+          <div class="ex1-item__n">1</div>
+          <p>
+            <span class="pick" data-n="1" role="group" aria-label="Item 1">
+              <label><input type="radio" name="g1" value="Alternative" /> <em>Alternative</em></label>
+              <span class="sep">/</span>
+              <label><input type="radio" name="g1" value="Complementary" /> <em>Complementary</em></label>
+            </span>
+            therapies can be a substitute for conventional medicines.
+          </p>
+        </div>
+        <div class="ex1-item">
+          <div class="ex1-item__n">2</div>
+          <p>
+            <span class="pick" data-n="2" role="group" aria-label="Item 2">
+              <label><input type="radio" name="g2" value="Acute" /> <em>Acute</em></label>
+              <span class="sep">/</span>
+              <label><input type="radio" name="g2" value="Chronic" /> <em>Chronic</em></label>
+            </span>
+            pain lasts a long time and/or keeps recurring.
+          </p>
+        </div>
+        <div class="ex1-item">
+          <div class="ex1-item__n">3</div>
+          <p>
+            You can build
+            <span class="pick" data-n="3" role="group" aria-label="Item 3">
+              <label><input type="radio" name="g3" value="brute" /> <em>brute</em></label>
+              <span class="sep">/</span>
+              <label><input type="radio" name="g3" value="core" /> <em>core</em></label>
+            </span>
+            strength by exercising muscles in your back and abdomen.
+          </p>
+        </div>
+        <div class="ex1-item">
+          <div class="ex1-item__n">4</div>
+          <p>
+            Your
+            <span class="pick" data-n="4" role="group" aria-label="Item 4">
+              <label><input type="radio" name="g4" value="balanced" /> <em>balanced</em></label>
+              <span class="sep">/</span>
+              <label><input type="radio" name="g4" value="staple" /> <em>staple</em></label>
+            </span>
+            diet is the food which forms the main source of your nutrition.
+          </p>
+        </div>
+        <div class="ex1-item">
+          <div class="ex1-item__n">5</div>
+          <p>
+            Your
+            <span class="pick" data-n="5" role="group" aria-label="Item 5">
+              <label><input type="radio" name="g5" value="immune" /> <em>immune</em></label>
+              <span class="sep">/</span>
+              <label><input type="radio" name="g5" value="nervous" /> <em>nervous</em></label>
+            </span>
+            system carries signals to and from your brain.
+          </p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-check" id="btn-check-1">Check Exercise 1</button>
+        <button type="button" class="btn-reset" id="btn-reset-1">Reset</button>
+        <button type="button" class="btn-sol" id="btn-solution-1" style="display:none;">Show solution</button>
+      </div>
+      <div class="feedback" id="feedback-1" aria-live="polite"></div>
+    </section>
+
+    <section class="section-gap" aria-labelledby="ex2-head">
+      <h2 id="ex2-head">2 Complete each sentence with a suitable noun from the box that collocates with all the words in bold. In some sentences, the same noun appears twice.</h2>
+      <div class="ex2-workspace">
+        <div class="ex2-bank-sticky">
+          <div class="word-box" id="word-box" aria-label="Word box"></div>
+          <p class="instr" style="margin-bottom:0;font-size:0.82rem;">Tap a noun, then a gap. The same word can be used more than once.</p>
+        </div>
+        <div class="ex2-list" id="ex2-list"></div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-check" id="btn-check-2">Check Exercise 2</button>
+        <button type="button" class="btn-reset" id="btn-reset-2">Reset</button>
+        <button type="button" class="btn-sol" id="btn-solution-2" style="display:none;">Show solution</button>
+      </div>
+      <div class="feedback" id="feedback-2" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  /* —— Exercise 1 —— */
+  var KEY1 = {
+    1: "Alternative",
+    2: "Chronic",
+    3: "core",
+    4: "staple",
+    5: "nervous"
+  };
+  var TOTAL1 = 5;
+  var locked1 = false;
+  var elFb1 = document.getElementById("feedback-1");
+  var btnSol1 = document.getElementById("btn-solution-1");
+
+  function picks1() {
+    return document.querySelectorAll(".pick[data-n]");
+  }
+
+  function getChoice1(n) {
+    var inp = document.querySelector('input[name="g' + n + '"]:checked');
+    return inp ? inp.value : "";
+  }
+
+  function clearStyles1() {
+    picks1().forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-key", "is-your-wrong");
+      });
+      var hint = p.querySelector(".pick-hint");
+      if (hint) hint.remove();
+    });
+  }
+
+  function markPick1(n, got, isOk) {
+    var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      var val = lab.querySelector("input").value;
+      if (val === KEY1[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isOk) lab.classList.add("is-your-wrong");
+    });
+    var hint = document.createElement("div");
+    hint.className = "pick-hint";
+    hint.innerHTML = isOk
+      ? '<span class="hint-ok">\u2713 Correct \u2014 <strong>' + KEY1[n] + "</strong></span>"
+      : '<span class="hint-bad">Correct: <strong>' + KEY1[n] + "</strong></span>";
+    wrap.appendChild(hint);
+  }
+
+  function setLocked1(on) {
+    locked1 = on;
+    picks1().forEach(function (p) {
+      p.querySelectorAll("input").forEach(function (inp) {
+        inp.disabled = on;
+      });
+    });
+  }
+
+  document.getElementById("btn-check-1").addEventListener("click", function () {
+    if (locked1) return;
+    clearStyles1();
+    elFb1.className = "feedback";
+    elFb1.innerHTML = "";
+
+    var missing = [];
+    var wrong = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL1; n++) {
+      var got = getChoice1(n);
+      var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY1[n]) {
+        ok++;
+        wrap.classList.add("is-ok");
+        markPick1(n, got, true);
+      } else {
+        wrong.push(n);
+        wrap.classList.add("is-bad");
+        markPick1(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb1.textContent = "Choose an option for item(s): " + missing.join(", ") + ".";
+      elFb1.className = "feedback show bad";
+      btnSol1.style.display = "none";
+      return;
+    }
+
+    if (ok === TOTAL1) {
+      elFb1.innerHTML = "<p><strong>Excellent \u2014 " + TOTAL1 + " / " + TOTAL1 + ".</strong></p>";
+      elFb1.className = "feedback show ok";
+      btnSol1.style.display = "none";
+      setLocked1(true);
+    } else {
+      elFb1.innerHTML =
+        "<p><strong>Score: " + ok + " / " + TOTAL1 + ".</strong> Check the hints under each item.</p>";
+      elFb1.className = "feedback show bad";
+      btnSol1.style.display = "inline-block";
+    }
+  });
+
+  btnSol1.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL1; n++) {
+      var inp = document.querySelector('input[name="g' + n + '"][value="' + KEY1[n] + '"]');
+      if (inp) inp.checked = true;
+    }
+    clearStyles1();
+    picks1().forEach(function (p) {
+      p.classList.add("is-ok");
+      markPick1(Number(p.getAttribute("data-n")), KEY1[p.getAttribute("data-n")], true);
+    });
+    elFb1.innerHTML = "<p><strong>Solution shown.</strong></p>";
+    elFb1.className = "feedback show ok";
+    btnSol1.style.display = "none";
+    setLocked1(true);
+  });
+
+  document.getElementById("btn-reset-1").addEventListener("click", function () {
+    locked1 = false;
+    clearStyles1();
+    picks1().forEach(function (p) {
+      p.querySelectorAll("input").forEach(function (inp) {
+        inp.checked = false;
+        inp.disabled = false;
+      });
+    });
+    elFb1.className = "feedback";
+    elFb1.textContent = "";
+    btnSol1.style.display = "none";
+  });
+
+  picks1().forEach(function (p) {
+    p.querySelectorAll("input").forEach(function (inp) {
+      inp.addEventListener("change", function () {
+        if (locked1) return;
+        clearStyles1();
+        elFb1.className = "feedback";
+        elFb1.textContent = "";
+        btnSol1.style.display = "none";
+      });
+    });
+  });
+
+  /* —— Exercise 2 —— */
+  var BOX = ["circulation", "diet", "intervention", "makeup", "perspective", "strength"];
+
+  var EX2 = [
+    {
+      n: 1,
+      html:
+        'Your susceptibility to certain diseases depends to some extent on your <span class="adj-bold">genetic</span> and <span class="adj-bold">physical</span> <button type="button" class="ex2-gap" data-gap="1" aria-label="Gap 1">&mdash;</button>, as well as particular lifestyle choices.'
+    },
+    {
+      n: 2,
+      html:
+        'In the week before your operation, you&rsquo;ll need to go on a <span class="adj-bold">special</span> <button type="button" class="ex2-gap" data-gap="2a" aria-label="Gap 2a">&mdash;</button> &mdash; a much more <span class="adj-bold">restricted</span> one than the <span class="adj-bold">varied</span> <button type="button" class="ex2-gap" data-gap="2b" aria-label="Gap 2b">&mdash;</button> you&rsquo;re probably used to.'
+    },
+    {
+      n: 3,
+      html:
+        'Some practitioners offer only an <span class="adj-bold">alternative</span> <button type="button" class="ex2-gap" data-gap="3a" aria-label="Gap 3a">&mdash;</button> to healthcare, but we believe in a more <span class="adj-bold">balanced</span> <button type="button" class="ex2-gap" data-gap="3b" aria-label="Gap 3b">&mdash;</button>, taking conventional practices into consideration.'
+    },
+    {
+      n: 4,
+      html:
+        'I&rsquo;ve got problems with my veins &ndash; my <span class="adj-bold">blood</span> <button type="button" class="ex2-gap" data-gap="4" aria-label="Gap 4">&mdash;</button> is quite poor.'
+    },
+    {
+      n: 5,
+      html:
+        'That injury will definitely require <span class="adj-bold">medical</span> <button type="button" class="ex2-gap" data-gap="5a" aria-label="Gap 5a">&mdash;</button>, because it needs to be treated by a doctor, but hopefully <span class="adj-bold">surgical</span> <button type="button" class="ex2-gap" data-gap="5b" aria-label="Gap 5b">&mdash;</button> can be avoided.'
+    },
+    {
+      n: 6,
+      html:
+        'Completing a marathon isn&rsquo;t so much about <span class="adj-bold">physical</span> <button type="button" class="ex2-gap" data-gap="6a" aria-label="Gap 6a">&mdash;</button> as the considerable <span class="adj-bold">inner</span> <button type="button" class="ex2-gap" data-gap="6b" aria-label="Gap 6b">&mdash;</button> required to keep going when your body is screaming to give up.'
+    }
+  ];
+
+  var KEY2 = {
+    "1": "makeup",
+    "2a": "diet",
+    "2b": "diet",
+    "3a": "perspective",
+    "3b": "perspective",
+    "4": "circulation",
+    "5a": "intervention",
+    "5b": "intervention",
+    "6a": "strength",
+    "6b": "strength"
+  };
+
+  var GAP_IDS = Object.keys(KEY2);
+  var armedWord = null;
+  var ex2Locked = false;
+  var ex2Filled = Object.create(null);
+  var elFb2 = document.getElementById("feedback-2");
+  var btnSol2 = document.getElementById("btn-solution-2");
+
+  function norm(s) {
+    return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function renderWordBox() {
+    var host = document.getElementById("word-box");
+    host.innerHTML = '<div class="word-box__label">Word box</div>';
+    BOX.forEach(function (word) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "word-chip";
+      btn.textContent = word;
+      btn.setAttribute("data-word", word);
+      btn.addEventListener("click", function () {
+        if (ex2Locked) return;
+        host.querySelectorAll(".word-chip").forEach(function (c) {
+          c.classList.remove("is-armed");
+        });
+        armedWord = word;
+        btn.classList.add("is-armed");
+      });
+      host.appendChild(btn);
+    });
+  }
+
+  function renderEx2() {
+    var list = document.getElementById("ex2-list");
+    list.innerHTML = "";
+    EX2.forEach(function (row) {
+      var div = document.createElement("div");
+      div.className = "ex2-row";
+      div.setAttribute("data-ex2-row", String(row.n));
+      div.innerHTML =
+        '<div class="ex2-row__n">' + row.n + ".</div><p>" + row.html + '</p><div class="ex2-row-hint" aria-live="polite"></div>';
+      list.appendChild(div);
+    });
+    list.querySelectorAll(".ex2-gap").forEach(function (gap) {
+      gap.addEventListener("click", function () {
+        if (ex2Locked) return;
+        var id = gap.getAttribute("data-gap");
+        if (armedWord) {
+          ex2Filled[id] = armedWord;
+          gap.textContent = armedWord;
+          gap.classList.add("is-filled");
+          armedWord = null;
+          document.querySelectorAll(".word-chip.is-armed").forEach(function (c) {
+            c.classList.remove("is-armed");
+          });
+          list.querySelectorAll(".ex2-gap.is-target").forEach(function (g) {
+            g.classList.remove("is-target");
+          });
+          clearEx2Styles();
+          elFb2.className = "feedback";
+          elFb2.textContent = "";
+          btnSol2.style.display = "none";
+          return;
+        }
+        list.querySelectorAll(".ex2-gap.is-target").forEach(function (g) {
+          g.classList.remove("is-target");
+        });
+        gap.classList.add("is-target");
+      });
+    });
+  }
+
+  function clearEx2Styles() {
+    document.querySelectorAll(".ex2-row").forEach(function (r) {
+      r.classList.remove("is-ok", "is-bad");
+      var hint = r.querySelector(".ex2-row-hint");
+      if (hint) hint.textContent = "";
+    });
+    document.querySelectorAll(".ex2-gap").forEach(function (g) {
+      g.classList.remove("is-ok", "is-bad", "is-target");
+    });
+  }
+
+  function gapsForRow(rowNum) {
+    var prefix = String(rowNum);
+    return GAP_IDS.filter(function (id) {
+      return id === prefix || id.indexOf(prefix) === 0;
+    });
+  }
+
+  function markEx2Row(rowNum) {
+    var ids = gapsForRow(rowNum);
+    var rowOk = true;
+    ids.forEach(function (id) {
+      var got = ex2Filled[id] || "";
+      var gap = document.querySelector('.ex2-gap[data-gap="' + id + '"]');
+      var isOk = norm(got) === norm(KEY2[id]);
+      if (!isOk) rowOk = false;
+      if (gap) {
+        gap.classList.add(isOk ? "is-ok" : "is-bad");
+      }
+    });
+    var rowEl = document.querySelector('.ex2-row[data-ex2-row="' + rowNum + '"]');
+    if (rowEl) {
+      rowEl.classList.add(rowOk ? "is-ok" : "is-bad");
+      if (!rowOk) {
+        var hint = rowEl.querySelector(".ex2-row-hint");
+        var parts = ids.map(function (id) {
+          return KEY2[id];
+        });
+        var unique = parts.filter(function (v, i, a) {
+          return a.indexOf(v) === i;
+        });
+        hint.innerHTML = 'Correct noun' + (unique.length > 1 ? "s" : "") + ': <span class="hint-key">' + unique.join(", ") + "</span>";
+      }
+    }
+    return rowOk;
+  }
+
+  function resetEx2() {
+    ex2Locked = false;
+    ex2Filled = Object.create(null);
+    armedWord = null;
+    document.querySelectorAll(".word-chip").forEach(function (c) {
+      c.classList.remove("is-armed");
+    });
+    document.querySelectorAll(".ex2-gap").forEach(function (g) {
+      g.textContent = "\u2014";
+      g.classList.remove("is-filled", "is-ok", "is-bad", "is-target");
+    });
+    clearEx2Styles();
+    elFb2.className = "feedback";
+    elFb2.textContent = "";
+    btnSol2.style.display = "none";
+  }
+
+  document.getElementById("btn-check-2").addEventListener("click", function () {
+    if (ex2Locked) return;
+    clearEx2Styles();
+    elFb2.className = "feedback";
+    elFb2.innerHTML = "";
+
+    var missing = GAP_IDS.filter(function (id) {
+      return !ex2Filled[id];
+    });
+    if (missing.length) {
+      elFb2.textContent = "Fill all gaps before checking (" + missing.length + " still empty).";
+      elFb2.className = "feedback show bad";
+      btnSol2.style.display = "none";
+      return;
+    }
+
+    var okRows = 0;
+    for (var r = 1; r <= 6; r++) {
+      if (markEx2Row(r)) okRows++;
+    }
+
+    if (okRows === 6) {
+      elFb2.innerHTML = "<p><strong>Excellent \u2014 all 6 sentences correct.</strong></p>";
+      elFb2.className = "feedback show ok";
+      btnSol2.style.display = "none";
+      ex2Locked = true;
+    } else {
+      elFb2.innerHTML =
+        "<p><strong>Score: " + okRows + " / 6 sentences correct.</strong> Check hints under wrong items.</p>";
+      elFb2.className = "feedback show bad";
+      btnSol2.style.display = "inline-block";
+    }
+  });
+
+  btnSol2.addEventListener("click", function () {
+    GAP_IDS.forEach(function (id) {
+      ex2Filled[id] = KEY2[id];
+      var gap = document.querySelector('.ex2-gap[data-gap="' + id + '"]');
+      if (gap) {
+        gap.textContent = KEY2[id];
+        gap.classList.add("is-filled");
+      }
+    });
+    clearEx2Styles();
+    for (var r = 1; r <= 6; r++) markEx2Row(r);
+    elFb2.innerHTML = "<p><strong>Solution shown.</strong></p>";
+    elFb2.className = "feedback show ok";
+    btnSol2.style.display = "none";
+    ex2Locked = true;
+  });
+
+  document.getElementById("btn-reset-2").addEventListener("click", resetEx2);
+
+  renderWordBox();
+  renderEx2();
+})();
+  </script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+</body>
+</html>

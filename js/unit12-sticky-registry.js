@@ -44,6 +44,25 @@
             },
         },
         {
+            mode: "u12mwv",
+            deckProp: "u12MwvStickyDeck",
+            renderGlobal: "u12MwvStickyRenderBoard",
+            resetGlobal: "u12MwvStickyResetUI",
+            gapCueKind: "artrest",
+            tabId: "u12-sticky-tab-mwv",
+            taskPanelId: "u12-sticky-task-mwv",
+            boardId: "u12-mwv-sticky-board",
+            doneId: "u12-mwv-sticky-done",
+            labels: {
+                hubTab: "Multi-word verbs · Vocabulary",
+                l9Tab: "Task 16: U12 Multi-word verbs",
+                liveScopeLabel: "Task 16: Unit 12 multi-word verbs only",
+                panelLeadHtml:
+                    "<b>Multi-word verbs</b> — same deck as the <b>Multi-word verbs</b> Word Bank tab (listening + verb box). One missing word per sticky; <b>Context</b> shows the full line.",
+                resetBtn: "Reset multi-word verbs",
+            },
+        },
+        {
             mode: "u12listening",
             deckProp: "u12ListeningStickyDeck",
             renderGlobal: "u12ListeningStickyRenderBoard",
@@ -55,8 +74,8 @@
             doneId: "u12-listening-sticky-done",
             labels: {
                 hubTab: "Listening · Track 12.1",
-                l9Tab: "Task 16: U12 Listening",
-                liveScopeLabel: "Task 16: Unit 12 Listening only",
+                l9Tab: "Task 17: U12 Listening",
+                liveScopeLabel: "Task 17: Unit 12 Listening only",
                 panelLeadHtml:
                     "<b>Disabled access</b> (SB Track 12.1) — same phrases as the <b>Listening</b> Word Bank tab. One missing word per sticky; <b>Context</b> shows the full line.",
                 resetBtn: "Reset listening pack",
@@ -83,6 +102,7 @@
     W.u12LexGamesPackToStickyMode = function (pack) {
         if (pack === "sports") return "u12sports";
         if (pack === "listening") return "u12listening";
+        if (pack === "mwv") return "u12mwv";
         return "u12reading";
     };
 

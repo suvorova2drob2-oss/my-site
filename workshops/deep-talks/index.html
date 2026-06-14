@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Talks · Conversation club</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="css/deep-talks.css" />
+</head>
+<body class="intensive-body intensive-body--deep-talks">
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">Conversation club · B2+ – C1</span>
+        <h1 class="int-title">Deep Talks</h1>
+        <p class="int-sub">8 sessions · life &amp; ideas (not academic). Listen to a blink before club · discuss in depth · one theme per evening.</p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <section class="dt-showcase">
+      <img
+        class="dt-showcase-thumb"
+        src="img/deep-talks-cover.png"
+        alt=""
+        width="152"
+        height="152"
+        loading="eager"
+      />
+      <div class="dt-showcase-copy">
+        <h2>Big ideas · your words · real opinions</h2>
+        <p>Habits, money, work, connection — eight evenings going deep. No lectures: pairs, debate games, and freer speech.</p>
+      </div>
+    </section>
+
+    <p class="int-series-map">
+      <strong>The series:</strong>
+      1 Habits → 2 Focus → 3 Money → 4 Work → 5 Communication → 6 Decisions → 7 Connection → 8 Confidence.
+      Pick any session or run all eight in order.
+    </p>
+
+    <section class="int-hero" aria-labelledby="hero-title">
+      <h2 id="hero-title">Seven steps per evening (~90 min)</h2>
+      <p>
+        <strong>Warm-up</strong> → <strong>Big idea</strong> (blink async) → <strong>Harvest</strong> →
+        <strong>Pairs</strong> → <strong>Debate &amp; games</strong> → <strong>Freer</strong> → <strong>Wrap</strong>.
+        Each theme has three <em>lenses</em> — angles to go deep.
+      </p>
+      <div class="int-meta-row">
+        <span class="int-pill int-pill--gold">8 themes</span>
+        <span class="int-pill">7 steps</span>
+        <span class="int-pill">Pairs + debate</span>
+        <span class="int-pill">Blinkist-friendly</span>
+      </div>
+    </section>
+
+    <nav class="int-theme-grid" id="theme-grid" aria-label="Deep Talks themes"></nav>
+  </div>
+
+  <script src="js/deep-talks.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById("theme-grid");
+      if (!grid || !window.DEEP_TALKS_THEMES) return;
+
+      grid.innerHTML = DEEP_TALKS_THEMES.map(function (t) {
+        var lenses =
+          t.lenses && t.lenses.length
+            ? '<span class="dt-lenses">Deep: ' + t.lenses.join(" · ") + "</span>"
+            : "";
+        return (
+          '<a class="int-theme-card" href="lesson.html?theme=' +
+          encodeURIComponent(t.id) +
+          '">' +
+          '<span class="int-theme-num">Session ' +
+          String(t.num).padStart(2, "0") +
+          "</span>" +
+          '<span class="int-theme-icon" aria-hidden="true">' +
+          t.icon +
+          "</span>" +
+          '<span class="int-theme-name">' +
+          t.title +
+          "</span>" +
+          '<span class="int-theme-tag">' +
+          t.tagline +
+          lenses +
+          "</span>" +
+          '<span class="int-theme-go">Open session flow →</span></a>'
+        );
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

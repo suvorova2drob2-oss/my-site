@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Multi-word verbs (workbook)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --pink: #f472b6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro { font-size: 0.94rem; line-height: 1.6; color: #c5d4ef; margin-bottom: 22px; }
+    .section-gap { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
+    h2 { font-size: 1.05rem; color: #bae6fd; margin-bottom: 10px; }
+    .instr { font-size: 0.9rem; line-height: 1.55; color: var(--muted); margin-bottom: 16px; }
+
+    .dual-banks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 560px) { .dual-banks { grid-template-columns: 1fr; } }
+    .bank-panel {
+      border: 1px dashed rgba(244, 114, 182, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(244, 114, 182, 0.08);
+    }
+    .bank-panel__label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbcfe8;
+      margin-bottom: 10px;
+    }
+    .bank-line { display: flex; flex-wrap: wrap; gap: 8px; }
+    .bank-chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(8, 22, 48, 0.55);
+      font-size: 0.86rem;
+      color: #fce7f3;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .bank-chip:hover:not(.used) { border-color: #f9a8d4; }
+    .bank-chip.is-armed {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
+    }
+    .bank-chip.used { opacity: 0.35; pointer-events: none; }
+
+    .dialogue {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 16px;
+      background: var(--panel-soft);
+      font-size: 0.94rem;
+      line-height: 1.85;
+    }
+    .dialogue p { margin-bottom: 12px; }
+    .dialogue p:last-child { margin-bottom: 0; }
+    .speaker {
+      font-weight: 800;
+      color: var(--pink);
+      margin-right: 6px;
+    }
+    .mwv-slot {
+      display: inline-block;
+      min-width: 4.5rem;
+      padding: 2px 8px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: #132544;
+      color: #fef08a;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .mwv-slot.is-filled { border-style: solid; }
+    .mwv-slot.is-target { box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35); border-color: var(--accent); }
+    .mwv-slot.is-ok { border-color: var(--ok); color: var(--ok); }
+    .mwv-slot.is-bad { border-color: var(--bad); color: var(--bad); }
+    .mwv-fixed {
+      color: #fde047;
+      font-weight: 700;
+      font-style: italic;
+    }
+    .gap-row-hint { font-size: 0.8rem; color: #c5d4ef; margin-top: 4px; }
+
+    .match-layout {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .match-layout { grid-template-columns: 1fr 1fr; }
+    }
+    .col-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bae6fd;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .pair-list, .def-pool { display: flex; flex-direction: column; gap: 10px; }
+    .pair-row {
+      border: 1px solid #4a6898;
+      border-radius: 12px;
+      background: #152a4d;
+      padding: 12px 14px;
+    }
+    .pair-row.is-selected { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35); }
+    .pair-row.is-ok { border-color: var(--ok); }
+    .pair-row.is-bad { border-color: var(--bad); }
+    .pair-row__n { font-weight: 800; color: #7dd3fc; margin-right: 6px; }
+    .pair-row__txt { font-size: 0.94rem; line-height: 1.55; color: #f1f5f9; }
+    .pair-slot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px dashed #4a6898;
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.86rem;
+      color: #7dd3fc;
+      min-height: 34px;
+    }
+    .pair-slot.has-match { border-style: solid; color: #fef08a; font-weight: 700; }
+    .pair-slot.pick-hint { color: #fde047; font-style: italic; }
+    .def-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid #4a6898;
+      border-radius: 12px;
+      background: #152a4d;
+      padding: 12px 14px;
+      color: #eef4ff;
+      font: inherit;
+      cursor: pointer;
+    }
+    .def-btn:hover:not(.used) { border-color: #7dd3fc; background: #1a3358; }
+    .def-btn.used { opacity: 0.35; pointer-events: none; }
+    .def-btn .letter { font-weight: 800; color: #7dd3fc; margin-right: 8px; }
+    .unpair {
+      margin-left: 8px;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .btn-check, .btn-reset, .btn-sol, .btn-secondary {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-check {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border-color: #0284c7;
+      color: #fff;
+    }
+    .btn-reset, .btn-secondary { background: var(--panel-soft); color: var(--text); }
+    .btn-sol { background: rgba(244, 114, 182, 0.12); color: #fbcfe8; border-color: rgba(244, 114, 182, 0.35); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.08); color: #bbf7d0; }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); color: #fecaca; }
+    .fb-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #c5d4ef;
+    }
+    .fb-panel.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Multi-word verbs &mdash; workbook</h1>
+      <a class="back" id="back-link" href="index.html?course=cpe">&larr; Multi-word verbs</a>
+    </header>
+
+    <p class="intro">
+      Coursebook exercises: complete the exam-prep dialogue with verb + particle combinations from the two boxes, then match each statement to the best response.
+    </p>
+
+    <section aria-labelledby="ex1-head">
+      <h2 id="ex1-head">1 Use the correct form of one word from each box to complete the conversation.</h2>
+      <div class="dual-banks">
+        <div class="bank-panel">
+          <div class="bank-panel__label">Verbs</div>
+          <div class="bank-line" id="verb-bank"></div>
+        </div>
+        <div class="bank-panel">
+          <div class="bank-panel__label">Particles / prepositions</div>
+          <div class="bank-line" id="part-bank"></div>
+        </div>
+      </div>
+      <p class="instr" style="margin-top:-6px;">Tap a word in a box, then tap a dashed slot. Use each word once (<em>get</em> appears twice in the verb box).</p>
+      <div class="dialogue" id="dialogue"></div>
+      <div class="toolbar">
+        <button type="button" class="btn-check" id="btn-check-1">Check Exercise 1</button>
+        <button type="button" class="btn-reset" id="btn-reset-1">Reset</button>
+        <button type="button" class="btn-sol" id="btn-solution-1" style="display:none;">Show solution</button>
+      </div>
+      <div class="feedback" id="feedback-1" aria-live="polite"></div>
+    </section>
+
+    <section class="section-gap" aria-labelledby="ex2-head">
+      <h2 id="ex2-head">2 Match the statements (1&ndash;6) to the most suitable responses (a&ndash;f).</h2>
+      <p class="instr">Tap a statement, then tap a response &mdash; it will appear in the slot next to that statement.</p>
+      <div class="toolbar">
+        <button type="button" class="btn-secondary" id="m-shuffle">Shuffle responses</button>
+        <button type="button" class="btn-secondary" id="m-clear">Clear pairs</button>
+      </div>
+      <div class="match-layout">
+        <div>
+          <div class="col-title">Statements + your match</div>
+          <div class="pair-list" id="m-left"></div>
+        </div>
+        <div>
+          <div class="col-title">Responses still available</div>
+          <div class="def-pool" id="m-right"></div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-check" id="btn-check-2" disabled>Check Exercise 2</button>
+        <button type="button" class="btn-sol" id="btn-solution-2" style="display:none;">Show solution</button>
+      </div>
+      <p class="feedback" id="feedback-2" aria-live="polite"></p>
+      <div class="fb-panel" id="fb-panel-2" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var VERBS = ["catch", "get", "get", "go", "keep", "mount"];
+  var PARTS = ["at", "through", "to", "up", "with", "without"];
+
+  var GAPS = [
+    { id: "1", before: "the pressure has really been ", after: ".", verb: "mount", part: "up", form: "mounting up" },
+    { id: "2", before: "I guess it is starting to ", after: " me a little.", verb: "get", part: "to", form: "get to" },
+    { id: "3", before: "I must admit I&rsquo;ve been ", after: " sleep the past few nights &hellip;", verb: "go", part: "without", form: "going without" },
+    { id: "4", before: "Lack of sleep can really ", mid: " up ", after: " you, and then you&rsquo;ll pay the price later.", verb: "catch", part: "with", form: "catch up with" },
+    { id: "5", before: "I just need to ", after: " this exam. I&rsquo;ll be fine once it&rsquo;s over.", verb: "get", part: "through", form: "get through" },
+    { id: "6", before: "if you ", after: " it all night and day, you&rsquo;ll be a nervous wreck soon.", verb: "keep", part: "at", form: "keep at" }
+  ];
+
+  var filled = Object.create(null);
+  var armed = null;
+  var armedKind = null;
+  var verbUsed = Object.create(null);
+  var partUsed = Object.create(null);
+  var ex1Locked = false;
+
+  function renderBanks() {
+    var vb = document.getElementById("verb-bank");
+    var pb = document.getElementById("part-bank");
+    vb.innerHTML = "";
+    pb.innerHTML = "";
+    VERBS.forEach(function (word, idx) {
+      var key = word + ":" + idx;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bank-chip";
+      btn.textContent = word;
+      btn.dataset.key = key;
+      btn.dataset.word = word;
+      btn.dataset.kind = "verb";
+      if (verbUsed[key]) btn.classList.add("used");
+      if (armed === key) btn.classList.add("is-armed");
+      btn.addEventListener("click", function () {
+        if (ex1Locked || verbUsed[key]) return;
+        armed = key;
+        armedKind = "verb";
+        renderBanks();
+      });
+      vb.appendChild(btn);
+    });
+    PARTS.forEach(function (word) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bank-chip";
+      btn.textContent = word;
+      btn.dataset.word = word;
+      btn.dataset.kind = "part";
+      if (partUsed[word]) btn.classList.add("used");
+      if (armed === word && armedKind === "part") btn.classList.add("is-armed");
+      btn.addEventListener("click", function () {
+        if (ex1Locked || partUsed[word]) return;
+        armed = word;
+        armedKind = "part";
+        renderBanks();
+      });
+      pb.appendChild(btn);
+    });
+  }
+
+  function renderDialogue() {
+    var host = document.getElementById("dialogue");
+    var lines = [
+      { sp: "A", text: "How&rsquo;s the exam preparation going? You seem pretty stressed." },
+      {
+        sp: "B",
+        html:
+          "Well, maybe a bit. I mean, this exam is really important and " +
+          buildGapHtml("1") +
+          " I guess it is starting to " +
+          buildGapHtml("2") +
+          " me a little."
+      },
+      { sp: "A", text: "A little? You look exhausted." },
+      {
+        sp: "B",
+        html: "Well, I must admit I&rsquo;ve been " + buildGapHtml("3") + " sleep the past few nights &hellip;"
+      },
+      {
+        sp: "A",
+        html: "What? That&rsquo;s a really bad idea. Lack of sleep can really " + buildGapHtml("4") + ", and then you&rsquo;ll pay the price later."
+      },
+      {
+        sp: "B",
+        html: "I know, but I just need to " + buildGapHtml("5") + " this exam. I&rsquo;ll be fine once it&rsquo;s over."
+      },
+      {
+        sp: "A",
+        html: "Yeah, but if you " + buildGapHtml("6") + " it all night and day, you&rsquo;ll be a nervous wreck soon."
+      },
+      { sp: "B", text: "Maybe you&rsquo;re right. OK, I&rsquo;ll take a break and grab some sleep." }
+    ];
+    host.innerHTML = "";
+    lines.forEach(function (line) {
+      var p = document.createElement("p");
+      p.innerHTML =
+        '<span class="speaker">' +
+        line.sp +
+        ":</span>" +
+        (line.html || line.text);
+      host.appendChild(p);
+    });
+    host.querySelectorAll(".mwv-slot").forEach(function (slot) {
+      slot.addEventListener("click", function () {
+        if (ex1Locked) return;
+        var sid = slot.dataset.slot;
+        var kind = slot.dataset.kind;
+        if (armed && armedKind === kind) {
+          var prev = filled[sid];
+          if (prev) releaseWord(kind, prev);
+          filled[sid] = armed;
+          slot.textContent =
+            kind === "verb"
+              ? document.querySelector('.bank-chip[data-key="' + armed + '"]').dataset.word
+              : armed;
+          slot.classList.add("is-filled");
+          markUsed(kind, armed);
+          armed = null;
+          armedKind = null;
+          renderBanks();
+          clearEx1Styles();
+          document.getElementById("feedback-1").className = "feedback";
+          document.getElementById("btn-solution-1").style.display = "none";
+          return;
+        }
+        host.querySelectorAll(".mwv-slot.is-target").forEach(function (s) {
+          s.classList.remove("is-target");
+        });
+        slot.classList.add("is-target");
+      });
+    });
+  }
+
+  function buildGapHtml(id) {
+    var g = GAPS.filter(function (x) { return x.id === id; })[0];
+    if (g && g.mid) {
+      return (
+        '<button type="button" class="mwv-slot" data-gap="' +
+        id +
+        '" data-slot="' +
+        id +
+        '-v" data-kind="verb" aria-label="Gap ' +
+        id +
+        ' verb">&mdash;</button><span class="mwv-fixed">up</span><button type="button" class="mwv-slot" data-gap="' +
+        id +
+        '" data-slot="' +
+        id +
+        '-p" data-kind="part" aria-label="Gap ' +
+        id +
+        ' particle">&mdash;</button>'
+      );
+    }
+    return (
+      '<button type="button" class="mwv-slot" data-gap="' +
+      id +
+      '" data-slot="' +
+      id +
+      '-v" data-kind="verb" aria-label="Gap ' +
+      id +
+      ' verb">&mdash;</button><button type="button" class="mwv-slot" data-gap="' +
+      id +
+      '" data-slot="' +
+      id +
+      '-p" data-kind="part" aria-label="Gap ' +
+      id +
+      ' particle">&mdash;</button>'
+    );
+  }
+
+  function markUsed(kind, token) {
+    if (kind === "verb") verbUsed[token] = true;
+    else partUsed[token] = true;
+  }
+
+  function releaseWord(kind, token) {
+    if (kind === "verb") delete verbUsed[token];
+    else delete partUsed[token];
+  }
+
+  function clearEx1Styles() {
+    document.querySelectorAll(".mwv-slot").forEach(function (s) {
+      s.classList.remove("is-ok", "is-bad", "is-target");
+    });
+  }
+
+  function gapComplete(id) {
+    return filled[id + "-v"] && filled[id + "-p"];
+  }
+
+  function getGapChoice(id) {
+    var vSlot = filled[id + "-v"];
+    var pSlot = filled[id + "-p"];
+    if (!vSlot || !pSlot) return null;
+    var vEl = document.querySelector('.bank-chip[data-key="' + vSlot + '"]');
+    var verb = vEl ? vEl.dataset.word : vSlot;
+    var part = pSlot;
+    return { verb: verb, part: part };
+  }
+
+  document.getElementById("btn-check-1").addEventListener("click", function () {
+    if (ex1Locked) return;
+    clearEx1Styles();
+    var fb = document.getElementById("feedback-1");
+    fb.className = "feedback";
+    fb.innerHTML = "";
+
+    var missing = GAPS.filter(function (g) {
+      return !gapComplete(g.id);
+    });
+    if (missing.length) {
+      fb.textContent = "Fill all gaps (verb + particle for each number).";
+      fb.className = "feedback show bad";
+      return;
+    }
+
+    var ok = 0;
+    GAPS.forEach(function (g) {
+      var choice = getGapChoice(g.id);
+      var isOk = choice && choice.verb === g.verb && choice.part === g.part;
+      if (isOk) ok++;
+      ["-v", "-p"].forEach(function (suf) {
+        var slot = document.querySelector('.mwv-slot[data-slot="' + g.id + suf + '"]');
+        if (slot) slot.classList.add(isOk ? "is-ok" : "is-bad");
+      });
+    });
+
+    if (ok === GAPS.length) {
+      fb.innerHTML =
+        "<p><strong>Excellent &mdash; all six combinations correct.</strong> In context: mounting up &middot; get to &middot; going without &middot; catch up with &middot; get through &middot; keep at it.</p>";
+      fb.className = "feedback show ok";
+      document.getElementById("btn-solution-1").style.display = "none";
+      ex1Locked = true;
+    } else {
+      fb.innerHTML =
+        "<p><strong>Score: " +
+        ok +
+        " / 6.</strong> Check verb + particle pairs. Expected forms in context: " +
+        GAPS.map(function (g) { return g.form; }).join(" &middot; ") +
+        ".</p>";
+      fb.className = "feedback show bad";
+      document.getElementById("btn-solution-1").style.display = "inline-block";
+    }
+  });
+
+  document.getElementById("btn-solution-1").addEventListener("click", function () {
+    resetEx1();
+    GAPS.forEach(function (g) {
+      var vKeys = VERBS.map(function (w, i) { return w + ":" + i; }).filter(function (k) {
+        return k.split(":")[0] === g.verb && !verbUsed[k];
+      });
+      var vKey = vKeys[0];
+      if (vKey) {
+        filled[g.id + "-v"] = vKey;
+        markUsed("verb", vKey);
+        var vSlot = document.querySelector('.mwv-slot[data-slot="' + g.id + '-v"]');
+        if (vSlot) { vSlot.textContent = g.verb; vSlot.classList.add("is-filled", "is-ok"); }
+      }
+      filled[g.id + "-p"] = g.part;
+      markUsed("part", g.part);
+      var pSlot = document.querySelector('.mwv-slot[data-slot="' + g.id + '-p"]');
+      if (pSlot) { pSlot.textContent = g.part; pSlot.classList.add("is-filled", "is-ok"); }
+    });
+    armed = null;
+    armedKind = null;
+    renderBanks();
+    document.getElementById("feedback-1").innerHTML = "<p><strong>Solution shown.</strong></p>";
+    document.getElementById("feedback-1").className = "feedback show ok";
+    document.getElementById("btn-solution-1").style.display = "none";
+    ex1Locked = true;
+  });
+
+  function resetEx1() {
+    ex1Locked = false;
+    filled = Object.create(null);
+    armed = null;
+    armedKind = null;
+    verbUsed = Object.create(null);
+    partUsed = Object.create(null);
+    clearEx1Styles();
+    renderBanks();
+    renderDialogue();
+    document.getElementById("feedback-1").className = "feedback";
+    document.getElementById("feedback-1").textContent = "";
+    document.getElementById("btn-solution-1").style.display = "none";
+  }
+
+  document.getElementById("btn-reset-1").addEventListener("click", resetEx1);
+
+  renderBanks();
+  renderDialogue();
+
+  /* —— Exercise 2 matching —— */
+  var STATEMENTS = [
+    { id: 1, text: "I\u2019ve invented a new sport \u2013 backwards jumping. What do you think?" },
+    { id: 2, text: "Do you drink a lot of coffee?" },
+    { id: 3, text: "Has the old boss been kicked out yet?" },
+    { id: 4, text: "I\u2019m getting into more and more debt." },
+    { id: 5, text: "What if I lose motivation halfway?" },
+    { id: 6, text: "Can I count on your support?" }
+  ];
+
+  var RESPONSES = [
+    { id: "a", text: "Oh no! Don\u2019t let it mount up too much." },
+    { id: "b", text: "Hmm \u2026 I\u2019m not sure it\u2019ll ever catch on." },
+    { id: "c", text: "It goes without saying!" },
+    { id: "d", text: "I can\u2019t get through the day without it!" },
+    { id: "e", text: "Don\u2019t worry \u2013 I\u2019ll be there urging you on." },
+    { id: "f", text: "Nah! She\u2019s still clinging on to power somehow." }
+  ];
+
+  var MATCH_KEY = { 1: "b", 2: "d", 3: "f", 4: "a", 5: "e", 6: "c" };
+
+  var mPairs = {};
+  var mSelected = null;
+  var mDefOrder = [];
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function mAllPaired() {
+    return Object.keys(mPairs).length === 6;
+  }
+
+  function mRenderLeft() {
+    var list = document.getElementById("m-left");
+    list.innerHTML = "";
+    STATEMENTS.forEach(function (s) {
+      var row = document.createElement("div");
+      row.className = "pair-row";
+      row.dataset.id = String(s.id);
+      if (mSelected === s.id) row.classList.add("is-selected");
+      var matchId = mPairs[s.id];
+      var matchText = matchId
+        ? RESPONSES.filter(function (r) { return r.id === matchId; })[0].text
+        : "";
+      row.innerHTML =
+        '<div><span class="pair-row__n">' +
+        s.id +
+        ".</span><span class=\"pair-row__txt\">" +
+        esc(s.text) +
+        "</span></div>" +
+        '<div class="pair-slot' +
+        (matchText ? " has-match" : mSelected === s.id ? " pick-hint" : "") +
+        '">' +
+        (matchText ? esc(matchId + ". " + matchText) : mSelected === s.id ? "Tap a response \u2192" : "No match yet") +
+        (matchText
+          ? '<button type="button" class="unpair" aria-label="Unpair ' + s.id + '">\u00d7</button>'
+          : "") +
+        "</div>";
+      if (matchText) {
+        row.querySelector(".unpair").addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          delete mPairs[s.id];
+          mSelected = null;
+          mRenderAll();
+        });
+      }
+      row.addEventListener("click", function () {
+        if (mPairs[s.id]) return;
+        mSelected = mSelected === s.id ? null : s.id;
+        mRenderAll();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function mRenderRight() {
+    var list = document.getElementById("m-right");
+    list.innerHTML = "";
+    var used = {};
+    Object.keys(mPairs).forEach(function (k) { used[mPairs[k]] = true; });
+    mDefOrder.forEach(function (r) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "def-btn";
+      if (used[r.id]) btn.classList.add("used");
+      btn.innerHTML = '<span class="letter">' + r.id + ".</span>" + esc(r.text);
+      btn.addEventListener("click", function () {
+        if (used[r.id] || !mSelected) return;
+        mPairs[mSelected] = r.id;
+        mSelected = null;
+        mRenderAll();
+      });
+      list.appendChild(btn);
+    });
+  }
+
+  function mRenderAll() {
+    mRenderLeft();
+    mRenderRight();
+    document.getElementById("btn-check-2").disabled = !mAllPaired();
+    document.getElementById("feedback-2").textContent = "";
+    document.getElementById("feedback-2").className = "feedback";
+    document.getElementById("fb-panel-2").className = "fb-panel";
+    document.getElementById("btn-solution-2").style.display = "none";
+  }
+
+  document.getElementById("m-shuffle").addEventListener("click", function () {
+    mDefOrder = shuffle(RESPONSES);
+    mRenderRight();
+  });
+
+  document.getElementById("m-clear").addEventListener("click", function () {
+    mPairs = {};
+    mSelected = null;
+    mRenderAll();
+  });
+
+  document.getElementById("btn-check-2").addEventListener("click", function () {
+    var ok = 0;
+    var html = "";
+    STATEMENTS.forEach(function (s) {
+      var got = mPairs[s.id];
+      var isOk = got === MATCH_KEY[s.id];
+      if (isOk) ok++;
+      var row = document.querySelector('.pair-row[data-id="' + s.id + '"]');
+      if (row) {
+        row.classList.remove("is-ok", "is-bad");
+        row.classList.add(isOk ? "is-ok" : "is-bad");
+      }
+      if (!isOk) {
+        html +=
+          "<p><strong>" +
+          s.id +
+          ".</strong> Your match: <em>" +
+          (got || "?") +
+          "</em> &mdash; correct: <strong>" +
+          MATCH_KEY[s.id] +
+          "</strong></p>";
+      }
+    });
+    var fb = document.getElementById("feedback-2");
+    fb.className = "feedback show " + (ok === 6 ? "ok" : "bad");
+    fb.textContent =
+      ok === 6 ? "Perfect \u2014 all six matched." : ok + " / 6 correct.";
+    var panel = document.getElementById("fb-panel-2");
+    if (ok === 6) {
+      panel.className = "fb-panel";
+      document.getElementById("btn-solution-2").style.display = "none";
+    } else {
+      panel.innerHTML = html;
+      panel.className = "fb-panel show";
+      document.getElementById("btn-solution-2").style.display = "inline-block";
+    }
+  });
+
+  document.getElementById("btn-solution-2").addEventListener("click", function () {
+    mPairs = {};
+    STATEMENTS.forEach(function (s) { mPairs[s.id] = MATCH_KEY[s.id]; });
+    mSelected = null;
+    mRenderAll();
+    document.getElementById("feedback-2").className = "feedback show ok";
+    document.getElementById("feedback-2").textContent = "Solution shown \u2014 1\u2192b, 2\u2192d, 3\u2192f, 4\u2192a, 5\u2192e, 6\u2192c.";
+    document.getElementById("btn-solution-2").style.display = "none";
+  });
+
+  mDefOrder = shuffle(RESPONSES);
+  mRenderAll();
+})();
+  </script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+</body>
+</html>

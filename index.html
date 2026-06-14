@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@
         var t = raw && raw !== "__PREP_META_TRACK__" ? String(raw).trim().toLowerCase() : "";
         if (t !== "cpe" && t !== "ege" && t !== "fce") t = "";
         window.__PREP_DEPLOY_TRACK__ = t || null;
+        if (!window.__PREP_PAGE_TRACK__) window.__PREP_PAGE_TRACK__ = "cpe";
         var qs = location.search || "";
         var stay =
             qs.indexOf("prep_reauth=1") >= 0 ||
@@ -2269,7 +2270,7 @@
             display: none !important;
         }
         /* Unit 12 Vocab Gym: vault pool is Reading + sports idioms only */
-        #screen-unit9-prep-escape.prep-escape-scope-u12 .prep-escape-pack-btn[data-pack]:not([data-pack='u12_reading_road_to_betterment']):not([data-pack='u12_sports_idioms']):not([data-pack='u12_listening_disabled_access']):not([data-pack='all']) {
+        #screen-unit9-prep-escape.prep-escape-scope-u12 .prep-escape-pack-btn[data-pack]:not([data-pack='u12_reading_road_to_betterment']):not([data-pack='u12_multi_word_verbs']):not([data-pack='u12_sports_idioms']):not([data-pack='u12_listening_disabled_access']):not([data-pack='all']) {
             display: none !important;
         }
         #screen-unit9-prep-escape.prep-escape-lockout .prep-escape-pack-bar {
@@ -6340,6 +6341,7 @@
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_uoe_shakespeare">Shakespeare UoE</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u10_similes">U10 similes</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u12_reading_road_to_betterment">U12 Reading</button>
+                    <button type="button" class="prep-escape-pack-btn" data-pack="u12_multi_word_verbs">U12 multi-word verbs</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u12_sports_idioms">U12 sports idioms</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="u12_listening_disabled_access">U12 Listening</button>
                     <button type="button" class="prep-escape-pack-btn" data-pack="all">Choose all</button>
@@ -6474,7 +6476,7 @@
             <strong>Unit 10 &mdash; how to use this screen.</strong> <b>(1)</b> Tap a <b>pack tab</b> (Part 4, books &amp; films, Shakespeare &middot; Use of English, Similes). <b>(2)</b> Scroll to the <b>phrase list</b> or tap a <b>game folder</b> below &mdash; trainer, flip, drop, etc. all follow that tab until you change it (default is Part 4). <b>Back</b> returns to the <b>Level 10</b> folder in Prep.
         </p>
         <p id="cpe-wb-lead-u12" class="u9-hub-lead" style="margin-bottom:12px;" hidden>
-            <strong>Unit 12 &mdash; how to use this screen.</strong> <b>(1)</b> Tap a <b>pack tab</b> (<em>The Road to Betterment</em>, <em>Sports idioms</em>, or <em>Listening · Track 12.1</em>). <b>(2)</b> Scroll to the <b>phrase list</b> or open a <b>game folder</b> below &mdash; flip, drop, MCQ, etc. all follow the active tab. <b>Back</b> returns to <b>Level 12</b>.
+            <strong>Unit 12 &mdash; how to use this screen.</strong> <b>(1)</b> Tap a <b>pack tab</b> (<em>The Road to Betterment</em>, <em>Multi-word verbs</em>, <em>Sports idioms</em>, or <em>Listening · Track 12.1</em>). <b>(2)</b> Scroll to the <b>phrase list</b> or open a <b>game folder</b> below &mdash; flip, drop, MCQ, etc. all follow the active tab. <b>Back</b> returns to <b>Level 12</b>.
         </p>
         <div id="cpe-wb-u10-tabs" class="wb-u10-tabs" role="tablist" aria-label="Unit 10 Word Bank packs" hidden>
             <button type="button" role="tab" class="wb-u10-tab active" id="cpe-wb-u10-tab-p4" data-u10-wb-tab="p4" aria-selected="true" aria-controls="cpe-wb-list">Listening multiple matching</button>
@@ -6557,6 +6559,7 @@
         </div>
         <div id="cpe-wb-u12-tabs" class="wb-u12-tabs" role="tablist" aria-label="Unit 12 Word Bank packs" hidden>
             <button type="button" role="tab" class="wb-u12-tab active" id="cpe-wb-u12-tab-reading" data-u12-wb-tab="reading" aria-selected="true" aria-controls="cpe-wb-list">The Road to Betterment · Reading</button>
+            <button type="button" role="tab" class="wb-u12-tab" id="cpe-wb-u12-tab-mwv" data-u12-wb-tab="mwv" aria-selected="false" aria-controls="cpe-wb-list">Multi-word verbs · Vocabulary</button>
             <button type="button" role="tab" class="wb-u12-tab" id="cpe-wb-u12-tab-sports" data-u12-wb-tab="sports" aria-selected="false" aria-controls="cpe-wb-list">Sports idioms · Vocabulary</button>
             <button type="button" role="tab" class="wb-u12-tab" id="cpe-wb-u12-tab-listening" data-u12-wb-tab="listening" aria-selected="false" aria-controls="cpe-wb-list">Listening · Track 12.1</button>
         </div>
@@ -6609,17 +6612,17 @@
             </div>
             <a class="folder" href="vocabulary-tic-tac-toe-unit12.html" style="text-decoration:none;color:inherit;">
                 <strong>Vocabulary Tic-Tac-Toe</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">Unit 12 · offline: Reading + sports idioms + listening &mdash; pick packs on the page.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;">Unit 12 · offline: Reading + multi-word verbs + sports idioms + listening &mdash; pick packs on the page.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Open &middot; solo / hot-seat</div>
             </a>
             <div class="folder" role="button" tabindex="0" onclick="openUnit12StickyGame()" onkeydown="if(event.key==='Enter')openUnit12StickyGame()">
                 <strong>Sticky notes board</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;"><b>Sticky notes</b> use the same phrases as the active tab: Reading, Sports idioms, or Listening.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;"><b>Sticky notes</b> use the same phrases as the active tab: Reading, Multi-word verbs, Sports idioms, or Listening.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Missing-word sticky drills</div>
             </div>
             <button type="button" class="folder" onclick="openUnit12PrepEscapeRoom()">
                 <strong>Prep vault (escape room)</strong>
-                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run starts on <b>U12 Reading</b> or <b>U12 sports idioms</b> from the tab you chose. Six phrases, <b>3:00</b> clock.</div>
+                <div style="color:var(--muted);font-size:12px;margin-top:6px;">On the <b>next screen</b>, use the <b>Pack</b> row &mdash; your run starts on the pack from the tab you chose (Reading, Multi-word verbs, Sports idioms, or Listening). Six phrases, <b>3:00</b> clock.</div>
                 <div style="color:var(--primary);font-size:11px;margin-top:5px;">Timed &middot; pack picker on vault screen</div>
             </button>
         </div>
@@ -6936,7 +6939,7 @@
         <h2 style="margin:0 0 6px;font-size:1.2rem;">Sticky notes board</h2>
         <p class="lex-reading-tag u9-sticky-tag-l9">Level 9 &middot; nine sticky tasks</p>
         <p class="lex-reading-tag u9-sticky-tag-u10" style="display:none;">Unit 10 &middot; four packs (Part 4 · books &amp; films · Shakespeare UoE · similes)</p>
-        <p class="lex-reading-tag u9-sticky-tag-u12" style="display:none;">Unit 12 &middot; three packs (Reading · sports idioms · listening)</p>
+        <p class="lex-reading-tag u9-sticky-tag-u12" style="display:none;">Unit 12 &middot; four packs (Reading · multi-word verbs · sports idioms · listening)</p>
         <div class="u9-sticky-tabs">
             <button type="button" id="u9-sticky-tab-idiom" class="u9-sticky-tab u9-sticky-pack-l9 active" onclick="u9StickyShowTask('idiom')">Task 1: Idioms</button>
             <button type="button" id="u9-sticky-tab-prep" class="u9-sticky-tab u9-sticky-pack-l9" onclick="u9StickyShowTask('prep')">Task 2: at / in / on / under</button>
@@ -7383,8 +7386,10 @@
 </div>
 
 <script src="js/units-data.js"></script>
+<script src="js/prep-track-scope.js" data-track="cpe" vite-ignore></script>
 <script src="js/prep-course-profile.js"></script>
 <script src="js/prep-sync-hub-track.js" data-track="cpe" vite-ignore></script>
+<script src="js/prep-login-entry.js" vite-ignore></script>
 <script src="js/prep-site-content.js"></script>
 <script src="js/prep-hub-seeds-unit10-grammar.js"></script>
 <script src="js/prep-listening-pack-registry.js"></script>
@@ -7392,19 +7397,42 @@
 <script src="js/prep-hub-seeds-unit10-uoe.js"></script>
 <script src="js/prep-hub-seeds-unit10-games.js"></script>
 <script src="js/prep-hub-unit10-nests.js"></script>
+<script src="js/prep-hub-seeds-unit1-vocabulary.js"></script>
+<script src="js/prep-hub-seeds-unit1-grammar.js"></script>
+<script src="js/prep-hub-seeds-unit1-listening.js"></script>
+<script src="js/prep-hub-seeds-unit1-reading.js"></script>
+<script src="js/prep-hub-seeds-unit1-uoe.js"></script>
+<script src="js/prep-hub-seeds-unit7-vocabulary.js"></script>
+<script src="js/prep-hub-seeds-unit7-uoe.js"></script>
+<script src="js/prep-hub-unit7-nests.js"></script>
+<script src="js/prep-hub-seeds-unit8-vocabulary.js"></script>
+<script src="js/prep-hub-unit8-nests.js"></script>
+<script src="js/prep-hub-seeds-unit9-vocabulary.js"></script>
+<script src="js/prep-hub-unit9-vocab-nests.js"></script>
+<script src="js/prep-hub-seeds-unit11-vocabulary.js"></script>
+<script src="js/prep-hub-unit11-vocab-nests.js"></script>
+<script src="js/prep-hub-unit1-nests.js"></script>
+<script src="js/prep-hub-seeds-unit2-vocabulary.js"></script>
+<script src="js/prep-hub-seeds-unit2-grammar.js"></script>
+<script src="js/prep-hub-seeds-unit2-reading.js"></script>
+<script src="js/prep-hub-seeds-unit2-listening.js"></script>
+<script src="js/prep-hub-seeds-unit2-uoe.js"></script>
+<script src="js/prep-hub-unit2-nests.js"></script>
+<script src="js/prep-hub-seeds-unit3-vocabulary.js"></script>
+<script src="js/prep-hub-seeds-unit3-reading.js"></script>
+<script src="js/prep-hub-seeds-unit3-listening.js"></script>
+<script src="js/prep-hub-seeds-unit3-uoe.js"></script>
+<script src="js/prep-hub-unit3-nests.js"></script>
 <script src="js/prep-hub-seeds-unit12-vocabulary.js"></script>
 <script src="js/prep-hub-seeds-unit12-reading.js"></script>
 <script src="js/prep-hub-seeds-unit12-listening.js"></script>
 <script src="js/prep-hub-seeds-unit12-grammar.js"></script>
 <script src="js/prep-hub-seeds-unit12-uoe.js"></script>
+<script src="js/prep-hub-seeds-unit12-writing.js"></script>
 <script src="js/prep-hub-seeds-unit12-lexical-games.js"></script>
 <script src="js/prep-hub-seeds-unit12-games.js"></script>
+<script src="js/prep-script-loader.js"></script>
 <script src="js/prep-hub-unit12-nests.js"></script>
-<script src="js/unit12-reading-road-to-betterment-lexicon.js"></script>
-<script src="js/unit12-sports-idioms-lexicon.js"></script>
-<script src="js/unit12-listening-sb12-1-disabled-access-lexicon.js"></script>
-<script src="js/prep-hub-unit12-lexgames.js"></script>
-<script src="js/unit12-sticky-registry.js"></script>
 <script src="js/prep-boxed.js"></script>
 <script src="js/prepositional-phrases-core.js"></script>
 <script src="js/interior-design-vocab-core.js"></script>
@@ -7470,7 +7498,6 @@
 <script src="js/u10-similes-lexis.js"></script>
 <script src="js/unit10-sticky-registry.js"></script>
 <script src="js/unit10-plain-sticky-kit.js"></script>
-<script src="js/unit12-sticky-packs.js"></script>
     <script src="js/u9-contemporary-art-reading-data.js"></script>
     <script src="js/u9-must-know-lexis.js"></script>
 <script src="js/lexical-games-plain-row-kit.js"></script>
@@ -10652,6 +10679,7 @@ function ensureU9FallPool() {
         .concat(u10SimilesLexFallItems())
         .concat(typeof u12ReadingLexFallItems === 'function' ? u12ReadingLexFallItems() : [])
         .concat(typeof u12SportsIdiomsLexFallItems === 'function' ? u12SportsIdiomsLexFallItems() : [])
+        .concat(typeof u12MultiWordVerbsLexFallItems === 'function' ? u12MultiWordVerbsLexFallItems() : [])
         .concat(typeof u12ListeningDisabledAccessLexFallItems === 'function' ? u12ListeningDisabledAccessLexFallItems() : []);
 }
 
@@ -11118,553 +11146,9 @@ function openUnit9LexGamesHub() {
         }
     })();
 }
-
-var CPE_WB_KEY = 'masteringCpeWordBankV1';
-var cpeWbTheme = 'robots';
-var cpeWbFilter = 'all';
-var cpeWbSort = 'dueFirst';
-var cpeWbState = {};
-var cpeWbReady = false;
-var cpeWbCache = null;
-var CPE_WB_STEPS = [1, 2, 4, 7, 14, 30];
-
-function cpeWbLoadState() {
-    try {
-        var raw = localStorage.getItem(CPE_WB_KEY);
-        cpeWbState = raw ? JSON.parse(raw) : {};
-    } catch (e) {
-        cpeWbState = {};
-    }
-}
-
-function cpeWbSaveState() {
-    localStorage.setItem(CPE_WB_KEY, JSON.stringify(cpeWbState));
-}
-
-function cpeWbNorm(s) {
-    return String(s || '').toLowerCase().replace(/[^a-z0-9'\s-]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
-function cpeWbEsc(s) {
-    return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function cpeWbGet(id) {
-    return cpeWbState[id] || { mark: '', streak: 0, nextAt: 0 };
-}
-
-function cpeWbDueNow(id) {
-    var r = cpeWbGet(id);
-    return !r.nextAt || r.nextAt <= Date.now();
-}
-
-function cpeWbDueLabel(id) {
-    var r = cpeWbGet(id);
-    if (!r.nextAt || r.nextAt <= Date.now()) return 'Due now';
-    var days = Math.ceil((r.nextAt - Date.now()) / 86400000);
-    return 'Next review in ' + days + 'd';
-}
-
-function cpeWbMark(id, mark) {
-    if (mark === 'reset') {
-        delete cpeWbState[id];
-        cpeWbSaveState();
-        return;
-    }
-    var old = cpeWbGet(id);
-    if (mark === 'know') {
-        var streak = Math.max(0, Number(old.streak || 0)) + 1;
-        var stepIdx = Math.min(CPE_WB_STEPS.length - 1, streak - 1);
-        cpeWbState[id] = {
-            mark: 'know',
-            streak: streak,
-            nextAt: Date.now() + CPE_WB_STEPS[stepIdx] * 86400000
-        };
-    } else {
-        cpeWbState[id] = {
-            mark: 'learn',
-            streak: 0,
-            nextAt: Date.now()
-        };
-    }
-    cpeWbSaveState();
-}
-
-function cpeWbBuildRobotsItems() {
-    var pj = u9FallPassagePlain('u9v-reading');
-    var pv = u9FallPassagePlain('u9val-reading');
-    var pp = u9FallPassagePlain('u9pho-reading');
-    var pr = u9FallPassagePlain('u9ric-reading');
-    var pk = u9FallPassagePlain('u9kik-reading');
-    var rows = []
-        .concat(u9FallZipTasksWithSpeaker(u9LexJackTasks(), u9FallScrapePhrases('u9v-reading', '.u9v-click'), 'A Jack', pj))
-        .concat(u9FallZipTasksWithSpeaker(u9LexValTasks(), u9FallScrapePhrases('u9val-reading', '.u9val-click'), 'B Valentina', pv))
-        .concat(u9FallZipTasksWithSpeaker(u9LexPhoTasks(), u9FallScrapePhrases('u9pho-reading', '.u9pho-click'), 'C Phoebe', pp))
-        .concat(u9FallZipTasksWithSpeaker(u9LexRicTasks(), u9FallScrapePhrases('u9ric-reading', '.u9ric-click'), 'D Richard', pr))
-        .concat(u9FallZipTasksWithSpeaker(u9LexKikTasks(), u9FallScrapePhrases('u9kik-reading', '.u9kik-click'), 'E Kiki', pk));
-    return rows
-        .filter(function (x) { return !!(x && x.ans); })
-        .map(function (x, i) {
-            return {
-                id: 'robots::' + i + '::' + x.speaker + '::' + x.ans,
-                phrase: x.ans,
-                hint: x.syn || '',
-                speaker: x.speaker || 'Reading'
-            };
-        });
-}
-
-function cpeWbBuildIdiomsItems() {
-    return LEX_IDIOM_DATA.map(function (d, i) {
-        return {
-            id: 'idioms::' + i + '::' + d.ans,
-            phrase: d.ans,
-            hint: d.hint || '',
-            speaker: 'Idioms'
-        };
-    });
-}
-
-function cpeWbBuildListeningItems() {
-    var rows = LEX_LISTEN_DATA.map(function (d, i) {
-        return {
-            id: 'listening::' + i + '::' + d.ans,
-            phrase: d.ans,
-            hint: d.hint || '',
-            speaker: 'Listening'
-        };
-    });
-    for (var j = 0; j < U9_LISTEN_SC_DATA.length; j++) {
-        var s = U9_LISTEN_SC_DATA[j];
-        rows.push({
-            id: 'listening::sc::' + j + '::' + s.ans,
-            phrase: s.ans,
-            hint: s.hint || '',
-            speaker: 'Listening (sentence completion)'
-        });
-    }
-    return rows;
-}
-
-function cpeWbBuildMindsEyeItems() {
-    if (typeof U9_MINDS_EYE_WB_LEAD === 'undefined' || !U9_MINDS_EYE_WB_LEAD.length) return [];
-    var sp = "Listening: Painting with the mind's eye";
-    var rows = [];
-    for (var l = 0; l < U9_MINDS_EYE_WB_LEAD.length; l++) {
-        var ld = U9_MINDS_EYE_WB_LEAD[l];
-        if (!ld || !ld.phrase) continue;
-        var para = String(ld.paraphrase != null ? ld.paraphrase : ld.hint || '').trim();
-        var gru = String(ld.glossRu != null ? ld.glossRu : '').trim();
-        var hint = gru ? para + ' \u2014 ' + gru : para;
-        rows.push({
-            id: 'minds_eye::wb::' + l + '::' + String(ld.phrase || ''),
-            phrase: String(ld.phrase || '').trim(),
-            hint: hint,
-            speaker: sp
-        });
-    }
-    return rows;
-}
-
-function cpeWbBuildPrepItems() {
-    return LEX_PREP_PHRASE_DATA.map(function (d, i) {
-        return {
-            id: 'prep::' + i + '::' + d.ans,
-            phrase: d.ans,
-            hint: d.hint || '',
-            speaker: LEX_PREP_SPEAKER_LABEL
-        };
-    });
-}
-
-function cpeWbBuildInteriorItems() {
-    var C = typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' ? INTERIOR_DESIGN_VOCAB_CORE : null;
-    var sp = C && C.lexicalGamesSpeaker ? C.lexicalGamesSpeaker : 'Interior design: Art & architecture';
-    var items =
-        C && C.treasureHuntRounds && C.treasureHuntRounds[0] && C.treasureHuntRounds[0].items
-            ? C.treasureHuntRounds[0].items
-            : [];
-    return items.map(function (d, i) {
-        var hint = d.paraphrase || '';
-        if (d.paraphraseRu) {
-            hint = hint + ' \u2014 ' + d.paraphraseRu;
-        }
-        return {
-            id: 'interior::' + i + '::' + d.phrase,
-            phrase: d.phrase,
-            hint: hint,
-            speaker: sp
-        };
-    });
-}
-
-function cpeWbBuildArtRestItems() {
-    if (typeof ART_REST_LISTEN_DATA === 'undefined' || !ART_REST_LISTEN_DATA.length) return [];
-    var sp =
-        typeof LEX_ART_REST_SPEAKER === 'string' ? LEX_ART_REST_SPEAKER : 'Listening: Art restoration';
-    return ART_REST_LISTEN_DATA.map(function (d, i) {
-        return {
-            id: 'artrest::' + i + '::' + d.ans,
-            phrase: d.keyword,
-            hint: d.definition || '',
-            /** Transcript key phrase — used in Prep vault matching (enrich) and dedup, not the Word Bank title. */
-            matchPhrase: d.ans,
-            speaker: sp
-        };
-    });
-}
-
-function cpeWbBuildContemporaryArtItems() {
-    if (typeof U9_MUST_KNOW_ITEMS === 'undefined' || !U9_MUST_KNOW_ITEMS.length) return [];
-    var sp = U9_MUST_KNOW_SPEAKER || 'Contemporary art';
-    return U9_MUST_KNOW_ITEMS.map(function (x, i) {
-        return {
-            id: 'mustknow::' + i + '::' + String(x.phrase || ''),
-            phrase: x.phrase,
-            hint: x.hint || '',
-            speaker: sp
-        };
-    });
-}
-
-function cpeWbBuildU10P4Items() {
-    var spP4 =
-        typeof LEX_U10_P4_SPEAKER_LABEL === 'string'
-            ? LEX_U10_P4_SPEAKER_LABEL
-            : 'Listening: Part 4 · Unit 10 (SB 10.1)';
-    var plain = u10P4LexPlainText();
-    if (!plain || typeof U10_P4_LEXIS_GAME_ROWS === 'undefined' || !U10_P4_LEXIS_GAME_ROWS.length) {
-        return [];
-    }
-    return lexicalGamesHintAnsRowsToWordBankItems(plain, U10_P4_LEXIS_GAME_ROWS, spP4, 'u10p4');
-}
-
-function cpeWbBuildU10BooksItems() {
-    var spBf =
-        typeof LEX_U10_BOOKS_FILMS_SPEAKER_LABEL === 'string'
-            ? LEX_U10_BOOKS_FILMS_SPEAKER_LABEL
-            : 'Unit 10 · Describing books & films';
-    var plain = u10BooksFilmsLexPlainText();
-    if (!plain || typeof U10_BOOKS_FILMS_LEXIS_GAME_ROWS === 'undefined' || !U10_BOOKS_FILMS_LEXIS_GAME_ROWS.length) {
-        return [];
-    }
-    return lexicalGamesHintAnsRowsToWordBankItems(plain, U10_BOOKS_FILMS_LEXIS_GAME_ROWS, spBf, 'u10bf');
-}
-
-function cpeWbBuildU10ShakespeareItems() {
-    var spSh =
-        typeof LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL === 'string'
-            ? LEX_U10_UOE_SHAKESPEARE_SPEAKER_LABEL
-            : 'Shakespeare · Use of English';
-    var plainSh = u10ShakespeareLexPlainText();
-    if (!plainSh || typeof U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS === 'undefined' || !U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS.length) {
-        return [];
-    }
-    return lexicalGamesHintAnsRowsToWordBankItems(plainSh, U10_UOE_SHAKESPEARE_LEXIS_GAME_ROWS, spSh, 'u10shak');
-}
-
-function cpeWbBuildU10SimilesItems() {
-    var spSm =
-        typeof LEX_U10_SIMILES_SPEAKER_LABEL === 'string'
-            ? LEX_U10_SIMILES_SPEAKER_LABEL
-            : 'Unit 10 · Similes';
-    var plainSm = u10SimilesLexPlainText();
-    if (!plainSm || typeof U10_SIMILES_LEXIS_GAME_ROWS === 'undefined' || !U10_SIMILES_LEXIS_GAME_ROWS.length) {
-        return [];
-    }
-    return lexicalGamesHintAnsRowsToWordBankItems(plainSm, U10_SIMILES_LEXIS_GAME_ROWS, spSm, 'u10sim');
-}
-
-/** Lazy Word Bank rows — build only the theme requested (opening lexical hub used to block on every theme at once). */
-function cpeWbEnsureThemeBuilt(theme) {
-    var t = theme || 'robots';
-    if (!cpeWbCache) {
-        cpeWbCache = {};
-    }
-    if (Object.prototype.hasOwnProperty.call(cpeWbCache, t)) {
-        return;
-    }
-    var rows;
-    switch (t) {
-        case 'robots':
-            rows = cpeWbBuildRobotsItems();
-            break;
-        case 'idioms':
-            rows = cpeWbBuildIdiomsItems();
-            break;
-        case 'listening':
-            rows = cpeWbBuildListeningItems();
-            break;
-        case 'minds_eye':
-            rows = cpeWbBuildMindsEyeItems();
-            break;
-        case 'prep':
-            rows = cpeWbBuildPrepItems();
-            break;
-        case 'interior':
-            rows = cpeWbBuildInteriorItems();
-            break;
-        case 'art_restoration':
-            rows = cpeWbBuildArtRestItems();
-            break;
-        case 'contemporary_art':
-            rows = cpeWbBuildContemporaryArtItems();
-            break;
-        case 'u10_p4':
-            rows = cpeWbBuildU10P4Items();
-            break;
-        case 'u10_books':
-            rows = cpeWbBuildU10BooksItems();
-            break;
-        case 'u10_uoe_shakespeare':
-            rows = cpeWbBuildU10ShakespeareItems();
-            break;
-        case 'u10_similes':
-            rows = cpeWbBuildU10SimilesItems();
-            break;
-        case 'u12_reading_road_to_betterment':
-            rows = typeof cpeWbBuildU12ReadingItems === 'function' ? cpeWbBuildU12ReadingItems() : [];
-            break;
-        case 'u12_sports_idioms':
-            rows = typeof cpeWbBuildU12SportsItems === 'function' ? cpeWbBuildU12SportsItems() : [];
-            break;
-        case 'u12_listening_disabled_access':
-            rows = typeof cpeWbBuildU12ListeningItems === 'function' ? cpeWbBuildU12ListeningItems() : [];
-            break;
-        default:
-            rows = [];
-    }
-    cpeWbCache[t] = rows;
-}
-
-function cpeWbItems(theme) {
-    cpeWbEnsureThemeBuilt(theme);
-    return (cpeWbCache[theme || 'robots'] || []).slice();
-}
-
-function cpeWordBankRender() {
-    var list = document.getElementById('cpe-wb-list');
-    var stats = document.getElementById('cpe-wb-stats');
-    var search = document.getElementById('cpe-wb-search');
-    var sortSel = document.getElementById('cpe-wb-sort');
-    if (!list || !stats || !search || !sortSel) return;
-
-    var data = cpeWbItems(cpeWbTheme);
-    var q = cpeWbNorm(search.value || '');
-    var base = cpeWbFilter === 'due' ? data.filter(function (x) { return cpeWbDueNow(x.id); }) : data;
-    var filtered = q
-        ? base.filter(function (x) {
-              return cpeWbNorm(x.phrase + ' ' + x.hint + ' ' + x.speaker).indexOf(q) !== -1;
-          })
-        : base;
-
-    function cpeWbU12PackGroupRank(group, orderGlobal) {
-        var order =
-            typeof orderGlobal !== 'undefined' && orderGlobal.length ? orderGlobal : [];
-        var g = String(group || '');
-        for (var gri = 0; gri < order.length; gri++) {
-            if (order[gri] === g) return gri;
-        }
-        return 99;
-    }
-    filtered.sort(function (a, b) {
-        if (cpeWbTheme === 'u12_sports_idioms') {
-            var ga = cpeWbU12PackGroupRank(a.group, U12_SPORTS_IDIOMS_GROUP_ORDER);
-            var gb = cpeWbU12PackGroupRank(b.group, U12_SPORTS_IDIOMS_GROUP_ORDER);
-            if (ga !== gb) return ga - gb;
-        }
-        if (cpeWbTheme === 'u12_listening_disabled_access') {
-            var gla = cpeWbU12PackGroupRank(a.group, U12_LISTENING_DISABLED_ACCESS_GROUP_ORDER);
-            var glb = cpeWbU12PackGroupRank(b.group, U12_LISTENING_DISABLED_ACCESS_GROUP_ORDER);
-            if (gla !== glb) return gla - glb;
-        }
-        if (cpeWbSort === 'alpha') return a.phrase.localeCompare(b.phrase);
-        var ad = cpeWbDueNow(a.id) ? 0 : 1;
-        var bd = cpeWbDueNow(b.id) ? 0 : 1;
-        if (ad !== bd) return ad - bd;
-        return a.phrase.localeCompare(b.phrase);
-    });
-
-    var know = 0;
-    var learn = 0;
-    var i;
-    for (i = 0; i < filtered.length; i++) {
-        var m = cpeWbGet(filtered[i].id).mark;
-        if (m === 'know') know++;
-        else if (m === 'learn') learn++;
-    }
-    var due = data.filter(function (x) { return cpeWbDueNow(x.id); }).length;
-    var unmarked = filtered.length - know - learn;
-
-    stats.textContent =
-        'Theme: ' +
-        (cpeWbTheme === 'robots'
-            ? 'Reading: The robots are taking over'
-            : cpeWbTheme === 'contemporary_art'
-              ? (typeof U9_MUST_KNOW_SPEAKER === 'string' ? U9_MUST_KNOW_SPEAKER : 'Contemporary art')
-              : cpeWbTheme === 'listening'
-                ? 'Listening: Making a mark'
-                : cpeWbTheme === 'minds_eye'
-                  ? "Listening: Painting with the mind's eye (Track 10)"
-                : cpeWbTheme === 'prep'
-                  ? LEX_PREP_SPEAKER_LABEL
-                  : cpeWbTheme === 'interior'
-                    ? typeof INTERIOR_DESIGN_VOCAB_CORE !== 'undefined' &&
-                      INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
-                      ? INTERIOR_DESIGN_VOCAB_CORE.lexicalGamesSpeaker
-                      : 'Interior design: Art & architecture'
-                    : cpeWbTheme === 'art_restoration'
-                      ? typeof LEX_ART_REST_SPEAKER === 'string'
-                        ? LEX_ART_REST_SPEAKER
-                        : 'Listening: Art restoration'
-                      : cpeWbTheme === 'u10_p4'
-                        ? 'Unit 10 · Listening Part 4 (SB 10.1)'
-                        : cpeWbTheme === 'u10_books'
-                          ? 'Unit 10 · Describing books & films'
-                          : cpeWbTheme === 'u10_uoe_shakespeare'
-                            ? 'Unit 10 · Shakespeare · Use of English'
-                            : cpeWbTheme === 'u10_similes'
-                              ? 'Unit 10 · Similes'
-                              : cpeWbTheme === 'u12_reading_road_to_betterment'
-                                ? 'Unit 12 · The Road to Betterment (Reading)'
-                                : cpeWbTheme === 'u12_sports_idioms'
-                                  ? 'Unit 12 · Sports idioms'
-                                  : cpeWbTheme === 'u12_listening_disabled_access'
-                                    ? 'Unit 12 · Listening (Track 12.1)'
-                                    : 'Idioms: Art and creativity') +
-        ' · Total: ' +
-        filtered.length +
-        ' · Due now: ' +
-        due +
-        ' · I know: ' +
-        know +
-        ' · Learning: ' +
-        learn +
-        ' · Unmarked: ' +
-        unmarked;
-
-    function cpeWbItemHtml(x) {
-        var rec = cpeWbGet(x.id);
-        var mark = rec.mark === 'know' ? 'I know' : rec.mark === 'learn' ? 'Learning' : 'Unmarked';
-        return (
-            '<li class="wb-item">' +
-            '<div class="phrase">' +
-            cpeWbEsc(x.phrase) +
-            '</div>' +
-            '<div class="hint">' +
-            cpeWbEsc(x.hint) +
-            '</div>' +
-            '<div class="meta"><span class="status">' +
-            mark +
-            ' · ' +
-            cpeWbDueLabel(x.id) +
-            '</span><div class="act">' +
-            '<button class="wb-mark-btn know" type="button" data-cpe-wb-mark="know" data-cpe-wb-id="' +
-            cpeWbEsc(x.id) +
-            '">Know</button>' +
-            '<button class="wb-mark-btn learn" type="button" data-cpe-wb-mark="learn" data-cpe-wb-id="' +
-            cpeWbEsc(x.id) +
-            '">Learning</button>' +
-            '<button class="wb-mark-btn reset" type="button" data-cpe-wb-mark="reset" data-cpe-wb-id="' +
-            cpeWbEsc(x.id) +
-            '">Reset</button>' +
-            '</div></div>' +
-            '</li>'
-        );
-    }
-    if (cpeWbTheme === 'u12_sports_idioms' || cpeWbTheme === 'u12_listening_disabled_access') {
-        var wbHtml = '';
-        var lastGrp = '';
-        for (var wbi = 0; wbi < filtered.length; wbi++) {
-            var gx = filtered[wbi];
-            var grp = String(gx.group || '').trim();
-            if (grp && grp !== lastGrp) {
-                wbHtml += '<li class="wb-group-head">' + cpeWbEsc(grp) + '</li>';
-                lastGrp = grp;
-            }
-            wbHtml += cpeWbItemHtml(gx);
-        }
-        list.innerHTML = wbHtml || '<li class="wb-item">No matches.</li>';
-    } else {
-        list.innerHTML =
-            filtered.map(cpeWbItemHtml).join('') || '<li class="wb-item">No matches.</li>';
-    }
-}
-
-function cpeWordBankEnsureBind() {
-    if (cpeWbReady) return;
-    cpeWbReady = true;
-    cpeWbLoadState();
-
-    document.addEventListener('click', function (e) {
-        var u10Tab = e.target.closest('#cpe-wb-u10-tabs .wb-u10-tab');
-        if (u10Tab) {
-            var pack = u10Tab.getAttribute('data-u10-wb-tab');
-            if (pack === 'p4' || pack === 'books' || pack === 'shakespeare' || pack === 'similes') {
-                u10LexPackTabSelect(pack);
-                cpeWordBankRender();
-            }
-            return;
-        }
-
-        var u12Tab = e.target.closest('#cpe-wb-u12-tabs .wb-u12-tab');
-        if (u12Tab) {
-            var pack12 = u12Tab.getAttribute('data-u12-wb-tab');
-            if (pack12 === 'reading' || pack12 === 'sports' || pack12 === 'listening') {
-                u12LexPackTabSelect(pack12);
-                cpeWordBankRender();
-            }
-            return;
-        }
-
-        var themeBtn = e.target.closest('#screen-unit9-wordbank .wb-theme-btn');
-        if (themeBtn) {
-            cpeWbTheme = themeBtn.getAttribute('data-cpe-wb-theme') || 'robots';
-            var allTheme = document.querySelectorAll('#screen-unit9-wordbank .wb-theme-btn');
-            for (var i = 0; i < allTheme.length; i++) {
-                allTheme[i].classList.toggle('active', allTheme[i] === themeBtn);
-            }
-            cpeWordBankRender();
-            return;
-        }
-
-        var filterBtn = e.target.closest('#screen-unit9-wordbank .wb-repeat-btn');
-        if (filterBtn) {
-            cpeWbFilter = filterBtn.getAttribute('data-cpe-wb-filter') || 'all';
-            var allFilter = document.querySelectorAll('#screen-unit9-wordbank .wb-repeat-btn');
-            for (var j = 0; j < allFilter.length; j++) {
-                allFilter[j].classList.toggle('active', allFilter[j] === filterBtn);
-            }
-            cpeWordBankRender();
-            return;
-        }
-
-        var markBtn = e.target.closest('#screen-unit9-wordbank .wb-mark-btn');
-        if (markBtn) {
-            var id = markBtn.getAttribute('data-cpe-wb-id') || '';
-            var mark = markBtn.getAttribute('data-cpe-wb-mark') || '';
-            if (id && mark) {
-                cpeWbMark(id, mark);
-                cpeWordBankRender();
-            }
-        }
-    });
-
-    document.addEventListener('input', function (e) {
-        if (e.target && e.target.id === 'cpe-wb-search') cpeWordBankRender();
-    });
-    document.addEventListener('change', function (e) {
-        if (e.target && e.target.id === 'cpe-wb-sort') {
-            cpeWbSort = e.target.value || 'dueFirst';
-            cpeWordBankRender();
-        }
-    });
-}
-
+</script>
+<script src="js/cpe-word-bank-core.js"></script>
+<script>
 function openUnit9WordBank() {
     u10LexGamesActive = false;
     u12LexGamesActive = false;
@@ -14120,7 +13604,7 @@ function prepEscapeApplyTimePenalty(sec) {
 function prepEscapeBuildUnifiedPool() {
     cpeWbItems('robots');
     var themes = u12LexGamesActive
-        ? ['u12_reading_road_to_betterment', 'u12_sports_idioms', 'u12_listening_disabled_access']
+        ? ['u12_reading_road_to_betterment', 'u12_multi_word_verbs', 'u12_sports_idioms', 'u12_listening_disabled_access']
         : u10LexGamesActive
         ? ['u10_p4', 'u10_books', 'u10_uoe_shakespeare', 'u10_similes']
         : [
@@ -14205,7 +13689,7 @@ function prepEscapeSyncVaultScopeUi() {
     var tag = document.querySelector('#screen-unit9-prep-escape .lex-reading-tag');
     if (tag) {
         tag.textContent = u12LexGamesActive
-            ? 'Unit 12 · The Road to Betterment + sports idioms'
+            ? 'Unit 12 · Reading + multi-word verbs + sports idioms + listening'
             : u10LexGamesActive
               ? 'Unit 10 · Part 4 + books & films + Shakespeare UoE + similes'
               : 'Level 9 · Word Bank packs (pick one or Choose all)';
@@ -23777,6 +23261,26 @@ function renderLinkedFoldersInto(containerId, unitNum) {
     if (!root) return;
     unitNum = Number(unitNum);
     root.innerHTML = "";
+    if (unitNum === 7 && typeof ensurePrepUnit7LinkedShells === "function") {
+        try {
+            ensurePrepUnit7LinkedShells();
+        } catch (eU7Lf) {}
+    }
+    if (unitNum === 8 && typeof ensurePrepUnit8LinkedShells === "function") {
+        try {
+            ensurePrepUnit8LinkedShells();
+        } catch (eU8Lf) {}
+    }
+    if (unitNum === 9 && typeof ensurePrepUnit9LinkedShells === "function") {
+        try {
+            ensurePrepUnit9LinkedShells();
+        } catch (eU9Lf) {}
+    }
+    if (unitNum === 11 && typeof ensurePrepUnit11LinkedShells === "function") {
+        try {
+            ensurePrepUnit11LinkedShells();
+        } catch (eU11Lf) {}
+    }
     if (unitNum === 10 && typeof ensurePrepUnit10LinkedShells === "function") {
         try {
             ensurePrepUnit10LinkedShells();
@@ -23917,7 +23421,7 @@ function renderLinkedFoldersInto(containerId, unitNum) {
         var subEl = document.createElement("div");
         subEl.className = "hub-u10-practice-sub";
         subEl.textContent =
-            "Vocab Gym (phrase bank / Word Bank) and Playground (lesson decks) — separate from textbook folders.";
+            "Vocab Gym (phrase bank / Word Bank) and Playground (lesson decks) тАФ separate from textbook folders.";
         var chips = document.createElement("div");
         chips.className = "hub-u10-practice-chips";
         for (var ci = 0; ci < practiceFolders.length; ci++) {
@@ -23993,7 +23497,7 @@ function hubFolderWorkspaceStripAdd(action) {
     if (!par) {
         try {
             hubToastShow(
-                "This folder is missing from the course data. Go back to Levels and open it from the hub, or create a new folder (Edit → + Folder) if you have hub editing enabled."
+                "This folder is missing from the course data. Go back to Levels and open it from the hub, or create a new folder (Edit тЖТ + Folder) if you have hub editing enabled."
             );
         } catch (eStrip) {}
         return;
@@ -24001,7 +23505,7 @@ function hubFolderWorkspaceStripAdd(action) {
     if (action === "activity") {
         hubWorkspace = Object.assign({}, hubWorkspace, { kind: "folder-activity" });
         var hAct = document.getElementById("hub-task-heading");
-        if (hAct) hAct.textContent = "Add activity — in this folder";
+        if (hAct) hAct.textContent = "Add activity тАФ in this folder";
         hubTaskModalOpen();
         return;
     }
@@ -24056,7 +23560,7 @@ function hubUnitStripAdd(unitNum, action) {
     if (action === "activity") {
         hubWorkspace = { kind: "unit-linked", unitNum: unitNum };
         var h = document.getElementById("hub-task-heading");
-        if (h) h.textContent = "Add activity — Level " + unitNum;
+        if (h) h.textContent = "Add activity тАФ Level " + unitNum;
         hubTaskModalOpen();
     }
 }
@@ -24070,6 +23574,11 @@ function hubUnitStripAddFromGeneric(action) {
 function openGenericUnitMenu(unitNum) {
     unitNum = Number(unitNum);
     prepCourseHub.genericUnitNumber = unitNum;
+    if (unitNum === 7 && typeof ensurePrepUnit7LinkedShells === "function") {
+        try {
+            ensurePrepUnit7LinkedShells();
+        } catch (eU7Open) {}
+    }
     if (unitNum === 10 && typeof ensurePrepUnit10LinkedShells === "function") {
         try {
             ensurePrepUnit10LinkedShells();
@@ -24104,7 +23613,7 @@ function openGenericUnitMenu(unitNum) {
     if (leadEl) {
         leadEl.textContent =
             unitNum === 10
-                ? "At the top: Practice tools (Vocab Gym + Playground). Under Unit materials: vocabulary pages, grammar, Use of English, listening — the textbook-side folders."
+                ? "At the top: Practice tools (Vocab Gym + Playground). Under Unit materials: vocabulary pages, grammar, Use of English, listening тАФ the textbook-side folders."
                 : unitNum === 12
                   ? "At the top: Practice tools (Vocab Gym + Playground). Under Unit materials: Vocabulary, Reading, Listening, Grammar, and more textbook-side folders."
                   : "Open a folder, then choose a reading. You can add more readings under each activity later. In Edit mode, use the cards below to add a folder or an activity.";
@@ -24114,7 +23623,7 @@ function openGenericUnitMenu(unitNum) {
 }
 
 /**
- * Single router for built-in Level tiles (1–12).
+ * Single router for built-in Level tiles (1тАУ12).
  * Keeps entry behavior in one place so Level links cannot drift into mixed legacy screens.
  */
 function openBuiltInUnitMenu(unitNum) {
@@ -24184,6 +23693,18 @@ function ensurePrepHubLinkedShellsEarly() {
     try {
         hubNormalizeLinkedUnitsByTaskLinks();
     } catch (eLinkUnitFix) {}
+    try {
+        ensurePrepUnit7LinkedShells();
+    } catch (eLegU7All) {}
+    try {
+        ensurePrepUnit8LinkedShells();
+    } catch (eLegU8All) {}
+    try {
+        ensurePrepUnit9LinkedShells();
+    } catch (eLegU9All) {}
+    try {
+        ensurePrepUnit11LinkedShells();
+    } catch (eLegU11All) {}
     try {
         ensurePrepUnit10LinkedShells();
     } catch (eLegU10All) {}
@@ -24260,7 +23781,7 @@ function prepContentToolsEnabled() {
     }
 }
 
-/** Hub is always student (preview) — Preview/Edit UI removed. */
+/** Hub is always student (preview) тАФ Preview/Edit UI removed. */
 function getHubViewMode() {
     return "preview";
 }
@@ -24316,7 +23837,7 @@ function prepCourseWizardWireOnce() {
             try {
                 hubToastShow(
                     prepCourseWizardSelection === "empty"
-                        ? "New course — set assignment in the header, then add folders."
+                        ? "New course тАФ set assignment in the header, then add folders."
                         : "CPE hub ready."
                 );
             } catch (eW2) {}
@@ -24611,7 +24132,7 @@ function hubCreateSave() {
 
 function hubDynamicTileLabel(f) {
     if (f && f.type === "activity") {
-        return (f.title || "Activity") + " — " + (f.subtitle || "");
+        return (f.title || "Activity") + " тАФ " + (f.subtitle || "");
     }
     var t = (f.title || "").trim();
     var st = (f.subtitle || "").trim();
@@ -24623,7 +24144,7 @@ function hubCmsBackParams() {
     return { back: back, label: encodeURIComponent(HUB_I18N.backToUnits) };
 }
 
-/** Standalone URL for Level 10 Prep «Playground» (games hub). Seed href wins when present. */
+/** Standalone URL for Level 10 Prep ┬лPlayground┬╗ (games hub). Seed href wins when present. */
 function hubPrepPlaygroundHref() {
     var pgHref = "games/cpe/unit10/index.html?course=cpe";
     try {
@@ -24636,7 +24157,7 @@ function hubPrepPlaygroundHref() {
 }
 
 /**
- * Level 10 Prep Playground folder (prep_legacy_u10_games): learners go straight to the games page —
+ * Level 10 Prep Playground folder (prep_legacy_u10_games): learners go straight to the games page тАФ
  * no folder workspace / CMS hop. Edit mode keeps the in-app folder workspace for teachers (rename, hide task, etc.).
  */
 function hubTryNavigatePrepPlaygroundFolder(folderId) {
@@ -24651,6 +24172,43 @@ function hubTryNavigatePrepPlaygroundFolder(folderId) {
         return true;
     }
     return false;
+}
+
+/** Level 7/8 legacy folders: learners go to CPE-only hubs — not FCE unit pages. */
+function hubTryNavigateUnit7LegacyFolder(folderId) {
+    if (typeof getHubViewMode === "function" && getHubViewMode() === "edit") return false;
+    if (typeof hubUnit7LegacyFolderHubHref !== "function") return false;
+    var href = hubUnit7LegacyFolderHubHref(folderId);
+    if (!href) return false;
+    window.location.href = href;
+    return true;
+}
+
+function hubTryNavigateUnit8LegacyFolder(folderId) {
+    if (typeof getHubViewMode === "function" && getHubViewMode() === "edit") return false;
+    if (typeof hubUnit8LegacyFolderHubHref !== "function") return false;
+    var href = hubUnit8LegacyFolderHubHref(folderId);
+    if (!href) return false;
+    window.location.href = href;
+    return true;
+}
+
+function hubTryNavigateUnit9LegacyFolder(folderId) {
+    if (typeof getHubViewMode === "function" && getHubViewMode() === "edit") return false;
+    if (typeof hubUnit9LegacyFolderHubHref !== "function") return false;
+    var href = hubUnit9LegacyFolderHubHref(folderId);
+    if (!href) return false;
+    window.location.href = href;
+    return true;
+}
+
+function hubTryNavigateUnit11LegacyFolder(folderId) {
+    if (typeof getHubViewMode === "function" && getHubViewMode() === "edit") return false;
+    if (typeof hubUnit11LegacyFolderHubHref !== "function") return false;
+    var href = hubUnit11LegacyFolderHubHref(folderId);
+    if (!href) return false;
+    window.location.href = href;
+    return true;
 }
 
 function hubNavigateToCmsFolder(folderId) {
@@ -24670,6 +24228,10 @@ function hubNavigateToCmsFolder(folderId) {
         openHubFolderWorkspace(folderId);
         return;
     }
+    if (hubTryNavigateUnit7LegacyFolder(folderId)) return;
+    if (hubTryNavigateUnit8LegacyFolder(folderId)) return;
+    if (hubTryNavigateUnit9LegacyFolder(folderId)) return;
+    if (hubTryNavigateUnit11LegacyFolder(folderId)) return;
     if (typeof PrepSiteContent !== "undefined" && PrepSiteContent.load) {
         var fd = (PrepSiteContent.load().folders || []).find(function (x) {
             return x.id === folderId;
@@ -24980,9 +24542,35 @@ function openHubUnitWorkspace(u) {
 
 function openHubFolderWorkspace(fid) {
     var fidRaw = fid;
+    if (typeof getHubViewMode === "function" && getHubViewMode() !== "edit") {
+        if (typeof hubTryNavigateUnit7LegacyFolder === "function" && hubTryNavigateUnit7LegacyFolder(fidRaw)) {
+            return;
+        }
+        if (typeof hubTryNavigateUnit8LegacyFolder === "function" && hubTryNavigateUnit8LegacyFolder(fidRaw)) {
+            return;
+        }
+        if (typeof hubTryNavigateUnit9LegacyFolder === "function" && hubTryNavigateUnit9LegacyFolder(fidRaw)) {
+            return;
+        }
+        if (typeof hubTryNavigateUnit11LegacyFolder === "function" && hubTryNavigateUnit11LegacyFolder(fidRaw)) {
+            return;
+        }
+    }
     prepCourseHub.stagedFolderRecord = null;
     if (typeof prepHubUnit10EnsureByFolderId === "function") {
         prepHubUnit10EnsureByFolderId(fidRaw);
+    }
+    if (typeof prepHubUnit7EnsureByFolderId === "function") {
+        prepHubUnit7EnsureByFolderId(fidRaw);
+    }
+    if (typeof prepHubUnit8EnsureByFolderId === "function") {
+        prepHubUnit8EnsureByFolderId(fidRaw);
+    }
+    if (typeof prepHubUnit9EnsureByFolderId === "function") {
+        prepHubUnit9EnsureByFolderId(fidRaw);
+    }
+    if (typeof prepHubUnit11EnsureByFolderId === "function") {
+        prepHubUnit11EnsureByFolderId(fidRaw);
     }
     if (typeof prepHubUnit12EnsureByFolderId === "function") {
         prepHubUnit12EnsureByFolderId(fidRaw);
@@ -25002,6 +24590,18 @@ function openHubFolderWorkspace(fid) {
     if (!f && typeof prepHubUnit12EnsureByFolderId === "function" && prepHubUnit12EnsureByFolderId(fid)) {
         f = hubFindPrepFolder(fid);
     }
+    if (!f && typeof prepHubUnit7EnsureByFolderId === "function" && prepHubUnit7EnsureByFolderId(fid)) {
+        f = hubFindPrepFolder(fid);
+    }
+    if (!f && typeof prepHubUnit8EnsureByFolderId === "function" && prepHubUnit8EnsureByFolderId(fid)) {
+        f = hubFindPrepFolder(fid);
+    }
+    if (!f && typeof prepHubUnit9EnsureByFolderId === "function" && prepHubUnit9EnsureByFolderId(fid)) {
+        f = hubFindPrepFolder(fid);
+    }
+    if (!f && typeof prepHubUnit11EnsureByFolderId === "function" && prepHubUnit11EnsureByFolderId(fid)) {
+        f = hubFindPrepFolder(fid);
+    }
     if (!f && typeof hubUnit12GetFolderRecord === "function") {
         f = hubUnit12GetFolderRecord(fid);
         if (f) prepCourseHub.stagedFolderRecord = f;
@@ -25013,9 +24613,27 @@ function openHubFolderWorkspace(fid) {
             window.location.href = u12Href;
             return;
         }
+        var u7Href =
+            typeof hubUnit7LegacyFolderHubHref === "function" ? hubUnit7LegacyFolderHubHref(fid) : null;
+        if (u7Href) {
+            window.location.href = u7Href;
+            return;
+        }
+        var u8Href =
+            typeof hubUnit8LegacyFolderHubHref === "function" ? hubUnit8LegacyFolderHubHref(fid) : null;
+        if (u8Href) {
+            window.location.href = u8Href;
+            return;
+        }
+        var u9Href =
+            typeof hubUnit9LegacyFolderHubHref === "function" ? hubUnit9LegacyFolderHubHref(fid) : null;
+        if (u9Href) {
+            window.location.href = u9Href;
+            return;
+        }
         try {
             hubToastShow(
-                "This folder is missing from the course data (removed or another course). Go back to the hub and open the folder from the level grid, or add a new one with Edit → + Folder."
+                "This folder is missing from the course data (removed or another course). Go back to the hub and open the folder from the level grid, or add a new one with Edit тЖТ + Folder."
             );
         } catch (eOfw) {}
         hubWorkspace = { kind: "unit", unit: 1 };
@@ -25056,8 +24674,8 @@ function ensurePrepLegacyU9UoeFolder() {
     var id = PREP_LEGACY_U9_UOE_FOLDER_ID;
     var seedTask = {
         id: "u9_interior_design_seed",
-        title: "Interior design — different strokes for different folks",
-        subtitle: "Part 1 · 12 gaps (classroom sheet)",
+        title: "Interior design тАФ different strokes for different folks",
+        subtitle: "Part 1 ┬╖ 12 gaps (classroom sheet)",
         kind: "uoe-part1",
         dataSrc: "published-unit9-interior-design.json"
     };
@@ -25081,7 +24699,7 @@ function ensurePrepLegacyU9UoeFolder() {
         id: id,
         type: "folder",
         title: "Use of English",
-        subtitle: "Part 1 multiple-choice cloze — add your own activities inside.",
+        subtitle: "Part 1 multiple-choice cloze тАФ add your own activities inside.",
         goal: "",
         linkedUnit: 9,
         sections: [],
@@ -25103,7 +24721,7 @@ function hubLooksLikeLegacyU9UoeShell(f) {
     var title = String(f.title == null ? "" : f.title).trim();
     var subtitle = String(f.subtitle == null ? "" : f.subtitle).trim();
     if (title !== "Use of English") return false;
-    return subtitle === "Part 1 multiple-choice cloze — add your own activities inside.";
+    return subtitle === "Part 1 multiple-choice cloze тАФ add your own activities inside.";
 }
 
 function hubInferUnitFromHref(rawHref) {
@@ -25224,7 +24842,7 @@ function hubNormalizeLinkedUnitsByTaskLinks() {
     if (changed) PrepSiteContent.save(d);
 }
 
-/** Level 9 — экран-папка «Use of English» со списком Part 1 заданий (пока одно + плейсхолдер). */
+/** Level 9 тАФ ╤Н╨║╤А╨░╨╜-╨┐╨░╨┐╨║╨░ ┬лUse of English┬╗ ╤Б╨╛ ╤Б╨┐╨╕╤Б╨║╨╛╨╝ Part 1 ╨╖╨░╨┤╨░╨╜╨╕╨╣ (╨┐╨╛╨║╨░ ╨╛╨┤╨╜╨╛ + ╨┐╨╗╨╡╨╣╤Б╤Е╨╛╨╗╨┤╨╡╤А). */
 function openUnit9UoeFolderHub(ev) {
     if (ev) {
         if (typeof ev.preventDefault === "function") ev.preventDefault();
@@ -25744,7 +25362,7 @@ function legacyRefreshUnitScreen(unit) {
     hubPracticeToolsZoneSyncLegacy(unit);
 }
 
-/** Hide Practice tools strip when every chip inside is legacy-hidden (teacher Edit mode). Level 8–9 only. */
+/** Hide Practice tools strip when every chip inside is legacy-hidden (teacher Edit mode). Level 8тАУ9 only. */
 function hubPracticeToolsZoneSyncLegacy(unit) {
     var sid = unit === 9 ? "screen-unit9" : unit === 8 ? "screen-unit8" : "";
     if (!sid) return;
@@ -25830,6 +25448,26 @@ function renderHubUnitTasksContent() {
         var prepFolders = [];
         var allOrder = [];
         if (typeof PrepSiteContent !== "undefined" && PrepSiteContent.load) {
+            if (Number(u) === 7 && typeof ensurePrepUnit7LinkedShells === "function") {
+                try {
+                    ensurePrepUnit7LinkedShells();
+                } catch (eU7Hub) {}
+            }
+            if (Number(u) === 8 && typeof ensurePrepUnit8LinkedShells === "function") {
+                try {
+                    ensurePrepUnit8LinkedShells();
+                } catch (eU8Hub) {}
+            }
+            if (Number(u) === 9 && typeof ensurePrepUnit9LinkedShells === "function") {
+                try {
+                    ensurePrepUnit9LinkedShells();
+                } catch (eU9Hub) {}
+            }
+            if (Number(u) === 11 && typeof ensurePrepUnit11LinkedShells === "function") {
+                try {
+                    ensurePrepUnit11LinkedShells();
+                } catch (eU11Hub) {}
+            }
             if (Number(u) === 12 && typeof ensurePrepUnit12LinkedShells === "function") {
                 try {
                     ensurePrepUnit12LinkedShells();
@@ -26213,7 +25851,7 @@ function openTeacherCourseCms() {
 function refreshUserBar() {
     var dn = document.getElementById('display-name');
     if (dn) {
-        var tag = userData.liveRole === 'teacher' ? ' · Teacher' : ' · Student';
+        var tag = userData.liveRole === 'teacher' ? ' ┬╖ Teacher' : ' ┬╖ Student';
         dn.innerText = userData.name + tag;
     }
     var ds = document.getElementById("display-score");
@@ -26361,24 +25999,24 @@ function openUnitDetail(unit) {
     showLegacyProtectedScreen('screen-unit-detail');
 }
 
-/** Teachers: unlocks the right-hand “My courses” rail. Change this string to your own secret. */
+/** Teachers: unlocks the right-hand тАЬMy coursesтАЭ rail. Change this string to your own secret. */
 var PREP_PLATFORM_AUTHOR_PIN = "EMP-platform-2026";
 
 var loginCourseTrackPick = "cpe";
 /** Single login password for CPE / EGE / FCE / Creator on this screen. */
-/** Learners / class teachers — not shown in the UI. */
+/** Learners / class teachers тАФ not shown in the UI. */
 var PREP_PUBLIC_LOGIN_PASSWORD = "suvorova2drob2";
 /** Site admin (prepAdmin); optional if you still use prep_link with admin password. */
 var PREP_ADMIN_LOGIN_PASSWORD = "0608";
 
 /**
- * If true, only your name is required — course password may be empty (open beta / private deploy).
+ * If true, only your name is required тАФ course password may be empty (open beta / private deploy).
  * Class and admin passwords still work when typed. Set to false before a public launch.
  */
 var PREP_ALLOW_PASSWORDLESS_LOGIN = true;
 
 /**
- * Optional extra passwords for “class links” (prep_class=slug in URL). If slug is set, prep_pass must match
+ * Optional extra passwords for тАЬclass linksтАЭ (prep_class=slug in URL). If slug is set, prep_pass must match
  * public, admin, OR this table. Leave values empty to only use PREP_PUBLIC_LOGIN_PASSWORD.
  * Example link (Level 9, learner): index.html?prep_link=1&prep_pass=PUBLIC&prep_name=Anna&prep_track=cpe&screen=unit9
  * Teacher / full access: same with PREP_ADMIN_LOGIN_PASSWORD and prep_role=teacher
@@ -26526,7 +26164,7 @@ function prepSyncProfileAfterLogin(track) {
     } catch (eProf) {}
 }
 
-/** ?prep_track= / ?prep_exam= — switch workspace from nav links (e.g. ege.html → CPE). */
+/** ?prep_track= / ?prep_exam= тАФ switch workspace from nav links (e.g. ege.html тЖТ CPE). */
 function prepApplyPrepTrackFromQuery(params) {
     if (!params || typeof params.get !== "function") return;
     var trRaw = params.get("prep_track") || params.get("prep_exam");
@@ -26579,7 +26217,7 @@ try {
     window.setLoginLiveRole = setLoginLiveRole;
 } catch (eWinLogin) {}
 
-/** Делегирование: работает при строгом CSP без inline onclick и надёжнее на тач-устройствах. */
+/** ╨Ф╨╡╨╗╨╡╨│╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡: ╤А╨░╨▒╨╛╤В╨░╨╡╤В ╨┐╤А╨╕ ╤Б╤В╤А╨╛╨│╨╛╨╝ CSP ╨▒╨╡╨╖ inline onclick ╨╕ ╨╜╨░╨┤╤С╨╢╨╜╨╡╨╡ ╨╜╨░ ╤В╨░╤З-╤Г╤Б╤В╤А╨╛╨╣╤Б╤В╨▓╨░╤Е. */
 function wireLoginScreenPickersOnce() {
     var root = document.getElementById("screen-login");
     if (!root || root.getAttribute("data-login-delegation") === "1") return;
@@ -26623,13 +26261,9 @@ function registerUser() {
     if (n.length > 60) n = n.slice(0, 60);
     var pwEl = document.getElementById('login-password-input');
     var password = pwEl ? String(pwEl.value || '').trim() : '';
-    var track = prepNormalizeTrackForScope(loginCourseTrackPick || 'cpe');
-    try {
-        if (typeof prepCourseProfile !== "undefined" && prepCourseProfile.load) {
-            var pt = prepCourseProfile.load().courseTrack;
-            if (pt && /^(cpe|ege|fce|creator)$/.test(pt)) track = prepNormalizeTrackForScope(pt);
-        }
-    } catch (eTr) {}
+    /* index.html = CPE hub: never inherit ege/fce from a prior visit on this origin */
+    var track = prepNormalizeTrackForScope(loginCourseTrackPick || "cpe");
+    if (track !== "creator") track = prepNormalizeTrackForScope("cpe");
 
     var isAdmin = password === PREP_ADMIN_LOGIN_PASSWORD;
     var isPublic = password === PREP_PUBLIC_LOGIN_PASSWORD;
@@ -26704,7 +26338,7 @@ function registerUser() {
             }
         } catch (e4) {}
     }
-    /* Stay on CPE hub after naming; use “My courses” (or profile track) to open EGE/FCE — avoid immediate replace away from index. */
+    /* Stay on CPE hub after naming; use тАЬMy coursesтАЭ (or profile track) to open EGE/FCE тАФ avoid immediate replace away from index. */
     showHub();
 }
 
@@ -26847,24 +26481,24 @@ function openStats() {
     showScreen('screen-stats');
     var rows = '<div style="background:#0f172a;padding:15px;border-radius:12px;margin-bottom:10px;">Score: ' + userData.score + ' pts</div>';
     for (var u = 1; u <= 5; u++) {
-        rows += '<p style="margin:8px 0;color:var(--muted);">Level ' + u + ' — Coming soon</p>';
+        rows += '<p style="margin:8px 0;color:var(--muted);">Level ' + u + ' тАФ Coming soon</p>';
     }
-    rows += '<p style="margin:8px 0;">Level 6 — Key-word transformation: ' + (userData.wins[winKey(6, 'keyword')] || 0) + ', Word-formation: ' + (userData.wins[winKey(6, 'wordform')] || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 6 тАФ Key-word transformation: ' + (userData.wins[winKey(6, 'keyword')] || 0) + ', Word-formation: ' + (userData.wins[winKey(6, 'wordform')] || 0) + '</p>';
     rows +=
-        '<p style="margin:8px 0;">Level 8 — Use of English &middot; Word formation (MORE THAN A TUNNEL): ' +
+        '<p style="margin:8px 0;">Level 8 тАФ Use of English &middot; Word formation (MORE THAN A TUNNEL): ' +
         (userData.wins[winKey(7, 'wordform')] || 0) +
         '</p>';
-    rows += '<p style="margin:8px 0 12px;font-weight:600;color:var(--primary);">Level 9 — Reading: The robots are taking over</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — A Jack (full passage) completions: ' + (userData.wins.unit9 || 0) + '</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — B Valentina (full passage) completions: ' + (userData.wins.unit9v || 0) + '</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — C Phoebe (full passage) completions: ' + (userData.wins.unit9p || 0) + '</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — D Richard (full passage) completions: ' + (userData.wins.unit9d || 0) + '</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — E Kiki (full passage) completions: ' + (userData.wins.unit9e || 0) + '</p>';
+    rows += '<p style="margin:8px 0 12px;font-weight:600;color:var(--primary);">Level 9 тАФ Reading: The robots are taking over</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ A Jack (full passage) completions: ' + (userData.wins.unit9 || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ B Valentina (full passage) completions: ' + (userData.wins.unit9v || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ C Phoebe (full passage) completions: ' + (userData.wins.unit9p || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ D Richard (full passage) completions: ' + (userData.wins.unit9d || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ E Kiki (full passage) completions: ' + (userData.wins.unit9e || 0) + '</p>';
     rows +=
-        '<p style="margin:8px 0;">Level 9 — Treasure Hunt · Listening: Making a mark (full script) completions: ' +
+        '<p style="margin:8px 0;">Level 9 тАФ Treasure Hunt ┬╖ Listening: Making a mark (full script) completions: ' +
         (userData.wins.unit9markth || 0) +
         '</p>';
-    rows += '<p style="margin:8px 0;">Level 9 — Lexical trainer · Reading: The robots are taking over (full run) completions: ' + (userData.wins.unit9lex || 0) + '</p>';
+    rows += '<p style="margin:8px 0;">Level 9 тАФ Lexical trainer ┬╖ Reading: The robots are taking over (full run) completions: ' + (userData.wins.unit9lex || 0) + '</p>';
     rows += '<p style="margin:8px 0;color:var(--muted);">Each correct tap in vocabulary tasks adds +1 to Score above. Each correct answer on the Part 7 exam adds +1 to Score when you submit.</p>';
     rows += '<div style="background:#0f172a;padding:14px 16px;border-radius:12px;margin:14px 0;border:1px solid #334155;">';
     rows += '<p style="margin:0 0 10px;font-weight:600;color:var(--primary);">Exams</p>';
@@ -27083,7 +26717,7 @@ window.onload = function () {
         try {
             var dTrack = window.__PREP_DEPLOY_TRACK__;
             if (dTrack === "cpe") {
-                /* single-site CPE deploy: never auto-bounce to ЕГЭ / FCE */
+                /* single-site CPE deploy: never auto-bounce to ╨Х╨У╨н / FCE */
             } else if (dTrack === "ege") {
                 window.location.replace(prepResolveSiteFile("ege.html"));
                 return;
@@ -27091,7 +26725,7 @@ window.onload = function () {
                 window.location.replace(prepResolveSiteFile("fce.html"));
                 return;
             }
-            /* dTrack null (local / placeholder): never redirect index → fce/ege from saved profile */
+            /* dTrack null (local / placeholder): never redirect index тЖТ fce/ege from saved profile */
         } catch (eExamHome) {}
     }
     ensureHubBuilt();
@@ -27202,7 +26836,32 @@ window.onload = function () {
     try {
         var pOf = params.get("prep_open_folder");
         if (pOf && String(pOf).trim()) {
-            openHubFolderWorkspace(String(pOf).trim());
+            var fidOpen = String(pOf).trim();
+            if (
+                typeof hubTryNavigateUnit7LegacyFolder === "function" &&
+                hubTryNavigateUnit7LegacyFolder(fidOpen)
+            ) {
+                return;
+            }
+            if (
+                typeof hubTryNavigateUnit8LegacyFolder === "function" &&
+                hubTryNavigateUnit8LegacyFolder(fidOpen)
+            ) {
+                return;
+            }
+            if (
+                typeof hubTryNavigateUnit9LegacyFolder === "function" &&
+                hubTryNavigateUnit9LegacyFolder(fidOpen)
+            ) {
+                return;
+            }
+            if (
+                typeof hubTryNavigateUnit11LegacyFolder === "function" &&
+                hubTryNavigateUnit11LegacyFolder(fidOpen)
+            ) {
+                return;
+            }
+            openHubFolderWorkspace(fidOpen);
             try {
                 history.replaceState({}, "", prepStripPrepOpenFolderFromUrl());
             } catch (eStripOf) {}
@@ -27285,3 +26944,4 @@ window.addEventListener('focus', function () {
 ></div>
 </body>
 </html>
+

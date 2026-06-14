@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 &mdash; Listening Part 4 &middot; Thomas Barker</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 12px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q { margin-bottom: 16px; border-bottom: 1px solid #34507d; padding-bottom: 14px; }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.98rem; line-height: 1.4; margin-bottom: 10px; color: #e8f0ff; }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .opt-line:has(input:checked) {
+      background: rgba(86, 204, 242, 0.12);
+      border-color: rgba(86, 204, 242, 0.45);
+    }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line.ok,
+    .opt-line.ok:has(input:checked) {
+      background: rgba(34, 197, 94, 0.28);
+      border-color: #4ade80;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.65);
+    }
+    .opt-line.bad-pick,
+    .opt-line.bad-pick:has(input:checked) {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #f87171;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      line-height: 1.45;
+      min-height: 1.5em;
+      font-size: 0.92rem;
+    }
+    .note-box {
+      font-size: 0.88rem;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      background: rgba(86, 204, 242, 0.08);
+      line-height: 1.45;
+    }
+    .fold-study {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+    }
+    .fold-study summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 12px 14px;
+      color: var(--muted);
+    }
+    .fold-inner {
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--line);
+    }
+    .fold-lead {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 12px 0;
+    }
+    .transcript {
+      font-size: 0.94rem;
+      line-height: 1.55;
+      color: #dbeafe;
+    }
+    .transcript p { margin: 0 0 10px; }
+    .transcript .spk { font-weight: 700; color: #7dd3fc; }
+    .transcript mark {
+      background: rgba(251, 191, 36, 0.22);
+      color: #fde68a;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">RfB2 First &middot; Listening &middot; Part 4 Multiple choice &middot; WB Track 10</span>
+        <h1>Thomas Barker &mdash; ex-criminal</h1>
+        <p class="lead"><code>RfB2First_WB_Track 10.mp3</code> &mdash; choose <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.</p>
+      </div>
+      <a class="back" id="u10ListenBack" href="../index.html">&larr; Listening — Unit 10</a>
+    </header>
+
+    <div class="audio-wrap">
+      <label for="track">Audio (Yandex Object Storage)</label>
+      <audio id="track" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/fce/RfB2First_WB_Track%2010.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <p class="lead">
+      You will hear part of a radio interview with a man called Thomas Barker, who is an ex-criminal. For questions <strong>1&ndash;7</strong>, choose the best answer (<strong>A</strong>, <strong>B</strong> or <strong>C</strong>).
+    </p>
+    <div id="mcq-root" class="questions" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear choices &amp; marks</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+
+    <details class="fold-study">
+      <summary>After you listen &middot; Audioscript (study)</summary>
+      <div class="fold-inner">
+        <p class="fold-lead">
+          Read-only transcript from the Workbook. Yellow highlights mark the lines tested in questions 1&ndash;7.
+        </p>
+        <div class="transcript">
+          <p><span class="spk">I:</span> In our series of interviews this week about crime fighters, we&rsquo;ve spoken to police officers and welfare officers. Today, I&rsquo;m talking to someone who&rsquo;s actually been in prison and is now helping fight crime himself, Thomas Barker. Thomas, you started breaking the law when you were very young. Can you tell us why?</p>
+          <p><span class="spk">T:</span> I know it&rsquo;s common for people who&rsquo;ve gone bad to blame their family and their upbringing, but quite honestly, I can&rsquo;t really do that. My parents weren&rsquo;t very rich, but they both worked hard and they didn&rsquo;t row much. They had time for me and I respected them. I have two brothers who have never broken the law in their lives, so <mark>I don&rsquo;t think there was anything wrong with my home life</mark>.</p>
+          <p><span class="spk">I:</span> So, if it wasn&rsquo;t that, what was it?</p>
+          <p><span class="spk">T:</span> I think it was the friends I had at school. Before I started school, I was a little angel! Then, <mark>I suppose I fell in with a bad crowd. And these were kids at primary school &mdash; about ten years old! But these kids were very persuasive.</mark> They used to shoplift sweets and drinks from the local newsagent&rsquo;s, and because I didn&rsquo;t want to be different, I did the same. We got away with it, so we did it again and again at a load of different shops. Although it was quite risky, we never got caught.</p>
+          <p><span class="spk">I:</span> And this continued at secondary school?</p>
+          <p><span class="spk">T:</span> Yes. It started to get more serious then. By the time I was 14, I was part of a big gang. We weren&rsquo;t in it for bags of sweets or packets of crisps then &mdash; it became more organised. <mark>We&rsquo;d watch people&rsquo;s homes for a few days then break in and steal money when we knew they&rsquo;d be out for a while.</mark> It became really exciting. Somehow, it never crossed my mind that the police would find us! We also took valuables like jewellery and watches and sold them on to real criminals.</p>
+          <p><span class="spk">I:</span> You say &lsquo;real criminals&rsquo;. You didn&rsquo;t think that you were a real criminal yourself?</p>
+          <p><span class="spk">T:</span> Not at the time. <mark>I suppose I thought it was still a big game.</mark> We were getting loads of cash out of it, but it was more like playing at being a criminal than being a real one. But that all changed when one of the guys got violent. We were burgling an old lady&rsquo;s house and we didn&rsquo;t know it but she was still at home and came at us with an umbrella! We panicked and one of my mates pushed her over and she hit her head. She was hurt quite badly. We got caught and I ended up doing a stretch in prison.</p>
+          <p><span class="spk">I:</span> And how did that affect you?</p>
+          <p><span class="spk">T:</span> <mark>I think I was in shock for about six months.</mark> It had all been fun and an easy way to make money and buy stuff we wanted and then suddenly there I was in prison. Looking back, I&rsquo;m really glad we were caught. It brought me to my senses. In prison, I had time to think and I knew I had to change. It&rsquo;s not easy in there. You&rsquo;re surrounded by guys who have done some bad things, and a lot of them are forming new relationships to help them commit more crimes when they get out.</p>
+          <p><span class="spk">I:</span> Were you helped at all while you were in prison &mdash; to prepare for life when you got out?</p>
+          <p><span class="spk">T:</span> Well, at school I hadn&rsquo;t done well. I hadn&rsquo;t wanted to study or get any qualifications. But in prison, they encouraged me to take exams, and by the time I came out, I was a qualified car mechanic. <mark>They got me a part-time job to go to when I was released, too, so I have a lot to thank them for.</mark> It meant it was much more unlikely that I would ever go back to my previous life. Luckily, my parents were happy to have me home. However, I wouldn&rsquo;t have blamed them if they&rsquo;d shut the door on me.</p>
+          <p><span class="spk">I:</span> And you&rsquo;re helping to change lives yourself, aren&rsquo;t you?</p>
+          <p><span class="spk">T:</span> I hope so. I&rsquo;m involved with a volunteer programme to try to help youngsters who are in trouble and maybe in with the wrong crowd. I go to youth clubs and schools and talk about my own experiences and how and why I&rsquo;ve changed. <mark>I think it helps for them to hear from someone who&rsquo;s been through the things that they might be going through themselves.</mark> I wish there had been someone to help me out when I was at that stage.</p>
+          <p><span class="spk">I:</span> Well, congratulations on doing a great job, Thomas. And we wish you all the best.</p>
+        </div>
+      </div>
+    </details>
+  </main>
+
+  <script>
+(function () {
+  var QUESTIONS = [
+    {
+      stem: "What does Thomas say about his home life when he was a child?",
+      opts: {
+        A: "His family had a lot of money.",
+        B: "His parents were good role models.",
+        C: "His brothers got into trouble with the police."
+      }
+    },
+    {
+      stem: "Thomas says that he started stealing things because",
+      opts: {
+        A: "he liked the element of danger.",
+        B: "he wanted to be part of the group.",
+        C: "he enjoyed getting things for free."
+      }
+    },
+    {
+      stem: "What was different about the crimes he was involved in later?",
+      opts: {
+        A: "the degree of planning",
+        B: "the worry about getting caught",
+        C: "the number of crimes he committed"
+      }
+    },
+    {
+      stem: "What was Thomas&rsquo; attitude to his crimes at that time?",
+      opts: {
+        A: "He did not take his crimes seriously.",
+        B: "He disliked the level of violence involved.",
+        C: "He envied the more serious criminals."
+      }
+    },
+    {
+      stem: "What was his reaction to being in prison?",
+      opts: {
+        A: "He enjoyed making new friends.",
+        B: "He was confused about the reason for being there.",
+        C: "He accepted the consequences of his actions."
+      }
+    },
+    {
+      stem: "When Thomas left prison, he felt",
+      opts: {
+        A: "angry with his parents for not accommodating him.",
+        B: "concerned that he might reoffend and return to prison.",
+        C: "grateful to the prison for the opportunities it had given him."
+      }
+    },
+    {
+      stem: "Thomas works today to",
+      opts: {
+        A: "help prisoners to rehabilitate.",
+        B: "help the police to detect crime.",
+        C: "steer young people away from crime."
+      }
+    }
+  ];
+  var ANSWERS = ["B", "B", "A", "A", "C", "C", "C"];
+
+  var root = document.getElementById("mcq-root");
+
+  function render() {
+    root.innerHTML = "";
+    QUESTIONS.forEach(function (q, idx) {
+      var n = idx + 1;
+      var box = document.createElement("section");
+      box.className = "q";
+      box.innerHTML = "<p class=\"stem\"><strong>" + n + ".</strong> " + q.stem + "</p>";
+
+      var list = document.createElement("ul");
+      list.className = "opts";
+      ["A", "B", "C"].forEach(function (letter) {
+        var li = document.createElement("li");
+        li.className = "opt-line";
+        var id = "q" + n + letter;
+        li.innerHTML =
+          "<input type=\"radio\" name=\"q" + n + "\" id=\"" + id + "\" value=\"" + letter + "\">" +
+          "<span class=\"letter\">" + letter + "</span>" +
+          "<label for=\"" + id + "\">" + q.opts[letter] + "</label>";
+        list.appendChild(li);
+      });
+      box.appendChild(list);
+      root.appendChild(box);
+    });
+  }
+
+  function currentChoices() {
+    var out = [];
+    QUESTIONS.forEach(function (_, idx) {
+      var n = idx + 1;
+      var checked = document.querySelector("input[name=\"q" + n + "\"]:checked");
+      out.push(checked ? checked.value : "—");
+    });
+    return out;
+  }
+
+  function clearMarks() {
+    document.querySelectorAll(".opt-line").forEach(function (line) {
+      line.classList.remove("ok", "bad-pick");
+    });
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    clearMarks();
+    var choices = currentChoices();
+    var score = 0;
+    choices.forEach(function (choice, idx) {
+      var n = idx + 1;
+      var correct = ANSWERS[idx];
+      var correctInput = document.getElementById("q" + n + correct);
+      if (correctInput) correctInput.closest(".opt-line").classList.add("ok");
+      if (choice === correct) {
+        score++;
+      } else if (choice !== "—") {
+        var picked = document.getElementById("q" + n + choice);
+        if (picked) picked.closest(".opt-line").classList.add("bad-pick");
+      }
+    });
+    document.getElementById("feedback").textContent =
+      score + " / " + QUESTIONS.length + " correct. Key: " +
+      ANSWERS.map(function (v, i) { return (i + 1) + v; }).join(" · ") + ".";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function () {
+    document.querySelectorAll("input[type=radio]").forEach(function (el) {
+      el.checked = false;
+    });
+    clearMarks();
+    document.getElementById("feedback").textContent = "";
+  });
+
+  render();
+})();
+  </script>
+  <script src="../../../../js/prep-course-profile.js"></script>
+  <script src="../../../../js/prep-site-content.js"></script>
+  <script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var back = document.getElementById("u10ListenBack");
+  if (!back) return;
+  var rawBack = q.get("back");
+  if (!rawBack) return;
+  try {
+    var u = new URL(rawBack, window.location.href);
+    if (u.origin === window.location.origin) {
+      back.href = u.pathname + u.search + u.hash;
+    }
+  } catch (e) {}
+  if (q.get("backLabel")) {
+    try {
+      back.textContent = "\u2190 " + decodeURIComponent(q.get("backLabel").replace(/\+/g, " "));
+    } catch (eLabel) {}
+  }
+})();
+  </script>
+</body>
+</html>

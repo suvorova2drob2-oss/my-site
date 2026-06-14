@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Verb patterns · Exercise 1</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --rose: #fda4af;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.55;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.1rem; font-weight: 800; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .gram-nav { margin-bottom: 14px; font-size: 0.88rem; color: var(--muted); }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .instr { font-size: 0.94rem; color: #d5e2f8; margin-bottom: 16px; }
+    .row-list { display: flex; flex-direction: column; gap: 14px; }
+    .row {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .row.is-ok { border-color: rgba(54, 211, 153, 0.45); }
+    .row.is-bad { border-color: rgba(248, 113, 113, 0.45); }
+    .row-num { font-weight: 800; color: var(--rose); margin-bottom: 10px; }
+    .opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
+    .sep { color: var(--muted); font-weight: 700; padding: 0 2px; user-select: none; }
+    .opt {
+      border: 1px solid #3d5680;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: rgba(8, 22, 48, 0.55);
+      color: #e8f0ff;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .opt:hover { border-color: var(--accent); }
+    .opt.is-pick { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35); }
+    .opt.is-cross {
+      text-decoration: line-through;
+      text-decoration-color: var(--bad);
+      color: #fca5a5;
+      border-color: rgba(248, 113, 113, 0.55);
+      background: rgba(248, 113, 113, 0.12);
+    }
+    .opt.is-key-cross {
+      text-decoration: line-through;
+      text-decoration-color: var(--ok);
+      border-color: rgba(54, 211, 153, 0.55);
+      background: rgba(54, 211, 153, 0.12);
+      color: #bbf7d0;
+    }
+    .tail { font-size: 0.9rem; color: #c5d4ef; margin-top: 8px; }
+    .row-hint {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #86efac;
+      line-height: 1.45;
+    }
+    .row.is-bad .row-hint { display: block; }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Verb patterns &middot; Exercise 1</h1>
+      </div>
+      <a class="back" id="back-link" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Grammar &middot; Level 12</a>
+    </header>
+
+    <nav class="gram-nav">
+      <a href="index.html">Verb patterns hub</a>
+      <span> &middot; </span>
+      <span style="font-weight:700;color:var(--text);">Exercise 1</span>
+      <span> &middot; </span>
+      <a href="exercise-2-meaning-flip.html">Exercise 2 &mdash; flip cards</a>
+    </nav>
+
+    <p class="instr"><strong>1</strong> Cross out the incorrect word or phrase in each set. Tap the phrase that <strong>does not</strong> fit the verb pattern.</p>
+
+    <div class="row-list" id="row-list"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check</button>
+      <button type="button" class="btn-reset" id="btnReset">Reset</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      n: 1,
+      options: ["I resisted", "I'm struggling", "I deserve", "I've arranged", "I didn't hesitate"],
+      tail: "to join the course.",
+      key: "I resisted",
+      hint: "<strong>I resisted</strong> takes -ing (<em>resist joining</em>), not a to-infinitive."
+    },
+    {
+      n: 2,
+      options: ["keep putting off", "would hate", "didn't anticipate", "don't want to risk", "can't contemplate"],
+      tail: "having to go there.",
+      key: "would hate",
+      hint: "<strong>would hate</strong> usually takes a to-infinitive (<em>would hate to have to go</em>), not -ing here."
+    },
+    {
+      n: 3,
+      options: ["caught", "found", "left", "spotted", "vowed"],
+      tail: "him eating some snacks.",
+      key: "vowed",
+      hint: "<strong>vowed</strong> does not take object + -ing; use <em>vowed to</em> or <em>vowed that</em>."
+    },
+    {
+      n: 4,
+      options: [
+        "I have a tendency",
+        "made a decision",
+        "have no recollection",
+        "submitted a proposal",
+        "don't have the capacity"
+      ],
+      tail: "to do the work myself.",
+      key: "have no recollection",
+      hint: "<strong>have no recollection</strong> needs <em>of</em> + -ing, not a to-infinitive."
+    },
+    {
+      n: 5,
+      options: ["reluctant", "thrilled", "aware", "elated", "eager"],
+      tail: "to go back to the health spa.",
+      key: "aware",
+      hint: "<strong>aware</strong> takes <em>of</em> / <em>that</em>, not a to-infinitive after the adjective."
+    }
+  ];
+
+  var picks = {};
+  var list = document.getElementById("row-list");
+  var fb = document.getElementById("feedback");
+
+  function render() {
+    list.innerHTML = "";
+    ITEMS.forEach(function (it) {
+      var row = document.createElement("div");
+      row.className = "row";
+      row.dataset.n = String(it.n);
+      var html = '<p class="row-num">' + it.n + ".</p><div class=\"opts\">";
+      it.options.forEach(function (opt, oi) {
+        if (oi) html += '<span class="sep">/</span>';
+        html +=
+          '<button type="button" class="opt" data-n="' +
+          it.n +
+          '" data-opt="' +
+          opt.replace(/"/g, "&quot;") +
+          '">' +
+          opt +
+          "</button>";
+      });
+      html += '</div><p class="tail">' + it.tail + "</p>";
+      html += '<p class="row-hint"></p>';
+      row.innerHTML = html;
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll(".opt").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var n = btn.getAttribute("data-n");
+        var opt = btn.getAttribute("data-opt");
+        var row = btn.closest(".row");
+        row.classList.remove("is-ok", "is-bad");
+        row.querySelector(".row-hint").innerHTML = "";
+        row.querySelectorAll(".opt").forEach(function (b) {
+          b.classList.remove("is-pick", "is-cross", "is-key-cross");
+        });
+        picks[n] = opt;
+        btn.classList.add("is-cross");
+        fb.textContent = "";
+      });
+    });
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0;
+    var missing = [];
+    ITEMS.forEach(function (it) {
+      var row = list.querySelector('.row[data-n="' + it.n + '"]');
+      var hint = row.querySelector(".row-hint");
+      row.classList.remove("is-ok", "is-bad");
+      row.querySelectorAll(".opt").forEach(function (b) {
+        b.classList.remove("is-key-cross");
+      });
+      if (!picks[it.n]) {
+        missing.push(it.n);
+        return;
+      }
+      var good = picks[it.n] === it.key;
+      if (good) {
+        ok++;
+        row.classList.add("is-ok");
+      } else {
+        row.classList.add("is-bad");
+        hint.innerHTML = "Cross out: " + it.hint;
+        row.querySelectorAll(".opt").forEach(function (b) {
+          if (b.getAttribute("data-opt") === it.key) b.classList.add("is-key-cross");
+        });
+      }
+    });
+    if (missing.length) {
+      fb.textContent = "Choose one phrase to cross out in item(s): " + missing.join(", ") + ".";
+      return;
+    }
+    fb.textContent =
+      ok === ITEMS.length
+        ? "Excellent \u2014 all 5 correct."
+        : ok + " / 5 correct. Green strike = what you should have crossed out.";
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    picks = {};
+    fb.textContent = "";
+    render();
+  });
+
+  render();
+})();
+  </script>
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script src="../../../js/unit12-cpe-grammar-back.js"></script>
+  <script>wireUnit12CpeGrammarBack();</script>
+</body>
+</html>

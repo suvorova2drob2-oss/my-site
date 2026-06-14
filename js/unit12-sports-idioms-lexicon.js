@@ -46,6 +46,7 @@
         },
         {
             group: "Sports idioms · phrase bank",
+            headword: "have the upper hand",
             ans: "the upper hand",
             hint:
                 "Cards · have / give the upper hand · To have an advantage over someone.",
@@ -53,10 +54,11 @@
         },
         {
             group: "Sports idioms · phrase bank",
-            ans: "have a head start",
+            headword: "have a head start",
+            ans: "a head start",
             hint:
                 "Horse racing · literal: a horse ahead at the start · To start with an advantage.",
-            tap: "have a head start",
+            tap: "a head start",
         },
         {
             group: "Word box · one-word gaps",
@@ -84,9 +86,10 @@
         },
         {
             group: "Word box · one-word gaps",
-            ans: "take it on the chin",
+            headword: "take it on the chin",
+            ans: "took it on the chin",
             hint: "Boxing · To accept criticism or bad news without complaining.",
-            tap: "take it on the chin",
+            tap: "took it on the chin",
         },
         {
             group: "Discussing pairs",
@@ -104,7 +107,7 @@
     ];
 
     W.U12_SPORTS_IDIOMS_TAP_PHRASES = W.U12_SPORTS_IDIOMS_LEXIS_GAME_ROWS.map(function (row) {
-        return { en: row.tap || row.ans, hint: row.hint };
+        return { en: row.headword || row.tap || row.ans, hint: row.hint };
     });
 
     /** Each `ans` above appears verbatim in this plain (for drop / Word Bank anchoring). */

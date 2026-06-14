@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 8 &mdash; Coastal habitats (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .cpe-vocab-gap-input {
+      display: inline-block;
+      width: min(11rem, 42vw);
+      max-width: 100%;
+      margin: 0 2px;
+      padding: 6px 10px;
+      border: 1px solid #3d5680;
+      border-radius: 8px;
+      background: var(--cv-gap-bg, #1f2937);
+      color: var(--cv-text, #e8f0ff);
+      font: inherit;
+      vertical-align: baseline;
+    }
+    .cpe-vocab-gap-input:focus {
+      outline: 2px solid var(--cv-accent, #56ccf2);
+      outline-offset: 1px;
+    }
+    .cpe-vocab-gap-input.is-ok {
+      border-color: var(--cv-ok, #36d399);
+      box-shadow: 0 0 0 1px rgba(54, 211, 153, 0.35);
+    }
+    .cpe-vocab-gap-input.is-bad {
+      border-color: var(--cv-bad, #f87171);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.35);
+    }
+    .cpe-vocab-passage .gap-num {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--cv-muted-dim, #9bb0d3);
+      margin-right: 2px;
+    }
+  </style>
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u8-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">&larr; Vocabulary &mdash; Level 8</a>
+      <h1>Coastal habitats</h1>
+      <p class="cpe-vocab-meta">Level 8 &middot; Vocabulary &middot; environment collocations</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the text with the correct words. Type one word in each gap, then <strong>Submit</strong>.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-passage" id="passage"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u8-cpe-sibling" href="../electric-vehicles-options/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">&larr; Electric vehicles</a></p>
+  </main>
+
+  <script>
+(function () {
+  var GAPS = [
+    {
+      id: 1,
+      answers: ["ecosystems", "habitats"],
+      why:
+        "<strong>Ecosystems</strong> collocates with woodland and climate impacts. <em>Habitats</em> is also accepted if your word bank used that form."
+    },
+    {
+      id: 2,
+      answers: ["erosion"],
+      why:
+        "<strong>Coastal erosion</strong> = gradual wearing away of land by sea and weather (Unit 8 environment lexis)."
+    },
+    {
+      id: 3,
+      answers: ["coastal", "marine"],
+      why:
+        "<strong>Coastal</strong> or <strong>marine</strong> habitats &mdash; natural places at the shoreline / in the sea that conservation work protects."
+    },
+    {
+      id: 4,
+      answers: ["pollutants", "leachates", "leachate", "toxins"],
+      why:
+        "Landfills can release harmful <strong>pollutants</strong> (or technical <em>leachate(s)</em>) into the sea."
+    },
+    {
+      id: 5,
+      answers: ["humanitarian"],
+      why:
+        "<strong>Humanitarian catastrophe</strong> &mdash; large-scale crisis affecting people (displacement, loss of land)."
+    },
+    {
+      id: 6,
+      answers: ["management", "disposal"],
+      why:
+        "<strong>Waste management</strong> (or <em>disposal</em>) &mdash; organised handling of rubbish safely."
+    },
+    {
+      id: 7,
+      answers: ["sustainable"],
+      why:
+        "<strong>Sustainable development</strong> &mdash; growth that does not harm future generations (Unit 8 collocation)."
+    },
+    {
+      id: 8,
+      answers: ["ecological", "environmental"],
+      why:
+        "<strong>Ecological</strong> or <strong>environmental</strong> disaster &mdash; severe harm to nature / the planet."
+    }
+  ];
+
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function gapInput(id) {
+    return (
+      '<label class="sr-only" for="gap-' +
+      id +
+      '">Gap ' +
+      id +
+      '</label><span class="gap-num">(' +
+      id +
+      ')</span><input type="text" class="cpe-vocab-gap-input" id="gap-' +
+      id +
+      '" data-gap="' +
+      id +
+      '" autocomplete="off" spellcheck="false" />'
+    );
+  }
+
+  function renderPassage() {
+    document.getElementById("passage").innerHTML =
+      "<p>We have heard a lot recently about the impacts of climate change on our woodland " +
+      gapInput(1) +
+      ". Now, let us turn our attention to our seas.</p>" +
+      "<p>Coastal " +
+      gapInput(2) +
+      ", the gradual weathering of land by natural forces, jeopardises " +
+      gapInput(3) +
+      " habitats and wildlife conservation efforts. As shorelines recede, vital breeding and feeding grounds vanish, disrupting ecosystems and compromising biodiversity. As well as the loss of ground, this crisis exacerbates the threat of coastal landfills releasing harmful " +
+      gapInput(4) +
+      " that will contaminate marine environments.</p>" +
+      "<p>As climate change brings about more storms and higher seas create more waves, winds and flooding, this gradual erosion will continue to worsen. For low-lying island nations, particularly in the Pacific, these changes increase vulnerability and the risk of a " +
+      gapInput(5) +
+      " catastrophe. Here, communities will face displacement and agricultural land will be lost, posing economic and social challenges.</p>" +
+      "<p>A comprehensive, coordinated effort is essential, integrating responsible waste " +
+      gapInput(6) +
+      ", " +
+      gapInput(7) +
+      " development, and a commitment to mitigating the human impact on fragile ecosystems. Only through such measures can we hope to avert the impending " +
+      gapInput(8) +
+      " disaster.</p>";
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function matchGap(gap, raw) {
+    var val = norm(raw);
+    if (!val) return false;
+    return gap.answers.some(function (a) {
+      return norm(a) === val;
+    });
+  }
+
+  function primaryAnswer(gap) {
+    return gap.answers[0];
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var parts = [];
+
+    GAPS.forEach(function (gap) {
+      var input = document.getElementById("gap-" + gap.id);
+      var val = input ? input.value : "";
+      var ok = matchGap(gap, val);
+      if (ok) correct += 1;
+
+      if (input) {
+        input.disabled = true;
+        input.classList.remove("is-ok", "is-bad");
+        input.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>(' +
+          gap.id +
+          ") " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(primaryAnswer(gap)) +
+          "</strong>" +
+          (val && !ok ? " (you wrote <em>" + esc(val) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          gap.why +
+          "</p></div>"
+      );
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' +
+      correct +
+      " / " +
+      GAPS.length +
+      "</p>" +
+      parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    hideAside();
+    renderPassage();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  renderPassage();
+})();
+  </script>
+  <script src="../../../js/u8-vocab-course-context.js"></script>
+</body>
+</html>

@@ -188,8 +188,14 @@ function pruneSiblingHubFiles() {
 /** FCE-only publish: drop CPE-exclusive vocabulary routes (same repo, separate products). */
 function pruneFceCpeOnlyContent() {
   if (TRACK !== "fce") return;
-  const sim = path.join(OUT, "unit10-vocabulary", "similes");
-  if (fs.existsSync(sim)) fs.rmSync(sim, { recursive: true, force: true });
+  const dropRel = [
+    "unit10-vocabulary/similes",
+    "unit12-vocabulary/cpe",
+  ];
+  for (const rel of dropRel) {
+    const target = path.join(OUT, ...rel.split("/"));
+    if (fs.existsSync(target)) fs.rmSync(target, { recursive: true, force: true });
+  }
 }
 
 copyTree();

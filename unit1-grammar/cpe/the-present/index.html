@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 Grammar &mdash; The present (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --teal: #14b8a6;
+      --teal-bright: #5eead4;
+      --ok: #36d399;
+      --bad: #f87171;
+      --gram: #f472b6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fbcfe8;
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .mcq-stack { display: grid; gap: 14px; }
+    .mcq-card {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      border-radius: 14px;
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+    .mcq-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #be185d 0%, #9d174d 100%);
+      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+    .mcq-body {
+      padding: 14px 16px 12px;
+      background: rgba(20, 32, 58, 0.72);
+    }
+    .mcq-stem {
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: #f1f5ff;
+    }
+    .pick-row {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+      vertical-align: baseline;
+      margin: 0 4px;
+    }
+    .pick-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 2px solid rgba(244, 114, 182, 0.35);
+      background: rgba(8, 22, 48, 0.45);
+      cursor: pointer;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+    .pick-opt:hover { border-color: #f9a8d4; }
+    .pick-opt input { accent-color: #f472b6; margin: 0; }
+    .pick-opt span {
+      font-style: italic;
+      font-weight: 600;
+      color: #fbcfe8;
+      font-size: 0.9rem;
+    }
+    .pick-opt .sep { font-style: normal; color: var(--muted); font-weight: 700; margin: 0 2px; }
+    .pick-opt.is-ok {
+      border-color: #4ade80;
+      background: rgba(34, 197, 94, 0.2);
+    }
+    .pick-opt.is-bad {
+      border-color: var(--bad);
+      background: rgba(239, 68, 68, 0.16);
+    }
+    .pick-opt.is-missed {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.12);
+    }
+    .pick-opt.is-ok span,
+    .pick-opt.is-bad span { font-style: normal; }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .btn-sol {
+      background: rgba(254, 240, 138, 0.15);
+      color: #fef08a;
+      border: 1px solid rgba(254, 240, 138, 0.35);
+      display: none;
+    }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 1.5em;
+    }
+    @media (max-width: 520px) {
+      .mcq-card { grid-template-columns: 44px 1fr; }
+      .mcq-num { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Language focus &mdash; The present</h1>
+        <p class="badge">Grammar &middot; Unit 1</p>
+      </div>
+      <a class="back" id="back-link" href="../index.html?course=cpe&amp;backLabel=Grammar%20%E2%80%94%20Level%201">&larr; Grammar</a>
+    </header>
+
+    <p class="instr">
+      Choose the correct alternatives in the following sentences. Either one or both alternatives may be possible.
+      Tick every form that fits; leave incorrect forms unticked.
+    </p>
+
+    <div class="mcq-stack" id="mcq-root" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check</button>
+      <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      <button type="button" class="btn-sol" id="btnSolution">Show solution</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  </main>
+
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      num: 1,
+      before: "If you ",
+      after: " ill, why don&rsquo;t you go lie down and rest?",
+      options: [
+        { id: "feel", label: "feel" },
+        { id: "are feeling", label: "are feeling" }
+      ],
+      correct: ["feel", "are feeling"],
+      note: "Zero conditional: <strong>feel</strong> (general) or <strong>are feeling</strong> (current state) both work."
+    },
+    {
+      num: 2,
+      before: "Thinking back on it now, I still can&rsquo;t believe I won &ndash; I ",
+      after: " luck was on my side.",
+      options: [
+        { id: "guess", label: "guess" },
+        { id: "am guessing", label: "am guessing" }
+      ],
+      correct: ["guess"],
+      note: "Opinion about the past &mdash; present simple <strong>guess</strong> (not a process happening now)."
+    },
+    {
+      num: 3,
+      before: "I ",
+      after: " my own business, in the middle of a relaxing jog, and a dog runs up and starts nipping at my heels.",
+      options: [
+        { id: "mind", label: "mind" },
+        { id: "am minding", label: "am minding" }
+      ],
+      correct: ["am minding"],
+      note: "Activity in progress around the main events &mdash; <strong>am minding</strong> my own business."
+    },
+    {
+      num: 4,
+      before: "I&rsquo;m trying to make sense of this information. It ",
+      after: " safety protocols and will be applicable to all of us.",
+      options: [
+        { id: "concerns", label: "concerns" },
+        { id: "is concerning", label: "is concerning" }
+      ],
+      correct: ["concerns"],
+      note: "The document is <em>about</em> protocols &mdash; stative <strong>concerns</strong> (= relates to)."
+    },
+    {
+      num: 5,
+      before: "The parade starts at 10 am and the weather forecast ",
+      after: " good.",
+      options: [
+        { id: "looks", label: "looks" },
+        { id: "is looking", label: "is looking" }
+      ],
+      correct: ["looks"],
+      note: "General prediction &mdash; <strong>looks</strong> good (simple present)."
+    },
+    {
+      num: 6,
+      before: "We ",
+      after: " to present a brief overview to demonstrate what benefits this technology could provide for your organisation.",
+      options: [
+        { id: "wish", label: "wish" },
+        { id: "are wishing", label: "are wishing" }
+      ],
+      correct: ["wish"],
+      note: "Formal written register &mdash; <strong>wish to</strong> + infinitive."
+    },
+    {
+      num: 7,
+      before: "To avoid potential inconvenience, we ",
+      after: " that drivers renew their licences well in advance of the expiration date.",
+      options: [
+        { id: "recommend", label: "recommend" },
+        { id: "are recommending", label: "are recommending" }
+      ],
+      correct: ["recommend"],
+      note: "General official advice &mdash; simple <strong>recommend</strong> (+ that-clause)."
+    },
+    {
+      num: 8,
+      before: "He now ",
+      after: " a bachelor&rsquo;s degree in computer science from Tsinghua University in Beijing.",
+      options: [
+        { id: "holds", label: "holds" },
+        { id: "is holding", label: "is holding" }
+      ],
+      correct: ["holds"],
+      note: "Permanent state / qualification &mdash; <strong>holds</strong> a degree."
+    }
+  ];
+
+  var root = document.getElementById("mcq-root");
+  var fb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btnSolution");
+  var locked = false;
+
+  function esc(t) {
+    return String(t)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function render() {
+    root.innerHTML = ITEMS.map(function (item, idx) {
+      var picks = item.options
+        .map(function (o, oi) {
+          var id = "mq-" + idx + "-" + oi;
+          return (
+            (oi > 0 ? '<span class="sep">/</span>' : "") +
+            '<label class="pick-opt" data-qidx="' +
+            idx +
+            '" data-val="' +
+            esc(o.id) +
+            '">' +
+            '<input type="checkbox" name="mq' +
+            idx +
+            '" value="' +
+            esc(o.id) +
+            '" id="' +
+            id +
+            '" />' +
+            "<span>" +
+            esc(o.label) +
+            "</span></label>"
+          );
+        })
+        .join("");
+
+      return (
+        '<article class="mcq-card">' +
+        '<div class="mcq-num" aria-hidden="true">' +
+        item.num +
+        "</div>" +
+        '<div class="mcq-body">' +
+        '<p class="mcq-stem">' +
+        esc(item.before) +
+        '<span class="pick-row">' +
+        picks +
+        "</span>" +
+        item.after +
+        "</p>" +
+        "</div></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        if (locked) return;
+        clearMarks();
+        fb.textContent = "";
+        btnSol.style.display = "none";
+      });
+    });
+  }
+
+  function clearMarks() {
+    root.querySelectorAll(".pick-opt").forEach(function (line) {
+      line.classList.remove("is-ok", "is-bad", "is-missed");
+    });
+  }
+
+  function getPicked(idx) {
+    var out = [];
+    root.querySelectorAll('input[name="mq' + idx + '"]:checked').forEach(function (cb) {
+      out.push(cb.value);
+    });
+    out.sort();
+    return out;
+  }
+
+  function sameSet(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+
+  function markItem(idx, picked, correctSorted) {
+    var correctSet = {};
+    correctSorted.forEach(function (v) {
+      correctSet[v] = true;
+    });
+    root.querySelectorAll('.pick-opt[data-qidx="' + idx + '"]').forEach(function (line) {
+      var val = line.getAttribute("data-val");
+      var isPicked = picked.indexOf(val) >= 0;
+      var isCorrect = !!correctSet[val];
+      if (isCorrect && isPicked) line.classList.add("is-ok");
+      else if (!isCorrect && isPicked) line.classList.add("is-bad");
+      else if (isCorrect && !isPicked) line.classList.add("is-missed");
+    });
+  }
+
+  render();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    if (locked) return;
+    clearMarks();
+    fb.textContent = "";
+    btnSol.style.display = "none";
+
+    for (var i = 0; i < ITEMS.length; i++) {
+      if (!getPicked(i).length) {
+        fb.textContent = "Tick at least one form in each sentence (1\u20138), then check again.";
+        return;
+      }
+    }
+
+    var score = 0;
+    var detail = "";
+    for (var j = 0; j < ITEMS.length; j++) {
+      var picked = getPicked(j);
+      var correct = ITEMS[j].correct.slice().sort();
+      var ok = sameSet(picked, correct);
+      if (ok) score++;
+      markItem(j, picked, correct);
+      if (!ok) {
+        detail +=
+          '<p style="margin:8px 0 0;font-size:0.84rem;color:#c5d4ef;"><strong>' +
+          ITEMS[j].num +
+          ".</strong> " +
+          ITEMS[j].note +
+          "</p>";
+      }
+    }
+
+    if (score === ITEMS.length) {
+      fb.innerHTML = "<strong>Excellent &mdash; " + ITEMS.length + " / " + ITEMS.length + ".</strong>";
+      locked = true;
+      root.querySelectorAll("input").forEach(function (inp) {
+        inp.disabled = true;
+      });
+    } else {
+      fb.innerHTML =
+        "<strong>Score: " +
+        score +
+        " / " +
+        ITEMS.length +
+        ".</strong> Green = correct tick; red = wrong tick; amber = missed correct form." +
+        detail;
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    ITEMS.forEach(function (item, idx) {
+      root.querySelectorAll('input[name="mq' + idx + '"]').forEach(function (cb) {
+        cb.checked = item.correct.indexOf(cb.value) >= 0;
+        cb.disabled = true;
+      });
+    });
+    clearMarks();
+    ITEMS.forEach(function (item, idx) {
+      markItem(idx, item.correct.slice().sort(), item.correct.slice().sort());
+    });
+    fb.innerHTML = "<strong>Solution shown.</strong>";
+    btnSol.style.display = "none";
+    locked = true;
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    locked = false;
+    root.querySelectorAll("input").forEach(function (inp) {
+      inp.checked = false;
+      inp.disabled = false;
+    });
+    clearMarks();
+    fb.textContent = "";
+    btnSol.style.display = "none";
+  });
+})();
+  </script>
+  <script src="../../../js/prep-hub-unit1-nests.js"></script>
+  <script src="../../../js/unit1-cpe-grammar-back.js"></script>
+  <script>wireUnit1CpeGrammarBack({ hubDepth: 3 });</script>
+</body>
+</html>

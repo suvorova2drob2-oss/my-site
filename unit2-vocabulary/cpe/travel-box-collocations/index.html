@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2 &mdash; Travel: boxes A &amp; B (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --rose: #fda4af;
+      --rose-bg: rgba(244, 114, 182, 0.12);
+      --mint: #6ee7b7;
+      --mint-bg: rgba(110, 231, 183, 0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 16px;
+    }
+    .example {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+    .example__lab {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 8px;
+    }
+    .example .phrase-bold { font-weight: 800; color: #fef08a; }
+    .ex-workspace {
+      display: grid;
+      grid-template-columns: minmax(168px, 220px) 1fr;
+      gap: 16px 20px;
+      align-items: start;
+    }
+    .bank-col--side {
+      position: sticky;
+      top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .items-col { min-width: 0; }
+    .word-box-wrap {
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: var(--rose-bg);
+    }
+    .word-box-wrap--b {
+      border-color: rgba(110, 231, 183, 0.45);
+      background: var(--mint-bg);
+    }
+    .word-box-wrap h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .word-box-wrap--b h2 { color: var(--mint); }
+    .word-box { display: flex; flex-wrap: wrap; gap: 6px; }
+    .word-box--dock { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+    .word-chip {
+      font-size: 0.84rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffe4e6;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .word-box-wrap--b .word-chip {
+      border-color: rgba(110, 231, 183, 0.45);
+      color: #d1fae5;
+    }
+    .word-chip:hover:not(.is-used):not(.is-selected) { border-color: var(--accent); }
+    .word-chip.is-selected {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.18);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .word-chip.is-used { opacity: 0.35; cursor: default; text-decoration: line-through; }
+    .bank-hint { margin-top: 8px; font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+    .bank-dock {
+      display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 50;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(9, 18, 42, 0.97);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    .bank-dock__label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 4px;
+    }
+    .bank-dock__status {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      min-height: 1.1em;
+    }
+    .bank-dock__status.is-active { color: #bae6fd; font-weight: 700; }
+    .bank-dock__row { margin-bottom: 8px; }
+    .bank-dock__row:last-child { margin-bottom: 0; }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      margin-bottom: 12px;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .item__sent { font-size: 0.94rem; line-height: 1.75; }
+    .gap-pair {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      vertical-align: baseline;
+      margin: 0 2px;
+    }
+    .gap {
+      display: inline-block;
+      min-width: 5.5rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: rgba(8, 22, 48, 0.55);
+      color: #bae6fd;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .gap--adj { border-color: rgba(244, 114, 182, 0.55); }
+    .gap--noun { border-color: rgba(110, 231, 183, 0.55); }
+    .gap:hover:not(.is-locked) { border-color: var(--accent); }
+    .gap.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.3);
+    }
+    .gap.is-filled { border-style: solid; }
+    .gap.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); color: #bbf7d0; }
+    .gap.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+    .gap.is-locked { cursor: default; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; }
+    .btn-reset { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--line); }
+    .btn-sol { background: rgba(254, 240, 138, 0.15); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); display: none; }
+    .feedback {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+    @media (max-width: 720px) {
+      body { padding-bottom: 180px; }
+      .ex-workspace { grid-template-columns: 1fr; }
+      .bank-col--side { display: none; }
+      .bank-dock { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Travel</p>
+        <h1>Complete the sentences with an adjective from box A and a noun from box B.</h1>
+      </div>
+      <a class="back" id="back-link" data-u2-vocab-hub-depth="1" data-u2-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%202">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      Complete the sentences with an adjective from box A and a noun from box B. There is an example at the beginning.
+      Each word from the boxes is used <strong>once</strong> (including the example).
+      <span class="bank-hint" style="display:block;margin-top:8px;">Tap a gap, then a word in box A or B. Tap a filled gap to clear it.</span>
+    </p>
+
+    <div class="example">
+      <div class="example__lab">0 &middot; Example</div>
+      <p>What might a <span class="phrase-bold">discerning traveller</span> expect from a luxury hotel?</p>
+    </div>
+
+    <div class="ex-workspace">
+      <aside class="bank-col bank-col--side" aria-label="Word boxes sidebar">
+        <div class="word-box-wrap">
+          <h2>Box A</h2>
+          <div class="word-box" id="word-box-a"></div>
+        </div>
+        <div class="word-box-wrap word-box-wrap--b">
+          <h2>Box B</h2>
+          <div class="word-box" id="word-box-b"></div>
+        </div>
+        <p class="bank-hint">Pink gaps = adjective (A). Green gaps = noun (B).</p>
+      </aside>
+
+      <div class="items-col">
+        <div id="items"></div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-check" id="btn-check">Check</button>
+          <button type="button" class="btn btn-reset" id="btn-reset">Reset</button>
+          <button type="button" class="btn btn-sol" id="btn-solution">Show solution</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bank-dock" id="bank-dock" aria-label="Word boxes dock">
+    <div class="bank-dock__status" id="dock-status">Tap a gap, then a word.</div>
+    <div class="bank-dock__row">
+      <div class="bank-dock__label">Box A</div>
+      <div class="word-box word-box--dock" id="word-box-a-dock"></div>
+    </div>
+    <div class="bank-dock__row">
+      <div class="bank-dock__label" style="color:var(--mint);">Box B</div>
+      <div class="word-box word-box--dock" id="word-box-b-dock"></div>
+    </div>
+  </div>
+
+  <script src="../../../js/u2-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var BOX_A = ["backwater", "bustling", "culture", "discerning", "iconic", "leisurely", "overseas", "shoddy"];
+  var BOX_B = ["crowds", "landmark", "service", "shock", "stroll", "travel", "traveller", "villages"];
+
+  var KEY_ADJ = {
+    1: "overseas",
+    2: "leisurely",
+    3: "iconic",
+    4: "bustling",
+    5: "shoddy",
+    6: "culture",
+    7: "backwater"
+  };
+
+  var KEY_NOUN = {
+    1: "travel",
+    2: "stroll",
+    3: "landmark",
+    4: "crowds",
+    5: "service",
+    6: "shock",
+    7: "villages"
+  };
+
+  var ITEMS = [
+    {
+      n: 1,
+      html:
+        "What would be the pros and cons of a job that involved frequent " +
+        '<span class="gap-pair" data-n="1">' +
+        '<button type="button" class="gap gap--adj" data-n="1" data-slot="adj" aria-label="Gap 1 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="1" data-slot="noun" aria-label="Gap 1 noun">&mdash;</button>' +
+        "</span>?"
+    },
+    {
+      n: 2,
+      html:
+        "Which would be more relaxing to do on a beach holiday &ndash; lying in the sand or taking a " +
+        '<span class="gap-pair" data-n="2">' +
+        '<button type="button" class="gap gap--adj" data-n="2" data-slot="adj" aria-label="Gap 2 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="2" data-slot="noun" aria-label="Gap 2 noun">&mdash;</button>' +
+        "</span> along the coast?"
+    },
+    {
+      n: 3,
+      html:
+        "For you, what " +
+        '<span class="gap-pair" data-n="3">' +
+        '<button type="button" class="gap gap--adj" data-n="3" data-slot="adj" aria-label="Gap 3 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="3" data-slot="noun" aria-label="Gap 3 noun">&mdash;</button>' +
+        "</span> in your country is a must-see for foreign visitors?"
+    },
+    {
+      n: 4,
+      html:
+        "When in a major city, do you gravitate toward the " +
+        '<span class="gap-pair" data-n="4">' +
+        '<button type="button" class="gap gap--adj" data-n="4" data-slot="adj" aria-label="Gap 4 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="4" data-slot="noun" aria-label="Gap 4 noun">&mdash;</button>' +
+        "</span> of the city centre or do you try to avoid them?"
+    },
+    {
+      n: 5,
+      html:
+        "If you experienced " +
+        '<span class="gap-pair" data-n="5">' +
+        '<button type="button" class="gap gap--adj" data-n="5" data-slot="adj" aria-label="Gap 5 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="5" data-slot="noun" aria-label="Gap 5 noun">&mdash;</button>' +
+        "</span> while on holiday, would you make a complaint?"
+    },
+    {
+      n: 6,
+      html:
+        "Have you ever experienced " +
+        '<span class="gap-pair" data-n="6">' +
+        '<button type="button" class="gap gap--adj" data-n="6" data-slot="adj" aria-label="Gap 6 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="6" data-slot="noun" aria-label="Gap 6 noun">&mdash;</button>' +
+        "</span>? Where were you? How long, if ever, did it take you to adjust?"
+    },
+    {
+      n: 7,
+      html:
+        "Do you think it&rsquo;s more interesting to visit cosmopolitan cities or quiet " +
+        '<span class="gap-pair" data-n="7">' +
+        '<button type="button" class="gap gap--adj" data-n="7" data-slot="adj" aria-label="Gap 7 adjective">&mdash;</button> ' +
+        '<button type="button" class="gap gap--noun" data-n="7" data-slot="noun" aria-label="Gap 7 noun">&mdash;</button>' +
+        "</span>?"
+    }
+  ];
+
+  var TOTAL = 7;
+  var answersAdj = Object.create(null);
+  var answersNoun = Object.create(null);
+  var activeGap = null;
+  var selectedWord = null;
+  var selectedBox = null;
+  var locked = false;
+
+  var elBoxA = document.getElementById("word-box-a");
+  var elBoxB = document.getElementById("word-box-b");
+  var elBoxADock = document.getElementById("word-box-a-dock");
+  var elBoxBDock = document.getElementById("word-box-b-dock");
+  var elDockStatus = document.getElementById("dock-status");
+  var elItems = document.getElementById("items");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+
+  var EXAMPLE_USED_A = ["discerning"];
+  var EXAMPLE_USED_B = ["traveller"];
+
+  function renderBoxInto(container, words, box) {
+    if (!container) return;
+    container.innerHTML = "";
+    words.forEach(function (w) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "word-chip";
+      chip.textContent = w;
+      chip.setAttribute("data-word", w);
+      chip.setAttribute("data-box", box);
+      container.appendChild(chip);
+    });
+  }
+
+  function isWordUsed(w, box) {
+    if (box === "A" && EXAMPLE_USED_A.indexOf(w) >= 0) return true;
+    if (box === "B" && EXAMPLE_USED_B.indexOf(w) >= 0) return true;
+    var store = box === "A" ? answersAdj : answersNoun;
+    for (var k in store) {
+      if (store[k] === w) return true;
+    }
+    return false;
+  }
+
+  function syncBoxInto(container, words, box) {
+    if (!container) return;
+    container.querySelectorAll(".word-chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-word");
+      var used = isWordUsed(w, box);
+      chip.classList.toggle("is-selected", selectedWord === w && selectedBox === box);
+      chip.classList.toggle("is-used", used && !(selectedWord === w && selectedBox === box));
+      chip.disabled = locked || (used && !(selectedWord === w && selectedBox === box));
+    });
+  }
+
+  function syncBoxes() {
+    syncBoxInto(elBoxA, BOX_A, "A");
+    syncBoxInto(elBoxB, BOX_B, "B");
+    syncBoxInto(elBoxADock, BOX_A, "A");
+    syncBoxInto(elBoxBDock, BOX_B, "B");
+    updateDockStatus();
+  }
+
+  function updateDockStatus() {
+    if (!elDockStatus) return;
+    if (activeGap) {
+      elDockStatus.textContent =
+        "Gap " + activeGap.n + " \u00b7 " + (activeGap.slot === "adj" ? "adjective (A)" : "noun (B)") + " \u2014 pick a word";
+      elDockStatus.className = "bank-dock__status is-active";
+    } else if (selectedWord) {
+      elDockStatus.textContent = "Selected: " + selectedWord + " \u2014 tap a gap";
+      elDockStatus.className = "bank-dock__status is-active";
+    } else {
+      elDockStatus.textContent = "Tap a gap, then a word.";
+      elDockStatus.className = "bank-dock__status";
+    }
+  }
+
+  function renderItems() {
+    elItems.innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' + it.html + "</p>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
+  function syncGaps() {
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      var n = gap.getAttribute("data-n");
+      var slot = gap.getAttribute("data-slot");
+      var val = slot === "adj" ? answersAdj[n] || "" : answersNoun[n] || "";
+      gap.textContent = val || "\u2014";
+      gap.classList.toggle("is-filled", !!val);
+      gap.classList.remove("is-ok", "is-bad");
+      gap.classList.toggle(
+        "is-active",
+        !!activeGap && String(activeGap.n) === String(n) && activeGap.slot === slot
+      );
+      gap.classList.toggle("is-locked", locked);
+    });
+  }
+
+  function clearFeedback() {
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+  }
+
+  function handleBoxClick(e) {
+    if (locked) return;
+    var chip = e.target.closest(".word-chip");
+    if (!chip || chip.disabled) return;
+    var w = chip.getAttribute("data-word");
+    var box = chip.getAttribute("data-box");
+
+    if (activeGap) {
+      var needSlot = activeGap.slot === "adj" ? "A" : "B";
+      if (box !== needSlot) return;
+      if (isWordUsed(w, box) && !(answersAdj[activeGap.n] === w || answersNoun[activeGap.n] === w)) return;
+      if (activeGap.slot === "adj") answersAdj[activeGap.n] = w;
+      else answersNoun[activeGap.n] = w;
+      activeGap = null;
+      selectedWord = null;
+      selectedBox = null;
+      syncGaps();
+      syncBoxes();
+      clearFeedback();
+      return;
+    }
+
+    selectedWord = selectedWord === w && selectedBox === box ? null : w;
+    selectedBox = selectedWord ? box : null;
+    syncBoxes();
+  }
+
+  function handleGapClick(e) {
+    if (locked) return;
+    var gap = e.target.closest(".gap[data-n]");
+    if (!gap) return;
+    var n = gap.getAttribute("data-n");
+    var slot = gap.getAttribute("data-slot");
+    var val = slot === "adj" ? answersAdj[n] : answersNoun[n];
+
+    if (val) {
+      if (slot === "adj") delete answersAdj[n];
+      else delete answersNoun[n];
+      activeGap = null;
+      selectedWord = null;
+      selectedBox = null;
+      syncGaps();
+      syncBoxes();
+      clearFeedback();
+      return;
+    }
+
+    if (selectedWord && selectedBox) {
+      var needSlot = slot === "adj" ? "A" : "B";
+      if (selectedBox !== needSlot) {
+        activeGap = { n: n, slot: slot };
+        selectedWord = null;
+        selectedBox = null;
+      } else {
+        if (slot === "adj") answersAdj[n] = selectedWord;
+        else answersNoun[n] = selectedWord;
+        activeGap = null;
+        selectedWord = null;
+        selectedBox = null;
+      }
+    } else {
+      activeGap = activeGap && String(activeGap.n) === String(n) && activeGap.slot === slot
+        ? null
+        : { n: n, slot: slot };
+    }
+    syncGaps();
+    syncBoxes();
+    clearFeedback();
+  }
+
+  [elBoxA, elBoxB, elBoxADock, elBoxBDock].forEach(function (el) {
+    el.addEventListener("click", handleBoxClick);
+  });
+  elItems.addEventListener("click", handleGapClick);
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearFeedback();
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var adjGap = document.querySelector('.gap[data-n="' + n + '"][data-slot="adj"]');
+      var nounGap = document.querySelector('.gap[data-n="' + n + '"][data-slot="noun"]');
+      if (!answersAdj[n] || !answersNoun[n]) {
+        missing.push(n);
+        continue;
+      }
+      var adjOk = answersAdj[n] === KEY_ADJ[n];
+      var nounOk = answersNoun[n] === KEY_NOUN[n];
+      if (adjOk) adjGap.classList.add("is-ok");
+      else adjGap.classList.add("is-bad");
+      if (nounOk) nounGap.classList.add("is-ok");
+      else nounGap.classList.add("is-bad");
+      if (adjOk && nounOk) ok++;
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Fill both gaps in item(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === TOTAL) {
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+      elFb.className = "feedback show ok";
+      locked = true;
+      activeGap = null;
+      selectedWord = null;
+      selectedBox = null;
+      syncGaps();
+      syncBoxes();
+    } else {
+      elFb.innerHTML =
+        "<strong>Score: " + ok + " / " + TOTAL + ".</strong> Tap a gap to clear and try again.";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL; n++) {
+      answersAdj[n] = KEY_ADJ[n];
+      answersNoun[n] = KEY_NOUN[n];
+    }
+    locked = true;
+    activeGap = null;
+    selectedWord = null;
+    selectedBox = null;
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      gap.classList.add("is-ok");
+    });
+    syncGaps();
+    syncBoxes();
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    answersAdj = Object.create(null);
+    answersNoun = Object.create(null);
+    activeGap = null;
+    selectedWord = null;
+    selectedBox = null;
+    locked = false;
+    clearFeedback();
+    syncGaps();
+    syncBoxes();
+  });
+
+  renderBoxInto(elBoxA, BOX_A, "A");
+  renderBoxInto(elBoxB, BOX_B, "B");
+  renderBoxInto(elBoxADock, BOX_A, "A");
+  renderBoxInto(elBoxBDock, BOX_B, "B");
+  renderItems();
+  syncGaps();
+  syncBoxes();
+})();
+  </script>
+</body>
+</html>

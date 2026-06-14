@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &mdash; Personality idioms matching (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --violet: #c4b5fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 16px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .toolbar button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+    .toolbar button:hover { border-color: var(--accent); }
+    .match-grid {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 760px) {
+      .match-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .col-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .sen-list, .def-list { display: flex; flex-direction: column; gap: 10px; }
+    .sen, .def {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 12px 12px 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      border-left: 4px solid transparent;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .sen:hover, .def:hover { border-color: #4a6898; }
+    .sen.selected { box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.45); border-color: var(--accent); }
+    .sen .num {
+      display: inline-block;
+      min-width: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .sen .txt { font-size: 0.92rem; line-height: 1.6; }
+    .sen .name { font-weight: 800; color: #bae6fd; }
+    .sen .badge {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ok);
+      min-height: 1.1em;
+    }
+    .sen .badge.empty { color: var(--muted); font-weight: 600; }
+    .sen .unpair {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(51, 65, 85, 0.9);
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .sen.matched .unpair { display: inline-flex; }
+    .def .letter {
+      display: inline-block;
+      font-weight: 800;
+      color: var(--violet);
+      margin-right: 8px;
+      min-width: 1.25rem;
+    }
+    .def .txt { font-size: 0.92rem; line-height: 1.55; }
+    .phrase-bold { font-weight: 800; color: #fef08a; }
+    .def .badge {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      min-height: 1.1em;
+    }
+    .def.used { opacity: 0.92; }
+    .def.dim { opacity: 0.45; pointer-events: none; }
+    .sen.is-ok { border-left-color: var(--ok) !important; }
+    .sen.is-bad { border-left-color: var(--bad) !important; }
+    .actions { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; }
+    .btn-check:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-reset { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--line); }
+    .btn-sol { background: rgba(254, 240, 138, 0.15); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); display: none; }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Idioms</p>
+        <h1>Personality &mdash; match sentences to idioms</h1>
+      </div>
+      <a class="back" id="back-link" data-u1-vocab-hub-depth="1" data-u1-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%201">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      <strong>2</strong> Match sentences (1&ndash;9) to idioms (a&ndash;i) which have a similar meaning.
+      Tap a sentence, then tap an idiom. Use <strong>Shuffle idioms</strong> to mix the right-hand column.
+    </p>
+
+    <div class="toolbar">
+      <button type="button" id="btn-shuffle">Shuffle idioms</button>
+      <button type="button" id="btn-clear">Clear all pairs</button>
+    </div>
+
+    <div class="match-grid">
+      <div>
+        <div class="col-title">Sentences 1&ndash;9</div>
+        <div class="sen-list" id="sen-list" aria-label="Sentences"></div>
+      </div>
+      <div>
+        <div class="col-title">Idioms a&ndash;i</div>
+        <div class="def-list" id="def-list" aria-label="Idioms"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-check" id="btn-check" disabled>Check</button>
+      <button type="button" class="btn btn-reset" id="btn-reset">Reset</button>
+      <button type="button" class="btn btn-sol" id="btn-solution">Show solution</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../../js/u1-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  var SENTENCES = [
+    {
+      id: 1,
+      html:
+        '<span class="name">Mena</span> used to be very shy, but these days she is friendlier and more talkative. She seems more confident when speaking to new people.'
+    },
+    {
+      id: 2,
+      html:
+        '<span class="name">Mark</span> has an inflated sense of his own importance. He thinks of himself as being very special and clever, and he can&rsquo;t help showing it.'
+    },
+    {
+      id: 3,
+      html:
+        '<span class="name">Sarina</span> has become very enthusiastic about chess. She dedicates nearly all of her time and energy to the game.'
+    },
+    {
+      id: 4,
+      html:
+        '<span class="name">Jimmy</span> is the kind of person who lies to people and he is likely to cause trouble. He&rsquo;s unpleasant and unkind.'
+    },
+    {
+      id: 5,
+      html:
+        '<span class="name">Tommaso</span> is always ruining other people&rsquo;s fun. He either refuses to join activities other people want to do &ndash; or, if he does join, he stops other people from enjoying the activity.'
+    },
+    {
+      id: 6,
+      html:
+        '<span class="name">Alice</span> feels like she was treated unfairly at one point in the past. She has been resentful about this for a long time. When the subject comes up, she takes offence quickly and easily.'
+    },
+    {
+      id: 7,
+      html:
+        '<span class="name">Georgia</span> is very energetic and determined to succeed. Plus, she seems to be able to handle any difficult situation with ease.'
+    },
+    {
+      id: 8,
+      html:
+        'Very gregarious and outgoing, <span class="name">Melonie</span> has always had great communication skills. She seems to take real joy in meeting and talking to people.'
+    },
+    {
+      id: 9,
+      html:
+        '<span class="name">Nnamdi</span> is a stickler for rules. When given instructions on how to do something, he follows them rigorously.'
+    }
+  ];
+
+  var IDIOMS = [
+    { id: "a", html: 'He&rsquo;s a <span class="phrase-bold">nasty piece of work</span>.' },
+    { id: "b", html: 'He does things strictly <span class="phrase-bold">by the book</span>.' },
+    { id: "c", html: 'She&rsquo;s <span class="phrase-bold">come out of her shell</span>.' },
+    { id: "d", html: 'She <span class="phrase-bold">lives and breathes it</span>.' },
+    { id: "e", html: 'He&rsquo;s <span class="phrase-bold">full of himself</span>.' },
+    { id: "f", html: 'She&rsquo;s <span class="phrase-bold">got a chip on her shoulder</span>.' },
+    { id: "g", html: 'She&rsquo;s a <span class="phrase-bold">people person</span>.' },
+    { id: "h", html: 'He&rsquo;s a <span class="phrase-bold">wet blanket</span>.' },
+    { id: "i", html: 'She&rsquo;s a real <span class="phrase-bold">go-getter</span>.' }
+  ];
+
+  var KEY = { 1: "c", 2: "e", 3: "d", 4: "a", 5: "h", 6: "f", 7: "i", 8: "g", 9: "b" };
+
+  var COLORS = ["#56ccf2", "#c4b5fd", "#6ee7b7", "#fda4af", "#fcd34d", "#2dd4bf", "#818cf8", "#fb923c", "#f472b6"];
+
+  function colorForLetter(L) {
+    var i = String(L).charCodeAt(0) - 97;
+    if (i < 0 || i > 8) return "#64748b";
+    return COLORS[i];
+  }
+
+  var defOrder = IDIOMS.slice();
+  var matches = {};
+  var selectedSen = null;
+  var locked = false;
+  var elSen = document.getElementById("sen-list");
+  var elDef = document.getElementById("def-list");
+  var elCheck = document.getElementById("btn-check");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+  var TOTAL = 9;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function assign(senId, letter) {
+    var sid = Number(senId);
+    for (var k in matches) {
+      if (matches[k] === letter && Number(k) !== sid) delete matches[k];
+    }
+    matches[sid] = letter;
+  }
+
+  function pairCount() {
+    var n = 0;
+    for (var k in matches) if (matches[k]) n++;
+    return n;
+  }
+
+  function render() {
+    elSen.innerHTML = "";
+    elDef.innerHTML = "";
+
+    for (var si = 0; si < SENTENCES.length; si++) {
+      var s = SENTENCES[si];
+      var sid = s.id;
+      var letter = matches[sid];
+      var row = document.createElement("div");
+      row.className =
+        "sen" +
+        (selectedSen === sid ? " selected" : "") +
+        (letter ? " matched" : "") +
+        (locked && letter ? (letter === KEY[sid] ? " is-ok" : " is-bad") : "");
+      if (letter) row.style.borderLeftColor = colorForLetter(letter);
+      row.innerHTML =
+        '<button type="button" class="unpair" aria-label="Remove pair">&times;</button>' +
+        '<span class="num">' +
+        sid +
+        '.</span><span class="txt">' +
+        s.html +
+        "</span>" +
+        '<div class="badge' +
+        (letter ? "" : " empty") +
+        '">' +
+        (letter ? "\u2192 Idiom " + letter : "\u2014 pick an idiom") +
+        "</div>";
+      row.addEventListener("click", (function (id) {
+        return function (e) {
+          if (locked) return;
+          if (e.target.closest(".unpair")) return;
+          selectedSen = selectedSen === id ? null : id;
+          render();
+        };
+      })(sid));
+      row.querySelector(".unpair").addEventListener("click", (function (id) {
+        return function (e) {
+          e.stopPropagation();
+          if (locked) return;
+          delete matches[id];
+          if (selectedSen === id) selectedSen = null;
+          clearFeedback();
+          render();
+        };
+      })(sid));
+      elSen.appendChild(row);
+    }
+
+    for (var di = 0; di < defOrder.length; di++) {
+      var d = defOrder[di];
+      var usedBy = null;
+      for (var mk in matches) {
+        if (matches[mk] === d.id) usedBy = Number(mk);
+      }
+      var drow = document.createElement("div");
+      drow.className = "def" + (usedBy ? " used" : "");
+      if (usedBy) drow.style.borderLeftColor = colorForLetter(d.id);
+      if (locked && !usedBy) drow.classList.add("dim");
+      drow.innerHTML =
+        '<span class="letter">' +
+        d.id +
+        '.</span><span class="txt">' +
+        d.html +
+        "</span>" +
+        '<div class="badge">' +
+        (usedBy
+          ? "\u2190 Sentence " + usedBy
+          : selectedSen
+            ? "Tap to link with " + selectedSen
+            : "Tap a sentence first") +
+        "</div>";
+      drow.addEventListener("click", (function (letter) {
+        return function () {
+          if (locked) return;
+          if (selectedSen == null) {
+            elFb.textContent = "Select a sentence on the left, then tap an idiom.";
+            elFb.className = "feedback show bad";
+            return;
+          }
+          assign(selectedSen, letter);
+          selectedSen = null;
+          clearFeedback();
+          render();
+        };
+      })(d.id));
+      elDef.appendChild(drow);
+    }
+
+    elCheck.disabled = pairCount() !== TOTAL;
+    document.getElementById("btn-shuffle").disabled = locked;
+    document.getElementById("btn-clear").disabled = locked;
+  }
+
+  function clearFeedback() {
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+  }
+
+  document.getElementById("btn-shuffle").addEventListener("click", function () {
+    if (locked) return;
+    defOrder = shuffle(IDIOMS);
+    clearFeedback();
+    render();
+  });
+
+  document.getElementById("btn-clear").addEventListener("click", function () {
+    if (locked) return;
+    matches = {};
+    selectedSen = null;
+    clearFeedback();
+    render();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked || pairCount() !== TOTAL) return;
+    clearFeedback();
+    var ok = 0;
+    for (var n = 1; n <= TOTAL; n++) {
+      if (matches[n] === KEY[n]) ok++;
+    }
+    locked = true;
+    render();
+    if (ok === TOTAL) {
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+      elFb.className = "feedback show ok";
+    } else {
+      elFb.innerHTML =
+        "<strong>Score: " +
+        ok +
+        " / " +
+        TOTAL +
+        ".</strong> Green border = correct pair; red = try again after Reset.";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL; n++) matches[n] = KEY[n];
+    locked = true;
+    selectedSen = null;
+    render();
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    matches = {};
+    selectedSen = null;
+    locked = false;
+    clearFeedback();
+    render();
+  });
+
+  defOrder = shuffle(IDIOMS);
+  render();
+})();
+  </script>
+</body>
+</html>

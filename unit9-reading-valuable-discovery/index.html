@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Reading &mdash; A Valuable Discovery</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 8px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .instr { font-size: 0.94rem; color: #d5e2f8; margin-bottom: 16px; }
+    .read-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: 20px 24px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .read-split { grid-template-columns: 1fr; }
+    }
+    .passage, .questions {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 18px 20px;
+    }
+    @media (min-width: 901px) {
+      .passage, .read-col--tasks {
+        position: sticky;
+        top: 12px;
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
+      }
+    }
+    .passage h2 {
+      font-size: 1.45rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fef9c3;
+      margin-bottom: 14px;
+    }
+    .passage p { margin-bottom: 12px; }
+    .passage p:last-child { margin-bottom: 0; }
+    .q { margin-bottom: 14px; border-bottom: 1px solid #34507d; padding-bottom: 12px; }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.95rem; line-height: 1.45; margin-bottom: 8px; color: #e8f0ff; }
+    .opts { list-style: none; display: grid; gap: 6px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.28);
+      border-color: #4ade80;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.65);
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #f87171;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      line-height: 1.45;
+      min-height: 1.5em;
+      font-size: 0.92rem;
+      color: #d5e2f8;
+    }
+    .lex-task {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+    .lex-task h2 {
+      font-size: 1.05rem;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .lex-task p {
+      color: #d5e2f8;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .lex-example {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px dashed var(--line);
+      color: #fef9c3;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .eye-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .eye-grid { grid-template-columns: 1fr; }
+    }
+    .eye-row,
+    .eye-ending {
+      width: 100%;
+      text-align: left;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      color: #e8f0ff;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      font: inherit;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .eye-row:hover,
+    .eye-ending:hover { border-color: #5a7ab0; }
+    .eye-row.pick,
+    .eye-ending.pick { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .eye-row.bad { border-color: var(--bad); }
+    .eye-ending.linked { border-color: rgba(54, 211, 153, 0.55); background: rgba(54, 211, 153, 0.08); }
+    .eye-badge {
+      float: right;
+      color: #86efac;
+      font-weight: 800;
+      margin-left: 10px;
+    }
+    .eye-key {
+      color: #86efac;
+      font-weight: 800;
+      display: inline-block;
+      min-width: 1.25rem;
+    }
+    .eye-hint {
+      color: #b8cce8;
+      font-size: 0.86rem;
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.25);
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Reading &middot; Multiple choice</span>
+        <h1>A Valuable Discovery</h1>
+        <p class="lead">Unit 9 reading text with six A&ndash;D questions.</p>
+      </div>
+      <a class="back" href="../unit9-reading/index.html">&larr; Reading &mdash; Unit 9</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;6</strong>, choose the answer (<strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>) which you think fits best according to the text.
+    </p>
+
+    <div class="read-split">
+      <div class="read-col read-col--passage">
+        <article class="passage">
+          <h2>A Valuable Discovery</h2>
+          <p>
+            In 2019, two gardeners were doing routine jobs at the Ricci Oddi Gallery of Modern Art in Piacenza, Italy, and they discovered something very strange when clearing some ivy. By chance, they noticed that one of the walls had a metal panel in it. It caught their eye and they decided to take a look inside. There, between the internal and external gallery walls, was a black box. The worker admitted that he had originally thought it was just a bin full of rubbish. It&rsquo;s a good job, then, that he decided to double-check.
+          </p>
+          <p>
+            Could this be the <em>Portrait of a Lady</em> painting by Austrian artist Gustav Klimt, which had gone missing in 1997? The gallery staff was understandably excited as they congratulated the gardeners on the potentially special find. The gallery&rsquo;s Vice President, Laura Bonfanti, was cautiously optimistic and wanted to wait until various tests had been carried out to determine that it was, without a doubt, by the famous artist. Ultraviolet and infrared light would be used to compare similar tests taken in 1996. But looking at more obvious features like seals and stamps, everything was looking good.
+          </p>
+          <p>
+            The painting had been stolen back in 1997 when it was being prepared to be transported to a special exhibition. How exactly it had been stolen is still unclear. The frame of the painting, thought to be worth a staggering 60 million euros, had been found next to the skylight on the roof, which was strange because it couldn&rsquo;t actually fit through the skylight! This led some to think it was an inside job. The painting had made headlines shortly before its disappearance because an art student discovered it was actually a double portrait and Klimt&rsquo;s only known one. This means it was a painting that had been painted over another one.
+          </p>
+          <p>
+            Police got to work on finding the whereabouts of the artwork. There were various leads. At one point, a letter was sent to <em>Libert&agrave;</em>, a local newspaper. It was from two people claiming that they had stolen the picture. The police also joined forces with a local art thief to see if he could come up with any ideas. And three months after the theft, a painting was found on the border between France and Italy. This was apparently unconnected. Years later, fingerprints were discovered on the original frame but this, too, came to nothing, leaving police scratching their heads.
+          </p>
+          <p>
+            In 2016, a BBC investigation revealed that the local thief who had helped the investigation admitted that he had stolen the original. Nevertheless, he claimed this was months before the actual theft. According to him, he&rsquo;d taken the painting and replaced it with a fake. Then, on learning the fake was going to be taken to an exhibition, he got rid of the fake in order to avoid experts noticing that it wasn&rsquo;t genuine. He then suggested that the original must have been sold and would be returned in 2017. When 2017 came and went without incident, they knew he was an unreliable source.
+          </p>
+          <p>
+            Art theft is nothing new. Caravaggio&rsquo;s stolen painting, <em>Nativity with St. Francis and St. Lawrence</em>, was stolen in 1969, and its whereabouts remains one of the art world&rsquo;s biggest mysteries. Had the gardener not found it, Klimt&rsquo;s could have joined the same club. The police are no nearer to discovering the truth about how it got to its hiding place and who was involved in putting it there, but at least we appear to have it back.
+          </p>
+        </article>
+      </div>
+
+      <div class="read-col read-col--tasks">
+        <div id="mcq-root" class="questions" aria-live="polite"></div>
+        <div class="btn-row">
+          <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+          <button type="button" class="btn-reset" id="btnClear">Clear choices &amp; marks</button>
+        </div>
+        <p class="feedback" id="feedback"></p>
+
+        <section class="lex-task" aria-label="Expressions with eye">
+          <h2>Expressions with <em>eye</em></h2>
+          <p>
+            In the article, the phrase <em>to catch one&rsquo;s eye</em> means to notice something unusual or exciting.
+          </p>
+          <div class="lex-example">
+            It <strong>caught their eye</strong> and they decided to take a look inside.
+          </div>
+          <p><strong>Match the sentence halves which use other expressions with <em>eye</em>.</strong></p>
+          <p class="eye-hint" id="eyeHint">Choose a sentence beginning or an ending to make a pair.</p>
+          <div class="eye-grid">
+            <div>
+              <button type="button" class="eye-row" data-line="1">1 I&rsquo;ve <strong>had my eye on</strong> that pair of shoes <span class="eye-badge" id="eye-badge-1">&mdash;</span></button>
+              <button type="button" class="eye-row" data-line="2">2 Editors need to <span class="eye-badge" id="eye-badge-2">&mdash;</span></button>
+              <button type="button" class="eye-row" data-line="3">3 Please <strong>keep an eye out</strong> for my phone, <span class="eye-badge" id="eye-badge-3">&mdash;</span></button>
+              <button type="button" class="eye-row" data-line="4">4 Well, <strong>you&rsquo;re a sight for sore eyes</strong>! <span class="eye-badge" id="eye-badge-4">&mdash;</span></button>
+              <button type="button" class="eye-row" data-line="5">5 We&rsquo;re not supposed to park here, <span class="eye-badge" id="eye-badge-5">&mdash;</span></button>
+              <button type="button" class="eye-row" data-line="6">6 Bob and John will never <strong>see eye to eye</strong> <span class="eye-badge" id="eye-badge-6">&mdash;</span></button>
+            </div>
+            <div>
+              <button type="button" class="eye-ending" data-letter="a"><span class="eye-key">a</span> I&rsquo;ve lost it.</button>
+              <button type="button" class="eye-ending" data-letter="b"><span class="eye-key">b</span> but the authorities usually <strong>turn a blind eye</strong>.</button>
+              <button type="button" class="eye-ending" data-letter="c"><span class="eye-key">c</span> for a while, so I think I&rsquo;ll buy them.</button>
+              <button type="button" class="eye-ending" data-letter="d"><span class="eye-key">d</span> &ndash; they&rsquo;re just too different.</button>
+              <button type="button" class="eye-ending" data-letter="e"><span class="eye-key">e</span> <strong>have a good eye</strong> for detail.</button>
+              <button type="button" class="eye-ending" data-letter="f"><span class="eye-key">f</span> I haven&rsquo;t seen you since last summer!</button>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-submit" id="btnEyeCheck">Check eye expressions</button>
+            <button type="button" class="btn-reset" id="btnEyeClear">Reset eye task</button>
+          </div>
+          <p class="feedback" id="eyeFeedback"></p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var CORRECT = ["C", "D", "D", "A", "B", "C"];
+      var MCQ = [
+        {
+          q: "What is true about how the painting was found?",
+          options: {
+            A: "Access to the painting was via an internal wall.",
+            B: "The painting was found with a metal panel around it.",
+            C: "Regular work on the building was being carried out.",
+            D: "The gardener knew he had found something significant."
+          }
+        },
+        {
+          q: "How did the Vice President of the gallery react?",
+          options: {
+            A: "very positively",
+            B: "with celebration",
+            C: "with great uncertainty",
+            D: "with slight reservation"
+          }
+        },
+        {
+          q: "What does &lsquo;inside job&rsquo; mean in line 28?",
+          options: {
+            A: "The gallery officials had always known where the painting was.",
+            B: "The original painting had actually been inside the fake painting.",
+            C: "A thief had been paid a lot of money to steal the painting.",
+            D: "Some gallery workers had been involved in the theft."
+          }
+        },
+        {
+          q: "Why were the police &lsquo;scratching their heads&rsquo; (line 42)?",
+          options: {
+            A: "because they were confused by the crime",
+            B: "because they thought they had a strong lead",
+            C: "because they were contacted by a local thief",
+            D: "because the fingerprints on the frame disappeared"
+          }
+        },
+        {
+          q: "What did the local art thief admit?",
+          options: {
+            A: "He had stolen both paintings.",
+            B: "He had stolen the real painting.",
+            C: "He had stolen the fake painting.",
+            D: "He had sold the real painting."
+          }
+        },
+        {
+          q: "What does the writer suggest in the last paragraph?",
+          options: {
+            A: "We must continue to hunt for other stolen works.",
+            B: "We will never know how many artworks are stolen.",
+            C: "We are fortunate to have the painting in our possession.",
+            D: "We should have had a better investigation by the police."
+          }
+        }
+      ];
+
+      var root = document.getElementById("mcq-root");
+      var fb = document.getElementById("feedback");
+      var eyeLinked = Object.create(null);
+      var eyePickLine = null;
+      var eyePickLetter = null;
+      var EYE_KEY = { 1: "c", 2: "e", 3: "a", 4: "f", 5: "b", 6: "d" };
+
+      function render() {
+        root.innerHTML = MCQ.map(function (item, idx) {
+          var n = idx + 1;
+          var opts = Object.keys(item.options).map(function (letter) {
+            var id = "q" + n + "-" + letter;
+            return (
+              '<li class="opt-line" data-q="' + n + '" data-letter="' + letter + '">' +
+              '<input type="radio" name="q' + n + '" id="' + id + '" value="' + letter + '">' +
+              '<label for="' + id + '"><span class="letter">' + letter + '</span> ' + item.options[letter] + '</label>' +
+              "</li>"
+            );
+          }).join("");
+          return '<section class="q"><p class="stem"><strong>' + n + ".</strong> " + item.q + '</p><ul class="opts">' + opts + "</ul></section>";
+        }).join("");
+      }
+
+      function clearMarks() {
+        document.querySelectorAll(".opt-line").forEach(function (el) {
+          el.classList.remove("ok", "bad-pick");
+        });
+      }
+
+      document.getElementById("btnCheck").addEventListener("click", function () {
+        clearMarks();
+        var score = 0;
+        MCQ.forEach(function (_, idx) {
+          var n = idx + 1;
+          var key = CORRECT[idx];
+          var picked = document.querySelector('input[name="q' + n + '"]:checked');
+          var keyLine = document.querySelector('.opt-line[data-q="' + n + '"][data-letter="' + key + '"]');
+          if (keyLine) keyLine.classList.add("ok");
+          if (picked && picked.value === key) {
+            score++;
+          } else if (picked) {
+            var bad = picked.closest(".opt-line");
+            if (bad) bad.classList.add("bad-pick");
+          }
+        });
+        fb.innerHTML =
+          score === MCQ.length
+            ? "<strong style='color:var(--ok)'>All answers are correct.</strong>"
+            : "Score: <strong>" + score + "</strong> / " + MCQ.length + ". Green shows the key; red shows your incorrect choice.";
+      });
+
+      document.getElementById("btnClear").addEventListener("click", function () {
+        document.querySelectorAll('input[type="radio"]').forEach(function (inp) {
+          inp.checked = false;
+        });
+        clearMarks();
+        fb.textContent = "";
+      });
+
+      render();
+
+      function setEyeHint(html) {
+        var hint = document.getElementById("eyeHint");
+        if (hint) hint.innerHTML = html;
+      }
+
+      function clearEyePicks() {
+        eyePickLine = null;
+        eyePickLetter = null;
+        document.querySelectorAll(".eye-row.pick, .eye-ending.pick").forEach(function (el) {
+          el.classList.remove("pick");
+        });
+      }
+
+      function syncEye() {
+        for (var i = 1; i <= 6; i++) {
+          var badge = document.getElementById("eye-badge-" + i);
+          if (badge) badge.textContent = eyeLinked[i] ? "\u2192 " + eyeLinked[i] : "\u2014";
+        }
+        document.querySelectorAll(".eye-ending").forEach(function (btn) {
+          var letter = btn.getAttribute("data-letter");
+          var used = false;
+          for (var k = 1; k <= 6; k++) {
+            if (eyeLinked[k] === letter) used = true;
+          }
+          btn.classList.toggle("linked", used);
+        });
+      }
+
+      function applyEyePair(line, letter) {
+        for (var i = 1; i <= 6; i++) {
+          if (i !== line && eyeLinked[i] === letter) delete eyeLinked[i];
+        }
+        eyeLinked[line] = letter;
+        clearEyePicks();
+        syncEye();
+        setEyeHint("Pair added. Continue or check your answers.");
+      }
+
+      document.querySelectorAll(".eye-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+          var line = parseInt(row.getAttribute("data-line"), 10);
+          if (eyePickLetter) {
+            applyEyePair(line, eyePickLetter);
+            return;
+          }
+          clearEyePicks();
+          eyePickLine = line;
+          row.classList.add("pick");
+          setEyeHint("Beginning <strong>" + line + "</strong> selected. Now choose an ending.");
+        });
+      });
+
+      document.querySelectorAll(".eye-ending").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var letter = btn.getAttribute("data-letter");
+          if (eyePickLine) {
+            applyEyePair(eyePickLine, letter);
+            return;
+          }
+          clearEyePicks();
+          eyePickLetter = letter;
+          btn.classList.add("pick");
+          setEyeHint("Ending <strong>" + letter + "</strong> selected. Now choose a beginning.");
+        });
+      });
+
+      document.getElementById("btnEyeCheck").addEventListener("click", function () {
+        clearEyePicks();
+        var score = 0;
+        var lines = [];
+        document.querySelectorAll(".eye-row.bad").forEach(function (row) {
+          row.classList.remove("bad");
+        });
+        for (var i = 1; i <= 6; i++) {
+          var got = eyeLinked[i] || "";
+          if (got === EYE_KEY[i]) {
+            score++;
+          } else if (got) {
+            var row = document.querySelector('.eye-row[data-line="' + i + '"]');
+            if (row) row.classList.add("bad");
+          }
+          lines.push("<strong>" + i + ".</strong> " + (got || "&mdash;") + " / key: <strong>" + EYE_KEY[i] + "</strong>");
+        }
+        document.getElementById("eyeFeedback").innerHTML =
+          "<strong>Score: " + score + " / 6.</strong><br>" + lines.join(" &nbsp; ");
+      });
+
+      document.getElementById("btnEyeClear").addEventListener("click", function () {
+        eyeLinked = Object.create(null);
+        clearEyePicks();
+        syncEye();
+        document.querySelectorAll(".eye-row.bad").forEach(function (row) {
+          row.classList.remove("bad");
+        });
+        document.getElementById("eyeFeedback").textContent = "";
+        setEyeHint("Choose a sentence beginning or an ending to make a pair.");
+      });
+
+      syncEye();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2 Grammar &mdash; Adverbs and adverbial phrases (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --gram: #f472b6;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.25; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fbcfe8;
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      font-size: 0.94rem;
+      color: #d5e2f8;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .ref-box {
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: rgba(244, 114, 182, 0.08);
+      margin-bottom: 18px;
+    }
+    .ref-box h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gram);
+      margin-bottom: 10px;
+    }
+    .ref-row {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #e2e8f8;
+      margin-bottom: 8px;
+    }
+    .ref-row:last-child { margin-bottom: 0; }
+    .ref-row strong { color: #fbcfe8; margin-right: 6px; }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      margin-bottom: 12px;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .item__sent { font-size: 0.94rem; line-height: 1.7; margin-bottom: 12px; }
+    .phrase-bold { font-weight: 800; color: #fef08a; }
+    .pick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pick label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.55);
+      touch-action: manipulation;
+    }
+    .pick label:hover { border-color: var(--accent); }
+    .pick input { accent-color: var(--gram); }
+    .pick.is-ok { padding: 4px; border-radius: 10px; border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(34, 197, 94, 0.08); }
+    .pick.is-bad { padding: 4px; border-radius: 10px; border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+    .pick.is-locked label { pointer-events: none; opacity: 0.92; }
+    .pick label.is-key {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.22);
+      color: #bbf7d0;
+      font-weight: 700;
+    }
+    .pick label.is-your-wrong {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.18);
+      color: #fecaca;
+    }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .btn-sol {
+      background: rgba(254, 240, 138, 0.15);
+      color: #fef08a;
+      border: 1px solid rgba(254, 240, 138, 0.35);
+      display: none;
+    }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 1.5em;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border-color: rgba(54, 211, 153, 0.45); }
+    .feedback.bad { border-color: rgba(248, 113, 113, 0.45); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Language focus &mdash; Adverbs and adverbial phrases</h1>
+        <p class="badge">Grammar &middot; Unit 2</p>
+      </div>
+      <a class="back" id="back-link" href="../index.html?course=cpe&amp;backLabel=Grammar%20%E2%80%94%20Level%202">&larr; Grammar</a>
+    </header>
+
+    <p class="instr">
+      <strong>1</strong> Match each adverb or adverbial phrase (1&ndash;3) in bold from the listening on page 21 with its type and function (a&ndash;c).
+    </p>
+
+    <div class="ref-box" aria-label="Types a to c">
+      <h2>Types</h2>
+      <p class="ref-row"><strong>a.</strong> Adverbial of place: informs us where something happened.</p>
+      <p class="ref-row"><strong>b.</strong> Comment adverb: comments on, and sometimes distances the speaker from, what they are saying.</p>
+      <p class="ref-row"><strong>c.</strong> Focusing adverb: highlights one part of the sentence.</p>
+    </div>
+
+    <div id="items"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check</button>
+      <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      <button type="button" class="btn-sol" id="btnSolution">Show solution</button>
+    </div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+  </main>
+
+  <script src="../../../js/prep-hub-unit2-nests.js"></script>
+  <script src="../../../js/unit2-cpe-grammar-back.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var KEY = { 1: "c", 2: "a", 3: "b" };
+  var LETTERS = ["a", "b", "c"];
+  var TOTAL = 3;
+  var locked = false;
+
+  var ITEMS = [
+    {
+      n: 1,
+      html: "In the desert, <span class=\"phrase-bold\">even</span> the sound of your own footsteps is different.",
+    },
+    {
+      n: 2,
+      html:
+        "It is estimated that the current population living <span class=\"phrase-bold\">in the wild</span> could be in the low hundreds &hellip;",
+    },
+    {
+      n: 3,
+      html:
+        "&hellip; great swathes of land are irrigated intensely with the goal of growing crops, <span class=\"phrase-bold\">supposedly</span> in the name of saving mankind from the climate crisis.",
+    },
+  ];
+
+  var elItems = document.getElementById("items");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btnSolution");
+
+  function renderItems() {
+    elItems.innerHTML = ITEMS.map(function (it) {
+      var opts = LETTERS.map(function (letter) {
+        var id = "q" + it.n + "-" + letter;
+        return (
+          '<label><input type="radio" name="q' + it.n + '" value="' + letter + '" id="' + id + '" /> ' +
+          letter +
+          "</label>"
+        );
+      }).join("");
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' + it.html + "</p>" +
+        '<div class="pick" data-n="' + it.n + '" role="group">' + opts + "</div>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
+  function getChoice(n) {
+    var inp = document.querySelector('input[name="q' + n + '"]:checked');
+    return inp ? inp.value : "";
+  }
+
+  function clearStyles() {
+    document.querySelectorAll(".pick").forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-key", "is-your-wrong");
+      });
+    });
+  }
+
+  function markPick(n, got, isOk) {
+    var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      var val = lab.querySelector("input").value;
+      if (val === KEY[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isOk) lab.classList.add("is-your-wrong");
+    });
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    if (locked) return;
+    clearStyles();
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var got = getChoice(n);
+      var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY[n]) {
+        ok++;
+        wrap.classList.add("is-ok");
+        markPick(n, got, true);
+      } else {
+        wrap.classList.add("is-bad");
+        markPick(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Choose a letter for item(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === TOTAL) {
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+      elFb.className = "feedback show ok";
+      locked = true;
+      document.querySelectorAll('input[type="radio"]').forEach(function (inp) {
+        inp.disabled = true;
+      });
+      document.querySelectorAll(".pick").forEach(function (p) {
+        p.classList.add("is-locked");
+      });
+    } else {
+      elFb.innerHTML = "<strong>Score: " + ok + " / " + TOTAL + ".</strong> Try again or show solution.";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL; n++) {
+      var inp = document.querySelector('input[name="q' + n + '"][value="' + KEY[n] + '"]');
+      if (inp) inp.checked = true;
+    }
+    locked = true;
+    clearStyles();
+    document.querySelectorAll(".pick").forEach(function (p) {
+      var num = Number(p.getAttribute("data-n"));
+      p.classList.add("is-ok", "is-locked");
+      markPick(num, KEY[num], true);
+    });
+    document.querySelectorAll('input[type="radio"]').forEach(function (inp) {
+      inp.disabled = true;
+    });
+    elFb.innerHTML = "<strong>Solution shown.</strong> 1&ndash;c &middot; 2&ndash;a &middot; 3&ndash;b";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    locked = false;
+    clearStyles();
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+    document.querySelectorAll('input[type="radio"]').forEach(function (inp) {
+      inp.checked = false;
+      inp.disabled = false;
+    });
+  });
+
+  renderItems();
+  if (typeof wireUnit2CpeGrammarBack === "function") {
+    wireUnit2CpeGrammarBack({ hubDepth: 3 });
+  }
+})();
+  </script>
+</body>
+</html>

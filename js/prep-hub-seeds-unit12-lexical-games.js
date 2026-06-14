@@ -8,7 +8,7 @@
         folderLexical: {
             title: "Vocab Gym",
             subtitle:
-                "Word Bank & phrase modes · The Road to Betterment + sports idioms · separate from textbook folders below",
+                "Word Bank & phrase modes · Reading + multi-word verbs + sports idioms + listening · separate from textbook folders below",
         },
     };
 })(typeof window !== "undefined" ? window : globalThis);

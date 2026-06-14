@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 8 &mdash; Electric vehicles (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u8-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">&larr; Vocabulary &mdash; Level 8</a>
+      <h1>Electric vehicles</h1>
+      <p class="cpe-vocab-meta">Level 8 &middot; Vocabulary &middot; contrast linkers</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the text with the correct options. Then <strong>Submit</strong> for explanations.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-passage" id="passage"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u8-cpe-sibling" href="../coastal-words/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">Next &middot; Coastal habitats &rarr;</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      a: "Despite",
+      b: "Nonetheless",
+      ans: "Despite",
+      why:
+        "<strong>Despite + -ing</strong> introduces contrast: the idea was innovative, yet uptake was slow. <em>Nonetheless</em> usually starts its own clause, not <em>Nonetheless being&hellip;</em>.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Nonetheless being an innovative concept</em> is not standard here.</span>"
+    },
+    {
+      id: 2,
+      a: "despite",
+      b: "albeit",
+      ans: "albeit",
+      why:
+        "<strong>Albeit</strong> + noun phrase = &ldquo;even though / although&rdquo; (<em>albeit crude and impractical</em>). <em>Despite</em> needs a noun or <em>-ing</em>, not a bare adjective list.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Despite the first iterations&hellip; were crude</em> would need a full clause; <em>despite crude</em> alone does not fit.</span>"
+    },
+    {
+      id: 3,
+      a: "While",
+      b: "Nonetheless",
+      ans: "While",
+      why:
+        "<strong>While this must be applauded</strong> = although we should praise this progress, problems remain. <em>Nonetheless</em> would not link smoothly to <em>this must be applauded</em>.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Nonetheless this must be applauded</em> is awkward; <em>nonetheless</em> typically follows the main clause.</span>"
+    },
+    {
+      id: 4,
+      a: "a great deal",
+      b: "comparatively",
+      ans: "comparatively",
+      why:
+        "<strong>Comparatively high</strong> modifies the adjective (<em>high compared to petrol vehicles</em>). <em>A great deal high</em> is ungrammatical.",
+      notOther:
+        "<span class=\"fb-not\">✗ You could say <em>a great deal higher</em>, but not <em>a great deal high</em>.</span>"
+    },
+    {
+      id: 5,
+      a: "almost",
+      b: "nearly",
+      ans: "nearly",
+      why:
+        "<strong>Not nearly as prepared as</strong> is the fixed pattern (= far less prepared than). <em>Almost</em> does not combine with <em>not &hellip; as &hellip; as</em> here.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Not almost as prepared as</em> is not the idiom we need.</span>"
+    },
+    {
+      id: 6,
+      a: "albeit",
+      b: "despite",
+      ans: "albeit",
+      why:
+        "<strong>Albeit some EVs being able to go 300 miles</strong> concedes a fact before the contrast (motorists still worry). <em>Despite</em> would need a different structure.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Despite some EVs being able to&hellip;</em> is possible in other frames, but here <em>albeit</em> matches the textbook slot.</span>"
+    },
+    {
+      id: 7,
+      a: "even",
+      b: "yet",
+      ans: "yet",
+      why:
+        "<strong>And yet</strong> = nevertheless; a strong contrast linker at the start of the final paragraph.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>And even, EVs remain</em> does not work as a sentence opener.</span>"
+    }
+  ];
+
+  var picks = {};
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function gapHtml(id) {
+    var it = ITEMS[id - 1];
+    return (
+      '<span class="pick" data-gap="' +
+      id +
+      '"><span class="gap-num">(' +
+      id +
+      ')</span>' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.a) +
+      '">' +
+      esc(it.a) +
+      "</button>" +
+      '<span class="pick-sep">/</span>' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.b) +
+      '">' +
+      esc(it.b) +
+      "</button></span>"
+    );
+  }
+
+  function renderPassage() {
+    var root = document.getElementById("passage");
+    root.innerHTML =
+      "<p>The new cleaner, greener alternative to petrol cars began in its life as far back as 1832. " +
+      gapHtml(1) +
+      " being an innovative concept, it was to take until the second half of the 19th century before electric vehicles really began to take off. The concept was ahead of its time, " +
+      gapHtml(2) +
+      " the first iterations created by Robert Anderson were crude and somewhat impractical.</p>" +
+      "<p>Since then, EVs have come on in leaps and bounds. More than 650,000 were being driven in the UK in 2023. " +
+      gapHtml(3) +
+      " this must be applauded, there are still major obstacles to overcome. The cost of an EV is " +
+      gapHtml(4) +
+      " high compared to petrol vehicles. Most neighbourhoods aren&rsquo;t " +
+      gapHtml(5) +
+      " as prepared as they should be regarding recharging points. And then there&rsquo;s range anxiety: " +
+      gapHtml(6) +
+      " some EVs being able to go 300 miles on one charge, motorists are still concerned about the battery limitations.</p>" +
+      "<p>And " +
+      gapHtml(7) +
+      ", EVs remain our best option for tackling harmful emissions. With the right investment, they could become the norm and not just the exception.</p>";
+
+    root.querySelectorAll(".pick-opt").forEach(function (btn) {
+      btn.addEventListener("click", onPick);
+    });
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function onPick(ev) {
+    if (checked) return;
+    var btn = ev.currentTarget;
+    var gap = Number(btn.getAttribute("data-gap"));
+    var word = btn.getAttribute("data-word");
+    picks[gap] = word;
+    hideAside();
+    document.querySelectorAll('.pick-opt[data-gap="' + gap + '"]').forEach(function (b) {
+      b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+      if (b.getAttribute("data-word") === word) b.classList.add("is-picked");
+    });
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var fb = document.getElementById("feedback");
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var chosen = picks[it.id] || "";
+      var ok = chosen === it.ans;
+      if (ok) correct += 1;
+
+      var pickEl = document.querySelector('.pick[data-gap="' + it.id + '"]');
+      if (pickEl) {
+        pickEl.classList.remove("is-ok", "is-bad");
+        pickEl.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      document.querySelectorAll('.pick-opt[data-gap="' + it.id + '"]').forEach(function (b) {
+        b.disabled = true;
+        var w = b.getAttribute("data-word");
+        b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+        if (w === it.ans) b.classList.add("is-ok");
+        else if (w === chosen && !ok) b.classList.add("is-bad");
+        else b.classList.add("is-dim");
+      });
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>(' +
+          it.id +
+          ") " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.ans) +
+          "</strong>" +
+          (chosen && !ok ? " (you chose <em>" + esc(chosen) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          it.notOther +
+          "</p></div>"
+      );
+    });
+
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' +
+      correct +
+      " / " +
+      ITEMS.length +
+      "</p>" +
+      parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    picks = {};
+    hideAside();
+    renderPassage();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  renderPassage();
+})();
+  </script>
+  <script src="../../../js/u8-vocab-course-context.js"></script>
+</body>
+</html>

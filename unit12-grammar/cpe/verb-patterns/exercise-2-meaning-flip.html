@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 Grammar — Verb patterns · Exercise 2</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --rose: #fda4af;
+      --front-bg: #223657;
+      --back-bg: #182d52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.62;
+    }
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 22px 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .top h1 { font-size: 1.1rem; font-weight: 800; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .gram-nav { margin-bottom: 14px; font-size: 0.88rem; color: var(--muted); }
+    .gram-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .instr { font-size: 0.94rem; color: #d5e2f8; margin-bottom: 8px; }
+    .hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 18px; }
+    .card-wrap { margin-bottom: 16px; }
+    .card-meta { font-size: 0.78rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+    .flip-card {
+      perspective: 1100px;
+      cursor: pointer;
+      outline: none;
+      border-radius: 14px;
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+    }
+    .flip-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.45);
+      border-radius: 14px;
+    }
+    .flip-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-face {
+      grid-area: 1 / 1;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-front { background: var(--front-bg); }
+    .flip-back { background: var(--back-bg); transform: rotateY(180deg); }
+    .flip-front .lead {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .pair-line { margin-bottom: 8px; }
+    .pair-line strong { color: #bae6fd; margin-right: 6px; }
+    .verdict {
+      display: inline-block;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #86efac;
+      margin-bottom: 10px;
+    }
+    .verdict.is-d { color: #fca5a5; }
+    .tap-hint { margin-top: 12px; font-size: 0.78rem; color: var(--muted); }
+    .back-note { font-size: 0.88rem; color: #d5e2f8; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Verb patterns &middot; Exercise 2</h1>
+      </div>
+      <a class="back" id="back-link" href="../../../index.html?prep_stay=1&amp;screen=unit12">&larr; Grammar &middot; Level 12</a>
+    </header>
+
+    <nav class="gram-nav">
+      <a href="index.html">Verb patterns hub</a>
+      <span> &middot; </span>
+      <a href="exercise-1-cross-out.html">Exercise 1</a>
+      <span> &middot; </span>
+      <span style="font-weight:700;color:var(--text);">Exercise 2 &mdash; flip cards</span>
+    </nav>
+
+    <p class="instr"><strong>2</strong> Are the sentences in each pair the same (or similar) in <strong>meaning</strong>, or are they different? Think <strong>S</strong> or <strong>D</strong>, then tap the card.</p>
+    <p class="hint">Front = pair (a) and (b). Back = S or D + what changes.</p>
+
+    <div id="deck"></div>
+  </main>
+
+  <script>
+(function () {
+  var CARDS = [
+    {
+      a: "We left the rest of the group to eat dinner.",
+      b: "We left the rest of the group eating dinner.",
+      verdict: "D",
+      note: "(a) We left in order to eat dinner ourselves. (b) The group was already eating when we left them."
+    },
+    {
+      a: "I don't recall you being invited.",
+      b: "I don't recall your being invited.",
+      verdict: "S",
+      note: "Same meaning; (b) is more formal (possessive + gerund)."
+    },
+    {
+      a: "Pedro was happy for Mike to do the shopping.",
+      b: "Pedro was happy to do the shopping for Mike.",
+      verdict: "D",
+      note: "In (a) Mike does the shopping. In (b) Pedro does it for Mike."
+    },
+    {
+      a: "I regret telling you I was wrong.",
+      b: "I regret to tell you I was wrong.",
+      verdict: "D",
+      note: "(a) Past action I now wish I hadn't done. (b) Formal way of giving bad news now."
+    },
+    {
+      a: "The taking of photographs is not permitted.",
+      b: "Taking photographs is not permitted.",
+      verdict: "S",
+      note: "Same meaning; (a) is slightly more formal / bureaucratic."
+    },
+    {
+      a: "There's no turning back for us now.",
+      b: "We can't turn back now.",
+      verdict: "S",
+      note: "Both mean we are committed and cannot reverse course."
+    }
+  ];
+
+  var deck = document.getElementById("deck");
+  deck.innerHTML = CARDS.map(function (c, i) {
+    var n = i + 1;
+    var vClass = c.verdict === "D" ? " verdict is-d" : " verdict";
+    return (
+      '<div class="card-wrap">' +
+      '<p class="card-meta">Pair ' + n + " / " + CARDS.length + "</p>" +
+      '<button type="button" class="flip-card" aria-pressed="false">' +
+      '<div class="flip-inner">' +
+      '<div class="flip-face flip-front">' +
+      '<div class="lead">Same or different?</div>' +
+      '<p class="pair-line"><strong>a</strong>' + c.a + "</p>" +
+      '<p class="pair-line"><strong>b</strong>' + c.b + "</p>" +
+      '<div class="tap-hint">Tap to flip &mdash; S or D?</div>' +
+      "</div>" +
+      '<div class="flip-face flip-back">' +
+      '<span class="' + vClass.trim() + '">' + c.verdict + "</span>" +
+      '<p class="back-note">' + c.note + "</p>" +
+      "</div></div></button></div>"
+    );
+  }).join("");
+
+  document.querySelectorAll(".flip-card").forEach(function (card) {
+    function toggle() {
+      var on = card.classList.toggle("is-flipped");
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggle();
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+})();
+  </script>
+  <script src="../../../js/prep-hub-unit12-nests.js"></script>
+  <script src="../../../js/unit12-cpe-grammar-back.js"></script>
+  <script>wireUnit12CpeGrammarBack();</script>
+</body>
+</html>

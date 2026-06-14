@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 Reading &mdash; Innovation limits (CPE Part 7)</title>
+  <link rel="stylesheet" href="../../../css/cpe-reading-part7-shell.css" />
+</head>
+<body class="cpe-p7-body">
+  <header class="app-header">
+    <a class="back" id="backLink" href="../../../index.html?prep_stay=1&amp;screen=unit3&amp;prep_open_folder=prep_legacy_u3_reading">&larr; Reading &mdash; Level 3</a>
+    <h1>Reading and Use of English &mdash; Part 7 multiple matching</h1>
+    <p class="app-reading-title" id="page-reading-title"><strong>Are we reaching the limits of innovation?</strong></p>
+    <p id="page-lead"></p>
+    <div class="tip">
+      <strong>Tip:</strong> Read all ten statements first. Scan sections <strong>A&ndash;F</strong> in order; sections may be used more than once.
+    </div>
+  </header>
+  <div class="layout">
+    <div class="texts-column" id="texts-column">
+      <p class="texts-lead" id="texts-lead"></p>
+      <div class="mobile-tabs"><div class="tab-strip" id="tab-strip" role="tablist"></div></div>
+      <div id="passages-root"></div>
+    </div>
+    <aside class="questions-sidebar" id="questions-sidebar">
+      <p class="sidebar-title" id="sidebar-title"></p>
+      <div id="questions-root"></div>
+      <div class="actions">
+        <button type="button" class="btn-submit" id="btn-submit" disabled>Submit</button>
+        <button type="button" class="btn-reset" id="btn-reset">Try again</button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="../../../js/unit3-reading-innovation-limits-data.js"></script>
+  <script src="../../../js/cpe-reading-part7-matching-engine.js"></script>
+  <script src="../../../js/prep-hub-unit3-nests.js"></script>
+  <script>
+(function () {
+  var pack = window.U3_READING_INNOVATION_LIMITS;
+  if (!pack || !window.CPE_READING_PART7) return;
+
+  document.getElementById("page-lead").innerHTML = pack.lead || "";
+  document.getElementById("texts-lead").innerHTML =
+    pack.articleTitle ? "<strong>" + pack.articleTitle + "</strong>" : "";
+  document.getElementById("sidebar-title").textContent = pack.sidebarTitle || "";
+
+  CPE_READING_PART7.mountPage({ pack: pack });
+
+  var back = document.getElementById("backLink");
+  var hubDefault =
+    "../../../index.html?prep_stay=1&screen=unit3&prep_open_folder=prep_legacy_u3_reading";
+
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+
+  var q = new URLSearchParams(window.location.search);
+  if (back) {
+    back.href = sanitizeReturnHref(q.get("back"), hubDefault);
+    if (q.get("backLabel")) {
+      try {
+        back.textContent =
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+      } catch (e) {}
+    }
+  }
+})();
+  </script>
+</body>
+</html>

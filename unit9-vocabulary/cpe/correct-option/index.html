@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 9 &mdash; Correct option (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u9-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%209">&larr; Vocabulary &mdash; Level 9</a>
+      <h1>Correct option</h1>
+      <p class="cpe-vocab-meta">Level 9 &middot; Vocabulary &middot; design &amp; style</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the sentence with the correct option in each pair. Then <strong>Submit</strong> for explanations.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-items" id="sent-list"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u9-cpe-sibling" href="../linker-words/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%209">Next &middot; Linker words &rarr;</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      before: "I would like a ",
+      a: "minimalistic",
+      b: "vulgar",
+      after: " design for my bedroom, nothing too ornate or lavish.",
+      ans: "minimalistic",
+      why:
+        "<strong>Minimalistic</strong> = simple, not ornate &mdash; matches <em>nothing too ornate or lavish</em>.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Vulgar</em> means tasteless or crude, not &ldquo;simple and uncluttered&rdquo;.</span>"
+    },
+    {
+      id: 2,
+      before: "This ",
+      a: "whimsical",
+      b: "ostentatious",
+      after: " design isn&rsquo;t really to my tastes. I&rsquo;d prefer something a bit simpler.",
+      ans: "whimsical",
+      why:
+        "<strong>Whimsical</strong> can feel playful or fanciful &mdash; the speaker wants something simpler. <em>Ostentatious</em> means showy and flashy (also not their taste), but here the pair contrasts quirky/fancy with plain.",
+      notOther:
+        "<span class=\"fb-not\">✗ Both words could imply &ldquo;too much&rdquo;, but the textbook slot is <em>whimsical</em> (quirky rather than showy-luxury).</span>"
+    },
+    {
+      id: 3,
+      before: "The ",
+      a: "unassuming",
+      b: "imposing",
+      after: " artist wasn&rsquo;t comfortable with the attention her work received.",
+      ans: "unassuming",
+      why:
+        "<strong>Unassuming</strong> = modest, not seeking attention &mdash; fits discomfort with publicity.",
+      notOther:
+        "<span class=\"fb-not\">✗ An <em>imposing</em> artist would more likely welcome or expect attention.</span>"
+    },
+    {
+      id: 4,
+      before: "My grandmother has good taste and she loves bright colours. She always stands out with her ",
+      a: "flamboyant",
+      b: "garish",
+      after: " style.",
+      ans: "flamboyant",
+      why:
+        "<strong>Flamboyant</strong> = colourful and striking, but can still suggest good taste. <em>Garish</em> is negatively loaded (= gaudy, in bad taste).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Garish</em> clashes with <em>good taste</em> in the same sentence.</span>"
+    },
+    {
+      id: 5,
+      before: "The ",
+      a: "whimsical",
+      b: "swanky",
+      after: " new houses on the estuary added a touch of luxury to the region.",
+      ans: "swanky",
+      why:
+        "<strong>Swanky</strong> = stylish and luxurious. <em>Whimsical</em> does not collocate with <em>a touch of luxury</em>.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Whimsical</em> suggests quirky/playful, not upscale luxury.</span>"
+    },
+    {
+      id: 6,
+      before: "Have I heard of Banksy? He is one of the most ",
+      a: "renowned",
+      b: "ostentatious",
+      after: " graffiti artists of all time!",
+      ans: "renowned",
+      why:
+        "<strong>Renowned</strong> = famous and widely respected. <em>Ostentatious</em> describes style, not reputation.",
+      notOther:
+        "<span class=\"fb-not\">✗ You can be an <em>ostentatious</em> person, but not &ldquo;one of the most ostentatious artists <em>of all time</em>&rdquo; in this fame sense.</span>"
+    }
+  ];
+
+  var picks = {};
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function pairHtml(id, it) {
+    return (
+      '<span class="pick" data-gap="' +
+      id +
+      '">' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.a) +
+      '">' +
+      esc(it.a) +
+      "</button>" +
+      '<span class="pick-sep">/</span>' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.b) +
+      '">' +
+      esc(it.b) +
+      "</button></span>"
+    );
+  }
+
+  function render() {
+    var root = document.getElementById("sent-list");
+    root.innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="cpe-vocab-item"><div class="cpe-vocab-item__n">' +
+        it.id +
+        "</div><p class=\"cpe-vocab-item__text\">" +
+        it.before +
+        pairHtml(it.id, it) +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll(".pick-opt").forEach(function (btn) {
+      btn.addEventListener("click", onPick);
+    });
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function onPick(ev) {
+    if (checked) return;
+    var btn = ev.currentTarget;
+    var gap = Number(btn.getAttribute("data-gap"));
+    var word = btn.getAttribute("data-word");
+    picks[gap] = word;
+    hideAside();
+    document.querySelectorAll('.pick-opt[data-gap="' + gap + '"]').forEach(function (b) {
+      b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+      if (b.getAttribute("data-word") === word) b.classList.add("is-picked");
+    });
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var fb = document.getElementById("feedback");
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var chosen = picks[it.id] || "";
+      var ok = chosen === it.ans;
+      if (ok) correct += 1;
+
+      var pickEl = document.querySelector('.pick[data-gap="' + it.id + '"]');
+      if (pickEl) {
+        pickEl.classList.remove("is-ok", "is-bad");
+        pickEl.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      document.querySelectorAll('.pick-opt[data-gap="' + it.id + '"]').forEach(function (b) {
+        b.disabled = true;
+        var w = b.getAttribute("data-word");
+        b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+        if (w === it.ans) b.classList.add("is-ok");
+        else if (w === chosen && !ok) b.classList.add("is-bad");
+        else b.classList.add("is-dim");
+      });
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>' +
+          it.id +
+          ". " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.ans) +
+          "</strong>" +
+          (chosen && !ok ? " (you chose <em>" + esc(chosen) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          it.notOther +
+          "</p></div>"
+      );
+    });
+
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' + correct + " / " + ITEMS.length + "</p>" + parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    picks = {};
+    hideAside();
+    render();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  render();
+})();
+  </script>
+  <script src="../../../js/u9-vocab-cpe-course-context.js"></script>
+</body>
+</html>

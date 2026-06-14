@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scroll &amp; Speak · Teen club</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="css/scroll-speak.css" />
+</head>
+<body class="intensive-body intensive-body--scroll-speak">
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">Teens · B1–B2 · Conversation club</span>
+        <h1 class="int-title">Scroll &amp; Speak</h1>
+        <p class="int-sub">Clips, trends, challenges — speak English like your feed feels. 8 sessions · you find clips online · we talk.</p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <section class="ss-showcase">
+      <img
+        class="ss-showcase-thumb"
+        src="img/scroll-speak-cover.png"
+        alt=""
+        width="152"
+        height="152"
+        loading="eager"
+      />
+      <div>
+        <h2>React · challenge · speak to camera</h2>
+        <p>GRWM, Blue Planet moments, reality-show games — short bursts, pairs, no boring worksheets.</p>
+      </div>
+    </section>
+
+    <p class="ss-rules">
+      <strong>Room rules:</strong> no roasting real classmates · clips you curate · posting online always optional ·
+      English in the club, code-switch OK in 1-word reactions.
+    </p>
+
+    <section class="int-hero" aria-labelledby="hero-title">
+      <h2 id="hero-title">Seven steps · ~75–90 min</h2>
+      <p>
+        <strong>Warm-up</strong> → <strong>Trend/clip</strong> → <strong>React</strong> → <strong>Phrases</strong> →
+        <strong>Challenge</strong> → <strong>Speak-off</strong> → <strong>Wrap</strong>.
+      </p>
+      <div class="int-meta-row">
+        <span class="int-pill int-pill--gold">8 themes</span>
+        <span class="int-pill">Clip-based</span>
+        <span class="int-pill">Challenge core</span>
+        <span class="int-pill">Ages 13–17</span>
+      </div>
+    </section>
+
+    <nav class="int-theme-grid" id="theme-grid" aria-label="Scroll and Speak themes"></nav>
+  </div>
+
+  <script src="js/scroll-speak.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById("theme-grid");
+      if (!grid || !window.SCROLL_SPEAK_THEMES) return;
+
+      grid.innerHTML = SCROLL_SPEAK_THEMES.map(function (t) {
+        var lenses =
+          t.lenses && t.lenses.length
+            ? '<span class="ss-lenses">Talk: ' + t.lenses.join(" · ") + "</span>"
+            : "";
+        var ch = t.challenge
+          ? '<span class="ss-challenge">Challenge: ' + t.challenge + "</span>"
+          : "";
+        return (
+          '<a class="int-theme-card" href="lesson.html?theme=' +
+          encodeURIComponent(t.id) +
+          '">' +
+          '<span class="int-theme-num">Session ' +
+          String(t.num).padStart(2, "0") +
+          "</span>" +
+          '<span class="int-theme-icon" aria-hidden="true">' +
+          t.icon +
+          "</span>" +
+          '<span class="int-theme-name">' +
+          t.title +
+          "</span>" +
+          '<span class="int-theme-tag">' +
+          t.tagline +
+          lenses +
+          ch +
+          "</span>" +
+          '<span class="int-theme-go">Open session →</span></a>'
+        );
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

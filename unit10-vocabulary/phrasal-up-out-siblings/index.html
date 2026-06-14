@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 Vocabulary &mdash; Phrasal verbs (up / out)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.15rem; line-height: 1.35; }
+    .top-links {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+      margin-bottom: 22px;
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .instr-num { font-weight: 800; color: var(--accent); margin-right: 4px; }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .story-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .story-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #fef9c3;
+    }
+    .passage {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.94rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+    }
+    .gap-wrap {
+      display: inline;
+      white-space: normal;
+    }
+    .gap-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #fcd34d;
+      margin-right: 2px;
+      vertical-align: super;
+    }
+    .pv-stem {
+      font-weight: 600;
+      color: #cbd5f5;
+    }
+    .particle-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin: 0 2px;
+      padding: 2px 4px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      vertical-align: baseline;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .particle-picker.is-example {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .particle-picker.is-checked-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.12);
+    }
+    .particle-picker.is-checked-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .pv-btn {
+      border: 2px solid rgba(86, 204, 242, 0.35);
+      border-radius: 6px;
+      padding: 2px 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(86, 204, 242, 0.1);
+      color: var(--text);
+      font-family: inherit;
+      line-height: 1.35;
+      transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+    }
+    .pv-btn:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.2);
+    }
+    .pv-btn.is-on {
+      border-color: #a78bfa;
+      background: rgba(167, 139, 250, 0.28);
+      color: #f5f3ff;
+      box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.25);
+    }
+    .pv-btn.is-key-hint {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+      color: #86efac;
+    }
+    .gap-mark {
+      display: inline-block;
+      margin-left: 4px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .particle-picker.is-checked .gap-mark { opacity: 1; }
+    .particle-picker.is-checked-ok .gap-mark { color: #86efac; }
+    .particle-picker.is-checked-bad .gap-mark { color: #fca5a5; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .score-strip {
+      flex: 1 1 auto;
+      min-width: 10rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .score-strip:empty { display: none; }
+    .score-strip.is-perfect {
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+    }
+    .score-strip.is-mixed {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: rgba(251, 191, 36, 0.1);
+      color: #fde68a;
+    }
+    .match-board {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .match-lines { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+    .match-line {
+      display: grid;
+      grid-template-columns: 1.35rem 1.4rem 1fr auto minmax(8.5rem, 11.5rem);
+      align-items: center;
+      gap: 8px 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: rgba(15, 23, 42, 0.4);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    @media (max-width: 700px) {
+      .match-line {
+        grid-template-columns: 1.35rem 1.4rem 1fr minmax(7.5rem, 1fr);
+        grid-template-areas:
+          "mark num def slot"
+          "mark arrow arrow slot";
+        gap: 4px 8px;
+      }
+      .match-line .match-mark { grid-area: mark; }
+      .match-line .match-num { grid-area: num; }
+      .match-line .match-def { grid-area: def; }
+      .match-line .match-arrow { grid-area: arrow; justify-self: start; }
+      .match-line .match-slot { grid-area: slot; }
+    }
+    .match-line.is-focused {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.22);
+    }
+    .match-line-wrap.is-checked-ok .match-line {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .match-line-wrap.is-checked-bad .match-line {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.08);
+    }
+    .match-mark {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .match-line-wrap.is-checked .match-mark { opacity: 1; }
+    .match-line-wrap.is-checked-ok .match-mark { color: #86efac; }
+    .match-line-wrap.is-checked-bad .match-mark { color: #fca5a5; }
+    .match-inline-note {
+      display: none;
+      padding: 2px 10px 8px 3.2rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #bae6fd;
+    }
+    .match-line-wrap.is-checked-bad .match-inline-note { display: block; }
+    .match-inline-note .key-pill {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86efac;
+      font-weight: 800;
+    }
+    .match-num { font-weight: 800; color: #fcd34d; font-size: 0.88rem; }
+    .match-def { font-size: 0.9rem; line-height: 1.45; color: #e8f0ff; }
+    .match-def strong { color: #fef9c3; font-weight: 700; }
+    .match-arrow { color: var(--muted); font-weight: 800; font-size: 0.95rem; }
+    .match-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 2px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(8, 22, 48, 0.5);
+      cursor: pointer;
+    }
+    .match-slot:hover { border-color: rgba(86, 204, 242, 0.55); }
+    .match-slot.is-drag-over {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.12);
+    }
+    .match-slot:empty::before {
+      content: "\2014";
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .match-slot.has-word {
+      border-style: solid;
+      border-color: rgba(167, 139, 250, 0.45);
+      background: rgba(76, 29, 149, 0.18);
+      justify-content: stretch;
+    }
+    .match-bank-dock {
+      margin-top: 12px;
+      padding: 12px 12px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(96, 165, 250, 0.32);
+      background: rgba(96, 165, 250, 0.1);
+    }
+    @media (min-height: 520px) {
+      .match-bank-dock {
+        position: sticky;
+        bottom: 10px;
+        z-index: 3;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+      }
+    }
+    .match-bank-head {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      margin-bottom: 6px;
+    }
+    .match-bank-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .match-bank {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary</span>
+        <h1>Phrasal verbs &mdash; <em>up</em> / <em>out</em></h1>
+      </div>
+      <div class="top-links">
+        <a class="back u10-back-vocab-index" href="../fce/index.html">&larr; Vocabulary hub</a>
+        <a class="back u10-back-unit10" data-u10-unit-depth="2" href="../../unit10.html">&larr; Unit 10</a>
+      </div>
+    </header>
+
+    <nav class="voc-nav" aria-label="Vocabulary tasks">
+      <a href="../phrasal-out-exercise-1/index.html" class="u10-nav-sibling">Task 1 &mdash; Phrasal <em>out</em></a>
+      <span>|</span>
+      <a href="../prefix-out-sentences/index.html" class="u10-nav-sibling">Task 2 &mdash; <em>out-</em></a>
+      <span>|</span>
+      <a href="../phrasal-out-exercise-2/index.html" class="u10-nav-sibling">Task 3 &mdash; Phrasal <em>up</em></a>
+      <span>|</span>
+      <a href="../crimes-and-criminals/index.html" class="u10-nav-sibling">Task 4 &mdash; Crimes</a>
+      <span>|</span>
+      <a href="../criminal-titles-exercise-3/index.html" class="u10-nav-sibling">Task 5 &mdash; Titles</a>
+      <span>|</span>
+      <span>Task 6 &mdash; <em>up</em> / <em>out</em></span>
+    </nav>
+
+    <section class="task" id="task-gap">
+      <h2>Exercise 1 &mdash; SIBLINGS</h2>
+      <p class="instr">
+        <span class="instr-num">1</span>
+        Complete the phrasal verbs in the text below with the correct particle. There is an example at the beginning (0).
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> tap <em>up</em> or <em>out</em> for each gap &mdash; no typing. Example (0) is already <strong>made up</strong>. Check shows ✓/✗ on each gap.
+      </p>
+
+      <div class="story-head">
+        <div class="story-title">SIBLINGS</div>
+      </div>
+
+      <div class="passage" id="passage"></div>
+
+      <div class="toolbar">
+        <div class="btn-row">
+          <button type="button" class="btn-check" id="btn-gap-check">Check Exercise 1</button>
+          <button type="button" class="btn-reset" id="btn-gap-reset">Reset</button>
+        </div>
+        <div class="score-strip" id="gap-score-strip" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="task" id="task-match">
+      <h2>Exercise 2 &mdash; definitions</h2>
+      <p class="instr">
+        <span class="instr-num">2</span>
+        Match the phrasal verbs (1&ndash;4) to their definitions (a&ndash;d).
+      </p>
+      <p class="hint-bar">
+        <strong>How:</strong> each phrasal verb &rarr; slot for a definition letter. Pick a chip from the bank below (tap or drag). Check shows ✓/✗ on each row.
+      </p>
+
+      <div class="match-board">
+        <div class="match-lines" id="match-lines" aria-label="Phrasal verbs"></div>
+
+        <div class="match-bank-dock">
+          <div class="match-bank-head">Definitions (a&ndash;d)</div>
+          <p class="match-bank-hint">Tap a definition, then tap the slot on the line &mdash; or drag up.</p>
+          <div class="match-bank" id="match-word-bank" aria-label="Definition bank"></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="btn-row">
+            <button type="button" class="btn-check" id="btn-match-check">Check Exercise 2</button>
+            <button type="button" class="btn-reset" id="btn-match-reset">Reset</button>
+          </div>
+          <div class="score-strip" id="match-score-strip" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <p id="match-hint" class="sr-only" aria-live="polite"></p>
+  </main>
+
+  <script>
+(function () {
+  /* --- Exercise 1: particle gaps --- */
+  var GAP_KEY = {
+    0: "up",
+    1: "up",
+    2: "up",
+    3: "out",
+    4: "out",
+    5: "out",
+    6: "out",
+    7: "up",
+    8: "out"
+  };
+
+  var GAP_PARTS = [
+    { n: 0, before: "always ", stem: "made", after: " stories if mum asked her what had happened. She would never ", example: true },
+    { n: 1, before: "", stem: "own", after: " to anything she did and usually blamed me. I " },
+    { n: 2, before: "", stem: "put", after: " with this until I got bigger than her. I remember the occasion like it was yesterday. A picture got broken and she said I&rsquo;d done it. I was about 12 and had " },
+    { n: 3, before: "", stem: "run", after: " of patience. I mean, I hadn&rsquo;t even been at home at the time. Admittedly, I was worried about " },
+    { n: 4, before: "", stem: "falling", after: " with her. She was my elder sister and I&rsquo;d never stood up to her like this before. Mum had " },
+    { n: 5, before: "", stem: "found", after: " the truth, and this " },
+    { n: 6, before: "", stem: "turned", after: " to be very bad for my sister. I think she was grounded for about a month and didn&rsquo;t speak to me for that whole time either. She eventually " },
+    { n: 7, before: "", stem: "gave", after: " ignoring me and these days we are the best of friends. We help each other " },
+    { n: 8, before: "", stem: "sort", after: " our problems and are really supportive of one another." }
+  ];
+
+  var passageEl = document.getElementById("passage");
+  var gapScoreStrip = document.getElementById("gap-score-strip");
+
+  function makePicker(part) {
+    var wrap = document.createElement("span");
+    wrap.className = "gap-wrap";
+
+    var num = document.createElement("span");
+    num.className = "gap-num";
+    num.textContent = "(" + part.n + ")";
+    wrap.appendChild(document.createTextNode(part.before));
+    wrap.appendChild(num);
+
+    var stem = document.createElement("span");
+    stem.className = "pv-stem";
+    stem.textContent = part.stem + " ";
+    wrap.appendChild(stem);
+
+    var picker = document.createElement("span");
+    picker.className = "particle-picker" + (part.example ? " is-example" : "");
+    picker.setAttribute("data-gap", String(part.n));
+
+    ["up", "out"].forEach(function (val) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pv-btn";
+      btn.setAttribute("data-val", val);
+      btn.textContent = val;
+      btn.addEventListener("click", function () {
+        picker.querySelectorAll(".pv-btn").forEach(function (b) {
+          b.classList.toggle("is-on", b === btn);
+        });
+        picker.setAttribute("data-choice", val);
+        picker.classList.remove("is-checked", "is-checked-ok", "is-checked-bad");
+        var mark = picker.querySelector(".gap-mark");
+        if (mark) mark.textContent = "";
+        gapScoreStrip.textContent = "";
+        gapScoreStrip.className = "score-strip";
+        picker.querySelectorAll(".pv-btn").forEach(function (b) {
+          b.classList.remove("is-key-hint");
+        });
+      });
+      picker.appendChild(btn);
+    });
+
+    var mark = document.createElement("span");
+    mark.className = "gap-mark";
+    mark.setAttribute("aria-hidden", "true");
+    picker.appendChild(mark);
+
+    wrap.appendChild(picker);
+    wrap.appendChild(document.createTextNode(part.after));
+
+    if (part.example) {
+      var upBtn = picker.querySelector("[data-val=\"up\"]");
+      if (upBtn) {
+        upBtn.classList.add("is-on");
+        picker.setAttribute("data-choice", "up");
+      }
+    }
+
+    return wrap;
+  }
+
+  function mountPassage() {
+    passageEl.innerHTML = "";
+    passageEl.appendChild(document.createTextNode(
+      "When I was a kid, my sister used to lie. She was older than me and "
+    ));
+    GAP_PARTS.forEach(function (part) {
+      passageEl.appendChild(makePicker(part));
+    });
+  }
+
+  document.getElementById("btn-gap-check").addEventListener("click", function () {
+    var scored = 0;
+    var total = 0;
+    var missing = false;
+
+    document.querySelectorAll(".particle-picker").forEach(function (picker) {
+      var n = Number(picker.getAttribute("data-gap"));
+      if (n === 0) return;
+      total++;
+      var choice = picker.getAttribute("data-choice") || "";
+      if (!choice) {
+        missing = true;
+        return;
+      }
+      var ok = choice === GAP_KEY[n];
+      if (ok) scored++;
+      picker.classList.add("is-checked");
+      picker.classList.toggle("is-checked-ok", ok);
+      picker.classList.toggle("is-checked-bad", !ok);
+      var mark = picker.querySelector(".gap-mark");
+      if (mark) mark.textContent = ok ? "\u2713" : "\u2717";
+      picker.querySelectorAll(".pv-btn").forEach(function (btn) {
+        var isKey = btn.getAttribute("data-val") === GAP_KEY[n];
+        btn.classList.toggle("is-key-hint", !ok && isKey);
+      });
+    });
+
+    if (missing) {
+      gapScoreStrip.textContent = "Choose up or out for every gap (1\u20138), then check again.";
+      gapScoreStrip.className = "score-strip is-mixed";
+      return;
+    }
+
+    if (scored === total) {
+      gapScoreStrip.textContent = "Perfect \u2014 " + scored + " / " + total + " gaps correct.";
+      gapScoreStrip.className = "score-strip is-perfect";
+    } else {
+      gapScoreStrip.textContent =
+        scored + " / " + total + " correct. Green chip shows the key particle.";
+      gapScoreStrip.className = "score-strip is-mixed";
+    }
+  });
+
+  document.getElementById("btn-gap-reset").addEventListener("click", function () {
+    gapScoreStrip.textContent = "";
+    gapScoreStrip.className = "score-strip";
+    mountPassage();
+  });
+
+  mountPassage();
+
+  /* --- Exercise 2: matching --- */
+  var PHRASALS = [
+    { n: 1, text: "bring up" },
+    { n: 2, text: "cheer up" },
+    { n: 3, text: "take up" },
+    { n: 4, text: "give out" }
+  ];
+
+  var DEFS = [
+    { id: "a", letter: "a", label: "distribute" },
+    { id: "b", letter: "b", label: "start doing something regularly" },
+    { id: "c", letter: "c", label: "become less sad" },
+    { id: "d", letter: "d", label: "look after until adulthood" }
+  ];
+
+  var MATCH_KEY = { 1: "d", 2: "c", 3: "b", 4: "a" };
+  var MATCH_KEY_LABEL = {
+    1: "d. look after until adulthood",
+    2: "c. become less sad",
+    3: "b. start doing something regularly",
+    4: "a. distribute"
+  };
+
+  var bankEl = document.getElementById("match-word-bank");
+  var linesEl = document.getElementById("match-lines");
+  var selectedChip = null;
+  var focusedLine = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function announce(msg) {
+    var h = document.getElementById("match-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  function clearSelect() {
+    if (selectedChip) {
+      selectedChip.classList.remove("is-selected");
+      selectedChip = null;
+    }
+  }
+
+  function clearFocus() {
+    focusedLine = null;
+    document.querySelectorAll(".match-line").forEach(function (line) {
+      line.classList.remove("is-focused");
+    });
+  }
+
+  function clearMatchFeedback() {
+    var scoreStrip = document.getElementById("match-score-strip");
+    scoreStrip.textContent = "";
+    scoreStrip.className = "score-strip";
+    document.querySelectorAll(".match-line-wrap").forEach(function (wrap) {
+      wrap.className = "match-line-wrap";
+      var mark = wrap.querySelector(".match-mark");
+      if (mark) mark.textContent = "";
+      var note = wrap.querySelector(".match-inline-note");
+      if (note) note.innerHTML = "";
+    });
+    document.querySelectorAll(".match-chip").forEach(function (chip) {
+      chip.classList.remove("is-chip-ok", "is-chip-bad", "is-selected");
+    });
+  }
+
+  function getSlot(n) {
+    return document.getElementById("slot-" + n);
+  }
+
+  function syncSlotState(slot) {
+    var has = slot.querySelector(".match-chip");
+    slot.classList.toggle("has-word", !!has);
+  }
+
+  function findSlotWithWord(wordId) {
+    for (var n = 1; n <= 4; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip && chip.getAttribute("data-word") === wordId) return slot;
+    }
+    return null;
+  }
+
+  function moveChipToSlot(chip, slot) {
+    var wordId = chip.getAttribute("data-word");
+    var other = findSlotWithWord(wordId);
+    if (other && other !== slot) {
+      bankEl.appendChild(other.querySelector(".match-chip"));
+      syncSlotState(other);
+    }
+    var inSlot = slot.querySelector(".match-chip");
+    if (inSlot && inSlot !== chip) {
+      bankEl.appendChild(inSlot);
+    }
+    slot.appendChild(chip);
+    clearSelect();
+    syncSlotState(slot);
+    clearMatchFeedback();
+  }
+
+  function returnChipToBank(chip) {
+    bankEl.appendChild(chip);
+    var parent = chip.parentElement;
+    if (parent && parent.classList.contains("match-slot")) {
+      syncSlotState(parent);
+    }
+    clearSelect();
+    clearMatchFeedback();
+  }
+
+  function makeChip(def, chipId) {
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "match-chip";
+    chip.id = chipId;
+    chip.setAttribute("data-word", def.id);
+    chip.innerHTML =
+      "<span class=\"chip-letter\">" + def.letter + "</span><span>" + def.label + "</span>";
+    chip.draggable = true;
+
+    chip.addEventListener("dragstart", function (e) {
+      clearSelect();
+      if (e.dataTransfer) {
+        e.dataTransfer.setData("text/plain", chipId);
+        e.dataTransfer.effectAllowed = "move";
+      }
+    });
+
+    chip.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var inBank = chip.parentElement === bankEl;
+      if (inBank) {
+        if (focusedLine) {
+          moveChipToSlot(chip, getSlot(focusedLine));
+          announce("");
+          return;
+        }
+        clearSelect();
+        chip.classList.add("is-selected");
+        selectedChip = chip;
+        announce("Now tap a slot on the line above.");
+        return;
+      }
+      if (chip.parentElement.classList.contains("match-slot")) {
+        returnChipToBank(chip);
+        announce("");
+      }
+    });
+
+    return chip;
+  }
+
+  function wireDropZone(zone, onDrop) {
+    zone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      zone.classList.add("is-drag-over");
+    });
+    zone.addEventListener("dragleave", function (e) {
+      if (e.target === zone) zone.classList.remove("is-drag-over");
+    });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      zone.classList.remove("is-drag-over");
+      var id = e.dataTransfer ? e.dataTransfer.getData("text/plain") : "";
+      var chip = id ? document.getElementById(id) : null;
+      if (chip) onDrop(chip);
+    });
+  }
+
+  function mountLines() {
+    linesEl.innerHTML = "";
+    PHRASALS.forEach(function (item) {
+      var wrap = document.createElement("div");
+      wrap.className = "match-line-wrap";
+      wrap.setAttribute("data-def", String(item.n));
+
+      var line = document.createElement("div");
+      line.className = "match-line";
+
+      var mark = document.createElement("span");
+      mark.className = "match-mark";
+      mark.setAttribute("aria-hidden", "true");
+
+      var num = document.createElement("span");
+      num.className = "match-num";
+      num.textContent = item.n + ".";
+
+      var text = document.createElement("span");
+      text.className = "match-def";
+      text.innerHTML = "<strong>" + item.text + "</strong>";
+
+      var arrow = document.createElement("span");
+      arrow.className = "match-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "\u2192";
+
+      var slot = document.createElement("div");
+      slot.className = "match-slot";
+      slot.id = "slot-" + item.n;
+      slot.setAttribute("data-def", String(item.n));
+      slot.setAttribute("role", "button");
+      slot.setAttribute("tabindex", "0");
+
+      wireDropZone(slot, function (chip) {
+        moveChipToSlot(chip, slot);
+        clearFocus();
+      });
+
+      slot.addEventListener("click", function () {
+        clearMatchFeedback();
+        if (selectedChip && selectedChip.parentElement === bankEl) {
+          moveChipToSlot(selectedChip, slot);
+          clearFocus();
+          announce("");
+          return;
+        }
+        focusedLine = item.n;
+        document.querySelectorAll(".match-line").forEach(function (l) {
+          l.classList.toggle("is-focused", l === line);
+        });
+        announce("Tap a definition in the bank below, then this slot.");
+      });
+
+      line.appendChild(mark);
+      line.appendChild(num);
+      line.appendChild(text);
+      line.appendChild(arrow);
+      line.appendChild(slot);
+
+      var note = document.createElement("div");
+      note.className = "match-inline-note";
+
+      wrap.appendChild(line);
+      wrap.appendChild(note);
+      linesEl.appendChild(wrap);
+      syncSlotState(slot);
+    });
+  }
+
+  function mountBank() {
+    bankEl.innerHTML = "";
+    shuffle(DEFS).forEach(function (def, i) {
+      bankEl.appendChild(makeChip(def, "def-chip-" + i));
+    });
+  }
+
+  wireDropZone(bankEl, function (chip) {
+    returnChipToBank(chip);
+  });
+
+  function getAssignedWord(n) {
+    var chip = getSlot(n).querySelector(".match-chip");
+    return chip ? chip.getAttribute("data-word") : null;
+  }
+
+  document.getElementById("btn-match-check").addEventListener("click", function () {
+    var correct = 0;
+
+    for (var n = 1; n <= 4; n++) {
+      var user = getAssignedWord(n);
+      var ok = user != null && user === MATCH_KEY[n];
+      if (ok) correct++;
+
+      var wrap = document.querySelector(".match-line-wrap[data-def=\"" + n + "\"]");
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      var mark = wrap.querySelector(".match-mark");
+      var note = wrap.querySelector(".match-inline-note");
+
+      wrap.className = "match-line-wrap is-checked " + (ok ? "is-checked-ok" : "is-checked-bad");
+      mark.textContent = ok ? "\u2713" : "\u2717";
+
+      if (chip) {
+        chip.classList.toggle("is-chip-ok", ok);
+        chip.classList.toggle("is-chip-bad", !ok);
+      }
+
+      if (!ok) {
+        note.innerHTML = user
+          ? "Should be: <span class=\"key-pill\">" + MATCH_KEY_LABEL[n] + "</span>"
+          : "No definition chosen. Key: <span class=\"key-pill\">" + MATCH_KEY_LABEL[n] + "</span>";
+      } else {
+        note.innerHTML = "";
+      }
+    }
+
+    var scoreStrip = document.getElementById("match-score-strip");
+    if (correct === 4) {
+      scoreStrip.textContent = "Perfect \u2014 4 / 4. All definitions matched.";
+      scoreStrip.className = "score-strip is-perfect";
+    } else {
+      scoreStrip.textContent =
+        correct + " / 4 correct. Red rows show the key definition (a\u2013d).";
+      scoreStrip.className = "score-strip is-mixed";
+    }
+
+    clearFocus();
+    clearSelect();
+  });
+
+  document.getElementById("btn-match-reset").addEventListener("click", function () {
+    clearMatchFeedback();
+    clearFocus();
+    clearSelect();
+    announce("");
+    for (var n = 1; n <= 4; n++) {
+      var slot = getSlot(n);
+      var chip = slot.querySelector(".match-chip");
+      if (chip) bankEl.appendChild(chip);
+      syncSlotState(slot);
+    }
+    mountBank();
+  });
+
+  mountLines();
+  mountBank();
+})();
+  </script>
+  <style>
+    .match-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      background: rgba(86, 204, 242, 0.14);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      font-family: inherit;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .match-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .match-chip.is-selected {
+      box-shadow: 0 0 0 2px #a78bfa;
+      border-color: #a78bfa;
+    }
+    .chip-letter {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #93c5fd;
+      flex-shrink: 0;
+    }
+    .match-chip.is-chip-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+    }
+    .match-chip.is-chip-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.18);
+    }
+    .match-bank.is-drag-over {
+      outline: 2px dashed #60a5fa;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+  </style>
+  <script src="../../js/u10-vocab-course-context.js"></script>
+</body>
+</html>

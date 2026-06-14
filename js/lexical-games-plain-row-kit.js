@@ -32,15 +32,21 @@
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             if (!row || row[ansKey] == null || row[ansKey] === "") continue;
-            var ans = String(row[ansKey]).trim();
-            if (!ans || findAnsSpan(plain, ans) == null) continue;
+            var anchor = String(row[ansKey]).trim();
+            var headword =
+                row.headword != null && String(row.headword).trim() !== ""
+                    ? String(row.headword).trim()
+                    : "";
+            var learn = headword || anchor;
+            if (!anchor || findAnsSpan(plain, anchor) == null) continue;
             var hint = String(row[hintKey] != null ? row[hintKey] : "").trim();
             out.push({
                 syn: hint,
                 flipDef: hint,
-                ans: ans,
+                ans: learn,
+                anchor: anchor !== learn ? anchor : "",
                 speaker: speaker,
-                fallText: buildGapLine(plain, ans, speaker)
+                fallText: buildGapLine(plain, anchor, speaker)
             });
         }
         return out;
@@ -72,14 +78,20 @@
         for (var wi = 0; wi < rows.length; wi++) {
             var row = rows[wi];
             if (!row || row[ansKey] == null || row[ansKey] === "") continue;
-            var phrase = String(row[ansKey]).trim();
-            if (!phrase || findAnsSpan(plain, phrase) == null) continue;
+            var anchor = String(row[ansKey]).trim();
+            var headword =
+                row.headword != null && String(row.headword).trim() !== ""
+                    ? String(row.headword).trim()
+                    : "";
+            var phrase = headword || anchor;
+            if (!anchor || findAnsSpan(plain, anchor) == null) continue;
             out.push({
                 id: idPrefix + "::" + wi + "::" + phrase,
                 phrase: phrase,
                 hint: String(row[hintKey] != null ? row[hintKey] : "").trim(),
                 speaker: speaker,
-                group: row.group ? String(row.group).trim() : ""
+                group: row.group ? String(row.group).trim() : "",
+                anchor: anchor !== phrase ? anchor : ""
             });
         }
         return out;

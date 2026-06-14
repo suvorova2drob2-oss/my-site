@@ -5,6 +5,26 @@
 (function (W) {
     "use strict";
 
+    var healthFitness = {
+        id: "u12_health_fitness_collocations_seed",
+        title: "Health and fitness — odd collocation out",
+        subtitle: "Exercises 1–3 · odd collocation · noun groups · speaking · SB Health and fitness",
+        kind: "prep-link",
+        href:
+            "unit12-vocabulary/cpe/health-fitness-collocations/index.html?course=cpe&backLabel=" +
+            encodeURIComponent("Vocabulary — Level 12"),
+    };
+
+    var multiWordVerbs = {
+        id: "u12_multi_word_verbs_seed",
+        title: "Multi-word verbs — match, sort & gap-fill",
+        subtitle: "Exercises 1–3 · SB Track 12.1 verbs + verb box · tap-to-pair & chip fill",
+        kind: "prep-link",
+        href:
+            "unit12-vocabulary/cpe/multi-word-verbs/index.html?course=cpe&backLabel=" +
+            encodeURIComponent("Vocabulary — Level 12"),
+    };
+
     var sportsIdioms = {
         id: "u12_sports_idioms_seed",
         title: "Sports idioms — phrase bank & practice",
@@ -35,15 +55,55 @@
             encodeURIComponent("Vocabulary — Level 12"),
     };
 
+    var wordFormGaps = {
+        id: "u12_word_form_gaps_seed",
+        title: "Word form gaps — gerund / infinitive / participle",
+        subtitle: "6 sentences · reluctant to / mind + -ing / rather + bare inf / having gone",
+        kind: "prep-link",
+        href:
+            "unit12-vocabulary/cpe/word-form-gaps/index.html?course=cpe&backLabel=" +
+            encodeURIComponent("Vocabulary — Level 12"),
+    };
+
+    var sentenceHalves = {
+        id: "u12_sentence_halves_seed",
+        title: "Sentence halves — health & fitness matching",
+        subtitle: "8 pairs · restricted diet / circulation / immune system / genotype",
+        kind: "prep-link",
+        href:
+            "unit12-vocabulary/cpe/sentence-halves-matching/index.html?course=cpe&backLabel=" +
+            encodeURIComponent("Vocabulary — Level 12"),
+    };
+
     W.PREP_HUB_U12_VOCAB_SEEDS = {
         folderVocabulary: {
             title: "Vocabulary",
-            subtitle: "Unit 12 · sports idioms, word box, discussing pairs",
+            subtitle: "Unit 12 · health collocations, idioms, word forms, sentence halves",
         },
-        seededTasks: [sportsIdioms, idiomsWordBox, discussingIdioms],
-        taskIdsOrdered: [sportsIdioms.id, idiomsWordBox.id, discussingIdioms.id],
+        seededTasks: [
+            healthFitness,
+            multiWordVerbs,
+            sportsIdioms,
+            idiomsWordBox,
+            discussingIdioms,
+            wordFormGaps,
+            sentenceHalves,
+        ],
+        taskIdsOrdered: [
+            healthFitness.id,
+            multiWordVerbs.id,
+            sportsIdioms.id,
+            idiomsWordBox.id,
+            discussingIdioms.id,
+            wordFormGaps.id,
+            sentenceHalves.id,
+        ],
+        healthFitnessTask: healthFitness,
+        multiWordVerbsTask: multiWordVerbs,
         sportsIdiomsTask: sportsIdioms,
         idiomsWordBoxTask: idiomsWordBox,
         discussingIdiomsTask: discussingIdioms,
+        wordFormGapsTask: wordFormGaps,
+        sentenceHalvesTask: sentenceHalves,
     };
 })(typeof window !== "undefined" ? window : globalThis);

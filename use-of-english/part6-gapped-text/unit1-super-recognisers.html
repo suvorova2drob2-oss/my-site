@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &middot; Part 6 Gapped text &mdash; Super-recognisers</title>
+  <link rel="stylesheet" href="../../css/cpe-uoe-part6-gapped-text-shell.css" />
+</head>
+<body class="cpe-p6-body has-dock">
+  <main class="cpe-p6-page">
+    <header class="cpe-p6-top">
+      <div>
+        <span class="cpe-p6-tag">CPE Unit 1 &middot; Reading &middot; Part 6</span>
+        <h1>Gapped text &mdash; Super-recognisers</h1>
+        <p class="cpe-p6-lead">Paragraphs A&ndash;H &middot; gaps 1&ndash;7 &middot; one extra paragraph</p>
+      </div>
+      <a class="cpe-p6-back" id="back-link" href="../../index.html?prep_stay=1&amp;screen=unit1&amp;prep_open_folder=prep_legacy_u1_reading&amp;backLabel=Reading%20%E2%80%94%20Level%201">&larr; Reading</a>
+    </header>
+
+    <p class="cpe-p6-instr" id="page-instr"></p>
+
+    <div id="cpe-p6-app" aria-live="polite"></div>
+  </main>
+
+  <div class="cpe-p6-dock" aria-label="Paragraph bank dock">
+    <div class="cpe-p6-dock__label">Paragraphs A&ndash;H</div>
+    <div class="cpe-p6-dock__status" id="cpe-p6-dock-status">Tap a letter, then a gap (1&ndash;7).</div>
+    <div class="cpe-p6-dock-chips" id="cpe-p6-dock-chips"></div>
+  </div>
+
+  <script src="../../js/cpe-uoe-part6-gapped-text-data.js"></script>
+  <script src="../../js/unit1-uoe-part6-super-recognisers-data.js"></script>
+  <script src="../../js/cpe-uoe-part6-gapped-text-engine.js"></script>
+  <script>
+(function () {
+  var pack =
+    window.__CPE_UOE_PART6_GT__ &&
+    window.__CPE_UOE_PART6_GT__.units &&
+    window.__CPE_UOE_PART6_GT__.units[0];
+
+  if (!pack || !window.CPE_UOE_PART6_GT) return;
+
+  var instr = document.getElementById("page-instr");
+  if (instr && pack.instructionHtml) instr.innerHTML = pack.instructionHtml;
+
+  window.CPE_UOE_PART6_GT.mount({ rootId: "cpe-p6-app", pack: pack });
+
+  var back = document.getElementById("back-link");
+  if (back) {
+    var params = new URLSearchParams(location.search);
+    if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
+      var folderId =
+        typeof PREP_LEGACY_U1_READING_FOLDER_ID !== "undefined"
+          ? PREP_LEGACY_U1_READING_FOLDER_ID
+          : "prep_legacy_u1_reading";
+      back.href =
+        "../../index.html?prep_stay=1&screen=unit1&prep_open_folder=" +
+        encodeURIComponent(folderId);
+      var lbl = params.get("backLabel");
+      if (lbl) back.textContent = "\u2190 " + lbl;
+    }
+  }
+})();
+  </script>
+</body>
+</html>

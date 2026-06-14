@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 3 Word formation · Psychotherapy (Unit 12 CPE)</title>
+  <link rel="stylesheet" href="../../css/cpe-uoe-part3-wf-shell.css" />
+</head>
+<body class="cpe-p3-body">
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+        <p class="tag">Unit 12 &middot; CPE Prep &middot; On the right track</p>
+      </div>
+      <a class="back" id="backLink" href="../../index.html?prep_stay=1&amp;screen=unit12&amp;prep_open_folder=prep_legacy_u12_uoe">&larr; Use of English &mdash; Unit 12</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+    </p>
+
+    <div class="example">
+      <div class="lab">(0) &mdash; Example</div>
+      <p>
+        For millions today, psychotherapy is as <span class="done">INDISPENSABLE</span> a part of their lives as eating, working and sleeping.
+        <span class="root">DISPENSE</span>
+      </p>
+    </div>
+
+    <section class="block">
+      <div class="block-title">THE MESMERIZING ORIGINS OF PSYCHOTHERAPY</div>
+      <p class="line">
+        Without it, the struggle to get through modern life would be
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unbearable" aria-label="Gap 1 BEAR" /> <span class="root">BEAR</span></span>
+        harder. In fact, therapy has a rich pedigree
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="predating" aria-label="Gap 2 DATE" /> <span class="root">DATE</span></span>
+        the ordeals of the modern world by millennia.
+      </p>
+      <p class="line" style="margin-top:14px;">
+        Throughout history, people have been aware of the
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="therapeutic" aria-label="Gap 3 THERAPY" /> <span class="root">THERAPY</span></span>
+        power of speaking and, crucially, being listened to, not to mention the
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="detrimental" aria-label="Gap 4 DETRIMENT" /> <span class="root">DETRIMENT</span></span>
+        effects of bottling up emotions and leaving painful thoughts and experiences
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unspoken" aria-label="Gap 5 SPEAK" /> <span class="root">SPEAK</span></span>.
+        Both the Ancient Egyptians and Greeks wrote of healing through words. In the 9th century, Persian physician and psychologist Rhazes is believed to have
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="augured" aria-label="Gap 6 AUGUR" /> <span class="root">AUGUR</span></span>
+        the world&rsquo;s first theoretically based psychotherapy.
+      </p>
+      <p class="line" style="margin-top:14px;">
+        Western psychotherapy took shape in the late 1800s, around the time Sigmund Freud was developing his &lsquo;talking cure&rsquo; in Vienna. While Freud&rsquo;s transformative impact on psychotherapy is
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="irrefutable" aria-label="Gap 7 REFUTE" /> <span class="root">REFUTE</span></span>,
+        many experts consider Viennese physician Franz Mesmer, who pioneered the practice of hypnotherapy in the 1700s (and
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unwittingly" aria-label="Gap 8 WIT" /> <span class="root">WIT</span></span>
+        gave us the word <em>mesmerise</em>) to have been the true Father of Western Psychotherapy.
+      </p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+  var hubDefault =
+    "../../index.html?prep_stay=1&screen=unit12&prep_open_folder=prep_legacy_u12_uoe";
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function accepts(el) {
+    return (el.getAttribute("data-accept") || "")
+      .split("|")
+      .map(norm)
+      .filter(Boolean);
+  }
+
+  function check() {
+    var ok = 0;
+    inputs.forEach(function (el) {
+      el.classList.remove("ok", "bad");
+      var got = norm(el.value);
+      if (!got) {
+        el.classList.add("bad");
+        return;
+      }
+      if (accepts(el).indexOf(got) >= 0) {
+        el.classList.add("ok");
+        ok++;
+      } else {
+        el.classList.add("bad");
+      }
+    });
+    document.getElementById("scoreNum").textContent = String(ok);
+    document.getElementById("scoreLine").hidden = false;
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+  inputs.forEach(function (el) {
+    el.addEventListener("input", function () {
+      el.classList.remove("ok", "bad");
+    });
+  });
+
+  var q = new URLSearchParams(window.location.search);
+  var bl = document.getElementById("backLink");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+  if (bl) {
+    bl.href = sanitizeReturnHref(q.get("back"), hubDefault);
+    if (q.get("backLabel")) {
+      try {
+        bl.textContent =
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+      } catch (e) {}
+    }
+  }
+})();
+  </script>
+</body>
+</html>

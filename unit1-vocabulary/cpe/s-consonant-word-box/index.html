@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &mdash; /s/ consonant clusters (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --rose: #fda4af;
+      --rose-bg: rgba(244, 114, 182, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 18px;
+    }
+    .ex-workspace {
+      display: grid;
+      grid-template-columns: minmax(168px, 210px) 1fr;
+      gap: 16px 20px;
+      align-items: start;
+    }
+    .bank-col--side { position: sticky; top: 12px; }
+    .items-col { min-width: 0; }
+    .word-box-wrap {
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--rose-bg);
+    }
+    .word-box-wrap h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .word-box { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-box--dock {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+    .bank-dock {
+      display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 50;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(9, 18, 42, 0.97);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    .bank-dock__label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 6px;
+    }
+    .bank-dock__status {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      min-height: 1.1em;
+    }
+    .bank-dock__status.is-active { color: #bae6fd; font-weight: 700; }
+    .word-chip {
+      font-size: 0.88rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffe4e6;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .word-chip:hover:not(.is-used):not(.is-selected) { border-color: var(--accent); }
+    .word-chip.is-selected {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.18);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .word-chip.is-used {
+      opacity: 0.35;
+      cursor: default;
+      text-decoration: line-through;
+    }
+    .bank-hint { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .item__sent {
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+    .phrase-bold {
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .gap {
+      display: inline-block;
+      min-width: 7rem;
+      padding: 2px 10px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: rgba(8, 22, 48, 0.55);
+      color: #bae6fd;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .gap:hover:not(.is-locked) { border-color: var(--accent); }
+    .gap.is-filled { border-style: solid; border-color: #6ee7b7; color: #d1fae5; }
+    .gap.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); color: #bbf7d0; }
+    .gap.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+    .gap.is-locked { cursor: default; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; }
+    .btn-reset { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--line); }
+    .btn-sol { background: rgba(254, 240, 138, 0.15); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); display: none; }
+    .feedback {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+    @media (max-width: 720px) {
+      body { padding-bottom: 130px; }
+      .ex-workspace { grid-template-columns: 1fr; }
+      .bank-col--side { display: none; }
+      .bank-dock { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary</p>
+        <h1>/s/ + consonant clusters &mdash; word box</h1>
+      </div>
+      <a class="back" id="back-link" data-u1-vocab-hub-depth="1" data-u1-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%201">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      <strong>2</strong> The words in the box all contain a combination of /s/ and two other consonant sounds.
+      Complete each sentence with one of the words in the box.
+      <span class="bank-hint" style="display:block;margin-top:8px;">Word box stays on the left while you scroll (on phone &mdash; fixed at the bottom).</span>
+    </p>
+
+    <div class="ex-workspace">
+      <aside class="bank-col bank-col--side" aria-label="Word box sidebar">
+        <div class="word-box-wrap">
+          <h2>Word box</h2>
+          <div class="word-box" id="word-box"></div>
+          <p class="bank-hint">Tap a word, then a gap. Each word once.</p>
+        </div>
+      </aside>
+
+      <div class="items-col">
+        <div id="items"></div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-check" id="btn-check">Check</button>
+          <button type="button" class="btn btn-reset" id="btn-reset">Reset</button>
+          <button type="button" class="btn btn-sol" id="btn-solution">Show solution</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bank-dock" aria-label="Word box dock">
+    <div class="bank-dock__label">Word box</div>
+    <div class="bank-dock__status" id="dock-status">Tap a word, then a gap.</div>
+    <div class="word-box word-box--dock" id="word-box-dock"></div>
+  </div>
+
+  <script src="../../../js/u1-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  var BOX = ["boasts", "risks", "scrapped", "springboard", "streak", "stroll"];
+
+  var KEY = {
+    1: "streak",
+    2: "stroll",
+    3: "risks",
+    4: "scrapped",
+    5: "boasts",
+    6: "springboard"
+  };
+
+  var ITEMS = [
+    {
+      n: 1,
+      html:
+        'The school&rsquo;s volleyball team can&rsquo;t seem to lose &ndash; they&rsquo;re currently on a 10-game <span class="phrase-bold">winning</span> <button type="button" class="gap" data-n="1" aria-label="Gap 1">&mdash;</button>.'
+    },
+    {
+      n: 2,
+      html:
+        'The visit to my childhood home was a <button type="button" class="gap" data-n="2" aria-label="Gap 2">&mdash;</button> <span class="phrase-bold">down memory lane</span>.'
+    },
+    {
+      n: 3,
+      html:
+        'Do the potential benefits of space exploration outweigh its <span class="phrase-bold">inherent</span> <button type="button" class="gap" data-n="3" aria-label="Gap 3">&mdash;</button>?'
+    },
+    {
+      n: 4,
+      html:
+        'When its funding was pulled, <span class="phrase-bold">plans</span> for the youth centre were <button type="button" class="gap" data-n="4" aria-label="Gap 4">&mdash;</button> entirely.'
+    },
+    {
+      n: 5,
+      html:
+        'Abdul is exceptionally proud of his children and often <button type="button" class="gap" data-n="5" aria-label="Gap 5">&mdash;</button> of their <span class="phrase-bold">academic achievements</span>.'
+    },
+    {
+      n: 6,
+      html:
+        'The scholarship aims to provide a <button type="button" class="gap" data-n="6" aria-label="Gap 6">&mdash;</button> <span class="phrase-bold">to success</span> for talented young kids.'
+    }
+  ];
+
+  var answers = {};
+  var selectedWord = null;
+  var locked = false;
+  var elBox = document.getElementById("word-box");
+  var elBoxDock = document.getElementById("word-box-dock");
+  var elDockStatus = document.getElementById("dock-status");
+  var elItems = document.getElementById("items");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+  var TOTAL = 6;
+
+  function renderBoxInto(container) {
+    if (!container) return;
+    container.innerHTML = "";
+    BOX.forEach(function (w) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "word-chip";
+      chip.textContent = w;
+      chip.setAttribute("data-word", w);
+      container.appendChild(chip);
+    });
+  }
+
+  function usedWords() {
+    var used = {};
+    Object.keys(answers).forEach(function (k) {
+      if (answers[k]) used[answers[k]] = true;
+    });
+    return used;
+  }
+
+  function syncBoxInto(container) {
+    if (!container) return;
+    var used = usedWords();
+    container.querySelectorAll(".word-chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-word");
+      chip.classList.toggle("is-used", !!used[w] && selectedWord !== w);
+      chip.classList.toggle("is-selected", selectedWord === w);
+      chip.disabled = locked || (!!used[w] && selectedWord !== w);
+    });
+  }
+
+  function updateDockStatus() {
+    if (!elDockStatus) return;
+    if (selectedWord) {
+      elDockStatus.textContent = "Selected: " + selectedWord + " \u2014 now tap a gap";
+      elDockStatus.className = "bank-dock__status is-active";
+    } else {
+      elDockStatus.textContent = "Tap a word, then a gap.";
+      elDockStatus.className = "bank-dock__status";
+    }
+  }
+
+  function renderItems() {
+    elItems.innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' + it.html + "</p>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
+  function syncBox() {
+    syncBoxInto(elBox);
+    syncBoxInto(elBoxDock);
+    updateDockStatus();
+  }
+
+  function syncGaps() {
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      var n = gap.getAttribute("data-n");
+      var val = answers[n] || "";
+      gap.textContent = val || "\u2014";
+      gap.classList.toggle("is-filled", !!val);
+      gap.classList.remove("is-ok", "is-bad");
+      gap.classList.toggle("is-locked", locked);
+    });
+  }
+
+  function clearFeedback() {
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+  }
+
+  function handleBoxClick(e) {
+    if (locked) return;
+    var chip = e.target.closest(".word-chip");
+    if (!chip || chip.classList.contains("is-used")) return;
+    var w = chip.getAttribute("data-word");
+    selectedWord = selectedWord === w ? null : w;
+    syncBox();
+  }
+
+  elBox.addEventListener("click", handleBoxClick);
+  elBoxDock.addEventListener("click", handleBoxClick);
+
+  elItems.addEventListener("click", function (e) {
+    if (locked) return;
+    var gap = e.target.closest(".gap[data-n]");
+    if (!gap) return;
+    var n = gap.getAttribute("data-n");
+    if (answers[n]) {
+      delete answers[n];
+      selectedWord = null;
+      syncGaps();
+      syncBox();
+      clearFeedback();
+      return;
+    }
+    if (!selectedWord) return;
+    answers[n] = selectedWord;
+    selectedWord = null;
+    syncGaps();
+    syncBox();
+    clearFeedback();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearFeedback();
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var gap = document.querySelector('.gap[data-n="' + n + '"]');
+      if (!answers[n]) {
+        missing.push(n);
+        continue;
+      }
+      if (answers[n] === KEY[n]) {
+        ok++;
+        gap.classList.add("is-ok");
+      } else {
+        gap.classList.add("is-bad");
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Fill gap(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === TOTAL) {
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+      elFb.className = "feedback show ok";
+      locked = true;
+      syncBox();
+    } else {
+      elFb.innerHTML =
+        "<strong>Score: " + ok + " / " + TOTAL + ".</strong> Green = correct; red = try again (tap a gap to clear it).";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL; n++) answers[n] = KEY[n];
+    locked = true;
+    selectedWord = null;
+    syncGaps();
+    document.querySelectorAll(".gap[data-n]").forEach(function (gap) {
+      gap.classList.add("is-ok");
+    });
+    syncBox();
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    answers = {};
+    selectedWord = null;
+    locked = false;
+    clearFeedback();
+    syncGaps();
+    syncBox();
+  });
+
+  renderItems();
+  renderBoxInto(elBox);
+  renderBoxInto(elBoxDock);
+  syncGaps();
+})();
+  </script>
+</body>
+</html>

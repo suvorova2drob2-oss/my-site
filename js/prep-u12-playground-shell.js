@@ -2,7 +2,7 @@
 
  * CPE Prep Playground (Unit 12) — course flag + class-format stubs from the two Vocab Gym tabs.
 
- * Load after: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js, unit12-ttt-word-bank.js
+ * Load after: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js, unit12-multi-word-verbs-lexicon.js, unit12-ttt-word-bank.js
 
  */
 
@@ -157,6 +157,10 @@
             u12_reading_road_to_betterment:
 
                 "Reading · The Road to Betterment: pick the strongest phrases for discussing self-help, scepticism, and the industry.",
+
+            u12_multi_word_verbs:
+
+                "Multi-word verbs: pick chunks from the listening discussion and the verb-box gap-fill (health & wellbeing).",
 
             u12_sports_idioms:
 

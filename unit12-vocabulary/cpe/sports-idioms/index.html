@@ -182,13 +182,13 @@
     .toolbar button:hover:not(:disabled) { border-color: var(--accent); }
     .toolbar button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .match-grid {
+    .match-layout {
       display: grid;
-      gap: 16px;
+      gap: 18px;
       align-items: start;
     }
     @media (min-width: 720px) {
-      .match-grid { grid-template-columns: 1fr 1fr; }
+      .match-layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
     }
     .col-title {
       font-size: 11px;
@@ -198,8 +198,17 @@
       margin-bottom: 10px;
       font-weight: 700;
     }
-    .sen-list, .def-list { display: flex; flex-direction: column; gap: 10px; }
-    .sen, .def {
+    .pair-list { display: flex; flex-direction: column; gap: 10px; }
+    .pair-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+      align-items: stretch;
+    }
+    @media (max-width: 560px) {
+      .pair-row { grid-template-columns: 1fr; }
+    }
+    .pair-left {
       position: relative;
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -208,21 +217,93 @@
       text-align: left;
       cursor: pointer;
       touch-action: manipulation;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      border-left: 4px solid transparent;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      border-left: 4px solid #3d5a86;
+      color: inherit;
+      font: inherit;
     }
-    .sen:hover:not(.dim), .def:hover:not(.dim):not(.used) { border-color: #4a6898; }
-    .sen.selected {
+    .pair-left:hover:not(.dim) { border-color: #4a6898; }
+    .pair-left.selected {
       border-color: var(--accent);
+      border-left-color: #0ea5e9;
+      background: rgba(14, 165, 233, 0.18);
       box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.35);
     }
-    .sen.matched { background: rgba(86, 204, 242, 0.08); }
-    .def.used { background: rgba(54, 211, 153, 0.12); }
-    .def.dim { opacity: 0.55; pointer-events: none; }
-    .sen .num, .def .letter { font-weight: 800; color: var(--accent); margin-right: 8px; }
-    .sen .txt, .def .txt { font-size: 0.9rem; line-height: 1.45; }
-    .badge { margin-top: 8px; font-size: 12px; color: var(--muted); }
-    .badge.empty { font-style: italic; }
+    .pair-left.matched { background: rgba(86, 204, 242, 0.08); }
+    .pair-left.dim { opacity: 0.65; pointer-events: none; }
+    .pair-left.is-ok { border-color: var(--ok); border-left-color: var(--ok); }
+    .pair-left.is-bad { border-color: var(--bad); border-left-color: var(--bad); }
+    .pair-left .num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .pair-left .txt { font-size: 0.9rem; line-height: 1.45; font-weight: 700; color: #fef08a; }
+    .pair-slot {
+      border: 2px dashed #4a6898;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(8, 22, 48, 0.28);
+      min-height: 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .pair-slot.filled {
+      border-style: solid;
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.1);
+    }
+    .pair-slot.is-ok {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.14);
+    }
+    .pair-slot.is-bad {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .pair-slot .slot-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.4;
+    }
+    .pair-slot .slot-letter {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #7dd3fc;
+      margin-bottom: 4px;
+    }
+    .pair-slot .slot-txt {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #e8f0ff;
+    }
+    .def-pool { display: flex; flex-direction: column; gap: 8px; }
+    .def-chip {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(8, 22, 48, 0.5);
+      padding: 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      border-left: 4px solid #3d5a86;
+      color: inherit;
+      font: inherit;
+    }
+    .def-chip:hover:not(:disabled) {
+      border-color: #67e8f9;
+      background: rgba(14, 165, 233, 0.14);
+      box-shadow: 0 0 0 2px rgba(103, 232, 249, 0.35);
+    }
+    .def-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+    .def-chip .letter { font-weight: 800; color: var(--accent); margin-right: 8px; }
+    .def-chip .txt { font-size: 0.88rem; line-height: 1.45; }
+    .task-matching--ready .def-chip:not(:disabled) {
+      border-color: #67e8f9;
+    }
     .unpair {
       position: absolute;
       top: 8px;
@@ -238,6 +319,19 @@
       cursor: pointer;
     }
     .unpair:hover { border-color: var(--bad); color: #fecaca; }
+    .match-fb-line {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .match-fb-line:last-child { margin-bottom: 0; }
+    .match-fb-line.is-ok { border-color: rgba(54, 211, 153, 0.45); }
+    .match-fb-line.is-bad { border-color: rgba(248, 113, 113, 0.45); }
+    .match-fb-line strong { color: #bae6fd; }
+    .match-fb-line .fb-you { color: #fca5a5; margin-top: 4px; }
+    .match-fb-line .fb-key { color: #86efac; margin-top: 4px; }
 
     .gap-list { display: flex; flex-direction: column; gap: 12px; }
     .gap-sent {
@@ -326,7 +420,7 @@
   <main class="page">
     <header class="top">
       <h1>Sports idioms &mdash; phrase bank &amp; practice</h1>
-      <a class="back" id="back-link" href="../../index.html?prep_stay=1&amp;screen=unit12">&larr; Level 12</a>
+      <a class="back" id="back-link" data-u12-levels-depth="3" data-u12-vocab-hub-depth="1" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Vocabulary &middot; Level 12</a>
     </header>
 
     <p class="intro">
@@ -347,19 +441,19 @@
       <article class="task" id="task-meanings">
         <p class="task__label">Task 1</p>
         <h3>Match each idiom to its metaphorical meaning</h3>
-        <p class="instr">Use the phrase bank above. Tap an idiom on the left, then tap a meaning on the right.</p>
+        <p class="instr">Use the phrase bank above. Tap an idiom, then tap a meaning &mdash; it will appear <strong>in the slot next to that idiom</strong>. Use &times; to remove a pair.</p>
         <div class="toolbar">
           <button type="button" id="m-shuffle">Shuffle meanings</button>
           <button type="button" id="m-clear">Clear pairs</button>
         </div>
-        <div class="match-grid">
+        <div class="match-layout" id="m-match-root">
           <div>
-            <div class="col-title">Idioms (1&ndash;6)</div>
-            <div class="sen-list" id="m-sen-list"></div>
+            <div class="col-title">Idioms + your match</div>
+            <div class="pair-list" id="m-sen-list"></div>
           </div>
           <div>
-            <div class="col-title">Meanings (a&ndash;f)</div>
-            <div class="def-list" id="m-def-list"></div>
+            <div class="col-title">Meanings still available</div>
+            <div class="def-pool" id="m-def-list"></div>
           </div>
         </div>
         <div class="actions">
@@ -367,6 +461,7 @@
           <button type="button" class="btn-secondary" id="m-reveal" style="display:none;">Show solution</button>
         </div>
         <p class="feedback" id="m-feedback" aria-live="polite"></p>
+        <div class="fb-panel" id="m-fb-panel" aria-live="polite"></div>
       </article>
 
       <article class="task" id="task-gaps">
@@ -384,19 +479,19 @@
       <article class="task" id="task-sports">
         <p class="task__label">Task 3</p>
         <h3>Match each sport to its idiom</h3>
-        <p class="instr">Which idiom comes from which sport? Link each sport with one idiom.</p>
+        <p class="instr">Which idiom comes from which sport? Tap a sport, then tap an idiom &mdash; it will appear <strong>next to that sport</strong>.</p>
         <div class="toolbar">
           <button type="button" id="s-shuffle">Shuffle idioms</button>
           <button type="button" id="s-clear">Clear pairs</button>
         </div>
-        <div class="match-grid">
+        <div class="match-layout" id="s-match-root">
           <div>
-            <div class="col-title">Sport</div>
-            <div class="sen-list" id="s-sen-list"></div>
+            <div class="col-title">Sport + your match</div>
+            <div class="pair-list" id="s-sen-list"></div>
           </div>
           <div>
-            <div class="col-title">Idiom</div>
-            <div class="def-list" id="s-def-list"></div>
+            <div class="col-title">Idioms still available</div>
+            <div class="def-pool" id="s-def-list"></div>
           </div>
         </div>
         <div class="actions">
@@ -404,10 +499,13 @@
           <button type="button" class="btn-secondary" id="s-reveal" style="display:none;">Show solution</button>
         </div>
         <p class="feedback" id="s-feedback" aria-live="polite"></p>
+        <div class="fb-panel" id="s-fb-panel" aria-live="polite"></div>
       </article>
     </section>
   </main>
 
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
   <script src="../../../js/prep-course-profile.js"></script>
   <script src="../../../js/prep-site-content.js"></script>
   <script>
@@ -528,8 +626,6 @@
     6: "have a head start"
   };
 
-  var COLORS = ["#56ccf2", "#a78bfa", "#36d399", "#f472b6", "#fbbf24", "#2dd4bf"];
-
   function shuffle(arr) {
     var a = arr.slice();
     for (var i = a.length - 1; i > 0; i--) {
@@ -555,11 +651,6 @@
       .replace(/\s+/g, " ");
   }
 
-  function colorForLetter(L) {
-    var i = String(L).toLowerCase().charCodeAt(0) - 97;
-    return i >= 0 && i < 6 ? COLORS[i] : "#64748b";
-  }
-
   /* Phrase bank */
   var grid = document.getElementById("phrase-grid");
   PHRASES.forEach(function (p) {
@@ -583,12 +674,21 @@
     grid.appendChild(card);
   });
 
-  /* Generic matching engine */
+  /* Generic matching engine — inline slot next to each left item */
   function makeMatcher(opts) {
     var matches = {};
     var selected = null;
     var locked = false;
+    var checked = false;
     var defOrder = shuffle(opts.defs);
+    var taskRoot = opts.taskRoot;
+
+    function defById(id) {
+      for (var i = 0; i < opts.defs.length; i++) {
+        if (opts.defId(opts.defs[i]) === id) return opts.defs[i];
+      }
+      return null;
+    }
 
     function pairCount() {
       var n = 0;
@@ -604,90 +704,132 @@
       matches[sid] = letter;
     }
 
-    function render() {
-      opts.elSen.innerHTML = "";
-      opts.elDef.innerHTML = "";
+    function clearFeedback() {
+      opts.elFb.textContent = "";
+      opts.elFb.className = "feedback";
+      if (opts.elFbPanel) {
+        opts.elFbPanel.innerHTML = "";
+        opts.elFbPanel.classList.remove("show");
+      }
+      opts.elReveal.style.display = "none";
+      checked = false;
+    }
 
+    function renderPairs() {
+      opts.elSen.innerHTML = "";
       opts.sens.forEach(function (w) {
         var sid = opts.senId(w);
         var letter = matches[sid];
+        var keyLetter = opts.key[sid];
+        var isWrong = checked && letter && letter !== keyLetter;
+        var isOk = checked && letter === keyLetter;
+
         var row = document.createElement("div");
-        row.className =
-          "sen" +
+        row.className = "pair-row";
+        row.dataset.sen = String(sid);
+
+        var left = document.createElement("button");
+        left.type = "button";
+        left.className =
+          "pair-left" +
           (selected === sid ? " selected" : "") +
           (letter ? " matched" : "") +
-          (locked && letter && letter !== opts.key[sid] ? " dim" : "");
-        row.dataset.sen = String(sid);
-        if (letter) row.style.borderLeftColor = opts.colorFor ? opts.colorFor(letter) : colorForLetter(letter);
-        row.innerHTML =
-          '<button type="button" class="unpair" aria-label="Remove pair">&times;</button>' +
+          (locked ? " dim" : "") +
+          (isOk ? " is-ok" : "") +
+          (isWrong ? " is-bad" : "");
+        left.innerHTML =
           '<span class="num">' +
           esc(opts.senNum(w)) +
-          '.</span><span class="txt"></span>' +
-          '<div class="badge' +
-          (letter ? "" : " empty") +
-          '">' +
-          (letter ? "\u2192 " + opts.defLabel(letter) : "\u2014 pick a match") +
-          "</div>";
-        row.querySelector(".txt").textContent = opts.senText(w);
-        row.addEventListener("click", function (e) {
-          if (locked || e.target.closest(".unpair")) return;
+          '.</span><span class="txt"></span>';
+        left.querySelector(".txt").textContent = opts.senText(w);
+        left.addEventListener("click", function () {
+          if (locked || letter) return;
           selected = selected === sid ? null : sid;
           render();
         });
-        row.querySelector(".unpair").addEventListener("click", function (e) {
-          e.stopPropagation();
-          if (locked) return;
-          delete matches[sid];
-          selected = null;
-          opts.elFb.textContent = "";
-          opts.elFb.className = "feedback";
-          opts.elReveal.style.display = "none";
-          render();
-        });
+        if (letter && !locked) {
+          var un = document.createElement("button");
+          un.type = "button";
+          un.className = "unpair";
+          un.setAttribute("aria-label", "Remove pair");
+          un.textContent = "\u00d7";
+          un.addEventListener("click", function (e) {
+            e.stopPropagation();
+            delete matches[sid];
+            selected = null;
+            clearFeedback();
+            render();
+          });
+          left.appendChild(un);
+        }
+        row.appendChild(left);
+
+        var slot = document.createElement("div");
+        slot.className =
+          "pair-slot" +
+          (letter ? " filled" : "") +
+          (isOk ? " is-ok" : "") +
+          (isWrong ? " is-bad" : "");
+        if (letter) {
+          var d = defById(letter);
+          slot.innerHTML =
+            '<span class="slot-letter">' +
+            esc(opts.defLabel(letter)) +
+            "</span>" +
+            '<span class="slot-txt"></span>';
+          slot.querySelector(".slot-txt").textContent = d ? opts.defText(d) : "";
+        } else {
+          slot.innerHTML =
+            '<span class="slot-hint">' +
+            (selected === sid ? "Now tap a meaning on the right \u2192" : "\u2014 empty slot") +
+            "</span>";
+        }
+        row.appendChild(slot);
         opts.elSen.appendChild(row);
       });
+    }
+
+    function renderPool() {
+      opts.elDef.innerHTML = "";
+      var used = {};
+      for (var mk in matches) used[matches[mk]] = true;
 
       defOrder.forEach(function (d, di) {
         var did = opts.defId(d);
-        var usedBy = null;
-        for (var mk in matches) {
-          if (matches[mk] === did) usedBy = mk;
-        }
-        var drow = document.createElement("div");
-        drow.className = "def" + (usedBy != null ? " used" : "");
-        drow.dataset.def = did;
-        if (usedBy != null) drow.style.borderLeftColor = opts.colorFor ? opts.colorFor(did) : colorForLetter(did);
-        if (locked && !usedBy) drow.classList.add("dim");
-        drow.innerHTML =
+        if (used[did]) return;
+        var chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "def-chip";
+        chip.disabled = locked || selected == null;
+        chip.innerHTML =
           '<span class="letter">' +
           esc(opts.defNum(d, di)) +
-          '.</span><span class="txt"></span>' +
-          '<div class="badge">' +
-          (usedBy != null
-            ? "\u2190 " + opts.senBackLabel(usedBy)
-            : selected != null
-              ? "Tap to link"
-              : "Select on the left first") +
-          "</div>";
-        drow.querySelector(".txt").textContent = opts.defText(d);
-        drow.addEventListener("click", function () {
-          if (locked) return;
-          if (selected == null) {
-            opts.elFb.textContent = "Select an item on the left first.";
-            opts.elFb.className = "feedback bad";
-            return;
-          }
+          '.</span><span class="txt"></span>';
+        chip.querySelector(".txt").textContent = opts.defText(d);
+        chip.addEventListener("click", function () {
+          if (locked || selected == null) return;
           assign(selected, did);
           selected = null;
-          opts.elFb.textContent = "";
-          opts.elFb.className = "feedback";
+          clearFeedback();
           render();
         });
-        opts.elDef.appendChild(drow);
+        opts.elDef.appendChild(chip);
       });
 
-      opts.elCheck.disabled = pairCount() !== opts.sens.length;
+      if (!opts.elDef.children.length) {
+        var done = document.createElement("p");
+        done.className = "slot-hint";
+        done.style.padding = "8px 4px";
+        done.textContent = "All meanings placed — press Check.";
+        opts.elDef.appendChild(done);
+      }
+    }
+
+    function render() {
+      renderPairs();
+      renderPool();
+      if (taskRoot) taskRoot.classList.toggle("task-matching--ready", selected != null && !locked);
+      opts.elCheck.disabled = pairCount() !== opts.sens.length || locked;
       if (opts.elShuffle) opts.elShuffle.disabled = locked;
       if (opts.elClear) opts.elClear.disabled = locked;
     }
@@ -696,7 +838,7 @@
       opts.elShuffle.addEventListener("click", function () {
         if (locked) return;
         defOrder = shuffle(opts.defs);
-        opts.elFb.textContent = "";
+        clearFeedback();
         render();
       });
     }
@@ -705,37 +847,89 @@
         if (locked) return;
         matches = {};
         selected = null;
-        opts.elFb.textContent = "";
-        opts.elReveal.style.display = "none";
+        clearFeedback();
         render();
       });
     }
+
     opts.elCheck.addEventListener("click", function () {
       if (pairCount() !== opts.sens.length) return;
+      checked = true;
       var ok = 0;
-      var wrong = [];
       opts.sens.forEach(function (w) {
         var sid = opts.senId(w);
         if (matches[sid] === opts.key[sid]) ok++;
-        else wrong.push(sid);
       });
+
+      render();
+
       if (ok === opts.sens.length) {
         opts.elFb.textContent = "Perfect \u2014 " + ok + " / " + opts.sens.length + ".";
         opts.elFb.className = "feedback ok";
+        if (opts.elFbPanel) {
+          opts.elFbPanel.innerHTML =
+            "<p><strong>Score: " +
+            ok +
+            " / " +
+            opts.sens.length +
+            "</strong> \u2014 every pair is correct.</p>";
+          opts.elFbPanel.classList.add("show");
+        }
         locked = true;
         opts.elReveal.style.display = "none";
       } else {
         opts.elFb.textContent =
-          ok +
-          " / " +
-          opts.sens.length +
-          " correct." +
-          (wrong.length ? " Check: " + wrong.join(", ") + "." : "");
+          ok + " / " + opts.sens.length + " correct. See the notes below each mistake.";
         opts.elFb.className = "feedback bad";
         opts.elReveal.style.display = "block";
+        if (opts.elFbPanel) {
+          var html =
+            "<p style=\"margin-bottom:12px;font-weight:700;\">Score: " +
+            ok +
+            " / " +
+            opts.sens.length +
+            "</p>";
+          opts.sens.forEach(function (w) {
+            var sid = opts.senId(w);
+            var picked = matches[sid];
+            var correct = opts.key[sid];
+            var pickedDef = picked ? defById(picked) : null;
+            var correctDef = defById(correct);
+            var isRowOk = picked === correct;
+            html +=
+              '<div class="match-fb-line ' +
+              (isRowOk ? "is-ok" : "is-bad") +
+              '">' +
+              "<p><strong>" +
+              (isRowOk ? "\u2713" : "\u2717") +
+              " " +
+              esc(opts.senNum(w)) +
+              " \u00b7 " +
+              esc(opts.senText(w)) +
+              "</strong></p>";
+            if (!isRowOk) {
+              html +=
+                '<p class="fb-you">Your choice: <strong>(' +
+                esc(picked || "?") +
+                ")</strong> " +
+                esc(pickedDef ? opts.defText(pickedDef) : "\u2014") +
+                "</p>" +
+                '<p class="fb-key">Correct: <strong>(' +
+                esc(correct) +
+                ")</strong> " +
+                esc(correctDef ? opts.defText(correctDef) : "") +
+                "</p>";
+            } else {
+              html += '<p class="fb-key">Matched correctly.</p>';
+            }
+            html += "</div>";
+          });
+          opts.elFbPanel.innerHTML = html;
+          opts.elFbPanel.classList.add("show");
+        }
       }
-      render();
     });
+
     opts.elReveal.addEventListener("click", function () {
       opts.sens.forEach(function (w) {
         var sid = opts.senId(w);
@@ -743,9 +937,15 @@
       });
       selected = null;
       locked = true;
+      checked = true;
       opts.elFb.textContent = "Solution shown.";
       opts.elFb.className = "feedback ok";
       opts.elReveal.style.display = "none";
+      if (opts.elFbPanel) {
+        opts.elFbPanel.innerHTML =
+          "<p><strong>Key shown</strong> \u2014 each slot now has the correct match.</p>";
+        opts.elFbPanel.classList.add("show");
+      }
       render();
     });
 
@@ -756,6 +956,7 @@
     sens: PHRASES,
     defs: MEANINGS,
     key: MEAN_KEY,
+    taskRoot: document.getElementById("m-match-root"),
     senId: function (w) {
       return w.id;
     },
@@ -777,14 +978,12 @@
     defLabel: function (L) {
       return "Meaning " + L;
     },
-    senBackLabel: function (sid) {
-      return "Idiom " + sid;
-    },
     elSen: document.getElementById("m-sen-list"),
     elDef: document.getElementById("m-def-list"),
     elCheck: document.getElementById("m-check"),
     elReveal: document.getElementById("m-reveal"),
     elFb: document.getElementById("m-feedback"),
+    elFbPanel: document.getElementById("m-fb-panel"),
     elShuffle: document.getElementById("m-shuffle"),
     elClear: document.getElementById("m-clear")
   });
@@ -801,6 +1000,7 @@
     sens: PHRASES,
     defs: sportIdioms,
     key: sportKeyBySport,
+    taskRoot: document.getElementById("s-match-root"),
     senId: function (w) {
       return w.id;
     },
@@ -822,20 +1022,12 @@
     defLabel: function (L) {
       return L;
     },
-    senBackLabel: function (sid) {
-      var p = PHRASES.find(function (x) {
-        return x.id === sid;
-      });
-      return p ? p.sport : sid;
-    },
-    colorFor: function () {
-      return "#56ccf2";
-    },
     elSen: document.getElementById("s-sen-list"),
     elDef: document.getElementById("s-def-list"),
     elCheck: document.getElementById("s-check"),
     elReveal: document.getElementById("s-reveal"),
     elFb: document.getElementById("s-feedback"),
+    elFbPanel: document.getElementById("s-fb-panel"),
     elShuffle: document.getElementById("s-shuffle"),
     elClear: document.getElementById("s-clear")
   });
@@ -914,25 +1106,6 @@
     });
     document.getElementById("g-feedback").classList.remove("show");
   });
-})();
-  </script>
-  <script src="../../../js/prep-hub-unit12-nests.js"></script>
-  <script>
-(function wireBack() {
-  var back = document.getElementById("back-link");
-  if (!back) return;
-  var params = new URLSearchParams(location.search);
-  if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
-    var folderId =
-      typeof PREP_LEGACY_U12_VOCAB_FOLDER_ID !== "undefined"
-        ? PREP_LEGACY_U12_VOCAB_FOLDER_ID
-        : "prep_legacy_u12_vocab";
-    back.href =
-      "../../../index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
-      encodeURIComponent(folderId);
-    var lbl = params.get("backLabel");
-    back.textContent = lbl ? "\u2190 " + lbl : "\u2190 Vocabulary \u00b7 Level 12";
-  }
 })();
   </script>
 </body>

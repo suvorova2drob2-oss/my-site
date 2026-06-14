@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 12 &mdash; Sentence halves matching (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .match-page { width: min(980px, 100%); }
+    .match-hint {
+      border: 1px solid var(--cv-line);
+      background: rgba(47, 61, 80, 0.55);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--cv-muted);
+    }
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .match-grid { grid-template-columns: 1fr; }
+    }
+    .match-panel {
+      border-radius: 14px;
+      padding: 14px 14px 18px;
+      border: 2px solid;
+      min-height: 120px;
+    }
+    .match-panel--left {
+      background: rgba(251, 191, 36, 0.08);
+      border-color: rgba(251, 191, 36, 0.32);
+    }
+    .match-panel--right {
+      background: rgba(142, 197, 232, 0.08);
+      border-color: rgba(142, 197, 232, 0.32);
+    }
+    .match-panel-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+    .match-panel--left .match-panel-title { color: #fcd34d; }
+    .match-panel--right .match-panel-title { color: var(--cv-accent); }
+    .start-row {
+      padding: 10px 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: rgba(15, 23, 42, 0.35);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      line-height: 1.55;
+      font-size: 0.92rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .start-row:hover { border-color: rgba(251, 191, 36, 0.35); }
+    .start-row.is-focused {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.22);
+    }
+    .start-row .num { font-weight: 800; color: #fcd34d; margin-right: 6px; }
+    .start-meta {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--cv-muted-dim);
+      font-style: italic;
+      min-height: 1.35em;
+    }
+    .start-meta.has-pick { color: #a5f3fc; font-style: normal; }
+    .end-chip {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      border: 2px solid var(--cv-line);
+      background: rgba(15, 23, 42, 0.45);
+      color: var(--cv-text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      transition: border-color 0.15s ease, opacity 0.15s ease;
+    }
+    .end-chip:hover:not(:disabled) { border-color: var(--cv-accent); }
+    .end-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+    .end-chip.is-used {
+      border-color: rgba(68, 224, 161, 0.45);
+      background: rgba(68, 224, 161, 0.08);
+    }
+    .end-chip .badge {
+      display: inline-block;
+      min-width: 1.5rem;
+      font-weight: 800;
+      color: var(--cv-accent);
+      margin-right: 8px;
+    }
+    .match-feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--cv-line);
+      background: var(--cv-panel-soft);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--cv-muted);
+    }
+    .match-feedback.show { display: block; }
+    .fb-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--cv-line); }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item.ok h4 { color: var(--cv-ok); }
+    .fb-item.bad h4 { color: var(--cv-bad); }
+    .fb-item h4 { font-size: 0.8rem; margin-bottom: 6px; }
+    .match-btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .match-btn-check {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--cv-ok);
+      color: #05271a;
+    }
+    .match-btn-reset {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #3d4f6f;
+      color: var(--cv-text);
+    }
+  </style>
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page match-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back u12-cpe-sibling" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Vocabulary &mdash; Level 12</a>
+      <h1>Sentence halves matching</h1>
+      <p class="cpe-vocab-meta">Level 12 &middot; Vocabulary &middot; health &amp; fitness collocations</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Match the sentence halves to make correct sentences. Pair each beginning <strong>1&ndash;8</strong> with an ending <strong>a&ndash;h</strong>.</p>
+    <p class="match-hint">
+      <strong>How:</strong> click a beginning on the left, then an ending on the right. Each ending is used once.
+    </p>
+
+    <div class="match-grid">
+      <div class="match-panel match-panel--left" aria-label="Sentence beginnings">
+        <div class="match-panel-title">Beginnings</div>
+        <button type="button" class="start-row" data-num="1">
+          <span class="num">1.</span> I would advise against going on a restricted
+          <div class="start-meta js-pick" data-for="1"></div>
+        </button>
+        <button type="button" class="start-row" data-num="2">
+          <span class="num">2.</span> Some of the causes of poor
+          <div class="start-meta js-pick" data-for="2"></div>
+        </button>
+        <button type="button" class="start-row" data-num="3">
+          <span class="num">3.</span> The athlete pulled out of the race due to chronic
+          <div class="start-meta js-pick" data-for="3"></div>
+        </button>
+        <button type="button" class="start-row" data-num="4">
+          <span class="num">4.</span> A person&rsquo;s individual genetic
+          <div class="start-meta js-pick" data-for="4"></div>
+        </button>
+        <button type="button" class="start-row" data-num="5">
+          <span class="num">5.</span> Many factors can contribute to emotional
+          <div class="start-meta js-pick" data-for="5"></div>
+        </button>
+        <button type="button" class="start-row" data-num="6">
+          <span class="num">6.</span> Thanks to the human immune
+          <div class="start-meta js-pick" data-for="6"></div>
+        </button>
+        <button type="button" class="start-row" data-num="7">
+          <span class="num">7.</span> Even at the age of 60, his physical
+          <div class="start-meta js-pick" data-for="7"></div>
+        </button>
+        <button type="button" class="start-row" data-num="8">
+          <span class="num">8.</span> The mountaineers all needed some kind of medical
+          <div class="start-meta js-pick" data-for="8"></div>
+        </button>
+      </div>
+
+      <div class="match-panel match-panel--right" aria-label="Sentence endings">
+        <div class="match-panel-title">Endings</div>
+        <button type="button" class="end-chip" data-end="0"><span class="badge">a</span>resilience including life experience and age.</button>
+        <button type="button" class="end-chip" data-end="1"><span class="badge">b</span>system, the body&rsquo;s cells are protected from infection.</button>
+        <button type="button" class="end-chip" data-end="2"><span class="badge">c</span>intervention upon return to base camp.</button>
+        <button type="button" class="end-chip" data-end="3"><span class="badge">d</span>makeup is known as a genotype.</button>
+        <button type="button" class="end-chip" data-end="4"><span class="badge">e</span>diet unless specifically told to by a medical professional.</button>
+        <button type="button" class="end-chip" data-end="5"><span class="badge">f</span>pain in his foot at the halfway point.</button>
+        <button type="button" class="end-chip" data-end="6"><span class="badge">g</span>circulation are obesity, diabetes and smoking.</button>
+        <button type="button" class="end-chip" data-end="7"><span class="badge">h</span>strength was the envy of young people.</button>
+      </div>
+    </div>
+
+    <p id="bank-hint" class="sr-only" aria-live="polite"></p>
+
+    <div class="match-btn-row">
+      <button type="button" class="match-btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="match-btn-reset" id="btn-reset">Reset</button>
+    </div>
+
+    <div class="match-feedback" id="feedback" aria-live="polite"></div>
+
+    <p class="cpe-vocab-sibling" style="margin-top:18px;"><a class="u12-cpe-sibling" href="../word-form-gaps/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Word form gaps</a></p>
+  </main>
+
+  <script>
+(function () {
+  var KEY = { 1: 4, 2: 6, 3: 5, 4: 3, 5: 0, 6: 1, 7: 7, 8: 2 };
+
+  var END_SNIPPET = [
+    "resilience including life experience and age.",
+    "system, the body's cells are protected from infection.",
+    "intervention upon return to base camp.",
+    "makeup is known as a genotype.",
+    "diet unless specifically told to by a medical professional.",
+    "pain in his foot at the halfway point.",
+    "circulation are obesity, diabetes and smoking.",
+    "strength was the envy of young people."
+  ];
+
+  var END_BOOK_LETTER = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+  var EXPLAIN = {
+    1: "<strong>Restricted diet</strong> — only on medical advice.",
+    2: "<strong>Poor circulation</strong> — linked to obesity, diabetes, smoking.",
+    3: "<strong>Chronic pain</strong> — long-lasting pain; reason to withdraw from a race.",
+    4: "<strong>Genetic makeup / genotype</strong> — fixed collocation.",
+    5: "<strong>Emotional resilience</strong> — ability to recover from stress.",
+    6: "<strong>Immune system</strong> — protects cells from infection.",
+    7: "<strong>Physical strength</strong> — contrast with age (60).",
+    8: "<strong>Medical intervention</strong> — treatment after the expedition."
+  };
+
+  var FULL_SENTENCE = {
+    1: "I would advise against going on a restricted diet unless specifically told to by a medical professional.",
+    2: "Some of the causes of poor circulation are obesity, diabetes and smoking.",
+    3: "The athlete pulled out of the race due to chronic pain in his foot at the halfway point.",
+    4: "A person's individual genetic makeup is known as a genotype.",
+    5: "Many factors can contribute to emotional resilience including life experience and age.",
+    6: "Thanks to the human immune system, the body's cells are protected from infection.",
+    7: "Even at the age of 60, his physical strength was the envy of young people.",
+    8: "The mountaineers all needed some kind of medical intervention upon return to base camp."
+  };
+
+  var assign = {};
+  var focusedNum = null;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function announce(msg) {
+    var h = document.getElementById("bank-hint");
+    if (h) h.textContent = msg || "";
+  }
+
+  function clearFeedbackDisplay() {
+    var fb = document.getElementById("feedback");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  }
+
+  function updatePickLines() {
+    for (var n = 1; n <= 8; n++) {
+      var line = document.querySelector('.js-pick[data-for="' + n + '"]');
+      var eid = assign[n];
+      line.classList.toggle("has-pick", eid != null);
+      line.textContent = eid == null ? "" : "\u2192 (" + END_BOOK_LETTER[eid] + ") " + END_SNIPPET[eid];
+    }
+  }
+
+  function refreshEndButtons() {
+    var usedByEnd = {};
+    for (var k in assign) {
+      if (Object.prototype.hasOwnProperty.call(assign, k)) {
+        var v = assign[k];
+        if (v != null) usedByEnd[v] = Number(k);
+      }
+    }
+    document.querySelectorAll(".end-chip").forEach(function (btn) {
+      var id = Number(btn.getAttribute("data-end"));
+      var num = usedByEnd[id];
+      btn.disabled = false;
+      btn.classList.remove("is-used");
+      if (num != null) {
+        btn.classList.add("is-used");
+        btn.setAttribute(
+          "aria-label",
+          "Ending " + btn.querySelector(".badge").textContent.trim() + " — paired with sentence " + num
+        );
+      } else {
+        btn.setAttribute(
+          "aria-label",
+          "Ending: " + (btn.textContent || "").replace(/\s+/g, " ").trim()
+        );
+      }
+    });
+  }
+
+  document.querySelectorAll(".start-row").forEach(function (row) {
+    row.addEventListener("click", function () {
+      clearFeedbackDisplay();
+      focusedNum = Number(row.getAttribute("data-num"));
+      document.querySelectorAll(".start-row").forEach(function (r) {
+        r.classList.toggle("is-focused", r === row);
+      });
+      announce("");
+    });
+  });
+
+  document.querySelectorAll(".end-chip").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (btn.disabled) return;
+      var endId = Number(btn.getAttribute("data-end"));
+      if (focusedNum == null) {
+        announce("First click a sentence on the left.");
+        return;
+      }
+      clearFeedbackDisplay();
+      for (var k in assign) {
+        if (Object.prototype.hasOwnProperty.call(assign, k) && assign[k] === endId) {
+          assign[k] = null;
+        }
+      }
+      assign[focusedNum] = endId;
+      updatePickLines();
+      refreshEndButtons();
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var correct = 0;
+    var html = "";
+
+    for (var n = 1; n <= 8; n++) {
+      var user = assign[n];
+      var ok = user != null && user === KEY[n];
+      if (ok) correct++;
+
+      html += '<div class="fb-item ' + (ok ? "ok" : "bad") + '">';
+      html += "<h4>" + (ok ? "\u2713" : "\u2717") + " " + n + "</h4>";
+      if (user == null) {
+        html += "<p>No ending chosen.</p>";
+      } else {
+        html +=
+          "<p>Your choice: <strong>(" +
+          esc(END_BOOK_LETTER[user]) +
+          ")</strong> " +
+          esc(END_SNIPPET[user]) +
+          "</p>";
+      }
+      html += "<p>" + EXPLAIN[n] + "</p>";
+      if (!ok) {
+        html +=
+          "<p>Key: <strong>(" +
+          esc(END_BOOK_LETTER[KEY[n]]) +
+          ")</strong> &mdash; " +
+          esc(FULL_SENTENCE[n]) +
+          "</p>";
+      }
+      html += "</div>";
+    }
+
+    html =
+      '<p style="margin-bottom:12px;font-weight:700;color:var(--cv-text);">Score: ' +
+      correct +
+      " / 8</p>" +
+      html;
+    var fb = document.getElementById("feedback");
+    fb.innerHTML = html;
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    assign = {};
+    focusedNum = null;
+    announce("");
+    clearFeedbackDisplay();
+    document.querySelectorAll(".start-row").forEach(function (r) {
+      r.classList.remove("is-focused");
+    });
+    updatePickLines();
+    refreshEndButtons();
+  });
+})();
+  </script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+</body>
+</html>

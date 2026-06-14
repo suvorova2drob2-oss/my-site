@@ -26,6 +26,8 @@
 
     W.PREP_LEGACY_U12_UOE_FOLDER_ID = "prep_legacy_u12_uoe";
 
+    W.PREP_LEGACY_U12_WRITING_FOLDER_ID = "prep_legacy_u12_writing";
+
 
 
     var INLINE_READING_TASK = {
@@ -100,6 +102,14 @@
 
 
 
+    function getU12WritingPack() {
+
+        return W.PREP_HUB_U12_WRITING_SEEDS || null;
+
+    }
+
+
+
     function getU12VocabPack() {
 
         return W.PREP_HUB_U12_VOCAB_SEEDS || null;
@@ -122,7 +132,9 @@
 
             s === String(W.PREP_LEGACY_U12_GRAMMAR_FOLDER_ID) ||
 
-            s === String(W.PREP_LEGACY_U12_UOE_FOLDER_ID)
+            s === String(W.PREP_LEGACY_U12_UOE_FOLDER_ID) ||
+
+            s === String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID)
 
         );
 
@@ -150,6 +162,8 @@
 
         if (s === String(W.PREP_LEGACY_U12_UOE_FOLDER_ID)) return 6;
 
+        if (s === String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID)) return 7;
+
         return 10;
 
     };
@@ -168,12 +182,86 @@
 
         W.ensurePrepUnit12UoeFolder();
 
+        W.ensurePrepUnit12WritingFolder();
+
         W.ensurePrepUnit12LexicalGamesFolder();
 
         W.ensurePrepUnit12GamesFolder();
 
     };
 
+    /** Lazy bundle — lexicon data + Vocab Gym bridge (not parsed until Level 12 / Vocab Gym). */
+    W.PREP_U12_VOCAB_GYM_SCRIPT_CHAIN = [
+        "js/unit12-reading-road-to-betterment-lexicon.js",
+        "js/unit12-sports-idioms-lexicon.js",
+        "js/unit12-listening-sb12-1-disabled-access-lexicon.js",
+        "js/unit12-multi-word-verbs-lexicon.js",
+        "js/prep-hub-unit12-lexgames.js",
+        "js/unit12-sticky-registry.js",
+        "js/unit12-sticky-packs.js",
+    ];
+
+    W.ensurePrepU12VocabGymScripts = function () {
+        if (W.__prepU12VocabGymScriptsReady) return Promise.resolve();
+        if (W.__prepU12VocabGymScriptsPromise) return W.__prepU12VocabGymScriptsPromise;
+        if (typeof W.prepLoadScriptChain !== "function") {
+            return Promise.reject(new Error("prep-script-loader.js is missing"));
+        }
+        W.__prepU12VocabGymScriptsPromise = W.prepLoadScriptChain(W.PREP_U12_VOCAB_GYM_SCRIPT_CHAIN)
+            .then(function () {
+                W.__prepU12VocabGymScriptsReady = true;
+            })
+            .catch(function (err) {
+                W.__prepU12VocabGymScriptsPromise = null;
+                throw err;
+            });
+        return W.__prepU12VocabGymScriptsPromise;
+    };
+
+    function prepU12VocabGymCall(coreName, args) {
+        return W.ensurePrepU12VocabGymScripts()
+            .then(function () {
+                var fn = W[coreName];
+                if (typeof fn !== "function") {
+                    throw new Error(coreName + " is not available after U12 Vocab Gym load");
+                }
+                return fn.apply(W, args || []);
+            })
+            .catch(function (err) {
+                if (typeof console !== "undefined" && console.error) console.error(err);
+                if (typeof hubToastShow === "function") {
+                    hubToastShow("Could not load Unit 12 Vocab Gym — refresh and try again.");
+                }
+            });
+    }
+
+    W.openUnit12LexGamesHub = function () {
+        prepU12VocabGymCall("prepOpenUnit12LexGamesHubCore", []);
+    };
+
+    W.openUnit12LexReadingPick = function (mode) {
+        prepU12VocabGymCall("prepOpenUnit12LexReadingPickCore", [mode]);
+    };
+
+    W.openUnit12WordBank = function (theme) {
+        prepU12VocabGymCall("prepOpenUnit12WordBankCore", [theme]);
+    };
+
+    W.openUnit12StickyGame = function () {
+        prepU12VocabGymCall("prepOpenUnit12StickyGameCore", []);
+    };
+
+    W.openUnit12PrepEscapeRoom = function () {
+        prepU12VocabGymCall("prepOpenUnit12PrepEscapeRoomCore", []);
+    };
+
+    W.prepPrewarmU12WordBankThemes = function () {
+        return W.ensurePrepU12VocabGymScripts().then(function () {
+            if (typeof W.prepPrewarmU12WordBankThemesCore === "function") {
+                W.prepPrewarmU12WordBankThemesCore();
+            }
+        });
+    };
 
 
     /**
@@ -225,6 +313,14 @@
         if (fid === String(W.PREP_LEGACY_U12_UOE_FOLDER_ID)) {
 
             W.ensurePrepUnit12UoeFolder();
+
+            return true;
+
+        }
+
+        if (fid === String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID)) {
+
+            W.ensurePrepUnit12WritingFolder();
 
             return true;
 
@@ -405,6 +501,120 @@
             if (
 
                 reordered.length === fld.tasks.length &&
+
+                reordered.some(function (t, idx) {
+
+                    return t !== fld.tasks[idx];
+
+                })
+
+            ) {
+
+                fld.tasks = reordered;
+
+                changed = true;
+
+            }
+
+        }
+
+        return changed;
+
+    }
+
+
+
+    function reconcileU12WritingFolderTasks(fld, writingPack) {
+
+        if (!fld || !writingPack) return false;
+
+        fld.tasks = Array.isArray(fld.tasks) ? fld.tasks : [];
+
+        var changed = false;
+
+        var retired = Array.isArray(writingPack.retiredTaskIds)
+
+            ? writingPack.retiredTaskIds.map(String)
+
+            : ["u12_writing_informal_letter_model"];
+
+        var before = fld.tasks.length;
+
+        fld.tasks = fld.tasks.filter(function (t) {
+
+            if (!t) return false;
+
+            if (retired.indexOf(String(t.id)) >= 0) return false;
+
+            if (t.href && String(t.href).indexOf("informal-letter-model") >= 0) return false;
+
+            return true;
+
+        });
+
+        if (fld.tasks.length !== before) changed = true;
+
+        var seeds = Array.isArray(writingPack.seededTasks) ? writingPack.seededTasks : [];
+
+        seeds.forEach(function (seed) {
+
+            if (!seed || !seed.id) return;
+
+            for (var i = 0; i < fld.tasks.length; i++) {
+
+                var t = fld.tasks[i];
+
+                if (!t || String(t.id) !== String(seed.id)) continue;
+
+                ["title", "subtitle", "href", "kind"].forEach(function (key) {
+
+                    if (seed[key] != null && t[key] !== seed[key]) {
+
+                        t[key] = seed[key];
+
+                        changed = true;
+
+                    }
+
+                });
+
+                break;
+
+            }
+
+        });
+
+        if (Array.isArray(writingPack.taskIdsOrdered) && writingPack.taskIdsOrdered.length) {
+
+            var order = writingPack.taskIdsOrdered.map(String);
+
+            var byId = {};
+
+            fld.tasks.forEach(function (t) {
+
+                if (t && t.id != null) byId[String(t.id)] = t;
+
+            });
+
+            var reordered = [];
+
+            order.forEach(function (oid) {
+
+                if (byId[oid]) {
+
+                    reordered.push(byId[oid]);
+
+                    delete byId[oid];
+
+                }
+
+            });
+
+            if (Object.keys(byId).length > 0) changed = true;
+
+            if (
+
+                reordered.length !== fld.tasks.length ||
 
                 reordered.some(function (t, idx) {
 
@@ -716,6 +926,28 @@
 
         }
 
+        if (fid === String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID)) {
+
+            var writingPack = getU12WritingPack();
+
+            if (!writingPack || !writingPack.folderWriting) return null;
+
+            return buildEphemeralU12Folder(
+
+                fid,
+
+                writingPack.folderWriting,
+
+                Array.isArray(writingPack.seededTasks)
+
+                    ? writingPack.seededTasks
+
+                    : [writingPack.informalLetterEx1Task].filter(Boolean)
+
+            );
+
+        }
+
         return null;
 
     }
@@ -795,6 +1027,18 @@
                 "index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
 
                 encodeURIComponent(W.PREP_LEGACY_U12_UOE_FOLDER_ID)
+
+            );
+
+        }
+
+        if (fid === String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID)) {
+
+            return (
+
+                "unit12-writing/cpe/informal-letter-exercise-1/index.html?course=cpe&backLabel=" +
+
+                encodeURIComponent("Writing — Level 12")
 
             );
 
@@ -927,6 +1171,26 @@
                     ? uoePack.seededTasks
 
                     : [uoePack.foodSupplementsMcTask].filter(Boolean),
+
+            });
+
+        }
+
+        var writingPack = getU12WritingPack();
+
+        if (writingPack && writingPack.folderWriting) {
+
+            specs.push({
+
+                id: W.PREP_LEGACY_U12_WRITING_FOLDER_ID,
+
+                shell: writingPack.folderWriting,
+
+                seeds: Array.isArray(writingPack.seededTasks)
+
+                    ? writingPack.seededTasks
+
+                    : [writingPack.informalLetterEx1Task].filter(Boolean),
 
             });
 
@@ -1480,6 +1744,70 @@
 
 
 
+    W.ensurePrepUnit12WritingFolder = function () {
+
+        var pack = getU12WritingPack();
+
+        if (!pack || !pack.folderWriting) {
+
+            try {
+
+                console.warn(
+
+                    "[Prep hub] Missing PREP_HUB_U12_WRITING_SEEDS — load js/prep-hub-seeds-unit12-writing.js"
+
+                );
+
+            } catch (eSeed) {}
+
+            return false;
+
+        }
+
+        var ok = ensureLinkedFolder({
+
+            folderId: W.PREP_LEGACY_U12_WRITING_FOLDER_ID,
+
+            shell: pack.folderWriting,
+
+            seeds: Array.isArray(pack.seededTasks)
+
+                ? pack.seededTasks
+
+                : [pack.informalLetterEx1Task].filter(Boolean),
+
+        });
+
+        if (typeof PrepSiteContent !== "undefined" && PrepSiteContent.load && PrepSiteContent.save) {
+
+            var d = PrepSiteContent.load();
+
+            var fid = String(W.PREP_LEGACY_U12_WRITING_FOLDER_ID);
+
+            var j;
+
+            for (j = 0; j < (d.folders || []).length; j++) {
+
+                var f = d.folders[j];
+
+                if (!f || String(f.id) !== fid) continue;
+
+                var ch = reconcileU12WritingFolderTasks(f, pack);
+
+                if (ch) PrepSiteContent.save(d);
+
+                break;
+
+            }
+
+        }
+
+        return ok;
+
+    };
+
+
+
     W.ensurePrepUnit12LexicalGamesFolder = function () {
         if (typeof PrepSiteContent === "undefined" || !PrepSiteContent.load || !PrepSiteContent.save) return;
         var d = PrepSiteContent.load();
@@ -1487,7 +1815,7 @@
         var id = W.PREP_LEGACY_U12_LEXICAL_GAMES_FOLDER_ID;
         var canonTitle = "Vocab Gym";
         var canonSubtitle =
-            "Word Bank & phrase modes from Unit 12 reading + sports idioms · separate from textbook folders below";
+            "Word Bank & phrase modes from Unit 12 reading + multi-word verbs + sports idioms + listening · separate from textbook folders below";
         for (var i = 0; i < d.folders.length; i++) {
             if (String(d.folders[i].id == null ? "" : d.folders[i].id) !== String(id)) continue;
             var f = d.folders[i];

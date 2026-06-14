@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Part 3 Word formation · The art of sushi (Unit 2 CPE)</title>
+
+  <link rel="stylesheet" href="../../css/cpe-uoe-part3-wf-shell.css" />
+</head>
+
+<body class="cpe-p3-body">
+
+  <main class="page">
+
+    <header class="top">
+
+      <div>
+
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+
+        <p class="tag">Unit 2 &middot; CPE Prep &middot; The art of sushi</p>
+
+      </div>
+
+      <a class="back" id="backLink" href="../../index.html?prep_stay=1&amp;screen=unit2&amp;prep_open_folder=prep_legacy_u2_uoe">&larr; Use of English &mdash; Level 2</a>
+
+    </header>
+
+
+
+    <p class="instr">
+
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+
+    </p>
+
+
+
+    <div class="example">
+
+      <div class="lab">(0) &mdash; Example</div>
+
+      <p>
+
+        Sushi is one of the most <span class="done">ICONIC</span> foods of modern cuisine, revered in all corners of the globe, but becoming a sushi chef is no mean feat.
+
+        <span class="root">ICON</span>
+
+      </p>
+
+    </div>
+
+
+
+    <section class="block">
+
+      <div class="block-title">THE ART OF SUSHI</div>
+
+      <p class="line">
+
+        Expectations are high insofar as they must produce
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="consistently" aria-label="Gap 1 CONSIST" /> <span class="root">CONSIST</span></span>
+
+        high quality dishes and, as such, being a
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="perfectionist" aria-label="Gap 2 PERFECT" /> <span class="root">PERFECT</span></span>
+
+        is somewhat of a prerequisite.
+
+      </p>
+
+      <p class="line" style="margin-top:14px;">
+
+        These delicate morsels of rice and fish
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="exemplify" aria-label="Gap 3 EXAMPLE" /> <span class="root">EXAMPLE</span></span>
+
+        the meticulous attention to detail required of sushi chefs and this is reflected in their training. It may take trainees up to two years to learn how to prepare flawless rice. Any
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="miscalculation" aria-label="Gap 4 CALCULATE" /> <span class="root">CALCULATE</span></span>
+
+        in the balance of rice and vinegar could render it unpalatable. Once this has been mastered, chefs focus on the
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="composition" aria-label="Gap 5 COMPOSE" /> <span class="root">COMPOSE</span></span>
+
+        of the other ingredients to ensure the ideal balance of flavour and texture. It is this combination which makes sushi so
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="irresistible" aria-label="Gap 6 RESIST" /> <span class="root">RESIST</span></span>.
+
+      </p>
+
+      <p class="line" style="margin-top:14px;">
+
+        Rising to the status of master sushi chef is akin to becoming an artist. Their skills must be
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="exceptional" aria-label="Gap 7 EXCEPT" /> <span class="root">EXCEPT</span></span>
+
+        but additionally, they should bring a creative flair to their work to be categorised as master
+
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="practitioners" aria-label="Gap 8 PRACTICE" /> <span class="root">PRACTICE</span></span>
+
+        of their art.
+
+      </p>
+
+    </section>
+
+
+
+    <div class="actions">
+
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+
+    </div>
+
+  </main>
+
+
+
+  <script>
+
+(function () {
+
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+
+  var hubDefault =
+
+    "../../index.html?prep_stay=1&screen=unit2&prep_open_folder=prep_legacy_u2_uoe";
+
+
+
+  function norm(s) {
+
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+
+  }
+
+
+
+  function accepts(el) {
+
+    return (el.getAttribute("data-accept") || "")
+
+      .split("|")
+
+      .map(norm)
+
+      .filter(Boolean);
+
+  }
+
+
+
+  function check() {
+
+    var ok = 0;
+
+    inputs.forEach(function (el) {
+
+      el.classList.remove("ok", "bad");
+
+      var got = norm(el.value);
+
+      if (!got) {
+
+        el.classList.add("bad");
+
+        return;
+
+      }
+
+      if (accepts(el).indexOf(got) >= 0) {
+
+        el.classList.add("ok");
+
+        ok++;
+
+      } else {
+
+        el.classList.add("bad");
+
+      }
+
+    });
+
+    document.getElementById("scoreNum").textContent = String(ok);
+
+    document.getElementById("scoreLine").hidden = false;
+
+  }
+
+
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+
+  inputs.forEach(function (el) {
+
+    el.addEventListener("input", function () {
+
+      el.classList.remove("ok", "bad");
+
+    });
+
+  });
+
+
+
+  var q = new URLSearchParams(window.location.search);
+
+  var bl = document.getElementById("backLink");
+
+  function sanitizeReturnHref(raw, fallback) {
+
+    var s = String(raw || "").trim();
+
+    if (!s) return fallback || "";
+
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+
+    if (/^\s*\/\//.test(s)) return fallback || "";
+
+    try {
+
+      var u = new URL(s, window.location.href);
+
+      if (u.origin !== window.location.origin) return fallback || "";
+
+      return u.pathname + u.search + u.hash;
+
+    } catch (e) {
+
+      return fallback || "";
+
+    }
+
+  }
+
+  if (bl) {
+
+    bl.href = sanitizeReturnHref(q.get("back"), hubDefault);
+
+    if (q.get("backLabel")) {
+
+      try {
+
+        bl.textContent =
+
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+
+      } catch (e) {}
+
+    }
+
+  }
+
+})();
+
+  </script>
+
+</body>
+
+</html>
+

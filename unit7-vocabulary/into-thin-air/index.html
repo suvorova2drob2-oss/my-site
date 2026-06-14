@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 7 Vocabulary &mdash; Into thin air</title>
+  <script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search || "");
+    if (!q.get("course")) q.set("course", "cpe");
+    location.replace("../cpe/into-thin-air/index.html?" + q.toString());
+  } catch (e) {
+    location.replace("../cpe/into-thin-air/index.html?course=cpe");
+  }
+})();
+  </script>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.15rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 12px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+    }
+
+    .passage {
+      font-size: 0.96rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .passage p { margin-bottom: 14px; }
+    .passage p:last-child { margin-bottom: 0; }
+    .passage .story-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #bae6fd;
+    }
+    .passage .tagline {
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .gap-wrap {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      vertical-align: baseline;
+      margin: 0 2px;
+    }
+    .gap-num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-right: 2px;
+    }
+    .pair-btn {
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.5;
+      transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+    }
+    .pair-btn:hover { border-color: #5a7ab0; }
+    .pair-sep {
+      color: var(--muted);
+      font-weight: 600;
+      padding: 0 2px;
+      user-select: none;
+    }
+    .pair-btn.is-picked {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.18);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .pair-btn.is-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.18);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+    }
+    .pair-btn.is-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.14);
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.28);
+    }
+    .pair-btn.is-dim {
+      opacity: 0.45;
+    }
+    .pair-btn:disabled { cursor: default; }
+
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-check, .btn-reset {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .fb-summary {
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #e0e8f8;
+    }
+    .fb-item {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .fb-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .fb-item h4 { font-size: 0.84rem; margin-bottom: 6px; }
+    .fb-item.ok h4 { color: #86efac; }
+    .fb-item.bad h4 { color: #fca5a5; }
+    .fb-why { color: #cbd5e1; }
+    .fb-not {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary</span>
+        <h1>Into thin air &mdash; word pairs in context</h1>
+      </div>
+      <a class="back" id="u7-back-link" href="../index.html">&larr; Unit 7 vocabulary</a>
+    </header>
+
+      <nav class="voc-nav" aria-label="Unit 7 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <a href="../correct-option/index.html">Correct option (Part 2)</a>
+      <span>|</span>
+      <span><strong>Into thin air</strong></span>
+    </nav>
+
+    <section class="task">
+      <h2>Into thin air</h2>
+      <p class="instr">Complete the gaps in the text with the correct form of the word given.</p>
+      <p class="hint-bar"><strong>How:</strong> click one word in each pair. Then <strong>Check answers</strong> to see why each choice fits (or not).</p>
+
+      <article class="passage" id="passage"></article>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      a: "baffled",
+      b: "deluded",
+      ans: "baffled",
+      why:
+        "<strong>Baffled</strong> = completely puzzled by the story. <em>Deluded</em> means believing something false about yourself &mdash; the public is confused, not self-deceived.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Deluded</em> needs a person who believes a false idea (e.g. deluding themselves), not &ldquo;everyone is deluded by the news&rdquo; in this sense.</span>"
+    },
+    {
+      id: 2,
+      a: "double-crossed",
+      b: "confounded",
+      ans: "confounded",
+      why:
+        "<strong>Confounded</strong> = left the detectives thoroughly puzzled. <em>Double-crossed</em> is what a person does to someone else (betrayal), not what a mystery does to investigators.",
+      notOther:
+        "<span class=\"fb-not\">✗ Detectives are not &ldquo;double-crossed&rdquo; by a case &mdash; people double-cross people.</span>"
+    },
+    {
+      id: 3,
+      a: "perplexed",
+      b: "bluffing",
+      ans: "perplexed",
+      why:
+        "<strong>Perplexed</strong> = he was puzzled to find the spinning bike and no friend. <em>Bluffing</em> would mean Porter was pretending / lying, not his reaction to the discovery.",
+      notOther:
+        "<span class=\"fb-not\">✗ He is not &ldquo;bluffing to discover&rdquo; &mdash; bluffing is deceiving, not being confused.</span>"
+    },
+    {
+      id: 4,
+      a: "deluding",
+      b: "duping",
+      ans: "deluding",
+      why:
+        "<strong>Deluding themselves</strong> is the fixed pattern (= making themselves believe something untrue). <em>Duping</em> usually takes an object (<em>dupe someone</em>), not <em>dupe themselves</em> here.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Duping themselves</em> is less natural than <em>deluding themselves</em> after &ldquo;anyone who thinks&hellip;&rdquo;</span>"
+    },
+    {
+      id: 5,
+      a: "confounded",
+      b: "double-crossed",
+      ans: "double-crossed",
+      why:
+        "<strong>Double-crossed</strong> a business partner = betrayed them in a deal. <em>Confounded</em> does not collocate with &ldquo;a former business partner&rdquo; as the object of his action.",
+      notOther:
+        "<span class=\"fb-not\">✗ You confound <em>people</em> (puzzle them), you do not &ldquo;confound a partner&rdquo; in a business-crime sense.</span>"
+    },
+    {
+      id: 6,
+      a: "scammed",
+      b: "bluffed",
+      ans: "scammed",
+      why:
+        "<strong>Scammed them out of money</strong> is the natural collocation for fraud. <em>Bluffed</em> does not take <em>them out of money</em> &mdash; you bluff in poker or bluff that something is true.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Bluffed them out of money</em> is not standard English for financial fraud.</span>"
+    },
+    {
+      id: 7,
+      a: "baffling",
+      b: "bluffing",
+      ans: "bluffing",
+      why:
+        "<strong>Bluffing</strong> = pretending not to know / hiding the truth. <em>Baffling</em> would mean Porter himself is confusing (&ldquo;a baffling person&rdquo;), not that he might be deceiving reporters.",
+      notOther:
+        "<span class=\"fb-not\">✗ The question is whether he is <em>pretending</em> ignorance &mdash; that is bluffing, not baffling.</span>"
+    },
+    {
+      id: 8,
+      a: "duped",
+      b: "perplexed",
+      ans: "duped",
+      why:
+        "<strong>Duped everyone into thinking</strong> = tricked people into believing a false story. <em>Perplexed everyone into thinking</em> is wrong: you perplex people (confuse them), you do not <em>perplex into</em> a belief.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Perplexed</em> cannot combine with <em>into thinking</em> the way <em>duped</em> can.</span>"
+    }
+  ];
+
+  var picks = {};
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderPassage() {
+    var root = document.getElementById("passage");
+    var html =
+      '<p class="story-title">Into thin air</p>' +
+      '<p>Everyone is ' +
+      gapHtml(1) +
+      " by a recent news story. A wealthy businessman has apparently disappeared into thin air, which has " +
+      gapHtml(2) +
+      " detectives looking into the case.</p>" +
+      "<p>John Porter had been on a bike ride in the rolling hills of Devon when his business associate and friend, the victim, Daniel Keen, went missing. Upon turning into a country lane, Mr Porter noticed Mr Keen hadn&rsquo;t followed him. Backtracking, he was " +
+      gapHtml(3) +
+      " to discover Mr Keen&rsquo;s bike with the wheels still in motion 50 metres up the road, but no sign of his friend.</p>" +
+      "<p>Speaking to reporters, Mr Porter said, &lsquo;Anyone who thinks a car picked him up is " +
+      gapHtml(4) +
+      " themselves. It was 6 am and very quiet&rsquo;. There has been speculation about Mr Keen&rsquo;s reputation. Had he " +
+      gapHtml(5) +
+      " a former business partner, or " +
+      gapHtml(6) +
+      " them out of money? Could Mr Porter be " +
+      gapHtml(7) +
+      " and actually know more than he&rsquo;s letting on? Could Mr Keen himself have set it up and " +
+      gapHtml(8) +
+      " everyone into thinking he had been the victim of a crime?</p>" +
+      '<p class="tagline">The plot thickens!</p>';
+    root.innerHTML = html;
+
+    root.querySelectorAll(".pair-btn").forEach(function (btn) {
+      btn.addEventListener("click", onPick);
+    });
+  }
+
+  function gapHtml(id) {
+    var it = ITEMS[id - 1];
+    return (
+      '<span class="gap-wrap" data-gap="' +
+      id +
+      '"><span class="gap-num">(' +
+      id +
+      ')</span>' +
+      '<button type="button" class="pair-btn" data-gap="' +
+      id +
+      '" data-word="' +
+      it.a +
+      '">' +
+      esc(it.a) +
+      "</button>" +
+      '<span class="pair-sep">/</span>' +
+      '<button type="button" class="pair-btn" data-gap="' +
+      id +
+      '" data-word="' +
+      it.b +
+      '">' +
+      esc(it.b) +
+      "</button></span>"
+    );
+  }
+
+  function onPick(ev) {
+    if (checked) return;
+    var btn = ev.currentTarget;
+    var gap = Number(btn.getAttribute("data-gap"));
+    var word = btn.getAttribute("data-word");
+    picks[gap] = word;
+    document.getElementById("feedback").classList.remove("show");
+    document.querySelectorAll('.pair-btn[data-gap="' + gap + '"]').forEach(function (b) {
+      b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+      if (b.getAttribute("data-word") === word) b.classList.add("is-picked");
+    });
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var fb = document.getElementById("feedback");
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var chosen = picks[it.id] || "";
+      var ok = chosen === it.ans;
+      if (ok) correct += 1;
+
+      document.querySelectorAll('.pair-btn[data-gap="' + it.id + '"]').forEach(function (b) {
+        b.disabled = true;
+        var w = b.getAttribute("data-word");
+        b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+        if (w === it.ans) b.classList.add("is-ok");
+        else if (w === chosen && !ok) b.classList.add("is-bad");
+        else b.classList.add("is-dim");
+      });
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>(' +
+          it.id +
+          ") " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.ans) +
+          "</strong>" +
+          (chosen && !ok ? " (you chose <em>" + esc(chosen) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          it.notOther +
+          "</p></div>"
+      );
+    });
+
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' +
+      correct +
+      " / " +
+      ITEMS.length +
+      "</p>" +
+      parts.join("");
+    fb.classList.add("show");
+  }
+
+  function resetAll() {
+    checked = false;
+    picks = {};
+    document.getElementById("feedback").classList.remove("show");
+    renderPassage();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  renderPassage();
+
+  (function () {
+    var p = new URLSearchParams(window.location.search);
+    var back = p.get("back");
+    var label = p.get("backLabel");
+    var el = document.getElementById("u7-back-link");
+    if (!el || !back) return;
+    el.href = back;
+    el.textContent = "\u2190 " + (label ? decodeURIComponent(String(label).replace(/\+/g, " ")) : "Back");
+  })();
+})();
+  </script>
+</body>
+</html>

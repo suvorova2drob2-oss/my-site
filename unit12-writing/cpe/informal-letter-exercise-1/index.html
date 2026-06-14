@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Writing Part 2 Informal letter (CPE)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --title: #fda4af;
+      --task-bg: #eef2f7;
+      --task-ink: #111827;
+      --hl: #fb923c;
+      --paper: #f8fafc;
+      --paper-ink: #111827;
+      --mark-task: #fb923c;
+      --mark-lang: #2dd4bf;
+      --ok: #4ade80;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: clamp(12px, 3vw, 24px);
+      line-height: 1.6;
+    }
+    .page {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(18px, 3vw, 26px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--title);
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: clamp(1.1rem, 3vw, 1.45rem); line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+
+    .part-divider {
+      margin: 28px 0 18px;
+      padding-top: 22px;
+      border-top: 2px solid var(--line);
+    }
+    .part-divider h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .part-divider p { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+
+    .layout-top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .layout-top { grid-template-columns: minmax(0, 1fr) 280px; }
+    }
+
+    .layout-model {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .layout-model { grid-template-columns: minmax(240px, 280px) minmax(0, 1fr); }
+    }
+
+    .instr { font-size: 0.94rem; color: var(--muted); margin-bottom: 16px; }
+    .instr strong { color: var(--text); }
+
+    .task-box {
+      background: var(--task-bg);
+      color: var(--task-ink);
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .hl {
+      background: rgba(251, 146, 60, 0.35);
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .q-block {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .q-block h2 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #bae6fd;
+      margin-bottom: 10px;
+    }
+    .opts { list-style: none; margin: 0; padding: 0; }
+    .opts li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(50, 74, 113, 0.5);
+    }
+    .opts li:last-child { border-bottom: none; }
+    .opts input { margin-top: 4px; accent-color: var(--accent); }
+    .opts label { cursor: pointer; line-height: 1.5; font-size: 0.92rem; color: #dbeafe; }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .btn-show { background: var(--accent); color: #052030; }
+    .btn-check { background: #6366f1; color: #fff; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.45);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .feedback.show { display: block; }
+    .feedback strong.ok { color: var(--ok); }
+    .feedback strong.warn { color: #fbbf24; }
+
+    .tips-col { display: flex; flex-direction: column; gap: 14px; }
+    .tip-box {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .tip-head {
+      background: #374151;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 10px 12px;
+    }
+    .tip-body {
+      background: #f3f4f6;
+      color: #111827;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+    .tip-body p + p { margin-top: 10px; }
+    .tip-body .arr { color: #6b7280; font-weight: 700; margin-right: 6px; }
+    .tip-body .u { text-decoration: underline; text-underline-offset: 2px; }
+    .tip-body .g {
+      background: rgba(134, 239, 172, 0.55);
+      padding: 0 2px;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+    .swatch--task { background: rgba(251, 146, 60, 0.65); }
+    .swatch--lang { background: rgba(45, 212, 191, 0.65); }
+    .swatch--ex3 { background: rgba(167, 139, 250, 0.65); }
+    .swatch--ex4 { background: rgba(251, 191, 36, 0.75); }
+
+    .bank {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel-soft);
+      position: sticky;
+      top: 12px;
+    }
+    .bank h3 {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 14px 0 8px;
+    }
+    .bank h3:first-child { margin-top: 0; }
+    .bank > p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .bank-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .bank-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      padding: 7px 9px;
+      border-radius: 9px;
+      border: 1px solid rgba(50, 74, 113, 0.55);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .bank-list li.is-found { border-color: rgba(74, 222, 128, 0.5); background: rgba(22, 101, 52, 0.2); }
+    .bank-list li.is-missed { border-color: rgba(251, 191, 36, 0.5); background: rgba(120, 53, 15, 0.18); }
+    .bank-list .tick { flex: 0 0 auto; width: 1rem; font-weight: 800; color: #64748b; }
+    .bank-list li.is-found .tick { color: var(--ok); }
+    .bank-list .tag {
+      flex: 0 0 auto;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+    .tag--task { background: rgba(251, 146, 60, 0.25); color: #fdba74; }
+    .tag--lang { background: rgba(45, 212, 191, 0.2); color: #5eead4; }
+
+    .letter-wrap {
+      background: var(--paper);
+      color: var(--paper-ink);
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: clamp(18px, 3vw, 24px);
+      font-size: 0.95rem;
+      line-height: 1.68;
+    }
+    .letter-wrap p { margin-bottom: 1em; }
+    .letter-wrap p:last-child { margin-bottom: 0; }
+    .letter-wrap .sig { margin-top: 1.2em; font-weight: 700; }
+    .letter-wrap .salute { font-weight: 700; margin-bottom: 0.6em; }
+
+    .hit {
+      cursor: pointer;
+      border-radius: 3px;
+      padding: 0 1px;
+    }
+    .hit:hover { background: rgba(86, 204, 242, 0.18); }
+    .hit.is-marked[data-cat="task"] {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--mark-task);
+      background: rgba(251, 146, 60, 0.28);
+    }
+    .hit.is-marked[data-cat="lang"] {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--mark-lang);
+      background: rgba(45, 212, 191, 0.28);
+    }
+    .hit.is-ex3-marked,
+    .hit.is-marked[data-ex3]:not([data-cat]) {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: #a78bfa;
+      background: rgba(167, 139, 250, 0.28);
+    }
+    .hit.is-ex3-marked.is-marked[data-cat="lang"] {
+      text-decoration-color: #a78bfa;
+      background: rgba(167, 139, 250, 0.32);
+    }
+    .hit.is-solution[data-cat="task"] {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      background: rgba(251, 146, 60, 0.4);
+    }
+    .hit.is-solution[data-cat="lang"] {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      background: rgba(45, 212, 191, 0.4);
+    }
+    .hit.is-ex3-solution {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      background: rgba(167, 139, 250, 0.42);
+    }
+
+    .ex3-prompt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .ex3-prompt-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid rgba(50, 74, 113, 0.55);
+      background: rgba(8, 22, 48, 0.35);
+      color: #dbeafe;
+    }
+    .ex3-prompt-list li.is-found { border-color: rgba(167, 139, 250, 0.55); background: rgba(76, 29, 149, 0.22); }
+    .ex3-prompt-list li.is-missed { border-color: rgba(251, 191, 36, 0.5); background: rgba(120, 53, 15, 0.18); }
+    .ex3-prompt-list .tick { flex: 0 0 auto; width: 1rem; font-weight: 800; color: #64748b; }
+    .ex3-prompt-list li.is-found .tick { color: var(--ok); }
+    .ex3-prompt-list .neutral { color: #94a3b8; }
+    .ex3-prompt-list .arrow { color: #a78bfa; font-weight: 800; margin: 0 4px; }
+    .hit.is-ex4-marked {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.28);
+      box-shadow: inset 0 -2px 0 rgba(251, 191, 36, 0.45);
+    }
+    .hit.is-ex4-solution {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      background: rgba(251, 191, 36, 0.42);
+    }
+    .ex4-prompt-list .para-tag {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fcd34d;
+      margin-bottom: 4px;
+    }
+    .ex4-prompt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .ex4-prompt-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid rgba(50, 74, 113, 0.55);
+      background: rgba(8, 22, 48, 0.35);
+      color: #dbeafe;
+    }
+    .ex4-prompt-list li.is-found { border-color: rgba(251, 191, 36, 0.55); background: rgba(120, 53, 15, 0.2); }
+    .ex4-prompt-list li.is-missed { border-color: rgba(248, 113, 113, 0.45); background: rgba(127, 29, 29, 0.18); }
+    .ex4-prompt-list .tick { flex: 0 0 auto; width: 1rem; font-weight: 800; color: #64748b; }
+    .ex4-prompt-list li.is-found .tick { color: var(--ok); }
+    .letter-wrap.is-ex3-focus {
+      outline: 3px solid rgba(167, 139, 250, 0.55);
+      outline-offset: 3px;
+    }
+    .letter-wrap.is-ex4-focus {
+      outline: 3px solid rgba(251, 191, 36, 0.55);
+      outline-offset: 3px;
+    }
+    .swatch--ex5 { background: rgba(56, 189, 248, 0.75); }
+    .hit.is-ex5-marked {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.28);
+    }
+    .hit.is-ex5-solution { background: rgba(56, 189, 248, 0.42); text-decoration: underline; text-underline-offset: 3px; }
+    .letter-wrap.is-ex5-focus { outline: 3px solid rgba(56, 189, 248, 0.55); outline-offset: 3px; }
+
+    .ul-box {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 12px;
+    }
+    .ul-box-head {
+      background: #374151;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 10px 14px;
+    }
+    .ul-box-body {
+      background: #f3f4f6;
+      color: #111827;
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+    .ul-box-body h4 {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #374151;
+      margin: 12px 0 8px;
+    }
+    .ul-box-body h4:first-child { margin-top: 0; }
+    .ul-box-body ol { margin: 0; padding-left: 1.25rem; }
+    .ul-box-body li { margin-bottom: 8px; }
+    .ex5-gap {
+      display: inline-block;
+      min-width: 4.5em;
+      max-width: 9em;
+      padding: 2px 6px;
+      margin: 0 2px;
+      border-radius: 6px;
+      border: 2px solid #94a3b8;
+      background: #fff;
+      color: #0f172a;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .ex5-gap.is-locked { background: #e2e8f0; color: #64748b; border-color: #94a3b8; }
+    .ex5-gap.is-unlocked { border-color: #38bdf8; background: #f0f9ff; color: #0f172a; }
+    .ex5-gap.ok { border-color: var(--ok); background: #f0fdf4; }
+    .ex5-gap.no { border-color: #f87171; background: #fef2f2; }
+    .ex5-find-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .ex5-find-list li {
+      font-size: 0.84rem;
+      padding: 7px 9px;
+      border-radius: 9px;
+      border: 1px solid rgba(50, 74, 113, 0.55);
+      background: rgba(8, 22, 48, 0.35);
+      color: #dbeafe;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .ex5-find-list li.is-found { border-color: rgba(56, 189, 248, 0.55); background: rgba(12, 74, 110, 0.25); }
+    .ex5-find-list li.is-missed { border-color: rgba(248, 113, 113, 0.45); background: rgba(127, 29, 29, 0.18); }
+    .ex5-find-list .tick { flex: 0 0 auto; font-weight: 800; color: #64748b; }
+    .ex5-find-list li.is-found .tick { color: var(--ok); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Writing &middot; Part 2</p>
+        <h1>Informal letter</h1>
+      </div>
+      <a class="back" id="back-link" href="../index.html?course=cpe&amp;backLabel=Writing%20%E2%80%94%20Level%2012">&larr; Writing</a>
+    </header>
+
+    <div class="layout-top">
+      <div class="main-col">
+        <p class="instr">
+          <strong>1</strong> Read the following Writing Part 2 task. Answer the questions.
+        </p>
+
+        <div class="task-box" role="region" aria-label="Writing Part 2 task">
+          <p>
+            A friend from an English-speaking country has asked you for help with an article they are writing about mental health (especially anxiety/stress) in different countries around the world. Write an informal letter to your friend to outline how <span class="hl">mental health used to be perceived in your country</span>, together with <span class="hl">recent changes in these perceptions</span>. You should also mention common causes of stress and anxiety in your country.
+          </p>
+        </div>
+
+        <section class="q-block" aria-labelledby="q1-title">
+          <h2 id="q1-title">1 What three points must you include in your letter?</h2>
+          <p style="font-size:0.88rem;color:var(--muted);margin-bottom:10px;">Type your three points (any clear wording is fine).</p>
+          <ol style="list-style:none;margin:0;padding:0;">
+            <li style="margin-bottom:8px;"><input type="text" id="q1a" placeholder="Point 1" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:#12264b;color:var(--text);font:inherit;" /></li>
+            <li style="margin-bottom:8px;"><input type="text" id="q1b" placeholder="Point 2" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:#12264b;color:var(--text);font:inherit;" /></li>
+            <li><input type="text" id="q1c" placeholder="Point 3" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:#12264b;color:var(--text);font:inherit;" /></li>
+          </ol>
+        </section>
+
+        <section class="q-block" aria-labelledby="q2-title">
+          <h2 id="q2-title">2 What else from the list below (a&ndash;g) should you include?</h2>
+          <ul class="opts" id="q2-opts">
+            <li><input type="checkbox" id="opt-a" value="a" /><label for="opt-a"><strong>a</strong> your knowledge of mental health issues in a range of countries</label></li>
+            <li><input type="checkbox" id="opt-b" value="b" /><label for="opt-b"><strong>b</strong> your personal experiences of mental health problems (or those of people you know)</label></li>
+            <li><input type="checkbox" id="opt-c" value="c" /><label for="opt-c"><strong>c</strong> your ideas as to how mental health issues could be better dealt with</label></li>
+            <li><input type="checkbox" id="opt-d" value="d" /><label for="opt-d"><strong>d</strong> your opinions about whether it&rsquo;s good to address mental health issues openly</label></li>
+            <li><input type="checkbox" id="opt-e" value="e" /><label for="opt-e"><strong>e</strong> a chatty introduction and conclusion to make it clear it&rsquo;s a letter</label></li>
+            <li><input type="checkbox" id="opt-f" value="f" /><label for="opt-f"><strong>f</strong> questions/comments about the article your friend is writing</label></li>
+          </ul>
+        </section>
+
+        <div class="toolbar">
+          <button type="button" class="btn-show" id="btn-show-q">Show suggested answers (Q1&ndash;2)</button>
+          <button type="button" class="btn-reset" id="btn-reset-q">Reset questions</button>
+        </div>
+        <div class="feedback" id="feedback-q" aria-live="polite"></div>
+      </div>
+
+      <aside class="tips-col" aria-label="How to go about it">
+        <div class="tip-box">
+          <div class="tip-head">How to go about it</div>
+          <div class="tip-body">
+            <p><span class="arr">&gt;</span> Remember that your writing doesn&rsquo;t have to be 100% true &ndash; the main thing is that it must <span class="u">feel</span> authentic. It&rsquo;s better to invent examples rather than admit defeat. You can also make up some simple anecdotes to support your ideas.</p>
+            <p><span class="arr">&gt;</span> An informal letter shouldn&rsquo;t feel like an essay or article. That means you should treat the reader as somebody you already know well, so a short chatty introduction and conclusion will create a good impression.</p>
+          </div>
+        </div>
+        <div class="tip-box">
+          <div class="tip-head">How to go about it</div>
+          <div class="tip-body">
+            <p><span class="arr">&gt;</span> Remember that letters or emails are usually part of a chain of communication, so it&rsquo;s good to refer briefly to previous messages (at the beginning) and future contact (at the end).</p>
+            <p><span class="arr">&gt;</span> Although <span class="g">informal English</span> typically involves <span class="g">simpler grammar</span> and vocabulary than formal English, it can mean you need to <span class="g">work harder</span> to <span class="g">produce C2-level</span> language, such as <span class="g">idioms</span> and <span class="g">phrasal verbs</span>.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="part-divider" id="model-section">
+      <h2>Model answer &mdash; find your points + C1&ndash;C2 language</h2>
+      <p>
+        Read Lisa&rsquo;s letter. <strong>Click each highlighted chunk</strong> in the text when you spot something from your Q1&ndash;2 answers
+        (<span class="swatch swatch--task" style="vertical-align:middle;"></span> orange) or strong
+        <strong>C1&ndash;C2</strong> phrases (<span class="swatch swatch--lang" style="vertical-align:middle;"></span> teal). Then press <strong>Check model</strong>.
+      </p>
+    </section>
+
+    <div class="layout-model">
+      <aside class="bank" aria-label="Items to find in the model">
+        <p>Tick items off as you find them in the letter.</p>
+        <h3>From Q1 &amp; Q2</h3>
+        <ol class="bank-list" id="bank-task"></ol>
+        <h3>C1&ndash;C2 useful language</h3>
+        <ol class="bank-list" id="bank-lang"></ol>
+      </aside>
+
+      <div>
+        <div class="legend" aria-hidden="true">
+          <span><span class="swatch swatch--task"></span> task points (Q1&ndash;2)</span>
+          <span><span class="swatch swatch--lang"></span> C1&ndash;C2 phrases</span>
+        </div>
+
+        <article class="letter-wrap" id="letter" aria-label="Model informal letter from Lisa to Jenny">
+          <p class="salute">Hi Jenny</p>
+          <p>
+            <span class="hit" data-id="q2e-intro" data-cat="task" tabindex="0" role="button" aria-pressed="false">Great to
+            <span class="hit" data-id="ex5-hear" data-ex5="ex5-hear" tabindex="0" role="button" aria-pressed="false">hear</span>
+            from you! It&rsquo;s been a long time,
+            <span class="hit" data-id="ex5-hasnt" data-ex5="ex5-hasnt" tabindex="0" role="button" aria-pressed="false">hasn&rsquo;t it?</span></span>
+            I hope life&rsquo;s
+            <span class="hit" data-id="ex5-treating" data-ex5="ex5-treating" tabindex="0" role="button" aria-pressed="false">treating</span>
+            you better than
+            <span class="hit" data-id="ex3-intouch" data-ex3="ex3-1" tabindex="0" role="button" aria-pressed="false">last time we were in touch</span>.
+            <span class="hit" data-id="q2f-article" data-cat="task" tabindex="0" role="button" aria-pressed="false">Your article sounds fascinating. Is it for a blog? I&rsquo;d love to</span>
+            <span class="hit" data-id="ex3-read" data-ex3="ex3-2" tabindex="0" role="button" aria-pressed="false">have a read</span>
+            of it once you&rsquo;ve finished.
+          </p>
+          <p data-letter-p="2">
+            <span class="hit" data-id="q1-past" data-cat="task" tabindex="0" role="button" aria-pressed="false">In this country, mental health used to be something of a taboo.</span>
+            My parents&rsquo; generation
+            <span class="hit" data-id="ex4-p2-pass1" data-ex4="ex4-p2-pass1" tabindex="0" role="button" aria-pressed="false">were expected to</span>
+            <span class="hit" data-id="lang-bottle" data-cat="lang" data-ex3="ex3-3a" tabindex="0" role="button" aria-pressed="false">bottle up</span>
+            whatever psychological pain they were going through, and to simply
+            <span class="hit" data-id="lang-brave" data-cat="lang" data-ex3="ex3-3b" tabindex="0" role="button" aria-pressed="false">put a brave face on it</span>.
+            <span class="hit" data-id="ex4-p2-pass2" data-ex4="ex4-p2-pass2" tabindex="0" role="button" aria-pressed="false">It was considered weak to admit you were struggling</span>, and the
+            <span class="hit" data-id="ex5-idea" data-ex5="ex5-idea" tabindex="0" role="button" aria-pressed="false">idea</span>
+            of seeking help from a therapist was pretty much
+            <span class="hit" data-id="lang-unheard" data-cat="lang" data-ex5="ex5-unheard" tabindex="0" role="button" aria-pressed="false">unheard of</span>.
+            <span class="hit" data-id="ex5-needless" data-ex5="ex5-needless" tabindex="0" role="button" aria-pressed="false">Needless to say</span>, such attitudes
+            <span class="hit" data-id="ex4-p2-modal" data-ex4="ex4-p2-modal" tabindex="0" role="button" aria-pressed="false">must have caused</span>
+            a massive amount of damage, as people&rsquo;s problems were simply
+            <span class="hit" data-id="lang-swept" data-cat="lang" data-ex3="ex3-5" tabindex="0" role="button" aria-pressed="false">swept under the carpet</span>.
+          </p>
+          <p data-letter-p="3">
+            <span class="hit" data-id="ex5-thankfully" data-ex5="ex5-thankfully" tabindex="0" role="button" aria-pressed="false">Thankfully</span>,
+            we&rsquo;ve
+            <span class="hit" data-id="ex5-come" data-ex5="ex5-come" tabindex="0" role="button" aria-pressed="false">come</span>
+            <span class="hit" data-id="q1-change" data-cat="task" tabindex="0" role="button" aria-pressed="false">a long way since then, although some outdated attitudes have persisted. Nowadays,</span>
+            <span class="hit" data-id="lang-pendulum" data-cat="lang" data-ex3="ex3-6" tabindex="0" role="button" aria-pressed="false">the pendulum has swung almost to the opposite extreme</span>
+            &ndash;
+            <span class="hit" data-id="q2b-personal" data-cat="task" tabindex="0" role="button" aria-pressed="false">almost everyone I know has had therapy for one issue or another</span>.
+            More generally, people no longer
+            <span class="hit" data-id="ex3-badge" data-cat="lang" data-ex3="ex3-7" tabindex="0" role="button" aria-pressed="false">wear their stressful lives as a badge of honour</span>,
+            as if
+            <span class="hit" data-id="ex4-p3-cond" data-ex4="ex4-p3-cond" tabindex="0" role="button" aria-pressed="false">suffering in silence were something to be proud of</span>.
+          </p>
+          <p data-letter-p="4">
+            <span class="hit" data-id="ex3-not-to-say" data-ex3="ex3-4" tabindex="0" role="button" aria-pressed="false">That&rsquo;s
+            <span class="hit" data-id="ex5-not" data-ex5="ex5-not" tabindex="0" role="button" aria-pressed="false">not</span>
+            to say</span>
+            mental health issues have been eradicated &ndash;
+            <span class="hit" data-id="ex5-far" data-ex5="ex5-far" tabindex="0" role="button" aria-pressed="false">far from it</span>!
+            Modern life seems to
+            <span class="hit" data-id="ex3-throw" data-ex3="ex3-8" tabindex="0" role="button" aria-pressed="false">throw up new challenges</span>
+            <span class="hit" data-id="q1-causes" data-cat="task" tabindex="0" role="button" aria-pressed="false">that barely existed previously, from credit-card debt to precarious employment, and from social-media bullying to the climate crisis,</span>
+            <span class="hit" data-id="ex4-p4-rel" data-ex4="ex4-p4-rel" tabindex="0" role="button" aria-pressed="false">all of which cause real anguish to people in my social circle</span>.
+            Life&rsquo;s certainly not
+            <span class="hit" data-id="lang-roses" data-cat="lang" data-ex3="ex3-9" tabindex="0" role="button" aria-pressed="false">a bed of roses</span>,
+            but at least better support mechanisms are in place than before.
+          </p>
+          <p>
+            <span class="hit" data-id="ex5-anyway" data-ex5="ex5-anyway" tabindex="0" role="button" aria-pressed="false">Anyway</span>, I&rsquo;m not sure if
+            <span class="hit" data-id="q2f-article2" data-cat="task" tabindex="0" role="button" aria-pressed="false">my
+            <span class="hit" data-id="ex5-rambling" data-ex5="ex5-rambling" tabindex="0" role="button" aria-pressed="false">rambling</span>
+            ideas are of any use for your article</span>,
+            but at least they&rsquo;re my honest opinions.
+            <span class="hit" data-id="ex5-do" data-ex5="ex5-do" tabindex="0" role="button" aria-pressed="false">Do</span>
+            let me know if I need to clarify or
+            <span class="hit" data-id="ex5-expand" data-ex5="ex5-expand" tabindex="0" role="button" aria-pressed="false">expand</span>
+            on anything &ndash; it&rsquo;s always a
+            <span class="hit" data-id="ex5-pleasure" data-ex5="ex5-pleasure" tabindex="0" role="button" aria-pressed="false">pleasure</span>
+            to help.
+            <span class="hit" data-id="q2e-outro" data-cat="task" tabindex="0" role="button" aria-pressed="false">Let&rsquo;s stay in touch more often,
+            <span class="hit" data-id="ex5-shall" data-ex5="ex5-shall" tabindex="0" role="button" aria-pressed="false">shall we?</span>
+            We really must have a proper
+            <span class="hit" data-id="ex5-catchup" data-ex5="ex5-catchup" tabindex="0" role="button" aria-pressed="false">catch-up</span>
+            someday soon.</span>
+          </p>
+          <p class="sig">Take care,<br />Lisa</p>
+        </article>
+
+        <div class="toolbar">
+          <button type="button" class="btn-check" id="btn-check-model">Check model</button>
+          <button type="button" class="btn-show" id="btn-show-model">Show all in model</button>
+          <button type="button" class="btn-reset" id="btn-reset-model">Reset model</button>
+        </div>
+        <div class="feedback" id="feedback-model" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <section class="part-divider" id="ex3-section">
+      <h2>Exercise 3 &mdash; informal idioms in the model</h2>
+      <p class="instr" style="margin-bottom:14px;">
+        <strong>3</strong> Find informal idiomatic phrases in the model answer that replace the simpler / more neutral phrases below.
+        <strong>Click the matching phrase in Lisa&rsquo;s letter above</strong>
+        (<span class="swatch swatch--ex3" style="vertical-align:middle;"></span> purple underline).
+      </p>
+
+      <div class="layout-model">
+        <aside class="bank" aria-label="Neutral phrases to match">
+          <p>Find all <strong>9</strong> prompts in the letter above (item 3 = two phrases).</p>
+          <ol class="ex3-prompt-list" id="ex3-bank"></ol>
+        </aside>
+        <div>
+          <p style="font-size:0.88rem;color:var(--muted);line-height:1.55;margin-bottom:12px;">
+            The letter is above &uarr; &mdash; scroll up if needed. Item <strong>3</strong> needs <em>two</em> clicks
+            (<em>bottle up</em> and <em>put a brave face on it</em>).
+          </p>
+          <div class="legend" aria-hidden="true">
+            <span><span class="swatch swatch--ex3"></span> Exercise 3 idiom</span>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn-check" id="btn-check-ex3">Check Exercise 3</button>
+            <button type="button" class="btn-show" id="btn-show-ex3">Show all (Ex 3)</button>
+            <button type="button" class="btn-reset" id="btn-reset-ex3">Reset Ex 3</button>
+            <button type="button" class="btn-reset" id="btn-focus-letter" style="border:1px solid #a78bfa;color:#c4b5fd;">Scroll to letter &uarr;</button>
+          </div>
+          <div class="feedback" id="feedback-ex3" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="part-divider" id="ex4-section">
+      <h2>Exercise 4 &mdash; sophisticated grammar in the model</h2>
+      <p class="instr" style="margin-bottom:14px;">
+        <strong>4</strong> Underline the following examples of sophisticated grammar in the model answer.
+        <strong>Click each structure in Lisa&rsquo;s letter above</strong>
+        (<span class="swatch swatch--ex4" style="vertical-align:middle;"></span> amber underline).
+      </p>
+
+      <div class="layout-model">
+        <aside class="bank" aria-label="Grammar structures to find">
+          <p>Find <strong>5</strong> structures in the letter (paragraph numbers as in the book).</p>
+          <ol class="ex4-prompt-list" id="ex4-bank"></ol>
+        </aside>
+        <div>
+          <p style="font-size:0.88rem;color:var(--muted);line-height:1.55;margin-bottom:12px;">
+            The letter is above &uarr;. Paragraph 2 = taboo / bottle up; 3 = pendulum / therapy; 4 = stress causes / bed of roses.
+          </p>
+          <div class="legend" aria-hidden="true">
+            <span><span class="swatch swatch--ex4"></span> Exercise 4 grammar</span>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn-check" id="btn-check-ex4">Check Exercise 4</button>
+            <button type="button" class="btn-show" id="btn-show-ex4">Show all (Ex 4)</button>
+            <button type="button" class="btn-reset" id="btn-reset-ex4">Reset Ex 4</button>
+            <button type="button" class="btn-reset" id="btn-focus-letter-ex4" style="border:1px solid #fbbf24;color:#fcd34d;">Scroll to letter &uarr;</button>
+          </div>
+          <div class="feedback" id="feedback-ex4" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="part-divider" id="ex5-section">
+      <h2>Exercise 5 &mdash; Useful language box</h2>
+      <p class="instr" style="margin-bottom:14px;">
+        <strong>5</strong> Complete the Useful language box with words from the model answer.
+        <strong>First find each word or phrase in Lisa&rsquo;s letter above</strong>
+        (<span class="swatch swatch--ex5" style="vertical-align:middle;"></span> sky-blue underline) &mdash; the gap turns light blue when found. You can type or paste anytime.
+      </p>
+
+      <div class="layout-model">
+        <aside class="bank" aria-label="Words to find for Exercise 5">
+          <p>Find all <strong>17</strong> items in the letter. Each tick unlocks the matching gap.</p>
+          <ol class="ex5-find-list" id="ex5-find-bank"></ol>
+        </aside>
+        <div>
+          <p style="font-size:0.88rem;color:var(--muted);line-height:1.55;margin-bottom:12px;">
+            The letter is above &uarr;. Locked gaps stay grey until you click the word in the text.
+          </p>
+          <div class="legend" aria-hidden="true">
+            <span><span class="swatch swatch--ex5"></span> Exercise 5 word</span>
+          </div>
+
+          <div class="ul-box" id="ex5-ul-box" aria-label="Useful language">
+            <div class="ul-box-head">Useful language</div>
+            <div class="ul-box-body">
+              <h4>Chatty introductions and conclusions</h4>
+              <ol start="1">
+                <li>Great to <input class="ex5-gap is-locked" id="ex5-in-hear" data-ex5-gap="ex5-hear" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap hear" /> from you! It&rsquo;s been a long time, <input class="ex5-gap is-locked" id="ex5-in-hasnt" data-ex5-gap="ex5-hasnt" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap hasn't" /> it?</li>
+                <li>I hope life&rsquo;s <input class="ex5-gap is-locked" id="ex5-in-treating" data-ex5-gap="ex5-treating" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap treating" /> you better than last time we were in touch.</li>
+                <li><input class="ex5-gap is-locked" id="ex5-in-anyway" data-ex5-gap="ex5-anyway" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap Anyway" />, I&rsquo;m not sure if my <input class="ex5-gap is-locked" id="ex5-in-rambling" data-ex5-gap="ex5-rambling" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap rambling" /> ideas are of any use for &hellip;, but at least they&rsquo;re my honest opinions.</li>
+                <li><input class="ex5-gap is-locked" id="ex5-in-do" data-ex5-gap="ex5-do" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap Do" /> let me know if I need to clarify or <input class="ex5-gap is-locked" id="ex5-in-expand" data-ex5-gap="ex5-expand" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap expand" /> on anything &ndash; it&rsquo;s always a <input class="ex5-gap is-locked" id="ex5-in-pleasure" data-ex5-gap="ex5-pleasure" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap pleasure" /> to help.</li>
+                <li>Let&rsquo;s stay in touch more often, <input class="ex5-gap is-locked" id="ex5-in-shall" data-ex5-gap="ex5-shall" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap shall" /> we?</li>
+                <li>We really must have a proper <input class="ex5-gap is-locked" id="ex5-in-catchup" data-ex5-gap="ex5-catchup" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap catch-up" /> someday soon.</li>
+              </ol>
+              <h4>Presenting facts and opinions in informal writing</h4>
+              <ol start="7">
+                <li>&hellip; the <input class="ex5-gap is-locked" id="ex5-in-idea" data-ex5-gap="ex5-idea" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap idea" /> of seeking help from a therapist was pretty much <input class="ex5-gap is-locked" id="ex5-in-unheard" data-ex5-gap="ex5-unheard" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap unheard" /> of.</li>
+                <li><input class="ex5-gap is-locked" id="ex5-in-needless" data-ex5-gap="ex5-needless" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap Needless" /> to say, such attitudes must have caused &hellip;</li>
+                <li><input class="ex5-gap is-locked" id="ex5-in-thankfully" data-ex5-gap="ex5-thankfully" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap Thankfully" />, we&rsquo;ve <input class="ex5-gap is-locked" id="ex5-in-come" data-ex5-gap="ex5-come" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap come" /> a long way since then.</li>
+                <li>That&rsquo;s <input class="ex5-gap is-locked" id="ex5-in-not" data-ex5-gap="ex5-not" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap not" /> to say &hellip; &ndash; <input class="ex5-gap is-locked" id="ex5-in-far" data-ex5-gap="ex5-far" placeholder="?" title="Сначала найди слово в письме выше, потом впиши сюда" aria-label="Gap far" /> from it!</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="toolbar" style="margin-top:14px;">
+            <button type="button" class="btn-check" id="btn-check-ex5">Check Exercise 5</button>
+            <button type="button" class="btn-show" id="btn-show-ex5">Show answers (Ex 5)</button>
+            <button type="button" class="btn-reset" id="btn-reset-ex5">Reset Ex 5</button>
+            <button type="button" class="btn-reset" id="btn-focus-letter-ex5" style="border:1px solid #38bdf8;color:#7dd3fc;">Scroll to letter &uarr;</button>
+          </div>
+          <div class="feedback" id="feedback-ex5" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  var KEY_Q2 = { b: true, e: true, f: true };
+
+  var TASK_ITEMS = [
+    { id: "q1-past", label: "Q1 · how mental health used to be perceived" },
+    { id: "q1-change", label: "Q1 · recent changes in perceptions" },
+    { id: "q1-causes", label: "Q1 · causes of stress and anxiety today" },
+    { id: "q2b-personal", label: "Q2b · people you know / personal angle" },
+    { id: "q2e-intro", label: "Q2e · chatty introduction" },
+    { id: "q2e-outro", label: "Q2e · chatty conclusion / stay in touch" },
+    { id: "q2f-article", label: "Q2f · comments about your friend\u2019s article" },
+    { id: "q2f-article2", label: "Q2f · usefulness for the article (closing)" },
+  ];
+
+  var LANG_ITEMS = [
+    { id: "lang-bottle", label: "bottle up" },
+    { id: "lang-brave", label: "put a brave face on it" },
+    { id: "lang-unheard", label: "unheard of" },
+    { id: "lang-swept", label: "swept under the carpet" },
+    { id: "lang-pendulum", label: "the pendulum has swung (almost to the opposite extreme)" },
+    { id: "ex3-badge", label: "wear … as a badge of honour" },
+    { id: "lang-roses", label: "bed of roses" },
+  ];
+
+  function buildBank(listEl, items, tagClass, tagLabel) {
+    items.forEach(function (item) {
+      var li = document.createElement("li");
+      li.id = "bank-" + item.id;
+      li.innerHTML =
+        '<span class="tick" aria-hidden="true">\u25cb</span>' +
+        '<span class="tag ' + tagClass + '">' + tagLabel + '</span>' +
+        "<span>" + item.label + "</span>";
+      listEl.appendChild(li);
+    });
+  }
+
+  buildBank(document.getElementById("bank-task"), TASK_ITEMS, "tag--task", "task");
+  buildBank(document.getElementById("bank-lang"), LANG_ITEMS, "tag--lang", "C2");
+
+  var ALL_ITEMS = TASK_ITEMS.concat(LANG_ITEMS);
+  var modelChecked = false;
+  var modelSolution = false;
+  var ex3Checked = false;
+  var ex3Solution = false;
+  var ex4Checked = false;
+  var ex4Solution = false;
+  var ex5Checked = false;
+  var ex5Solution = false;
+
+  var EX5_ITEMS = [
+    { id: "ex5-hear", label: "hear", answers: ["hear"] },
+    { id: "ex5-hasnt", label: "hasn\u2019t", answers: ["hasn't", "hasnt", "hasn't it", "hasnt it"] },
+    { id: "ex5-treating", label: "treating", answers: ["treating"] },
+    { id: "ex5-anyway", label: "Anyway", answers: ["anyway"] },
+    { id: "ex5-rambling", label: "rambling", answers: ["rambling"] },
+    { id: "ex5-do", label: "Do", answers: ["do"] },
+    { id: "ex5-expand", label: "expand", answers: ["expand"] },
+    { id: "ex5-pleasure", label: "pleasure", answers: ["pleasure"] },
+    { id: "ex5-shall", label: "shall", answers: ["shall", "shall we"] },
+    { id: "ex5-catchup", label: "catch-up", answers: ["catch-up", "catch up", "catchup"] },
+    { id: "ex5-idea", label: "idea", answers: ["idea"] },
+    { id: "ex5-unheard", label: "unheard", answers: ["unheard"] },
+    { id: "ex5-needless", label: "Needless", answers: ["needless"] },
+    { id: "ex5-thankfully", label: "Thankfully", answers: ["thankfully"] },
+    { id: "ex5-come", label: "come", answers: ["come"] },
+    { id: "ex5-not", label: "not", answers: ["not"] },
+    { id: "ex5-far", label: "far", answers: ["far", "far from it"] },
+  ];
+
+  var ex5FindBank = document.getElementById("ex5-find-bank");
+  EX5_ITEMS.forEach(function (item) {
+    var li = document.createElement("li");
+    li.id = "ex5-find-" + item.id;
+    li.innerHTML = '<span class="tick" aria-hidden="true">\u25cb</span><span>' + item.label + "</span>";
+    ex5FindBank.appendChild(li);
+  });
+
+  function normEx5(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function ex5GapEl(id) {
+    return document.querySelector('.ex5-gap[data-ex5-gap="' + id + '"]');
+  }
+
+  function isHitMarkedForEx5(el) {
+    if (!el) return false;
+    return el.classList.contains("is-ex5-marked") || el.classList.contains("is-ex5-solution");
+  }
+
+  function isEx5HitActive(el) {
+    if (!el) return false;
+    return (
+      el.classList.contains("is-ex5-marked") ||
+      el.classList.contains("is-ex5-solution") ||
+      el.classList.contains("is-marked") ||
+      el.classList.contains("is-solution") ||
+      el.classList.contains("is-ex3-marked") ||
+      el.classList.contains("is-ex3-solution") ||
+      el.classList.contains("is-ex4-marked") ||
+      el.classList.contains("is-ex4-solution")
+    );
+  }
+
+  function unlockEx5Gap(id) {
+    var inp = ex5GapEl(id);
+    if (!inp || ex5Solution) return;
+    inp.classList.remove("is-locked");
+    inp.classList.add("is-unlocked");
+    inp.placeholder = "";
+    inp.title = "";
+  }
+
+  function syncEx5UnlockFromHit(el) {
+    if (!el) return;
+    var ex5Id = el.getAttribute("data-ex5");
+    if (ex5Id && isEx5HitActive(el)) {
+      unlockEx5Gap(ex5Id);
+    }
+    [].slice.call(el.querySelectorAll(".hit[data-ex5]")).forEach(function (child) {
+      if (isEx5HitActive(el) || isEx5HitActive(child)) {
+        unlockEx5Gap(child.getAttribute("data-ex5"));
+        if (isEx5HitActive(el) && !ex5Solution) {
+          child.classList.add("is-ex5-marked");
+        }
+      }
+    });
+  }
+
+  function syncAllEx5Unlocks() {
+    allHits().forEach(syncEx5UnlockFromHit);
+  }
+
+  function updateEx5FindBank() {
+    EX5_ITEMS.forEach(function (item) {
+      var li = document.getElementById("ex5-find-" + item.id);
+      if (!li) return;
+      var hit = document.querySelector('.hit[data-ex5="' + item.id + '"]');
+      var on = isEx5HitActive(hit);
+      if (!ex5Checked) {
+        li.classList.toggle("is-found", on);
+        li.querySelector(".tick").textContent = on ? "\u2713" : "\u25cb";
+      }
+    });
+  }
+
+  var EX3_ITEMS = [
+    { ex3: "ex3-1", hitId: "ex3-intouch" },
+    { ex3: "ex3-2", hitId: "ex3-read" },
+    { ex3: "ex3-3a", hitId: "lang-bottle" },
+    { ex3: "ex3-3b", hitId: "lang-brave" },
+    { ex3: "ex3-4", hitId: "ex3-not-to-say" },
+    { ex3: "ex3-5", hitId: "lang-swept" },
+    { ex3: "ex3-6", hitId: "lang-pendulum" },
+    { ex3: "ex3-7", hitId: "ex3-badge" },
+    { ex3: "ex3-8", hitId: "ex3-throw" },
+    { ex3: "ex3-9", hitId: "lang-roses" },
+  ];
+
+  var ex3Bank = document.getElementById("ex3-bank");
+  var ex3Grouped = [
+    { n: 1, neutral: "we wrote to each other", answers: ["(last time) we were in touch"], hits: ["ex3-intouch"] },
+    { n: 2, neutral: "read it", answers: ["have a read"], hits: ["ex3-read"] },
+    { n: 3, neutral: "hide/conceal", answers: ["bottle up", "put a brave face on it"], hits: ["lang-bottle", "lang-brave"] },
+    { n: 4, neutral: "it should go without saying", answers: ["That\u2019s not to say"], hits: ["ex3-not-to-say"] },
+    { n: 5, neutral: "hidden / concealed", answers: ["swept under the carpet"], hits: ["lang-swept"] },
+    { n: 6, neutral: "the situation has nearly reversed", answers: ["the pendulum has swung almost to the opposite extreme"], hits: ["lang-pendulum"] },
+    { n: 7, neutral: "feel proud of (something unpleasant)", answers: ["wear \u2026 as a badge of honour"], hits: ["ex3-badge"] },
+    { n: 8, neutral: "produce / create", answers: ["throw up new challenges"], hits: ["ex3-throw"] },
+    { n: 9, neutral: "easy / comfortable", answers: ["a bed of roses"], hits: ["lang-roses"] },
+  ];
+
+  ex3Grouped.forEach(function (row) {
+    var li = document.createElement("li");
+    li.id = "ex3-row-" + row.n;
+    li.dataset.hits = row.hits.join(",");
+    li.innerHTML =
+      '<span class="tick" aria-hidden="true">\u25cb</span>' +
+      "<span><strong>" + row.n + ".</strong> <span class=\"neutral\">" + row.neutral + "</span></span>";
+    ex3Bank.appendChild(li);
+  });
+
+  var EX4_ITEMS = [
+    { id: "ex4-p2-pass1", hitId: "ex4-p2-pass1", para: 2, label: "passive reporting verb + to-infinitive (1)", answer: "were expected to \u2026 bottle up" },
+    { id: "ex4-p2-pass2", hitId: "ex4-p2-pass2", para: 2, label: "passive reporting verb + to-infinitive (2)", answer: "It was considered weak to admit you were struggling" },
+    { id: "ex4-p2-modal", hitId: "ex4-p2-modal", para: 2, label: "modal perfect structure", answer: "must have caused" },
+    { id: "ex4-p3-cond", hitId: "ex4-p3-cond", para: 3, label: "second conditional (imaginary present)", answer: "as if suffering in silence were something to be proud of" },
+    { id: "ex4-p4-rel", hitId: "ex4-p4-rel", para: 4, label: "non-defining relative clause (which)", answer: "all of which cause real anguish to people in my social circle" },
+  ];
+
+  var ex4Bank = document.getElementById("ex4-bank");
+  var ex4ByPara = { 2: [], 3: [], 4: [] };
+  EX4_ITEMS.forEach(function (item) {
+    ex4ByPara[item.para].push(item);
+  });
+
+  [2, 3, 4].forEach(function (pnum) {
+    ex4ByPara[pnum].forEach(function (item) {
+      var li = document.createElement("li");
+      li.id = "ex4-row-" + item.id;
+      li.dataset.hit = item.hitId;
+      li.innerHTML =
+        '<span class="tick" aria-hidden="true">\u25cb</span>' +
+        "<span><span class=\"para-tag\">Paragraph " + pnum + "</span>" + item.label + "</span>";
+      ex4Bank.appendChild(li);
+    });
+  });
+
+  function isHitMarkedForEx4(el) {
+    if (!el) return false;
+    return el.classList.contains("is-ex4-marked") || el.classList.contains("is-ex4-solution");
+  }
+
+  function updateEx4Bank() {
+    EX4_ITEMS.forEach(function (item) {
+      var li = document.getElementById("ex4-row-" + item.id);
+      if (!li) return;
+      var on = isHitMarkedForEx4(hitById(item.hitId));
+      if (!ex4Checked) {
+        li.classList.toggle("is-found", on);
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = on ? "\u2713" : "\u25cb";
+      }
+    });
+  }
+
+  function hitById(id) {
+    return document.querySelector('.hit[data-id="' + id + '"]');
+  }
+
+  function isHitMarkedForEx3(el) {
+    if (!el) return false;
+    return el.classList.contains("is-ex3-marked") || el.classList.contains("is-ex3-solution");
+  }
+
+  function updateEx3Bank() {
+    ex3Grouped.forEach(function (row) {
+      var li = document.getElementById("ex3-row-" + row.n);
+      if (!li) return;
+      var allOn = row.hits.every(function (hid) {
+        return isHitMarkedForEx3(hitById(hid));
+      });
+      if (!ex3Checked) {
+        li.classList.toggle("is-found", allOn);
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = allOn ? "\u2713" : "\u25cb";
+      }
+    });
+  }
+
+  function allHits() {
+    return [].slice.call(document.querySelectorAll(".hit"));
+  }
+
+  function updateBankMarks() {
+    allHits().forEach(function (el) {
+      var id = el.getAttribute("data-id");
+      var li = document.getElementById("bank-" + id);
+      if (!li) return;
+      var marked = el.classList.contains("is-marked") || el.classList.contains("is-solution");
+      li.classList.toggle("is-found", marked && !modelChecked);
+      if (!modelChecked) {
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = marked ? "\u2713" : "\u25cb";
+      }
+    });
+  }
+
+  function toggleHit(el) {
+    if (modelSolution && ex3Solution && ex4Solution && ex5Solution) return;
+    if (modelChecked && el.getAttribute("data-cat")) {
+      modelChecked = false;
+      document.getElementById("feedback-model").classList.remove("show");
+      document.getElementById("feedback-model").innerHTML = "";
+      allHits().forEach(function (h) {
+        h.classList.remove("is-solution");
+      });
+      document.querySelectorAll("#bank-task li, #bank-lang li").forEach(function (li) {
+        li.classList.remove("is-missed");
+      });
+    }
+    if (ex3Checked && el.getAttribute("data-ex3")) {
+      ex3Checked = false;
+      document.getElementById("feedback-ex3").classList.remove("show");
+      document.getElementById("feedback-ex3").innerHTML = "";
+      allHits().forEach(function (h) {
+        h.classList.remove("is-ex3-solution");
+      });
+      document.querySelectorAll(".ex3-prompt-list li").forEach(function (li) {
+        li.classList.remove("is-missed");
+      });
+    }
+    if (ex4Checked && el.getAttribute("data-ex4")) {
+      ex4Checked = false;
+      document.getElementById("feedback-ex4").classList.remove("show");
+      document.getElementById("feedback-ex4").innerHTML = "";
+      allHits().forEach(function (h) {
+        h.classList.remove("is-ex4-solution");
+      });
+      document.querySelectorAll(".ex4-prompt-list li").forEach(function (li) {
+        li.classList.remove("is-missed");
+      });
+    }
+    if (ex5Checked && el.getAttribute("data-ex5")) {
+      ex5Checked = false;
+      document.getElementById("feedback-ex5").classList.remove("show");
+      document.getElementById("feedback-ex5").innerHTML = "";
+      allHits().forEach(function (h) {
+        h.classList.remove("is-ex5-solution");
+      });
+      document.querySelectorAll(".ex5-find-list li").forEach(function (li) {
+        li.classList.remove("is-missed");
+      });
+      document.querySelectorAll(".ex5-gap").forEach(function (inp) {
+        inp.classList.remove("ok", "no");
+      });
+    }
+
+    if (el.getAttribute("data-ex5") && !ex5Solution) {
+      el.classList.toggle("is-ex5-marked");
+    } else if (el.getAttribute("data-ex4") && !ex4Solution) {
+      el.classList.toggle("is-ex4-marked");
+    } else if (el.getAttribute("data-ex3") && !ex3Solution) {
+      el.classList.toggle("is-ex3-marked");
+      if (el.getAttribute("data-cat")) {
+        el.classList.toggle("is-marked", el.classList.contains("is-ex3-marked"));
+      }
+    } else if (el.getAttribute("data-cat") && !modelSolution) {
+      el.classList.toggle("is-marked");
+    }
+
+    if (el.getAttribute("data-ex5") && el.getAttribute("data-cat") && !ex5Solution && !modelSolution) {
+      if (el.classList.contains("is-ex5-marked")) {
+        el.classList.add("is-marked");
+      }
+    }
+
+    syncEx5UnlockFromHit(el);
+
+    el.setAttribute(
+      "aria-pressed",
+      el.classList.contains("is-marked") ||
+        el.classList.contains("is-ex3-marked") ||
+        el.classList.contains("is-ex4-marked") ||
+        el.classList.contains("is-ex5-marked")
+        ? "true"
+        : "false"
+    );
+    updateBankMarks();
+    updateEx3Bank();
+    updateEx4Bank();
+    updateEx5FindBank();
+    var letter = document.getElementById("letter");
+    if (el.getAttribute("data-ex5")) {
+      letter.classList.add("is-ex5-focus");
+    } else if (el.getAttribute("data-ex4")) {
+      letter.classList.add("is-ex4-focus");
+    } else if (el.getAttribute("data-ex3")) {
+      letter.classList.add("is-ex3-focus");
+    }
+  }
+
+  allHits().forEach(function (el) {
+    el.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      toggleHit(el);
+    });
+    el.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        toggleHit(el);
+      }
+    });
+  });
+
+  function taskLangHits() {
+    return allHits().filter(function (el) {
+      return el.getAttribute("data-cat");
+    });
+  }
+
+  document.getElementById("btn-check-model").addEventListener("click", function () {
+    modelChecked = true;
+    modelSolution = false;
+    var found = 0;
+    var missed = [];
+    var scoped = taskLangHits();
+
+    scoped.forEach(function (el) {
+      var id = el.getAttribute("data-id");
+      var marked = el.classList.contains("is-marked");
+      var li = document.getElementById("bank-" + id);
+      if (marked) {
+        found++;
+        if (li) {
+          li.classList.add("is-found");
+          li.classList.remove("is-missed");
+          li.querySelector(".tick").textContent = "\u2713";
+        }
+      } else {
+        var item = ALL_ITEMS.filter(function (x) { return x.id === id; })[0];
+        if (item) missed.push(item.label);
+        if (li) {
+          li.classList.add("is-missed");
+          li.classList.remove("is-found");
+          li.querySelector(".tick").textContent = "\u2013";
+        }
+      }
+    });
+
+    var fb = document.getElementById("feedback-model");
+    var total = scoped.length;
+    fb.innerHTML =
+      found === total
+        ? "<p><strong class=\"ok\">All " + total + " chunks found.</strong> Orange = content from Q1&ndash;2; teal = C1&ndash;C2 idioms and collocations.</p>"
+        : "<p><strong class=\"warn\">You found " + found + " of " + total + ".</strong> Still look for: <em>" +
+          missed.join("</em>, <em>") + "</em>.</p>";
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-show-model").addEventListener("click", function () {
+    modelChecked = true;
+    modelSolution = true;
+    taskLangHits().forEach(function (el) {
+      el.classList.add("is-marked", "is-solution");
+      el.setAttribute("aria-pressed", "true");
+    });
+    document.querySelectorAll(".bank-list li").forEach(function (li) {
+      li.classList.add("is-found");
+      li.classList.remove("is-missed");
+      li.querySelector(".tick").textContent = "\u2713";
+    });
+    var fb = document.getElementById("feedback-model");
+    fb.innerHTML =
+      "<p><strong class=\"ok\">All points underlined.</strong> Notice how Lisa covers every task bullet while keeping an informal, chatty tone with C2-level chunks (<em>swept under the carpet</em>, <em>bed of roses</em>, etc.).</p>";
+    fb.classList.add("show");
+    syncAllEx5Unlocks();
+  });
+
+  document.getElementById("btn-reset-model").addEventListener("click", function () {
+    modelChecked = false;
+    modelSolution = false;
+    allHits().forEach(function (el) {
+      if (el.getAttribute("data-cat")) {
+        el.classList.remove("is-marked", "is-solution");
+        if (!el.getAttribute("data-ex3")) {
+          el.setAttribute("aria-pressed", "false");
+        }
+      }
+    });
+    allHits().forEach(function (el) {
+      if (!el.classList.contains("is-ex3-marked") && !el.classList.contains("is-ex3-solution")) {
+        el.setAttribute("aria-pressed", "false");
+      }
+    });
+    document.querySelectorAll("#bank-task li, #bank-lang li").forEach(function (li) {
+      li.classList.remove("is-found", "is-missed");
+      li.querySelector(".tick").textContent = "\u25cb";
+    });
+    var fb = document.getElementById("feedback-model");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+    updateEx3Bank();
+  });
+
+  document.getElementById("btn-show-q").addEventListener("click", function () {
+    var fb = document.getElementById("feedback-q");
+    var q2ok = [];
+    var q2miss = [];
+    var q2extra = [];
+    document.querySelectorAll("#q2-opts input[type=checkbox]").forEach(function (cb) {
+      var v = cb.value;
+      var on = cb.checked;
+      if (KEY_Q2[v] && on) q2ok.push(v);
+      if (KEY_Q2[v] && !on) q2miss.push(v);
+      if (!KEY_Q2[v] && on) q2extra.push(v);
+    });
+
+    fb.innerHTML =
+      "<p><strong>Question 1</strong> &mdash; three required points from the task:</p>" +
+      "<ol><li>how mental health <em>used to be perceived</em> in your country</li>" +
+      "<li><em>recent changes</em> in these perceptions</li>" +
+      "<li>common <em>causes of stress and anxiety</em> in your country</li></ol>" +
+      "<p style='margin-top:10px;'><strong>Question 2</strong> &mdash; include <strong>b, e, f</strong> (personal angle + clear letter shape + respond to your friend&rsquo;s article). " +
+      (q2ok.length === 3 && !q2extra.length
+        ? "Your selection matches."
+        : "You selected: " +
+          (q2ok.length ? q2ok.join(", ") : "none of b/e/f") +
+          (q2miss.length ? " \u00b7 missing: " + q2miss.join(", ") : "") +
+          (q2extra.length ? " \u00b7 optional extras you ticked: " + q2extra.join(", ") : "") +
+          ".") +
+      "</p>" +
+      "<p style='margin-top:8px;color:#94a3b8;font-size:0.84rem;'>Then scroll to the <a href='#model-section' style='color:#56ccf2;'>model answer</a> and <a href='#ex3-section' style='color:#a78bfa;'>Exercise 3</a> &mdash; click phrases in Lisa&rsquo;s letter.</p>";
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset-q").addEventListener("click", function () {
+    ["q1a", "q1b", "q1c"].forEach(function (id) {
+      document.getElementById(id).value = "";
+    });
+    document.querySelectorAll("#q2-opts input").forEach(function (cb) {
+      cb.checked = false;
+    });
+    document.getElementById("feedback-q").classList.remove("show");
+    document.getElementById("feedback-q").innerHTML = "";
+  });
+
+  var back = document.getElementById("back-link");
+  if (back) {
+    var p = new URLSearchParams(location.search);
+    if (p.get("course") === "cpe" || p.get("prep_stay") === "1") {
+      back.href =
+        "../../../index.html?prep_stay=1&screen=unit12&prep_open_folder=" +
+        encodeURIComponent("prep_legacy_u12_writing");
+      back.textContent = "\u2190 " + (p.get("backLabel") || "Level 12");
+    }
+  }
+
+  if (location.hash === "#model-section" || location.hash === "#ex3-section" || location.hash === "#ex4-section" || location.hash === "#ex5-section") {
+    setTimeout(function () {
+      var id = location.hash.slice(1);
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  }
+
+  document.getElementById("btn-focus-letter").addEventListener("click", function () {
+    var letter = document.getElementById("letter");
+    letter.classList.add("is-ex3-focus");
+    letter.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  document.getElementById("btn-check-ex3").addEventListener("click", function () {
+    ex3Checked = true;
+    ex3Solution = false;
+    var foundRows = 0;
+    var missedRows = [];
+
+    ex3Grouped.forEach(function (row) {
+      var li = document.getElementById("ex3-row-" + row.n);
+      var allOn = row.hits.every(function (hid) {
+        return isHitMarkedForEx3(hitById(hid));
+      });
+      if (allOn) {
+        foundRows++;
+        li.classList.add("is-found");
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = "\u2713";
+      } else {
+        missedRows.push(row.n);
+        li.classList.add("is-missed");
+        li.classList.remove("is-found");
+        li.querySelector(".tick").textContent = "\u2013";
+      }
+    });
+
+    var fb = document.getElementById("feedback-ex3");
+    fb.innerHTML =
+      foundRows === ex3Grouped.length
+        ? "<p><strong class=\"ok\">All 9 prompts matched in the letter.</strong> (Item 3 = two phrases.)</p>"
+        : "<p><strong class=\"warn\">" + foundRows + " / " + ex3Grouped.length + " prompts complete.</strong> Still check item(s): " + missedRows.join(", ") + " in the letter above.</p>";
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-show-ex3").addEventListener("click", function () {
+    ex3Checked = true;
+    ex3Solution = true;
+    EX3_ITEMS.forEach(function (item) {
+      var el = hitById(item.hitId);
+      if (!el) return;
+      el.classList.add("is-ex3-marked", "is-ex3-solution");
+      if (el.getAttribute("data-cat")) el.classList.add("is-marked");
+      el.setAttribute("aria-pressed", "true");
+    });
+    ex3Grouped.forEach(function (row) {
+      var li = document.getElementById("ex3-row-" + row.n);
+      li.classList.add("is-found");
+      li.classList.remove("is-missed");
+      li.querySelector(".tick").textContent = "\u2713";
+    });
+    document.getElementById("feedback-ex3").innerHTML =
+      "<p><strong class=\"ok\">All Ex 3 idioms highlighted in purple.</strong></p>" +
+      "<ol style='margin:10px 0 0 1.1rem;font-size:0.86rem;line-height:1.55;color:#cbd5e1;'>" +
+      ex3Grouped.map(function (row) {
+        return "<li><span style=\"color:#94a3b8;\">" + row.neutral + "</span> \u2192 <em>" + row.answers.join(" / ") + "</em></li>";
+      }).join("") +
+      "</ol>";
+    document.getElementById("feedback-ex3").classList.add("show");
+    document.getElementById("letter").scrollIntoView({ behavior: "smooth", block: "center" });
+    syncAllEx5Unlocks();
+    updateEx5FindBank();
+  });
+
+  document.getElementById("btn-reset-ex3").addEventListener("click", function () {
+    ex3Checked = false;
+    ex3Solution = false;
+    allHits().forEach(function (el) {
+      if (el.getAttribute("data-ex3")) {
+        el.classList.remove("is-ex3-marked", "is-ex3-solution");
+        if (el.getAttribute("data-cat") === "lang") {
+          el.classList.remove("is-marked");
+        }
+        if (!el.classList.contains("is-marked") && !el.classList.contains("is-solution")) {
+          el.setAttribute("aria-pressed", "false");
+        }
+      }
+    });
+    document.querySelectorAll(".ex3-prompt-list li").forEach(function (li) {
+      li.classList.remove("is-found", "is-missed");
+      li.querySelector(".tick").textContent = "\u25cb";
+    });
+    document.getElementById("letter").classList.remove("is-ex3-focus");
+    var fb = document.getElementById("feedback-ex3");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+    updateBankMarks();
+  });
+
+  document.getElementById("btn-focus-letter-ex4").addEventListener("click", function () {
+    var letter = document.getElementById("letter");
+    letter.classList.add("is-ex4-focus");
+    letter.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  document.getElementById("btn-check-ex4").addEventListener("click", function () {
+    ex4Checked = true;
+    ex4Solution = false;
+    var found = 0;
+    var missed = [];
+
+    EX4_ITEMS.forEach(function (item) {
+      var li = document.getElementById("ex4-row-" + item.id);
+      var on = isHitMarkedForEx4(hitById(item.hitId));
+      if (on) {
+        found++;
+        li.classList.add("is-found");
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = "\u2713";
+      } else {
+        missed.push("P" + item.para + " \u00b7 " + item.label);
+        li.classList.add("is-missed");
+        li.classList.remove("is-found");
+        li.querySelector(".tick").textContent = "\u2013";
+      }
+    });
+
+    var fb = document.getElementById("feedback-ex4");
+    fb.innerHTML =
+      found === EX4_ITEMS.length
+        ? "<p><strong class=\"ok\">All 5 grammar structures found.</strong></p>"
+        : "<p><strong class=\"warn\">" + found + " / " + EX4_ITEMS.length + " found.</strong> Still look for: " + missed.join("; ") + ".</p>";
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-show-ex4").addEventListener("click", function () {
+    ex4Checked = true;
+    ex4Solution = true;
+    EX4_ITEMS.forEach(function (item) {
+      var el = hitById(item.hitId);
+      if (!el) return;
+      el.classList.add("is-ex4-marked", "is-ex4-solution");
+      el.setAttribute("aria-pressed", "true");
+      var li = document.getElementById("ex4-row-" + item.id);
+      li.classList.add("is-found");
+      li.classList.remove("is-missed");
+      li.querySelector(".tick").textContent = "\u2713";
+    });
+    document.getElementById("feedback-ex4").innerHTML =
+      "<p><strong class=\"ok\">All Ex 4 structures highlighted.</strong></p>" +
+      "<ul style='margin:10px 0 0 1.1rem;font-size:0.86rem;line-height:1.55;color:#cbd5e1;'>" +
+      EX4_ITEMS.map(function (item) {
+        return "<li><strong>P" + item.para + ":</strong> <em>" + item.answer + "</em></li>";
+      }).join("") +
+      "</ul>";
+    document.getElementById("feedback-ex4").classList.add("show");
+    document.getElementById("letter").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  document.getElementById("btn-reset-ex4").addEventListener("click", function () {
+    ex4Checked = false;
+    ex4Solution = false;
+    allHits().forEach(function (el) {
+      if (el.getAttribute("data-ex4")) {
+        el.classList.remove("is-ex4-marked", "is-ex4-solution");
+        if (!el.classList.contains("is-marked") && !el.classList.contains("is-ex3-marked")) {
+          el.setAttribute("aria-pressed", "false");
+        }
+      }
+    });
+    document.querySelectorAll(".ex4-prompt-list li").forEach(function (li) {
+      li.classList.remove("is-found", "is-missed");
+      li.querySelector(".tick").textContent = "\u25cb";
+    });
+    document.getElementById("letter").classList.remove("is-ex4-focus");
+    var fb = document.getElementById("feedback-ex4");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  });
+
+  document.getElementById("btn-focus-letter-ex5").addEventListener("click", function () {
+    var letter = document.getElementById("letter");
+    letter.classList.add("is-ex5-focus");
+    letter.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  document.getElementById("btn-check-ex5").addEventListener("click", function () {
+    ex5Checked = true;
+    ex5Solution = false;
+    var foundInLetter = 0;
+    var correctGaps = 0;
+    var missedFind = [];
+    var wrongGaps = [];
+
+    EX5_ITEMS.forEach(function (item) {
+      var hit = document.querySelector('.hit[data-ex5="' + item.id + '"]');
+      var li = document.getElementById("ex5-find-" + item.id);
+      var on = isEx5HitActive(hit);
+      if (on) {
+        foundInLetter++;
+        if (li) {
+          li.classList.add("is-found");
+          li.querySelector(".tick").textContent = "\u2713";
+        }
+      } else {
+        missedFind.push(item.label);
+        if (li) {
+          li.classList.add("is-missed");
+          li.querySelector(".tick").textContent = "\u2013";
+        }
+      }
+
+      var inp = ex5GapEl(item.id);
+      if (!inp) return;
+      var val = normEx5(inp.value);
+      var ok = item.answers.some(function (a) { return normEx5(a) === val; });
+      inp.classList.remove("ok", "no");
+      if (!on) {
+        inp.classList.add("no");
+      } else if (ok) {
+        inp.classList.add("ok");
+        correctGaps++;
+      } else if (val) {
+        inp.classList.add("no");
+        wrongGaps.push(item.label);
+      } else {
+        wrongGaps.push(item.label + " (empty)");
+      }
+    });
+
+    var fb = document.getElementById("feedback-ex5");
+    var allFound = foundInLetter === EX5_ITEMS.length;
+    var allGaps = correctGaps === EX5_ITEMS.length;
+    if (allFound && allGaps) {
+      fb.innerHTML = "<p><strong class=\"ok\">All 17 words found and filled correctly.</strong> These chunks are handy for chatty intros/conclusions and for softening opinions in informal letters.</p>";
+    } else {
+      var parts = [];
+      if (!allFound) {
+        parts.push("Still find in the letter: <em>" + missedFind.join("</em>, <em>") + "</em>");
+      }
+      if (!allGaps) {
+        parts.push("Check gaps: <em>" + wrongGaps.join("</em>, <em>") + "</em>");
+      }
+      fb.innerHTML = "<p><strong class=\"warn\">" + foundInLetter + " / " + EX5_ITEMS.length + " found; " + correctGaps + " / " + EX5_ITEMS.length + " gaps correct.</strong> " + parts.join(". ") + ".</p>";
+    }
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-show-ex5").addEventListener("click", function () {
+    ex5Checked = true;
+    ex5Solution = true;
+    EX5_ITEMS.forEach(function (item) {
+      var hit = document.querySelector('.hit[data-ex5="' + item.id + '"]');
+      if (hit) {
+        hit.classList.add("is-ex5-marked", "is-ex5-solution");
+        hit.setAttribute("aria-pressed", "true");
+      }
+      var li = document.getElementById("ex5-find-" + item.id);
+      if (li) {
+        li.classList.add("is-found");
+        li.classList.remove("is-missed");
+        li.querySelector(".tick").textContent = "\u2713";
+      }
+      var inp = ex5GapEl(item.id);
+      if (inp) {
+        inp.classList.remove("is-locked");
+        inp.classList.add("is-unlocked", "ok");
+        inp.classList.remove("no");
+        inp.placeholder = "";
+        inp.title = "";
+        inp.value = item.answers[0];
+      }
+    });
+    document.getElementById("feedback-ex5").innerHTML =
+      "<p><strong class=\"ok\">All Ex 5 answers shown.</strong> Notice how Lisa opens and closes the letter in a friendly, conversational way.</p>";
+    document.getElementById("feedback-ex5").classList.add("show");
+    document.getElementById("letter").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  document.getElementById("btn-reset-ex5").addEventListener("click", function () {
+    ex5Checked = false;
+    ex5Solution = false;
+    allHits().forEach(function (el) {
+      if (el.getAttribute("data-ex5")) {
+        el.classList.remove("is-ex5-marked", "is-ex5-solution");
+        if (!el.classList.contains("is-marked") && !el.classList.contains("is-ex3-marked") && !el.classList.contains("is-ex4-marked")) {
+          el.setAttribute("aria-pressed", "false");
+        }
+      }
+    });
+    document.querySelectorAll(".ex5-find-list li").forEach(function (li) {
+      li.classList.remove("is-found", "is-missed");
+      li.querySelector(".tick").textContent = "\u25cb";
+    });
+    document.querySelectorAll(".ex5-gap").forEach(function (inp) {
+      inp.value = "";
+      inp.placeholder = "?";
+      inp.title = "Сначала найди слово в письме выше, потом впиши сюда";
+      inp.classList.remove("is-unlocked", "ok", "no");
+      inp.classList.add("is-locked");
+    });
+    document.getElementById("letter").classList.remove("is-ex5-focus");
+    var fb = document.getElementById("feedback-ex5");
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  });
+})();
+  </script>
+</body>
+</html>

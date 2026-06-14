@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    (function () {
+      try {
+        sessionStorage.setItem("prepU10UoeIntent", "fce");
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Use of English Unit 10 — Word formation · Life of crime</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { font-size: 1.2rem; line-height: 1.35; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      font-size: 0.95rem;
+      color: #d5e2f8;
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+    .instr strong { color: #fef9c3; }
+    .hint {
+      font-size: 0.84rem;
+      color: #bae6fd;
+      margin-bottom: 16px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+    }
+    .ref-box {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      background: rgba(15, 36, 68, 0.45);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .task-layout {
+      display: grid;
+      grid-template-columns: minmax(150px, 190px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .task-layout .ref-box {
+      position: sticky;
+      top: 12px;
+      margin-bottom: 0;
+    }
+    @media (max-width: 760px) {
+      .task-layout { grid-template-columns: 1fr; }
+      .task-layout .ref-box { position: static; }
+    }
+    .ref-box strong { color: #bae6fd; }
+    .ref-words {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-weight: 700;
+      color: #fcd34d;
+      letter-spacing: 0.04em;
+    }
+    @media (max-width: 760px) {
+      .ref-words {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+      }
+    }
+    .ref-words .used {
+      color: var(--muted);
+      text-decoration: line-through;
+      font-weight: 600;
+    }
+    .story-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #fef9c3;
+      margin-bottom: 12px;
+    }
+    .story {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      font-size: 0.94rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+    }
+    .story p { margin-bottom: 14px; }
+    .story p:last-child { margin-bottom: 0; }
+    .gap-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #fcd34d;
+      margin-right: 2px;
+    }
+    .gap-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 6.5rem;
+      min-height: 34px;
+      padding: 2px 6px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: 2px dashed rgba(148, 163, 184, 0.45);
+      background: rgba(8, 22, 48, 0.5);
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    .gap-slot:hover { border-color: rgba(86, 204, 242, 0.55); }
+    .gap-slot.has-word {
+      border-style: solid;
+      border-color: rgba(167, 139, 250, 0.45);
+      background: rgba(76, 29, 149, 0.18);
+    }
+    .gap-slot.is-example {
+      border-style: solid;
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+    }
+    .gap-slot.is-drag-over {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.12);
+    }
+    .gap-slot:empty::before {
+      content: "\2014";
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .gap-mark {
+      display: inline-block;
+      margin-left: 4px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      opacity: 0;
+      vertical-align: middle;
+    }
+    .story.is-checked .gap-wrap.is-ok .gap-mark { opacity: 1; color: #86efac; }
+    .story.is-checked .gap-wrap.is-bad .gap-mark { opacity: 1; color: #fca5a5; }
+    .bank-dock {
+      margin-top: 16px;
+      padding: 12px 12px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(96, 165, 250, 0.32);
+      background: rgba(96, 165, 250, 0.1);
+    }
+    @media (min-height: 520px) {
+      .bank-dock {
+        position: sticky;
+        bottom: 10px;
+        z-index: 3;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+      }
+    }
+    .bank-head {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      margin-bottom: 6px;
+    }
+    .bank-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .word-bank.is-drag-over {
+      outline: 2px dashed #60a5fa;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+    .word-chip {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 2px solid rgba(86, 204, 242, 0.38);
+      background: rgba(86, 204, 242, 0.14);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      font-family: inherit;
+    }
+    .word-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.22);
+    }
+    .word-chip.is-selected {
+      box-shadow: 0 0 0 2px #a78bfa;
+      border-color: #a78bfa;
+    }
+    .word-chip.is-chip-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+    }
+    .word-chip.is-chip-bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.18);
+    }
+    .word-chip.is-locked {
+      cursor: default;
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.18);
+      color: #86efac;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .score-strip {
+      flex: 1 1 auto;
+      min-width: 10rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.55);
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .score-strip:empty { display: none; }
+    .score-strip.is-perfect {
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+    }
+    .score-strip.is-mixed {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: rgba(251, 191, 36, 0.1);
+      color: #fde68a;
+    }
+    .gap-wrap { display: inline; }
+    .gap-wrap.is-focused .gap-slot {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.22);
+    }
+    .gap-in {
+      display: inline-block;
+      width: 8rem;
+      max-width: 45vw;
+      min-height: 34px;
+      padding: 5px 10px;
+      margin: 0 3px;
+      border-radius: 8px;
+      border: 2px solid rgba(148, 163, 184, 0.55);
+      background: rgba(8, 22, 48, 0.58);
+      color: var(--text);
+      font-size: 0.94rem;
+      font-family: inherit;
+      vertical-align: middle;
+    }
+    .gap-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.18);
+    }
+    .gap-wrap.is-ok .gap-in {
+      border-color: var(--ok);
+      background: rgba(34, 197, 94, 0.12);
+    }
+    .gap-wrap.is-bad .gap-in {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.12);
+    }
+    .key-hint {
+      display: none;
+      margin-left: 5px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86efac;
+      font-size: 0.78rem;
+      font-weight: 800;
+      vertical-align: middle;
+    }
+    .story.is-checked .gap-wrap.is-bad .key-hint { display: inline-block; }
+    .voc-next {
+      margin-top: 18px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .voc-next a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .voc-next a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Word formation &mdash; <em>Life of crime</em></h1>
+        <span class="badge">Participle adjectives &amp; adverbs</span>
+      </div>
+      <a class="back" href="../fce/index.html?course=fce">&larr; Unit 10 · Use of English</a>
+    </header>
+
+    <p class="instr">
+      Complete the story with the correct form of words from the box. You can use negative prefixes where necessary. There is an example at the beginning (0).
+    </p>
+    <p class="hint">
+      <strong>How:</strong> type the correct form into each gap. Example (0) is already <strong>disappointed</strong>. Check shows ✓/✗ on each gap.
+    </p>
+
+    <div class="task-layout">
+      <div class="ref-box">
+        <strong>Box (roots):</strong>
+        <div class="ref-words">
+          <span>bore</span>
+          <span class="used">disappoint</span>
+          <span>relief</span>
+          <span>reward</span>
+          <span>stimulate</span>
+          <span>surprise</span>
+          <span>surprise</span>
+          <span>threaten</span>
+          <span>vary</span>
+        </div>
+      </div>
+
+      <section>
+        <div class="story-title">LIFE OF CRIME</div>
+
+        <div class="story" id="story">
+          <p id="para1"></p>
+          <p id="para2"></p>
+          <p id="para3"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="toolbar">
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+        <button type="button" class="btn-reset" id="btnReset">Reset</button>
+      </div>
+      <div class="score-strip" id="score-strip" aria-live="polite"></div>
+    </div>
+
+    <p class="voc-next">
+      <a href="index.html?course=fce">Word formation &mdash; <em>Private investigators investigated</em> &rarr;</a>
+    </p>
+  </main>
+
+  <script>
+(function () {
+  var GAPS = {
+    0: { answers: ["disappointed"], show: "disappointed", example: true },
+    1: { answers: ["varied", "various"], show: "varied" },
+    2: { answers: ["boring"], show: "boring" },
+    3: { answers: ["surprisingly"], show: "Surprisingly" },
+    4: { answers: ["relieved"], show: "relieved" },
+    5: { answers: ["surprised"], show: "surprised" },
+    6: { answers: ["threatening"], show: "threatening" },
+    7: { answers: ["rewarding"], show: "rewarding" },
+    8: { answers: ["stimulated"], show: "stimulated" }
+  };
+
+  var storyEl = document.getElementById("story");
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\u2019/g, "'").replace(/\s+/g, "");
+  }
+
+  function clearCheck() {
+    var strip = document.getElementById("score-strip");
+    strip.textContent = "";
+    strip.className = "score-strip";
+    storyEl.classList.remove("is-checked");
+    document.querySelectorAll(".gap-wrap").forEach(function (w) {
+      w.classList.remove("is-ok", "is-bad");
+      var mark = w.querySelector(".gap-mark");
+      if (mark) mark.textContent = "";
+      var hint = w.querySelector(".key-hint");
+      if (hint) hint.textContent = "";
+    });
+  }
+
+  function makeGap(n) {
+    var wrap = document.createElement("span");
+    wrap.className = "gap-wrap";
+    wrap.setAttribute("data-n", String(n));
+
+    var num = document.createElement("span");
+    num.className = "gap-num";
+    num.textContent = "(" + n + ")";
+    wrap.appendChild(num);
+
+    if (GAPS[n].example) {
+      var example = document.createElement("span");
+      example.className = "gap-slot is-example";
+      example.textContent = GAPS[n].show;
+      wrap.appendChild(example);
+    } else {
+      var input = document.createElement("input");
+      input.type = "text";
+      input.className = "gap-in";
+      input.id = "gap-" + n;
+      input.setAttribute("data-gap", String(n));
+      input.setAttribute("autocomplete", "off");
+      input.setAttribute("spellcheck", "false");
+      input.setAttribute("aria-label", "Gap " + n);
+      input.addEventListener("input", clearCheck);
+      wrap.appendChild(input);
+    }
+
+    var mark = document.createElement("span");
+    mark.className = "gap-mark";
+    mark.setAttribute("aria-hidden", "true");
+    wrap.appendChild(mark);
+
+    if (!GAPS[n].example) {
+      var hint = document.createElement("span");
+      hint.className = "key-hint";
+      wrap.appendChild(hint);
+    }
+
+    return wrap;
+  }
+
+  function mountStory() {
+    var p1 = document.getElementById("para1");
+    p1.innerHTML = "";
+    p1.appendChild(document.createTextNode(
+      "I\u2019m a police officer, which means people always ask me about catching criminals. They are often "
+    ));
+    p1.appendChild(makeGap(0));
+    p1.appendChild(document.createTextNode(
+      " that this is actually a small part of what I do. Although the job is "
+    ));
+    p1.appendChild(makeGap(1));
+    p1.appendChild(document.createTextNode(
+      " and every day is different, the normal stuff can be quite mundane and "
+    ));
+    p1.appendChild(makeGap(2));
+    p1.appendChild(document.createTextNode(
+      ". Inputting data and answering phone calls is a large part of the behind-the-scenes stuff."
+    ));
+
+    var p2 = document.getElementById("para2");
+    p2.innerHTML = "";
+    p2.appendChild(makeGap(3));
+    p2.appendChild(document.createTextNode(
+      ", I\u2019ve never even arrested anyone. I\u2019m quite "
+    ));
+    p2.appendChild(makeGap(4));
+    p2.appendChild(document.createTextNode(
+      " about this because I\u2019m still very new and would worry I\u2019m going to do it wrong. I wouldn\u2019t be "
+    ));
+    p2.appendChild(makeGap(5));
+    p2.appendChild(document.createTextNode(
+      " if I have to soon, though. I\u2019ve been in a few dangerous situations with some "
+    ));
+    p2.appendChild(makeGap(6));
+    p2.appendChild(document.createTextNode(
+      " individuals, but so far I\u2019ve just seen it being done."
+    ));
+
+    var p3 = document.getElementById("para3");
+    p3.innerHTML = "";
+    p3.appendChild(document.createTextNode(
+      "If you\u2019re thinking of going into the police force, I would say it\u2019s very "
+    ));
+    p3.appendChild(makeGap(7));
+    p3.appendChild(document.createTextNode(
+      " because you know you\u2019re making a difference and making the streets safer. The best part is going out in the vehicle with the siren on. Who wouldn\u2019t feel "
+    ));
+    p3.appendChild(makeGap(8));
+    p3.appendChild(document.createTextNode(" by that?"));
+  }
+
+  function matches(val, answers) {
+    var n = norm(val);
+    for (var i = 0; i < answers.length; i++) {
+      if (n === norm(answers[i])) return true;
+    }
+    return false;
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var correct = 0;
+    var total = 0;
+    storyEl.classList.add("is-checked");
+
+    for (var n = 1; n <= 8; n++) {
+      total++;
+      var input = document.getElementById("gap-" + n);
+      var user = input ? input.value : "";
+      var ok = matches(user, GAPS[n].answers);
+      if (ok) correct++;
+
+      var wrap = document.querySelector(".gap-wrap[data-n=\"" + n + "\"]");
+      wrap.classList.toggle("is-ok", ok);
+      wrap.classList.toggle("is-bad", !ok);
+      var mark = wrap.querySelector(".gap-mark");
+      mark.textContent = ok ? "\u2713" : "\u2717";
+      var hint = wrap.querySelector(".key-hint");
+      if (hint) hint.textContent = GAPS[n].show;
+    }
+
+    var strip = document.getElementById("score-strip");
+    if (correct === total) {
+      strip.textContent = "Perfect \u2014 " + correct + " / " + total + ".";
+      strip.className = "score-strip is-perfect";
+    } else {
+      strip.textContent = correct + " / " + total + " correct. Red gaps show the key.";
+      strip.className = "score-strip is-mixed";
+    }
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    clearCheck();
+    for (var n = 1; n <= 8; n++) {
+      var input = document.getElementById("gap-" + n);
+      if (input) input.value = "";
+    }
+  });
+
+  mountStory();
+})();
+  </script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script src="../../../js/prep-site-content.js"></script>
+</body>
+</html>

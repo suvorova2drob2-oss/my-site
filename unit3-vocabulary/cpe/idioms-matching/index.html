@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 &mdash; Idioms matching (CPE Prep)</title>
+  <link rel="stylesheet" href="../../../css/cpe-uoe-part3-wf-shell.css" />
+  <style>
+    .page { width: min(980px, 100%); }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fda4af;
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: var(--cpe-p3-muted);
+      margin-bottom: 12px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--cpe-p3-panel-soft);
+      border: 1px solid var(--cpe-p3-line);
+      font-size: 0.86rem;
+      color: var(--cpe-p3-muted-dim);
+      margin-bottom: 18px;
+    }
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .match-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      border-radius: 14px;
+      padding: 14px 14px 18px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-panel-soft);
+      min-height: 120px;
+    }
+    .panel-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      color: var(--cpe-p3-muted);
+    }
+    .start-row {
+      padding: 10px 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-gap-bg);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+    .start-row:hover { border-color: var(--cpe-p3-accent); }
+    .start-row.is-focused {
+      border-color: var(--cpe-p3-accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.22);
+    }
+    .start-row strong { color: #fef9c3; font-weight: 700; }
+    .start-row .num { font-weight: 800; color: var(--cpe-p3-accent); margin-right: 6px; }
+    .start-meta {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--cpe-p3-muted-dim);
+      font-style: italic;
+      min-height: 1.35em;
+    }
+    .start-meta.has-pick { color: #a5f3fc; font-style: normal; }
+    .end-chip {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-gap-bg);
+      color: var(--cpe-p3-text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .end-chip:hover:not(:disabled) { border-color: var(--cpe-p3-accent); }
+    .end-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+    .end-chip.is-used {
+      border-color: rgba(52, 211, 153, 0.45);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .end-chip .badge {
+      display: inline-block;
+      min-width: 1.5rem;
+      font-weight: 800;
+      color: var(--cpe-p3-accent);
+      margin-right: 8px;
+    }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--cpe-p3-ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--cpe-p3-text); }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-panel-soft);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--cpe-p3-muted);
+    }
+    .feedback.show { display: block; }
+    .fb-score { font-weight: 800; margin-bottom: 10px; color: var(--cpe-p3-text); }
+    .fb-item { margin-bottom: 8px; }
+    .fb-item.ok { color: #86efac; }
+    .fb-item.bad { color: #fca5a5; }
+  </style>
+</head>
+<body class="cpe-p3-body">
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Idiomatic expressions</p>
+        <h1>Match questions and answers</h1>
+      </div>
+      <a class="back back-link" id="back-link" data-u3-vocab-hub-depth="1" data-u3-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%203">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      <strong>2</strong> Match each question <strong>1&ndash;9</strong> with the most appropriate answer <strong>a&ndash;i</strong>.
+      The phrases in bold are idiomatic expressions.
+    </p>
+    <p class="hint-bar">
+      <strong>How:</strong> click a question on the left, then an answer on the right. Each answer is used once. Click the same question again to change your pair.
+    </p>
+
+    <div class="match-grid">
+      <div class="panel" aria-label="Questions">
+        <div class="panel-title">Questions</div>
+        <div id="starts-root"></div>
+      </div>
+      <div class="panel" aria-label="Answers">
+        <div class="panel-title">Answers</div>
+        <div id="ends-root"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="action btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="action btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../../js/u3-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var STARTS = [
+    { n: 1, html: "Does your construction company have any major projects <strong>in the pipeline</strong>?" },
+    { n: 2, html: "Did you experience any <strong>teething problems</strong> when you first developed this product?" },
+    { n: 3, html: "Has the recent controversy proved to be a <strong>stumbling block</strong> to obtaining investment?" },
+    { n: 4, html: "Are we still <strong>on the right track</strong> for continued growth in the wearable technology market?" },
+    { n: 5, html: "Have the trade negotiations really come to a <strong>dead end</strong>?" },
+    { n: 6, html: "Jordan&rsquo;s candidacy for mayor is starting to look like a <strong>long shot</strong>, don&rsquo;t you think?" },
+    { n: 7, html: "Is the company still <strong>at the leading edge</strong> of cyber security?" },
+    { n: 8, html: "Is it the kind of place that lets you <strong>think outside the box</strong>?" },
+    { n: 9, html: "Parliamentary debate on educational reform is <strong>going round in circles</strong>, isn&rsquo;t it?" },
+  ];
+
+  var ENDS = [
+    { id: "a", html: "Yes, it continues to actively recruit top talent and invest in state-of-the-art facilities." },
+    { id: "b", html: "Yes, the quick adoption we&rsquo;re seeing of smart watches should ensure long-term profits." },
+    { id: "c", html: "Yes, we have plans drawn up for several new office buildings in various city centres." },
+    { id: "d", html: "I agree. If she keeps scoring so low in opinion polls, she&rsquo;s got little chance of winning." },
+    { id: "e", html: "Yes, our reputation has suffered as a result, and we are finding it hard to attract finance." },
+    { id: "f", html: "Unfortunately yes. We have lost hope of making any progress as both sides refuse to compromise on tariffs." },
+    { id: "g", html: "Absolutely. Management really encourages us to be creative and challenge conventional wisdom." },
+    { id: "h", html: "We did have some issues in the early stages, but we managed to solve these quickly." },
+    { id: "i", html: "Yes, MPs have been discussing the issue for weeks with little to show for it." },
+  ];
+
+  /** question 1–9 → answer index 0–8 (a=0 … i=8) */
+  var KEY = { 1: 2, 2: 7, 3: 4, 4: 1, 5: 5, 6: 3, 7: 0, 8: 6, 9: 8 };
+
+  var focused = null;
+  var picks = {};
+  var usedEnds = {};
+
+  var startsRoot = document.getElementById("starts-root");
+  var endsRoot = document.getElementById("ends-root");
+  var fb = document.getElementById("feedback");
+
+  function endLabel(idx) {
+    return ENDS[idx].id + ". " + ENDS[idx].html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function renderStarts() {
+    startsRoot.innerHTML = STARTS.map(function (s) {
+      return (
+        '<button type="button" class="start-row" data-num="' + s.n + '">' +
+        '<span class="num">' + s.n + ".</span> " + s.html +
+        '<div class="start-meta js-pick" data-for="' + s.n + '"></div></button>'
+      );
+    }).join("");
+  }
+
+  function renderEnds() {
+    endsRoot.innerHTML = ENDS.map(function (e, idx) {
+      return (
+        '<button type="button" class="end-chip" data-end="' + idx + '">' +
+        '<span class="badge">' + e.id + "</span> " + e.html + "</button>"
+      );
+    }).join("");
+  }
+
+  function refreshMeta() {
+    STARTS.forEach(function (s) {
+      var meta = document.querySelector('.js-pick[data-for="' + s.n + '"]');
+      if (!meta) return;
+      var idx = picks[s.n];
+      if (idx == null) {
+        meta.textContent = "";
+        meta.classList.remove("has-pick");
+      } else {
+        meta.textContent = "\u2192 " + endLabel(idx);
+        meta.classList.add("has-pick");
+      }
+    });
+    document.querySelectorAll(".end-chip").forEach(function (chip) {
+      var idx = Number(chip.getAttribute("data-end"));
+      chip.classList.toggle("is-used", usedEnds[idx] != null);
+      chip.disabled = usedEnds[idx] != null && usedEnds[idx] !== focused;
+    });
+  }
+
+  function setFocus(num) {
+    focused = num;
+    document.querySelectorAll(".start-row").forEach(function (row) {
+      row.classList.toggle("is-focused", Number(row.getAttribute("data-num")) === num);
+    });
+    refreshMeta();
+  }
+
+  startsRoot.addEventListener("click", function (ev) {
+    var row = ev.target.closest(".start-row");
+    if (!row) return;
+    setFocus(Number(row.getAttribute("data-num")));
+  });
+
+  endsRoot.addEventListener("click", function (ev) {
+    var chip = ev.target.closest(".end-chip");
+    if (!chip || focused == null) return;
+    var idx = Number(chip.getAttribute("data-end"));
+    if (usedEnds[idx] != null && usedEnds[idx] !== focused) return;
+
+    var prev = picks[focused];
+    if (prev != null) delete usedEnds[prev];
+
+    picks[focused] = idx;
+    usedEnds[idx] = focused;
+    refreshMeta();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var ok = 0;
+    var lines = [];
+    for (var n = 1; n <= 9; n++) {
+      var got = picks[n];
+      var correct = KEY[n];
+      if (got == null) {
+        lines.push('<div class="fb-item bad">' + n + ": not paired yet.</div>");
+        continue;
+      }
+      if (got === correct) {
+        ok++;
+        lines.push('<div class="fb-item ok">' + n + " \u2713 " + ENDS[got].id + "</div>");
+      } else {
+        lines.push(
+          '<div class="fb-item bad">' +
+            n +
+            ": you chose " +
+            ENDS[got].id +
+            "; key is " +
+            ENDS[correct].id +
+            ".</div>"
+        );
+      }
+    }
+    fb.innerHTML =
+      '<div class="fb-score">' + ok + " / 9 correct</div>" + lines.join("");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    picks = {};
+    usedEnds = {};
+    focused = null;
+    document.querySelectorAll(".start-row").forEach(function (row) {
+      row.classList.remove("is-focused");
+    });
+    refreshMeta();
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  });
+
+  renderStarts();
+  renderEnds();
+  refreshMeta();
+})();
+  </script>
+</body>
+</html>

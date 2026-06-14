@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 9 &mdash; Linker words (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .cpe-vocab-gap-input {
+      display: inline-block;
+      width: min(9rem, 36vw);
+      max-width: 100%;
+      margin: 0 3px;
+      padding: 6px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.34);
+      border-radius: 8px;
+      background: var(--cv-gap-bg, #1f2937);
+      color: var(--cv-text, #edf2f7);
+      font: inherit;
+      vertical-align: baseline;
+    }
+    .cpe-vocab-gap-input--wide {
+      width: min(11rem, 44vw);
+    }
+    .cpe-vocab-gap-input:focus {
+      outline: 2px solid var(--cv-accent, #8ec5e8);
+      outline-offset: 1px;
+    }
+    .cpe-vocab-gap-input.is-ok {
+      border-color: var(--cv-ok, #44e0a1);
+    }
+    .cpe-vocab-gap-input.is-bad {
+      border-color: var(--cv-bad, #ff7d87);
+    }
+    .cpe-vocab-item__text {
+      line-height: 1.75;
+    }
+  </style>
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u9-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%209">&larr; Vocabulary &mdash; Level 9</a>
+      <h1>Linker words</h1>
+      <p class="cpe-vocab-meta">Level 9 &middot; Vocabulary</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete each sentence with the correct word (or short phrase). Then <strong>Submit</strong>.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-items" id="sent-list"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u9-cpe-sibling" href="../correct-option/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%209">&larr; Correct option</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      before: "The artist wasn&rsquo;t very courteous when we met him, ",
+      after: " was he affable.",
+      answers: ["nor"],
+      wide: false,
+      why:
+        "<strong>Nor</strong> + inversion after a negative clause: <em>wasn&rsquo;t courteous, nor was he affable</em>."
+    },
+    {
+      id: 2,
+      before: "Try to learn what makes your heart sing, ",
+      after: " that might be.",
+      answers: ["whatever"],
+      wide: false,
+      why:
+        "<strong>Whatever</strong> that might be = no matter what it turns out to be."
+    },
+    {
+      id: 3,
+      before: "",
+      after: " they had been tipped off about the scandal, the gallery were forewarned.",
+      answers: ["as", "since"],
+      wide: false,
+      why:
+        "<strong>As</strong> / <strong>Since</strong> they had been tipped off&hellip; = because this was already the case, the gallery were forewarned."
+    },
+    {
+      id: 4,
+      before: "",
+      after: " we&rsquo;re in the area, why don&rsquo;t we pop in to see the show?",
+      answers: ["while"],
+      wide: false,
+      why:
+        "<strong>While</strong> we&rsquo;re in the area&hellip; = since we happen to be here already, let&rsquo;s visit."
+    },
+    {
+      id: 5,
+      before: "We bumped into each other in Alaska, ",
+      after: " strange that might seem.",
+      answers: ["however"],
+      wide: false,
+      why:
+        "<strong>However</strong> strange that might seem &mdash; same pattern as <em>whatever</em> / <em>however</em> + adjective."
+    },
+    {
+      id: 6,
+      before: "The position is ideal for me ",
+      after: " it draws on my previous experience but gives me room to grow.",
+      answers: ["in that", "in so far as", "insofar as"],
+      wide: true,
+      why:
+        "<strong>In that</strong> it draws on&hellip; = because / in the sense that it uses my experience and still allows growth (formal linker)."
+    }
+  ];
+
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function gapInput(id, wide) {
+    var cls = "cpe-vocab-gap-input" + (wide ? " cpe-vocab-gap-input--wide" : "");
+    return (
+      '<label class="sr-only" for="gap-' +
+      id +
+      '">Gap ' +
+      id +
+      '</label><input type="text" class="' +
+      cls +
+      '" id="gap-' +
+      id +
+      '" data-gap="' +
+      id +
+      '" autocomplete="off" spellcheck="false" />'
+    );
+  }
+
+  function render() {
+    document.getElementById("sent-list").innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="cpe-vocab-item"><div class="cpe-vocab-item__n">' +
+        it.id +
+        '</div><p class="cpe-vocab-item__text">' +
+        it.before +
+        gapInput(it.id, it.wide) +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function matchItem(it, raw) {
+    var val = norm(raw);
+    if (!val) return false;
+    return it.answers.some(function (a) {
+      return norm(a) === val;
+    });
+  }
+
+  function primaryAnswer(it) {
+    return it.answers[0];
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var input = document.getElementById("gap-" + it.id);
+      var val = input ? input.value : "";
+      var ok = matchItem(it, val);
+      if (ok) correct += 1;
+
+      if (input) {
+        input.disabled = true;
+        input.classList.remove("is-ok", "is-bad");
+        input.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>' +
+          it.id +
+          ". " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(primaryAnswer(it)) +
+          "</strong>" +
+          (val && !ok ? " (you wrote <em>" + esc(val) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          "</p></div>"
+      );
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' +
+      correct +
+      " / " +
+      ITEMS.length +
+      "</p>" +
+      parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    hideAside();
+    render();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  render();
+})();
+  </script>
+  <script src="../../../js/u9-vocab-cpe-course-context.js"></script>
+</body>
+</html>

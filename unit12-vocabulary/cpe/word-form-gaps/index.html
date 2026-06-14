@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 12 &mdash; Word form gaps (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+  <style>
+    .cpe-vocab-gap-input {
+      display: inline-block;
+      width: min(9rem, 36vw);
+      max-width: 100%;
+      margin: 0 3px;
+      padding: 6px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.34);
+      border-radius: 8px;
+      background: var(--cv-gap-bg);
+      color: var(--cv-text);
+      font: inherit;
+      vertical-align: baseline;
+    }
+    .cpe-vocab-gap-input--wide {
+      width: min(11rem, 44vw);
+    }
+    .cpe-vocab-gap-input:focus {
+      outline: 2px solid var(--cv-accent);
+      outline-offset: 1px;
+    }
+    .cpe-vocab-gap-input.is-ok { border-color: var(--cv-ok); }
+    .cpe-vocab-gap-input.is-bad { border-color: var(--cv-bad); }
+    .cpe-vocab-item__text { line-height: 1.75; }
+    .wf-bracket {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fcd34d;
+      vertical-align: baseline;
+    }
+  </style>
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back u12-cpe-sibling" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Vocabulary &mdash; Level 12</a>
+      <h1>Word form gaps</h1>
+      <p class="cpe-vocab-meta">Level 12 &middot; Vocabulary &middot; gerund / infinitive / participle</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the gap in each sentence with the correct form of the word given. Then <strong>Submit</strong>.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-items" id="sent-list"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u12-cpe-sibling" href="../sentence-halves-matching/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">Next &middot; Sentence halves matching &rarr;</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      before: "The women were reluctant ",
+      bracket: "DISCLOSE",
+      after: " the information.",
+      answers: ["to disclose"],
+      wide: false,
+      why:
+        "<strong>Reluctant to + infinitive</strong> — reluctance to do something."
+    },
+    {
+      id: 2,
+      before: "Do you mind my ",
+      bracket: "OPEN",
+      after: " the window for a little while?",
+      answers: ["opening"],
+      wide: false,
+      why:
+        "<strong>Mind + possessive + -ing</strong> — asking permission for an action."
+    },
+    {
+      id: 3,
+      before: "I&rsquo;d rather ",
+      bracket: "GIVE",
+      after: " her a lift to the party than her have to wait for a bus.",
+      answers: ["give"],
+      wide: false,
+      why:
+        "<strong>Would rather + bare infinitive</strong> (no <em>to</em>)."
+    },
+    {
+      id: 4,
+      before: "David&rsquo;s ",
+      bracket: "LOSE",
+      after: " the match came as a surprise to most.",
+      answers: ["losing"],
+      wide: false,
+      why:
+        "<strong>Possessive + -ing</strong> as the subject of the sentence (= the fact that David lost)."
+    },
+    {
+      id: 5,
+      before: "It&rsquo;s no good ",
+      bracket: "BLAME",
+      after: " yourself for what happened &ndash; it wasn&rsquo;t your fault.",
+      answers: ["blaming"],
+      wide: false,
+      why:
+        "<strong>It&rsquo;s no good + -ing</strong> — fixed pattern (= useless to blame)."
+    },
+    {
+      id: 6,
+      before: "",
+      bracket: "GO",
+      after: " without food for a whole 24 hours, she was ravenous.",
+      answers: ["having gone"],
+      wide: true,
+      why:
+        "<strong>Perfect participle clause</strong> — action completed before the main clause: <em>Having gone without food …, she was ravenous.</em>"
+    }
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function render() {
+    var root = document.getElementById("sent-list");
+    root.innerHTML = ITEMS.map(function (it) {
+      var inputCls = "cpe-vocab-gap-input" + (it.wide ? " cpe-vocab-gap-input--wide" : "");
+      return (
+        '<article class="cpe-vocab-item"><div class="cpe-vocab-item__n">' +
+        it.id +
+        '</div><p class="cpe-vocab-item__text">' +
+        it.before +
+        '<input type="text" class="' +
+        inputCls +
+        '" id="gap-' +
+        it.id +
+        '" autocomplete="off" spellcheck="false" aria-label="Gap ' +
+        it.id +
+        '" />' +
+        '<span class="wf-bracket">(' +
+        esc(it.bracket) +
+        ")</span> " +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function checkAnswers() {
+    var correct = 0;
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var el = document.getElementById("gap-" + it.id);
+      var raw = el ? el.value : "";
+      var ok = it.answers.some(function (a) {
+        return norm(raw) === norm(a);
+      });
+      if (ok) correct += 1;
+
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(ok ? "is-ok" : "is-bad");
+      el.disabled = true;
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>' +
+          it.id +
+          ". " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.answers[0]) +
+          "</strong>" +
+          (raw.trim() && !ok ? " (you wrote <em>" + esc(raw.trim()) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          "</p></div>"
+      );
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' + correct + " / " + ITEMS.length + "</p>" + parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    hideAside();
+    ITEMS.forEach(function (it) {
+      var el = document.getElementById("gap-" + it.id);
+      if (!el) return;
+      el.value = "";
+      el.disabled = false;
+      el.classList.remove("is-ok", "is-bad");
+    });
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  render();
+})();
+  </script>
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+</body>
+</html>

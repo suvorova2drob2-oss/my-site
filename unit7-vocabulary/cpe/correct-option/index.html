@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 7 &mdash; Correct option (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u7-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%207">&larr; Vocabulary &mdash; Level 7</a>
+      <h1>Correct option</h1>
+      <p class="cpe-vocab-meta">Level 7 &middot; Vocabulary &middot; Part 2</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the sentence with the correct option in each pair. Then <strong>Submit</strong> for explanations (adjective order, collocations, fixed phrases).</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-items" id="sent-list"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a href="../into-thin-air/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%207">&larr; Part 1 &middot; Into thin air</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      before: "She was a ",
+      a: "talkative, approachable and warm",
+      b: "warm, talkative and approachable",
+      after: " member of the community.",
+      ans: "warm, talkative and approachable",
+      why:
+        "<strong>Warm, talkative and approachable</strong> follows natural adjective order: a general, positive impression (<em>warm</em>) before more specific personality traits.",
+      notOther:
+        "<span class=\"fb-not\">✗ Ending with <em>warm</em> after two longer traits sounds less balanced; the textbook order groups the general adjective first.</span>"
+    },
+    {
+      id: 2,
+      before: "It was considered to be ",
+      a: "a brilliant, awe-inspiring",
+      b: "an awe-inspiring, brilliant",
+      after: " cinematic experience.",
+      ans: "a brilliant, awe-inspiring",
+      why:
+        "<strong>A brilliant, awe-inspiring</strong> &mdash; shorter opinion adjective first, then the longer compound; <em>a</em> goes with <em>brilliant</em>.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>An awe-inspiring, brilliant</em> is grammatical, but here the expected order is opinion + compound opinion in this sequence.</span>"
+    },
+    {
+      id: 3,
+      before: "",
+      a: "For",
+      b: "By",
+      after: " all means, use my car if it&rsquo;ll help you out.",
+      ans: "By",
+      why: "<strong>By all means</strong> is a fixed phrase (= of course, please do).",
+      notOther: "<span class=\"fb-not\">✗ <em>For all means</em> is not an English idiom.</span>"
+    },
+    {
+      id: 4,
+      before: "This is the ",
+      a: "major",
+      b: "very",
+      after: " place where the writers came to drink and converse.",
+      ans: "very",
+      why:
+        "<strong>The very place where</strong> = exactly that place (emphatic). <em>Major place</em> is not a natural collocation here.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Major</em> collocates with <em>reason, role, factor</em>, not usually &ldquo;the major place where&hellip;&rdquo;</span>"
+    },
+    {
+      id: 5,
+      before: "For ",
+      a: "a",
+      b: "the",
+      after: " time being, let&rsquo;s just stay put and be patient.",
+      ans: "the",
+      why: "<strong>For the time being</strong> is a fixed phrase (= for now, temporarily).",
+      notOther: "<span class=\"fb-not\">✗ <em>For a time being</em> is not standard English.</span>"
+    },
+    {
+      id: 6,
+      before: "My teacher was a ",
+      a: "major",
+      b: "very",
+      after: " reason why I ended up choosing a sports diploma.",
+      ans: "major",
+      why:
+        "<strong>A major reason</strong> is a strong collocation (= an important factor). <em>Very</em> cannot modify <em>reason</em> directly.",
+      notOther:
+        "<span class=\"fb-not\">✗ You cannot say <em>a very reason</em> &mdash; use <em>a very important reason</em> or <em>a major reason</em>.</span>"
+    },
+    {
+      id: 7,
+      before: "The painting, so ",
+      a: "bold, bright and beautiful",
+      b: "beautiful, bright and bold",
+      after: ", drew a large crowd.",
+      ans: "beautiful, bright and bold",
+      why:
+        "<strong>Beautiful, bright and bold</strong> &mdash; general opinion (<em>beautiful</em>) before colour/light (<em>bright</em>) and character (<em>bold</em>).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Bold, bright and beautiful</em> reverses the expected opinion &rarr; quality order for describing a painting.</span>"
+    }
+  ];
+
+  var picks = {};
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function pairHtml(id, it) {
+    return (
+      '<span class="pick" data-gap="' +
+      id +
+      '">' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.a) +
+      '">' +
+      esc(it.a) +
+      "</button>" +
+      '<span class="pick-sep">or</span>' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.b) +
+      '">' +
+      esc(it.b) +
+      "</button></span>"
+    );
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function render() {
+    var root = document.getElementById("sent-list");
+    root.innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="cpe-vocab-item"><div class="cpe-vocab-item__n">' +
+        it.id +
+        "</div><p class=\"cpe-vocab-item__text\">" +
+        escHtml(it.before) +
+        pairHtml(it.id, it) +
+        escHtml(it.after) +
+        "</p></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll(".pick-opt").forEach(function (btn) {
+      btn.addEventListener("click", onPick);
+    });
+  }
+
+  function escHtml(s) {
+    return String(s);
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function onPick(ev) {
+    if (checked) return;
+    var btn = ev.currentTarget;
+    var gap = Number(btn.getAttribute("data-gap"));
+    var word = btn.getAttribute("data-word");
+    picks[gap] = word;
+    hideAside();
+    document.querySelectorAll('.pick-opt[data-gap="' + gap + '"]').forEach(function (b) {
+      b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+      if (b.getAttribute("data-word") === word) b.classList.add("is-picked");
+    });
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var fb = document.getElementById("feedback");
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var chosen = picks[it.id] || "";
+      var ok = chosen === it.ans;
+      if (ok) correct += 1;
+
+      var pickEl = document.querySelector('.pick[data-gap="' + it.id + '"]');
+      if (pickEl) {
+        pickEl.classList.remove("is-ok", "is-bad");
+        pickEl.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      document.querySelectorAll('.pick-opt[data-gap="' + it.id + '"]').forEach(function (b) {
+        b.disabled = true;
+        var w = b.getAttribute("data-word");
+        b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+        if (w === it.ans) b.classList.add("is-ok");
+        else if (w === chosen && !ok) b.classList.add("is-bad");
+        else b.classList.add("is-dim");
+      });
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>' +
+          it.id +
+          ". " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.ans) +
+          "</strong>" +
+          (chosen && !ok ? " (you chose <em>" + esc(chosen) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          it.notOther +
+          "</p></div>"
+      );
+    });
+
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' + correct + " / " + ITEMS.length + "</p>" + parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    picks = {};
+    hideAside();
+    render();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  render();
+
+})();
+  </script>
+  <script src="../../../js/u7-vocab-course-context.js"></script>
+</body>
+</html>

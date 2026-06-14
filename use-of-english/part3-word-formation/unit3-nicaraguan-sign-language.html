@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 3 Word formation · Nicaraguan Sign Language (Unit 3 CPE)</title>
+  <link rel="stylesheet" href="../../css/cpe-uoe-part3-wf-shell.css" />
+</head>
+<body class="cpe-p3-body">
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+        <p class="tag">Unit 3 &middot; CPE Prep &middot; Nicaraguan Sign Language</p>
+      </div>
+      <a class="back" id="backLink" href="../../index.html?prep_stay=1&amp;screen=unit3&amp;prep_open_folder=prep_legacy_u3_uoe">&larr; Use of English &mdash; Level 3</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+    </p>
+
+    <div class="example">
+      <div class="lab">(0) &mdash; Example</div>
+      <p>
+        Humans possess an <span class="done">IRREPRESSIBLE</span> urge to communicate.
+        <span class="root">REPRESS</span>
+      </p>
+    </div>
+
+    <section class="block">
+      <div class="block-title">NICARAGUAN SIGN LANGUAGE</div>
+      <p class="line">
+        What, then, would happen if we were to grow up in a community bereft of any established language system &ndash; would we develop a new one? For linguists, the idea of ever being able to conduct any research into this question was
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="inconceivable" aria-label="Gap 1 CONCEIVE" /> <span class="root">CONCEIVE</span></span>
+        &ndash; until it suddenly wasn&rsquo;t.
+      </p>
+      <p class="line">
+        In the mid-1980s, the field of linguistics received an unexpected
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="windfall" aria-label="Gap 2 FALL" /> <span class="root">FALL</span></span>
+        when the government of Nicaragua
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="rolled" aria-label="Gap 3 ROLL" /> <span class="root">ROLL</span></span>
+        hundreds of deaf children into two newly built schools. Most started with no understanding of grammar or syntax &mdash; they only had rudimentary signs for basic needs, like &lsquo;eat&rsquo; and &lsquo;drink.&rsquo; However, once placed together, the children began to respond to and build on each other&rsquo;s signs,
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="effectively" aria-label="Gap 4 EFFECT" /> <span class="root">EFFECT</span></span>
+        creating a new language out of thin air.
+      </p>
+      <p class="line">
+        The invention of Nicaraguan Sign Language is recognised as a
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="momentous" aria-label="Gap 5 MOMENT" /> <span class="root">MOMENT</span></span>
+        feat within the field of linguistics. Over the years, scholars have patiently
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="decoded|codified" aria-label="Gap 6 CODE" /> <span class="root">CODE</span></span>
+        the language, finding it to be filled with
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="curiosities" aria-label="Gap 7 CURIOUS" /> <span class="root">CURIOUS</span></span>
+        and yet strikingly similar to many of the world&rsquo;s languages. Many see this as
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="definitive" aria-label="Gap 8 DEFINE" /> <span class="root">DEFINE</span></span>
+        evidence of children&rsquo;s ability not only to passively learn languages, but to actively develop them.
+      </p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+  var hubDefault =
+    "../../index.html?prep_stay=1&screen=unit3&prep_open_folder=prep_legacy_u3_uoe";
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function accepts(el) {
+    return (el.getAttribute("data-accept") || "")
+      .split("|")
+      .map(norm)
+      .filter(Boolean);
+  }
+
+  function check() {
+    var ok = 0;
+    inputs.forEach(function (el) {
+      el.classList.remove("ok", "bad");
+      var got = norm(el.value);
+      if (!got) {
+        el.classList.add("bad");
+        return;
+      }
+      if (accepts(el).indexOf(got) >= 0) {
+        el.classList.add("ok");
+        ok++;
+      } else {
+        el.classList.add("bad");
+      }
+    });
+    document.getElementById("scoreNum").textContent = String(ok);
+    document.getElementById("scoreLine").hidden = false;
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+  inputs.forEach(function (el) {
+    el.addEventListener("input", function () {
+      el.classList.remove("ok", "bad");
+    });
+  });
+
+  var q = new URLSearchParams(window.location.search);
+  var bl = document.getElementById("backLink");
+  function sanitizeReturnHref(raw, fallback) {
+    var s = String(raw || "").trim();
+    if (!s) return fallback || "";
+    if (/^\s*(?:javascript|data|vbscript):/i.test(s)) return fallback || "";
+    if (/^\s*\/\//.test(s)) return fallback || "";
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.origin !== window.location.origin) return fallback || "";
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return fallback || "";
+    }
+  }
+  if (bl) {
+    bl.href = sanitizeReturnHref(q.get("back"), hubDefault);
+    if (q.get("backLabel")) {
+      try {
+        bl.textContent =
+          "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+      } catch (e) {}
+    }
+  }
+})();
+  </script>
+</body>
+</html>

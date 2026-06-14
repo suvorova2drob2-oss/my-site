@@ -62,6 +62,15 @@
                 quickDictionaryEngine: "js/cpe-quick-dictionary-drawer.js"
             },
             {
+                id: "u12_multi_word_verbs",
+                description: "Unit 12 Vocabulary · Multi-word verbs · listening + verb box",
+                dataFile: "js/unit12-multi-word-verbs-lexicon.js",
+                rowsGlobal: "U12_MULTI_WORD_VERBS_LEXIS_GAME_ROWS",
+                plainGlobal: "U12_MULTI_WORD_VERBS_LEXIS_PLAIN",
+                speakerGlobal: "LEX_U12_MULTI_WORD_VERBS_LABEL",
+                wordBankThemeId: "u12_multi_word_verbs"
+            },
+            {
                 id: "u12_sports_idioms",
                 description: "Unit 12 Vocabulary · Sports idioms · phrase deck",
                 dataFile: "js/unit12-sports-idioms-lexicon.js",
@@ -107,6 +116,17 @@
         /** Vocab Gym hub bridge (Unit 10 / 12): tabs → Word Bank + fall pool filter + sticky / vault / TTT */
         /** Unit 10 Vocab Gym bridge — inline in index.html (u10LexGamesActive, openUnit10LexGamesHub, …) */
         unit12LexGamesBridgeFile: "js/prep-hub-unit12-lexgames.js",
+        unit12VocabGymLazyScriptChain: [
+            "js/unit12-reading-road-to-betterment-lexicon.js",
+            "js/unit12-sports-idioms-lexicon.js",
+            "js/unit12-listening-sb12-1-disabled-access-lexicon.js",
+            "js/unit12-multi-word-verbs-lexicon.js",
+            "js/prep-hub-unit12-lexgames.js",
+            "js/unit12-sticky-registry.js",
+            "js/unit12-sticky-packs.js"
+        ],
+        prepScriptLoaderFile: "js/prep-script-loader.js",
+        cpeWordBankCoreFile: "js/cpe-word-bank-core.js",
         unit10StickyRegistryFile: "js/unit10-sticky-registry.js",
         unit12StickyRegistryFile: "js/unit12-sticky-registry.js",
         unit12StickyPacksFile: "js/unit12-sticky-packs.js",

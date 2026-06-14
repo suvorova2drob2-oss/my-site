@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshops · Speaking courses</title>
+  <link rel="stylesheet" href="b2-summer-intensive/css/intensive-shell.css" />
+  <style>
+    body.intensive-body--hub {
+      background:
+        radial-gradient(900px 500px at 50% -15%, rgba(56, 189, 248, 0.12) 0%, transparent 55%),
+        radial-gradient(600px 360px at 100% 60%, rgba(34, 211, 238, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #0a1428 0%, #070f1f 45%, #050a14 100%);
+    }
+
+    .int-hub {
+      max-width: 960px;
+      margin: 0 auto;
+      padding-top: 12px;
+    }
+    .int-hub-head {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .int-hub-head .int-kicker {
+      text-shadow: 0 0 24px rgba(56, 189, 248, 0.25);
+    }
+    .int-hub-head .int-title {
+      font-size: clamp(1.75rem, 5vw, 2.35rem);
+      background: linear-gradient(120deg, #f0f9ff 0%, #bae6fd 40%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .int-hub-head .int-sub {
+      margin: 14px auto 0;
+      font-size: 1.02rem;
+      max-width: 48ch;
+    }
+    .int-track-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .int-track-card {
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 268px;
+      padding: 26px 24px 24px;
+      border-radius: calc(var(--int-radius) + 6px);
+      border: 1px solid var(--int-line);
+      background: linear-gradient(165deg, var(--int-panel-soft) 0%, #142038 100%);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .int-track-card:hover {
+      transform: translateY(-5px);
+    }
+    .int-track-card--summer:hover {
+      border-color: rgba(251, 191, 36, 0.55);
+      box-shadow:
+        0 24px 52px rgba(0, 0, 0, 0.35),
+        0 0 64px rgba(251, 191, 36, 0.12);
+    }
+    .int-track-card--fleabag,
+    .int-track-card--summer,
+    .int-track-card--deeptalks,
+    .int-track-card--scrollspeak {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px 24px;
+      min-height: 0;
+      padding: 22px 22px 22px 18px;
+    }
+    .int-track-card--deeptalks {
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      background:
+        linear-gradient(105deg, rgba(52, 211, 153, 0.1) 0%, transparent 36%),
+        linear-gradient(165deg, #0a1614 0%, #061210 55%, #040a09 100%);
+      box-shadow:
+        0 0 0 1px rgba(52, 211, 153, 0.05),
+        0 20px 48px rgba(0, 0, 0, 0.35),
+        0 0 48px rgba(52, 211, 153, 0.1);
+    }
+    .int-track-card--scrollspeak {
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      background:
+        linear-gradient(105deg, rgba(244, 114, 182, 0.1) 0%, transparent 36%),
+        linear-gradient(165deg, #1a1420 0%, #140f18 55%, #0a0810 100%);
+      box-shadow:
+        0 0 0 1px rgba(244, 114, 182, 0.05),
+        0 20px 48px rgba(0, 0, 0, 0.35),
+        0 0 48px rgba(244, 114, 182, 0.1);
+    }
+    .int-track-card--summer {
+      border: 1px solid rgba(251, 191, 36, 0.32);
+      background:
+        linear-gradient(105deg, rgba(251, 191, 36, 0.1) 0%, transparent 36%),
+        linear-gradient(165deg, #1a2438 0%, #121c30 55%, #0c1424 100%);
+      box-shadow:
+        0 0 0 1px rgba(251, 191, 36, 0.05),
+        0 20px 48px rgba(0, 0, 0, 0.35),
+        0 0 48px rgba(251, 191, 36, 0.08);
+    }
+    .int-track-card--fleabag {
+      border: 1px solid rgba(56, 189, 248, 0.38);
+      background:
+        linear-gradient(105deg, rgba(34, 211, 238, 0.1) 0%, transparent 36%),
+        linear-gradient(165deg, #0c1828 0%, #081220 55%, #050c16 100%);
+      box-shadow:
+        0 0 0 1px rgba(34, 211, 238, 0.05),
+        0 20px 48px rgba(0, 0, 0, 0.38),
+        0 0 56px rgba(56, 189, 248, 0.1);
+    }
+    .int-card-visual {
+      position: relative;
+      flex: 0 0 auto;
+      z-index: 1;
+    }
+    .int-card-thumb {
+      display: block;
+      width: 108px;
+      height: 108px;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 20px;
+    }
+    .int-track-card--fleabag .int-card-thumb {
+      object-position: center 18%;
+      border: 2px solid rgba(125, 211, 252, 0.55);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.45),
+        0 0 32px rgba(34, 211, 238, 0.2);
+    }
+    .int-track-card--summer .int-card-thumb {
+      border: 2px solid rgba(251, 191, 36, 0.45);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        0 0 28px rgba(251, 191, 36, 0.15);
+    }
+    .int-track-card--deeptalks .int-card-thumb {
+      border: 2px solid rgba(52, 211, 153, 0.42);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        0 0 28px rgba(52, 211, 153, 0.14);
+    }
+    .int-track-card--scrollspeak .int-card-thumb {
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        0 0 28px rgba(244, 114, 182, 0.14);
+    }
+    .int-card-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 24px;
+      pointer-events: none;
+    }
+    .int-track-card--fleabag .int-card-ring {
+      border: 1px solid rgba(34, 211, 238, 0.35);
+    }
+    .int-track-card--summer .int-card-ring {
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+    .int-track-card--deeptalks .int-card-ring {
+      border: 1px solid rgba(52, 211, 153, 0.28);
+    }
+    .int-track-card--scrollspeak .int-card-ring {
+      border: 1px solid rgba(244, 114, 182, 0.28);
+    }
+    .int-card-body {
+      flex: 1 1 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .int-card-cta {
+      flex: 0 0 auto;
+      margin-top: 0 !important;
+      padding: 12px 18px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .int-track-card--fleabag .int-card-cta {
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      background: rgba(34, 211, 238, 0.1);
+    }
+    .int-track-card--summer .int-card-cta {
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      background: rgba(251, 191, 36, 0.08);
+    }
+    .int-track-card--deeptalks .int-card-cta {
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      background: rgba(52, 211, 153, 0.08);
+    }
+    .int-track-card--scrollspeak .int-card-cta {
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      background: rgba(244, 114, 182, 0.08);
+    }
+    @media (min-width: 720px) {
+      .int-track-card--fleabag,
+      .int-track-card--summer,
+      .int-track-card--deeptalks,
+      .int-track-card--scrollspeak {
+        flex-wrap: nowrap;
+        padding: 24px 28px 24px 22px;
+        gap: 28px;
+      }
+      .int-card-thumb {
+        width: 132px;
+        height: 132px;
+        border-radius: 22px;
+      }
+      .int-card-body .int-track-title {
+        font-size: 1.62rem;
+      }
+      .int-card-cta {
+        margin-left: auto;
+        font-size: 1rem;
+        padding: 14px 20px;
+      }
+    }
+    @media (max-width: 719px) {
+      .int-card-cta {
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .int-track-card--summer::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      left: -10%;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.16) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .int-track-card--summer::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #fbbf24, #fde68a, #fbbf24, transparent);
+      opacity: 0.55;
+    }
+    .int-track-card--summer:hover .int-card-thumb {
+      border-color: rgba(253, 224, 71, 0.65);
+      box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.45),
+        0 0 36px rgba(251, 191, 36, 0.28);
+    }
+    .int-track-card--summer:hover .int-card-cta {
+      background: rgba(251, 191, 36, 0.16);
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.18);
+    }
+    .int-track-card--deeptalks::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      right: -12%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.18) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .int-track-card--deeptalks::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #34d399, #6ee7b7, #34d399, transparent);
+      opacity: 0.55;
+    }
+    .int-track-card--deeptalks:hover {
+      border-color: rgba(110, 231, 183, 0.55);
+      box-shadow: 0 24px 52px rgba(0, 0, 0, 0.38), 0 0 64px rgba(52, 211, 153, 0.16);
+    }
+    .int-track-card--deeptalks:hover .int-card-thumb {
+      border-color: rgba(167, 243, 208, 0.65);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 36px rgba(52, 211, 153, 0.25);
+    }
+    .int-track-card--deeptalks:hover .int-card-cta {
+      background: rgba(52, 211, 153, 0.16);
+      box-shadow: 0 0 24px rgba(52, 211, 153, 0.18);
+    }
+    .int-track-card--scrollspeak::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      left: -8%;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244, 114, 182, 0.16) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .int-track-card--scrollspeak::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #f472b6, #22d3ee, #f472b6, transparent);
+      opacity: 0.55;
+    }
+    .int-track-card--scrollspeak:hover {
+      border-color: rgba(249, 168, 212, 0.55);
+      box-shadow: 0 24px 52px rgba(0, 0, 0, 0.38), 0 0 64px rgba(244, 114, 182, 0.16);
+    }
+    .int-track-card--scrollspeak:hover .int-card-thumb {
+      border-color: rgba(249, 168, 212, 0.65);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 36px rgba(244, 114, 182, 0.25);
+    }
+    .int-track-card--scrollspeak:hover .int-card-cta {
+      background: rgba(244, 114, 182, 0.16);
+      box-shadow: 0 0 24px rgba(244, 114, 182, 0.18);
+    }
+    .int-track-card--fleabag::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -15%;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.22) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .int-track-card--fleabag::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #22d3ee, #7dd3fc, #22d3ee, transparent);
+      opacity: 0.65;
+    }
+    .int-track-card--fleabag:hover {
+      border-color: rgba(125, 211, 252, 0.65);
+      box-shadow:
+        0 28px 64px rgba(0, 0, 0, 0.45),
+        0 0 96px rgba(34, 211, 238, 0.22);
+    }
+    .int-track-card--fleabag:hover .int-card-thumb {
+      box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(34, 211, 238, 0.35);
+      border-color: rgba(186, 230, 253, 0.75);
+    }
+    .int-track-card--fleabag:hover .int-card-cta {
+      background: rgba(34, 211, 238, 0.2);
+      box-shadow: 0 0 28px rgba(34, 211, 238, 0.25);
+    }
+    .int-track-title {
+      font-size: clamp(1.2rem, 2.8vw, 1.36rem);
+      font-weight: 800;
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      position: relative;
+      z-index: 1;
+    }
+    .int-track-card--fleabag .int-track-title {
+      background: linear-gradient(120deg, #f0f9ff 0%, #7dd3fc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .int-track-card--summer .int-track-title {
+      background: linear-gradient(120deg, #fffbeb 0%, #fde68a 45%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .int-track-card--deeptalks .int-track-title {
+      background: linear-gradient(120deg, #ecfdf5 0%, #6ee7b7 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .int-track-card--scrollspeak .int-track-title {
+      background: linear-gradient(120deg, #fdf4ff 0%, #f472b6 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .int-track-card--fleabag .int-track-desc {
+      color: #94b8d9;
+      max-width: 56ch;
+    }
+    .int-track-card--summer .int-track-desc {
+      max-width: 56ch;
+    }
+    .int-track-card--deeptalks .int-track-desc {
+      color: #8fb8ae;
+      max-width: 56ch;
+    }
+    .int-track-card--scrollspeak .int-track-desc {
+      color: #c4b5d0;
+      max-width: 56ch;
+    }
+    .int-track-card--fleabag .int-card-cta {
+      color: #22d3ee;
+      text-shadow: 0 0 16px rgba(34, 211, 238, 0.35);
+    }
+    .int-track-card--summer .int-card-cta {
+      color: #fbbf24;
+      text-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+    }
+    .int-track-card--deeptalks .int-card-cta {
+      color: #34d399;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.25);
+    }
+    .int-track-card--scrollspeak .int-card-cta {
+      color: #f472b6;
+      text-shadow: 0 0 12px rgba(244, 114, 182, 0.25);
+    }
+    .int-track-level {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+    .int-track-card--summer .int-track-level {
+      color: #d4a017;
+    }
+    .int-track-card--fleabag .int-track-level {
+      color: #38bdf8;
+    }
+    .int-track-card--deeptalks .int-track-level {
+      color: #34d399;
+    }
+    .int-track-card--scrollspeak .int-track-level {
+      color: #f472b6;
+    }
+    .int-track-desc {
+      font-size: 0.96rem;
+      color: var(--int-muted);
+      line-height: 1.52;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+    .int-hub-foot {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.84rem;
+      color: var(--int-dim);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body class="intensive-body intensive-body--hub">
+  <div class="int-shell int-hub">
+    <header class="int-hub-head">
+      <p class="int-kicker">Standalone workshops</p>
+      <h1 class="int-title">Speaking hub</h1>
+      <p class="int-sub">Four tracks · teens to advanced · pick a club — each session opens step by step.</p>
+    </header>
+
+    <div class="int-track-grid">
+      <a class="int-track-card int-track-card--fleabag" href="workshops/fleabag/index.html">
+        <div class="int-card-visual">
+          <img
+            class="int-card-thumb"
+            src="workshops/fleabag/img/fleabag-avatar.png"
+            alt=""
+            width="132"
+            height="132"
+            loading="eager"
+          />
+          <span class="int-card-ring" aria-hidden="true"></span>
+        </div>
+        <div class="int-card-body">
+          <span class="int-track-level">Advanced · C1–C2 · Workshop</span>
+          <span class="int-track-title">Fleabag</span>
+          <span class="int-track-desc">
+            Season 1 · shadowing &amp; games · speak with the series lexicon.
+            warm-up → scene → harvest → shadow → games → freer → homework.
+          </span>
+        </div>
+        <span class="int-track-go int-card-cta">Open 6 sessions →</span>
+      </a>
+
+      <a class="int-track-card int-track-card--deeptalks" href="workshops/deep-talks/index.html">
+        <div class="int-card-visual">
+          <img
+            class="int-card-thumb"
+            src="workshops/deep-talks/img/deep-talks-cover.png"
+            alt=""
+            width="132"
+            height="132"
+            loading="lazy"
+          />
+          <span class="int-card-ring" aria-hidden="true"></span>
+        </div>
+        <div class="int-card-body">
+          <span class="int-track-level">B2+ – C1 · Conversation club</span>
+          <span class="int-track-title">Deep Talks</span>
+          <span class="int-track-desc">
+            8 life themes · blink before club · pairs &amp; debate.
+            habits → focus → money → work → talk → decisions → connection → confidence.
+          </span>
+        </div>
+        <span class="int-track-go int-card-cta">Open 8 sessions →</span>
+      </a>
+
+      <a class="int-track-card int-track-card--scrollspeak" href="workshops/scroll-speak/index.html">
+        <div class="int-card-visual">
+          <img
+            class="int-card-thumb"
+            src="workshops/scroll-speak/img/scroll-speak-cover.png"
+            alt=""
+            width="132"
+            height="132"
+            loading="lazy"
+          />
+          <span class="int-card-ring" aria-hidden="true"></span>
+        </div>
+        <div class="int-card-body">
+          <span class="int-track-level">Teens 13–17 · B1–B2</span>
+          <span class="int-track-title">Scroll &amp; Speak</span>
+          <span class="int-track-desc">
+            TikTok energy · clips &amp; challenges · GRWM, Blue Planet, reality games.
+            react → phrase → speak to camera.
+          </span>
+        </div>
+        <span class="int-track-go int-card-cta">Open 8 sessions →</span>
+      </a>
+
+      <a class="int-track-card int-track-card--summer" href="b2-summer-intensive/index.html">
+        <div class="int-card-visual">
+          <img
+            class="int-card-thumb"
+            src="b2-summer-intensive/img/summer-intensive-cover.png"
+            alt=""
+            width="132"
+            height="132"
+            loading="lazy"
+          />
+          <span class="int-card-ring" aria-hidden="true"></span>
+        </div>
+        <div class="int-card-body">
+          <span class="int-track-level">B2 · Summer 2026 · Intensive</span>
+          <span class="int-track-title">Speaking Intensive</span>
+          <span class="int-track-desc">
+            16 themed lessons · warm-up → input → harvest → controlled → freer → wrap.
+            Small group · pairs · 90–120 min.
+          </span>
+        </div>
+        <span class="int-track-go int-card-cta">Open 16 themes →</span>
+      </a>
+    </div>
+
+    <p class="int-hub-foot">
+      Content slots are empty — architecture ready for you to fill in.
+    </p>
+  </div>
+</body>
+</html>

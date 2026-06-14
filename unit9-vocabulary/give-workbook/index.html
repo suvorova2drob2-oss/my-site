@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Vocabulary &mdash; Give</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 1.3rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task h2 {
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+      color: #bae6fd;
+    }
+    .instr {
+      color: #d5e2f8;
+      font-size: 0.94rem;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 10px;
+      align-items: baseline;
+      margin-bottom: 9px;
+      line-height: 1.55;
+      color: #e8f0ff;
+      font-size: 0.95rem;
+    }
+    .num { color: #fcd34d; font-weight: 800; min-width: 1.4rem; }
+    .example {
+      color: #bbf7d0;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      border-bottom: 1px solid rgba(187, 247, 208, 0.55);
+      padding: 0 4px;
+    }
+    .gap-in {
+      width: 8.3rem;
+      max-width: 44vw;
+      margin: 0 4px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(86, 204, 242, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+    .gap-in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .gap-in.ok { border-color: rgba(54, 211, 153, 0.9); background: rgba(6, 78, 59, 0.35); }
+    .gap-in.bad { border-color: rgba(248, 113, 113, 0.9); background: rgba(127, 29, 29, 0.32); }
+    .match-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .match-grid { grid-template-columns: 1fr; }
+    }
+    .match-row, .ending-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+      color: inherit;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font: inherit;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      cursor: pointer;
+    }
+    .match-row:hover, .ending-btn:hover { border-color: #5a7ab0; }
+    .match-row.pick, .ending-btn.pick { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
+    .match-row.bad { border-color: var(--bad); }
+    .match-row .badge {
+      float: right;
+      color: #86efac;
+      font-weight: 800;
+      margin-left: 10px;
+    }
+    .ending-btn.linked { border-color: rgba(54, 211, 153, 0.55); background: rgba(54, 211, 153, 0.08); }
+    .ending-letter { color: #86efac; font-weight: 800; display: inline-block; min-width: 1.25rem; }
+    .hint {
+      color: #b8cce8;
+      font-size: 0.86rem;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.25);
+      margin-bottom: 12px;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .check { background: var(--ok); color: #05271a; }
+    .reset { background: #3d4f6f; color: var(--text); border: 1px solid var(--line); }
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .feedback.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; <em>Give</em></h1>
+      <a class="back u9-back-vocab-index" href="../index.html">&larr; Unit 9 vocabulary</a>
+    </header>
+
+    <section class="task" aria-label="Give phrases gap fill">
+      <h2>1. Complete the <em>give</em> phrases</h2>
+      <p class="instr">
+        Complete the <em>give</em> phrases with one word. The first letter of the missing word is given in bold.
+        There is an example at the beginning (0).
+      </p>
+
+      <div class="line"><span class="num">0</span><span>The woman didn&rsquo;t give <span class="example">away</span> what happened at the end of the film.</span></div>
+      <div class="line"><span class="num">1</span><span>Can I borrow your book and give it <input class="gap-in" data-gap="1" placeholder="b..." autocomplete="off" spellcheck="true" /> tomorrow?</span></div>
+      <div class="line"><span class="num">2</span><span>She gave a piercing <input class="gap-in" data-gap="2" placeholder="s..." autocomplete="off" spellcheck="true" />, which made everyone jump.</span></div>
+      <div class="line"><span class="num">3</span><span>The child gave a broad <input class="gap-in" data-gap="3" placeholder="s..." autocomplete="off" spellcheck="true" /> for the photo.</span></div>
+      <div class="line"><span class="num">4</span><span>The sight of their son on stage gave them great <input class="gap-in" data-gap="4" placeholder="p..." autocomplete="off" spellcheck="true" />.</span></div>
+      <div class="line"><span class="num">5</span><span>The woman was disinterested and gave a blank <input class="gap-in" data-gap="5" placeholder="l..." autocomplete="off" spellcheck="true" /> throughout.</span></div>
+      <div class="line"><span class="num">6</span><span>My sister finally gave <input class="gap-in" data-gap="6" placeholder="i..." autocomplete="off" spellcheck="true" /> and said I was right.</span></div>
+      <div class="line"><span class="num">7</span><span>I was given a nasty <input class="gap-in" data-gap="7" placeholder="s..." autocomplete="off" spellcheck="true" /> when I saw the cost of the phone.</span></div>
+      <div class="line"><span class="num">8</span><span>The patients were given a pleasant <input class="gap-in" data-gap="8" placeholder="s..." autocomplete="off" spellcheck="true" /> when the band entered.</span></div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkGaps">Check Exercise 1</button>
+        <button type="button" class="action reset" id="resetGaps">Reset Exercise 1</button>
+      </div>
+      <div class="feedback" id="gapFeedback" aria-live="polite"></div>
+    </section>
+
+    <section class="task" aria-label="Give matching">
+      <h2>2. Match the sentence beginnings to the endings</h2>
+      <p class="instr">
+        Match the sentence beginnings <strong>(1&ndash;5)</strong> to the endings <strong>(a&ndash;e)</strong>. There is an example at the beginning (0).
+      </p>
+      <p class="hint" id="matchHint">Choose a beginning or an ending to make a pair. Example: <strong>0 → f</strong>.</p>
+
+      <div class="match-grid">
+        <div>
+          <button type="button" class="match-row" data-line="1">1 We&rsquo;ll be giving out details <span class="badge" id="badge-1">&mdash;</span></button>
+          <button type="button" class="match-row" data-line="2">2 He gave a sigh of <span class="badge" id="badge-2">&mdash;</span></button>
+          <button type="button" class="match-row" data-line="3">3 My sister never gives <span class="badge" id="badge-3">&mdash;</span></button>
+          <button type="button" class="match-row" data-line="4">4 The man gave himself up <span class="badge" id="badge-4">&mdash;</span></button>
+          <button type="button" class="match-row" data-line="5">5 We decided to give <span class="badge" id="badge-5">&mdash;</span></button>
+        </div>
+        <div>
+          <button type="button" class="ending-btn" data-letter="a"><span class="ending-letter">a</span> up looking for the treasure.</button>
+          <button type="button" class="ending-btn" data-letter="b"><span class="ending-letter">b</span> when the police arrived.</button>
+          <button type="button" class="ending-btn" data-letter="c"><span class="ending-letter">c</span> in when she knows I&rsquo;m right.</button>
+          <button type="button" class="ending-btn" data-letter="d"><span class="ending-letter">d</span> about the trip after class.</button>
+          <button type="button" class="ending-btn" data-letter="e"><span class="ending-letter">e</span> relief when he saw his marks.</button>
+          <button type="button" class="ending-btn linked" disabled><span class="ending-letter">f</span> the work on time. <strong>0 → f</strong></button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkMatch">Check Exercise 2</button>
+        <button type="button" class="action reset" id="resetMatch">Reset Exercise 2</button>
+      </div>
+      <div class="feedback" id="matchFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-vocab-course-context.js"></script>
+  <script>
+(function () {
+  var GAP_KEY = {
+    1: ["back"],
+    2: ["scream"],
+    3: ["smile"],
+    4: ["pleasure"],
+    5: ["look"],
+    6: ["in"],
+    7: ["shock"],
+    8: ["surprise"]
+  };
+  var MATCH_KEY = { 1: "d", 2: "e", 3: "c", 4: "b", 5: "a" };
+  var linked = Object.create(null);
+  var pickLine = null;
+  var pickLetter = null;
+
+  function norm(v) {
+    return String(v || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function esc(v) {
+    var d = document.createElement("div");
+    d.textContent = String(v || "");
+    return d.innerHTML;
+  }
+
+  document.getElementById("checkGaps").addEventListener("click", function () {
+    var score = 0;
+    var rows = [];
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      var n = inp.getAttribute("data-gap");
+      var ok = (GAP_KEY[n] || []).some(function (ans) { return norm(ans) === norm(inp.value); });
+      inp.classList.remove("ok", "bad");
+      if (ok) {
+        inp.classList.add("ok");
+        score++;
+      } else if (norm(inp.value)) {
+        inp.classList.add("bad");
+      }
+      rows.push("<strong>" + n + ".</strong> " + esc((GAP_KEY[n] || []).join(" / ")));
+    });
+    var fb = document.getElementById("gapFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 8.</strong><br>" + rows.join(" &nbsp; ");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("resetGaps").addEventListener("click", function () {
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      inp.value = "";
+      inp.classList.remove("ok", "bad");
+    });
+    document.getElementById("gapFeedback").classList.remove("show");
+    document.getElementById("gapFeedback").innerHTML = "";
+  });
+
+  function setHint(text) {
+    document.getElementById("matchHint").innerHTML = text;
+  }
+
+  function clearPicks() {
+    pickLine = null;
+    pickLetter = null;
+    document.querySelectorAll(".match-row.pick, .ending-btn.pick").forEach(function (el) {
+      el.classList.remove("pick");
+    });
+  }
+
+  function syncMatch() {
+    for (var i = 1; i <= 5; i++) {
+      var badge = document.getElementById("badge-" + i);
+      if (badge) badge.textContent = linked[i] ? "\u2192 " + linked[i] : "\u2014";
+    }
+    document.querySelectorAll(".ending-btn:not([disabled])").forEach(function (btn) {
+      var letter = btn.getAttribute("data-letter");
+      var used = false;
+      for (var k = 1; k <= 5; k++) {
+        if (linked[k] === letter) used = true;
+      }
+      btn.classList.toggle("linked", used);
+    });
+  }
+
+  function applyPair(line, letter) {
+    for (var i = 1; i <= 5; i++) {
+      if (i !== line && linked[i] === letter) delete linked[i];
+    }
+    linked[line] = letter;
+    clearPicks();
+    syncMatch();
+    setHint("Pair added. Continue or check your answers.");
+  }
+
+  document.querySelectorAll(".match-row").forEach(function (row) {
+    row.addEventListener("click", function () {
+      var line = parseInt(row.getAttribute("data-line"), 10);
+      if (pickLetter) {
+        applyPair(line, pickLetter);
+        return;
+      }
+      clearPicks();
+      pickLine = line;
+      row.classList.add("pick");
+      setHint("Beginning <strong>" + line + "</strong> selected. Now choose an ending.");
+    });
+  });
+
+  document.querySelectorAll(".ending-btn:not([disabled])").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var letter = btn.getAttribute("data-letter");
+      if (pickLine) {
+        applyPair(pickLine, letter);
+        return;
+      }
+      clearPicks();
+      pickLetter = letter;
+      btn.classList.add("pick");
+      setHint("Ending <strong>" + letter + "</strong> selected. Now choose a beginning.");
+    });
+  });
+
+  document.getElementById("checkMatch").addEventListener("click", function () {
+    clearPicks();
+    var score = 0;
+    var lines = [];
+    document.querySelectorAll(".match-row").forEach(function (row) {
+      row.classList.remove("bad");
+    });
+    for (var i = 1; i <= 5; i++) {
+      var got = linked[i] || "";
+      var ok = got === MATCH_KEY[i];
+      if (ok) {
+        score++;
+      } else if (got) {
+        var row = document.querySelector('.match-row[data-line="' + i + '"]');
+        if (row) row.classList.add("bad");
+      }
+      lines.push("<strong>" + i + ".</strong> " + (got ? esc(got) : "&mdash;") + " / key: <strong>" + MATCH_KEY[i] + "</strong>");
+    }
+    var fb = document.getElementById("matchFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 5.</strong><br>" + lines.join(" &nbsp; ");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("resetMatch").addEventListener("click", function () {
+    linked = Object.create(null);
+    clearPicks();
+    syncMatch();
+    document.querySelectorAll(".match-row.bad").forEach(function (row) { row.classList.remove("bad"); });
+    document.getElementById("matchFeedback").classList.remove("show");
+    document.getElementById("matchFeedback").innerHTML = "";
+    setHint("Choose a beginning or an ending to make a pair. Example: <strong>0 \u2192 f</strong>.");
+  });
+
+  syncMatch();
+})();
+  </script>
+</body>
+</html>

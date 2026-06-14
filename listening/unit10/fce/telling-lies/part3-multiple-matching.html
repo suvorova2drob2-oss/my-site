@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 — SB 10.2 · Part 3 Multiple matching (lies)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .top h1 { font-size: 1.35rem; line-height: 1.3; }
+    .tag { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      padding: 14px;
+      background: var(--panel-soft);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .note-box {
+      font-size: 0.88rem;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      background: rgba(15, 36, 68, 0.45);
+      line-height: 1.5;
+    }
+    .note-box code { color: #cfe0ff; font-size: 0.84rem; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 18px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .task-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 760px) {
+      .task-split { grid-template-columns: 1fr; }
+    }
+    .options,
+    .match-block {
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a4065;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .letter { font-weight: 800; color: var(--accent); }
+    .match-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a4065;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-row label {
+      font-weight: 600;
+      min-width: 6.5rem;
+      flex: 0 0 auto;
+    }
+    select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1rem;
+      width: 100%;
+      max-width: 160px;
+    }
+    select.correct { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok); }
+    select.wrong { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border: 1px solid var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback.partial {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid var(--bad);
+      color: #fecaca;
+    }
+    .fold-study {
+      margin-top: 22px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #1a2944;
+      padding: 14px 16px;
+    }
+    .fold-study summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--accent);
+      list-style-position: outside;
+      padding: 6px 0;
+    }
+    .fold-study summary::-webkit-details-marker { color: var(--accent); }
+    .fold-inner {
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .fold-lead {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .hunt-block h3 {
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin: 14px 0 10px;
+    }
+    .phv {
+      color: #fde68a;
+      font-weight: 700;
+    }
+    .u10lies-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .u10lies-tools > span.lab {
+      font-weight: 700;
+      color: var(--text);
+    }
+    .u10lies-brush {
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      font-family: inherit;
+      border: 2px solid transparent;
+      background: #2a4065;
+      color: var(--text);
+      touch-action: manipulation;
+    }
+    .u10lies-brush:hover { filter: brightness(1.08); }
+    .u10lies-brush.is-active.u10lies-brush--green {
+      border-color: var(--ok);
+      box-shadow: 0 0 0 1px rgba(54, 211, 153, 0.45);
+    }
+    .u10lies-brush.is-active.u10lies-brush--red {
+      border-color: var(--bad);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.5);
+    }
+    .u10lies-brush.is-active.u10lies-brush--erase {
+      border-color: #94a3b8;
+    }
+    .u10lies-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .u10lies-tab {
+      cursor: pointer;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      font-family: inherit;
+      background: #203556;
+      color: var(--muted);
+    }
+    .u10lies-tab:hover { color: var(--text); }
+    .u10lies-tab.is-active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(86, 204, 242, 0.1);
+    }
+    .u10lies-meta {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    #u10lies-huntPrompt {
+      font-size: 0.9rem;
+      color: #d5e2f8;
+      line-height: 1.5;
+      margin: 0 0 10px;
+      min-height: 3rem;
+    }
+    .u10lies-hunt-key {
+      margin-bottom: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.08);
+      font-size: 0.94rem;
+      line-height: 1.45;
+      color: #e8f0ff;
+    }
+    .u10lies-hunt-key-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .u10lies-hunt-key-letter {
+      font-size: 1.08rem;
+      color: var(--accent);
+      margin-right: 4px;
+    }
+    .u10lies-hunt-key-line {
+      color: #dbeafe;
+      font-weight: 600;
+    }
+    .u10lies-hunt-options {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(18, 38, 75, 0.55);
+    }
+    .u10lies-hunt-options-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+    .u10lies-opt-row {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 8px 10px;
+      align-items: start;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(50, 74, 113, 0.55);
+      font-size: 0.86rem;
+      line-height: 1.4;
+      color: #d5e2f8;
+    }
+    .u10lies-opt-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .u10lies-opt-row.is-key {
+      background: rgba(86, 204, 242, 0.08);
+      margin: 0 -8px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      border-bottom-color: transparent;
+    }
+    .u10lies-opt-letter {
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .u10lies-opt-row.is-key .u10lies-opt-letter { color: #7dd3fc; }
+    .u10lies-opt-key-badge {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #86efac;
+      vertical-align: middle;
+    }
+    .u10lies-passage {
+      font-size: 0.93rem;
+      line-height: 1.68;
+      color: #dce6fb;
+      padding: 16px;
+      background: #203556;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 12px;
+    }
+    .u10lies-passage .lies-glue .phv {
+      color: #fde68a;
+      font-weight: 700;
+    }
+    .u10lies-passage .lies-hit .phv {
+      color: #fde68a;
+      font-weight: 700;
+    }
+    .u10lies-passage .lies-hit-wrap {
+      display: inline;
+    }
+    .u10lies-passage .lies-tempts-tag {
+      display: block;
+      margin: 4px 0 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border-left: 3px solid #f87171;
+      background: rgba(239, 68, 68, 0.12);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #fecaca;
+    }
+    .u10lies-passage .lies-tempts-prefix {
+      font-weight: 700;
+      color: #fca5a5;
+      margin-right: 4px;
+    }
+    .u10lies-passage .lies-tempts-letter {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #fbbf24;
+      margin-right: 4px;
+    }
+    .u10lies-passage .lies-tempts-line {
+      color: #fde68a;
+      font-weight: 600;
+    }
+    .u10lies-passage .lies-tempts-note {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #fca5a5;
+      opacity: 0.92;
+    }
+    .u10lies-passage .lies-key-reject {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #fdba74;
+      opacity: 0.95;
+    }
+    .u10lies-passage .lies-evidence-tag {
+      display: block;
+      margin: 4px 0 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border-left: 3px solid #4ade80;
+      background: rgba(34, 197, 94, 0.12);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #bbf7d0;
+    }
+    .u10lies-passage .lies-evidence-prefix {
+      font-weight: 700;
+      color: #86efac;
+      margin-right: 4px;
+    }
+    .u10lies-passage .lies-evidence-line {
+      color: #fde68a;
+      font-weight: 600;
+    }
+    .u10lies-passage .lies-evidence-note {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #86efac;
+      opacity: 0.92;
+    }
+    .u10lies-passage .lies-tempts-tag[hidden],
+    .u10lies-passage .lies-evidence-tag[hidden] {
+      display: none !important;
+    }
+    .u10lies-passage .lies-hit {
+      cursor: pointer;
+      border-radius: 4px;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.5);
+      transition: background 0.15s, box-shadow 0.15s;
+      padding: 0 2px;
+    }
+    .u10lies-passage .lies-hit:hover:not(.lies-bad):not(.is-green):not(.is-red) {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .u10lies-passage .lies-hit.is-green {
+      background-color: rgba(34, 197, 94, 0.32);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45);
+    }
+    .u10lies-passage .lies-hit.is-red {
+      background-color: rgba(239, 68, 68, 0.26);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.5);
+    }
+    .u10lies-passage .lies-hit.lies-bad {
+      outline: 2px dashed #fbbf24;
+      outline-offset: 2px;
+    }
+    .u10lies-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .u10lies-actions .btn-mini {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      font-family: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .u10lies-actions .btn-verify {
+      background: var(--accent);
+      color: #052030;
+    }
+    .u10lies-actions .btn-clear-hunt {
+      background: #3d4f6f;
+      color: var(--text);
+    }
+    .u10lies-hunt-fb {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      display: none;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+    .u10lies-hunt-fb.show,
+    .u10lies-hunt-fb.ok,
+    .u10lies-hunt-fb.partial {
+      display: block;
+    }
+    .u10lies-hunt-fb.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border: 1px solid var(--ok);
+      color: #a7f3d0;
+    }
+    .u10lies-hunt-fb.partial {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid var(--bad);
+      color: #fecaca;
+    }
+    #u10lies-huntToast {
+      min-height: 0;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #fcd34d;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      margin-top: 6px;
+    }
+    #u10lies-huntToast.is-visible {
+      opacity: 1;
+      min-height: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Listening Part 3 — Multiple matching</h1>
+        <p class="tag">RfB2 First &middot; <code style="color: var(--muted);">RfB2First_SB_Track 10.2.mp3</code></p>
+      </div>
+      <a class="back" id="u10ListenBack" href="../index.html">Back to Listening folder</a>
+    </header>
+
+    <p class="instr">
+      You will hear <strong>five different people</strong> talking about a time when they told a lie.
+      For questions <strong>1&ndash;5</strong>, choose from the list (<strong>A&ndash;H</strong>) what each speaker says.
+      Use the <strong>letters only once</strong>. There are <strong>three extra</strong> letters which you do not need to use.
+    </p>
+
+    <p class="note-box">
+      <strong>Scoring:</strong> <strong>Check</strong> compares your choices with the <em>Workbook with Key</em> answers for SB 10.2
+      (<strong>1&rarr;D, 2&rarr;E, 3&rarr;A, 4&rarr;G, 5&rarr;B</strong>). Green / red outlines show right or wrong per speaker.
+    </p>
+
+    <div class="audio-wrap">
+      <label for="track-audio">Audio (Yandex Object Storage)</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RfB2First_SB_Track%2010.2.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <div class="task-split">
+      <section class="options" aria-labelledby="optHeading">
+        <h2 id="optHeading">Options A–H</h2>
+        <div id="optionsList"></div>
+      </section>
+
+      <section class="match-block" aria-labelledby="matchHeading">
+        <h2 id="matchHeading">Speakers 1–5</h2>
+        <div id="matchRows"></div>
+      </section>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear choices</button>
+    </div>
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <details class="fold-study">
+      <summary>After you listen · Transcript · Evidence &amp; distractor hunt</summary>
+      <div class="fold-inner">
+        <p class="fold-lead">
+          Open after listening (or between attempts). Dashed-underline <strong style="color: var(--text);">chunks</strong> are clickable: choose a brush below, tap a chunk to colour it
+          <strong style="color:#86efac">green</strong> (evidence for the workbook headline) or
+          <strong style="color:#fca5a5">red</strong> (distractor / tempting wrong headline — a note appears naming which A&ndash;H line it mimics).
+          Phrasal verbs stay <span class="phv">yellow</span>. The <strong>target headline</strong> for each speaker is shown above the transcript. <strong>Check markings</strong> compares your greens/reds to the tutor slices.
+        </p>
+
+        <div class="hunt-block">
+          <h3>Interactive transcript · Evidence &amp; distractor hunt</h3>
+
+          <div class="u10lies-tools">
+            <span class="lab">Brush:</span>
+            <button type="button" class="u10lies-brush u10lies-brush--green is-active" data-brush="green" aria-pressed="true">Evidence · green</button>
+            <button type="button" class="u10lies-brush u10lies-brush--red" data-brush="red" aria-pressed="false">Distractor · red</button>
+            <button type="button" class="u10lies-brush u10lies-brush--erase" data-brush="erase" aria-pressed="false">Erase highlight</button>
+          </div>
+
+          <div class="u10lies-tabs" role="tablist" aria-label="Speaker">
+            <button type="button" class="u10lies-tab is-active" role="tab" data-spk="0" aria-selected="true">Speaker 1</button>
+            <button type="button" class="u10lies-tab" role="tab" data-spk="1" aria-selected="false">Speaker 2</button>
+            <button type="button" class="u10lies-tab" role="tab" data-spk="2" aria-selected="false">Speaker 3</button>
+            <button type="button" class="u10lies-tab" role="tab" data-spk="3" aria-selected="false">Speaker 4</button>
+            <button type="button" class="u10lies-tab" role="tab" data-spk="4" aria-selected="false">Speaker 5</button>
+          </div>
+
+          <p id="u10lies-huntMeta" class="u10lies-meta" aria-live="polite"></p>
+          <div id="u10lies-huntOptions" class="u10lies-hunt-options" aria-label="Options A–H reference"></div>
+          <p id="u10lies-huntKey" class="u10lies-hunt-key" aria-live="polite"></p>
+          <p id="u10lies-huntPrompt"></p>
+          <div id="u10lies-huntPassage" class="u10lies-passage" aria-label="Transcript with clickable chunks"></div>
+
+          <div class="u10lies-actions">
+            <button type="button" class="btn-mini btn-verify" id="u10lies-huntVerify">Check markings</button>
+            <button type="button" class="btn-mini btn-clear-hunt" id="u10lies-huntReset">Clear this speaker</button>
+          </div>
+          <div id="u10lies-huntFb" class="u10lies-hunt-fb" role="status"></div>
+          <div id="u10lies-huntToast" aria-live="polite"></div>
+        </div>
+
+        <details class="hunt-spoilers" style="margin-top: 16px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: rgba(15,36,68,0.35);">
+          <summary style="cursor:pointer;font-weight:700;color:var(--muted);">Spoilers · unused A&ndash;H letters</summary>
+          <p style="margin-top:10px;font-size:0.86rem;line-height:1.5;color:var(--muted);">
+            Extra (not matched to 1&ndash;5): <strong style="color:var(--text)">C, F, H</strong>.
+            Typical traps: apology wording that is not the speaker&rsquo;s headline (<strong>C</strong>);
+            accusing / damage wording that belongs to someone else or the wrong gist (<strong>F</strong>);
+            &lsquo;sent to another place&rsquo; surface vs bad-treatment gist (<strong>H</strong> vs <strong>G</strong>).
+          </p>
+        </details>
+      </div>
+    </details>
+  </main>
+
+  <script>
+    /** SB 10.2 — speakers 1–5 in order (Workbook key). */
+    var ANSWER_KEY = ["D", "E", "A", "G", "B"];
+
+    var OPTIONS = [
+      { letter: "A", text: "I lied to protect a friend." },
+      { letter: "B", text: "I insisted on my innocence." },
+      { letter: "C", text: "I apologised for telling a lie." },
+      { letter: "D", text: "I exaggerated the extent of a problem." },
+      { letter: "E", text: "I was surprised at someone's reaction." },
+      { letter: "F", text: "I accused someone of causing damage." },
+      { letter: "G", text: "I lied to someone who had not treated me well." },
+      { letter: "H", text: "I intentionally sent someone to the wrong place." }
+    ];
+
+    var optionsList = document.getElementById("optionsList");
+    var matchRows = document.getElementById("matchRows");
+    var btnCheck = document.getElementById("btnCheck");
+    var btnReset = document.getElementById("btnReset");
+    var feedback = document.getElementById("feedback");
+    var selects = [];
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    optionsList.innerHTML = OPTIONS.map(function (o) {
+      return (
+        '<div class="opt-row"><span class="letter">' +
+        escapeHtml(o.letter) +
+        '</span><span>' +
+        escapeHtml(o.text) +
+        "</span></div>"
+      );
+    }).join("");
+
+    function getValues() {
+      return selects.map(function (s) {
+        return s.value;
+      });
+    }
+
+    function rebuildSelects() {
+      var vals = getValues();
+      selects.forEach(function (sel, idx) {
+        var current = vals[idx];
+        var usedElsewhere = {};
+        vals.forEach(function (v, j) {
+          if (j !== idx && v) {
+            usedElsewhere[v] = true;
+          }
+        });
+        sel.innerHTML = "";
+        var opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "— choose —";
+        sel.appendChild(opt0);
+        OPTIONS.forEach(function (o) {
+          var L = o.letter;
+          if (!usedElsewhere[L] || L === current) {
+            var opt = document.createElement("option");
+            opt.value = L;
+            opt.textContent = L;
+            if (L === current) {
+              opt.selected = true;
+            }
+            sel.appendChild(opt);
+          }
+        });
+        if (current && !sel.value) {
+          sel.value = "";
+        }
+      });
+    }
+
+    for (var i = 0; i < 5; i += 1) {
+      var row = document.createElement("div");
+      row.className = "match-row";
+      var lab = document.createElement("label");
+      lab.setAttribute("for", "spk" + i);
+      lab.textContent = "Speaker " + (i + 1);
+      var sel = document.createElement("select");
+      sel.id = "spk" + i;
+      sel.setAttribute("aria-label", "Answer for speaker " + (i + 1));
+      sel.addEventListener("change", function (ev) {
+        var target = ev.target;
+        var newVal = target.value;
+        if (newVal) {
+          selects.forEach(function (other) {
+            if (other !== target && other.value === newVal) {
+              other.value = "";
+            }
+          });
+        }
+        clearResultStyles();
+        feedback.classList.remove("show");
+        rebuildSelects();
+      });
+      row.appendChild(lab);
+      row.appendChild(sel);
+      matchRows.appendChild(row);
+      selects.push(sel);
+    }
+    rebuildSelects();
+
+    function clearResultStyles() {
+      selects.forEach(function (s) {
+        s.classList.remove("correct", "wrong");
+      });
+    }
+
+    function keyReady() {
+      return Array.isArray(ANSWER_KEY) && ANSWER_KEY.length === 5 && ANSWER_KEY.every(function (x) {
+        return x && String(x).length === 1;
+      });
+    }
+
+    btnCheck.addEventListener("click", function () {
+      var vals = getValues();
+      var allFilled = vals.every(function (v) {
+        return v;
+      });
+      if (!allFilled) {
+        feedback.textContent = "Choose a letter for all five speakers before checking.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+      var dup = {};
+      var hasDup = false;
+      vals.forEach(function (v) {
+        if (dup[v]) {
+          hasDup = true;
+        }
+        dup[v] = true;
+      });
+      if (hasDup) {
+        feedback.textContent = "Each letter can only be used once. Fix duplicates.";
+        feedback.className = "feedback partial show";
+        return;
+      }
+
+      clearResultStyles();
+
+      if (!keyReady()) {
+        feedback.innerHTML =
+          "<strong>Format OK:</strong> five different letters (A–H). Compare with your answer key. " +
+          "Set <code>ANSWER_KEY</code> in the script for auto-scoring.";
+        feedback.className = "feedback ok show";
+        return;
+      }
+
+      var ok = 0;
+      for (var j = 0; j < 5; j += 1) {
+        var want = String(ANSWER_KEY[j]).toUpperCase();
+        var got = vals[j].toUpperCase();
+        if (got === want) {
+          selects[j].classList.add("correct");
+          ok += 1;
+        } else {
+          selects[j].classList.add("wrong");
+        }
+      }
+
+      if (ok === 5) {
+        feedback.innerHTML =
+          "<strong>All correct.</strong> Speakers 1–5: " +
+          vals.map(function (v, k) {
+            return k + 1 + " → " + v;
+          }).join("; ") +
+          ".";
+        feedback.className = "feedback ok show";
+      } else {
+        feedback.innerHTML =
+          "You have <strong>" +
+          ok +
+          " / 5</strong> correct. Adjust choices and check again. (Three letters are extra.)";
+        feedback.className = "feedback partial show";
+      }
+    });
+
+    btnReset.addEventListener("click", function () {
+      selects.forEach(function (sel) {
+        sel.value = "";
+        sel.classList.remove("correct", "wrong");
+      });
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      rebuildSelects();
+    });
+  </script>
+  <script src="../../../../js/unit10-sb102-lies-evidence-hunt.js"></script>
+  <script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var bh = document.getElementById("u10ListenBack");
+  if (!bh) return;
+  var rawBack = q.get("back");
+  if (!rawBack) return;
+  try {
+    var u = new URL(String(rawBack).trim(), window.location.href);
+    if (u.origin === window.location.origin) bh.href = u.pathname + u.search + u.hash;
+  } catch (e) {}
+  if (q.get("backLabel")) {
+    try {
+      bh.textContent = "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+    } catch (e2) {}
+  }
+})();
+  </script>
+</body>
+</html>

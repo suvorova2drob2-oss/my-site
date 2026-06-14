@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Grammar &mdash; Modals and reported speech</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 1.3rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task h2 { font-size: 1.08rem; color: #bae6fd; margin-bottom: 10px; }
+    .instr { color: #d5e2f8; font-size: 0.94rem; line-height: 1.55; margin-bottom: 14px; }
+    .choice-row, .gap-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 10px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      color: #e8f0ff;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .num { color: #fcd34d; font-weight: 800; min-width: 1.3rem; }
+    .choice-pair {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      vertical-align: middle;
+    }
+    .choice-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(8, 22, 48, 0.35);
+      color: #e8f0ff;
+      cursor: pointer;
+      font: inherit;
+      font-style: italic;
+    }
+    .choice-btn:hover { border-color: #5a7ab0; }
+    .choice-btn.pick { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .choice-btn.ok, .gap-in.ok { border-color: rgba(54, 211, 153, 0.9); background: rgba(6, 78, 59, 0.35); }
+    .choice-btn.bad, .gap-in.bad { border-color: rgba(248, 113, 113, 0.9); background: rgba(127, 29, 29, 0.32); }
+    .example { color: #bbf7d0; font-style: italic; font-weight: 700; }
+    .quote { display: block; color: #fef9c3; margin-bottom: 3px; }
+    .gap-in {
+      width: 13rem;
+      max-width: 58vw;
+      margin: 0 4px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(86, 204, 242, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+    .gap-in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .check { background: var(--ok); color: #05271a; }
+    .reset { background: #3d4f6f; color: var(--text); border: 1px solid var(--line); }
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .feedback.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Grammar &mdash; Modals and Reported Speech</h1>
+      <a class="back" href="../index.html">&larr; Unit 9 grammar</a>
+    </header>
+
+    <section class="task" aria-label="Modals of speculation and deduction">
+      <h2>Language focus &mdash; Modals of speculation and deduction</h2>
+      <p class="instr">
+        Choose the correct word or phrase to complete the sentences. There is an example at the beginning (0).
+      </p>
+
+      <div class="choice-row"><span class="num">0</span><span>It <span class="example">must have</span> / must been raining. People are carrying umbrellas.</span></div>
+      <div class="choice-row" data-row="1"><span class="num">1</span><span>Jack <span class="choice-pair"><button type="button" class="choice-btn" data-choice="may have">may have</button><button type="button" class="choice-btn" data-choice="may">may</button></span> taken the day off because he&rsquo;s not at his desk.</span></div>
+      <div class="choice-row" data-row="2"><span class="num">2</span><span>They <span class="choice-pair"><button type="button" class="choice-btn" data-choice="must">must</button><button type="button" class="choice-btn" data-choice="can't">can&rsquo;t</button></span> be sleeping. It&rsquo;s already one in the morning.</span></div>
+      <div class="choice-row" data-row="3"><span class="num">3</span><span>Our teacher looked ill yesterday. She <span class="choice-pair"><button type="button" class="choice-btn" data-choice="may have not">may have not</button><button type="button" class="choice-btn" data-choice="may not have">may not have</button></span> been feeling good.</span></div>
+      <div class="choice-row" data-row="4"><span class="num">4</span><span>He <span class="choice-pair"><button type="button" class="choice-btn" data-choice="couldn't">couldn&rsquo;t</button><button type="button" class="choice-btn" data-choice="must">must</button></span> have asked me last week. I didn&rsquo;t speak to him.</span></div>
+      <div class="choice-row" data-row="5"><span class="num">5</span><span>I <span class="choice-pair"><button type="button" class="choice-btn" data-choice="can't">can&rsquo;t</button><button type="button" class="choice-btn" data-choice="might">might</button></span> be around next week if you want to go out.</span></div>
+      <div class="choice-row" data-row="6"><span class="num">6</span><span>We <span class="choice-pair"><button type="button" class="choice-btn" data-choice="can't">can&rsquo;t</button><button type="button" class="choice-btn" data-choice="might">might</button></span> be at the right venue. No one&rsquo;s here.</span></div>
+      <div class="choice-row" data-row="7"><span class="num">7</span><span>They <span class="choice-pair"><button type="button" class="choice-btn" data-choice="must have left">must have left</button><button type="button" class="choice-btn" data-choice="must be leaving">must be leaving</button></span> because their car&rsquo;s gone.</span></div>
+      <div class="choice-row" data-row="8"><span class="num">8</span><span>The girl <span class="choice-pair"><button type="button" class="choice-btn" data-choice="might be not">might be not</button><button type="button" class="choice-btn" data-choice="might not">might not</button></span> be telling the truth.</span></div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkModals">Check modals</button>
+        <button type="button" class="action reset" id="resetModals">Reset modals</button>
+      </div>
+      <div class="feedback" id="modalFeedback" aria-live="polite"></div>
+    </section>
+
+    <section class="task" aria-label="Reported speech verb forms">
+      <h2>Reported speech</h2>
+      <p class="instr">
+        Complete each gap with the correct form of the verb in the sentence above. There is an example at the beginning (0).
+      </p>
+
+      <div class="gap-row"><span class="num">0</span><span><span class="quote">He said, &lsquo;Did you open the door?&rsquo;</span>He asked if I <span class="example">had opened</span> the door.</span></div>
+      <div class="gap-row"><span class="num">1</span><span><span class="quote">Mary said, &lsquo;We must start the course as soon as possible.&rsquo;</span>Mary said we <input class="gap-in" data-gap="1" autocomplete="off" spellcheck="true" /> the course as soon as possible.</span></div>
+      <div class="gap-row"><span class="num">2</span><span><span class="quote">I asked, &lsquo;What do you want to do after lessons?&rsquo;</span>I asked what he <input class="gap-in" data-gap="2" autocomplete="off" spellcheck="true" /> to do after lessons.</span></div>
+      <div class="gap-row"><span class="num">3</span><span><span class="quote">Jack said, &lsquo;I don&rsquo;t know if I can come to the party.&rsquo;</span>Jack said he didn&rsquo;t know if he <input class="gap-in" data-gap="3" autocomplete="off" spellcheck="true" /> to the party.</span></div>
+      <div class="gap-row"><span class="num">4</span><span><span class="quote">The woman said, &lsquo;You should ask for a refund at the front desk.&rsquo;</span>The woman said I <input class="gap-in" data-gap="4" autocomplete="off" spellcheck="true" /> for a refund at the front desk.&rsquo;</span></div>
+      <div class="gap-row"><span class="num">5</span><span><span class="quote">Dad said, &lsquo;I&rsquo;ll do it later.&rsquo;</span>Dad said he <input class="gap-in" data-gap="5" autocomplete="off" spellcheck="true" /> it later.</span></div>
+      <div class="gap-row"><span class="num">6</span><span><span class="quote">My sister said, &lsquo;The children are enjoying their presents.&rsquo;</span>My sister said the children <input class="gap-in" data-gap="6" autocomplete="off" spellcheck="true" /> their presents.</span></div>
+      <div class="gap-row"><span class="num">7</span><span><span class="quote">Will said, &lsquo;I met her for coffee a few times.&rsquo;</span>Will said he <input class="gap-in" data-gap="7" autocomplete="off" spellcheck="true" /> her for coffee a few times.</span></div>
+      <div class="gap-row"><span class="num">8</span><span><span class="quote">The teacher asked, &lsquo;Can we have a chat in the break?&rsquo;</span>The teacher asked if we <input class="gap-in" data-gap="8" autocomplete="off" spellcheck="true" /> a chat in the break.</span></div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkReported">Check reported speech</button>
+        <button type="button" class="action reset" id="resetReported">Reset reported speech</button>
+      </div>
+      <div class="feedback" id="reportedFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-grammar-course-context.js"></script>
+  <script>
+(function () {
+  var MODAL_KEY = {
+    1: "may have",
+    2: "can't",
+    3: "may not have",
+    4: "couldn't",
+    5: "might",
+    6: "can't",
+    7: "must have left",
+    8: "might not"
+  };
+  var REPORTED_KEY = {
+    1: ["had to start"],
+    2: ["wanted"],
+    3: ["could come"],
+    4: ["should ask"],
+    5: ["would do"],
+    6: ["were enjoying"],
+    7: ["had met"],
+    8: ["could have"]
+  };
+
+  function norm(v) {
+    return String(v || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\s+/g, " ");
+  }
+
+  function esc(v) {
+    var d = document.createElement("div");
+    d.textContent = String(v || "");
+    return d.innerHTML;
+  }
+
+  document.querySelectorAll(".choice-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pair = btn.closest(".choice-pair");
+      pair.querySelectorAll(".choice-btn").forEach(function (b) {
+        b.classList.remove("pick", "ok", "bad");
+      });
+      btn.classList.add("pick");
+    });
+  });
+
+  document.getElementById("checkModals").addEventListener("click", function () {
+    var score = 0;
+    var keyRows = [];
+    document.querySelectorAll(".choice-row[data-row]").forEach(function (row) {
+      var n = row.getAttribute("data-row");
+      var picked = row.querySelector(".choice-btn.pick");
+      row.querySelectorAll(".choice-btn").forEach(function (b) {
+        b.classList.remove("ok", "bad");
+      });
+      if (picked && norm(picked.getAttribute("data-choice")) === MODAL_KEY[n]) {
+        picked.classList.add("ok");
+        score++;
+      } else if (picked) {
+        picked.classList.add("bad");
+      }
+      keyRows.push("<strong>" + n + ".</strong> " + esc(MODAL_KEY[n]));
+    });
+    var fb = document.getElementById("modalFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 8.</strong><br>" + keyRows.join(" &nbsp; ");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("resetModals").addEventListener("click", function () {
+    document.querySelectorAll(".choice-btn").forEach(function (btn) {
+      btn.classList.remove("pick", "ok", "bad");
+    });
+    document.getElementById("modalFeedback").classList.remove("show");
+    document.getElementById("modalFeedback").innerHTML = "";
+  });
+
+  document.getElementById("checkReported").addEventListener("click", function () {
+    var score = 0;
+    var keyRows = [];
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      var n = inp.getAttribute("data-gap");
+      var keys = REPORTED_KEY[n] || [];
+      var ok = keys.some(function (ans) { return norm(ans) === norm(inp.value); });
+      inp.classList.remove("ok", "bad");
+      if (ok) {
+        inp.classList.add("ok");
+        score++;
+      } else if (norm(inp.value)) {
+        inp.classList.add("bad");
+      }
+      keyRows.push("<strong>" + n + ".</strong> " + esc(keys.join(" / ")));
+    });
+    var fb = document.getElementById("reportedFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 8.</strong><br>" + keyRows.join(" &nbsp; ");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("resetReported").addEventListener("click", function () {
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      inp.value = "";
+      inp.classList.remove("ok", "bad");
+    });
+    document.getElementById("reportedFeedback").classList.remove("show");
+    document.getElementById("reportedFeedback").innerHTML = "";
+  });
+})();
+  </script>
+</body>
+</html>

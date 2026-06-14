@@ -73,6 +73,19 @@ PREP_VOCAB_WORD_BOX_GAPS.mount({
 
 Копировать токены с соседних Unit 12 / Unit 7 vocabulary-страниц — не вводить новую цветовую схему.
 
+## Bank + gap slots (tap chip → slot, not inline input)
+
+When the exercise is **noun/adjective bank + several gap buttons** (not `<input>` gaps), use a layout where the **bank never scrolls off screen**:
+
+1. **Wrapper:** `.ex2-workspace` or `.vocab-bank-workspace` — CSS grid.
+2. **Desktop (`min-width: 720px`):** bank column `minmax(148px, 196px)` + gap list; gap list **`grid-template-columns: 1fr 1fr`** if there are 6–10 rows (halves vertical scroll).
+3. **Bank panel:** `position: sticky; top: 8px; z-index: 2; max-height: calc(100vh - 16px); overflow-y: auto` — chips stay visible while the learner fills lower gaps.
+4. **Mobile:** same sticky bank at top of the workspace (still `top: 8px`), compact chips (`padding: 5px 10px`, `font-size: 0.8rem`).
+5. **Rows:** compact grid row (`padding: 8px 10px`, `gap: 6px`) — number · adjectives · gap button on one line.
+6. **After Check:** inline hint under wrong rows (`.ex2-row-hint`) + summary panel — same pattern as odd-collocation tasks.
+
+**Эталон:** `unit12-vocabulary/cpe/health-fitness-collocations/index.html` — Exercise 2.
+
 ## Новое упражнение — чеклист
 
 - [ ] Phrase bank / intro сверху (если есть в учебнике)
@@ -80,3 +93,4 @@ PREP_VOCAB_WORD_BOX_GAPS.mount({
 - [ ] `prep-vocab-word-box-gaps.js` + `mount`
 - [ ] Check / Reset без изменения логики проверки страницы
 - [ ] Prep-link в seeds, если это CPE Level N Vocabulary folder
+- [ ] Bank + slot: sticky bank + 2-col gap grid on desktop (см. **Bank + gap slots**)

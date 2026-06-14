@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All conditionals — J · Being an only child</title>
+  <link rel="stylesheet" href="../css/part2-open-cloze.css" />
+  <style>
+    .has-p2-dict-fab .part2-open-page {
+      padding-right: max(76px, calc(68px + env(safe-area-inset-right, 0px)));
+      box-sizing: border-box;
+    }
+
+    .ex3-glossary-inner {
+      padding: 14px 16px 18px;
+    }
+
+    .ex3-glossary-inner dl {
+      margin: 0;
+    }
+
+    .ex3-glossary-inner dt {
+      margin-top: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fef08a;
+    }
+
+    .ex3-glossary-inner dt:first-of-type {
+      margin-top: 0;
+    }
+
+    .ex3-glossary-inner dd {
+      margin: 5px 0 0;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1.52;
+      color: #cbd5e1;
+    }
+
+    .ex3-glossary-inner dd strong {
+      color: #fde68a;
+      font-weight: 800;
+    }
+
+    .p2-only-gloss__why {
+      margin: 0 0 8px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .ex3-glossary-inner dd > p:first-of-type {
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+
+    .p2-only-gloss-bonus {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(167, 139, 250, 0.35);
+    }
+
+    .p2-only-gloss-bonus__title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #a78bfa;
+      margin: 0 0 10px;
+    }
+
+    .p2-only-gloss-bonus p:last-child {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .ex3-dict-fab {
+      position: fixed;
+      z-index: 100002;
+      right: max(8px, env(safe-area-inset-right, 0px));
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      padding: 6px 5px;
+      border-radius: 12px;
+      border: 2px solid rgba(192, 132, 252, 0.8);
+      margin: 0;
+      font: inherit;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(
+        165deg,
+        rgba(139, 92, 246, 0.55) 0%,
+        rgba(30, 27, 75, 0.96) 45%,
+        rgba(15, 23, 42, 0.98) 100%
+      );
+      color: #faf5ff;
+      box-shadow: 0 4px 22px rgba(124, 58, 237, 0.38);
+      transition:
+        right 0.3s ease,
+        left 0.3s ease,
+        filter 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .ex3-dict-fab:hover {
+      filter: brightness(1.08);
+    }
+
+    .ex3-dict-fab:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    body.part2--dict-open .ex3-dict-fab {
+      right: min(360px, calc(92vw - env(safe-area-inset-right, 0px)));
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 480px) {
+      body.part2--dict-open .ex3-dict-fab {
+        right: auto;
+        left: max(8px, env(safe-area-inset-left, 8px));
+        transform: translateY(-50%);
+      }
+
+      body.part2--dict-open .ex3-dict-fab:active {
+        transform: translateY(-50%) scale(0.94);
+      }
+    }
+
+    .ex3-dict-fab-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      font-size: 7.5px;
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .ex3-dict-fab-line {
+      display: block;
+      max-width: 100%;
+    }
+
+    .ex3-dict-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100001;
+      background: rgba(2, 6, 23, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .ex3-dict-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(360px, 92vw);
+      height: 100%;
+      max-height: 100dvh;
+      z-index: 100002;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 55%, #0a0f1a 100%);
+      border-left: 2px solid rgba(167, 139, 250, 0.45);
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+      transform: translateX(100%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    }
+
+    .ex3-dict-drawer.is-visible {
+      transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .ex3-dict-drawer-head {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e9d5ff;
+    }
+
+    .ex3-dict-drawer-x {
+      font: inherit;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(248, 113, 113, 0.15);
+      color: #fecaca;
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .ex3-dict-drawer-x:hover {
+      background: rgba(248, 113, 113, 0.28);
+    }
+
+    .ex3-dict-drawer-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 16px));
+      border-top: none;
+      max-height: none;
+    }
+  </style>
+  <script>
+    window.PART2_OPEN_BOOT = {
+      contextId: "ege-all-conditionals-only-child",
+      embeddedScriptId: "part2-open-bundled-ege-all-conditionals-only-child",
+      backHref: "index.html",
+      backLabel: "Все типы — тесты",
+      pageTitle: "J · Being an only child",
+      documentTitle: "All conditionals — J · Being an only child"
+    };
+  </script>
+</head>
+<body class="part2-open-body has-p2-dict-fab">
+  <main class="part2-open-page">
+    <header class="part2-open-top">
+      <a class="part2-open-back" id="part2OpenBack" href="index.html">&larr; Back</a>
+      <h1 id="part2OpenH1">J · Being an only child</h1>
+    </header>
+    <p class="part2-open-subtitle" id="part2OpenSubtitle"></p>
+    <div id="part2OpenSplit" class="part2-open-split">
+      <div class="part2-open-main-col">
+        <section class="part2-open-task" id="part2OpenTask" aria-label="Open cloze text"></section>
+        <div class="part2-btn-row">
+          <button type="button" id="part2BtnCheck" class="part2-btn-check">Проверить</button>
+          <button type="button" id="part2BtnReset" class="part2-btn-reset">Сбросить</button>
+        </div>
+        <div id="part2Feedback" class="part2-feedback" role="status" aria-live="polite"></div>
+      </div>
+      <aside id="part2InlineReveal" class="part2-inline-panel" hidden aria-label="Ключ и пояснения к пропускам"></aside>
+    </div>
+    <div id="part2OpenNextStrip" class="part2-chain-next" hidden>
+      <a id="part2OpenNextLink" class="part2-chain-next__link" href="#">Next task</a>
+    </div>
+  </main>
+
+  <button
+    type="button"
+    class="ex3-dict-fab"
+    id="p2-only-dict-fab"
+    aria-label="Открыть быстрый словарь"
+    aria-controls="p2-only-dict-drawer"
+    aria-expanded="false"
+  >
+    <span class="ex3-dict-fab-text">
+      <span class="ex3-dict-fab-line">Быстрый</span>
+      <span class="ex3-dict-fab-line">словарь</span>
+    </span>
+  </button>
+  <div class="ex3-dict-backdrop" id="p2-only-dict-backdrop" hidden aria-hidden="true"></div>
+  <aside
+    class="ex3-dict-drawer"
+    id="p2-only-dict-drawer"
+    aria-label="Быстрый словарь"
+    aria-hidden="true"
+  >
+    <div class="ex3-dict-drawer-head">
+      <span>Быстрый словарь</span>
+      <button type="button" class="ex3-dict-drawer-x" id="p2-only-dict-close" aria-label="Закрыть словарь">
+        ×
+      </button>
+    </div>
+    <div class="ex3-glossary-inner ex3-dict-drawer-body" id="p2-only-dict-body">
+      <dl>
+        <dt>1. An only child</dt>
+        <dd>
+          <p><strong>Значение:</strong> единственный ребёнок в семье.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> в эссе о семье часто пишут <em>single child</em> или <em>the only one child</em> &mdash; это ошибка. Правильно только <strong>an only child</strong>.
+          </p>
+        </dd>
+        <dt>2. Someone closer to my own age</dt>
+        <dd>
+          <p><strong>Значение:</strong> кто-то ближе мне по возрасту.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> шикарная фраза для сравнения людей. Замени скучное <em>younger/older</em> на это выражение &mdash; и балл за лексику вырастет.
+          </p>
+        </dd>
+        <dt>3. Close friends</dt>
+        <dd>
+          <p><strong>Значение:</strong> близкие друзья.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> базовое, но устойчивое сочетание. Часто в заданиях 30&ndash;36 нужно выбрать прилагательное к <em>friends</em> (<em>best</em>, <em>close</em>, <em>old</em>).
+          </p>
+        </dd>
+        <dt>4. Spend time with someone</dt>
+        <dd>
+          <p><strong>Значение:</strong> проводить время с кем-то.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> важно помнить предлог <strong>with</strong>. В тексте это усилено словами <em>so much</em> (<em>spend so much time with me</em>).
+          </p>
+        </dd>
+        <dt>5. Have great fun together</dt>
+        <dd>
+          <p><strong>Значение:</strong> отлично проводить время вместе, веселиться.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> <em>fun</em> здесь неисчисляемое &mdash; не ставьте артикль <em>a</em> перед <em>fun</em>.
+          </p>
+        </dd>
+        <dt>6. Share a bedroom with someone</dt>
+        <dd>
+          <p><strong>Значение:</strong> делить спальню, жить в одной комнате.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> точное выражение для быта. Снова предлог <strong>with</strong>.
+          </p>
+        </dd>
+        <dt>7. The best thing in the world</dt>
+        <dd>
+          <p><strong>Значение:</strong> лучшая вещь на свете.</p>
+          <p class="p2-only-gloss__why">
+            <strong>Зачем:</strong> эмоциональная фраза для заключения в письме или для мнения в устной части.
+          </p>
+        </dd>
+      </dl>
+      <div class="p2-only-gloss-bonus" role="note">
+        <p class="p2-only-gloss-bonus__title">Грамматический бонус (для папок)</p>
+        <p>
+          Под цифрой (3) в колонке стоит <strong>PROVIDE</strong>. В этом контексте это союз <strong><em>provided</em></strong> (&laquo;при условии, что&raquo;) &mdash; разговорный <strong>заменитель <em>if</em></strong>. Добавь этот пример в папку &laquo;Реальность / First conditional&raquo;.
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <script id="part2-open-bundled-ege-all-conditionals-only-child" type="application/json">
+{
+  "title": "Being an only child",
+  "subtitle": "J — Complete using the correct form of the cue words in the column on the right (same order as the gaps). Capital letters where needed.",
+  "gapCues": {
+    "1": "HAVE",
+    "2": "HAVE",
+    "3": "PROVIDE",
+    "4": "NOT / BE",
+    "5": "HAVE",
+    "6": "WANT",
+    "7": "HAPPEN"
+  },
+  "cueRailBreaksAfter": [2, 4],
+  "passage": "I'm an only child. People often say to me: 'Wouldn't you be a lot happier if you [[1]] brothers and sisters?' but I don't see it like that.\n\nIt's true that if I had a brother or sister, I [[2]] someone closer to my own age to talk to and play with at home, but I don't think that's very important [[3]] you have close friends, which I do.\n\nIf my parents had more children, they [[4]] able to spend so much time with me. And we have great fun together!\n\nAlso, if I had a brother or sister, I [[5]] to share a bedroom with them.\n\nThat might be fun, but what would happen if I [[6]] to play music and he or she had to study?\n\nNo – I don't want a brother or sister, unless it [[7]], of course. In that case, I'll think it's the best thing in the world!",
+  "answers": {
+    "1": ["had"],
+    "2": ["would have", "'d have"],
+    "3": ["provided"],
+    "4": ["wouldn't be", "would not be", "wouldnt be"],
+    "5": ["would have", "'d have"],
+    "6": ["wanted"],
+    "7": ["happens"]
+  },
+  "explanations": {
+    "1": "Unreal present in the question: if you had brothers and sisters (Past Simple after if).",
+    "2": "Second conditional main clause: would have + object (someone to talk to).",
+    "3": "Provided (that) = on condition that — linking word from PROVIDE.",
+    "4": "If my parents had more children (Past), they wouldn't be able… — would + not + be + able.",
+    "5": "Hypothetical: I would have to share — obligation with would have to.",
+    "6": "If I wanted to… — Past Simple in the if-clause of a second-conditional question.",
+    "7": "Real open condition after unless: unless it happens — Present Simple."
+  }
+}
+  </script>
+  <script src="../js/prep-boxed.js"></script>
+  <script src="../js/part2-open-cloze-core.js"></script>
+  <script>
+    (function () {
+      var body = document.body;
+      var fab = document.getElementById("p2-only-dict-fab");
+      var drawer = document.getElementById("p2-only-dict-drawer");
+      var backdrop = document.getElementById("p2-only-dict-backdrop");
+      var closeBtn = document.getElementById("p2-only-dict-close");
+
+      function closeDict() {
+        if (!drawer) return;
+        drawer.classList.remove("is-visible");
+        drawer.setAttribute("aria-hidden", "true");
+        if (backdrop) {
+          backdrop.hidden = true;
+          backdrop.setAttribute("aria-hidden", "true");
+        }
+        body.classList.remove("part2--dict-open");
+        if (fab) fab.setAttribute("aria-expanded", "false");
+      }
+
+      function openDict() {
+        if (!drawer) return;
+        drawer.classList.add("is-visible");
+        drawer.setAttribute("aria-hidden", "false");
+        if (backdrop) {
+          backdrop.hidden = false;
+          backdrop.setAttribute("aria-hidden", "false");
+        }
+        body.classList.add("part2--dict-open");
+        if (fab) fab.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleDict() {
+        if (!drawer) return;
+        if (drawer.classList.contains("is-visible")) closeDict();
+        else openDict();
+      }
+
+      if (fab) fab.addEventListener("click", toggleDict);
+      if (closeBtn) closeBtn.addEventListener("click", closeDict);
+      if (backdrop) backdrop.addEventListener("click", closeDict);
+
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key !== "Escape") return;
+        if (drawer && drawer.classList.contains("is-visible")) {
+          ev.preventDefault();
+          closeDict();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

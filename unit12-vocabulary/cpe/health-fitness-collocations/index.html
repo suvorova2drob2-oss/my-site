@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 12 &mdash; Health and fitness collocations (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --mint: #6ee7b7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .intro {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 22px;
+    }
+    .intro em { color: #bae6fd; font-style: normal; font-weight: 600; }
+
+    .colloc-bank {
+      border: 1px solid #3d5a86;
+      border-radius: 16px;
+      padding: 16px 18px;
+      background: linear-gradient(165deg, rgba(110, 231, 183, 0.07) 0%, rgba(8, 22, 48, 0.45) 100%);
+      margin-bottom: 24px;
+    }
+    .colloc-bank h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--mint);
+      margin-bottom: 10px;
+    }
+    .colloc-bank p { font-size: 0.86rem; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+    .colloc-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .colloc-chip {
+      font-size: 0.82rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(110, 231, 183, 0.35);
+      background: rgba(110, 231, 183, 0.08);
+      color: #d1fae5;
+    }
+
+    .article {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 20px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .article:last-of-type { margin-bottom: 0; }
+    .article__head {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 6px;
+    }
+    .article h2 {
+      font-size: 1.05rem;
+      color: #bae6fd;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .article p {
+      font-size: 0.96rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+    }
+    .noun-bold {
+      font-weight: 800;
+      color: #fef08a;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .pick {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 6px;
+      vertical-align: baseline;
+      margin: 0 2px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .pick label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.55);
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .pick label:hover { border-color: var(--accent); }
+    .pick input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .pick .sep { color: var(--muted); font-weight: 700; }
+    .pick.is-ok { border-color: rgba(54, 211, 153, 0.55); background: rgba(34, 197, 94, 0.1); }
+    .pick.is-bad { border-color: rgba(248, 113, 113, 0.55); background: rgba(248, 113, 113, 0.08); }
+    .pick.is-locked label { pointer-events: none; opacity: 0.92; }
+    .pick label.is-your-wrong {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.22);
+      color: #fecaca;
+      text-decoration: line-through;
+      text-decoration-color: rgba(254, 202, 202, 0.85);
+    }
+    .pick label.is-key {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.22);
+      color: #bbf7d0;
+      font-weight: 700;
+      box-shadow: 0 0 0 2px rgba(54, 211, 153, 0.35);
+    }
+    .pick label.is-nat-colloc {
+      border-color: rgba(110, 231, 183, 0.45);
+      background: rgba(110, 231, 183, 0.1);
+      color: #d1fae5;
+    }
+    .pick-hint {
+      display: none;
+      flex-basis: 100%;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+    .pick.is-bad .pick-hint,
+    .pick.is-ok .pick-hint { display: block; }
+    .pick-hint .hint-bad { color: #fca5a5; }
+    .pick-hint .hint-ok { color: #86efac; }
+
+    .fb-line {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .fb-line:last-child { margin-bottom: 0; }
+    .fb-line.is-ok { border-color: rgba(54, 211, 153, 0.45); }
+    .fb-line.is-bad { border-color: rgba(248, 113, 113, 0.45); }
+    .fb-line strong { color: #bae6fd; }
+    .fb-line .fb-you { color: #fca5a5; margin-top: 5px; }
+    .fb-line .fb-key { color: #86efac; margin-top: 5px; }
+    .fb-line .fb-keep { color: #a5f3fc; margin-top: 5px; font-size: 0.88rem; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .btn-sol {
+      background: #132544;
+      color: #bae6fd;
+      border: 1px solid var(--line);
+      display: none;
+    }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border-color: rgba(54, 211, 153, 0.45); color: #86efac; }
+    .feedback.bad { border-color: rgba(248, 113, 113, 0.45); color: #fecaca; }
+    .feedback ul { margin: 10px 0 0 1.1rem; }
+
+    .section-gap {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .section-gap h2 {
+      font-size: 1.05rem;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .section-gap .instr { margin-bottom: 16px; }
+
+    /* Exercise 2 — bank always visible + compact grid (no scroll to see chips) */
+    .ex2-workspace {
+      display: grid;
+      gap: 12px;
+      align-items: start;
+    }
+    @media (min-width: 720px) {
+      .ex2-workspace {
+        grid-template-columns: minmax(148px, 196px) minmax(0, 1fr);
+        gap: 14px;
+      }
+    }
+    .noun-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+      padding: 10px 12px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      background: rgba(8, 22, 48, 0.45);
+      position: sticky;
+      top: 8px;
+      z-index: 2;
+      max-height: calc(100vh - 16px);
+      overflow-y: auto;
+    }
+    .noun-bank__label {
+      width: 100%;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .noun-bank__hint {
+      width: 100%;
+      font-size: 0.76rem;
+      line-height: 1.4;
+      color: #93c5fd;
+      margin-bottom: 4px;
+    }
+    .noun-chip {
+      border: 1px solid #3d5680;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(8, 22, 48, 0.55);
+      color: #e8f0ff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .noun-chip:hover { border-color: var(--accent); }
+    .noun-chip.is-armed {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+    }
+    .noun-chip.is-used { opacity: 0.4; pointer-events: none; }
+
+    .ex2-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    @media (min-width: 720px) {
+      .ex2-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 10px;
+      }
+    }
+    .ex2-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.28);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+    .ex2-row.is-ok { border-color: rgba(54, 211, 153, 0.45); }
+    .ex2-row.is-bad { border-color: rgba(248, 113, 113, 0.45); }
+    .ex2-row__n { font-weight: 800; color: var(--mint); }
+    .ex2-adj { color: #c5d4ef; min-width: 0; }
+    .ex2-gap {
+      min-width: 5.5rem;
+      min-height: 32px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: #132544;
+      color: #fef08a;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .ex2-gap:hover { border-color: var(--accent); }
+    .ex2-gap.is-filled { border-style: solid; border-color: #3d5680; }
+    .ex2-gap.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); color: #bbf7d0; }
+    .ex2-gap.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+    .ex2-gap.is-target {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
+    }
+    .ex2-row-hint {
+      display: none;
+      grid-column: 1 / -1;
+      font-size: 0.76rem;
+      line-height: 1.4;
+      color: #fca5a5;
+      margin-top: 2px;
+    }
+    .ex2-row.is-bad .ex2-row-hint { display: block; }
+    .ex2-row-hint .hint-key { color: #86efac; font-weight: 700; }
+
+    .speak-box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+    }
+    .speak-example {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+      background: rgba(86, 204, 242, 0.08);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin-bottom: 16px;
+      color: #d5e2f8;
+    }
+    .speak-prompts {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (min-width: 640px) {
+      .speak-prompts { grid-template-columns: 1fr 1fr; }
+    }
+    .speak-card {
+      border: 1px solid #3d5680;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(8, 22, 48, 0.4);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+    .speak-card strong { color: #bae6fd; display: block; margin-bottom: 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .speak-collocs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .workbook-zone {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .workbook-zone h2 {
+      font-size: 1.02rem;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .workbook-link {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(110, 231, 183, 0.4);
+      background: rgba(110, 231, 183, 0.1);
+      color: #6ee7b7;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    .workbook-link:hover {
+      background: rgba(110, 231, 183, 0.18);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Vocabulary &mdash; Health and fitness</h1>
+      <a class="back" id="back-link" data-u12-levels-depth="3" data-u12-vocab-hub-depth="1" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%2012">&larr; Vocabulary &middot; Level 12</a>
+    </header>
+
+    <p class="intro">
+      <strong>Exercise 1</strong> &mdash; Read the three ads below. For items <em>1&ndash;12</em>, choose the word that
+      <em>does not</em> collocate with the noun in <strong>yellow</strong> (the odd one out).
+    </p>
+
+    <aside class="colloc-bank" aria-label="Useful collocations">
+      <h2>Collocation focus</h2>
+      <p>Two of the three options form natural pairs with the bold noun; one is the &ldquo;odd word out&rdquo;.</p>
+      <div class="colloc-chips" id="colloc-chips">
+        <span class="colloc-chip">severe / persistent injury</span>
+        <span class="colloc-chip">chronic pain</span>
+        <span class="colloc-chip">surgical intervention</span>
+        <span class="colloc-chip">complementary therapies</span>
+        <span class="colloc-chip">fad diet</span>
+        <span class="colloc-chip">core strength</span>
+        <span class="colloc-chip">&hellip; and more after you check</span>
+      </div>
+    </aside>
+
+    <article class="article">
+      <div class="article__head">Advert 1</div>
+      <h2>Struggling with injury? Try Gold Physio.</h2>
+      <p>
+        Are you struggling with a
+        <span class="pick" data-n="1" role="group" aria-label="Item 1">
+          <label><input type="radio" name="g1" value="severe" /> severe</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g1" value="damaging" /> damaging</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g1" value="persistent" /> persistent</label>
+        </span>
+        <span class="noun-bold">injury</span>?
+        Do you suffer from
+        <span class="pick" data-n="2" role="group" aria-label="Item 2">
+          <label><input type="radio" name="g2" value="constant" /> constant</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g2" value="cognitive" /> cognitive</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g2" value="chronic" /> chronic</label>
+        </span>
+        <span class="noun-bold">pain</span>
+        that nags away despite
+        <span class="pick" data-n="3" role="group" aria-label="Item 3">
+          <label><input type="radio" name="g3" value="medical" /> medical</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g3" value="surgical" /> surgical</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g3" value="burning" /> burning</label>
+        </span>
+        <span class="noun-bold">intervention</span>.
+        Gold Physio could be for you! We&rsquo;ll look at a range of holistic options including
+        <span class="pick" data-n="4" role="group" aria-label="Item 4">
+          <label><input type="radio" name="g4" value="alternative" /> alternative</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g4" value="complementary" /> complementary</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g4" value="genetic" /> genetic</label>
+        </span>
+        <span class="noun-bold">therapies</span>
+        to bring you back to your pain-free self. Don&rsquo;t delay, make your appointment today.
+      </p>
+    </article>
+
+    <article class="article">
+      <div class="article__head">Advert 2</div>
+      <h2>Don&rsquo;t suffer in silence</h2>
+      <p>
+        Dieting is not just for weight loss.
+        <span class="pick" data-n="5" role="group" aria-label="Item 5">
+          <label><input type="radio" name="g5" value="Restricted" /> Restricted</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g5" value="Special" /> Special</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g5" value="Fad" /> Fad</label>
+        </span>
+        <span class="noun-bold">diets</span>
+        can actually benefit a whole host of ailments, from
+        <span class="pick" data-n="6" role="group" aria-label="Item 6">
+          <label><input type="radio" name="g6" value="poor" /> poor</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g6" value="bad" /> bad</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g6" value="limiting" /> limiting</label>
+        </span>
+        <span class="noun-bold">circulation</span>
+        to problems with your
+        <span class="pick" data-n="7" role="group" aria-label="Item 7">
+          <label><input type="radio" name="g7" value="health" /> health</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g7" value="digestive" /> digestive</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g7" value="immune" /> immune</label>
+        </span>
+        <span class="noun-bold">system</span>.
+        Come along to our Wednesday evening group to find out more about this. We&rsquo;ll offer advice as well as help with the
+        <span class="pick" data-n="8" role="group" aria-label="Item 8">
+          <label><input type="radio" name="g8" value="intelligent" /> intelligent</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g8" value="emotional" /> emotional</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g8" value="mental" /> mental</label>
+        </span>
+        <span class="noun-bold">resilience</span>
+        needed to stick to such diets. With a
+        <span class="pick" data-n="9" role="group" aria-label="Item 9">
+          <label><input type="radio" name="g9" value="fresh" /> fresh</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g9" value="conservative" /> conservative</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g9" value="balanced" /> balanced</label>
+        </span>
+        <span class="noun-bold">perspective</span>
+        and the right diet, you could see incredible results.
+      </p>
+    </article>
+
+    <article class="article">
+      <div class="article__head">Advert 3</div>
+      <h2>Muscles you can count on!</h2>
+      <p>
+        Do you see little improvement in your
+        <span class="pick" data-n="10" role="group" aria-label="Item 10">
+          <label><input type="radio" name="g10" value="core" /> core</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g10" value="physical" /> physical</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g10" value="superior" /> superior</label>
+        </span>
+        <span class="noun-bold">strength</span>,
+        no matter how many times you go to the gym? Remember, it&rsquo;s not always easy to change your build &mdash; it&rsquo;s often part of your
+        <span class="pick" data-n="11" role="group" aria-label="Item 11">
+          <label><input type="radio" name="g11" value="genetic" /> genetic</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g11" value="demographic" /> demographic</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g11" value="physical" /> physical</label>
+        </span>
+        <span class="noun-bold">makeup</span>.
+        But don&rsquo;t get disheartened as help is at hand. Using
+        <span class="pick" data-n="12" role="group" aria-label="Item 12">
+          <label><input type="radio" name="g12" value="effective" /> effective</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g12" value="established" /> established</label>
+          <span class="sep">/</span>
+          <label><input type="radio" name="g12" value="proficient" /> proficient</label>
+        </span>
+        <span class="noun-bold">practices</span>
+        from the east, we&rsquo;ll show you the secret of building muscle that will last! Call us now on 080039393.
+      </p>
+    </article>
+
+    <div class="toolbar">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      <button type="button" class="btn-sol" id="btn-solution">Show solution</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+
+    <section class="section-gap" aria-labelledby="ex2-head">
+      <h2 id="ex2-head">Exercise 2 &mdash; Add the noun</h2>
+      <p class="instr">
+        Each group of adjectives combines with <strong>one noun from Exercise 1</strong>. Tap a word in the bank (left), then tap a gap. The bank stays on screen while you work.
+        (Each noun is used once.)
+      </p>
+      <div class="ex2-workspace">
+        <div class="noun-bank" id="noun-bank" aria-label="Nouns from Exercise 1"></div>
+        <div class="ex2-list" id="ex2-list"></div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-check" id="btn-check-2">Check Exercise 2</button>
+        <button type="button" class="btn-reset" id="btn-reset-2">Reset Exercise 2</button>
+        <button type="button" class="btn-sol" id="btn-solution-2">Show solution</button>
+      </div>
+      <div class="feedback" id="feedback-2" aria-live="polite"></div>
+    </section>
+
+    <section class="section-gap" aria-labelledby="ex3-head">
+      <h2 id="ex3-head">Exercise 3 &mdash; Speak</h2>
+      <div class="speak-box">
+        <p class="instr" style="margin-bottom: 14px;">
+          Work in pairs. Prepare <strong>four questions</strong> for your partner using collocations from Exercises 1 and 2.
+          Take turns to ask and answer.
+        </p>
+        <div class="speak-example">
+          <strong>Example:</strong> Have you ever tried any <em>complementary therapies</em>?
+        </div>
+        <p class="instr" style="font-size: 0.88rem; margin-bottom: 8px;">Collocation bank (mix Ex. 1 + Ex. 2):</p>
+        <div class="speak-collocs" id="speak-collocs"></div>
+        <div class="speak-prompts">
+          <div class="speak-card">
+            <strong>Question 1 &mdash; therapies / intervention</strong>
+            Have you (or someone you know) ever benefited from &hellip; ?
+          </div>
+          <div class="speak-card">
+            <strong>Question 2 &mdash; diet / system / circulation</strong>
+            Do you think a &hellip; can really improve &hellip; ?
+          </div>
+          <div class="speak-card">
+            <strong>Question 3 &mdash; pain / strength / resilience</strong>
+            What helps you cope with &hellip; or build &hellip; ?
+          </div>
+          <div class="speak-card">
+            <strong>Question 4 &mdash; perspective / practices</strong>
+            From your &hellip;, what &hellip; would you recommend for staying healthy?
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workbook-zone" aria-label="Health and fitness workbook">
+      <h2>Workbook &mdash; choose the word &amp; noun box</h2>
+      <p class="instr" style="margin-bottom: 14px;">
+        Two extra exercises from the coursebook: pick the correct word in each definition, then complete collocations with nouns from the box (the same noun may appear twice).
+      </p>
+      <a class="workbook-link u12-cpe-sibling" href="workbook.html?course=cpe">Open workbook exercises &rarr;</a>
+    </section>
+  </main>
+
+  <script src="../../../js/u12-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  /** Odd word out — does NOT collocate with the bold noun (coursebook key). */
+  var KEY = {
+    1: "damaging",
+    2: "cognitive",
+    3: "burning",
+    4: "genetic",
+    5: "Special",
+    6: "limiting",
+    7: "health",
+    8: "intelligent",
+    9: "conservative",
+    10: "superior",
+    11: "demographic",
+    12: "proficient",
+  };
+
+  var EXPLAIN = {
+    1: "severe / persistent injury",
+    2: "constant / chronic pain",
+    3: "medical / surgical intervention",
+    4: "alternative / complementary therapies",
+    5: "restricted / fad diets",
+    6: "poor / bad circulation",
+    7: "digestive / immune system",
+    8: "emotional / mental resilience",
+    9: "fresh / balanced perspective",
+    10: "core / physical strength",
+    11: "genetic / physical makeup",
+    12: "effective / established practices",
+  };
+
+  var NOUN = {
+    1: "injury",
+    2: "pain",
+    3: "intervention",
+    4: "therapies",
+    5: "diets",
+    6: "circulation",
+    7: "system",
+    8: "resilience",
+    9: "perspective",
+    10: "strength",
+    11: "makeup",
+    12: "practices",
+  };
+
+  var TOTAL = 12;
+  var locked = false;
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+
+  function picks() {
+    return Array.prototype.slice.call(document.querySelectorAll(".pick"));
+  }
+
+  function getChoice(n) {
+    var sel = document.querySelector('input[name="g' + n + '"]:checked');
+    return sel ? sel.value : null;
+  }
+
+  function clearStyles() {
+    picks().forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-your-wrong", "is-key", "is-nat-colloc");
+      });
+      var hint = p.querySelector(".pick-hint");
+      if (hint) hint.remove();
+    });
+  }
+
+  function ensurePickHint(wrap) {
+    var hint = wrap.querySelector(".pick-hint");
+    if (!hint) {
+      hint = document.createElement("div");
+      hint.className = "pick-hint";
+      wrap.appendChild(hint);
+    }
+    return hint;
+  }
+
+  function markPickFeedback(n, got, isCorrect) {
+    var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      lab.classList.remove("is-your-wrong", "is-key", "is-nat-colloc");
+      var val = lab.querySelector("input").value;
+      if (val === KEY[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isCorrect) lab.classList.add("is-your-wrong");
+      else if (val !== KEY[n]) lab.classList.add("is-nat-colloc");
+    });
+    var hint = ensurePickHint(wrap);
+    if (isCorrect) {
+      hint.innerHTML =
+        '<span class="hint-ok">\u2713 Correct \u2014 <strong>' +
+        KEY[n] +
+        "</strong> does not collocate with <strong>" +
+        NOUN[n] +
+        "</strong>.</span>";
+    } else {
+      hint.innerHTML =
+        '<span class="hint-bad">You picked <strong>' +
+        got +
+        "</strong> \u2014 that <em>does</em> collocate.</span> " +
+        'Odd word: <strong class="hint-ok">' +
+        KEY[n] +
+        "</strong>. Natural pairs: " +
+        EXPLAIN[n] +
+        ".";
+    }
+  }
+
+  function buildEx1FeedbackHtml(ok, wrongNums) {
+    var html =
+      '<p style="margin-bottom:12px;font-weight:700;">Score: ' +
+      ok +
+      " / " +
+      TOTAL +
+      "</p>" +
+      '<p style="margin-bottom:12px;color:#93c5fd;font-size:0.88rem;">Remember: pick the word that <strong>does not</strong> go with the yellow noun.</p>';
+    for (var n = 1; n <= TOTAL; n++) {
+      var got = getChoice(n);
+      var isRowOk = got === KEY[n];
+      html +=
+        '<div class="fb-line ' +
+        (isRowOk ? "is-ok" : "is-bad") +
+        '">' +
+        "<p><strong>" +
+        (isRowOk ? "\u2713" : "\u2717") +
+        " " +
+        n +
+        " \u00b7 " +
+        NOUN[n] +
+        "</strong></p>";
+      if (!isRowOk && got) {
+        html +=
+          '<p class="fb-you">Your choice: <strong>' +
+          got +
+          "</strong> \u2014 collocates with <strong>" +
+          NOUN[n] +
+          "</strong> (so it is <em>not</em> the odd word).</p>" +
+          '<p class="fb-key">Odd word out: <strong>' +
+          KEY[n] +
+          "</strong></p>" +
+          '<p class="fb-keep">Natural pairs: ' +
+          EXPLAIN[n] +
+          "</p>";
+      } else if (isRowOk) {
+        html +=
+          '<p class="fb-key">Correct \u2014 <strong>' +
+          KEY[n] +
+          "</strong> is the odd one out.</p>" +
+          '<p class="fb-keep">Keep: ' +
+          EXPLAIN[n] +
+          "</p>";
+      }
+      html += "</div>";
+    }
+    return html;
+  }
+
+  function scrollToFirstWrong(wrongNums) {
+    if (!wrongNums.length) return;
+    var first = document.querySelector('.pick[data-n="' + wrongNums[0] + '"]');
+    if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function setLocked(on) {
+    locked = on;
+    picks().forEach(function (p) {
+      p.querySelectorAll("input").forEach(function (inp) {
+        inp.disabled = on;
+      });
+      if (on) p.classList.add("is-locked");
+    });
+  }
+
+  function fillCollocChips() {
+    var host = document.getElementById("colloc-chips");
+    if (!host) return;
+    host.innerHTML = "";
+    for (var k = 1; k <= TOTAL; k++) {
+      var chip = document.createElement("span");
+      chip.className = "colloc-chip";
+      chip.textContent = EXPLAIN[k];
+      host.appendChild(chip);
+    }
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearStyles();
+    elFb.className = "feedback";
+    elFb.innerHTML = "";
+
+    var missing = [];
+    var wrong = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var got = getChoice(n);
+      var wrap = document.querySelector('.pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY[n]) {
+        ok++;
+        wrap.classList.add("is-ok");
+        markPickFeedback(n, got, true);
+      } else {
+        wrong.push(n);
+        wrap.classList.add("is-bad");
+        markPickFeedback(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Choose the odd word out for item(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "none";
+      return;
+    }
+
+    if (ok === TOTAL) {
+      fillCollocChips();
+      elFb.innerHTML =
+        "<p><strong>Excellent \u2014 " +
+        TOTAL +
+        " / " +
+        TOTAL +
+        ".</strong> You spotted every non-collocation.</p>";
+      elFb.className = "feedback show ok";
+      btnSol.style.display = "none";
+      setLocked(true);
+    } else {
+      elFb.innerHTML = buildEx1FeedbackHtml(ok, wrong);
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+      scrollToFirstWrong(wrong);
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL; n++) {
+      var inp = document.querySelector('input[name="g' + n + '"][value="' + KEY[n] + '"]');
+      if (inp) inp.checked = true;
+    }
+    clearStyles();
+    picks().forEach(function (p) {
+      p.classList.add("is-ok");
+      var n = Number(p.getAttribute("data-n"));
+      markPickFeedback(n, KEY[n], true);
+    });
+    fillCollocChips();
+    elFb.innerHTML =
+      "<p><strong>Solution shown.</strong> Green labels = odd words out. Mint labels = natural collocations with the yellow noun.</p>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+    setLocked(true);
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    locked = false;
+    clearStyles();
+    picks().forEach(function (p) {
+      p.querySelectorAll("input").forEach(function (inp) {
+        inp.checked = false;
+        inp.disabled = false;
+      });
+    });
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+  });
+
+  picks().forEach(function (p) {
+    p.querySelectorAll("input").forEach(function (inp) {
+      inp.addEventListener("change", function () {
+        if (locked) return;
+        clearStyles();
+        elFb.className = "feedback";
+        elFb.textContent = "";
+        btnSol.style.display = "none";
+      });
+    });
+  });
+
+  /* —— Exercise 2 —— */
+  var NOUNS_EX1 = [
+    "injury",
+    "pain",
+    "intervention",
+    "therapies",
+    "diets",
+    "circulation",
+    "system",
+    "resilience",
+    "perspective",
+    "strength",
+    "makeup",
+    "practices",
+  ];
+
+  var EX2_GROUPS = [
+    { n: 1, adj: "healthcare / legal / nervous", ans: "system" },
+    { n: 2, adj: "brute / considerable / inner", ans: "strength" },
+    { n: 3, adj: "balanced / varied / staple", ans: "diets", also: ["diet"] },
+    { n: 4, adj: "alternative / personal / historical", ans: "perspective" },
+    { n: 5, adj: "increased / blood / air", ans: "circulation" },
+    { n: 6, adj: "unfair / employment / recommended", ans: "practices" },
+    { n: 7, adj: "chest / acute / sharp", ans: "pain" },
+    { n: 8, adj: "government / humanitarian / divine", ans: "intervention" },
+  ];
+
+  var SPEAK_COLLOCS = [
+    "healthcare system",
+    "legal system",
+    "nervous system",
+    "inner strength",
+    "balanced diet",
+    "blood circulation",
+    "complementary therapies",
+    "chronic pain",
+    "mental resilience",
+    "government intervention",
+    "employment practices",
+    "genetic makeup",
+    "core strength",
+    "digestive system",
+    "immune system",
+    "emotional resilience",
+    "fresh perspective",
+    "effective practices",
+    "persistent injury",
+    "surgical intervention",
+  ];
+
+  var armedNoun = null;
+  var ex2Locked = false;
+  var ex2Filled = Object.create(null);
+  var elFb2 = document.getElementById("feedback-2");
+  var btnSol2 = document.getElementById("btn-solution-2");
+
+  function normNoun(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function ex2Accept(n, got) {
+    var row = EX2_GROUPS[n - 1];
+    if (!row || !got) return false;
+    var g = normNoun(got);
+    if (g === normNoun(row.ans)) return true;
+    if (row.also) {
+      for (var i = 0; i < row.also.length; i++) {
+        if (g === normNoun(row.also[i])) return true;
+      }
+    }
+    return false;
+  }
+
+  function renderNounBank() {
+    var bank = document.getElementById("noun-bank");
+    if (!bank) return;
+    bank.innerHTML =
+      '<div class="noun-bank__label">Nouns from Ex. 1</div>' +
+      '<p class="noun-bank__hint">Tap a noun, then a gap.</p>';
+    NOUNS_EX1.forEach(function (word) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "noun-chip";
+      btn.textContent = word;
+      btn.setAttribute("data-noun", word);
+      btn.addEventListener("click", function () {
+        if (ex2Locked) return;
+        bank.querySelectorAll(".noun-chip").forEach(function (c) {
+          c.classList.remove("is-armed");
+        });
+        armedNoun = word;
+        btn.classList.add("is-armed");
+      });
+      bank.appendChild(btn);
+    });
+  }
+
+  function renderEx2Rows() {
+    var list = document.getElementById("ex2-list");
+    if (!list) return;
+    list.innerHTML = "";
+    EX2_GROUPS.forEach(function (row) {
+      var div = document.createElement("div");
+      div.className = "ex2-row";
+      div.setAttribute("data-ex2-row", String(row.n));
+      div.innerHTML =
+        '<span class="ex2-row__n">' +
+        row.n +
+        ".</span>" +
+        '<span class="ex2-adj">' +
+        row.adj +
+        "</span>" +
+        '<button type="button" class="ex2-gap" data-ex2="' +
+        row.n +
+        '" aria-label="Gap ' +
+        row.n +
+        '">&mdash;</button>' +
+        '<div class="ex2-row-hint" aria-live="polite"></div>';
+      list.appendChild(div);
+    });
+    list.querySelectorAll(".ex2-gap").forEach(function (gap) {
+      gap.addEventListener("click", function () {
+        if (ex2Locked) return;
+        var num = gap.getAttribute("data-ex2");
+        if (armedNoun) {
+          var prev = ex2Filled[num];
+          if (prev) {
+            var oldChip = document.querySelector('.noun-chip[data-noun="' + prev + '"]');
+            if (oldChip) oldChip.classList.remove("is-used");
+          }
+          ex2Filled[num] = armedNoun;
+          gap.textContent = armedNoun;
+          gap.classList.add("is-filled");
+          var chip = document.querySelector('.noun-chip[data-noun="' + armedNoun + '"]');
+          if (chip) chip.classList.add("is-used");
+          armedNoun = null;
+          document.querySelectorAll(".noun-chip.is-armed").forEach(function (c) {
+            c.classList.remove("is-armed");
+          });
+          list.querySelectorAll(".ex2-gap.is-target").forEach(function (g) {
+            g.classList.remove("is-target");
+          });
+          clearEx2Styles();
+          if (elFb2) {
+            elFb2.className = "feedback";
+            elFb2.textContent = "";
+          }
+          if (btnSol2) btnSol2.style.display = "none";
+          return;
+        }
+        list.querySelectorAll(".ex2-gap.is-target").forEach(function (g) {
+          g.classList.remove("is-target");
+        });
+        gap.classList.add("is-target");
+      });
+    });
+  }
+
+  function renderSpeakCollocs() {
+    var host = document.getElementById("speak-collocs");
+    if (!host) return;
+    SPEAK_COLLOCS.forEach(function (c) {
+      var sp = document.createElement("span");
+      sp.className = "colloc-chip";
+      sp.textContent = c;
+      host.appendChild(sp);
+    });
+  }
+
+  function clearEx2Styles() {
+    document.querySelectorAll(".ex2-row").forEach(function (r) {
+      r.classList.remove("is-ok", "is-bad");
+      var hint = r.querySelector(".ex2-row-hint");
+      if (hint) hint.textContent = "";
+    });
+    document.querySelectorAll(".ex2-gap").forEach(function (g) {
+      g.classList.remove("is-ok", "is-bad", "is-target");
+    });
+  }
+
+  function markEx2RowFeedback(rowNum, got, isOk) {
+    var rowEl = document.querySelector('.ex2-row[data-ex2-row="' + rowNum + '"]');
+    if (!rowEl) return;
+    rowEl.classList.remove("is-ok", "is-bad");
+    rowEl.classList.add(isOk ? "is-ok" : "is-bad");
+    var hint = rowEl.querySelector(".ex2-row-hint");
+    if (!hint || isOk) {
+      if (hint) hint.textContent = "";
+      return;
+    }
+    var row = EX2_GROUPS[rowNum - 1];
+    hint.innerHTML =
+      "Your noun: <strong>" +
+      got +
+      "</strong>. Correct: <span class=\"hint-key\">" +
+      row.ans +
+      "</span> (e.g. " +
+      row.adj.split(" / ")[0] +
+      " " +
+      row.ans +
+      ")";
+  }
+
+  function resetEx2() {
+    ex2Locked = false;
+    ex2Filled = Object.create(null);
+    armedNoun = null;
+    document.querySelectorAll(".noun-chip").forEach(function (c) {
+      c.classList.remove("is-armed", "is-used");
+    });
+    document.querySelectorAll(".ex2-gap").forEach(function (g) {
+      g.textContent = "\u2014";
+      g.classList.remove("is-filled", "is-ok", "is-bad", "is-target");
+    });
+    if (elFb2) {
+      elFb2.className = "feedback";
+      elFb2.textContent = "";
+    }
+    if (btnSol2) btnSol2.style.display = "none";
+  }
+
+  document.getElementById("btn-check-2").addEventListener("click", function () {
+    if (ex2Locked) return;
+    clearEx2Styles();
+    var missing = [];
+    var wrong = [];
+    var ok = 0;
+    EX2_GROUPS.forEach(function (row) {
+      var gap = document.querySelector('.ex2-gap[data-ex2="' + row.n + '"]');
+      var got = ex2Filled[row.n];
+      if (!got) {
+        missing.push(row.n);
+        return;
+      }
+      if (ex2Accept(row.n, got)) {
+        ok++;
+        if (gap) gap.classList.add("is-ok");
+        markEx2RowFeedback(row.n, got, true);
+      } else {
+        wrong.push(row.n);
+        if (gap) gap.classList.add("is-bad");
+        markEx2RowFeedback(row.n, got, false);
+      }
+    });
+    if (missing.length) {
+      elFb2.textContent = "Fill gap(s): " + missing.join(", ") + ".";
+      elFb2.className = "feedback show bad";
+      btnSol2.style.display = "none";
+      return;
+    }
+    if (ok === EX2_GROUPS.length) {
+      elFb2.innerHTML =
+        "<p><strong>Excellent \u2014 8 / 8.</strong> Every adjective group matches the right noun.</p>";
+      elFb2.className = "feedback show ok";
+      btnSol2.style.display = "none";
+      ex2Locked = true;
+    } else {
+      var html =
+        '<p style="margin-bottom:12px;font-weight:700;">Score: ' +
+        ok +
+        " / 8</p>";
+      EX2_GROUPS.forEach(function (row) {
+        var got = ex2Filled[row.n];
+        var isRowOk = ex2Accept(row.n, got);
+        html +=
+          '<div class="fb-line ' +
+          (isRowOk ? "is-ok" : "is-bad") +
+          '">' +
+          "<p><strong>" +
+          (isRowOk ? "\u2713" : "\u2717") +
+          " " +
+          row.n +
+          " \u00b7 " +
+          row.adj +
+          "</strong></p>";
+        if (!isRowOk && got) {
+          html +=
+            '<p class="fb-you">Your noun: <strong>' +
+            got +
+            "</strong></p>" +
+            '<p class="fb-key">Correct: <strong>' +
+            row.ans +
+            "</strong> \u2192 e.g. <em>" +
+            row.adj.split(" / ")[0] +
+            " " +
+            row.ans +
+            "</em></p>";
+        } else if (isRowOk) {
+          html +=
+            '<p class="fb-key">Correct \u2014 <strong>' +
+            row.ans +
+            "</strong></p>";
+        }
+        html += "</div>";
+      });
+      elFb2.innerHTML = html;
+      elFb2.className = "feedback show bad";
+      btnSol2.style.display = "inline-block";
+    }
+  });
+
+  btnSol2.addEventListener("click", function () {
+    resetEx2();
+    EX2_GROUPS.forEach(function (row) {
+      ex2Filled[row.n] = row.ans;
+      var gap = document.querySelector('.ex2-gap[data-ex2="' + row.n + '"]');
+      if (gap) {
+        gap.textContent = row.ans;
+        gap.classList.add("is-filled", "is-ok");
+      }
+      var chip = document.querySelector('.noun-chip[data-noun="' + row.ans + '"]');
+      if (chip) chip.classList.add("is-used");
+    });
+    ex2Locked = true;
+    elFb2.textContent = "Solution shown.";
+    elFb2.className = "feedback show ok";
+    btnSol2.style.display = "none";
+  });
+
+  document.getElementById("btn-reset-2").addEventListener("click", resetEx2);
+
+  renderNounBank();
+  renderEx2Rows();
+  renderSpeakCollocs();
+})();
+  </script>
+</body>
+</html>

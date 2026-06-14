@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 8 &mdash; Vocabulary</title>
+  <script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search || "");
+    var course = String(q.get("course") || "").toLowerCase();
+    var fromCpe =
+      course === "cpe" ||
+      q.get("prep_stay") === "1" ||
+      !!q.get("backLabel") ||
+      /level\s*8/i.test(String(q.get("backLabel") || ""));
+    if (fromCpe) {
+      q.set("course", "cpe");
+      var tail = q.toString();
+      location.replace("cpe/index.html" + (tail ? "?" + tail : "?course=cpe"));
+    }
+  } catch (e) {
+    location.replace("cpe/index.html?course=cpe");
+  }
+})();
+  </script>
   <style>
     :root {
       --panel: #1d2b4a;
@@ -69,7 +89,13 @@
     </header>
     <p class="lead">Listening phrases (<strong>SB 8.2</strong>), travel collocations, <strong>make / do</strong>, and other Unit&nbsp;8 word work.</p>
 
-    <a class="card-link" href="make-do-gap-fill/index.html">
+    <a class="card-link" href="workbook-pack/index.html">
+      <h2>Workbook vocabulary pack</h2>
+      <p>Travel and holidays, adjective word formation, and phrasal verbs from the workbook pages. Typed gaps + choice checks.</p>
+      <span class="go">Open workbook pack &rarr;</span>
+    </a>
+
+    <a class="card-link" href="make-do-gap-fill/index.html" style="margin-top: 14px;">
       <h2>Make and do &mdash; gap-fill (1&ndash;6)</h2>
       <p>Fifteen gaps: correct form of <strong>make</strong> or <strong>do</strong> (one or two words). Examples from the reading included. Check with key.</p>
       <span class="go">Open exercise &rarr;</span>

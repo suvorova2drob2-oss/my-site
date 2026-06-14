@@ -1,6 +1,6 @@
 /**
  * Unit 12 lexical packs for Vocabulary Tic-Tac-Toe (offline page).
- * Depends on: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js
+ * Depends on: unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js, unit12-multi-word-verbs-lexicon.js
  */
 (function (W) {
     "use strict";
@@ -10,6 +10,11 @@
             rowsGlobal: "U12_READING_ROAD_TO_BETTERMENT_LEXIS_GAME_ROWS",
             topicId: "u12_reading_road_to_betterment",
             label: "The Road to Betterment · Reading",
+        },
+        {
+            rowsGlobal: "U12_MULTI_WORD_VERBS_LEXIS_GAME_ROWS",
+            topicId: "u12_multi_word_verbs",
+            label: "Multi-word verbs · Vocabulary",
         },
         {
             rowsGlobal: "U12_SPORTS_IDIOMS_LEXIS_GAME_ROWS",
@@ -33,7 +38,13 @@
         for (i = 0; i < rows.length; i++) {
             var r = rows[i];
             if (!r) continue;
-            var ans = String(r.ans != null ? r.ans : r.phrase || "").trim();
+            var ans = String(
+                r.headword != null && String(r.headword).trim()
+                    ? r.headword
+                    : r.ans != null
+                      ? r.ans
+                      : r.phrase || ""
+            ).trim();
             var hint = String(r.hint != null ? r.hint : "").trim();
             if (!ans || !hint) continue;
             w.push(rowToWord(topic, hint, ans));

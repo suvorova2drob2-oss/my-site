@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &mdash; Self- compounds (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --rose: #fda4af;
+      --rose-bg: rgba(244, 114, 182, 0.12);
+      --mint: #6ee7b7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .section { margin-bottom: 28px; }
+    .section:last-child { margin-bottom: 0; }
+    .section-head {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 16px;
+    }
+    .section-head em { color: #bae6fd; font-style: italic; font-weight: 600; }
+    .ex-workspace {
+      display: grid;
+      grid-template-columns: minmax(168px, 210px) 1fr;
+      gap: 16px 20px;
+      align-items: start;
+    }
+    .bank-col--side { position: sticky; top: 12px; }
+    .items-col { min-width: 0; }
+    .word-box-wrap {
+      border: 2px solid rgba(244, 114, 182, 0.45);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--rose-bg);
+    }
+    .word-box-wrap h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .word-box { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-box--dock { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+    .bank-dock {
+      display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 50;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(9, 18, 42, 0.97);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    .bank-dock__label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 6px;
+    }
+    .bank-dock__status { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; min-height: 1.1em; }
+    .bank-dock__status.is-active { color: #bae6fd; font-weight: 700; }
+    .word-chip {
+      font-size: 0.88rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffe4e6;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .word-chip:hover:not(.is-used):not(.is-selected) { border-color: var(--accent); }
+    .word-chip.is-selected {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.18);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .word-chip.is-used { opacity: 0.35; cursor: default; text-decoration: line-through; }
+    .bank-hint { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .item__sent { font-size: 0.95rem; line-height: 1.75; }
+    .self-prefix { font-weight: 800; color: #fef08a; }
+    .gap {
+      display: inline-block;
+      min-width: 6.5rem;
+      padding: 2px 10px;
+      margin: 0 1px;
+      border-radius: 8px;
+      border: 2px dashed #4a6898;
+      background: rgba(8, 22, 48, 0.55);
+      color: #bae6fd;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      text-align: center;
+    }
+    .gap:hover:not(.is-locked) { border-color: var(--accent); }
+    .gap.is-filled { border-style: solid; border-color: #6ee7b7; color: #d1fae5; }
+    .gap.is-ok { border-color: var(--ok); background: rgba(54, 211, 153, 0.12); color: #bbf7d0; }
+    .gap.is-bad { border-color: var(--bad); background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+    .gap.is-locked { cursor: default; }
+    .pick {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 6px;
+      vertical-align: baseline;
+      margin: 0 2px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    .pick label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.55);
+      touch-action: manipulation;
+    }
+    .pick label:hover { border-color: var(--accent); }
+    .pick input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .pick .sep { color: var(--muted); font-weight: 700; }
+    .pick.is-ok { border-color: rgba(54, 211, 153, 0.55); background: rgba(34, 197, 94, 0.1); }
+    .pick.is-bad { border-color: rgba(248, 113, 113, 0.55); background: rgba(248, 113, 113, 0.08); }
+    .pick.is-locked label { pointer-events: none; opacity: 0.92; }
+    .pick label.is-key {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.22);
+      color: #bbf7d0;
+      font-weight: 700;
+    }
+    .pick label.is-your-wrong {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.22);
+      color: #fecaca;
+      text-decoration: line-through;
+    }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: linear-gradient(135deg, #0891b2, #2563eb); color: #fff; }
+    .btn-reset { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--line); }
+    .btn-sol { background: rgba(254, 240, 138, 0.15); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); display: none; }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { border: 1px solid rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.1); }
+    .feedback.bad { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.08); }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 28px 0;
+    }
+    @media (max-width: 720px) {
+      body.has-dock { padding-bottom: 130px; }
+      .ex-workspace { grid-template-columns: 1fr; }
+      .bank-col--side { display: none; }
+      .bank-dock { display: block; }
+    }
+  </style>
+</head>
+<body class="has-dock">
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary</p>
+        <h1>Self- compounds</h1>
+      </div>
+      <a class="back" id="back-link" data-u1-vocab-hub-depth="1" data-u1-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%201">&larr; Vocabulary</a>
+    </header>
+
+    <section class="section" aria-labelledby="ex2-head">
+      <p class="section-head" id="ex2-head">
+        <strong>2</strong> Complete the <em>self-</em> adjectives in sentences 1&ndash;6 with a word from the box.
+      </p>
+
+      <div class="ex-workspace">
+        <aside class="bank-col bank-col--side" aria-label="Word box sidebar">
+          <div class="word-box-wrap">
+            <h2>Word box</h2>
+            <div class="word-box" id="word-box"></div>
+            <p class="bank-hint">Tap a word, then a gap. Each word once.</p>
+          </div>
+        </aside>
+
+        <div class="items-col">
+          <div id="ex2-items"></div>
+          <div class="toolbar">
+            <button type="button" class="btn btn-check" id="btn-check-2">Check Exercise 2</button>
+            <button type="button" class="btn btn-reset" id="btn-reset-2">Reset Exercise 2</button>
+            <button type="button" class="btn btn-sol" id="btn-solution-2">Show solution</button>
+          </div>
+          <div class="feedback" id="feedback-2" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <section class="section" aria-labelledby="ex3-head">
+      <p class="section-head" id="ex3-head">
+        <strong>3</strong> Underline the correct option.
+      </p>
+
+      <div id="ex3-items"></div>
+
+      <div class="toolbar">
+        <button type="button" class="btn btn-check" id="btn-check-3">Check Exercise 3</button>
+        <button type="button" class="btn btn-reset" id="btn-reset-3">Reset Exercise 3</button>
+        <button type="button" class="btn btn-sol" id="btn-solution-3">Show solution</button>
+      </div>
+      <div class="feedback" id="feedback-3" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="bank-dock" aria-label="Word box dock">
+    <div class="bank-dock__label">Word box &middot; Exercise 2</div>
+    <div class="bank-dock__status" id="dock-status">Tap a word, then a gap.</div>
+    <div class="word-box word-box--dock" id="word-box-dock"></div>
+  </div>
+
+  <script src="../../../js/u1-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  /* —— Exercise 2 —— */
+  var BOX = [
+    "deprecating",
+    "indulgent",
+    "made",
+    "possessed",
+    "respecting",
+    "sacrificing",
+    "satisfied"
+  ];
+
+  var KEY2 = {
+    1: "satisfied",
+    2: "deprecating",
+    3: "sacrificing",
+    4: "respecting",
+    5: "possessed",
+    6: "made",
+    7: "indulgent"
+  };
+
+  var EX2 = [
+    {
+      n: 1,
+      html:
+        '&lsquo;I knew I was right,&rsquo; he gloated, and gave that irritatingly <span class="self-prefix">self-</span><button type="button" class="gap" data-n="1" aria-label="Gap 1">&mdash;</button> smile he reserves for even his most insignificant successes.'
+    },
+    {
+      n: 2,
+      html:
+        'Her one-hour stand-up act consisted of her usual <span class="self-prefix">self-</span><button type="button" class="gap" data-n="2" aria-label="Gap 2">&mdash;</button> humour, an endless string of jokes revolving around her own perceived failings.'
+    },
+    {
+      n: 3,
+      html:
+        'She received the award for her tireless efforts and <span class="self-prefix">self-</span><button type="button" class="gap" data-n="3" aria-label="Gap 3">&mdash;</button> devotion to those less fortunate than herself in the community.'
+    },
+    {
+      n: 4,
+      html:
+        'No <span class="self-prefix">self-</span><button type="button" class="gap" data-n="4" aria-label="Gap 4">&mdash;</button> cook should ever consider serving instant mashed potatoes!'
+    },
+    {
+      n: 5,
+      html:
+        'He confronts each problem with the same calm, <span class="self-prefix">self-</span><button type="button" class="gap" data-n="5" aria-label="Gap 5">&mdash;</button> confidence, never raising his voice, never losing his temper.'
+    },
+    {
+      n: 6,
+      html:
+        'This modest, <span class="self-prefix">self-</span><button type="button" class="gap" data-n="6" aria-label="Gap 6">&mdash;</button> billionaire &ndash; she built up her clothing empire from absolutely nothing &ndash; had no time for a <span class="self-prefix">self-</span><button type="button" class="gap" data-n="7" aria-label="Gap 7">&mdash;</button> lifestyle and was happier sitting at her desk than lounging by the pool.'
+    }
+  ];
+
+  var answers2 = {};
+  var selectedWord = null;
+  var locked2 = false;
+  var elBox = document.getElementById("word-box");
+  var elBoxDock = document.getElementById("word-box-dock");
+  var elDockStatus = document.getElementById("dock-status");
+  var elEx2 = document.getElementById("ex2-items");
+  var elFb2 = document.getElementById("feedback-2");
+  var btnSol2 = document.getElementById("btn-solution-2");
+  var TOTAL2 = 7;
+
+  function renderBoxInto(container) {
+    if (!container) return;
+    container.innerHTML = "";
+    BOX.forEach(function (w) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "word-chip";
+      chip.textContent = w;
+      chip.setAttribute("data-word", w);
+      container.appendChild(chip);
+    });
+  }
+
+  function usedWords2() {
+    var used = {};
+    Object.keys(answers2).forEach(function (k) {
+      if (answers2[k]) used[answers2[k]] = true;
+    });
+    return used;
+  }
+
+  function syncBoxInto(container) {
+    if (!container) return;
+    var used = usedWords2();
+    container.querySelectorAll(".word-chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-word");
+      chip.classList.toggle("is-used", !!used[w] && selectedWord !== w);
+      chip.classList.toggle("is-selected", selectedWord === w);
+      chip.disabled = locked2 || (!!used[w] && selectedWord !== w);
+    });
+  }
+
+  function updateDockStatus() {
+    if (!elDockStatus) return;
+    if (selectedWord) {
+      elDockStatus.textContent = "Selected: " + selectedWord + " \u2014 now tap a gap";
+      elDockStatus.className = "bank-dock__status is-active";
+    } else {
+      elDockStatus.textContent = "Tap a word, then a gap.";
+      elDockStatus.className = "bank-dock__status";
+    }
+  }
+
+  function syncBox2() {
+    syncBoxInto(elBox);
+    syncBoxInto(elBoxDock);
+    updateDockStatus();
+  }
+
+  function syncGaps2() {
+    document.querySelectorAll("#ex2-items .gap[data-n]").forEach(function (gap) {
+      var n = gap.getAttribute("data-n");
+      var val = answers2[n] || "";
+      gap.textContent = val || "\u2014";
+      gap.classList.toggle("is-filled", !!val);
+      gap.classList.remove("is-ok", "is-bad");
+      gap.classList.toggle("is-locked", locked2);
+    });
+  }
+
+  function renderEx2() {
+    elEx2.innerHTML = EX2.map(function (it) {
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' + it.html + "</p>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
+  function handleBoxClick(e) {
+    if (locked2) return;
+    var chip = e.target.closest(".word-chip");
+    if (!chip || chip.classList.contains("is-used")) return;
+    var w = chip.getAttribute("data-word");
+    selectedWord = selectedWord === w ? null : w;
+    syncBox2();
+  }
+
+  elBox.addEventListener("click", handleBoxClick);
+  elBoxDock.addEventListener("click", handleBoxClick);
+
+  elEx2.addEventListener("click", function (e) {
+    if (locked2) return;
+    var gap = e.target.closest(".gap[data-n]");
+    if (!gap) return;
+    var n = gap.getAttribute("data-n");
+    if (answers2[n]) {
+      delete answers2[n];
+      selectedWord = null;
+      syncGaps2();
+      syncBox2();
+      elFb2.className = "feedback";
+      elFb2.textContent = "";
+      btnSol2.style.display = "none";
+      return;
+    }
+    if (!selectedWord) return;
+    answers2[n] = selectedWord;
+    selectedWord = null;
+    syncGaps2();
+    syncBox2();
+    elFb2.className = "feedback";
+    elFb2.textContent = "";
+    btnSol2.style.display = "none";
+  });
+
+  document.getElementById("btn-check-2").addEventListener("click", function () {
+    if (locked2) return;
+    elFb2.className = "feedback";
+    elFb2.textContent = "";
+    btnSol2.style.display = "none";
+
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL2; n++) {
+      var gap = document.querySelector('#ex2-items .gap[data-n="' + n + '"]');
+      if (!answers2[n]) {
+        missing.push(n <= 6 ? n : "6b");
+        continue;
+      }
+      if (answers2[n] === KEY2[n]) {
+        ok++;
+        gap.classList.add("is-ok");
+      } else {
+        gap.classList.add("is-bad");
+      }
+    }
+
+    if (missing.length) {
+      elFb2.textContent = "Fill all gaps in Exercise 2.";
+      elFb2.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === TOTAL2) {
+      elFb2.innerHTML = "<strong>Excellent &mdash; " + TOTAL2 + " / " + TOTAL2 + ".</strong>";
+      elFb2.className = "feedback show ok";
+      locked2 = true;
+      syncBox2();
+    } else {
+      elFb2.innerHTML =
+        "<strong>Score: " + ok + " / " + TOTAL2 + ".</strong> Tap a gap to clear and try again.";
+      elFb2.className = "feedback show bad";
+      btnSol2.style.display = "inline-block";
+    }
+  });
+
+  btnSol2.addEventListener("click", function () {
+    for (var n = 1; n <= TOTAL2; n++) answers2[n] = KEY2[n];
+    locked2 = true;
+    selectedWord = null;
+    syncGaps2();
+    document.querySelectorAll("#ex2-items .gap[data-n]").forEach(function (gap) {
+      gap.classList.add("is-ok");
+    });
+    syncBox2();
+    elFb2.innerHTML = "<strong>Solution shown.</strong>";
+    elFb2.className = "feedback show ok";
+    btnSol2.style.display = "none";
+  });
+
+  document.getElementById("btn-reset-2").addEventListener("click", function () {
+    answers2 = {};
+    selectedWord = null;
+    locked2 = false;
+    elFb2.className = "feedback";
+    elFb2.textContent = "";
+    btnSol2.style.display = "none";
+    syncGaps2();
+    syncBox2();
+  });
+
+  /* —— Exercise 3 —— */
+  var KEY3 = { 1: "self-pity", 2: "self-worth", 3: "self-deception" };
+
+  var EX3 = [
+    {
+      n: 1,
+      before: "Her dismissal would have been an easy excuse for Hana to wallow in ",
+      options: ["self-preservation", "self-pity", "self-delusion"],
+      after: ", but she didn&rsquo;t fall into this trap."
+    },
+    {
+      n: 2,
+      before: "The book chronicles a young man&rsquo;s struggles with not quite fitting in, living with regrets and questioning his own ",
+      options: ["self-esteem", "self-worth", "self-interest"],
+      after: "."
+    },
+    {
+      n: 3,
+      before: "His attempt to rationalise his bad behaviour is a profound act of ",
+      options: ["self-deception", "self-aggrandisement", "self-assurance"],
+      after: " &ndash; but he&rsquo;s fooling no one else."
+    }
+  ];
+
+  var locked3 = false;
+  var elEx3 = document.getElementById("ex3-items");
+  var elFb3 = document.getElementById("feedback-3");
+  var btnSol3 = document.getElementById("btn-solution-3");
+
+  function renderEx3() {
+    elEx3.innerHTML = EX3.map(function (it) {
+      var opts = it.options
+        .map(function (opt, oi) {
+          var id = "ex3-" + it.n + "-" + oi;
+          return (
+            (oi > 0 ? '<span class="sep">/</span>' : "") +
+            '<label><input type="radio" name="ex3q' + it.n + '" value="' + opt + '" id="' + id + '" /> ' +
+            opt + "</label>"
+          );
+        })
+        .join("");
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' +
+        it.before +
+        '<span class="pick" data-n="' + it.n + '" role="group">' +
+        opts +
+        "</span>" +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+  }
+
+  function getChoice3(n) {
+    var inp = document.querySelector('input[name="ex3q' + n + '"]:checked');
+    return inp ? inp.value : "";
+  }
+
+  function clearStyles3() {
+    document.querySelectorAll("#ex3-items .pick").forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-key", "is-your-wrong");
+      });
+    });
+  }
+
+  function markPick3(n, got, isOk) {
+    var wrap = document.querySelector('#ex3-items .pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      var val = lab.querySelector("input").value;
+      if (val === KEY3[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isOk) lab.classList.add("is-your-wrong");
+    });
+  }
+
+  document.getElementById("btn-check-3").addEventListener("click", function () {
+    if (locked3) return;
+    clearStyles3();
+    elFb3.className = "feedback";
+    elFb3.textContent = "";
+    btnSol3.style.display = "none";
+
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= 3; n++) {
+      var got = getChoice3(n);
+      var wrap = document.querySelector('#ex3-items .pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY3[n]) {
+        ok++;
+        wrap.classList.add("is-ok");
+        markPick3(n, got, true);
+      } else {
+        wrap.classList.add("is-bad");
+        markPick3(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb3.textContent = "Choose an option for item(s): " + missing.join(", ") + ".";
+      elFb3.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === 3) {
+      elFb3.innerHTML = "<strong>Excellent &mdash; 3 / 3.</strong>";
+      elFb3.className = "feedback show ok";
+      locked3 = true;
+      document.querySelectorAll("#ex3-items input").forEach(function (inp) {
+        inp.disabled = true;
+      });
+      document.querySelectorAll("#ex3-items .pick").forEach(function (p) {
+        p.classList.add("is-locked");
+      });
+    } else {
+      elFb3.innerHTML = "<strong>Score: " + ok + " / 3.</strong> Green = correct option.";
+      elFb3.className = "feedback show bad";
+      btnSol3.style.display = "inline-block";
+    }
+  });
+
+  btnSol3.addEventListener("click", function () {
+    for (var n = 1; n <= 3; n++) {
+      var inp = document.querySelector('input[name="ex3q' + n + '"][value="' + KEY3[n] + '"]');
+      if (inp) inp.checked = true;
+    }
+    clearStyles3();
+    document.querySelectorAll("#ex3-items .pick").forEach(function (p) {
+      p.classList.add("is-ok", "is-locked");
+      markPick3(Number(p.getAttribute("data-n")), KEY3[p.getAttribute("data-n")], true);
+    });
+    document.querySelectorAll("#ex3-items input").forEach(function (inp) {
+      inp.disabled = true;
+    });
+    elFb3.innerHTML = "<strong>Solution shown.</strong>";
+    elFb3.className = "feedback show ok";
+    btnSol3.style.display = "none";
+    locked3 = true;
+  });
+
+  document.getElementById("btn-reset-3").addEventListener("click", function () {
+    locked3 = false;
+    clearStyles3();
+    document.querySelectorAll("#ex3-items input").forEach(function (inp) {
+      inp.checked = false;
+      inp.disabled = false;
+    });
+    elFb3.className = "feedback";
+    elFb3.textContent = "";
+    btnSol3.style.display = "none";
+  });
+
+  renderEx2();
+  renderEx3();
+  renderBoxInto(elBox);
+  renderBoxInto(elBoxDock);
+  syncGaps2();
+})();
+  </script>
+</body>
+</html>

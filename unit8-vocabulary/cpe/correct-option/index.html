@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Level 8 &mdash; Correct option (CPE Prep)</title>
+  <script src="../../../js/prep-track-scope.js" data-track="cpe"></script>
+  <link rel="stylesheet" href="../../../css/cpe-prep-vocab-pick-shell.css" />
+</head>
+<body class="cpe-vocab-body">
+  <main class="cpe-vocab-page">
+    <header class="cpe-vocab-top">
+      <a class="cpe-vocab-back" id="u8-back-link" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">&larr; Vocabulary &mdash; Level 8</a>
+      <h1>Correct option</h1>
+      <p class="cpe-vocab-meta">Level 8 &middot; Vocabulary</p>
+    </header>
+
+    <p class="cpe-vocab-instr">Complete the sentence with the correct option in each pair. Then <strong>Submit</strong> for explanations.</p>
+
+    <div class="cpe-vocab-split" id="cpe-vocab-split">
+      <div class="cpe-vocab-main">
+        <div class="cpe-vocab-block">
+          <div class="cpe-vocab-items" id="sent-list"></div>
+        </div>
+        <div class="cpe-vocab-btn-row">
+          <button type="button" class="cpe-vocab-btn-check" id="btn-check">Submit</button>
+          <button type="button" class="cpe-vocab-btn-reset" id="btn-reset">Reset</button>
+        </div>
+      </div>
+      <aside class="cpe-vocab-aside" id="feedback" aria-live="polite" hidden></aside>
+    </div>
+
+    <p class="cpe-vocab-sibling"><a class="u8-cpe-sibling" href="../electric-vehicles-options/index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%208">Next &middot; Electric vehicles &rarr;</a></p>
+  </main>
+
+  <script>
+(function () {
+  var ITEMS = [
+    {
+      id: 1,
+      before: "Education about recycling is ",
+      a: "now more than ever",
+      b: "every bit",
+      after: " as important as the act itself.",
+      ans: "every bit",
+      why:
+        "<strong>Every bit as important as</strong> is a fixed comparative pattern (= equally important).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Now more than ever as important as</em> does not fit this slot; <em>more than ever</em> usually comes after the adjective phrase or in a different structure.</span>"
+    },
+    {
+      id: 2,
+      before: "It was as if the governments didn&rsquo;t have the ",
+      a: "lightest",
+      b: "faintest",
+      after: " idea about the dire situation.",
+      ans: "faintest",
+      why:
+        "<strong>Not have the faintest idea</strong> is a fixed phrase (= no idea at all).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Lightest idea</em> is not an English collocation.</span>"
+    },
+    {
+      id: 3,
+      before: "We must work hard to ensure that future generations are ",
+      a: "not much",
+      b: "no",
+      after: " worse off than we have been.",
+      ans: "no",
+      why:
+        "<strong>No worse off than</strong> compares two situations (= not in a worse position).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Not much worse off than</em> changes the meaning (only slightly worse); the textbook phrase here is <em>no worse off</em>.</span>"
+    },
+    {
+      id: 4,
+      before: "Individual behaviour change is ",
+      a: "now more",
+      b: "not quite",
+      after: " as important as changes in industry.",
+      ans: "not quite",
+      why:
+        "<strong>Not quite as important as</strong> = almost, but not fully, as important (qualified comparison).",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>Now more as important as</em> is ungrammatical in this frame.</span>"
+    },
+    {
+      id: 5,
+      before: "If I may be ",
+      a: "so bold",
+      b: "as bold",
+      after: " as to say, my opponent&rsquo;s company has historically been a major polluter.",
+      ans: "so bold",
+      why:
+        "<strong>If I may be so bold as to say</strong> is a fixed polite formula for a frank remark.",
+      notOther:
+        "<span class=\"fb-not\">✗ <em>As bold as to say</em> is not the standard idiom; we need <em>so bold as to</em>.</span>"
+    }
+  ];
+
+  var picks = {};
+  var checked = false;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function pairHtml(id, it) {
+    return (
+      '<span class="pick" data-gap="' +
+      id +
+      '">' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.a) +
+      '">' +
+      esc(it.a) +
+      "</button>" +
+      '<span class="pick-sep">or</span>' +
+      '<button type="button" class="pick-opt" data-gap="' +
+      id +
+      '" data-word="' +
+      escAttr(it.b) +
+      '">' +
+      esc(it.b) +
+      "</button></span>"
+    );
+  }
+
+  function render() {
+    var root = document.getElementById("sent-list");
+    root.innerHTML = ITEMS.map(function (it) {
+      return (
+        '<article class="cpe-vocab-item"><div class="cpe-vocab-item__n">' +
+        it.id +
+        "</div><p class=\"cpe-vocab-item__text\">" +
+        it.before +
+        pairHtml(it.id, it) +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+
+    root.querySelectorAll(".pick-opt").forEach(function (btn) {
+      btn.addEventListener("click", onPick);
+    });
+  }
+
+  function hideAside() {
+    var fb = document.getElementById("feedback");
+    var split = document.getElementById("cpe-vocab-split");
+    fb.hidden = true;
+    fb.innerHTML = "";
+    split.classList.remove("cpe-vocab-split--aside-visible");
+  }
+
+  function onPick(ev) {
+    if (checked) return;
+    var btn = ev.currentTarget;
+    var gap = Number(btn.getAttribute("data-gap"));
+    var word = btn.getAttribute("data-word");
+    picks[gap] = word;
+    hideAside();
+    document.querySelectorAll('.pick-opt[data-gap="' + gap + '"]').forEach(function (b) {
+      b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+      if (b.getAttribute("data-word") === word) b.classList.add("is-picked");
+    });
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var fb = document.getElementById("feedback");
+    var parts = [];
+
+    ITEMS.forEach(function (it) {
+      var chosen = picks[it.id] || "";
+      var ok = chosen === it.ans;
+      if (ok) correct += 1;
+
+      var pickEl = document.querySelector('.pick[data-gap="' + it.id + '"]');
+      if (pickEl) {
+        pickEl.classList.remove("is-ok", "is-bad");
+        pickEl.classList.add(ok ? "is-ok" : "is-bad");
+      }
+
+      document.querySelectorAll('.pick-opt[data-gap="' + it.id + '"]').forEach(function (b) {
+        b.disabled = true;
+        var w = b.getAttribute("data-word");
+        b.classList.remove("is-picked", "is-ok", "is-bad", "is-dim");
+        if (w === it.ans) b.classList.add("is-ok");
+        else if (w === chosen && !ok) b.classList.add("is-bad");
+        else b.classList.add("is-dim");
+      });
+
+      parts.push(
+        '<div class="fb-item ' +
+          (ok ? "ok" : "bad") +
+          '"><h4>' +
+          it.id +
+          ". " +
+          (ok ? "Correct" : "Not quite") +
+          " &mdash; <strong>" +
+          esc(it.ans) +
+          "</strong>" +
+          (chosen && !ok ? " (you chose <em>" + esc(chosen) + "</em>)" : "") +
+          '</h4><p class="fb-why">' +
+          it.why +
+          it.notOther +
+          "</p></div>"
+      );
+    });
+
+    fb.innerHTML =
+      '<p class="fb-summary">Score: ' + correct + " / " + ITEMS.length + "</p>" + parts.join("");
+    fb.hidden = false;
+    document.getElementById("cpe-vocab-split").classList.add("cpe-vocab-split--aside-visible");
+  }
+
+  function resetAll() {
+    checked = false;
+    picks = {};
+    hideAside();
+    render();
+  }
+
+  document.getElementById("btn-check").addEventListener("click", checkAnswers);
+  document.getElementById("btn-reset").addEventListener("click", resetAll);
+  render();
+})();
+  </script>
+  <script src="../../../js/u8-vocab-course-context.js"></script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 10 &mdash; Listening 10.1 &middot; Justin (crime writer)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.32rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 12px; }
+    .note-box {
+      font-size: 0.88rem;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      background: #172948;
+      line-height: 1.45;
+    }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .questions {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .q { margin-bottom: 16px; border-bottom: 1px solid #34507d; padding-bottom: 14px; }
+    .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
+    .stem { font-size: 0.98rem; line-height: 1.4; margin-bottom: 10px; color: #e8f0ff; }
+    .opts { list-style: none; display: grid; gap: 4px; }
+    .opt-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
+    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line.ok {
+      background: rgba(34, 197, 94, 0.28);
+      border-color: #4ade80;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.65);
+    }
+    .opt-line.bad-pick {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #f87171;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-submit { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      line-height: 1.45;
+      min-height: 1.5em;
+      font-size: 0.92rem;
+    }
+    .fold-study {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+    }
+    .fold-study summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 12px 14px;
+      color: var(--muted);
+    }
+    .fold-inner {
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--line);
+    }
+    .fold-lead {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 12px 0;
+    }
+    .transcript {
+      font-size: 0.94rem;
+      line-height: 1.55;
+      color: #dbeafe;
+    }
+    .transcript p { margin: 0 0 10px; }
+    .transcript .spk { font-weight: 700; color: #7dd3fc; }
+    .transcript mark {
+      background: rgba(251, 191, 36, 0.22);
+      color: #fde68a;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">RfB2 First &middot; Listening &middot; Interview &middot; SB 10.1</span>
+        <h1>Justin &mdash; crime writer</h1>
+        <p class="lead"><code>RfB2First_SB_Track 10.1.mp3</code> &mdash; choose <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.</p>
+      </div>
+      <a class="back" id="u10ListenBack" href="../index.html">&larr; Listening — Unit 10</a>
+    </header>
+
+    <div class="audio-wrap">
+      <label for="track">Audio (Yandex Object Storage)</label>
+      <audio id="track" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/RfB2First_SB_Track%2010.1.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <p class="lead" style="margin-bottom: 12px;">
+      You will hear an interview with a crime writer. For questions <strong>1&ndash;7</strong>, choose the best answer (<strong>A</strong>, <strong>B</strong> or <strong>C</strong>).
+    </p>
+
+    <div id="mcq-root" class="questions" aria-live="polite"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-submit" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnClear">Clear choices &amp; marks</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+
+    <details class="fold-study">
+      <summary>After you listen &middot; Audioscript (study)</summary>
+      <div class="fold-inner">
+        <p class="fold-lead">
+          Read-only transcript from the Student&rsquo;s Book. Yellow highlights mark the lines tested in questions 1&ndash;7.
+        </p>
+        <div class="transcript">
+          <p><span class="spk">I:</span> With us today is local crime writer, Justin Blakelock. Justin, perhaps I should begin by asking you why you decided to write crime fiction rather than any other genre?</p>
+          <p><span class="spk">J:</span> Whenever I&rsquo;m asked that question, people think I&rsquo;m going to say it&rsquo;s because I&rsquo;ve always loved reading crime novels. Well, I have, but I&rsquo;m actually much more of a science-fiction fan than anything else, and that&rsquo;s the kind of thing I was writing when I first started out as an author. <mark>But then my editor &ndash; an ex-policewoman curiously enough &ndash; saw elements of crime writing in my work and she gently pushed me in that direction.</mark></p>
+          <p><span class="spk">I:</span> And was it her idea to set your novels here in Brighton?</p>
+          <p><span class="spk">J:</span> No, that was mine. Firstly, because I love the place so much and despite the crime theme, I do try to show it in a positive light. But also, even though I&rsquo;m writing fiction, <mark>I want my stories to be as real and accurate as possible. And because I grew up in this area, because I know it so well, it makes sense for me to set them here.</mark> There are too many novels that lack credibility because they&rsquo;re set in fictional places, or they&rsquo;re set in real places which are not accurately described.</p>
+          <p><span class="spk">I:</span> You show two versions of Brighton in your books, don&rsquo;t you?</p>
+          <p><span class="spk">J:</span> That&rsquo;s right. To the visitor, <mark>Brighton seems a very peaceful city. It has this gentle, calm exterior &ndash; the very solid seafront buildings and pleasant shopping streets. But like many other cities it has its darker, more criminal places &ndash; the rundown buildings and areas that the tourist rarely sees. And that&rsquo;s also true of many of the characters I create. At first, they seem to be very gentle, very pleasant people, but there&rsquo;s something darker, more criminal hiding below the surface.</mark></p>
+          <p><span class="spk">I:</span> And how about your protagonist, Detective Inspector George Trent? He&rsquo;s a little more straightforward, isn&rsquo;t he?</p>
+          <p><span class="spk">J:</span> Yes, yes he is. He does have the occasional moment when he surprises everyone &ndash; if not, he&rsquo;d be too dull. But essentially, what you see is what you get with George. He&rsquo;s very scruffy, slightly overweight, and completely disorganised. He doesn&rsquo;t worry about things like dressing up or <mark>combing his hair &ndash; he thinks he&rsquo;s good enough as he is; he&rsquo;s very comfortable with the way he looks.</mark> And that&rsquo;s really what makes him such a likeable character, I think.</p>
+          <p><span class="spk">I:</span> Yes, he&rsquo;s not attractive, but he&rsquo;s very human, isn&rsquo;t he? Now, Justin, you have a very popular website. Can you tell us about that?</p>
+          <p><span class="spk">J:</span> Yes, sure. Well, <mark>the original idea behind the site was to get my name out there more and promote my books.</mark> But it gradually evolved into a blog &ndash; usually articles aimed at crime writers who were just getting started. And then other established authors began reading and commenting on my posts, and now it&rsquo;s effectively become a forum, a kind of debating club.</p>
+          <p><span class="spk">I:</span> Can you give us an example of the kind of advice you give?</p>
+          <p><span class="spk">J:</span> Well, I&rsquo;ve just posted a list of things you should remember to include in a crime novel. So for example, make sure your detectives have enough paperwork to keep them busy. Real detectives have loads to do, so your fictional ones should be doing their fair share too. To be honest, it&rsquo;s the kind of thing writers ought to pick up themselves by <mark>watching what goes on in a police station. There&rsquo;s absolutely no substitute for that.</mark> But it&rsquo;s good to compare notes and for every ten pieces of advice I give, you can read twenty more in the comments from other writers who&rsquo;ve done their own research. It&rsquo;s a support service, a secondary source.</p>
+          <p><span class="spk">I:</span> And a very useful one. Now Justin, your last book, <em>Western Road</em>, is currently being made into a film. You must be delighted.</p>
+          <p><span class="spk">J:</span> Yes, I am. More or less. The American producers wanted to move the action to Chicago, but I made it a condition that it had to be filmed in Brighton with British actors. <mark>I only wish I&rsquo;d insisted on having more control over the script. It moves too fast for my liking.</mark> But that&rsquo;s the film world for you &ndash; what can you do?</p>
+          <p><span class="spk">I:</span> Not much, I guess.</p>
+        </div>
+      </div>
+    </details>
+  </main>
+
+  <script>
+    (function () {
+      /** SB 10.1 — RfB2 First key (questions 1–7). */
+      var CORRECT = ["C", "A", "B", "B", "A", "C", "B"];
+
+      var MCQ = [
+        {
+          q: "Why did Justin become a crime writer?",
+          options: {
+            A: "His favourite genre as a reader has always been crime.",
+            B: "He had previously worked in the police force.",
+            C: "He was encouraged to do so by his editor."
+          }
+        },
+        {
+          q: "The setting for Justin's novels helps him create",
+          options: {
+            A: "a sense of authenticity.",
+            B: "a mood of optimism.",
+            C: "a degree of tension."
+          }
+        },
+        {
+          q: "Both the city in which Justin's novels are set and his fictional characters",
+          options: {
+            A: "are physically very attractive.",
+            B: "have two very different sides.",
+            C: "are very unwelcoming."
+          }
+        },
+        {
+          q: "According to Justin, what is his main character's most appealing feature?",
+          options: {
+            A: "He is very unpredictable.",
+            B: "He is happy with his appearance.",
+            C: "He looks like a typical detective."
+          }
+        },
+        {
+          q: "Justin initially set up his website in order to",
+          options: {
+            A: "publicise his work.",
+            B: "help new crime writers.",
+            C: "encourage an exchange of ideas."
+          }
+        },
+        {
+          q: "Justin says writers should carry out their main research by",
+          options: {
+            A: "working closely with a detective.",
+            B: "consulting criminal documents.",
+            C: "observing police professionals."
+          }
+        },
+        {
+          q: "What is Justin not happy about with the film version of his latest book?",
+          options: {
+            A: "the actors",
+            B: "the script",
+            C: "the location"
+          }
+        }
+      ];
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function keyReady() {
+        return CORRECT.length === MCQ.length && CORRECT.every(function (x) {
+          return x === "A" || x === "B" || x === "C";
+        });
+      }
+
+      var root = document.getElementById("mcq-root");
+      var fb = document.getElementById("feedback");
+
+      function render() {
+        root.innerHTML = MCQ.map(function (item, qIdx) {
+          var keys = ["A", "B", "C"];
+          var opts = keys.map(function (k) {
+            if (!item.options[k]) return "";
+            var id = "q" + qIdx + k;
+            return (
+              '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+              '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+              '<label for="' + id + '"><span class="letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
+            );
+          }).join("");
+          return (
+            '<article class="q">' +
+            '<p class="stem"><strong>' + String(qIdx + 1) + ".</strong> " + escapeHtml(item.q) + "</p>" +
+            '<ul class="opts">' + opts + "</ul></article>"
+          );
+        }).join("");
+
+        root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            clearMarks();
+            fb.textContent = "";
+          });
+        });
+      }
+
+      function clearMarks() {
+        root.querySelectorAll(".opt-line").forEach(function (line) {
+          line.classList.remove("ok", "bad-pick");
+        });
+      }
+
+      function getChoice(i) {
+        var el = root.querySelector('input[name="q' + i + '"]:checked');
+        return el ? el.value : "";
+      }
+
+      render();
+
+      document.getElementById("btnCheck").addEventListener("click", function () {
+        clearMarks();
+        var n = MCQ.length;
+        var missing = false;
+        for (var i = 0; i < n; i++) {
+          if (!getChoice(i)) {
+            missing = true;
+            break;
+          }
+        }
+        if (missing) {
+          fb.textContent = "Choose A, B or C for every question, then check again.";
+          return;
+        }
+
+        if (!keyReady()) {
+          fb.innerHTML =
+            "<strong>All " +
+            n +
+            " answered.</strong> Add seven letters (A/B/C) to <code>CORRECT</code> in the script to turn on scoring.";
+          return;
+        }
+
+        var score = 0;
+        for (var j = 0; j < n; j++) {
+          var pick = getChoice(j);
+          var ok = pick === CORRECT[j];
+          if (ok) score++;
+          var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
+          if (line) line.classList.add(ok ? "ok" : "bad-pick");
+          var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + CORRECT[j] + '"]');
+          if (correctLine && !ok) correctLine.classList.add("ok");
+        }
+        fb.innerHTML =
+          score === n
+            ? "<strong>All " + n + " correct.</strong>"
+            : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct option; your wrong pick is outlined in red where applicable.";
+      });
+
+      document.getElementById("btnClear").addEventListener("click", function () {
+        root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+          r.checked = false;
+        });
+        clearMarks();
+        fb.textContent = "";
+      });
+    })();
+  </script>
+  <script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var bh = document.getElementById("u10ListenBack");
+  if (!bh) return;
+  var rawBack = q.get("back");
+  if (!rawBack) return;
+  try {
+    var u = new URL(String(rawBack).trim(), window.location.href);
+    if (u.origin === window.location.origin) bh.href = u.pathname + u.search + u.hash;
+  } catch (e) {}
+  if (q.get("backLabel")) {
+    try {
+      bh.textContent = "\u2190 " + decodeURIComponent(String(q.get("backLabel")).replace(/\+/g, " "));
+    } catch (e2) {}
+  }
+})();
+  </script>
+</body>
+</html>

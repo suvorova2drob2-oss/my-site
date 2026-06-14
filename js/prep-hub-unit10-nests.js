@@ -207,6 +207,15 @@
             kind: "prep-link",
             href: "unit10-vocabulary/similes/index.html"
         };
+        var seedTaskKwt = {
+            id: "u10_vocab_kwt_seed",
+            title: "Key word transformation — idioms",
+            subtitle: "4 items · KETTLE / TRUTH / FOOT / GOOSE · pot calling the kettle black",
+            kind: "prep-link",
+            href:
+                "unit10-vocabulary/cpe/key-word-transformation/index.html?course=cpe&backLabel=" +
+                encodeURIComponent("Vocabulary — Level 10"),
+        };
         function ensureTasksOnFolder(fld) {
             fld.tasks = Array.isArray(fld.tasks) ? fld.tasks : [];
             var ch = false;
@@ -228,6 +237,25 @@
                 fld.tasks.push(seedTaskSimiles);
                 ch = true;
             }
+            if (!fld.tasks.some(function (t) {
+                return t && String(t.id) === String(seedTaskKwt.id);
+            })) {
+                fld.tasks.push(seedTaskKwt);
+                ch = true;
+            }
+            [seedTask, seedTask2, seedTaskSimiles, seedTaskKwt].forEach(function (seed) {
+                var i = fld.tasks.findIndex(function (t) {
+                    return t && String(t.id) === String(seed.id);
+                });
+                if (i === -1) return;
+                var cur = fld.tasks[i];
+                ["title", "subtitle", "kind", "href"].forEach(function (key) {
+                    if (seed[key] != null && cur[key] !== seed[key]) {
+                        cur[key] = seed[key];
+                        ch = true;
+                    }
+                });
+            });
             return ch;
         }
         for (var i = 0; i < d.folders.length; i++) {
@@ -244,11 +272,11 @@
             id: id,
             type: "folder",
             title: "Vocabulary",
-            subtitle: "Books & films · similes (same list as site folder)",
+            subtitle: "Books & films · similes · idiom key-word transformation",
             goal: "",
             linkedUnit: 10,
             sections: [],
-            tasks: [seedTask, seedTask2, seedTaskSimiles]
+            tasks: [seedTask, seedTask2, seedTaskSimiles, seedTaskKwt]
         });
         PrepSiteContent.save(d);
     };

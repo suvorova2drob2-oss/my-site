@@ -28,9 +28,21 @@
       }
     } catch (e0) {}
     try {
-      var j = JSON.parse(global.localStorage.getItem(PROFILE_KEY) || "{}");
+      var pk = PROFILE_KEY;
+      if (global.prepTrackScope && typeof global.prepTrackScope.profileStorageKey === "function") {
+        pk = global.prepTrackScope.profileStorageKey(PROFILE_KEY);
+      } else if (global.prepCourseProfile && typeof global.prepCourseProfile.profileStorageKey === "function") {
+        pk = global.prepCourseProfile.profileStorageKey();
+      }
+      var j = JSON.parse(global.localStorage.getItem(pk) || "{}");
       if (j && j.courseId) return normalizeStorageCourseId(j.courseId);
     } catch (e0b) {}
+    try {
+      if (global.prepTrackScope && typeof global.prepTrackScope.get === "function") {
+        var tr = global.prepTrackScope.get();
+        if (tr === "ege" || tr === "fce") return tr;
+      }
+    } catch (eTr) {}
     return "cpe";
   }
 
@@ -190,11 +202,28 @@
     } catch (e) {}
   }
 
+  function isFcePageContext() {
+    try {
+      var path = String(location.pathname || "").replace(/\\/g, "/").toLowerCase();
+      if (/\/fce\.html$/.test(path)) return true;
+      if (/\/unit\d+\.html$/.test(path)) return true;
+      if (/\/unit\d+-[^/]+\/fce\//.test(path)) return true;
+      if (/\/listening\/unit\d+\/fce\//.test(path)) return true;
+      if (/\/use-of-english\/unit\d+\/fce\//.test(path)) return true;
+      if (/\/unit\d+-vocabulary\/fce\//.test(path)) return true;
+      if (/\/unit10-vocabulary\/(phrasal-out|phrasal-up-out|prefix-out|crimes-and|criminal-titles|crime-punishment)/.test(path)) {
+        return true;
+      }
+    } catch (ePath) {}
+    return false;
+  }
+
   function isFceCourseMode() {
     try {
       var course = String(new URLSearchParams(location.search || "").get("course") || "").toLowerCase();
       if (course === "cpe") return false;
       if (course === "fce") return true;
+      if (isFcePageContext()) return true;
       return sessionStorage.getItem(SS_KEY) === "1";
     } catch (e) {
       return false;

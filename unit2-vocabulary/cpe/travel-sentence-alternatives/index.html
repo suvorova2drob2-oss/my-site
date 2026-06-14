@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2 &mdash; Travel: correct alternative (CPE Prep)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --rose: #fda4af;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; max-width: 34rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .section-head {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: #c5d4ef;
+      margin-bottom: 16px;
+    }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .item:last-child { margin-bottom: 0; }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .item__sent { font-size: 0.94rem; line-height: 1.75; }
+    .pick {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 6px;
+      vertical-align: baseline;
+      margin: 0 2px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    .pick label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.55);
+      touch-action: manipulation;
+    }
+    .pick label:hover { border-color: var(--accent); }
+    .pick input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .pick .sep { color: var(--muted); font-weight: 700; }
+    .pick.is-ok { border-color: rgba(54, 211, 153, 0.55); background: rgba(34, 197, 94, 0.1); }
+    .pick.is-bad { border-color: rgba(248, 113, 113, 0.55); background: rgba(248, 113, 113, 0.08); }
+    .pick.is-locked label { pointer-events: none; opacity: 0.92; }
+    .pick label.is-key {
+      border-color: var(--ok);
+      background: rgba(54, 211, 153, 0.22);
+      color: #bbf7d0;
+      font-weight: 700;
+    }
+    .pick label.is-your-wrong {
+      border-color: var(--bad);
+      background: rgba(248, 113, 113, 0.18);
+      color: #fecaca;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn--primary { background: var(--accent); color: #0b1a33; }
+    .btn--ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+    .feedback {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { color: #bbf7d0; }
+    .feedback.bad { color: #fecaca; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Travel</p>
+        <h1>Underline the correct alternative.</h1>
+      </div>
+      <a class="back" id="back-link" data-u2-vocab-hub-depth="1" data-u2-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%202">&larr; Vocabulary</a>
+    </header>
+
+    <p class="section-head"><strong>1</strong> For sentences 1&ndash;6, underline the correct alternative.</p>
+
+    <div id="ex-items"></div>
+
+    <div class="toolbar">
+      <button type="button" class="btn btn--primary" id="btn-check">Check</button>
+      <button type="button" class="btn btn--ghost" id="btn-reset">Reset</button>
+      <button type="button" class="btn btn--ghost" id="btn-solution" style="display:none;">Show solution</button>
+    </div>
+    <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="../../../js/u2-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var KEY = {
+    1: "flight",
+    2: "arduous",
+    3: "far-flung",
+    4: "stroll",
+    5: "shoddy",
+    6: "travel",
+  };
+
+  var ITEMS = [
+    {
+      n: 1,
+      before:
+        "The years of stress at work had taken their toll. He was excited for his adventure, having never been on a long-haul ",
+      options: ["stroll", "delay", "travel", "flight"],
+      after: " before.",
+    },
+    {
+      n: 2,
+      before: "It was an incredibly long and ",
+      options: ["alternative", "arduous", "iconic", "far-flung"],
+      after: " journey through the mountains on horseback.",
+    },
+    {
+      n: 3,
+      before: "She was a seasoned traveller and had been to many ",
+      options: ["shoddy", "discerning", "far-flung", "torrential"],
+      after: " destinations.",
+    },
+    {
+      n: 4,
+      before: "After dinner, you should take a leisurely ",
+      options: ["service", "stroll", "travel", "visit"],
+      after: " from the main square down to the riverside promenade.",
+    },
+    {
+      n: 5,
+      before: "The hotel apologised for the ",
+      options: ["shoddy", "circuitous", "world-class", "perilous"],
+      after: " service and went so far as to give the family a full refund.",
+    },
+    {
+      n: 6,
+      before:
+        "Profits at the company took a turn for the worse over the period, with the CEO citing a sharp decline in overseas ",
+      options: ["landmarks", "shock", "strolls", "travel"],
+      after: " as the primary cause.",
+    },
+  ];
+
+  var TOTAL = ITEMS.length;
+  var locked = false;
+  var elItems = document.getElementById("ex-items");
+  var elFb = document.getElementById("feedback");
+  var btnSol = document.getElementById("btn-solution");
+
+  function renderItems() {
+    elItems.innerHTML = ITEMS.map(function (it) {
+      var opts = it.options
+        .map(function (opt, oi) {
+          var id = "ex-" + it.n + "-" + oi;
+          return (
+            (oi > 0 ? '<span class="sep">/</span>' : "") +
+            '<label><input type="radio" name="exq' + it.n + '" value="' + opt + '" id="' + id + '" /> ' +
+            opt + "</label>"
+          );
+        })
+        .join("");
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' +
+        it.before +
+        '<span class="pick" data-n="' + it.n + '" role="group">' +
+        opts +
+        "</span>" +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+  }
+
+  function getChoice(n) {
+    var inp = document.querySelector('input[name="exq' + n + '"]:checked');
+    return inp ? inp.value : "";
+  }
+
+  function clearStyles() {
+    document.querySelectorAll("#ex-items .pick").forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-key", "is-your-wrong");
+      });
+    });
+  }
+
+  function markPick(n, got, isOk) {
+    var wrap = document.querySelector('#ex-items .pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      var val = lab.querySelector("input").value;
+      if (val === KEY[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isOk) lab.classList.add("is-your-wrong");
+    });
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearStyles();
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var got = getChoice(n);
+      var wrap = document.querySelector('#ex-items .pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY[n]) {
+        ok++;
+        wrap.classList.add("is-ok");
+        markPick(n, got, true);
+      } else {
+        wrap.classList.add("is-bad");
+        markPick(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Choose an option for item(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    if (ok === TOTAL) {
+      elFb.innerHTML = "<strong>Excellent &mdash; " + TOTAL + " / " + TOTAL + ".</strong>";
+      elFb.className = "feedback show ok";
+      locked = true;
+      document.querySelectorAll("#ex-items input").forEach(function (inp) {
+        inp.disabled = true;
+      });
+      document.querySelectorAll("#ex-items .pick").forEach(function (p) {
+        p.classList.add("is-locked");
+      });
+    } else {
+      elFb.innerHTML =
+        "<strong>Score: " + ok + " / " + TOTAL + ".</strong> Change your answers and check again.";
+      elFb.className = "feedback show bad";
+      btnSol.style.display = "inline-block";
+    }
+  });
+
+  btnSol.addEventListener("click", function () {
+    ITEMS.forEach(function (it) {
+      var inp = document.querySelector('input[name="exq' + it.n + '"][value="' + KEY[it.n] + '"]');
+      if (inp) inp.checked = true;
+    });
+    locked = true;
+    clearStyles();
+    document.querySelectorAll("#ex-items .pick").forEach(function (p) {
+      var n = Number(p.getAttribute("data-n"));
+      p.classList.add("is-ok", "is-locked");
+      markPick(n, KEY[n], true);
+    });
+    document.querySelectorAll("#ex-items input").forEach(function (inp) {
+      inp.disabled = true;
+    });
+    elFb.innerHTML = "<strong>Solution shown.</strong>";
+    elFb.className = "feedback show ok";
+    btnSol.style.display = "none";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    locked = false;
+    elFb.className = "feedback";
+    elFb.textContent = "";
+    btnSol.style.display = "none";
+    document.querySelectorAll("#ex-items input").forEach(function (inp) {
+      inp.checked = false;
+      inp.disabled = false;
+    });
+    clearStyles();
+  });
+
+  renderItems();
+})();
+  </script>
+</body>
+</html>

@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 9 &mdash; Vocabulary</title>
+  <script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search || "");
+    var course = String(q.get("course") || "").toLowerCase();
+    var fromCpe =
+      course === "cpe" ||
+      q.get("prep_stay") === "1" ||
+      !!q.get("backLabel") ||
+      /level\s*9/i.test(String(q.get("backLabel") || ""));
+    if (fromCpe) {
+      q.set("course", "cpe");
+      var tail = q.toString();
+      location.replace("cpe/index.html" + (tail ? "?" + tail : "?course=cpe"));
+    }
+  } catch (e) {
+    location.replace("cpe/index.html?course=cpe");
+  }
+})();
+  </script>
   <style>
     :root {
       --panel: #1d2b4a;
@@ -85,7 +105,13 @@
         <a id="u9-nav-levels" class="back" href="../unit9.html">&larr; Unit 9 menu</a>
       </div>
     </header>
-    <p class="lead">Prepositions and particles; <strong><em>give</em> collocations</strong> (match 1&ndash;7 to a&ndash;g).</p>
+    <p class="lead">Prepositions and particles; <strong><em>give</em> phrases</strong> and collocations.</p>
+
+    <a class="task-card u9-task-from-vocab" href="give-workbook/index.html">
+      <h2><em>Give</em> &mdash; workbook page</h2>
+      <p>Complete <strong>give</strong> phrases with one word, then match sentence beginnings <strong>1&ndash;5</strong> to endings <strong>a&ndash;e</strong>.</p>
+      <span class="go">Open exercise →</span>
+    </a>
 
     <a class="task-card u9-task-from-vocab" href="give-collocations-match/index.html">
       <h2><em>Give</em> &mdash; collocations (match)</h2>

@@ -4,6 +4,74 @@
 (function (global) {
     var PROFILE_KEY = "prep-course-profile-v1";
 
+    function getStorageTrack() {
+        try {
+            if (global.prepTrackScope && typeof global.prepTrackScope.get === "function") {
+                var scoped = global.prepTrackScope.get();
+                if (scoped === "cpe" || scoped === "ege" || scoped === "fce") return scoped;
+            }
+        } catch (eSc) {}
+        var pt = normTrack(global.__PREP_ACTIVE_TRACK__ || global.__PREP_PAGE_TRACK__);
+        if (pt) return pt;
+        return "cpe";
+    }
+
+    function normTrack(t) {
+        var s = String(t || "").toLowerCase();
+        if (s === "cpe" || s === "ege" || s === "fce") return s;
+        return "";
+    }
+
+    function profileStorageKey() {
+        if (global.prepTrackScope && typeof global.prepTrackScope.profileStorageKey === "function") {
+            return global.prepTrackScope.profileStorageKey(PROFILE_KEY);
+        }
+        return PROFILE_KEY + "::" + getStorageTrack();
+    }
+
+    function migrateLegacyProfileToScoped() {
+        try {
+            var legacy = global.localStorage.getItem(PROFILE_KEY);
+            if (!legacy) return;
+            var j = {};
+            try {
+                j = JSON.parse(legacy);
+            } catch (eParse) {
+                j = {};
+            }
+            var legacyTrack = "cpe";
+            if (j && j.courseTrack === "ege") legacyTrack = "ege";
+            else if (j && j.courseTrack === "fce") legacyTrack = "fce";
+            var targets = { cpe: false, ege: false, fce: false };
+            targets[legacyTrack] = true;
+            targets.cpe = true;
+            for (var tr in targets) {
+                if (!targets.hasOwnProperty(tr)) continue;
+                var k = PROFILE_KEY + "::" + tr;
+                if (global.localStorage.getItem(k)) continue;
+                if (tr === legacyTrack) {
+                    global.localStorage.setItem(k, legacy);
+                } else if (tr === "cpe" && legacyTrack !== "cpe") {
+                    global.localStorage.setItem(k, JSON.stringify(defaults()));
+                }
+            }
+        } catch (eM) {}
+    }
+
+    function pinProfileToPageTrack(d) {
+        var pageTrack = getStorageTrack();
+        if (pageTrack === "ege" || pageTrack === "fce") {
+            d.courseTrack = pageTrack;
+            d.courseId = pageTrack;
+            return d;
+        }
+        if (d.courseTrack !== "creator") {
+            d.courseTrack = "cpe";
+            d.courseId = "cpe";
+        }
+        return d;
+    }
+
     function defaults() {
         return {
             wizardCompleted: false,
@@ -147,10 +215,11 @@
     }
 
     function load() {
+        migrateLegacyProfileToScoped();
         ensureLegacyProfileMigrated();
         var d = defaults();
         try {
-            var j = JSON.parse(global.localStorage.getItem(PROFILE_KEY) || "{}");
+            var j = JSON.parse(global.localStorage.getItem(profileStorageKey()) || "{}");
             if (j && typeof j === "object") {
                 var persist =
                     (!j.courseTrack && String(j.courseId || "") === "empty") ||
@@ -163,14 +232,17 @@
                     d.emptyHubTheme = "dark";
                 }
                 migrateProfileObject(j, d);
+                d = pinProfileToPageTrack(d);
                 if (persist) {
                     try {
-                        global.localStorage.setItem(PROFILE_KEY, JSON.stringify(d));
+                        global.localStorage.setItem(profileStorageKey(), JSON.stringify(d));
                     } catch (eP) {}
                 }
+            } else {
+                d = pinProfileToPageTrack(d);
             }
         } catch (e) {
-            return defaults();
+            return pinProfileToPageTrack(defaults());
         }
         return d;
     }
@@ -228,7 +300,8 @@
                 }
             }
         }
-        global.localStorage.setItem(PROFILE_KEY, JSON.stringify(cur));
+        cur = pinProfileToPageTrack(cur);
+        global.localStorage.setItem(profileStorageKey(), JSON.stringify(cur));
         applyDom();
         try {
             global.dispatchEvent(new CustomEvent("prep-course-profile-changed", { detail: cur }));
@@ -297,12 +370,14 @@
     }
 
     function hubHeaderStorageSuffix() {
+        var pageTrack = getStorageTrack();
+        if (pageTrack === "ege" || pageTrack === "fce") return pageTrack;
         var p = load();
         if (p.courseTrack === "creator" && isCreatorStorageId(normalizeCourseId(p.courseId))) {
             return p.courseId;
         }
         if (normalizeCourseId(p.courseId) === "empty") return "empty";
-        return p.courseTrack === "ege" || p.courseTrack === "fce" ? p.courseTrack : "cpe";
+        return "cpe";
     }
 
     function addCreatorCourse(meta) {
@@ -355,6 +430,8 @@
 
     global.prepCourseProfile = {
         PROFILE_KEY: PROFILE_KEY,
+        getStorageTrack: getStorageTrack,
+        profileStorageKey: profileStorageKey,
         normalizeCourseId: normalizeCourseId,
         normalizeCourseTrack: normalizeCourseTrack,
         newCreatorId: newCreatorId,

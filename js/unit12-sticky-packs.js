@@ -1,6 +1,6 @@
 /**
  * Unit 12 sticky boards — registers plain+rows packs via unit10-plain-sticky-kit.
- * Load after: unit10-plain-sticky-kit.js, unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js
+ * Load after: unit10-plain-sticky-kit.js, unit12-reading-road-to-betterment-lexicon.js, unit12-sports-idioms-lexicon.js, unit12-listening-sb12-1-disabled-access-lexicon.js, unit12-multi-word-verbs-lexicon.js
  */
 (function (W) {
     "use strict";
@@ -48,6 +48,29 @@
             return typeof W.LEX_U12_SPORTS_IDIOMS_LABEL === "string"
                 ? W.LEX_U12_SPORTS_IDIOMS_LABEL
                 : "Vocabulary: Sports idioms · Unit 12";
+        },
+    });
+
+    W.unit10RegisterPlainStickyPack({
+        mode: "u12mwv",
+        notifyTaskKey: "u12mwv",
+        deckProp: "u12MwvStickyDeck",
+        renderFnName: "u12MwvStickyRenderBoard",
+        resetFnName: "u12MwvStickyResetUI",
+        domPrefix: "u12-mwv-sticky",
+        doneElementId: "u12-mwv-sticky-done",
+        plainGetter: function () {
+            return typeof W.U12_MULTI_WORD_VERBS_LEXIS_PLAIN === "string"
+                ? W.U12_MULTI_WORD_VERBS_LEXIS_PLAIN
+                : "";
+        },
+        rowsGetter: function () {
+            return W.U12_MULTI_WORD_VERBS_LEXIS_GAME_ROWS || [];
+        },
+        speakerLabelGetter: function () {
+            return typeof W.LEX_U12_MULTI_WORD_VERBS_LABEL === "string"
+                ? W.LEX_U12_MULTI_WORD_VERBS_LABEL
+                : "Vocabulary: Multi-word verbs · Unit 12";
         },
     });
 

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Grammar &mdash; Reported speech</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 1.3rem; line-height: 1.25; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task h2 { font-size: 1.08rem; color: #bae6fd; margin-bottom: 10px; }
+    .instr { color: #d5e2f8; font-size: 0.94rem; line-height: 1.55; margin-bottom: 14px; }
+    .word-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px dashed var(--line);
+    }
+    .word-chip {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(86, 204, 242, 0.12);
+      border: 1px solid rgba(86, 204, 242, 0.28);
+      color: #e0f2fe;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .word-chip.used { opacity: 0.42; text-decoration: line-through; }
+    .line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 10px;
+      align-items: baseline;
+      margin-bottom: 14px;
+      color: #e8f0ff;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .num { color: #fcd34d; font-weight: 800; min-width: 1.3rem; }
+    .quote { color: #fef9c3; display: block; margin-bottom: 3px; }
+    .gap-in {
+      width: 8rem;
+      max-width: 42vw;
+      margin: 0 4px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(86, 204, 242, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+    .gap-in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .gap-in.ok, .choice-btn.ok { border-color: rgba(54, 211, 153, 0.9); background: rgba(6, 78, 59, 0.35); }
+    .gap-in.bad, .choice-btn.bad { border-color: rgba(248, 113, 113, 0.9); background: rgba(127, 29, 29, 0.32); }
+    .example {
+      color: #bbf7d0;
+      font-weight: 800;
+      border-bottom: 1px solid rgba(187, 247, 208, 0.55);
+      padding: 0 4px;
+    }
+    .choice-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 10px;
+      align-items: center;
+      margin-bottom: 9px;
+      color: #e8f0ff;
+      font-size: 0.95rem;
+    }
+    .choice-pair {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      vertical-align: middle;
+    }
+    .choice-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(8, 22, 48, 0.35);
+      color: #e8f0ff;
+      cursor: pointer;
+      font: inherit;
+      font-style: italic;
+    }
+    .choice-btn:hover { border-color: #5a7ab0; }
+    .choice-btn.pick { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .check { background: var(--ok); color: #05271a; }
+    .reset { background: #3d4f6f; color: var(--text); border: 1px solid var(--line); }
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      color: #d5e2f8;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .feedback.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Grammar &mdash; Reported Speech</h1>
+      <a class="back" href="../index.html">&larr; Unit 9 grammar</a>
+    </header>
+
+    <section class="task" aria-label="Reported speech time words">
+      <h2>2. Reported speech words</h2>
+      <p class="instr">
+        Complete the sentences with a word from the box. You may use each word only once.
+        There is an example at the beginning (0).
+      </p>
+      <div class="word-box" id="wordBox">
+        <span class="word-chip" data-word="before">before</span>
+        <span class="word-chip" data-word="following">following</span>
+        <span class="word-chip" data-word="next">next</span>
+        <span class="word-chip" data-word="previous">previous</span>
+        <span class="word-chip used" data-word="that">that</span>
+        <span class="word-chip" data-word="then">then</span>
+        <span class="word-chip" data-word="there">there</span>
+      </div>
+
+      <div class="line"><span class="num">0</span><span><span class="quote">&lsquo;I&rsquo;ll see you this weekend.&rsquo;</span>He said he would see me <span class="example">that</span> weekend.</span></div>
+      <div class="line"><span class="num">1</span><span><span class="quote">&lsquo;I was here before you arrived.&rsquo;</span>He said he had been <input class="gap-in" data-gap="1" autocomplete="off" spellcheck="true" /> before I arrived.</span></div>
+      <div class="line"><span class="num">2</span><span><span class="quote">&lsquo;I saw you last time you visited London.&rsquo;</span>He said you had seen me the <input class="gap-in" data-gap="2" autocomplete="off" spellcheck="true" /> time he had visited London.</span></div>
+      <div class="line"><span class="num">3</span><span><span class="quote">&lsquo;I&rsquo;ll see you next month.&rsquo;</span>He said he would see me the <input class="gap-in" data-gap="3" autocomplete="off" spellcheck="true" /> month.</span></div>
+      <div class="line"><span class="num">4</span><span><span class="quote">&lsquo;I met you a few years ago.&rsquo;</span>He said he&rsquo;d met me a few years <input class="gap-in" data-gap="4" autocomplete="off" spellcheck="true" />.</span></div>
+      <div class="line"><span class="num">5</span><span><span class="quote">&lsquo;I&rsquo;ll get in touch tomorrow.&rsquo;</span>He said he would get in touch the <input class="gap-in" data-gap="5" autocomplete="off" spellcheck="true" /> day.</span></div>
+      <div class="line"><span class="num">6</span><span><span class="quote">&lsquo;What are you doing now?&rsquo;</span>He asked what I was doing <input class="gap-in" data-gap="6" autocomplete="off" spellcheck="true" />.</span></div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkGaps">Check Exercise 2</button>
+        <button type="button" class="action reset" id="resetGaps">Reset Exercise 2</button>
+      </div>
+      <div class="feedback" id="gapFeedback" aria-live="polite"></div>
+    </section>
+
+    <section class="task" aria-label="Reporting verbs choice">
+      <h2>Reporting verbs</h2>
+      <p class="instr">Choose the correct options to complete the sentences.</p>
+
+      <div class="choice-row" data-row="1"><span class="num">1</span><span>The manager <span class="choice-pair"><button type="button" class="choice-btn" data-choice="insisted">insisted</button><button type="button" class="choice-btn" data-choice="encouraged">encouraged</button></span> the staff to participate.</span></div>
+      <div class="choice-row" data-row="2"><span class="num">2</span><span>The thief <span class="choice-pair"><button type="button" class="choice-btn" data-choice="refused">refused</button><button type="button" class="choice-btn" data-choice="admitted">admitted</button></span> to taking the money from the safe.</span></div>
+      <div class="choice-row" data-row="3"><span class="num">3</span><span>The teacher <span class="choice-pair"><button type="button" class="choice-btn" data-choice="suggested">suggested</button><button type="button" class="choice-btn" data-choice="reminded">reminded</button></span> the class about the homework.</span></div>
+      <div class="choice-row" data-row="4"><span class="num">4</span><span>The boy <span class="choice-pair"><button type="button" class="choice-btn" data-choice="threatened">threatened</button><button type="button" class="choice-btn" data-choice="advised">advised</button></span> to tell his mother.</span></div>
+      <div class="choice-row" data-row="5"><span class="num">5</span><span>The guide <span class="choice-pair"><button type="button" class="choice-btn" data-choice="recommended">recommended</button><button type="button" class="choice-btn" data-choice="promised">promised</button></span> we go to a sightseeing spot nearby.</span></div>
+      <div class="choice-row" data-row="6"><span class="num">6</span><span>The hotel guest <span class="choice-pair"><button type="button" class="choice-btn" data-choice="criticised">criticised</button><button type="button" class="choice-btn" data-choice="complained">complained</button></span> about the cold shower.</span></div>
+      <div class="choice-row" data-row="7"><span class="num">7</span><span>Her parents <span class="choice-pair"><button type="button" class="choice-btn" data-choice="congratulated">congratulated</button><button type="button" class="choice-btn" data-choice="urged">urged</button></span> her on the award.</span></div>
+      <div class="choice-row" data-row="8"><span class="num">8</span><span>The girl <span class="choice-pair"><button type="button" class="choice-btn" data-choice="accused">accused</button><button type="button" class="choice-btn" data-choice="blamed">blamed</button></span> her friend of stealing the toy.</span></div>
+
+      <div class="actions">
+        <button type="button" class="action check" id="checkChoices">Check Reporting verbs</button>
+        <button type="button" class="action reset" id="resetChoices">Reset Reporting verbs</button>
+      </div>
+      <div class="feedback" id="choiceFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/prep-course-profile.js"></script>
+  <script src="../../js/prep-site-content.js"></script>
+  <script src="../../js/u9-grammar-course-context.js"></script>
+  <script>
+(function () {
+  var GAP_KEY = { 1: "there", 2: "previous", 3: "following", 4: "before", 5: "next", 6: "then" };
+  var CHOICE_KEY = {
+    1: "encouraged",
+    2: "admitted",
+    3: "reminded",
+    4: "threatened",
+    5: "recommended",
+    6: "complained",
+    7: "congratulated",
+    8: "accused"
+  };
+
+  function norm(v) {
+    return String(v || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function esc(v) {
+    var d = document.createElement("div");
+    d.textContent = String(v || "");
+    return d.innerHTML;
+  }
+
+  function syncWordBox() {
+    var used = { that: true };
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      var v = norm(inp.value);
+      if (v) used[v] = true;
+    });
+    document.querySelectorAll(".word-chip").forEach(function (chip) {
+      chip.classList.toggle("used", !!used[norm(chip.getAttribute("data-word"))]);
+    });
+  }
+
+  document.querySelectorAll(".gap-in").forEach(function (inp) {
+    inp.addEventListener("input", syncWordBox);
+  });
+
+  document.getElementById("checkGaps").addEventListener("click", function () {
+    var score = 0;
+    var keyRows = [];
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      var n = inp.getAttribute("data-gap");
+      var ok = norm(inp.value) === GAP_KEY[n];
+      inp.classList.remove("ok", "bad");
+      if (ok) {
+        inp.classList.add("ok");
+        score++;
+      } else if (norm(inp.value)) {
+        inp.classList.add("bad");
+      }
+      keyRows.push("<strong>" + n + ".</strong> " + esc(GAP_KEY[n]));
+    });
+    var fb = document.getElementById("gapFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 6.</strong><br>" + keyRows.join(" &nbsp; ");
+    fb.classList.add("show");
+    syncWordBox();
+  });
+
+  document.getElementById("resetGaps").addEventListener("click", function () {
+    document.querySelectorAll(".gap-in").forEach(function (inp) {
+      inp.value = "";
+      inp.classList.remove("ok", "bad");
+    });
+    document.getElementById("gapFeedback").classList.remove("show");
+    document.getElementById("gapFeedback").innerHTML = "";
+    syncWordBox();
+  });
+
+  document.querySelectorAll(".choice-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pair = btn.closest(".choice-pair");
+      pair.querySelectorAll(".choice-btn").forEach(function (b) {
+        b.classList.remove("pick", "ok", "bad");
+      });
+      btn.classList.add("pick");
+    });
+  });
+
+  document.getElementById("checkChoices").addEventListener("click", function () {
+    var score = 0;
+    var keyRows = [];
+    document.querySelectorAll(".choice-row").forEach(function (row) {
+      var n = row.getAttribute("data-row");
+      var picked = row.querySelector(".choice-btn.pick");
+      row.querySelectorAll(".choice-btn").forEach(function (b) {
+        b.classList.remove("ok", "bad");
+      });
+      if (picked && norm(picked.getAttribute("data-choice")) === CHOICE_KEY[n]) {
+        picked.classList.add("ok");
+        score++;
+      } else if (picked) {
+        picked.classList.add("bad");
+      }
+      keyRows.push("<strong>" + n + ".</strong> " + esc(CHOICE_KEY[n]));
+    });
+    var fb = document.getElementById("choiceFeedback");
+    fb.innerHTML = "<strong>Score: " + score + " / 8.</strong><br>" + keyRows.join(" &nbsp; ");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("resetChoices").addEventListener("click", function () {
+    document.querySelectorAll(".choice-btn").forEach(function (btn) {
+      btn.classList.remove("pick", "ok", "bad");
+    });
+    document.getElementById("choiceFeedback").classList.remove("show");
+    document.getElementById("choiceFeedback").innerHTML = "";
+  });
+
+  syncWordBox();
+})();
+  </script>
+</body>
+</html>

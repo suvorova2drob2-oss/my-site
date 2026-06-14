@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 &middot; Listening Part 1 &mdash; Multiple choice</title>
+  <link rel="stylesheet" href="../../../css/cpe-listening-p3-mc-shell.css" />
+  <link rel="stylesheet" href="../../../css/cpe-listening-p1-mc-shell.css" />
+</head>
+<body class="cpe-l3-body">
+  <main class="cpe-l3-page">
+    <header class="cpe-l3-top">
+      <div>
+        <span class="cpe-l3-tag">CPE Unit 3 &middot; Listening &middot; Part 1</span>
+        <h1>Multiple choice &mdash; three extracts</h1>
+        <p class="cpe-l3-lead" id="page-lead">Questions 1&ndash;6 &middot; Track 3.3 &middot; two questions per extract</p>
+      </div>
+      <a class="cpe-l3-back" id="back-link" href="../index.html?course=cpe&amp;backLabel=Listening%20%E2%80%94%20Level%203">&larr; Listening</a>
+    </header>
+
+    <section class="cpe-l3-audio cpe-l3-audio--pending" id="audio-section">
+      <label for="track-audio">Audio &mdash; <span id="track-label">Track 3.3</span></label>
+      <p class="cpe-l3-audio-pending-note" id="audio-pending">
+        Audio file not uploaded yet. You can work through the questions now; playback will be added when the track is ready.
+      </p>
+      <audio id="track-audio" controls preload="none" hidden></audio>
+    </section>
+
+    <p class="cpe-l3-instr" id="page-instr"></p>
+
+    <div id="cpe-l3-app" class="cpe-l3-app" aria-live="polite"></div>
+  </main>
+
+  <script src="../../../js/cpe-listening-p1-mc-data.js"></script>
+  <script src="../../../js/unit3-listening-part1-set1-data.js"></script>
+  <script src="../../../js/cpe-listening-p1-mc-engine.js"></script>
+  <script>
+(function () {
+  var boot = window.__CPE_LISTENING_P1_MC__;
+  var pack = null;
+  if (boot && boot.units) {
+    for (var i = 0; i < boot.units.length; i++) {
+      if (boot.units[i] && boot.units[i].id === "u3_listen_p1_set1") {
+        pack = boot.units[i];
+        break;
+      }
+    }
+  }
+
+  if (!pack || !window.CPE_LISTENING_P1_MC) return;
+
+  var audioSection = document.getElementById("audio-section");
+  var audioPending = document.getElementById("audio-pending");
+  var audio = document.getElementById("track-audio");
+
+  if (pack.audioSrc) {
+    if (audioPending) audioPending.style.display = "none";
+    if (audio) {
+      audio.hidden = false;
+      audio.src = pack.audioSrc;
+    }
+    if (audioSection) audioSection.classList.remove("cpe-l3-audio--pending");
+  }
+
+  var instr = document.getElementById("page-instr");
+  if (instr && pack.instructionHtml) instr.innerHTML = pack.instructionHtml;
+
+  var trackLabel = document.getElementById("track-label");
+  if (trackLabel && pack.trackLabel) trackLabel.textContent = pack.trackLabel;
+
+  window.CPE_LISTENING_P1_MC.mount({ rootId: "cpe-l3-app", pack: pack });
+
+  var back = document.getElementById("back-link");
+  if (back) {
+    var params = new URLSearchParams(location.search);
+    if (params.get("course") === "cpe" || params.get("prep_stay") === "1") {
+      back.href =
+        "../../../index.html?prep_stay=1&screen=unit3&prep_open_folder=" +
+        encodeURIComponent("prep_legacy_u3_listening");
+      var lbl = params.get("backLabel");
+      back.textContent = lbl ? "\u2190 " + lbl : "\u2190 Listening \u00b7 Level 3";
+    }
+  }
+})();
+  </script>
+</body>
+</html>

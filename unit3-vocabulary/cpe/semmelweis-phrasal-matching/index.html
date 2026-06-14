@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 &mdash; Semmelweis phrasal matching (CPE Prep)</title>
+  <link rel="stylesheet" href="../../../css/cpe-uoe-part3-wf-shell.css" />
+  <style>
+    .page { width: min(980px, 100%); }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fda4af;
+      margin-bottom: 8px;
+    }
+    .instr {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: var(--cpe-p3-muted);
+      margin-bottom: 12px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--cpe-p3-panel-soft);
+      border: 1px solid var(--cpe-p3-line);
+      font-size: 0.86rem;
+      color: var(--cpe-p3-muted-dim);
+      margin-bottom: 18px;
+    }
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .match-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      border-radius: 14px;
+      padding: 14px 14px 18px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-panel-soft);
+      min-height: 120px;
+    }
+    .panel-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      color: var(--cpe-p3-muted);
+    }
+    .start-row {
+      padding: 10px 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-gap-bg);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+    .start-row:hover { border-color: var(--cpe-p3-accent); }
+    .start-row.is-focused {
+      border-color: var(--cpe-p3-accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.22);
+    }
+    .start-row strong { color: #fef9c3; font-weight: 700; }
+    .start-row .num { font-weight: 800; color: var(--cpe-p3-accent); margin-right: 6px; }
+    .start-meta {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--cpe-p3-muted-dim);
+      font-style: italic;
+      min-height: 1.35em;
+    }
+    .start-meta.has-pick { color: #a5f3fc; font-style: normal; }
+    .end-chip {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-gap-bg);
+      color: var(--cpe-p3-text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .end-chip:hover:not(:disabled) { border-color: var(--cpe-p3-accent); }
+    .end-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+    .end-chip.is-used {
+      border-color: rgba(52, 211, 153, 0.45);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .end-chip .badge {
+      display: inline-block;
+      min-width: 1.5rem;
+      font-weight: 800;
+      color: var(--cpe-p3-accent);
+      margin-right: 8px;
+    }
+    .end-chip .pv { font-weight: 800; }
+    .end-chip em { font-style: italic; }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-check { background: var(--cpe-p3-ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--cpe-p3-text); }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-panel-soft);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--cpe-p3-muted);
+    }
+    .feedback.show { display: block; }
+    .fb-score { font-weight: 800; margin-bottom: 10px; color: var(--cpe-p3-text); }
+    .fb-item { margin-bottom: 8px; }
+    .fb-item.ok { color: #86efac; }
+    .fb-item.bad { color: #fca5a5; }
+  </style>
+</head>
+<body class="cpe-p3-body">
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Phrasal verbs and noun collocations</p>
+        <h1>Semmelweis &mdash; match beginnings and endings</h1>
+      </div>
+      <a class="back back-link" id="back-link" data-u3-vocab-hub-depth="1" data-u3-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%203">&larr; Vocabulary</a>
+    </header>
+
+    <p class="instr">
+      <strong>2</strong> Read the following story about Ignaz Semmelweis&rsquo;s life-saving medical discovery. Match a sentence beginning <strong>1&ndash;10</strong> with an appropriate ending <strong>a&ndash;j</strong>. The nouns in italics are common collocates of the phrasal verbs.
+    </p>
+    <p class="hint-bar">
+      <strong>How:</strong> click a beginning on the left, then an ending on the right. Each ending is used once. Click the same beginning again to change your pair.
+    </p>
+
+    <div class="match-grid">
+      <div class="panel" aria-label="Sentence beginnings">
+        <div class="panel-title">Beginnings</div>
+        <div id="starts-root"></div>
+      </div>
+      <div class="panel" aria-label="Sentence endings">
+        <div class="panel-title">Endings</div>
+        <div id="ends-root"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="action btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="action btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </main>
+
+  <script src="../../../js/u3-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var STARTS = [
+    { n: 1, html: "Recently, I was <strong>flicking</strong>" },
+    { n: 2, html: "As I did so, I <strong>stumbled</strong>" },
+    { n: 3, html: "Ignaz Semmelweis <strong>came</strong>" },
+    { n: 4, html: "Handwashing <strong>brought</strong>" },
+    { n: 5, html: "He wrote a book <strong>drawing</strong>" },
+    { n: 6, html: "But he was unable to <strong>put</strong>" },
+    { n: 7, html: "As a result, his theory <strong>met</strong>" },
+    { n: 8, html: "His fellow doctors <strong>throw</strong>" },
+    { n: 9, html: "And Semmelweis <strong>held</strong>" },
+    { n: 10, html: "People would later <strong>come</strong>" },
+  ];
+
+  var ENDS = [
+    { id: "a", html: '<span class="pv">up with</span> a <em>solution</em> to postpartum infections in his clinic.' },
+    { id: "b", html: '<span class="pv">forward</span> a scientific <em>explanation</em> for his discovery.' },
+    { id: "c", html: '<span class="pv">through</span> the <em>pages</em> of a book on scientific discoveries.' },
+    { id: "d", html: '<span class="pv">with</span> fierce <em>resistance</em> from the medical community.' },
+    { id: "e", html: '<span class="pv">out</span> little <em>hope</em> that his idea would ever receive acceptance.' },
+    { id: "f", html: '<span class="pv">across</span> the <em>story</em> of a 19th-century Hungarian obstetrician.' },
+    { id: "g", html: '<span class="pv">round</span> to his <em>way of thinking</em>, but not until after his death.' },
+    { id: "h", html: '<span class="pv">down</span> the <em>number</em> of cases of puerperal fever, he noted.' },
+    { id: "i", html: '<span class="pv">out</span> the <em>suggestion</em> that they should disinfect their hands.' },
+    { id: "j", html: '<span class="pv">on</span> his <em>observations</em> and outlining his conclusions.' },
+  ];
+
+  /** sentence 1–10 → ending index 0–9 */
+  var KEY = { 1: 2, 2: 5, 3: 0, 4: 7, 5: 9, 6: 1, 7: 3, 8: 8, 9: 4, 10: 6 };
+
+  var focused = null;
+  var picks = {};
+  var usedEnds = {};
+
+  var startsRoot = document.getElementById("starts-root");
+  var endsRoot = document.getElementById("ends-root");
+  var fb = document.getElementById("feedback");
+
+  function endLabel(idx) {
+    return ENDS[idx].id + ". " + ENDS[idx].html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function renderStarts() {
+    startsRoot.innerHTML = STARTS.map(function (s) {
+      return (
+        '<button type="button" class="start-row" data-num="' + s.n + '">' +
+        '<span class="num">' + s.n + ".</span> " + s.html +
+        '<div class="start-meta js-pick" data-for="' + s.n + '"></div></button>'
+      );
+    }).join("");
+  }
+
+  function renderEnds() {
+    endsRoot.innerHTML = ENDS.map(function (e, idx) {
+      return (
+        '<button type="button" class="end-chip" data-end="' + idx + '">' +
+        '<span class="badge">' + e.id + "</span> " + e.html + "</button>"
+      );
+    }).join("");
+  }
+
+  function refreshMeta() {
+    STARTS.forEach(function (s) {
+      var meta = document.querySelector('.js-pick[data-for="' + s.n + '"]');
+      if (!meta) return;
+      var idx = picks[s.n];
+      if (idx == null) {
+        meta.textContent = "";
+        meta.classList.remove("has-pick");
+      } else {
+        meta.textContent = "\u2192 " + endLabel(idx);
+        meta.classList.add("has-pick");
+      }
+    });
+    document.querySelectorAll(".end-chip").forEach(function (chip) {
+      var idx = Number(chip.getAttribute("data-end"));
+      chip.classList.toggle("is-used", usedEnds[idx] != null);
+      chip.disabled = usedEnds[idx] != null && usedEnds[idx] !== focused;
+    });
+  }
+
+  function setFocus(num) {
+    focused = num;
+    document.querySelectorAll(".start-row").forEach(function (row) {
+      row.classList.toggle("is-focused", Number(row.getAttribute("data-num")) === num);
+    });
+    refreshMeta();
+  }
+
+  startsRoot.addEventListener("click", function (ev) {
+    var row = ev.target.closest(".start-row");
+    if (!row) return;
+    setFocus(Number(row.getAttribute("data-num")));
+  });
+
+  endsRoot.addEventListener("click", function (ev) {
+    var chip = ev.target.closest(".end-chip");
+    if (!chip || focused == null) return;
+    var idx = Number(chip.getAttribute("data-end"));
+    if (usedEnds[idx] != null && usedEnds[idx] !== focused) return;
+
+    var prev = picks[focused];
+    if (prev != null) delete usedEnds[prev];
+
+    picks[focused] = idx;
+    usedEnds[idx] = focused;
+    refreshMeta();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var ok = 0;
+    var lines = [];
+    for (var n = 1; n <= 10; n++) {
+      var got = picks[n];
+      var correct = KEY[n];
+      if (got == null) {
+        lines.push('<div class="fb-item bad">' + n + ": not paired yet.</div>");
+        continue;
+      }
+      if (got === correct) {
+        ok++;
+        lines.push('<div class="fb-item ok">' + n + " \u2713 " + ENDS[got].id + "</div>");
+      } else {
+        lines.push(
+          '<div class="fb-item bad">' +
+            n +
+            ": you chose " +
+            ENDS[got].id +
+            "; key is " +
+            ENDS[correct].id +
+            ".</div>"
+        );
+      }
+    }
+    fb.innerHTML =
+      '<div class="fb-score">' + ok + " / 10 correct</div>" + lines.join("");
+    fb.classList.add("show");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    picks = {};
+    usedEnds = {};
+    focused = null;
+    document.querySelectorAll(".start-row").forEach(function (row) {
+      row.classList.remove("is-focused");
+    });
+    refreshMeta();
+    fb.classList.remove("show");
+    fb.innerHTML = "";
+  });
+
+  renderStarts();
+  renderEnds();
+  refreshMeta();
+})();
+  </script>
+</body>
+</html>

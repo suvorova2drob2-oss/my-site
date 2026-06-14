@@ -11,8 +11,15 @@
   var boot = window.PART1_MC_BOOT || window.PART1_MC_CONFIG || {};
   var sp = new URLSearchParams(window.location.search);
   var contextId = String(boot.contextId || sp.get("context") || "default").trim() || "default";
-  /* ЕГЭ-контексты на общем Part 1 → тот же namespace PrepSiteContent, что на ege.html */
-  if (/^ege/i.test(contextId) && window.prepCourseProfile && typeof window.prepCourseProfile.load === "function" && typeof window.prepCourseProfile.save === "function") {
+  /* ЕГЭ-контексты: только на странице / в scope ЕГЭ — не переключать CPE-профиль */
+  if (
+    /^ege/i.test(contextId) &&
+    (String(window.__PREP_ACTIVE_TRACK__ || "").toLowerCase() === "ege" ||
+      /\/ege(\/|$)/i.test(String(window.location.pathname || ""))) &&
+    window.prepCourseProfile &&
+    typeof window.prepCourseProfile.load === "function" &&
+    typeof window.prepCourseProfile.save === "function"
+  ) {
     try {
       var _egeCur = window.prepCourseProfile.load();
       if (_egeCur.courseTrack !== "creator") {
@@ -38,8 +45,14 @@
   if (!dataSrc && contextId === "unit10-uoe") {
     dataSrc = "ex-athlete-taken-in/published.json";
   }
+  if (!dataSrc && contextId === "unit11-uoe-british-weather") {
+    dataSrc = "published-unit11-british-weather.json";
+  }
   if (!dataSrc && contextId === "unit12-uoe-food-supplements") {
     dataSrc = "published-unit12-food-supplements.json";
+  }
+  if (!dataSrc && contextId === "unit2-uoe-another-world") {
+    dataSrc = "published-unit2-another-world.json";
   }
   /** Level 9 Workbook Part 1: вшитый JSON в part1-mc-cloze/index.html (без fetch / file://). */
   var unit9InteriorHardwired =
@@ -69,8 +82,20 @@
   var unit10ShakespeareBundled = String(contextId) === "unit10-uoe-shakespeare";
   /** Unit 12 CPE — Food supplements — JSON in #part1-mc-bundled-unit12-food-supplements. */
   var unit12FoodSupplementsBundled = String(contextId) === "unit12-uoe-food-supplements";
+  /** Unit 1 CPE — Fashion for rent — JSON in #part1-mc-bundled-unit1-fashion-for-rent. */
+  var unit1FashionForRentBundled =
+    String(contextId) === "unit1-p1-fashion-for-rent" ||
+    /published-unit1-p1-fashion-for-rent\.json\s*$/i.test(dataSrc);
+  /** Unit 2 CPE — Another world (Comic-Con) — JSON in #part1-mc-bundled-unit2-another-world. */
+  var unit2AnotherWorldBundled =
+    String(contextId) === "unit2-uoe-another-world" ||
+    /published-unit2-another-world\.json\s*$/i.test(dataSrc);
   /** Unit 5 FCE · Summer jobs — JSON in #part1-mc-bundled-unit5-summer-jobs (works file://). */
   var unit5UoeBundled = String(contextId) === "unit5-uoe";
+  /** Unit 11 FCE · The British Weather — JSON in #part1-mc-bundled-unit11-british-weather. */
+  var unit11BritishWeatherBundled =
+    String(contextId) === "unit11-uoe-british-weather" ||
+    /published-unit11-british-weather\.json\s*$/i.test(dataSrc);
   var studentOnly =
     boot.studentOnly === true ||
     sp.get("part1Student") === "1" ||
@@ -83,7 +108,10 @@
     unit10ExAthleteBundled ||
     unit10ShakespeareBundled ||
     unit12FoodSupplementsBundled ||
+    unit1FashionForRentBundled ||
+    unit2AnotherWorldBundled ||
     unit5UoeBundled ||
+    unit11BritishWeatherBundled ||
     unit8UoeSevilleBundled;
   var boxedSite =
     (typeof window !== "undefined" && window.__PREP_BOXED_SITE__ === true) ||
@@ -1200,8 +1228,9 @@
 
   function adminFillFromData(data) {
     if (!hasAdminDom) return;
-    if (!admTitle.readOnly) admTitle.value = data.title || "";
-    if (!admSubtitle.readOnly) admSubtitle.value = data.subtitle || "";
+    /* readOnly only blocks edits — still show loaded title/subtitle in locked meta fields */
+    admTitle.value = data.title || "";
+    admSubtitle.value = data.subtitle || "";
     var passage = String(data.passage || "");
     admPassage.value = passage;
     if (data.example) {
@@ -1952,12 +1981,42 @@
         }
       }
     }
+    if (unit1FashionForRentBundled) {
+      var elU1ffr = document.getElementById("part1-mc-bundled-unit1-fashion-for-rent");
+      if (elU1ffr) {
+        try {
+          return JSON.parse(elU1ffr.textContent.trim());
+        } catch (eU1ffr) {
+          return null;
+        }
+      }
+    }
+    if (unit2AnotherWorldBundled) {
+      var elU2aw = document.getElementById("part1-mc-bundled-unit2-another-world");
+      if (elU2aw) {
+        try {
+          return JSON.parse(elU2aw.textContent.trim());
+        } catch (eU2aw) {
+          return null;
+        }
+      }
+    }
     if (unit5UoeBundled) {
       var el5sj = document.getElementById("part1-mc-bundled-unit5-summer-jobs");
       if (el5sj) {
         try {
           return JSON.parse(el5sj.textContent.trim());
         } catch (e5sj) {
+          return null;
+        }
+      }
+    }
+    if (unit11BritishWeatherBundled) {
+      var el11bw = document.getElementById("part1-mc-bundled-unit11-british-weather");
+      if (el11bw) {
+        try {
+          return JSON.parse(el11bw.textContent.trim());
+        } catch (e11bw) {
           return null;
         }
       }
@@ -2010,9 +2069,10 @@
         })
         .catch(function () {
           var loc = readLocalPublished();
-          if (loc) return loc;
+          if (loc && validateExercise(loc).length === 0) return loc;
           var bundled = readBundledPublishedFallback();
           if (bundled) return bundled;
+          if (loc) return loc;
           return null;
         });
     });

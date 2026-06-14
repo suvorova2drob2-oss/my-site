@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 &mdash; Phrasal verbs from the reading (CPE Prep)</title>
+  <link rel="stylesheet" href="../../../css/cpe-uoe-part3-wf-shell.css" />
+  <style>
+    .page { width: min(920px, 100%); }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fda4af;
+      margin-bottom: 8px;
+    }
+    .section-head {
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: var(--cpe-p3-muted);
+      margin-bottom: 16px;
+    }
+    .item {
+      border: 1px solid var(--cpe-p3-line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--cpe-p3-panel-soft);
+      margin-bottom: 14px;
+    }
+    .item__n {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cpe-p3-muted-dim);
+      margin-bottom: 8px;
+    }
+    .item__sent { font-size: 0.94rem; line-height: 1.75; }
+    .pick {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 6px;
+      vertical-align: baseline;
+      margin: 0 2px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    .pick label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--cpe-p3-line);
+      background: var(--cpe-p3-gap-bg);
+    }
+    .pick label:hover { border-color: var(--cpe-p3-accent); }
+    .pick input { width: 1rem; height: 1rem; accent-color: var(--cpe-p3-accent); }
+    .pick .sep { color: var(--cpe-p3-muted-dim); font-weight: 700; }
+    .pick.is-ok { border-color: rgba(54, 211, 153, 0.55); background: rgba(34, 197, 94, 0.1); }
+    .pick.is-bad { border-color: rgba(248, 113, 113, 0.55); background: rgba(248, 113, 113, 0.08); }
+    .pick.is-locked label { pointer-events: none; opacity: 0.92; }
+    .pick label.is-key {
+      border-color: var(--cpe-p3-ok);
+      background: rgba(54, 211, 153, 0.22);
+      color: #bbf7d0;
+      font-weight: 700;
+    }
+    .pick label.is-your-wrong {
+      border-color: var(--cpe-p3-bad);
+      background: rgba(248, 113, 113, 0.18);
+      color: #fecaca;
+    }
+    .phv-tail { font-weight: 700; color: #fef9c3; }
+    .coll { font-style: italic; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--cpe-p3-line);
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn--primary { background: var(--cpe-p3-accent); color: #0b1a33; }
+    .btn--ghost {
+      background: transparent;
+      color: var(--cpe-p3-muted-dim);
+      border: 1px solid var(--cpe-p3-line);
+    }
+    .feedback {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { color: #bbf7d0; }
+    .feedback.bad { color: #fecaca; }
+  </style>
+</head>
+<body class="cpe-p3-body">
+  <main class="page">
+    <header class="top">
+      <div>
+        <p class="kicker">Vocabulary &middot; Phrasal verbs and noun collocations</p>
+        <h1>Choose the correct verb</h1>
+      </div>
+      <a class="back back-link" id="back-link" data-u3-vocab-hub-depth="1" data-u3-levels-depth="3" href="../index.html?course=cpe&amp;backLabel=Vocabulary%20%E2%80%94%20Level%203">&larr; Vocabulary</a>
+    </header>
+
+    <p class="section-head"><strong>1</strong> Choose the correct verb to complete these sentences from the reading.</p>
+
+    <div id="ex-items"></div>
+
+    <div class="toolbar">
+      <button type="button" class="btn btn--primary" id="btn-check">Check</button>
+      <button type="button" class="btn btn--ghost" id="btn-reset">Reset</button>
+    </div>
+    <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="../../../js/u3-vocab-course-context.js"></script>
+  <script src="../../../js/prep-course-profile.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var KEY = { 1: "run", 2: "plough", 3: "hold" };
+
+  var ITEMS = [
+    {
+      n: 1,
+      before: "But companies have ",
+      options: ["run", "ended", "stood", "kicked"],
+      tail: " up against",
+      after: " a vexing <span class=\"coll\">problem</span>: to continue achieving this success, they have to pour more and more resources into the effort over time.",
+    },
+    {
+      n: 2,
+      before: "Persistently high rates of profit give big firms plenty of <span class=\"coll\">money</span> to ",
+      options: ["knock", "plough", "slam", "blast"],
+      tail: " into",
+      after: " fancy research labs, &hellip;",
+    },
+    {
+      n: 3,
+      before: "In some ways, the accumulation of knowledge can ",
+      options: ["stand", "revert", "hold", "scale"],
+      tail: " back progress",
+      after: ".",
+    },
+  ];
+
+  var TOTAL = ITEMS.length;
+  var locked = false;
+  var elItems = document.getElementById("ex-items");
+  var elFb = document.getElementById("feedback");
+
+  function renderItems() {
+    elItems.innerHTML = ITEMS.map(function (it) {
+      var opts = it.options
+        .map(function (opt, oi) {
+          return (
+            (oi > 0 ? '<span class="sep">/</span>' : "") +
+            '<label><input type="radio" name="exq' + it.n + '" value="' + opt + '" /> ' + opt + "</label>"
+          );
+        })
+        .join("");
+      return (
+        '<article class="item">' +
+        '<div class="item__n">' + it.n + "</div>" +
+        '<p class="item__sent">' +
+        it.before +
+        '<span class="pick" data-n="' + it.n + '">' + opts + "</span>" +
+        (it.tail ? '<span class="phv-tail">' + it.tail + "</span>" : "") +
+        it.after +
+        "</p></article>"
+      );
+    }).join("");
+  }
+
+  function getChoice(n) {
+    var inp = document.querySelector('input[name="exq' + n + '"]:checked');
+    return inp ? inp.value : "";
+  }
+
+  function clearStyles() {
+    document.querySelectorAll("#ex-items .pick").forEach(function (p) {
+      p.classList.remove("is-ok", "is-bad", "is-locked");
+      p.querySelectorAll("label").forEach(function (lab) {
+        lab.classList.remove("is-key", "is-your-wrong");
+      });
+    });
+  }
+
+  function markPick(n, got, isOk) {
+    var wrap = document.querySelector('#ex-items .pick[data-n="' + n + '"]');
+    if (!wrap) return;
+    wrap.querySelectorAll("label").forEach(function (lab) {
+      var val = lab.querySelector("input").value;
+      if (val === KEY[n]) lab.classList.add("is-key");
+      else if (got && val === got && !isOk) lab.classList.add("is-your-wrong");
+    });
+  }
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    if (locked) return;
+    clearStyles();
+    elFb.className = "feedback";
+
+    var missing = [];
+    var ok = 0;
+
+    for (var n = 1; n <= TOTAL; n++) {
+      var got = getChoice(n);
+      var wrap = document.querySelector('#ex-items .pick[data-n="' + n + '"]');
+      if (!got) {
+        missing.push(n);
+        continue;
+      }
+      if (got === KEY[n]) {
+        ok++;
+        wrap.classList.add("is-ok", "is-locked");
+        markPick(n, got, true);
+      } else {
+        wrap.classList.add("is-bad", "is-locked");
+        markPick(n, got, false);
+      }
+    }
+
+    if (missing.length) {
+      elFb.textContent = "Choose an option for item(s): " + missing.join(", ") + ".";
+      elFb.className = "feedback show bad";
+      return;
+    }
+
+    locked = true;
+    elFb.textContent =
+      ok === TOTAL
+        ? "All " + TOTAL + " correct."
+        : ok + " / " + TOTAL + " correct. Green = key; red = your wrong choice.";
+    elFb.className = "feedback show " + (ok === TOTAL ? "ok" : "bad");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    locked = false;
+    clearStyles();
+    document.querySelectorAll('#ex-items input[type="radio"]').forEach(function (inp) {
+      inp.checked = false;
+    });
+    elFb.className = "feedback";
+    elFb.textContent = "";
+  });
+
+  renderItems();
+})();
+  </script>
+</body>
+</html>

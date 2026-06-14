@@ -23,6 +23,21 @@
   if (!dataSrc && contextId === "p2-gigamansions") {
     dataSrc = "published-gigamansions.json";
   }
+  if (!dataSrc && contextId === "unit2-p2-lessons-lens") {
+    dataSrc = "published-unit2-p2-lessons-lens.json";
+  }
+  if (!dataSrc && contextId === "unit3-p2-gps") {
+    dataSrc = "published-unit3-p2-gps.json";
+  }
+  if (!dataSrc && contextId === "unit7-p2-giant-jigsaw") {
+    dataSrc = "published-unit7-p2-giant-jigsaw.json";
+  }
+  if (!dataSrc && contextId === "unit10-p2-agatha-christie") {
+    dataSrc = "published-unit10-p2-agatha-christie.json";
+  }
+  if (!dataSrc && contextId === "unit9-p2-loch-ness-monster") {
+    dataSrc = "published-unit9-p2-loch-ness-monster.json";
+  }
   var backHref = String(boot.backHref || sp.get("back") || "").trim();
   var backLabel = String(
     boot.backLabel || (sp.get("backLabel") ? decodeURIComponent(sp.get("backLabel")) : "") || "Back"
@@ -144,12 +159,30 @@
   var bundledUnit9Sporting =
     String(contextId) === "unit9-p2-sporting-superstitions" ||
     /published-unit9-p2-sporting-superstitions\.json\s*$/i.test(dataSrc);
+  var bundledUnit9LochNess =
+    String(contextId) === "unit9-p2-loch-ness-monster" ||
+    /published-unit9-p2-loch-ness-monster\.json\s*$/i.test(dataSrc);
   var bundledUnit11ZeroWaste =
     String(contextId) === "unit11-p2-zero-waste" ||
     /zero-waste-lifestyle\/published\.json\s*$/i.test(dataSrc);
   var bundledGigamansions =
     String(contextId) === "p2-gigamansions" ||
     /published-gigamansions\.json\s*$/i.test(dataSrc);
+  var bundledUnit1JobTitles =
+    String(contextId) === "unit1-p2-job-titles" ||
+    /published-unit1-p2-job-titles\.json\s*$/i.test(dataSrc);
+  var bundledUnit2LessonsLens =
+    String(contextId) === "unit2-p2-lessons-lens" ||
+    /published-unit2-p2-lessons-lens\.json\s*$/i.test(dataSrc);
+  var bundledUnit3Gps =
+    String(contextId) === "unit3-p2-gps" ||
+    /published-unit3-p2-gps\.json\s*$/i.test(dataSrc);
+  var bundledUnit7GiantJigsaw =
+    String(contextId) === "unit7-p2-giant-jigsaw" ||
+    /published-unit7-p2-giant-jigsaw\.json\s*$/i.test(dataSrc);
+  var bundledUnit10AgathaChristie =
+    String(contextId) === "unit10-p2-agatha-christie" ||
+    /published-unit10-p2-agatha-christie\.json\s*$/i.test(dataSrc);
 
   function publishedFetchUrl() {
     if (dataSrc) {
@@ -204,6 +237,16 @@
         }
       }
     }
+    if (bundledUnit9LochNess) {
+      var elLn = document.getElementById("part2-open-bundled-unit9-loch-ness");
+      if (elLn) {
+        try {
+          return JSON.parse(elLn.textContent.trim());
+        } catch (eLoch) {
+          return null;
+        }
+      }
+    }
     if (bundledUnit11ZeroWaste) {
       var elZw = document.getElementById("part2-open-bundled-unit11-zero-waste");
       if (elZw) {
@@ -220,6 +263,56 @@
         try {
           return JSON.parse(elGi.textContent.trim());
         } catch (eGi) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit1JobTitles) {
+      var elU1 = document.getElementById("part2-open-bundled-unit1-job-titles");
+      if (elU1) {
+        try {
+          return JSON.parse(elU1.textContent.trim());
+        } catch (eU1) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit2LessonsLens) {
+      var elU2 = document.getElementById("part2-open-bundled-unit2-lessons-lens");
+      if (elU2) {
+        try {
+          return JSON.parse(elU2.textContent.trim());
+        } catch (eU2) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit3Gps) {
+      var elU3 = document.getElementById("part2-open-bundled-unit3-gps");
+      if (elU3) {
+        try {
+          return JSON.parse(elU3.textContent.trim());
+        } catch (eU3) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit7GiantJigsaw) {
+      var elU7 = document.getElementById("part2-open-bundled-unit7-giant-jigsaw");
+      if (elU7) {
+        try {
+          return JSON.parse(elU7.textContent.trim());
+        } catch (eU7) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit10AgathaChristie) {
+      var elU10 = document.getElementById("part2-open-bundled-unit10-agatha-christie");
+      if (elU10) {
+        try {
+          return JSON.parse(elU10.textContent.trim());
+        } catch (eU10) {
           return null;
         }
       }
@@ -247,6 +340,9 @@
         return r.json();
       })
       .catch(function () {
+        if (dataSrc || contextId !== "default") {
+          throw new Error("no data");
+        }
         var def = parseDefaultJson();
         if (def) return def;
         throw new Error("no data");
@@ -531,6 +627,8 @@
   }
 
   document.body.classList.add("part2-open-body");
+  var courseSkin = String(boot.course || sp.get("course") || "").toLowerCase().trim();
+  if (courseSkin === "fce") document.body.classList.add("part2-open-fce-theme");
   document.title = docTitle;
 
   wireBackNav();
@@ -664,7 +762,14 @@
     })
     .catch(function () {
       document.body.classList.remove("part2-open--cue-rail");
-      if (elTask) elTask.innerHTML = "";
+      if (elSub) {
+        elSub.textContent =
+          "The task data could not be loaded. Check the context/src link or embedded JSON for this exercise.";
+      }
+      if (elTask) {
+        elTask.innerHTML =
+          '<p class="part2-open-load-error">Could not load this Open Cloze task. The old demo fallback is disabled for real exercise links.</p>';
+      }
       if (btnCheck) btnCheck.disabled = true;
       if (btnReset) btnReset.disabled = true;
     });
