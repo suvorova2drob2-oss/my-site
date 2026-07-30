@@ -960,11 +960,11 @@
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-create">Создать комнату</button>' +
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-start" hidden>Старт (на весь экран)</button>' +
       '    <p class="ege-live-code-row" id="ege-live-code-row" hidden>Код: <span id="ege-live-code" class="ege-live-code">—</span></p>' +
-      '    <label class="ege-live-label" id="ege-live-link-label" hidden>Ссылка для учеников (с кодом комнаты)' +
-      '      <input id="ege-live-link" class="ege-live-input" readonly />' +
+      '    <label class="ege-live-label" id="ege-live-link-label" hidden>Ссылка для учеников (должна содержать ?room=КОД)' +
+      '      <textarea id="ege-live-link" class="ege-live-input ege-live-input--link" readonly rows="3"></textarea>' +
       "    </label>" +
       '    <p class="ege-live-link-preview" id="ege-live-link-preview" hidden></p>' +
-      '    <button type="button" class="ege-live-btn" id="ege-live-copy" hidden>Скопировать ссылку</button>' +
+      '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-copy" hidden>Скопировать ссылку ученику</button>' +
       '    <p class="ege-live-muted" id="ege-live-file-hint" hidden>Ученик открывает ссылку с <strong>?room=…</strong>. Без кода это страница учителя.</p>' +
       "  </div>" +
       '  <div id="ege-live-student-block" hidden></div>' +
@@ -1256,16 +1256,20 @@
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
         function () {
-          setMsg(msg, "Ссылка скопирована", true);
+          setMsg(msg, "Ссылка ученика скопирована (с ?room=)", true);
         },
         function () {
-          if (inp) inp.select();
-          setMsg(msg, "Скопируйте ссылку вручную (Ctrl+C)", null);
+          if (inp) {
+            inp.focus();
+            inp.select();
+          }
+          setMsg(msg, "Выделилась ссылка — нажмите Ctrl+C. В ней должен быть ?room=", null);
         }
       );
     } else if (inp) {
+      inp.focus();
       inp.select();
-      setMsg(msg, "Скопируйте ссылку вручную (Ctrl+C)", null);
+      setMsg(msg, "Выделилась ссылка — нажмите Ctrl+C. В ней должен быть ?room=", null);
     }
   }
 
