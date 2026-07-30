@@ -85,24 +85,45 @@
   }
 
   function studentLink(roomCode) {
+    var code = String(roomCode || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 12);
     var unit = "";
     try {
       unit = String(state.getUnitId() || "").trim();
     } catch (e) {}
-    var publicOrigin = String(W.__EGE_LIVE_PUBLIC_ORIGIN__ || "").replace(/\/$/, "");
-    var pathHint = deckPathHint();
-    var u;
-    if (publicOrigin) {
-      u = new URL(publicOrigin + pathHint);
-    } else if (location.protocol === "http:" || location.protocol === "https:") {
-      u = new URL(location.href);
-    } else {
-      u = new URL("http://127.0.0.1:8787" + pathHint);
+
+    var origin = String(W.__EGE_LIVE_PUBLIC_ORIGIN__ || "").replace(/\/$/, "");
+    if (!origin || /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) {
+      origin = "http://77.110.113.165:8787";
     }
-    u.searchParams.set("room", roomCode);
-    if (unit) u.searchParams.set("unit", unit);
-    u.searchParams.delete("live_host");
-    return u.toString();
+
+    var path = deckPathHint();
+    if (!/\.html(?:$|\?)/i.test(path)) {
+      path = DECK_PATH_HINTS[state.deckPrefix] || "/ege/ege-listening-matching.html";
+    }
+    if (path.charAt(0) !== "/") path = "/" + path;
+
+    // Build explicitly so ?room= is never dropped / truncated by URL quirks
+    var link = origin + path + "?room=" + encodeURIComponent(code);
+    if (unit) link += "&unit=" + encodeURIComponent(unit);
+    return link;
+  }
+
+  function fillStudentLink(roomCode) {
+    var link = studentLink(roomCode);
+    var inp = document.getElementById("ege-live-link");
+    if (inp) {
+      inp.value = link;
+      inp.title = link;
+    }
+    var preview = document.getElementById("ege-live-link-preview");
+    if (preview) {
+      preview.textContent = link;
+      preview.hidden = false;
+    }
+    return link;
   }
 
   function readSavedPlayerName() {
@@ -939,11 +960,12 @@
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-create">Создать комнату</button>' +
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-start" hidden>Старт (на весь экран)</button>' +
       '    <p class="ege-live-code-row" id="ege-live-code-row" hidden>Код: <span id="ege-live-code" class="ege-live-code">—</span></p>' +
-      '    <label class="ege-live-label" id="ege-live-link-label" hidden>Ссылка для учеников' +
+      '    <label class="ege-live-label" id="ege-live-link-label" hidden>Ссылка для учеников (с кодом комнаты)' +
       '      <input id="ege-live-link" class="ege-live-input" readonly />' +
       "    </label>" +
+      '    <p class="ege-live-link-preview" id="ege-live-link-preview" hidden></p>' +
       '    <button type="button" class="ege-live-btn" id="ege-live-copy" hidden>Скопировать ссылку</button>' +
-      '    <p class="ege-live-muted" id="ege-live-file-hint" hidden>Откройте сайт через http://localhost (не file://), иначе ссылка ученикам не откроется.</p>' +
+      '    <p class="ege-live-muted" id="ege-live-file-hint" hidden>Ученик открывает ссылку с <strong>?room=…</strong>. Без кода это страница учителя.</p>' +
       "  </div>" +
       '  <div id="ege-live-student-block" hidden></div>' +
       '  <p class="ege-live-msg" id="ege-live-msg"></p>' +
@@ -1178,20 +1200,17 @@
         document.getElementById("ege-live-code").textContent = state.roomCode;
         document.getElementById("ege-live-code-row").hidden = false;
         document.getElementById("ege-live-link-label").hidden = false;
-        var link = studentLink(state.roomCode);
-        document.getElementById("ege-live-link").value = link;
+        fillStudentLink(state.roomCode);
         document.getElementById("ege-live-copy").hidden = false;
         document.getElementById("ege-live-start").hidden = false;
         document.getElementById("ege-live-student-block").hidden = true;
         var hint = document.getElementById("ege-live-file-hint");
         if (hint) {
           hint.hidden = false;
-          hint.textContent =
-            location.protocol === "file:"
-              ? "Откройте сами: http://127.0.0.1:8787" +
-                deckPathHint() +
-                " (не file://). Ссылка ученику уже http."
-              : "Ученик открывает скопированную http-ссылку. Нужен npm run live:rooms.";
+          hint.innerHTML =
+            "Ученику нужна ссылка с <strong>?room=" +
+            esc(state.roomCode) +
+            "</strong>. Без кода открывается страница учителя.";
         }
         setMsg(msg, "Комната создана. Скопируйте ссылку ученикам, затем Старт.", true);
         subscribe(state.roomCode);
@@ -1227,11 +1246,13 @@
   }
 
   function onCopy() {
-    var inp = document.getElementById("ege-live-link");
     var msg = document.getElementById("ege-live-msg");
-    var text = (inp && inp.value) || (state.roomCode ? studentLink(state.roomCode) : "");
+    var text =
+      (state.roomCode ? fillStudentLink(state.roomCode) : "") ||
+      ((document.getElementById("ege-live-link") || {}).value || "");
+    var inp = document.getElementById("ege-live-link");
+    if (inp && text) inp.value = text;
     if (!text) return;
-    if (inp) inp.value = text;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
         function () {
