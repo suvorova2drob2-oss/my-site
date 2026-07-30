@@ -21,6 +21,10 @@ cp "$ROOT/server/ege-live-rooms.service" /etc/systemd/system/ege-live-rooms.serv
 systemctl daemon-reload
 systemctl enable ege-live-rooms
 systemctl restart ege-live-rooms
+# Also kick auto-update once if present
+if [[ -f "$ROOT/server/auto-update-live.sh" ]]; then
+  chmod +x "$ROOT/server/auto-update-live.sh" || true
+fi
 
 echo "==> Status"
 systemctl --no-pager --full status ege-live-rooms | head -n 12

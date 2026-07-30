@@ -210,27 +210,11 @@
   }
 
   function onChangeName() {
-    var prevId = state.playerId || "";
-    try {
-      if (prevId) sessionStorage.setItem(SS_REPLACE, prevId);
-    } catch (e0) {}
-    state.playerId = "";
-    try {
-      sessionStorage.removeItem(SS_PLAYER);
-      sessionStorage.removeItem(SS_ROLE);
-    } catch (e1) {}
-    if (state.unsub) {
-      try {
-        state.unsub();
-      } catch (e2) {}
-      state.unsub = null;
-    }
-    fillNameInput(readSavedPlayerName());
-    applyStudentPhase("lobby");
     var joinStep = document.getElementById("ege-live-gate-join");
     var waitStep = document.getElementById("ege-live-gate-wait");
     if (joinStep) joinStep.hidden = false;
     if (waitStep) waitStep.hidden = true;
+    fillNameInput(readSavedPlayerName() || "");
     var nameEl = document.getElementById("ege-live-name");
     if (nameEl) {
       try {
@@ -238,6 +222,28 @@
         nameEl.select();
       } catch (e3) {}
     }
+    var msg = document.getElementById("ege-live-gate-msg");
+    setMsg(msg, "Введите новое имя и нажмите «Войти в комнату»", null);
+  }
+
+  function applyRenamedIdentity(res, code, name) {
+    state.roomCode = code;
+    state.playerId = res.playerId;
+    state.role = "student";
+    persistPlayerName(name);
+    try {
+      sessionStorage.setItem(SS_ROOM, code);
+      sessionStorage.setItem(SS_PLAYER, res.playerId);
+      sessionStorage.setItem(SS_ROLE, "student");
+      sessionStorage.setItem(SS_NAME, name);
+      sessionStorage.removeItem(SS_REPLACE);
+    } catch (e2) {}
+    var waitCode = document.getElementById("ege-live-wait-code");
+    if (waitCode) waitCode.textContent = code;
+    var waitName = document.getElementById("ege-live-wait-name");
+    if (waitName) waitName.textContent = "Вы в комнате как " + name;
+    applyStudentPhase((state.lastSnap && state.lastSnap.phase) || "lobby");
+    if (!state.unsub) subscribe(code);
   }
 
   function setMsg(el, text, ok) {
@@ -1335,10 +1341,21 @@
       setMsg(msg, (e && e.message) || "API не загружен", false);
       return;
     }
-    setMsg(msg, "Входим…", null);
-    var replaceId = "";
+
+    // Already in the room → rename in place (never create a second seat)
+    var existingId = state.playerId || "";
     try {
-      replaceId = sessionStorage.getItem(SS_REPLACE) || "";
+      if (!existingId) existingId = sessionStorage.getItem(SS_PLAYER) || "";
+    } catch (eP) {}
+    if (existingId && state.role === "student") {
+      setMsg(msg, "Меняем имя…", null);
+      return renameViaApi(code, existingId, name, msg);
+    }
+
+    setMsg(msg, "Входим…", null);
+    var replaceId = existingId;
+    try {
+      replaceId = sessionStorage.getItem(SS_REPLACE) || existingId || "";
     } catch (eR) {}
     ensureApi()
       .joinRoom({
@@ -1347,23 +1364,7 @@
         replacePlayerId: replaceId || undefined
       })
       .then(function (res) {
-        state.roomCode = code;
-        state.playerId = res.playerId;
-        state.role = "student";
-        persistPlayerName(name);
-        try {
-          sessionStorage.setItem(SS_ROOM, code);
-          sessionStorage.setItem(SS_PLAYER, res.playerId);
-          sessionStorage.setItem(SS_ROLE, "student");
-          sessionStorage.setItem(SS_NAME, name);
-          sessionStorage.removeItem(SS_REPLACE);
-        } catch (e2) {}
-        var waitCode = document.getElementById("ege-live-wait-code");
-        if (waitCode) waitCode.textContent = code;
-        var waitName = document.getElementById("ege-live-wait-name");
-        if (waitName) waitName.textContent = "Вы в комнате как " + name;
-        applyStudentPhase((state.lastSnap && state.lastSnap.phase) || "lobby");
-        subscribe(code);
+        applyRenamedIdentity(res, code, name);
       })
       .catch(function (err) {
         setMsg(
@@ -1372,6 +1373,44 @@
             "Не удалось войти. Проверьте код и что сервер запущен.",
           false
         );
+      });
+  }
+
+  function renameViaApi(code, playerId, name, msg) {
+    var url = String(W.__EGE_LIVE_API_URL__ || "http://127.0.0.1:8787/live");
+    return fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        op: "renamePlayer",
+        roomCode: code,
+        playerId: playerId,
+        displayName: name
+      })
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (j) {
+        if (!j || !j.ok) throw new Error((j && j.error) || "Rename failed");
+        applyRenamedIdentity(j.result, code, name);
+        setMsg(msg, "Имя обновлено", true);
+      })
+      .catch(function (err) {
+        // Fallback: join with replacePlayerId
+        ensureApi()
+          .joinRoom({
+            roomCode: code,
+            displayName: name,
+            replacePlayerId: playerId
+          })
+          .then(function (res) {
+            applyRenamedIdentity(res, code, name);
+            setMsg(msg, "Имя обновлено", true);
+          })
+          .catch(function (err2) {
+            setMsg(msg, (err2 && err2.message) || (err && err.message) || "Не удалось сменить имя", false);
+          });
       });
   }
 

@@ -212,6 +212,46 @@ function handleOp(op, body) {
       });
       return { playerId: playerId, displayName: displayName, attempts: 0 };
     }
+    case "renamePlayer": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      const playerId = String((body && body.playerId) || "");
+      const p = r.players.get(playerId);
+      if (!p || p.isHost) throw new Error("Player not found");
+      const displayName = String((body && body.displayName) || "")
+        .trim()
+        .slice(0, 40);
+      if (!displayName) throw new Error("Name required");
+
+      // If another seat already has this name, merge into it and drop the old seat
+      let otherId = null;
+      const nameKey = displayName.toLowerCase();
+      r.players.forEach(function (pl, id) {
+        if (pl.isHost || id === playerId) return;
+        if (String(pl.displayName || "").trim().toLowerCase() === nameKey) {
+          otherId = id;
+        }
+      });
+      if (otherId) {
+        r.players.delete(playerId);
+        const keep = r.players.get(otherId);
+        return {
+          playerId: otherId,
+          displayName: keep.displayName,
+          attempts: Number(keep.attempts || 0),
+          merged: true
+        };
+      }
+
+      p.displayName = displayName;
+      return {
+        playerId: playerId,
+        displayName: displayName,
+        attempts: Number(p.attempts || 0),
+        renamed: true
+      };
+    }
     case "submitAnswer": {
       const code = normalizeRoom(body && body.roomCode);
       const r = rooms.get(code);
