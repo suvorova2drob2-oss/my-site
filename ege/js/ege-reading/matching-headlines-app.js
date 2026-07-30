@@ -1084,6 +1084,73 @@
     });
   }
 
+  function isLiveStudent() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
+  function buildLiveItems() {
+    var items = [];
+    var ok = 0;
+    var filledN = 0;
+    var pi;
+    var L;
+    var sel;
+    var v;
+    var isFilled;
+    var exp;
+    var isOk;
+    var n = U.paragraphs.length;
+    for (pi = 0; pi < n; pi++) {
+      L = U.paragraphs[pi].letter;
+      sel = root.querySelector('.ege-mh-select[data-letter="' + L + '"]');
+      v = sel ? sel.value : "";
+      isFilled = !!v;
+      exp = String(U.key[L]);
+      isOk = isFilled && v === exp;
+      if (isFilled) filledN++;
+      if (isOk) ok++;
+      items.push({
+        id: L,
+        label: "Абзац " + L,
+        correct: isOk,
+        answer: v,
+        expected: exp,
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filledN,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (!isLiveStudent() || checked) return;
+    var pk = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pk.score,
+      correct: pk.correct,
+      total: pk.total,
+      items: pk.items
+    });
+  }
+
+  function openHuntForLive() {
+    var ht = document.getElementById("ege-mh-hunt-toggle");
+    if (ht) ht.checked = true;
+    refreshPassageDisplay();
+    var hb = document.getElementById("ege-mh-hunt-bar");
+    if (hb) hb.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function build() {
     var paras = [];
     var p;
@@ -1290,6 +1357,7 @@
     tryStartTimerOnInteraction();
     refreshPassageDisplay();
     refreshCheer();
+    pushLiveDraft();
   }
 
   function clearMarks() {
@@ -1333,6 +1401,7 @@
     var ht = document.getElementById("ege-mh-hunt-toggle");
     if (ht) ht.checked = true;
     refreshCheer({ phase: "working", force: true });
+    pushLiveDraft();
   }
 
   function onCheck() {
@@ -1471,12 +1540,27 @@
       extraEl.innerHTML = "<strong>Лишний заголовок.</strong> " + U.extraExplainRu;
     }
 
+    var liveStudent = isLiveStudent();
     var huntBar = document.getElementById("ege-mh-hunt-bar");
     if (huntBar) {
       huntBar.hidden = !unitHasEvidence() || isSheetView;
     }
+    if (liveStudent) {
+      var htLive = document.getElementById("ege-mh-hunt-toggle");
+      if (htLive) htLive.checked = false;
+    }
     refreshPassageDisplay();
     refreshCheer({ phase: "checked", percent: mhPct, force: true });
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+      var livePack = buildLiveItems();
+      window.EgeLiveRoom.notifyProgress({
+        draft: false,
+        score: mhPct,
+        correct: correctCount,
+        total: mhTotal,
+        items: livePack.items
+      });
+    }
   }
 
   window.addEventListener("pagehide", function () {
@@ -1492,4 +1576,30 @@
   });
 
   build();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-reading-matching-headlines",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              bankTitle: "Заголовки 1–" + ((U.headlines || []).length),
+              bankLines: (U.headlines || []).map(function (h) {
+                return { id: h.num, text: h.text };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        openHuntForLive();
+      },
+      onRestart: function () {
+        onReset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

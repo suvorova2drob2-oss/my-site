@@ -385,6 +385,61 @@
     );
   }
 
+  function isLiveStudent() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
+  function buildLiveItems() {
+    var n = state.nQuestions;
+    var items = [];
+    var ok = 0;
+    var filledN = 0;
+    var i;
+    var v;
+    var isFilled;
+    var exp;
+    var isOk;
+    for (i = 0; i < n; i++) {
+      v = getChoice(i);
+      isFilled = !!v;
+      exp = String(Number((U.items[i] || {}).correctIndex) || 0);
+      isOk = isFilled && v === exp;
+      if (isFilled) filledN++;
+      if (isOk) ok++;
+      items.push({
+        id: String(30 + i),
+        label: "№" + (30 + i),
+        correct: isOk,
+        answer: v,
+        expected: exp,
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filledN,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (!isLiveStudent() || checked) return;
+    var pk = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pk.score,
+      correct: pk.correct,
+      total: pk.total,
+      items: pk.items
+    });
+  }
+
   function unitTimerSec() {
     var def =
       pack.defaultTimerSec != null && pack.defaultTimerSec > 0
@@ -579,6 +634,7 @@
           }
           saveDraft();
           updateProgress();
+          pushLiveDraft();
         });
         lab.appendChild(radio);
         lab.appendChild(
@@ -807,6 +863,16 @@
         lxBr
       );
     }
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+      var livePack = buildLiveItems();
+      window.EgeLiveRoom.notifyProgress({
+        draft: false,
+        score: pct,
+        correct: score,
+        total: n,
+        items: livePack.items
+      });
+    }
   }
 
   function onReset() {
@@ -826,6 +892,7 @@
     }
     updateProgress();
     refreshCheer({ phase: "working", force: true });
+    pushLiveDraft();
   }
 
   function goToUnitIndex(ix, opts) {
@@ -951,4 +1018,33 @@
   }
 
   mountUnit();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-lexis-exam",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              bankTitle: "Ключ (§30–36)",
+              bankLines: (U.items || []).map(function (it, idx) {
+                var ci = Number(it.correctIndex) || 0;
+                return { id: 30 + idx, text: String(it.options[ci] || "") };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        var fb = root.querySelector("#ege-lx-feedback");
+        if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+      onRestart: function () {
+        var btn = root.querySelector("#ege-lx-reset");
+        if (btn) btn.click();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

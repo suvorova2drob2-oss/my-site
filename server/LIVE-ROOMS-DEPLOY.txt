@@ -1,0 +1,21 @@
+Live rooms server — выкладка на VPS (кратко)
+
+1) Нужны Node 18+ и этот репозиторий (или хотя бы server/live-rooms-server.js + package.json dependencies: express).
+
+2) На сервере:
+   cd /path/to/my-site
+   npm install --omit=dev
+   PORT=8787 ALLOWED_ORIGINS=https://ваш-ege-домен.ru npm run live:rooms
+
+3) Локально (учитель + ученик на одном ПК):
+   npm run live:rooms
+   Учитель открывает ТОЛЬКО:
+     http://127.0.0.1:8787/ege/ege-listening-matching.html
+   (не двойной клик по файлу / не file://)
+   Live → Создать → Скопировать ссылку → второй браузер открывает эту http-ссылку.
+
+4) Production: nginx HTTPS → тот же Node; в ege-live-config.js:
+   __EGE_LIVE_API_URL__ = "https://live.домен.ru/live"
+   __EGE_LIVE_PUBLIC_ORIGIN__ = "https://ваш-ege-сайт.ru"
+
+Комнаты в памяти процесса — после перезапуска сбрасываются.

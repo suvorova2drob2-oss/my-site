@@ -561,6 +561,65 @@
     });
   }
 
+  function isLiveStudent() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
+  function buildLiveItems() {
+    var items = [];
+    var ok = 0;
+    var filledN = 0;
+    U.questions.forEach(function (q) {
+      var sel = root.querySelector('input[name="q' + q.examNum + '"]:checked');
+      var v = sel ? sel.value : "";
+      var isFilled = !!v;
+      var exp = String(q.key);
+      var isOk = isFilled && v === exp;
+      if (isFilled) filledN++;
+      if (isOk) ok++;
+      items.push({
+        id: String(q.examNum),
+        label: "Вопрос " + q.examNum,
+        correct: isOk,
+        answer: v,
+        expected: exp,
+        filled: isFilled
+      });
+    });
+    var total = U.questions.length;
+    return {
+      items: items,
+      correct: ok,
+      filled: filledN,
+      total: total,
+      score: total ? Math.round((ok / total) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (!isLiveStudent() || checked) return;
+    var pk = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pk.score,
+      correct: pk.correct,
+      total: pk.total,
+      items: pk.items
+    });
+  }
+
+  function openHuntForLive() {
+    var ht = document.getElementById("ege-mcr-hunt-toggle");
+    if (ht) ht.checked = true;
+    refreshPassageDisplay();
+    var hb = document.getElementById("ege-mcr-hunt-bar");
+    if (hb) hb.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function renderStatsBar() {
     var el = document.getElementById("ege-mcr-stats");
     if (!el || !window.__egeReadingMcStats || typeof window.__egeReadingMcStats.getUnitStats !== "function") {
@@ -768,6 +827,7 @@
         if (checked) return;
         saveAnswers();
         refreshCheer();
+        pushLiveDraft();
       });
     });
 
@@ -826,6 +886,7 @@
     }
     refreshPassageDisplay();
     refreshCheer({ phase: "working", force: true });
+    pushLiveDraft();
   }
 
   function onCheck() {
@@ -941,13 +1002,57 @@
     }
     renderStatsBar();
 
+    var liveStudent = isLiveStudent();
     var hb = document.getElementById("ege-mcr-hunt-bar");
     if (hb && unitHasEvidence()) hb.hidden = false;
+    if (liveStudent) {
+      var htLive = document.getElementById("ege-mcr-hunt-toggle");
+      if (htLive) htLive.checked = false;
+    }
 
     closeDictDrawer();
     refreshPassageDisplay();
     refreshCheer({ phase: "checked", percent: pct, force: true });
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+      var livePack = buildLiveItems();
+      window.EgeLiveRoom.notifyProgress({
+        draft: false,
+        score: pct,
+        correct: ok,
+        total: total,
+        items: livePack.items
+      });
+    }
   }
 
   render();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-reading-mc",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              bankTitle: "Вопросы",
+              bankLines: (U.questions || []).map(function (q) {
+                return {
+                  id: q.examNum,
+                  text: String(q.prompt || "").replace(/<[^>]+>/g, "")
+                };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        openHuntForLive();
+      },
+      onRestart: function () {
+        onReset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

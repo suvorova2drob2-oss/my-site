@@ -73,6 +73,68 @@
     });
   }
 
+  function isLiveStudent() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
+  function buildLiveItems() {
+    var letters = collectGapLetters();
+    var key = U.key || {};
+    var items = [];
+    var ok = 0;
+    var filledN = 0;
+    var i;
+    var L;
+    var zone;
+    var chip;
+    var nChip;
+    var exp;
+    var isFilled;
+    var isOk;
+    for (i = 0; i < letters.length; i++) {
+      L = letters[i];
+      zone = root.querySelector('.ege-gt-drop[data-gap-letter="' + L + '"]');
+      chip = zone ? zone.querySelector(".ege-gt-chip") : null;
+      nChip = chip ? parseInt(chip.getAttribute("data-n") || "0", 10) : 0;
+      isFilled = !!chip;
+      exp = String(key[L]);
+      isOk = isFilled && String(nChip) === exp;
+      if (isFilled) filledN++;
+      if (isOk) ok++;
+      items.push({
+        id: L,
+        label: "Пропуск " + L,
+        correct: isOk,
+        answer: isFilled ? String(nChip) : "",
+        expected: exp,
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filledN,
+      total: letters.length,
+      score: letters.length ? Math.round((ok / letters.length) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (!isLiveStudent() || gtSubmitted) return;
+    var pk = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pk.score,
+      correct: pk.correct,
+      total: pk.total,
+      items: pk.items
+    });
+  }
+
   function clearPostSubmitUI() {
     var fb = root.querySelector("#ege-gt-feedback");
     var body = root.querySelector("#ege-gt-feedback-body");
@@ -589,6 +651,7 @@
     fixEmptyZones();
     saveLayout();
     if (!gtSubmitted) refreshCheer();
+    pushLiveDraft();
   }
 
   function moveToBank(chip) {
@@ -598,6 +661,7 @@
     fixEmptyZones();
     saveLayout();
     if (!gtSubmitted) refreshCheer();
+    pushLiveDraft();
   }
 
   function hookChip(chip) {
@@ -1023,6 +1087,7 @@
       }
       startExamTimer();
       refreshCheer({ phase: "working", force: true });
+      pushLiveDraft();
     });
 
     document.getElementById("ege-gt-check").addEventListener("click", function () {
@@ -1124,6 +1189,16 @@
       saveLayout();
       gtSubmitted = true;
       refreshCheer({ phase: "checked", percent: pct, force: true });
+      if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+        var livePack = buildLiveItems();
+        window.EgeLiveRoom.notifyProgress({
+          draft: false,
+          score: pct,
+          correct: ok,
+          total: total,
+          items: livePack.items
+        });
+      }
     });
 
     restoreLayout();
@@ -1147,4 +1222,32 @@
   }
 
   mountUnit();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-reading-gapped-text",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              bankTitle: "Фразы-пазлы (ключ)",
+              bankLines: (U.fragments || []).map(function (f) {
+                return { id: f.num, text: f.text };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        var fb = document.getElementById("ege-gt-feedback");
+        if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+      onRestart: function () {
+        var btn = document.getElementById("ege-gt-reset");
+        if (btn) btn.click();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

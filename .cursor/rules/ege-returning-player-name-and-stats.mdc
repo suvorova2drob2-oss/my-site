@@ -1,0 +1,50 @@
+---
+description: Returning EGE students keep their name and all exercise results go to Statistics
+globs: "**/ege/**/*live*,**/ege/js/ege-player-name.js,**/ege/js/ege-*-stats-bridge.js,**/ege/ege-statistics.html"
+alwaysApply: false
+---
+
+# EGE — returning player name + Statistics
+
+## Name on this device
+
+If a student **already entered a name** on the EGE site (Live join, hub, or another exercise that saves the name), **reuse it** on the next visit:
+
+1. Read via **`EgePlayerName.get()`** (`ege/js/ege-player-name.js`) — shared keys with Prep/FCE where possible (`prep-player-display-name-v1`, `english_mastery_perfect.name`, `egePlayerDisplayName`).
+2. **Save** with **`EgePlayerName.set(name)`** whenever they confirm a name (Live join, hub login).
+3. **Live (`?room=`):** if a saved name exists → **auto-join** under that name (skip the empty “Введите имя” step). Show who they are and a **«Сменить имя»** escape hatch.
+4. First visit / cleared storage → show the name form as usual.
+
+Do **not** invent a second parallel name store per exercise.
+
+## Statistics
+
+Every **final** attempt on an exercise (Check / submit, including inside a Live room) must call that skill’s **`recordAttempt`** / stats bridge so **`ege-statistics.html`** can merge scores.
+
+- Live **draft** progress (while typing) goes to the room leaderboard only — **not** a new Statistics attempt.
+- Live **final** check → both **`notifyProgress({ draft: false })`** (teacher board) **and** the existing stats bridge (`__egeListeningMatchingStats.recordAttempt`, etc.).
+- Statistics pages themselves stay **without** Live rooms (no room FAB on the stats hub).
+
+## When adding Live to another EGE shell
+
+1. Load **`ege-player-name.js`** before **`ege-live-room-bar.js`**.
+2. Keep the exercise’s **stats bridge** call on final check — do not skip it in Live mode.
+3. Rely on the Live bar for name prefills / auto-join; do not copy name logic into each `*-app.js`.
+4. Register the page in **`DECK_PATH_HINTS`** inside `ege-live-room-bar.js` so student links resolve when opened via `file://` / public origin.
+5. Unique **`deckPrefix`** per shell (see wired list below).
+
+## Wired exercise shells (Live FAB)
+
+| Shell | `deckPrefix` |
+|-------|----------------|
+| Listening Matching | `ege-listening-matching` |
+| Listening TFNS | `ege-listening-tfns` |
+| Listening MC | `ege-listening-mc` |
+| Reading Matching Headlines | `ege-reading-matching-headlines` |
+| Reading Gapped Text | `ege-reading-gapped-text` |
+| Reading MC | `ege-reading-mc` |
+| Grammar Exam | `ege-grammar-exam` |
+| Word Formation Exam | `ege-word-formation-exam` |
+| Lexis Exam (30–36) | `ege-lexis-exam` |
+
+**No Live** on hubs (`ege-listening.html`, `ege-reading.html`, …) or **`ege-statistics.html`**.

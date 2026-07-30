@@ -70,6 +70,65 @@
     );
   }
 
+  function isLiveStudent() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
+  function buildLiveItems() {
+    var items = U.items || [];
+    var out = [];
+    var ok = 0;
+    var filledN = 0;
+    var i;
+    var item;
+    var inp;
+    var raw;
+    var isFilled;
+    var good;
+    var exp;
+    for (i = 0; i < items.length; i++) {
+      item = items[i];
+      inp = root.querySelector('.ege-gx-input[data-exam-num="' + item.examNum + '"]');
+      raw = inp ? inp.value.trim() : "";
+      isFilled = !!normalizeAnswer(raw);
+      good = isFilled && isCorrect(item, raw);
+      exp = item.keyShow || (item.answers && item.answers[0]) || "";
+      if (isFilled) filledN++;
+      if (good) ok++;
+      out.push({
+        id: String(item.examNum),
+        label: "№" + item.examNum,
+        correct: good,
+        answer: raw,
+        expected: exp,
+        filled: isFilled
+      });
+    }
+    return {
+      items: out,
+      correct: ok,
+      filled: filledN,
+      total: items.length,
+      score: items.length ? Math.round((ok / items.length) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (!isLiveStudent() || checked) return;
+    var pk = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pk.score,
+      correct: pk.correct,
+      total: pk.total,
+      items: pk.items
+    });
+  }
+
   function esc(s) {
     return String(s || "")
       .replace(/&/g, "&amp;")
@@ -705,6 +764,7 @@
           msgEl.textContent = "";
           msgEl.className = "ege-gx-msg";
         }
+        pushLiveDraft();
       });
       inp.addEventListener("focus", function () {
         [].forEach.call(root.querySelectorAll(".ege-gx-item"), function (row) {
@@ -759,6 +819,7 @@
       startExamTimer();
       if (inputs[0]) inputs[0].focus();
       refreshCheer({ phase: "welcome", force: true });
+      pushLiveDraft();
     });
 
     document.getElementById("ege-gx-check").addEventListener("click", function () {
@@ -860,6 +921,16 @@
         }
       }
       refreshCheer({ phase: "checked", percent: percent, force: true });
+      if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+        var livePack = buildLiveItems();
+        window.EgeLiveRoom.notifyProgress({
+          draft: false,
+          score: percent,
+          correct: ok,
+          total: total,
+          items: livePack.items
+        });
+      }
     });
 
     refreshStatsBar();
@@ -869,4 +940,35 @@
   }
 
   mountUnit();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-grammar-exam",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              bankTitle: "Ключ по пропускам",
+              bankLines: (U.items || []).map(function (item) {
+                return {
+                  id: item.examNum,
+                  text: item.keyShow || (item.answers && item.answers[0]) || ""
+                };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        var fb = document.getElementById("ege-gx-feedback");
+        if (fb) fb.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+      onRestart: function () {
+        var btn = document.getElementById("ege-gx-reset");
+        if (btn) btn.click();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

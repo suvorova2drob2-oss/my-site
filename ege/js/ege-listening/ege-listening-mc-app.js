@@ -316,6 +316,56 @@
     }
   }
 
+  function buildLiveItems() {
+    var qs = U.questions || [];
+    var n = qs.length;
+    var items = [];
+    var ok = 0;
+    var filled = 0;
+    qs.forEach(function (q) {
+      var ans = getRowVal(q.examNum);
+      var exp = q.key;
+      var isFilled = !!ans;
+      var isOk = isFilled && ans === exp;
+      if (isFilled) filled += 1;
+      if (isOk) ok += 1;
+      items.push({
+        id: String(q.examNum),
+        label: "Q " + q.examNum,
+        correct: isOk,
+        answer: ans ? String(ans) : "",
+        expected: exp != null ? String(exp) : "",
+        filled: isFilled
+      });
+    });
+    return {
+      items: items,
+      correct: ok,
+      filled: filled,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
+  function pushLiveDraft() {
+    if (
+      !window.EgeLiveRoom ||
+      typeof window.EgeLiveRoom.isLiveStudent !== "function" ||
+      !window.EgeLiveRoom.isLiveStudent()
+    ) {
+      return;
+    }
+    if (checked) return;
+    var pack = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pack.score,
+      correct: pack.correct,
+      total: pack.total,
+      items: pack.items
+    });
+  }
+
   function onChoiceClick(examNum, val) {
     if (checked) return;
     setRowVal(examNum, val);
@@ -323,6 +373,7 @@
       lab.classList.toggle("is-picked", parseInt(lab.getAttribute("data-val"), 10) === val);
     });
     refreshCheer();
+    pushLiveDraft();
   }
 
   function onCheck() {
@@ -423,7 +474,26 @@
     }
 
     refreshCheer({ phase: "checked", percent: pct, force: true });
-    showHuntStage();
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+      var livePack = buildLiveItems();
+      window.EgeLiveRoom.notifyProgress({
+        draft: false,
+        score: pct,
+        correct: ok,
+        total: total,
+        items: livePack.items
+      });
+    }
+    var liveStudent =
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent();
+    if (liveStudent) {
+      var hunt = document.getElementById("ege-lmc-hunt-stage");
+      if (hunt) hunt.hidden = true;
+    } else {
+      showHuntStage();
+    }
   }
 
   function onReset() {
@@ -444,6 +514,7 @@
     var stage = document.getElementById("ege-lmc-hunt-stage");
     if (stage) stage.hidden = true;
     refreshCheer({ phase: "working", force: true });
+    pushLiveDraft();
   }
 
   function paintUnitSelect() {
@@ -646,4 +717,31 @@
   }
 
   mountUnit();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-listening-mc",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              id: U.id,
+              bankTitle: "Вопросы 3–9",
+              bankLines: (U.questions || []).map(function (q) {
+                return { id: String(q.examNum), text: q.prompt };
+              })
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        showHuntStage();
+      },
+      onRestart: function () {
+        onReset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();

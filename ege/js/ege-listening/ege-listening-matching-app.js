@@ -196,6 +196,11 @@
   function clearResultStyles() {
     selects.forEach(function (s) {
       s.classList.remove("is-correct", "is-wrong");
+      var row = s.closest ? s.closest(".ege-lm-match-row") : null;
+      if (row) {
+        var tip = row.querySelector(".ege-lm-correct-tip");
+        if (tip) tip.remove();
+      }
     });
   }
 
@@ -235,6 +240,58 @@
       repeatMode: repeat
     });
     shadowMounted = true;
+  }
+
+  function buildLiveItems() {
+    var n = speakerCount();
+    var vals = getValues();
+    var labels = U.speakerLabels || ["A", "B", "C", "D", "E", "F"];
+    var items = [];
+    var ok = 0;
+    var filled = 0;
+    var i;
+    for (i = 0; i < n; i++) {
+      var ans = String(vals[i] || "");
+      var exp = String(U.key[i]);
+      var isFilled = !!ans;
+      var isOk = isFilled && ans === exp;
+      if (isFilled) filled += 1;
+      if (isOk) ok += 1;
+      items.push({
+        id: String(labels[i] || i + 1),
+        label: "Speaker " + String(labels[i] || i + 1),
+        correct: isOk,
+        answer: ans,
+        expected: exp,
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filled,
+      total: n,
+      score: Math.round((ok / n) * 100)
+    };
+  }
+
+  function pushLiveDraft() {
+    if (
+      !window.EgeLiveRoom ||
+      typeof window.EgeLiveRoom.isLiveStudent !== "function" ||
+      !window.EgeLiveRoom.isLiveStudent()
+    ) {
+      return;
+    }
+    if (checked) return;
+    var pack = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: true,
+      score: pack.score,
+      correct: pack.correct,
+      total: pack.total,
+      items: pack.items
+    });
   }
 
   function showHuntStage() {
@@ -286,6 +343,14 @@
         ok++;
       } else {
         selects[i].classList.add("is-wrong");
+        var row = selects[i].closest ? selects[i].closest(".ege-lm-match-row") : null;
+        if (row) {
+          var tip = document.createElement("span");
+          tip.className = "ege-lm-correct-tip";
+          tip.setAttribute("aria-label", "Правильный ответ " + want);
+          tip.innerHTML = "верно → <strong>" + esc(want) + "</strong>";
+          row.appendChild(tip);
+        }
       }
     }
 
@@ -300,11 +365,10 @@
     if (msgEl) {
       if (ok === n) {
         msgEl.className = "ege-lm-msg is-ok";
-        msgEl.textContent = "Отлично — все " + n + " из " + n + ". Ниже — разбор в тексте.";
+        msgEl.textContent = "Отлично — все " + n + " из " + n + ".";
       } else {
         msgEl.className = "ege-lm-msg is-warn";
-        msgEl.textContent =
-          "Верно " + ok + " из " + n + " (" + pct + "%). Смотри ключ и Evidence hunt ниже.";
+        msgEl.textContent = "Верно " + ok + " из " + n + " (" + pct + "%).";
       }
     }
 
@@ -343,11 +407,89 @@
     }
 
     refreshCheer({ phase: "checked", percent: pct, force: true });
-    showHuntStage();
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.notifyProgress === "function") {
+      var pack = buildLiveItems();
+      window.EgeLiveRoom.notifyProgress({
+        draft: false,
+        score: pct,
+        correct: ok,
+        total: n,
+        items: pack.items
+      });
+    }
+
+    var liveStudent =
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent();
+    if (liveStudent) {
+      // Сразу видно красный/зелёный + «верно → N»; разбор — по кнопке
+      var hunt = document.getElementById("ege-lm-hunt-stage");
+      if (hunt) hunt.hidden = true;
+      if (window.EgeLiveRoom && typeof window.EgeLiveRoom.showStudentDone === "function") {
+        window.EgeLiveRoom.showStudentDone(false);
+      }
+      showLiveAfterBar(pct, ok, n);
+      var matchCol = root.querySelector(".ege-lm-col--match");
+      if (matchCol) matchCol.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      hideLiveAfterBar();
+      showHuntStage();
+    }
+  }
+
+  function hideLiveAfterBar() {
+    var bar = document.getElementById("ege-lm-live-after");
+    if (bar) bar.hidden = true;
+  }
+
+  function showLiveAfterBar(pct, ok, n) {
+    var bar = document.getElementById("ege-lm-live-after");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "ege-lm-live-after";
+      bar.className = "ege-lm-live-after";
+      var keyBox = document.getElementById("ege-lm-key-box");
+      if (keyBox && keyBox.parentNode) {
+        keyBox.parentNode.insertBefore(bar, keyBox.nextSibling);
+      } else {
+        var btnRow = root.querySelector(".ege-lm-btn-row");
+        if (btnRow && btnRow.parentNode) btnRow.parentNode.insertBefore(bar, btnRow.nextSibling);
+      }
+    }
+    bar.hidden = false;
+    bar.innerHTML =
+      '<p class="ege-lm-live-after-score"><strong>' +
+      esc(String(pct)) +
+      "%</strong> · верно " +
+      esc(String(ok)) +
+      " из " +
+      esc(String(n)) +
+      "</p>" +
+      '<p class="ege-lm-live-after-lead">Сверху уже видно, где ошибки (зелёным — правильный номер). Разбор в тексте — по желанию.</p>' +
+      '<div class="ege-lm-live-after-btns">' +
+      '<button type="button" class="ege-lm-btn ege-lm-btn--check" id="ege-lm-live-hunt">Разбор задания</button>' +
+      '<button type="button" class="ege-lm-btn ege-lm-btn--reset" id="ege-lm-live-restart">Начать заново</button>' +
+      "</div>";
+    var huntBtn = document.getElementById("ege-lm-live-hunt");
+    var restartBtn = document.getElementById("ege-lm-live-restart");
+    if (huntBtn) {
+      huntBtn.onclick = function () {
+        showHuntStage();
+      };
+    }
+    if (restartBtn) {
+      restartBtn.onclick = function () {
+        hideLiveAfterBar();
+        onReset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+    }
   }
 
   function onReset() {
     checked = false;
+    hideLiveAfterBar();
     selects.forEach(function (sel) {
       sel.value = "";
     });
@@ -365,6 +507,7 @@
     var stage = document.getElementById("ege-lm-hunt-stage");
     if (stage) stage.hidden = true;
     refreshCheer({ phase: "working", force: true });
+    pushLiveDraft();
   }
 
   function goToUnitIndex(ix) {
@@ -568,6 +711,7 @@
         if (msgEl) msgEl.textContent = "";
         rebuildSelects();
         refreshCheer();
+        pushLiveDraft();
       });
     });
 
@@ -594,4 +738,30 @@
   }
 
   mountUnit();
+
+  if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
+    window.EgeLiveRoom.mount({
+      deckPrefix: "ege-listening-matching",
+      getUnitId: function () {
+        return U && U.id;
+      },
+      getUnitData: function () {
+        return U
+          ? {
+              id: U.id,
+              statements: U.statements || [],
+              key: U.key || [],
+              speakerLabels: U.speakerLabels || []
+            }
+          : null;
+      },
+      onOpenHunt: function () {
+        showHuntStage();
+      },
+      onRestart: function () {
+        onReset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
 })();
