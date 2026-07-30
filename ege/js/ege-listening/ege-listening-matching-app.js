@@ -294,12 +294,22 @@
     });
   }
 
+  function isLiveStudentNow() {
+    return (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      window.EgeLiveRoom.isLiveStudent()
+    );
+  }
+
   function showHuntStage() {
     var stage = document.getElementById("ege-lm-hunt-stage");
     if (stage) {
       stage.hidden = false;
       stage.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    var keyBox = document.getElementById("ege-lm-key-box");
+    if (keyBox && isLiveStudentNow()) keyBox.hidden = false;
     mountHuntIfNeeded();
   }
 
@@ -403,7 +413,7 @@
             esc(String(U.extraStatementNum)) +
             "</strong></p>"
           : "");
-      keyBox.hidden = false;
+      keyBox.hidden = isLiveStudentNow();
     }
 
     refreshCheer({ phase: "checked", percent: pct, force: true });
@@ -418,14 +428,17 @@
       });
     }
 
-    var liveStudent =
-      window.EgeLiveRoom &&
-      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
-      window.EgeLiveRoom.isLiveStudent();
+    var liveStudent = isLiveStudentNow();
     if (liveStudent) {
-      // Сразу видно красный/зелёный + «верно → N»; разбор — по кнопке
       var hunt = document.getElementById("ege-lm-hunt-stage");
       if (hunt) hunt.hidden = true;
+      var keyBoxLive = document.getElementById("ege-lm-key-box");
+      if (keyBoxLive) keyBoxLive.hidden = true;
+      var shRoot = document.getElementById("ege-lm-shadow-root");
+      if (shRoot) {
+        shRoot.hidden = true;
+        shRoot.innerHTML = "";
+      }
       if (window.EgeLiveRoom && typeof window.EgeLiveRoom.showStudentDone === "function") {
         window.EgeLiveRoom.showStudentDone(false);
       }
@@ -505,7 +518,17 @@
       keyBox.innerHTML = "";
     }
     var stage = document.getElementById("ege-lm-hunt-stage");
-    if (stage) stage.hidden = true;
+    if (stage) {
+      stage.hidden = true;
+      stage.innerHTML = "";
+    }
+    huntMounted = false;
+    var shRoot = document.getElementById("ege-lm-shadow-root");
+    if (shRoot && isLiveStudentNow()) {
+      shRoot.hidden = true;
+      shRoot.innerHTML = "";
+      shadowMounted = false;
+    }
     refreshCheer({ phase: "working", force: true });
     pushLiveDraft();
   }
@@ -533,7 +556,11 @@
 
     var n = speakerCount();
     var labels = U.speakerLabels || ["A", "B", "C", "D", "E", "F"];
-    var repeatVisit = hasPriorAttempt();
+    var liveMode = !!(
+      typeof location !== "undefined" &&
+      new URLSearchParams(location.search).get("room")
+    );
+    var repeatVisit = hasPriorAttempt() && !liveMode;
     var html = "";
     html += '<div class="ege-lm-wrap">';
 
@@ -684,7 +711,9 @@
     html += "</div></div>";
     html += "</div>";
 
-    html += '<div id="ege-lm-shadow-root" class="ege-lm-shadow-root"></div>';
+    html += '<div id="ege-lm-shadow-root" class="ege-lm-shadow-root"' +
+      (liveMode ? " hidden" : "") +
+      "></div>";
 
     html += "</div>";
 
@@ -734,7 +763,7 @@
     mountCheerRail();
     wireQuickNav();
     refreshStatsBar();
-    mountShadowIfNeeded();
+    if (!liveMode) mountShadowIfNeeded();
   }
 
   mountUnit();

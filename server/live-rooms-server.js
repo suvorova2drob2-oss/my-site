@@ -156,6 +156,8 @@ function handleOp(op, body) {
         .trim()
         .slice(0, 40);
       const nameKey = displayName.toLowerCase();
+      const replaceId = String((body && body.replacePlayerId) || "");
+
       let existingId = null;
       r.players.forEach(function (p, id) {
         if (p.isHost) return;
@@ -163,6 +165,31 @@ function handleOp(op, body) {
           existingId = id;
         }
       });
+
+      // Rename existing seat (Сменить имя) — do not create a second player
+      if (replaceId && r.players.has(replaceId)) {
+        const old = r.players.get(replaceId);
+        if (old && !old.isHost) {
+          if (existingId && existingId !== replaceId) {
+            r.players.delete(replaceId);
+            const keep = r.players.get(existingId);
+            return {
+              playerId: existingId,
+              displayName: keep.displayName,
+              attempts: Number(keep.attempts || 0),
+              rejoined: true
+            };
+          }
+          old.displayName = displayName;
+          return {
+            playerId: replaceId,
+            displayName: displayName,
+            attempts: Number(old.attempts || 0),
+            renamed: true
+          };
+        }
+      }
+
       if (existingId) {
         const ex = r.players.get(existingId);
         return {

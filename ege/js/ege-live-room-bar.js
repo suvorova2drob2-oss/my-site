@@ -12,6 +12,7 @@
   var SS_PLAYER = "egeLivePlayerId";
   var SS_ROLE = "egeLiveRole";
   var SS_NAME = "egeLiveDisplayName";
+  var SS_REPLACE = "egeLiveReplacePlayerId";
 
   var state = {
     api: null,
@@ -209,6 +210,10 @@
   }
 
   function onChangeName() {
+    var prevId = state.playerId || "";
+    try {
+      if (prevId) sessionStorage.setItem(SS_REPLACE, prevId);
+    } catch (e0) {}
     state.playerId = "";
     try {
       sessionStorage.removeItem(SS_PLAYER);
@@ -1331,8 +1336,16 @@
       return;
     }
     setMsg(msg, "Входим…", null);
+    var replaceId = "";
+    try {
+      replaceId = sessionStorage.getItem(SS_REPLACE) || "";
+    } catch (eR) {}
     ensureApi()
-      .joinRoom({ roomCode: code, displayName: name })
+      .joinRoom({
+        roomCode: code,
+        displayName: name,
+        replacePlayerId: replaceId || undefined
+      })
       .then(function (res) {
         state.roomCode = code;
         state.playerId = res.playerId;
@@ -1343,6 +1356,7 @@
           sessionStorage.setItem(SS_PLAYER, res.playerId);
           sessionStorage.setItem(SS_ROLE, "student");
           sessionStorage.setItem(SS_NAME, name);
+          sessionStorage.removeItem(SS_REPLACE);
         } catch (e2) {}
         var waitCode = document.getElementById("ege-live-wait-code");
         if (waitCode) waitCode.textContent = code;
