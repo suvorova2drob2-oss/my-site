@@ -111,19 +111,57 @@
     return link;
   }
 
-  function fillStudentLink(roomCode) {
-    var link = studentLink(roomCode);
+  function applyInviteLink(link, roomCode) {
+    var finalLink = String(link || "").trim();
+    if (!finalLink || finalLink.indexOf("room=") < 0) {
+      finalLink = studentLink(roomCode);
+    }
     var inp = document.getElementById("ege-live-link");
     if (inp) {
-      inp.value = link;
-      inp.title = link;
+      inp.value = finalLink;
+      inp.title = finalLink;
     }
     var preview = document.getElementById("ege-live-link-preview");
     if (preview) {
-      preview.textContent = link;
+      preview.innerHTML =
+        '<a href="' +
+        esc(finalLink) +
+        '" target="_blank" rel="noopener">' +
+        esc(finalLink) +
+        "</a>";
       preview.hidden = false;
     }
-    return link;
+    return finalLink;
+  }
+
+  function copyText(text, msg) {
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () {
+          setMsg(msg, "Ссылка ученика скопирована — можно слать в чат", true);
+        },
+        function () {
+          var inp = document.getElementById("ege-live-link");
+          if (inp) {
+            inp.focus();
+            inp.select();
+          }
+          setMsg(msg, "Ссылка готова в поле — Ctrl+C", null);
+        }
+      );
+    } else {
+      var inp2 = document.getElementById("ege-live-link");
+      if (inp2) {
+        inp2.focus();
+        inp2.select();
+      }
+      setMsg(msg, "Ссылка готова в поле — Ctrl+C", null);
+    }
+  }
+
+  function fillStudentLink(roomCode) {
+    return applyInviteLink(studentLink(roomCode), roomCode);
   }
 
   function readSavedPlayerName() {
@@ -1184,7 +1222,17 @@
       return;
     }
     ensureApi()
-      .createRoom({ deckId: deckId(), hostDisplayName: "Teacher" })
+      .createRoom({
+        deckId: deckId(),
+        hostDisplayName: "Teacher",
+        unitId: (function () {
+          try {
+            return String(state.getUnitId() || "");
+          } catch (eU) {
+            return "";
+          }
+        })()
+      })
       .then(function (res) {
         state.roomCode = res.roomCode;
         state.hostToken = res.hostToken;
@@ -1200,7 +1248,7 @@
         document.getElementById("ege-live-code").textContent = state.roomCode;
         document.getElementById("ege-live-code-row").hidden = false;
         document.getElementById("ege-live-link-label").hidden = false;
-        fillStudentLink(state.roomCode);
+        var invite = applyInviteLink(res.studentUrl, state.roomCode);
         document.getElementById("ege-live-copy").hidden = false;
         document.getElementById("ege-live-start").hidden = false;
         document.getElementById("ege-live-student-block").hidden = true;
@@ -1208,11 +1256,12 @@
         if (hint) {
           hint.hidden = false;
           hint.innerHTML =
-            "Ученику нужна ссылка с <strong>?room=" +
+            "Готово: ссылка уже с <strong>?room=" +
             esc(state.roomCode) +
-            "</strong>. Без кода открывается страница учителя.";
+            "</strong>. Нажмите «Скопировать» и отправьте ученикам.";
         }
-        setMsg(msg, "Комната создана. Скопируйте ссылку ученикам, затем Старт.", true);
+        copyText(invite, msg);
+        setMsg(msg, "Комната создана. Ссылка ученика уже в буфере / в поле ниже.", true);
         subscribe(state.roomCode);
       })
       .catch(function (err) {
@@ -1247,30 +1296,11 @@
 
   function onCopy() {
     var msg = document.getElementById("ege-live-msg");
-    var text =
-      (state.roomCode ? fillStudentLink(state.roomCode) : "") ||
-      ((document.getElementById("ege-live-link") || {}).value || "");
-    var inp = document.getElementById("ege-live-link");
-    if (inp && text) inp.value = text;
-    if (!text) return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
-        function () {
-          setMsg(msg, "Ссылка ученика скопирована (с ?room=)", true);
-        },
-        function () {
-          if (inp) {
-            inp.focus();
-            inp.select();
-          }
-          setMsg(msg, "Выделилась ссылка — нажмите Ctrl+C. В ней должен быть ?room=", null);
-        }
-      );
-    } else if (inp) {
-      inp.focus();
-      inp.select();
-      setMsg(msg, "Выделилась ссылка — нажмите Ctrl+C. В ней должен быть ?room=", null);
-    }
+    var text = applyInviteLink(
+      state.roomCode ? studentLink(state.roomCode) : "",
+      state.roomCode
+    );
+    copyText(text, msg);
   }
 
   function onJoin() {

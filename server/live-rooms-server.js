@@ -12,12 +12,42 @@ const express = require("express");
 
 const PORT = Number(process.env.PORT || 8787);
 const ROOT = path.join(__dirname, "..");
+const PUBLIC_ORIGIN = String(
+  process.env.PUBLIC_ORIGIN || "http://77.110.113.165:8787"
+).replace(/\/$/, "");
 const allowedOrigins = String(process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map(function (x) {
     return x.trim();
   })
   .filter(Boolean);
+
+const DECK_PATHS = {
+  "ege-listening-matching": "/ege/ege-listening-matching.html",
+  "ege-listening-tfns": "/ege/ege-listening-tfns.html",
+  "ege-listening-mc": "/ege/ege-listening-mc.html",
+  "ege-reading-matching-headlines": "/ege/ege-reading-matching-headlines.html",
+  "ege-reading-gapped-text": "/ege/ege-reading-gapped-text.html",
+  "ege-reading-mc": "/ege/ege-reading-multiple-choice.html",
+  "ege-grammar-exam": "/ege/ege-grammar-exam.html",
+  "ege-word-formation-exam": "/ege/ege-word-formation-exam.html",
+  "ege-lexis-exam": "/ege/ege-lexis-exam.html"
+};
+
+function deckPrefixOf(deckId) {
+  const raw = String(deckId || "");
+  const cut = raw.indexOf(":");
+  return cut >= 0 ? raw.slice(0, cut) : raw;
+}
+
+function studentInviteUrl(roomCode, deckId, unitId) {
+  const prefix = deckPrefixOf(deckId);
+  const page = DECK_PATHS[prefix] || "/ege/ege-listening-matching.html";
+  let url = PUBLIC_ORIGIN + page + "?room=" + encodeURIComponent(roomCode);
+  const unit = String(unitId || "").trim();
+  if (unit) url += "&unit=" + encodeURIComponent(unit);
+  return url;
+}
 
 /** @type {Map<string, object>} */
 const rooms = new Map();
@@ -111,7 +141,12 @@ function handleOp(op, body) {
         createdAt: Date.now()
       });
       // Teacher is host only — not a player on the leaderboard.
-      return { roomCode: roomCode, hostToken: hostToken };
+      const unitId = String((body && body.unitId) || "").trim();
+      return {
+        roomCode: roomCode,
+        hostToken: hostToken,
+        studentUrl: studentInviteUrl(roomCode, deckId, unitId)
+      };
     }
     case "joinRoom": {
       const code = normalizeRoom(body && body.roomCode);
@@ -290,6 +325,8 @@ app.listen(PORT, "0.0.0.0", function () {
       PORT +
       "/ege/ege-listening-matching.html"
   );
+  console.log("[live-rooms] PUBLIC_ORIGIN " + PUBLIC_ORIGIN);
+  console.log("[live-rooms] student links include ?room=CODE automatically");
   if (allowedOrigins.length) {
     console.log("[live-rooms] ALLOWED_ORIGINS:", allowedOrigins.join(", "));
   } else {
