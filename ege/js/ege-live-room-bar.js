@@ -112,14 +112,15 @@
   }
 
   function applyInviteLink(link, roomCode) {
-    var finalLink = String(link || "").trim();
+    var finalLink = String(link || "")
+      .trim()
+      .replace(/\s+/g, "");
     if (!finalLink || finalLink.indexOf("room=") < 0) {
-      finalLink = studentLink(roomCode);
+      finalLink = String(studentLink(roomCode) || "").replace(/\s+/g, "");
     }
     var inp = document.getElementById("ege-live-link");
     if (inp) {
       inp.value = finalLink;
-      inp.title = finalLink;
     }
     var preview = document.getElementById("ege-live-link-preview");
     if (preview) {
@@ -131,32 +132,48 @@
         "</a>";
       preview.hidden = false;
     }
+    var wrap = document.getElementById("ege-live-link-label");
+    if (wrap) wrap.hidden = false;
+    var copyBtn = document.getElementById("ege-live-copy");
+    if (copyBtn) copyBtn.hidden = false;
+    var hint = document.getElementById("ege-live-file-hint");
+    if (hint) hint.hidden = false;
     return finalLink;
   }
 
   function copyText(text, msg) {
-    if (!text) return;
+    var clean = String(text || "").trim().replace(/\s+/g, "");
+    if (!clean) return;
+    var inp = document.getElementById("ege-live-link");
+    if (inp) inp.value = clean;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
+      navigator.clipboard.writeText(clean).then(
         function () {
-          setMsg(msg, "Ссылка ученика скопирована — можно слать в чат", true);
+          setMsg(msg, "Скопировано! Вставьте в чат ученикам (Ctrl+V)", true);
         },
         function () {
-          var inp = document.getElementById("ege-live-link");
-          if (inp) {
-            inp.focus();
-            inp.select();
-          }
-          setMsg(msg, "Ссылка готова в поле — Ctrl+C", null);
+          fallbackCopy(clean, msg);
         }
       );
     } else {
-      var inp2 = document.getElementById("ege-live-link");
-      if (inp2) {
-        inp2.focus();
-        inp2.select();
-      }
-      setMsg(msg, "Ссылка готова в поле — Ctrl+C", null);
+      fallbackCopy(clean, msg);
+    }
+  }
+
+  function fallbackCopy(text, msg) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setMsg(msg, "Скопировано! Вставьте в чат ученикам (Ctrl+V)", true);
+    } catch (e) {
+      setMsg(msg, "Не удалось скопировать — нажмите на синюю ссылку и скопируйте вручную", false);
     }
   }
 
@@ -998,12 +1015,13 @@
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-create">Создать комнату</button>' +
       '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-start" hidden>Старт (на весь экран)</button>' +
       '    <p class="ege-live-code-row" id="ege-live-code-row" hidden>Код: <span id="ege-live-code" class="ege-live-code">—</span></p>' +
-      '    <label class="ege-live-label" id="ege-live-link-label" hidden>Ссылка для учеников (должна содержать ?room=КОД)' +
-      '      <textarea id="ege-live-link" class="ege-live-input ege-live-input--link" readonly rows="3"></textarea>' +
-      "    </label>" +
-      '    <p class="ege-live-link-preview" id="ege-live-link-preview" hidden></p>' +
-      '    <button type="button" class="ege-live-btn ege-live-btn--primary" id="ege-live-copy" hidden>Скопировать ссылку ученику</button>' +
-      '    <p class="ege-live-muted" id="ege-live-file-hint" hidden>Ученик открывает ссылку с <strong>?room=…</strong>. Без кода это страница учителя.</p>' +
+      '    <div id="ege-live-link-label" hidden>' +
+      '      <p class="ege-live-label">Ссылка для учеников</p>' +
+      '      <p class="ege-live-link-preview" id="ege-live-link-preview"></p>' +
+      '      <input type="hidden" id="ege-live-link" value="" />' +
+      '      <button type="button" class="ege-live-btn ege-live-btn--primary ege-live-btn--lg" id="ege-live-copy">Скопировать ссылку ученику</button>' +
+      '      <p class="ege-live-muted" id="ege-live-file-hint">Нажмите кнопку — ссылка сразу в буфере, можно слать в WhatsApp / Telegram.</p>' +
+      "    </div>" +
       "  </div>" +
       '  <div id="ege-live-student-block" hidden></div>' +
       '  <p class="ege-live-msg" id="ege-live-msg"></p>' +
@@ -1247,21 +1265,11 @@
 
         document.getElementById("ege-live-code").textContent = state.roomCode;
         document.getElementById("ege-live-code-row").hidden = false;
-        document.getElementById("ege-live-link-label").hidden = false;
         var invite = applyInviteLink(res.studentUrl, state.roomCode);
-        document.getElementById("ege-live-copy").hidden = false;
         document.getElementById("ege-live-start").hidden = false;
         document.getElementById("ege-live-student-block").hidden = true;
-        var hint = document.getElementById("ege-live-file-hint");
-        if (hint) {
-          hint.hidden = false;
-          hint.innerHTML =
-            "Готово: ссылка уже с <strong>?room=" +
-            esc(state.roomCode) +
-            "</strong>. Нажмите «Скопировать» и отправьте ученикам.";
-        }
         copyText(invite, msg);
-        setMsg(msg, "Комната создана. Ссылка ученика уже в буфере / в поле ниже.", true);
+        setMsg(msg, "Комната создана. Ссылка уже скопирована — вставьте в чат.", true);
         subscribe(state.roomCode);
       })
       .catch(function (err) {
