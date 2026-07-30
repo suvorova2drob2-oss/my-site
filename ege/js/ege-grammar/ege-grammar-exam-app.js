@@ -78,6 +78,34 @@
     );
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function buildLiveItems() {
     var items = U.items || [];
     var out = [];
@@ -105,6 +133,9 @@
         correct: good,
         answer: raw,
         expected: exp,
+        prompt: String(item.sentence || item.prompt || item.text || ("№" + item.examNum)),
+        answerText: raw,
+        expectedText: exp,
         filled: isFilled
       });
     }
@@ -625,7 +656,12 @@
 
     html += '<div class="ege-gx-toolbar">';
     html += '<label><span>Тема</span> ';
-    html += '<select id="ege-gx-unit-select" class="ege-gx-select">';
+    html +=
+      '<select id="ege-gx-unit-select" class="ege-gx-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var gxStats = window.__egeGrammarExamStats;
     var gxPerfect = window.__egeExamUnitPerfectMark;
@@ -792,6 +828,10 @@
     });
 
     document.getElementById("ege-gx-unit-select").addEventListener("change", function () {
+      if (isLiveUnitLocked()) {
+        this.value = U.id;
+        return;
+      }
       var v = this.value;
       var ix = 0;
       for (var j = 0; j < units.length; j++) {
@@ -910,13 +950,13 @@
 
       if (ok === total) {
         if (msgEl) {
-          msgEl.textContent = "Идеально: все " + total + " из " + total + ".";
+          msgEl.textContent = "Идеально! " + scoreLine(ok, total);
           msgEl.className = "ege-gx-msg is-ok";
         }
       } else {
         if (msgEl) {
           msgEl.textContent =
-            "Верно " + ok + " из " + total + ". Разбор ниже — пролистай.";
+            scoreLine(ok, total) + ". Разбор ниже — пролистай.";
           msgEl.className = "ege-gx-msg is-warn";
         }
       }

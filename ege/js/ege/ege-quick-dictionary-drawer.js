@@ -292,12 +292,22 @@
       else open();
     }
 
+    function liveUiBlocksTips() {
+      var b = document.body;
+      return (
+        b.classList.contains("ege-live-host-fs-open") ||
+        b.classList.contains("ege-live-podium-open") ||
+        (document.getElementById("ege-live-student-done") &&
+          !document.getElementById("ege-live-student-done").hidden)
+      );
+    }
+
     function closeWtip() {
       if (wtipHost) wtipHost.hidden = true;
     }
 
     function showWtip(el) {
-      if (!wtipHost) return;
+      if (!wtipHost || liveUiBlocksTips()) return;
       var ru = el.getAttribute("data-ru") || "";
       if (!ru) return;
       wtipHost.innerHTML =

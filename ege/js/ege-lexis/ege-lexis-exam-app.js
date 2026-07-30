@@ -393,6 +393,34 @@
     );
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function buildLiveItems() {
     var n = state.nQuestions;
     var items = [];
@@ -410,12 +438,21 @@
       isOk = isFilled && v === exp;
       if (isFilled) filledN++;
       if (isOk) ok++;
+      var letters = "ABCD";
+      var ansLetter = v !== "" && v != null ? letters.charAt(Number(v)) || String(v) : "";
+      var expLetter = exp !== "" && exp != null ? letters.charAt(Number(exp)) || String(exp) : "";
+      var opts = (U.items[i] && U.items[i].options) || [];
+      var ansTxt = v !== "" && v != null ? String(opts[Number(v)] || "").trim() : "";
+      var expTxt = exp !== "" && exp != null ? String(opts[Number(exp)] || "").trim() : "";
       items.push({
         id: String(30 + i),
         label: "№" + (30 + i),
         correct: isOk,
-        answer: v,
-        expected: exp,
+        answer: ansLetter || v,
+        expected: expLetter || exp,
+        prompt: String((U.items[i] && (U.items[i].sentence || U.items[i].text || U.items[i].stem)) || ("№" + (30 + i))),
+        answerText: ansTxt || (ansLetter ? "Вариант " + ansLetter : ""),
+        expectedText: expTxt || (expLetter ? "Вариант " + expLetter : ""),
         filled: isFilled
       });
     }
@@ -834,13 +871,14 @@
     if (score === n) {
       if (msgEl) {
         msgEl.className = "ege-gx-msg is-ok";
-        msgEl.textContent = "Зачёт — все пропуски верны.";
+        msgEl.textContent = "Зачёт! " + scoreLine(score, n);
       }
     } else {
       if (msgEl) {
         msgEl.className = "ege-gx-msg is-warn";
         msgEl.textContent =
-          "Итог: " + score + " из " + n + " (" + pct + "%). Разбор — под каждым неверным пропуском справа.";
+          scoreLine(score, n) +
+          ". Разбор — под каждым неверным пропуском справа.";
       }
     }
 
@@ -923,7 +961,12 @@
 
     html += '<div class="ege-gx-toolbar">';
     html += '<label><span>Тема</span> ';
-    html += '<select id="ege-lx-unit-select" class="ege-gx-select">';
+    html +=
+      '<select id="ege-lx-unit-select" class="ege-gx-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var lxStats = window.__egeLexisExamStats;
     var lxPerfect = window.__egeExamUnitPerfectMark;
@@ -1001,6 +1044,10 @@
     var sel = root.querySelector("#ege-lx-unit-select");
     if (sel) {
       sel.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          sel.value = U.id;
+          return;
+        }
         var next = sel.value;
         for (var ix = 0; ix < units.length; ix++) {
           if (units[ix].id === next) {

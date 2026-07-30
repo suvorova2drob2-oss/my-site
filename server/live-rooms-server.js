@@ -12,8 +12,9 @@ const express = require("express");
 
 const PORT = Number(process.env.PORT || 8787);
 const ROOT = path.join(__dirname, "..");
+// Local default = this machine. On VPS set PUBLIC_ORIGIN in systemd (ege-live-rooms.service).
 const PUBLIC_ORIGIN = String(
-  process.env.PUBLIC_ORIGIN || "http://77.110.113.165:8787"
+  process.env.PUBLIC_ORIGIN || "http://127.0.0.1:8787"
 ).replace(/\/$/, "");
 const allowedOrigins = String(process.env.ALLOWED_ORIGINS || "")
   .split(",")
@@ -80,6 +81,12 @@ function normalizeItems(raw) {
       correct: !!(it && it.correct),
       answer: answer,
       expected: String((it && it.expected) != null ? it.expected : "").slice(0, 64),
+      answerText: String((it && it.answerText) != null ? it.answerText : "").slice(0, 600),
+      expectedText: String((it && it.expectedText) != null ? it.expectedText : "").slice(
+        0,
+        600
+      ),
+      prompt: String((it && it.prompt) != null ? it.prompt : "").slice(0, 700),
       filled: filled
     };
   });
@@ -108,13 +115,20 @@ function snapshot(roomCode) {
   leaderboard.sort(function (a, b) {
     return b.score - a.score || a.displayName.localeCompare(b.displayName);
   });
+  let allSubmitted = false;
+  if (leaderboard.length > 0) {
+    allSubmitted = leaderboard.every(function (row) {
+      return !!row.submitted;
+    });
+  }
   return {
     roomCode: code,
     deckId: r.deckId,
     phase: r.phase,
     cardIndex: r.cardIndex,
     leaderboard: leaderboard,
-    players: players
+    players: players,
+    allSubmitted: allSubmitted
   };
 }
 
@@ -304,17 +318,7 @@ function handleOp(op, body) {
         }
       }
 
-      // Auto-finish when every non-host player has submitted (final, not draft)
-      if (r.phase === "playing" && r.players.size > 0) {
-        let allIn = true;
-        let any = false;
-        r.players.forEach(function (pl) {
-          if (pl.isHost) return;
-          any = true;
-          if (!pl.submitted) allIn = false;
-        });
-        if (any && allIn) r.phase = "leaderboard";
-      }
+      // Do not auto-switch to leaderboard — teacher clicks «Завершить игру».
       return null;
     }
     case "getSnapshot": {
@@ -341,6 +345,14 @@ function handleOp(op, body) {
       if (!body || body.hostToken !== r.hostToken) throw new Error("Host only");
       r.cardIndex = Math.max(0, Math.floor(Number(body.cardIndex) || 0));
       return null;
+    }
+    case "closeRoom": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      if (!body || body.hostToken !== r.hostToken) throw new Error("Host only");
+      rooms.delete(code);
+      return { closed: true, roomCode: code };
     }
     default:
       throw new Error("Unknown op: " + op);

@@ -225,6 +225,16 @@
       joinRoom: function (p) {
         return driver.joinRoom(p);
       },
+      renamePlayer: function (p) {
+        if (typeof driver.renamePlayer === "function") {
+          return driver.renamePlayer(p);
+        }
+        return driver.joinRoom({
+          roomCode: p && p.roomCode,
+          displayName: p && p.displayName,
+          replacePlayerId: p && p.playerId
+        });
+      },
       submitAnswer: function (p) {
         return driver.submitAnswer(p);
       },
@@ -239,6 +249,12 @@
       },
       advanceCard: function (p) {
         return driver.advanceCard(p);
+      },
+      closeRoom: function (p) {
+        if (typeof driver.closeRoom === "function") {
+          return driver.closeRoom(p);
+        }
+        return Promise.reject(new Error("closeRoom not supported"));
       }
     };
   }

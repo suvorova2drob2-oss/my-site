@@ -47,6 +47,34 @@
       .replace(/"/g, "&quot;");
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function stmtCount() {
     return (U.statements && U.statements.length) || 7;
   }
@@ -162,7 +190,7 @@
           '%</strong> · последний <strong>' +
           st.last +
           "%</strong></span>"
-        : '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Отправить на проверку».</span>';
+        : '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Submit».</span>';
     } else {
       main =
         '<span class="ege-reading-stats-main">Сохранение статистики не подключено.</span>';
@@ -328,10 +356,13 @@
       if (isOk) ok += 1;
       items.push({
         id: L,
-        label: "Statement " + L,
+        label: "Утверждение " + L,
         correct: isOk,
         answer: ans,
         expected: exp,
+        prompt: String(st.text || ""),
+        answerText: ans === "t" ? "True (+)" : ans === "f" ? "False (−)" : ans === "ns" ? "Not stated (?)" : ans,
+        expectedText: exp === "t" ? "True (+)" : exp === "f" ? "False (−)" : exp === "ns" ? "Not stated (?)" : exp,
         filled: isFilled
       });
     });
@@ -457,9 +488,11 @@
     if (msgEl) {
       msgEl.className = ok === total ? "ege-tfns-msg is-ok" : "ege-tfns-msg is-warn";
       msgEl.textContent =
-        ok === total
-          ? "Отлично — все " + total + " из " + total + ". Ниже — разбор в тексте."
-          : "Верно " + ok + " из " + total + " (" + pct + "%). Разбор — под каждым пунктом.";
+        (ok === total ? "Отлично! " : "") +
+        scoreLine(ok, total) +
+        (ok === total
+          ? ". Ниже — разбор в тексте."
+          : ". Разбор — под каждым пунктом.");
     }
 
     var keyBox = document.getElementById("ege-tfns-key-box");
@@ -561,7 +594,12 @@
     }
 
     html += '<div class="ege-tfns-toolbar">';
-    html += '<label><span>Тема</span> <select id="ege-tfns-unit-select" class="ege-gx-select">';
+    html +=
+      '<label><span>Тема</span> <select id="ege-tfns-unit-select" class="ege-gx-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var stBr = window.__egeListeningTfnsStats;
     var pm = window.__egeExamUnitPerfectMark;
@@ -647,9 +685,9 @@
     html += '<p class="ege-tfns-msg" id="ege-tfns-msg" aria-live="polite"></p>';
     html += '<div class="ege-tfns-btn-row">';
     html +=
-      '<button type="button" id="ege-tfns-check" class="ege-tfns-btn ege-tfns-btn--check">Отправить на проверку</button>';
+      '<button type="button" id="ege-tfns-check" class="ege-tfns-btn ege-tfns-btn--check">Submit</button>';
     html +=
-      '<button type="button" id="ege-tfns-reset" class="ege-tfns-btn ege-tfns-btn--reset">Сбросить</button>';
+      '<button type="button" id="ege-tfns-reset" class="ege-tfns-btn ege-tfns-btn--reset">Start over</button>';
     html += "</div>";
     html += '<div id="ege-tfns-key-box" class="ege-tfns-key-box" hidden></div>';
 
@@ -708,6 +746,10 @@
     var unitSel = document.getElementById("ege-tfns-unit-select");
     if (unitSel) {
       unitSel.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          unitSel.value = U.id;
+          return;
+        }
         for (var ix = 0; ix < units.length; ix++) {
           if (units[ix].id === unitSel.value) {
             goToUnitIndex(ix);

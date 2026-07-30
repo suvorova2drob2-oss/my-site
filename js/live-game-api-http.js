@@ -43,6 +43,9 @@
       joinRoom: function (p) {
         return post("joinRoom", p);
       },
+      renamePlayer: function (p) {
+        return post("renamePlayer", p);
+      },
       submitAnswer: function (p) {
         return post("submitAnswer", p);
       },
@@ -55,24 +58,41 @@
       advanceCard: function (p) {
         return post("advanceCard", p);
       },
+      closeRoom: function (p) {
+        return post("closeRoom", p);
+      },
       subscribeRoom: function (roomCode, listener) {
         var code = String(roomCode).toUpperCase().trim();
         var last = "";
+        var gone = false;
         function tick() {
+          if (gone) return;
           post("getSnapshot", { roomCode: code }).then(
             function (snap) {
+              if (!snap) {
+                gone = true;
+                listener(null);
+                return;
+              }
               var s = JSON.stringify(snap);
               if (s !== last) {
                 last = s;
                 listener(snap);
               }
             },
-            function () {}
+            function (err) {
+              var msg = String((err && err.message) || err || "");
+              if (/not found|Room not found/i.test(msg)) {
+                gone = true;
+                listener(null);
+              }
+            }
           );
         }
         var id = setInterval(tick, 900);
         tick();
         return function () {
+          gone = true;
           clearInterval(id);
         };
       }

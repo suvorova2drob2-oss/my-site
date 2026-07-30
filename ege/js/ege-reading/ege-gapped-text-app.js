@@ -81,6 +81,34 @@
     );
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function buildLiveItems() {
     var letters = collectGapLetters();
     var key = U.key || {};
@@ -105,12 +133,26 @@
       isOk = isFilled && String(nChip) === exp;
       if (isFilled) filledN++;
       if (isOk) ok++;
+      var ansF = "";
+      var expF = "";
+      var frags = U.fragments || [];
+      for (var fi = 0; fi < frags.length; fi++) {
+        if (String(frags[fi].n) === String(nChip) || String(frags[fi].num) === String(nChip)) {
+          ansF = String(frags[fi].text || "");
+        }
+        if (String(frags[fi].n) === String(exp) || String(frags[fi].num) === String(exp)) {
+          expF = String(frags[fi].text || "");
+        }
+      }
       items.push({
         id: L,
         label: "Пропуск " + L,
         correct: isOk,
         answer: isFilled ? String(nChip) : "",
         expected: exp,
+        prompt: "Пропуск " + L,
+        answerText: ansF || (isFilled ? "Фрагмент №" + nChip : ""),
+        expectedText: expF || (exp ? "Фрагмент №" + exp : ""),
         filled: isFilled
       });
     }
@@ -365,18 +407,14 @@
     html += '<div class="ege-gt-feedback-score">';
     if (ok === total) {
       html +=
-        '<p class="ege-gt-feedback-result is-ok"><strong>Верно:</strong> все ' +
-        total +
-        " из " +
-        total +
-        ".</p>";
+        '<p class="ege-gt-feedback-result is-ok"><strong>' +
+        scoreLine(ok, total) +
+        "</strong></p>";
     } else {
       html +=
-        '<p class="ege-gt-feedback-result is-warn"><strong>Итог:</strong> верно ' +
-        ok +
-        " из " +
-        total +
-        ".</p>";
+        '<p class="ege-gt-feedback-result is-warn"><strong>' +
+        scoreLine(ok, total) +
+        "</strong></p>";
     }
     html += "</div>";
     html += '<div class="ege-gt-lifehack-card">' + life + "</div>";
@@ -906,7 +944,12 @@
     html += '<div class="ege-gt-wrap">';
     html += '<div class="ege-gt-toolbar">';
     html += '<label><span>Тема</span> ';
-    html += '<select id="ege-gt-unit-select" class="ege-gt-select">';
+    html +=
+      '<select id="ege-gt-unit-select" class="ege-gt-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var gtStats = window.__egeReadingGappedTextStats;
     var gtPerfect = window.__egeExamUnitPerfectMark;
@@ -1051,6 +1094,10 @@
     refreshGtStatsBar();
 
     document.getElementById("ege-gt-unit-select").addEventListener("change", function () {
+      if (isLiveUnitLocked()) {
+        this.value = U.id;
+        return;
+      }
       var v = this.value;
       var ix = 0;
       for (var j = 0; j < units.length; j++) {
@@ -1154,14 +1201,11 @@
       revealAllChipNumbers();
 
       if (ok === total) {
-        msgEl.textContent = "Зачёт: все " + total + " на месте. Красава.";
+        msgEl.textContent = "Зачёт! " + scoreLine(ok, total);
         msgEl.className = "ege-gt-msg is-ok";
       } else {
         msgEl.textContent =
-          "Попало " +
-          ok +
-          " из " +
-          total +
+          scoreLine(ok, total) +
           ". Ниже — на какое слово смотреть; переставь и отправь снова.";
         msgEl.className = "ege-gt-msg is-warn";
       }

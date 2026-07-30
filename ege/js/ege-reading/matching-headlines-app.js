@@ -875,7 +875,11 @@
     if (units.length > 1) {
       html +=
         '<label class="ege-mh-unit-sel-label">Пакет ' +
-        '<select id="ege-mh-unit-jump" class="ege-mh-unit-jump" aria-label="Номер пакета §10">';
+        '<select id="ege-mh-unit-jump" class="ege-mh-unit-jump" aria-label="Номер пакета §10"' +
+        (isLiveUnitLocked()
+          ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+          : "") +
+        ">";
       var ui;
       var un;
       var ord;
@@ -903,12 +907,19 @@
     var jump = document.getElementById("ege-mh-unit-jump");
     if (jump) {
       jump.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          jump.value = U.id;
+          return;
+        }
         var v = jump.value;
         if (!v || v === U.id) return;
         var url = new URL(location.href);
         url.searchParams.set("unit", v);
         location.href = url.pathname + url.search + url.hash;
       });
+    }
+    if (window.EgeLiveRoom && typeof window.EgeLiveRoom.applyUnitLocks === "function") {
+      window.EgeLiveRoom.applyUnitLocks();
     }
     refreshMhStatsBar();
   }
@@ -1092,6 +1103,34 @@
     );
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function buildLiveItems() {
     var items = [];
     var ok = 0;
@@ -1113,12 +1152,21 @@
       isOk = isFilled && v === exp;
       if (isFilled) filledN++;
       if (isOk) ok++;
+      var ansH = "";
+      var expH = "";
+      for (var hi = 0; hi < U.headlines.length; hi++) {
+        if (String(U.headlines[hi].num) === String(v)) ansH = String(U.headlines[hi].text || "");
+        if (String(U.headlines[hi].num) === String(exp)) expH = String(U.headlines[hi].text || "");
+      }
       items.push({
         id: L,
         label: "Абзац " + L,
         correct: isOk,
         answer: v,
         expected: exp,
+        prompt: String((U.paragraphs[pi] && (U.paragraphs[pi].text || U.paragraphs[pi].preview)) || ("Абзац " + L)).slice(0, 280),
+        answerText: ansH || (v ? "Заголовок №" + v : ""),
+        expectedText: expH || (exp ? "Заголовок №" + exp : ""),
         filled: isFilled
       });
     }
@@ -1253,6 +1301,7 @@
       '<button type="button" class="ege-mh-btn ege-mh-btn--primary" id="ege-mh-check">Проверить</button>' +
       '<button type="button" class="ege-mh-btn" id="ege-mh-reset">Сбросить</button>' +
       "</div>" +
+      '<p class="ege-mh-msg" id="ege-mh-msg" aria-live="polite" hidden></p>' +
       '<div class="ege-mh-hunt-bar" id="ege-mh-hunt-bar" hidden>' +
       '<label class="ege-mh-hunt-label">' +
       '<input type="checkbox" id="ege-mh-hunt-toggle" checked />' +
@@ -1400,6 +1449,12 @@
     if (hb) hb.hidden = true;
     var ht = document.getElementById("ege-mh-hunt-toggle");
     if (ht) ht.checked = true;
+    var scoreMsgR = document.getElementById("ege-mh-msg");
+    if (scoreMsgR) {
+      scoreMsgR.hidden = true;
+      scoreMsgR.textContent = "";
+      scoreMsgR.className = "ege-mh-msg";
+    }
     refreshCheer({ phase: "working", force: true });
     pushLiveDraft();
   }
@@ -1533,6 +1588,17 @@
       );
     }
     refreshMhStatsBar();
+
+    var scoreMsg = document.getElementById("ege-mh-msg");
+    if (scoreMsg) {
+      scoreMsg.hidden = false;
+      scoreMsg.className =
+        "ege-mh-msg " + (correctCount === mhTotal ? "is-ok" : "is-warn");
+      scoreMsg.textContent =
+        correctCount === mhTotal
+          ? "Отлично! " + scoreLine(correctCount, mhTotal)
+          : scoreLine(correctCount, mhTotal) + ". Разбор — под каждым абзацем.";
+    }
 
     var extraEl = document.getElementById("ege-mh-extra");
     if (extraEl && U.extraExplainRu) {

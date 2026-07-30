@@ -569,10 +569,67 @@
     );
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function buildLiveItems() {
     var items = [];
     var ok = 0;
     var filledN = 0;
+
+    function choiceByNum(q, num) {
+      var list = q.choices || q.options || [];
+      var want = String(num);
+      var i;
+      var ch;
+      for (i = 0; i < list.length; i++) {
+        ch = list[i];
+        if (!ch) continue;
+        if (typeof ch === "string") {
+          if (String(i + 1) === want || "ABCD".charAt(i) === want.toUpperCase()) return ch;
+          continue;
+        }
+        if (
+          String(ch.num) === want ||
+          String(ch.letter || ch.id || ch.value || "") === want
+        ) {
+          return String(ch.text || ch.label || "").trim();
+        }
+      }
+      return "";
+    }
+
+    function formatPick(code, text) {
+      if (code == null || code === "") return "";
+      var t = String(text || "").trim();
+      return t ? String(code) + ") " + t : String(code);
+    }
+
     U.questions.forEach(function (q) {
       var sel = root.querySelector('input[name="q' + q.examNum + '"]:checked');
       var v = sel ? sel.value : "";
@@ -583,10 +640,13 @@
       if (isOk) ok++;
       items.push({
         id: String(q.examNum),
-        label: "Вопрос " + q.examNum,
+        label: "Q " + q.examNum,
         correct: isOk,
         answer: v,
         expected: exp,
+        prompt: String(q.prompt || q.stem || q.question || q.text || "").trim(),
+        answerText: formatPick(v, choiceByNum(q, v)),
+        expectedText: formatPick(exp, choiceByNum(q, exp)),
         filled: isFilled
       });
     });
@@ -694,7 +754,11 @@
     html += '<span class="ege-mcr-title">' + esc(U.title || "") + "</span>";
     if (units.length > 1) {
       html +=
-        '<label class="ege-mcr-unit-sel">Пакет <select id="ege-mcr-unit-jump" class="ege-mh-unit-jump">';
+        '<label class="ege-mcr-unit-sel">Пакет <select id="ege-mcr-unit-jump" class="ege-mh-unit-jump"' +
+        (isLiveUnitLocked()
+          ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+          : "") +
+        ">";
       var uu;
       var mcrStats = window.__egeReadingMcStats;
       var mcrPerfect = window.__egeExamUnitPerfectMark;
@@ -817,6 +881,10 @@
     var jump = document.getElementById("ege-mcr-unit-jump");
     if (jump) {
       jump.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          jump.value = U.id;
+          return;
+        }
         var v = jump.value;
         if (v) location.search = "?unit=" + encodeURIComponent(v);
       });
@@ -972,13 +1040,9 @@
     if (sum) {
       sum.hidden = false;
       sum.innerHTML =
-        "<p><strong>Результат:</strong> " +
-        ok +
-        " из " +
-        total +
-        " (" +
-        pct +
-        "%).</p>";
+        "<p><strong>" +
+        esc(scoreLine(ok, total)) +
+        "</strong></p>";
     }
 
     if (

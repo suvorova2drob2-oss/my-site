@@ -41,6 +41,34 @@
       .replace(/"/g, "&quot;");
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function qCount() {
     return (U.questions && U.questions.length) || 7;
   }
@@ -177,7 +205,7 @@
           '%</strong> · последний <strong>' +
           st.last +
           "%</strong></span>"
-        : '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Отправить на проверку».</span>';
+        : '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Submit».</span>';
     } else {
       main =
         '<span class="ege-reading-stats-main">Сохранение статистики не подключено.</span>';
@@ -322,19 +350,50 @@
     var items = [];
     var ok = 0;
     var filled = 0;
+
+    function choiceByNum(q, num) {
+      var list = q.choices || q.options || [];
+      var want = Number(num);
+      var i;
+      var ch;
+      for (i = 0; i < list.length; i++) {
+        ch = list[i];
+        if (!ch) continue;
+        if (typeof ch === "string") {
+          if (i + 1 === want) return ch;
+          continue;
+        }
+        if (Number(ch.num) === want || String(ch.letter || ch.id || "") === String(num)) {
+          return String(ch.text || ch.label || "").trim();
+        }
+      }
+      return "";
+    }
+
+    function formatPick(num, text) {
+      if (!num && num !== 0) return "";
+      var t = String(text || "").trim();
+      return t ? String(num) + ") " + t : String(num);
+    }
+
     qs.forEach(function (q) {
       var ans = getRowVal(q.examNum);
       var exp = q.key;
       var isFilled = !!ans;
-      var isOk = isFilled && ans === exp;
+      var isOk = isFilled && Number(ans) === Number(exp);
       if (isFilled) filled += 1;
       if (isOk) ok += 1;
+      var ansTxt = choiceByNum(q, ans);
+      var expTxt = choiceByNum(q, exp);
       items.push({
         id: String(q.examNum),
         label: "Q " + q.examNum,
         correct: isOk,
         answer: ans ? String(ans) : "",
         expected: exp != null ? String(exp) : "",
+        prompt: String(q.prompt || q.stem || q.question || q.text || "").trim(),
+        answerText: formatPick(ans, ansTxt),
+        expectedText: formatPick(exp, expTxt),
         filled: isFilled
       });
     });
@@ -459,9 +518,11 @@
     if (msgEl) {
       msgEl.className = ok === total ? "ege-lmc-msg is-ok" : "ege-lmc-msg is-warn";
       msgEl.textContent =
-        ok === total
-          ? "Отлично — все " + total + " из " + total + ". Ниже — разбор в тексте."
-          : "Верно " + ok + " из " + total + " (" + pct + "%). Разбор — под каждым вопросом.";
+        (ok === total ? "Отлично! " : "") +
+        scoreLine(ok, total) +
+        (ok === total
+          ? ". Ниже — разбор в тексте."
+          : ". Разбор — под каждым вопросом.");
     }
 
     var keyBox = document.getElementById("ege-lmc-key-box");
@@ -560,7 +621,12 @@
     }
 
     html += '<div class="ege-lmc-toolbar">';
-    html += '<label><span>Тема</span> <select id="ege-lmc-unit-select" class="ege-gx-select">';
+    html +=
+      '<label><span>Тема</span> <select id="ege-lmc-unit-select" class="ege-gx-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var stBr = window.__egeListeningMcStats;
     var pm = window.__egeExamUnitPerfectMark;
@@ -634,9 +700,9 @@
     html += '<p class="ege-lmc-msg" id="ege-lmc-msg" aria-live="polite"></p>';
     html += '<div class="ege-lmc-btn-row">';
     html +=
-      '<button type="button" id="ege-lmc-check" class="ege-lmc-btn ege-lmc-btn--check">Отправить на проверку</button>';
+      '<button type="button" id="ege-lmc-check" class="ege-lmc-btn ege-lmc-btn--check">Submit</button>';
     html +=
-      '<button type="button" id="ege-lmc-reset" class="ege-lmc-btn ege-lmc-btn--reset">Сбросить</button>';
+      '<button type="button" id="ege-lmc-reset" class="ege-lmc-btn ege-lmc-btn--reset">Start over</button>';
     html += "</div>";
     html += '<div id="ege-lmc-key-box" class="ege-lmc-key-box" hidden></div>';
 
@@ -700,6 +766,10 @@
     var unitSel = document.getElementById("ege-lmc-unit-select");
     if (unitSel) {
       unitSel.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          unitSel.value = U.id;
+          return;
+        }
         for (var ix = 0; ix < units.length; ix++) {
           if (units[ix].id === unitSel.value) {
             goToUnitIndex(ix);

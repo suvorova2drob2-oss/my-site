@@ -1,0 +1,53 @@
+---
+description: EGE Live teacher board — always show full prompt + student vs key answers
+globs: ege/js/**/*live*
+alwaysApply: true
+---
+
+# EGE Live — teacher answer review (mandatory)
+
+When wiring or changing **any** Live classroom exercise (Listening, Reading, Grammar, WF, Lexis, or future games), the **teacher board** must show readable content — not only letter chips (A / D / F) or raw codes (`ns`, `t`).
+
+## Required `buildLiveItems()` fields
+
+Each item sent via `EgeLiveRoom.notifyProgress({ items })` must include:
+
+| Field | Purpose |
+|-------|---------|
+| `id`, `label` | Short id (A, Q3, Speaker B…) |
+| `prompt` | **Exact question / statement text** from the exercise (`q.prompt`, statement text, etc.) — never a placeholder like `Question 3` if real text exists |
+| `answer` | Student's raw choice/code |
+| `expected` | Key raw choice/code |
+| `answerText` | Human form: for MC use `1) Full option text` (from `choices[].text`), never `String(choiceObject)` → `[object Object]` |
+| `expectedText` | Same for the key |
+| `correct`, `filled` | Booleans |
+
+Server `normalizeItems` must **preserve** `prompt`, `answerText`, `expectedText` (not strip them).
+
+**MC choices** are usually `{ num, text }` — always take `.text`, never stringify the object.
+
+## Teacher UI (host fullscreen)
+
+In **Student answers** (and inspect panel):
+
+1. Show the **`prompt`** (exact question / statement from the task).
+2. If **wrong**: **Student** … / **Correct** … with full readable text (e.g. `1) Life on 99.9`).
+3. If **correct**: green block — correct ✓ + what the student answered.
+4. Use stacked rows (`.ege-live-ans-row`), not tiny chips.
+
+**Podium:** teacher clicks **End game** → podium opens immediately. Do **not** add a separate «Show podium» button.
+
+**No question bank on teacher Live UI:** do not render `renderTaskBank` / «ВОПРОСЫ 3–9» / statement lists under the inspect panel. Tabs: **Leaderboard** + **Answers** (per-student rows only).
+
+**Dictionary tips:** while teacher board or podium is open (`ege-live-host-fs-open` / `ege-live-podium-open`), word tooltips must not appear (block in `ege-quick-dictionary-drawer.js` + CSS hide).
+
+Shell: `ege/js/ege-live-room-bar.js` + `ege/css/ege-live-room-bar.css`.
+
+## New Live games
+
+Copy this item shape from an existing app (e.g. `ege-listening-tfns-app.js` `buildLiveItems`). Do not invent a chip-only progress payload.
+
+## Related
+
+- Podium only after teacher **Завершить игру** (no auto-leaderboard).
+- Local test: `http://127.0.0.1:8787/…`, not `file://`.

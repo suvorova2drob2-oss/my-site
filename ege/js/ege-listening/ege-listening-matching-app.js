@@ -41,6 +41,34 @@
       .replace(/"/g, "&quot;");
   }
 
+  function isLiveUnitLocked() {
+    return !!(
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.isUnitLocked === "function" &&
+      window.EgeLiveRoom.isUnitLocked()
+    );
+  }
+
+  function scoreLine(ok, total) {
+    if (
+      window.EgeLiveRoom &&
+      typeof window.EgeLiveRoom.formatScoreLine === "function"
+    ) {
+      return window.EgeLiveRoom.formatScoreLine(ok, total);
+    }
+    var wrong = Math.max(0, (Number(total) || 0) - (Number(ok) || 0));
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return (
+      "Результат: правильных " +
+      ok +
+      ", неправильных " +
+      wrong +
+      " · " +
+      pct +
+      "%"
+    );
+  }
+
   function speakerCount() {
     return (U.key && U.key.length) || (U.speakerLabels && U.speakerLabels.length) || 6;
   }
@@ -140,7 +168,7 @@
           "%</strong></span>";
       } else {
         main =
-          '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Отправить на проверку».</span>';
+          '<span class="ege-reading-stats-main">Пока нет записанных проверок — нажми «Submit».</span>';
       }
     } else {
       main =
@@ -257,12 +285,23 @@
       var isOk = isFilled && ans === exp;
       if (isFilled) filled += 1;
       if (isOk) ok += 1;
+      var ansStmt = "";
+      var expStmt = "";
+      if (Array.isArray(U.statements)) {
+        for (var si = 0; si < U.statements.length; si++) {
+          if (String(U.statements[si].num) === ans) ansStmt = String(U.statements[si].text || "");
+          if (String(U.statements[si].num) === exp) expStmt = String(U.statements[si].text || "");
+        }
+      }
       items.push({
         id: String(labels[i] || i + 1),
         label: "Speaker " + String(labels[i] || i + 1),
         correct: isOk,
         answer: ans,
         expected: exp,
+        prompt: "Speaker " + String(labels[i] || i + 1),
+        answerText: ansStmt || (ans ? "Утверждение №" + ans : ""),
+        expectedText: expStmt || (exp ? "Утверждение №" + exp : ""),
         filled: isFilled
       });
     }
@@ -322,7 +361,7 @@
       if (msgEl) {
         msgEl.className = "ege-lm-msg is-warn";
         msgEl.textContent =
-          "Выбери утверждение (1–7) для каждого говорящего A–F, затем нажми «Отправить на проверку».";
+          "Выбери утверждение (1–7) для каждого говорящего A–F, затем нажми «Submit».";
       }
       return;
     }
@@ -373,13 +412,8 @@
     refreshStatsBar();
 
     if (msgEl) {
-      if (ok === n) {
-        msgEl.className = "ege-lm-msg is-ok";
-        msgEl.textContent = "Отлично — все " + n + " из " + n + ".";
-      } else {
-        msgEl.className = "ege-lm-msg is-warn";
-        msgEl.textContent = "Верно " + ok + " из " + n + " (" + pct + "%).";
-      }
+      msgEl.className = ok === n ? "ege-lm-msg is-ok" : "ege-lm-msg is-warn";
+      msgEl.textContent = (ok === n ? "Отлично! " : "") + scoreLine(ok, n);
     }
 
     var keyHtml = "";
@@ -575,7 +609,12 @@
 
     html += '<div class="ege-lm-toolbar">';
     html += '<label><span>Тема</span> ';
-    html += '<select id="ege-lm-unit-select" class="ege-gx-select">';
+    html +=
+      '<select id="ege-lm-unit-select" class="ege-gx-select"' +
+      (isLiveUnitLocked()
+        ? ' disabled title="В live-комнате юнит зафиксирован ссылкой — менять нельзя"'
+        : "") +
+      ">";
     var ui;
     var lmStats = window.__egeListeningMatchingStats;
     var lmPerfect = window.__egeExamUnitPerfectMark;
@@ -655,9 +694,9 @@
     html += '<p class="ege-lm-msg" id="ege-lm-msg" aria-live="polite"></p>';
     html += '<div class="ege-lm-btn-row">';
     html +=
-      '<button type="button" id="ege-lm-check" class="ege-lm-btn ege-lm-btn--check">Отправить на проверку</button>';
+      '<button type="button" id="ege-lm-check" class="ege-lm-btn ege-lm-btn--check">Submit</button>';
     html +=
-      '<button type="button" id="ege-lm-reset" class="ege-lm-btn ege-lm-btn--reset">Сбросить</button>';
+      '<button type="button" id="ege-lm-reset" class="ege-lm-btn ege-lm-btn--reset">Start over</button>';
     html += "</div>";
 
     html += '<div id="ege-lm-key-box" class="ege-lm-key-box" hidden></div>';
@@ -750,6 +789,10 @@
     var unitSel = document.getElementById("ege-lm-unit-select");
     if (unitSel) {
       unitSel.addEventListener("change", function () {
+        if (isLiveUnitLocked()) {
+          unitSel.value = U.id;
+          return;
+        }
         var next = unitSel.value;
         for (var ix = 0; ix < units.length; ix++) {
           if (units[ix].id === next) {
