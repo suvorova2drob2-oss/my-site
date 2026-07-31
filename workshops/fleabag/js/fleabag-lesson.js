@@ -748,15 +748,32 @@
         "</div>";
       tape = "";
     } else {
+      var hwStickers = getImprovStickers().filter(function (s) {
+        return (s.use || s.example || "").trim();
+      });
       body =
         '<article class="int-slot">' +
         '<div class="int-slot-head">' +
-        '<span class="int-slot-title">Shadowing homework</span>' +
-        '<span class="int-slot-hint">Short lines · several takes</span></div>' +
+        '<span class="int-slot-title">Take home</span>' +
+        '<span class="int-slot-hint">Shadow · then play</span></div>' +
         '<p class="fb-hw-note">' +
         escapeHtml(screen.note) +
         "</p>" +
-        '<div class="int-slot-empty">Lines / audio slots — to be filled</div></article>';
+        (hwStickers.length
+          ? '<div class="fb-hw-games">' +
+            '<button type="button" class="fb-fyp-launch" id="btn-fyp-launch">' +
+            '<span class="fb-fyp-launch-kicker">Home game</span>' +
+            '<span class="fb-fyp-launch-title">Sticker FYP</span>' +
+            '<span class="fb-fyp-launch-sub">Vertical · pick 1 of 4 · ' +
+            hwStickers.length +
+            " cards</span></button>" +
+            '<button type="button" class="fb-fyp-launch fb-fyp-launch--swipe" id="btn-swipe-launch">' +
+            '<span class="fb-fyp-launch-kicker">Home game</span>' +
+            '<span class="fb-fyp-launch-title">Sticker Swipe</span>' +
+            '<span class="fb-fyp-launch-sub">6 levels · 10 cards · Tinder swipe</span></button>' +
+            "</div>"
+          : "") +
+        "</article>";
       tape = renderTape(allBeatPhrases(), "beat", screen);
     }
 
@@ -801,6 +818,52 @@
     document.body.classList.remove("fb-discuss-fs-open");
     bindDiscussUi(elStage);
     bindStickerWall(elStage);
+    bindFypLaunch(elStage);
+    bindSwipeLaunch(elStage);
+  }
+
+  function hwStickersWithDef() {
+    return getImprovStickers().filter(function (s) {
+      return (s.def || s.definition || "").trim() && (s.phrase || s.text || "").trim();
+    });
+  }
+
+  function bindFypLaunch(root) {
+    var btn = root.querySelector("#btn-fyp-launch");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      if (!window.FLEABAG_STICKER_FYP || typeof window.FLEABAG_STICKER_FYP.open !== "function") {
+        window.alert("Sticker FYP failed to load — hard-refresh the page (Ctrl+F5).");
+        return;
+      }
+      var stickers = getImprovStickers().filter(function (s) {
+        return (s.use || s.example || "").trim();
+      });
+      window.FLEABAG_STICKER_FYP.open({
+        stickers: stickers,
+        escapeHtml: escapeHtml,
+      });
+    });
+  }
+
+  function bindSwipeLaunch(root) {
+    var btn = root.querySelector("#btn-swipe-launch");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      if (!window.FLEABAG_STICKER_SWIPE || typeof window.FLEABAG_STICKER_SWIPE.open !== "function") {
+        window.alert("Sticker Swipe failed to load — hard-refresh the page (Ctrl+F5).");
+        return;
+      }
+      var stickers = hwStickersWithDef();
+      if (stickers.length < 2) {
+        window.alert("Need definitions on stickers for Swipe — try Ep3 after refresh.");
+        return;
+      }
+      window.FLEABAG_STICKER_SWIPE.open({
+        stickers: stickers,
+        escapeHtml: escapeHtml,
+      });
+    });
   }
 
   function updateNav() {
