@@ -13,7 +13,10 @@
       <div class="int-brand">
         <span class="int-kicker">Workshop · Advanced · C1–C2</span>
         <h1 class="int-title">Fleabag · Speak the series</h1>
-        <p class="int-sub">Season 1 · six sessions · shadowing, games, freer speech. Content slots empty — architecture only.</p>
+        <p class="int-sub">
+          Season 1 &amp; 2 · club sessions · discussion beats → cool-words tape → improv finale → shadowing HW.
+          Mature themes (18+). Bring your own licensed clips / timecodes.
+        </p>
       </div>
       <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
     </header>
@@ -33,27 +36,28 @@
       <div class="fb-showcase-copy">
         <p class="fb-showcase-kicker">Featured workshop</p>
         <h2>Speak the series · shadow the dialogue</h2>
-        <p>Cinematic English — irony, asides, and fluency. Seven steps per session, built for advanced speakers.</p>
+        <p>
+          Cinematic English — irony, asides, and fluency.
+          Each episode: <strong>discussion beats</strong> (clip → phrases → talk) ·
+          <strong>improv finale</strong> with the word tape · <strong>shadowing homework</strong>.
+        </p>
+        <div class="int-meta-row" style="margin-top:12px">
+          <span class="int-pill int-pill--gold">2 seasons</span>
+          <span class="int-pill">6 episodes each</span>
+          <span class="int-pill">Cool-words tape</span>
+          <span class="int-pill">Improv + HW</span>
+        </div>
       </div>
     </section>
 
-    <section class="int-hero" aria-labelledby="hero-title">
-      <h2 id="hero-title">Seven steps per session</h2>
-      <p>
-        <strong>Warm-up</strong> → <strong>Scene</strong> → <strong>Harvest</strong> → <strong>Shadow</strong> →
-        <strong>Games</strong> → <strong>Freer</strong> → <strong>Homework</strong>.
-        One screen at a time. Teacher notes on every step.
-      </p>
-      <div class="int-meta-row">
-        <span class="int-pill int-pill--gold">6 episodes</span>
-        <span class="int-pill">7 steps</span>
-        <span class="int-pill">Shadowing core</span>
-        <span class="int-pill">Small group</span>
-      </div>
-      <p class="int-warn">
-        <strong>Content note:</strong> mature themes (18+). Use your own licensed clips / timecodes — full scripts not hosted here.
-      </p>
-    </section>
+    <div class="fb-season-tabs" role="tablist" aria-label="Series">
+      <button type="button" class="fb-season-tab is-active" role="tab" aria-selected="true" data-season="1" id="tab-s1">
+        Season 1
+      </button>
+      <button type="button" class="fb-season-tab" role="tab" aria-selected="false" data-season="2" id="tab-s2">
+        Season 2
+      </button>
+    </div>
 
     <nav class="int-theme-grid" id="session-grid" aria-label="Fleabag sessions"></nav>
   </div>
@@ -62,14 +66,30 @@
   <script>
     (function () {
       var grid = document.getElementById("session-grid");
-      if (!grid || !window.FLEABAG_WORKSHOP_SESSIONS) return;
+      var tabs = document.querySelectorAll(".fb-season-tab");
+      if (!grid || typeof FLEABAG_WORKSHOP_getSessionsBySeason !== "function") return;
 
-      grid.innerHTML = FLEABAG_WORKSHOP_SESSIONS.map(function (s) {
+      function seasonFromHash() {
+        var m = (location.hash || "").match(/season[=-]?(\d)/i);
+        if (m) return Number(m[1]);
+        try {
+          var saved = Number(sessionStorage.getItem("fleabag-workshop-season"));
+          if (saved === 1 || saved === 2) return saved;
+        } catch (e) {}
+        return 1;
+      }
+
+      function renderCard(s) {
+        var syn = s.synopsis
+          ? '<span class="int-theme-syn">' + s.synopsis + "</span>"
+          : "";
         return (
           '<a class="int-theme-card" href="lesson.html?session=' +
           encodeURIComponent(s.id) +
           '">' +
-          '<span class="int-theme-num">Session ' +
+          '<span class="int-theme-num">S' +
+          (s.season || 1) +
+          " · Ep " +
           String(s.num).padStart(2, "0") +
           "</span>" +
           '<span class="int-theme-icon" aria-hidden="true">' +
@@ -81,9 +101,37 @@
           '<span class="int-theme-tag">' +
           s.tagline +
           "</span>" +
-          '<span class="int-theme-go">Open lesson flow →</span></a>'
+          syn +
+          '<span class="int-theme-go">Open session →</span></a>'
         );
-      }).join("");
+      }
+
+      function setSeason(season) {
+        season = season === 2 ? 2 : 1;
+        tabs.forEach(function (btn) {
+          var on = Number(btn.getAttribute("data-season")) === season;
+          btn.classList.toggle("is-active", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        var list = FLEABAG_WORKSHOP_getSessionsBySeason(season);
+        grid.innerHTML = list.map(renderCard).join("");
+        try {
+          sessionStorage.setItem("fleabag-workshop-season", String(season));
+        } catch (e) {}
+        if (history.replaceState) {
+          history.replaceState(null, "", "#season-" + season);
+        } else {
+          location.hash = "season-" + season;
+        }
+      }
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          setSeason(Number(btn.getAttribute("data-season")));
+        });
+      });
+
+      setSeason(seasonFromHash());
     })();
   </script>
 </body>
