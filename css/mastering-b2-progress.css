@@ -1,0 +1,178 @@
+/* Mastering B2 — progress tabs / unit & skill bars (stats modal) */
+
+.stats-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.stats-tab {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 160, 210, 0.28);
+  background: rgba(10, 20, 38, 0.45);
+  color: #8fa3c4;
+  cursor: pointer;
+}
+
+.stats-tab[aria-selected="true"] {
+  color: #eef4ff;
+  border-color: rgba(94, 200, 240, 0.5);
+  background: rgba(94, 200, 240, 0.14);
+}
+
+.stats-pane {
+  display: none;
+}
+
+.stats-pane.is-active {
+  display: block;
+}
+
+.prog-note {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #8fa3c4;
+}
+
+.prog-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prog-row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: rgba(16, 28, 50, 0.55);
+  border: 1px solid rgba(120, 160, 210, 0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.prog-row:hover {
+  border-color: rgba(94, 200, 240, 0.4);
+}
+
+.prog-row.is-static {
+  cursor: default;
+}
+
+.prog-row-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #eef4ff;
+}
+
+.prog-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(8, 18, 36, 0.65);
+  overflow: hidden;
+  border: 1px solid rgba(120, 160, 210, 0.18);
+}
+
+.prog-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+  transition: width 0.35s ease;
+}
+
+.prog-fill[data-tone="gold"] {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.prog-fill[data-tone="pink"] {
+  background: linear-gradient(90deg, #fb7185, #a78bfa);
+}
+
+.prog-fill[data-tone="muted"] {
+  background: rgba(143, 163, 196, 0.35);
+}
+
+.prog-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 76px;
+}
+
+.prog-pct {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #eef4ff;
+}
+
+.prog-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8fa3c4;
+}
+
+.prog-badge[data-status="passed"] {
+  color: #34d399;
+}
+
+.prog-badge[data-status="in_progress"] {
+  color: #fbbf24;
+}
+
+.prog-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.prog-back {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5ec8f0;
+  background: rgba(10, 20, 38, 0.45);
+  border: 1px solid rgba(94, 200, 240, 0.28);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.prog-detail-title {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f4efe4;
+}
+
+@media (max-width: 640px) {
+  .prog-row {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .prog-meta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

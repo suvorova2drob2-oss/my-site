@@ -98,6 +98,10 @@
     .score-line { font-size: 0.95rem; color: var(--muted); margin-bottom: 8px; }
     .err { color: var(--err); font-weight: 600; margin-top: 12px; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../css/mastering-b2-page-skin.css" />
 </head>
 <body>
   <div class="wrap">
@@ -127,6 +131,7 @@
     <p class="all-done" id="allDone">All rounds complete — return to the hub or open Exercise 5 for typed gaps.</p>
     <p class="err" id="mountErr" style="display:none;"></p>
   </div>
+  <script src="../../../js/mastering-b2-daily-activity.js"></script>
   <script>
 (function () {
   var scoreKey = 'masteringB2Score';
@@ -136,6 +141,7 @@
   }
   function addScore(x) {
     localStorage.setItem(scoreKey, String(getScore() + x));
+    if (window.MasteringB2Daily) MasteringB2Daily.addPoints(x);
   }
 
   var core = window.PREP_PHRASES_CORE;
@@ -289,5 +295,7 @@
   render();
 })();
   </script>
+<script src="../../../js/mastering-b2-skill-progress.js"></script>
+<script src="../../../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

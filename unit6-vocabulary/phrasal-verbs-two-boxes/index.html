@@ -23,7 +23,7 @@
       padding: 24px;
     }
     .page {
-      width: min(900px, 100%);
+      width: min(1100px, 100%);
       margin: 0 auto;
       background: var(--panel);
       border: 1px solid var(--line);
@@ -67,24 +67,82 @@
       color: #d5e2f8;
       margin-bottom: 14px;
     }
-    .ref-box {
+    .workspace {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(168px, 220px);
+      gap: 16px;
+      align-items: start;
     }
-    @media (max-width: 720px) {
-      .ref-box { grid-template-columns: 1fr; }
+    .workspace-main { min-width: 0; }
+    .ref-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 12px;
+      z-index: 2;
+      max-height: calc(100vh - 24px);
+      overflow-y: auto;
     }
     .ref-panel {
       border: 1px dashed var(--line);
       border-radius: 10px;
       padding: 12px 14px;
-      background: rgba(15, 36, 68, 0.45);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      background: rgba(15, 36, 68, 0.92);
+      font-size: 0.88rem;
+      line-height: 1.55;
     }
-    .ref-panel strong { color: #bae6fd; }
+    .ref-panel strong { color: #bae6fd; display: block; margin-bottom: 6px; }
+    .ref-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .bank-chip {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 5px 9px;
+      background: #132544;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.3;
+    }
+    .bank-chip:hover:not(.is-used) {
+      border-color: var(--accent);
+      color: #bae6fd;
+    }
+    .bank-chip.is-used {
+      opacity: 0.45;
+      text-decoration: line-through;
+      cursor: default;
+      pointer-events: none;
+    }
+    .gap.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    @media (max-width: 820px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .ref-box {
+        order: -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 8px;
+        max-height: none;
+      }
+      .ref-panel { flex: 1 1 220px; }
+    }
     .example {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -162,6 +220,10 @@
     }
     .feedback.show { display: block; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
 </head>
 <body>
   <main class="page">
@@ -182,82 +244,91 @@
     <p class="instr">
       In sentences <strong>2&ndash;8</strong>, complete the <strong>first gap</strong> with the correct form of a verb from <strong>box A</strong>, and the <strong>second gap</strong> with the correct particle from <strong>box B</strong>.
       Each word from the boxes is used <strong>once</strong> in the exercise (sentence 1 is a model).
+      Click a gap, then a word in the box &mdash; or type. Used words are struck through (including other verb forms, e.g. <em>give</em> &rarr; <em>given</em>).
     </p>
 
-    <div class="ref-box">
-      <div class="ref-panel">
-        <strong>Box A:</strong> bring &mdash; fall &mdash; give &mdash; get &mdash; let &mdash; look &mdash; sort &mdash; tell
+    <div class="workspace">
+      <div class="workspace-main">
+        <div class="example">
+          <div class="lab">Example (sentence 1)</div>
+          He was <strong>told</strong> <strong>off</strong> for hitting his sister and made to apologise to her.
+        </div>
+
+        <section class="task">
+          <div class="row" data-i="0">
+            <span class="row-num">2.</span>
+            I&rsquo;ve
+            <input type="text" class="gap" id="v0" autocomplete="off" spellcheck="false" aria-label="Sentence 2 verb" />
+            <input type="text" class="gap" id="p0" autocomplete="off" spellcheck="false" aria-label="Sentence 2 particle" />
+            trying to keep the flat tidy; the people I share with make no effort to help at all.
+          </div>
+          <div class="row" data-i="1">
+            <span class="row-num">3.</span>
+            My parents worked hard to pay for my education, so when I kept getting into trouble at school, they felt I had
+            <input type="text" class="gap" id="v1" autocomplete="off" spellcheck="false" aria-label="Sentence 3 verb" />
+            them
+            <input type="text" class="gap" id="p1" autocomplete="off" spellcheck="false" aria-label="Sentence 3 particle" />
+            .
+          </div>
+          <div class="row" data-i="2">
+            <span class="row-num">4.</span>
+            I don&rsquo;t
+            <input type="text" class="gap" id="v2" autocomplete="off" spellcheck="false" aria-label="Sentence 4 verb" />
+            <input type="text" class="gap" id="p2" autocomplete="off" spellcheck="false" aria-label="Sentence 4 particle" />
+            very well with my boss; we have a mutual dislike for each other.
+          </div>
+          <div class="row" data-i="3">
+            <span class="row-num">5.</span>
+            I was
+            <input type="text" class="gap" id="v3" autocomplete="off" spellcheck="false" aria-label="Sentence 5 verb" />
+            <input type="text" class="gap" id="p3" autocomplete="off" spellcheck="false" aria-label="Sentence 5 particle" />
+            by my parents to believe that honesty is the best policy.
+          </div>
+          <div class="row" data-i="4">
+            <span class="row-num">6.</span>
+            I was upset when I found out my uncle had spent time in prison: I had always
+            <input type="text" class="gap" id="v4" autocomplete="off" spellcheck="false" aria-label="Sentence 6 verb" />
+            up
+            <input type="text" class="gap" id="p4" autocomplete="off" spellcheck="false" aria-label="Sentence 6 particle" />
+            him and considered him a role model.
+          </div>
+          <div class="row" data-i="5">
+            <span class="row-num">7.</span>
+            My two girls are always
+            <input type="text" class="gap" id="v5" autocomplete="off" spellcheck="false" aria-label="Sentence 7 verb" />
+            <input type="text" class="gap" id="p5" autocomplete="off" spellcheck="false" aria-label="Sentence 7 particle" />
+            over the silliest of things; they&rsquo;ll go for days without talking to each other.
+          </div>
+          <div class="row" data-i="6">
+            <span class="row-num">8.</span>
+            We&rsquo;ve had our problems, but we&rsquo;ve always managed to
+            <input type="text" class="gap" id="v6" autocomplete="off" spellcheck="false" aria-label="Sentence 8 verb" />
+            them
+            <input type="text" class="gap" id="p6" autocomplete="off" spellcheck="false" aria-label="Sentence 8 particle" />
+            .
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+            <button type="button" class="btn-reset" id="btnReset">Reset</button>
+          </div>
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+        </section>
       </div>
-      <div class="ref-panel">
-        <strong>Box B:</strong> down &mdash; off &mdash; on &mdash; out &mdash; out &mdash; to &mdash; up &mdash; up
-      </div>
+
+      <aside class="ref-box" aria-label="Word boxes">
+        <div class="ref-panel" id="box-a">
+          <strong>Box A</strong>
+          <p class="ref-hint">Click a gap, then a verb.</p>
+          <div class="chip-row" id="chips-a"></div>
+        </div>
+        <div class="ref-panel" id="box-b">
+          <strong>Box B</strong>
+          <p class="ref-hint">Click a gap, then a particle.</p>
+          <div class="chip-row" id="chips-b"></div>
+        </div>
+      </aside>
     </div>
-
-    <div class="example">
-      <div class="lab">Example (sentence 1)</div>
-      He was <strong>told</strong> <strong>off</strong> for hitting his sister and made to apologise to her.
-    </div>
-
-    <section class="task">
-      <div class="row" data-i="0">
-        <span class="row-num">2.</span>
-        I&rsquo;ve
-        <input type="text" class="gap" id="v0" autocomplete="off" spellcheck="false" aria-label="Sentence 2 verb" />
-        <input type="text" class="gap" id="p0" autocomplete="off" spellcheck="false" aria-label="Sentence 2 particle" />
-        trying to keep the flat tidy; the people I share with make no effort to help at all.
-      </div>
-      <div class="row" data-i="1">
-        <span class="row-num">3.</span>
-        My parents worked hard to pay for my education, so when I kept getting into trouble at school, they felt I had
-        <input type="text" class="gap" id="v1" autocomplete="off" spellcheck="false" aria-label="Sentence 3 verb" />
-        them
-        <input type="text" class="gap" id="p1" autocomplete="off" spellcheck="false" aria-label="Sentence 3 particle" />
-        .
-      </div>
-      <div class="row" data-i="2">
-        <span class="row-num">4.</span>
-        I don&rsquo;t
-        <input type="text" class="gap" id="v2" autocomplete="off" spellcheck="false" aria-label="Sentence 4 verb" />
-        <input type="text" class="gap" id="p2" autocomplete="off" spellcheck="false" aria-label="Sentence 4 particle" />
-        very well with my boss; we have a mutual dislike for each other.
-      </div>
-      <div class="row" data-i="3">
-        <span class="row-num">5.</span>
-        I was
-        <input type="text" class="gap" id="v3" autocomplete="off" spellcheck="false" aria-label="Sentence 5 verb" />
-        <input type="text" class="gap" id="p3" autocomplete="off" spellcheck="false" aria-label="Sentence 5 particle" />
-        by my parents to believe that honesty is the best policy.
-      </div>
-      <div class="row" data-i="4">
-        <span class="row-num">6.</span>
-        I was upset when I found out my uncle had spent time in prison: I had always
-        <input type="text" class="gap" id="v4" autocomplete="off" spellcheck="false" aria-label="Sentence 6 verb" />
-        up
-        <input type="text" class="gap" id="p4" autocomplete="off" spellcheck="false" aria-label="Sentence 6 particle" />
-        him and considered him a role model.
-      </div>
-      <div class="row" data-i="5">
-        <span class="row-num">7.</span>
-        My two girls are always
-        <input type="text" class="gap" id="v5" autocomplete="off" spellcheck="false" aria-label="Sentence 7 verb" />
-        <input type="text" class="gap" id="p5" autocomplete="off" spellcheck="false" aria-label="Sentence 7 particle" />
-        over the silliest of things; they&rsquo;ll go for days without talking to each other.
-      </div>
-      <div class="row" data-i="6">
-        <span class="row-num">8.</span>
-        We&rsquo;ve had our problems, but we&rsquo;ve always managed to
-        <input type="text" class="gap" id="v6" autocomplete="off" spellcheck="false" aria-label="Sentence 8 verb" />
-        them
-        <input type="text" class="gap" id="p6" autocomplete="off" spellcheck="false" aria-label="Sentence 8 particle" />
-        .
-      </div>
-
-      <div class="btn-row">
-        <button type="button" class="btn-check" id="btnCheck">Check answers</button>
-        <button type="button" class="btn-reset" id="btnReset">Reset</button>
-      </div>
-      <div class="feedback" id="feedback" aria-live="polite"></div>
-    </section>
   </main>
 
   <script>
@@ -266,6 +337,28 @@
   /** [verb forms], [particles] per row */
   var KEY_VERB = [["given"], ["let"], ["get"], ["brought"], ["looked"], ["falling"], ["sort"]];
   var KEY_PART = [["up"], ["down"], ["on"], ["up"], ["to"], ["out"], ["out"]];
+
+  /** Base lemma → all forms that should strike this chip */
+  var BOX_A = [
+    { id: "a0", base: "bring", forms: ["bring", "brings", "bringing", "brought"], example: false },
+    { id: "a1", base: "fall", forms: ["fall", "falls", "falling", "fell", "fallen"], example: false },
+    { id: "a2", base: "give", forms: ["give", "gives", "giving", "gave", "given"], example: false },
+    { id: "a3", base: "get", forms: ["get", "gets", "getting", "got", "gotten"], example: false },
+    { id: "a4", base: "let", forms: ["let", "lets", "letting"], example: false },
+    { id: "a5", base: "look", forms: ["look", "looks", "looking", "looked"], example: false },
+    { id: "a6", base: "sort", forms: ["sort", "sorts", "sorting", "sorted"], example: false },
+    { id: "a7", base: "tell", forms: ["tell", "tells", "telling", "told"], example: true }
+  ];
+  var BOX_B = [
+    { id: "b0", base: "down", forms: ["down"], example: false },
+    { id: "b1", base: "off", forms: ["off"], example: true },
+    { id: "b2", base: "on", forms: ["on"], example: false },
+    { id: "b3", base: "out", forms: ["out"], example: false },
+    { id: "b4", base: "out", forms: ["out"], example: false },
+    { id: "b5", base: "to", forms: ["to"], example: false },
+    { id: "b6", base: "up", forms: ["up"], example: false },
+    { id: "b7", base: "up", forms: ["up"], example: false }
+  ];
 
   function norm(s) {
     return String(s || "")
@@ -290,23 +383,160 @@
     return false;
   }
 
+  function formHits(chip, typed) {
+    var n = norm(typed);
+    if (!n) return false;
+    for (var i = 0; i < chip.forms.length; i++) {
+      if (n === norm(chip.forms[i])) return true;
+    }
+    return false;
+  }
+
   function vEl(i) { return document.getElementById("v" + i); }
   function pEl(i) { return document.getElementById("p" + i); }
 
+  function allVerbGaps() {
+    var out = [];
+    for (var i = 0; i < ROWS; i++) out.push(vEl(i));
+    return out;
+  }
+  function allPartGaps() {
+    var out = [];
+    for (var i = 0; i < ROWS; i++) out.push(pEl(i));
+    return out;
+  }
+
+  function renderChips() {
+    var a = document.getElementById("chips-a");
+    var b = document.getElementById("chips-b");
+    a.innerHTML = BOX_A.map(function (c) {
+      return (
+        '<button type="button" class="bank-chip" data-box="a" data-id="' +
+        c.id +
+        '" data-word="' +
+        esc(c.base) +
+        '">' +
+        esc(c.base) +
+        "</button>"
+      );
+    }).join("");
+    b.innerHTML = BOX_B.map(function (c) {
+      return (
+        '<button type="button" class="bank-chip" data-box="b" data-id="' +
+        c.id +
+        '" data-word="' +
+        esc(c.base) +
+        '">' +
+        esc(c.base) +
+        "</button>"
+      );
+    }).join("");
+  }
+
+  function syncBankStrike() {
+    var usedA = {};
+    var usedB = {};
+    BOX_A.forEach(function (c) {
+      if (c.example) usedA[c.id] = true;
+    });
+    BOX_B.forEach(function (c) {
+      if (c.example) usedB[c.id] = true;
+    });
+
+    function claim(list, usedMap, typed) {
+      var n = norm(typed);
+      if (!n) return;
+      for (var i = 0; i < list.length; i++) {
+        var c = list[i];
+        if (usedMap[c.id]) continue;
+        if (formHits(c, n)) {
+          usedMap[c.id] = true;
+          return;
+        }
+      }
+    }
+
+    for (var i = 0; i < ROWS; i++) {
+      claim(BOX_A, usedA, vEl(i).value);
+      claim(BOX_B, usedB, pEl(i).value);
+    }
+
+    document.querySelectorAll("#chips-a .bank-chip").forEach(function (btn) {
+      btn.classList.toggle("is-used", !!usedA[btn.getAttribute("data-id")]);
+    });
+    document.querySelectorAll("#chips-b .bank-chip").forEach(function (btn) {
+      btn.classList.toggle("is-used", !!usedB[btn.getAttribute("data-id")]);
+    });
+  }
+
+  var lastFocus = null;
+
+  function clearActive() {
+    document.querySelectorAll(".gap").forEach(function (el) {
+      el.classList.remove("is-active");
+    });
+  }
+
+  function setActive(el) {
+    clearActive();
+    if (el) {
+      el.classList.add("is-active");
+      lastFocus = el;
+    }
+  }
+
+  function firstEmpty(list) {
+    for (var i = 0; i < list.length; i++) {
+      if (!norm(list[i].value)) return list[i];
+    }
+    return null;
+  }
+
+  function targetForBox(box) {
+    var list = box === "a" ? allVerbGaps() : allPartGaps();
+    if (lastFocus && list.indexOf(lastFocus) >= 0) return lastFocus;
+    return firstEmpty(list) || list[0];
+  }
+
+  renderChips();
+  syncBankStrike();
+
   document.querySelectorAll(".gap").forEach(function (el) {
+    el.addEventListener("focus", function () {
+      setActive(this);
+    });
+    el.addEventListener("click", function () {
+      setActive(this);
+    });
     el.addEventListener("input", function () {
       this.classList.remove("is-ok", "is-bad");
       document.getElementById("feedback").classList.remove("show");
+      syncBankStrike();
     });
   });
 
+  document.getElementById("chips-a").addEventListener("click", onChipClick);
+  document.getElementById("chips-b").addEventListener("click", onChipClick);
+
+  function onChipClick(e) {
+    var btn = e.target.closest(".bank-chip");
+    if (!btn || btn.classList.contains("is-used")) return;
+    var box = btn.getAttribute("data-box");
+    var word = btn.getAttribute("data-word");
+    var gap = targetForBox(box);
+    if (!gap) return;
+    gap.value = word;
+    gap.classList.remove("is-ok", "is-bad");
+    setActive(gap);
+    document.getElementById("feedback").classList.remove("show");
+    syncBankStrike();
+    gap.focus();
+  }
+
   document.getElementById("btnCheck").addEventListener("click", function () {
     var fb = document.getElementById("feedback");
-    var parts = [];
     for (var i = 0; i < ROWS; i++) {
-      var vv = vEl(i).value;
-      var pp = pEl(i).value;
-      if (!norm(vv) || !norm(pp)) {
+      if (!norm(vEl(i).value) || !norm(pEl(i).value)) {
         fb.textContent = "Complete both gaps in every sentence (2–8), then check again.";
         fb.classList.add("show");
         return;
@@ -345,6 +575,7 @@
       " lines fully correct.</p>" +
       html;
     fb.classList.add("show");
+    syncBankStrike();
   });
 
   document.getElementById("btnReset").addEventListener("click", function () {
@@ -354,10 +585,16 @@
       vEl(k).classList.remove("is-ok", "is-bad");
       pEl(k).classList.remove("is-ok", "is-bad");
     }
+    clearActive();
+    lastFocus = null;
     document.getElementById("feedback").classList.remove("show");
     document.getElementById("feedback").innerHTML = "";
+    syncBankStrike();
   });
 })();
   </script>
+<script src="../../js/mastering-b2-skill-progress.js"></script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

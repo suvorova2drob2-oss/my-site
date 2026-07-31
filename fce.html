@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mastering B2</title>
   <meta name="prep-deploy-track" content="__PREP_META_TRACK__" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/mastering-b2-progress.css" />
   <script>
     (function () {
       var m = document.querySelector('meta[name="prep-deploy-track"]');
@@ -17,143 +21,752 @@
   </script>
   <style>
     :root {
-      --page-bg: #071432;
-      --panel-bg: #1a2a47;
-      --panel-border: #2e4365;
-      --card-bg: #223657;
-      --card-muted: #8497b7;
-      --text-main: #e6eefc;
-      --text-dim: #9daecb;
-      --accent-blue: #38bdf8;
-      --accent-green: #36d399;
+      --page-bg: #050d1f;
+      --panel-bg: rgba(18, 30, 52, 0.78);
+      --panel-border: rgba(120, 160, 210, 0.18);
+      --card-bg: #1a2b48;
+      --card-bg-2: #15233c;
+      --text-main: #eef4ff;
+      --text-dim: #8fa3c4;
+      --accent: #5ec8f0;
+      --accent-soft: rgba(94, 200, 240, 0.14);
+      --gold: #e8c56a;
+      --ok: #3dd6a0;
+      --locked: #6b7c99;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
       min-height: 100vh;
-      padding: 28px;
+      height: 100vh;
+      overflow: hidden;
+      padding: 12px;
       color: var(--text-main);
-      background: radial-gradient(1000px 420px at 50% -15%, #132754 0%, var(--page-bg) 55%);
+      font-family: Manrope, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(900px 480px at 12% -10%, rgba(56, 130, 190, 0.28), transparent 55%),
+        radial-gradient(700px 420px at 92% 8%, rgba(232, 197, 106, 0.09), transparent 50%),
+        radial-gradient(800px 500px at 50% 110%, rgba(61, 214, 160, 0.07), transparent 55%),
+        linear-gradient(165deg, #081428 0%, var(--page-bg) 45%, #0a1528 100%);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
     .app {
-      width: min(1080px, 100%);
-      border-radius: 22px;
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 100%);
+      max-height: calc(100vh - 24px);
+      height: calc(100vh - 24px);
+      display: flex;
+      flex-direction: column;
+      border-radius: 24px;
       border: 1px solid var(--panel-border);
-      background: var(--panel-bg);
-      padding: 24px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+      background:
+        linear-gradient(145deg, rgba(36, 54, 88, 0.55) 0%, rgba(16, 28, 50, 0.92) 42%, rgba(14, 24, 44, 0.96) 100%);
+      padding: 16px 18px 12px;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 28px 80px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(12px);
+      animation: rise 0.55s ease both;
+      overflow: hidden;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .brand-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .brand-kicker::before {
+      content: "";
+      width: 14px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.7;
+    }
+
+    .brand h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.45rem, 2.8vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      background: linear-gradient(120deg, #fff8e8 10%, #e8c56a 45%, #9fd9f5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .brand p {
+      color: var(--text-dim);
+      font-size: 0.84rem;
+      line-height: 1.35;
+      max-width: 36rem;
     }
 
     .top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--panel-border);
-      padding-bottom: 14px;
-      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(143, 163, 196, 0.22);
+      background: rgba(10, 20, 38, 0.55);
+      font-size: 0.82rem;
       color: var(--text-dim);
     }
 
     .player-name {
-      color: var(--accent-blue);
+      color: var(--accent);
       font-weight: 700;
+    }
+
+    .score-pill {
+      border-color: rgba(232, 197, 106, 0.35);
+      background: rgba(232, 197, 106, 0.08);
+      color: #f3e2b0;
+      font-weight: 700;
+    }
+
+    .score-pill svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
 
     .score {
-      color: var(--accent-green);
-      font-weight: 700;
+      color: var(--ok);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
     .section-title {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .section-note {
       color: var(--text-dim);
-      margin-bottom: 14px;
+      font-size: 0.76rem;
     }
 
     .units {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+      flex: 1 1 auto;
+      min-height: 0;
+      align-content: stretch;
     }
 
     .unit {
+      position: relative;
       text-decoration: none;
       color: var(--text-main);
-      min-height: 100px;
-      border-radius: 16px;
-      border: 1px solid #2f456a;
-      background: linear-gradient(180deg, #243a5f 0%, #223656 100%);
-      padding: 14px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      min-height: 0;
+      border-radius: 14px;
+      border: 1px solid rgba(90, 120, 170, 0.28);
+      background:
+        linear-gradient(165deg, rgba(48, 72, 112, 0.55) 0%, var(--card-bg) 48%, var(--card-bg-2) 100%);
+      padding: 8px 10px 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      animation: cardIn 0.45s ease both;
     }
 
-    .unit:hover {
-      transform: translateY(-2px);
-      border-color: #4a6898;
+    .unit:nth-child(1) { animation-delay: 0.02s; }
+    .unit:nth-child(2) { animation-delay: 0.04s; }
+    .unit:nth-child(3) { animation-delay: 0.06s; }
+    .unit:nth-child(4) { animation-delay: 0.08s; }
+    .unit:nth-child(5) { animation-delay: 0.1s; }
+    .unit:nth-child(6) { animation-delay: 0.12s; }
+    .unit:nth-child(7) { animation-delay: 0.14s; }
+    .unit:nth-child(8) { animation-delay: 0.16s; }
+    .unit:nth-child(9) { animation-delay: 0.18s; }
+    .unit:nth-child(10) { animation-delay: 0.2s; }
+    .unit:nth-child(11) { animation-delay: 0.22s; }
+    .unit:nth-child(12) { animation-delay: 0.24s; }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .unit::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: transparent;
+      border-radius: 18px 0 0 18px;
+    }
+
+    .unit:not(.is-locked):hover {
+      transform: translateY(-3px);
+      border-color: rgba(94, 200, 240, 0.45);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(94, 200, 240, 0.12);
+    }
+
+    .unit:not(.is-locked)::before {
+      background: linear-gradient(180deg, var(--accent), rgba(61, 214, 160, 0.7));
+    }
+
+    .unit.is-locked {
+      opacity: 0.58;
+      background: linear-gradient(165deg, #1a2538 0%, #141e30 100%);
+      border-color: rgba(80, 100, 130, 0.25);
+      cursor: default;
+    }
+
+    .unit.is-locked:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .unit-num {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .unit.is-locked .unit-num {
+      color: var(--locked);
     }
 
     .unit-title {
-      font-size: 1.06rem;
-      font-weight: 700;
-      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+
+    .unit-title svg {
+      width: 12px;
+      height: 12px;
+      color: var(--gold);
+      flex-shrink: 0;
     }
 
     .unit-desc {
-      color: var(--card-muted);
-      font-size: 0.9rem;
-      line-height: 1.35;
+      color: var(--text-dim);
+      font-size: 0.74rem;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .unit.is-locked .unit-desc {
+      font-style: italic;
+    }
+
+    .mb2-done-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      min-width: 1.4rem;
+      height: 1.4rem;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      pointer-events: none;
+      opacity: 0;
+    }
+    a.unit.is-mb2-done .mb2-done-badge,
+    a.unit.is-mb2-progress .mb2-done-badge { opacity: 1; }
+    a.unit.is-mb2-done { border-color: rgba(61, 214, 160, 0.5); }
+    a.unit.is-mb2-done .mb2-done-badge {
+      background: linear-gradient(145deg, #34d399, #059669);
+      color: #042f1e;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+    a.unit.is-mb2-done::before {
+      background: linear-gradient(180deg, #34d399, rgba(61, 214, 160, 0.85));
+    }
+    a.unit.is-mb2-progress .mb2-done-badge {
+      background: rgba(94, 200, 240, 0.16);
+      border: 1px solid rgba(94, 200, 240, 0.4);
+      color: #bae6fd;
+      font-size: 0.58rem;
+    }
+    .progress-course {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: #8fa3c4;
+      font-weight: 600;
+    }
+    .progress-course strong {
+      color: #6ee7b7;
+      font-weight: 800;
     }
 
     .progress-box {
-      border-radius: 16px;
-      border: 1px solid #3a5279;
-      background: #334a6d;
-      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(232, 197, 106, 0.22);
+      background:
+        linear-gradient(120deg, rgba(232, 197, 106, 0.08), transparent 40%),
+        rgba(12, 22, 40, 0.65);
+      padding: 10px 14px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    .progress-box:hover {
+      border-color: rgba(232, 197, 106, 0.45);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .progress-box:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .progress-hint {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: #7d90b0;
+      text-align: right;
     }
 
     .progress-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.85rem;
-      margin-bottom: 8px;
       gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .progress-header svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gold);
     }
 
     .progress-title {
-      font-size: 2rem;
-      font-weight: 700;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
     .progress-text {
+      color: #c5d3ea;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(143, 163, 196, 0.18);
+      overflow: hidden;
+    }
+
+    .progress-bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #e8c56a, #3dd6a0);
+      transition: width 0.4s ease;
+    }
+
+    .progress-bar--course {
+      margin-top: 5px;
+      height: 5px;
+    }
+    .progress-bar--course > span {
+      background: linear-gradient(90deg, #34d399, #5ec8f0);
+    }
+
+    /* —— Progress stats modal (FCE tiles) —— */
+    .stats-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background:
+        radial-gradient(700px 400px at 10% 0%, rgba(56, 130, 190, 0.22), transparent 55%),
+        radial-gradient(600px 360px at 95% 100%, rgba(232, 197, 106, 0.12), transparent 50%),
+        rgba(3, 8, 20, 0.9);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: rise 0.28s ease both;
+    }
+
+    .stats-panel {
+      width: min(720px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      border-radius: 24px;
+      border: 1px solid var(--panel-border);
+      background:
+        linear-gradient(145deg, rgba(36, 54, 88, 0.55) 0%, rgba(16, 28, 50, 0.94) 45%, rgba(12, 22, 40, 0.98) 100%);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 28px 80px rgba(0, 0, 0, 0.5);
+      padding: 20px 20px 18px;
+      position: relative;
+    }
+
+    .stats-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stats-top h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #fff8e8 10%, #e8c56a 50%, #9fd9f5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .stats-top p {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      margin-top: 4px;
+    }
+
+    .stats-close {
+      border: 1px solid rgba(143, 163, 196, 0.28);
+      background: rgba(10, 20, 38, 0.65);
+      color: var(--text-dim);
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .stats-close:hover {
+      border-color: rgba(94, 200, 240, 0.45);
+      color: var(--text-main);
+    }
+
+    .stats-layout {
+      display: grid;
+      grid-template-columns: 1fr minmax(160px, 200px) 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .stats-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stat-tile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(90, 120, 170, 0.28);
+      background:
+        linear-gradient(165deg, rgba(48, 72, 112, 0.5) 0%, var(--card-bg) 50%, var(--card-bg-2) 100%);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+      min-height: 72px;
+    }
+
+    .stat-tile[data-tone="pink"] { border-color: rgba(244, 114, 182, 0.28); }
+    .stat-tile[data-tone="blue"] { border-color: rgba(94, 200, 240, 0.28); }
+    .stat-tile[data-tone="green"] { border-color: rgba(61, 214, 160, 0.28); }
+    .stat-tile[data-tone="gold"] { border-color: rgba(232, 197, 106, 0.28); }
+    .stat-tile[data-tone="violet"] { border-color: rgba(167, 139, 250, 0.28); }
+    .stat-tile[data-tone="coral"] { border-color: rgba(251, 146, 60, 0.28); }
+
+    .stat-ico {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .stat-ico svg {
+      width: 20px;
+      height: 20px;
+      color: #fff;
+    }
+
+    .stat-tile[data-tone="pink"] .stat-ico { background: linear-gradient(135deg, #fb7185, #f472b6); }
+    .stat-tile[data-tone="blue"] .stat-ico { background: linear-gradient(135deg, #38bdf8, #6366f1); }
+    .stat-tile[data-tone="green"] .stat-ico { background: linear-gradient(135deg, #34d399, #14b8a6); }
+    .stat-tile[data-tone="gold"] .stat-ico { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .stat-tile[data-tone="violet"] .stat-ico { background: linear-gradient(135deg, #a78bfa, #818cf8); }
+    .stat-tile[data-tone="coral"] .stat-ico { background: linear-gradient(135deg, #fb923c, #f43f5e); }
+
+    .stat-meta {
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stats-ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 4px;
+    }
+
+    .stats-ring {
+      --pct: 0;
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, #121e36 58%, transparent 59%),
+        conic-gradient(from -90deg, #e8c56a 0 calc(var(--pct) * 1%), #3dd6a0 calc(var(--pct) * 1% * 0.55), #5ec8f0 calc(var(--pct) * 1%), rgba(143, 163, 196, 0.18) 0);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 40px rgba(232, 197, 106, 0.12);
+    }
+
+    .stats-ring-inner {
       text-align: center;
-      color: #d3def3;
-      font-size: 0.96rem;
+    }
+
+    .stats-ring-inner .lvl-kicker {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .stats-ring-inner .lvl-num {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--text-main);
+    }
+
+    .stats-next {
+      width: 100%;
+      text-align: center;
+    }
+
+    .stats-next span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .stats-next-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(143, 163, 196, 0.18);
+      overflow: hidden;
+    }
+
+    .stats-next-bar > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #e8c56a, #3dd6a0);
+    }
+
+    .stats-week {
+      border-radius: 16px;
+      border: 1px solid rgba(90, 120, 170, 0.28);
+      background:
+        linear-gradient(165deg, rgba(48, 72, 112, 0.45) 0%, var(--card-bg) 55%, var(--card-bg-2) 100%);
+      padding: 14px 16px 12px;
+    }
+
+    .stats-week h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .week-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: end;
+      height: 88px;
+    }
+
+    .week-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      height: 100%;
+    }
+
+    .week-bar {
+      width: 100%;
+      max-width: 28px;
+      border-radius: 8px 8px 4px 4px;
+      min-height: 8px;
+      background: linear-gradient(180deg, #5ec8f0, #3b82f6);
+      opacity: 0.85;
+    }
+
+    .week-col:nth-child(2) .week-bar { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+    .week-col:nth-child(3) .week-bar { background: linear-gradient(180deg, #34d399, #14b8a6); }
+    .week-col:nth-child(4) .week-bar { background: linear-gradient(180deg, #a78bfa, #6366f1); }
+    .week-col:nth-child(5) .week-bar { background: linear-gradient(180deg, #fb7185, #f472b6); }
+    .week-col:nth-child(6) .week-bar { background: linear-gradient(180deg, #5ec8f0, #22d3ee); }
+    .week-col:nth-child(7) .week-bar { background: linear-gradient(180deg, #e8c56a, #3dd6a0); }
+
+    .week-day {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .week-col[data-empty="1"] .week-bar {
+      opacity: 0.28;
+    }
+
+    .stats-week-note {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 700px) {
+      .stats-layout {
+        grid-template-columns: 1fr;
+      }
+      .stats-ring {
+        width: 132px;
+        height: 132px;
+      }
     }
 
     .reset {
-      margin-top: 14px;
+      margin-top: 8px;
       text-align: center;
-      color: #7287aa;
-      font-size: 0.82rem;
+      color: #6d7f9e;
+      font-size: 0.74rem;
       cursor: pointer;
       user-select: none;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .reset:hover {
+      color: #9bb0d0;
     }
 
     .auth-layer {
       position: fixed;
       inset: 0;
-      background: rgba(3, 9, 24, 0.84);
+      z-index: 20;
+      background: rgba(3, 8, 20, 0.88);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -161,93 +774,347 @@
     }
 
     .auth-box {
-      width: min(460px, 100%);
-      background: var(--panel-bg);
+      width: min(440px, 100%);
+      background: linear-gradient(160deg, #1c2d4c, #121e36);
       border: 1px solid var(--panel-border);
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
 
     .auth-box h1 {
+      font-family: Fraunces, Georgia, serif;
       margin-bottom: 8px;
+      font-size: 1.6rem;
     }
 
     .auth-box p {
       color: var(--text-dim);
-      margin-bottom: 12px;
-      line-height: 1.35;
+      margin-bottom: 16px;
+      line-height: 1.45;
     }
 
     .auth-box label {
       display: block;
       margin-bottom: 6px;
       color: #c9d8f3;
+      font-size: 0.9rem;
+      font-weight: 600;
     }
 
     .auth-box input {
       width: 100%;
       margin-bottom: 10px;
       border: 1px solid var(--panel-border);
-      border-radius: 10px;
-      background: #132544;
+      border-radius: 12px;
+      background: #0d1a30;
       color: var(--text-main);
-      padding: 11px 12px;
+      padding: 12px 14px;
       font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .auth-box input:focus {
+      outline: none;
+      border-color: rgba(94, 200, 240, 0.55);
+      box-shadow: 0 0 0 3px var(--accent-soft);
     }
 
     .auth-box button {
       width: 100%;
       border: none;
-      border-radius: 10px;
-      padding: 11px 12px;
-      font-weight: 700;
-      color: #07241a;
-      background: var(--accent-green);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-family: inherit;
+      color: #062419;
+      background: linear-gradient(120deg, #5ee4b0, #3dd6a0);
       cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .auth-box button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
     }
 
     .error {
       min-height: 20px;
       margin-bottom: 8px;
       color: #ff97a4;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .hidden {
       display: none;
+    }
+
+    @media (max-width: 900px) {
+      .units {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+      }
+      .app {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+      }
+      .units {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
   <script src="js/prep-player-name-bridge.js"></script>
   <main class="app">
-    <header class="top">
-      <div>Player: <span id="playerName" class="player-name">Guest</span></div>
-      <div>🏆 <span id="scoreValue" class="score">0</span></div>
+    <header class="brand">
+      <div class="brand-kicker">Cambridge B2 First</div>
+      <h1>Mastering B2</h1>
+      <p>Your unit hub &mdash; listening, reading, grammar, vocabulary and speaking trainers in one place.</p>
     </header>
 
-    <p class="section-title">Choose a unit</p>
+    <div class="top">
+      <div class="pill">Player: <span id="playerName" class="player-name">Guest</span></div>
+      <div class="pill score-pill" title="Points">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 21h8M12 17v4M7 4h10v3a5 5 0 0 1-10 0V4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 7H4a2 2 0 0 0 2 5h1M17 7h3a2 2 0 0 1-2 5h-1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="scoreValue" class="score">0</span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2 class="section-title">Choose a unit</h2>
+      <span class="section-note">Units 1&ndash;12</span>
+    </div>
+
     <section class="units">
-      <a class="unit" href="unit1.html?course=fce"><div class="unit-title">🔒 Unit 1</div><div class="unit-desc">Coming soon</div></a>
-      <a class="unit" href="unit2.html?course=fce"><div class="unit-title">🔒 Unit 2</div><div class="unit-desc">Coming soon</div></a>
-      <a class="unit" href="unit3.html?course=fce"><div class="unit-title">🔒 Unit 3</div><div class="unit-desc">Coming soon</div></a>
-      <a class="unit" href="unit4.html?course=fce"><div class="unit-title">🔒 Unit 4</div><div class="unit-desc">Coming soon</div></a>
-      <a class="unit" href="unit5.html?course=fce"><div class="unit-title">🔒 Unit 5</div><div class="unit-desc">Coming soon</div></a>
-      <a class="unit" href="unit6.html?course=fce"><div class="unit-title">Unit 6</div><div class="unit-desc">Listening 6.2, grammar, vocabulary (incl. relationships matching), Use of English</div></a>
-      <a class="unit" href="unit7.html?course=fce"><div class="unit-title">Unit 7</div><div class="unit-desc">Open trainers</div></a>
-      <a class="unit" href="unit8.html?course=fce"><div class="unit-title">Unit 8</div><div class="unit-desc">Environment collocations</div></a>
-      <a class="unit" href="unit9.html?course=fce"><div class="unit-title">Unit 9</div><div class="unit-desc">Vocabulary, reading, Use of English (book hub)</div></a>
-      <a class="unit" href="unit10.html?course=fce"><div class="unit-title">Unit 10</div><div class="unit-desc">Open trainers</div></a>
-      <a class="unit" href="unit11.html?course=fce"><div class="unit-title">Unit 11</div><div class="unit-desc">Vocabulary (phrasal <em>down</em>: MCQ + gaps), reading, listening, grammar</div></a>
-      <a class="unit" href="unit12.html?course=fce"><div class="unit-title">Unit 12</div><div class="unit-desc">Listening, vocabulary, reading, games, grammar (quantifiers), Use of English</div></a>
+      <a class="unit" href="unit1.html?course=fce" data-mb2-unit="1">
+        <div class="unit-num">01</div>
+        <div class="unit-title">Unit 1</div>
+        <div class="unit-desc">Speaking (Interview + Long turn) + Lifestyle vocabulary</div>
+      </a>
+      <a class="unit" href="unit2.html?course=fce" data-mb2-unit="2">
+        <div class="unit-num">02</div>
+        <div class="unit-title">Unit 2</div>
+        <div class="unit-desc">Use of English Part 1 (MC cloze)</div>
+      </a>
+      <a class="unit" href="unit3.html?course=fce" data-mb2-unit="3">
+        <div class="unit-num">03</div>
+        <div class="unit-title">Unit 3</div>
+        <div class="unit-desc">Digital detox, listening, grammar &amp; lexical games</div>
+      </a>
+      <a class="unit" href="unit4.html?course=fce" data-mb2-unit="4">
+        <div class="unit-num">04</div>
+        <div class="unit-title">Unit 4</div>
+        <div class="unit-desc">Use of English Part 1 (MC cloze)</div>
+      </a>
+      <a class="unit" href="unit5.html?course=fce" data-mb2-unit="5">
+        <div class="unit-num">05</div>
+        <div class="unit-title">Unit 5</div>
+        <div class="unit-desc">School rules reading, SB 5.2 listening, obligation grammar &amp; UoE</div>
+      </a>
+      <a class="unit" href="unit6.html?course=fce" data-mb2-unit="6">
+        <div class="unit-num">06</div>
+        <div class="unit-title">Unit 6</div>
+        <div class="unit-desc">Listening 6.2, relative clauses, vocabulary &amp; Use of English</div>
+      </a>
+      <a class="unit" href="unit7.html?course=fce" data-mb2-unit="7">
+        <div class="unit-num">07</div>
+        <div class="unit-title">Unit 7</div>
+        <div class="unit-desc">Listening, reading &amp; skills trainers</div>
+      </a>
+      <a class="unit" href="unit8.html?course=fce" data-mb2-unit="8">
+        <div class="unit-num">08</div>
+        <div class="unit-title">Unit 8</div>
+        <div class="unit-desc">Environment collocations &amp; speaking photos</div>
+      </a>
+      <a class="unit" href="unit9.html?course=fce" data-mb2-unit="9">
+        <div class="unit-num">09</div>
+        <div class="unit-title">Unit 9</div>
+        <div class="unit-desc">Vocabulary, reading &amp; Use of English</div>
+      </a>
+      <a class="unit" href="unit10.html?course=fce" data-mb2-unit="10">
+        <div class="unit-num">10</div>
+        <div class="unit-title">Unit 10</div>
+        <div class="unit-desc">Truth &amp; crime &mdash; skills + Speaking Part 2</div>
+      </a>
+      <a class="unit" href="unit11.html?course=fce" data-mb2-unit="11">
+        <div class="unit-num">11</div>
+        <div class="unit-title">Unit 11</div>
+        <div class="unit-desc">Phrasal <em>down</em>, reading, listening &amp; grammar</div>
+      </a>
+      <a class="unit" href="unit12.html?course=fce" data-mb2-unit="12">
+        <div class="unit-num">12</div>
+        <div class="unit-title">Unit 12</div>
+        <div class="unit-desc">Listening, vocabulary, games, quantifiers &amp; UoE</div>
+      </a>
     </section>
 
-    <section class="progress-box">
-      <div class="progress-header">📊 <span class="progress-title">My progress</span></div>
+    <section
+      class="progress-box"
+      id="progressBox"
+      role="button"
+      tabindex="0"
+      aria-haspopup="dialog"
+      aria-controls="statsLayer"
+      title="Open progress details"
+    >
+      <div class="progress-header">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 19V5M4 19h16M8 16V10M12 16V7M16 16v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="progress-title">My progress</span>
+      </div>
       <p class="progress-text">You need <span id="pointsToNext">100</span> more points to reach the next level.</p>
+      <div class="progress-bar" aria-hidden="true"><span id="progressFill"></span></div>
+      <div class="progress-bar progress-bar--course" aria-hidden="true"><span id="courseFill"></span></div>
+      <p class="progress-course" id="progressCourse">Course: <strong id="coursePct">0%</strong> · Units passed <span id="courseUnits">0 / 12</span></p>
+      <p class="progress-hint">Tap for details</p>
     </section>
     <p id="resetData" class="reset">Reset all data</p>
   </main>
+
+  <section id="statsLayer" class="stats-layer hidden" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+    <div class="stats-panel">
+      <div class="stats-top">
+        <div>
+          <h2 id="statsTitle">Your progress</h2>
+          <p>Mastering B2 &middot; overview for <span id="statsPlayerName">Guest</span></p>
+        </div>
+        <button type="button" class="stats-close" id="statsClose" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="stats-tabs" role="tablist" aria-label="Progress views">
+        <button type="button" class="stats-tab" role="tab" id="tabOverview" data-tab="overview" aria-selected="true" aria-controls="paneOverview">Overview</button>
+        <button type="button" class="stats-tab" role="tab" id="tabUnits" data-tab="units" aria-selected="false" aria-controls="paneUnits">Units</button>
+        <button type="button" class="stats-tab" role="tab" id="tabSkills" data-tab="skills" aria-selected="false" aria-controls="paneSkills">Skills</button>
+      </div>
+
+      <div class="stats-pane is-active" id="paneOverview" role="tabpanel" aria-labelledby="tabOverview">
+      <div class="stats-layout">
+        <div class="stats-col">
+          <div class="stat-tile" data-tone="pink">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 10-14h-7l0-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Points</div>
+              <div class="stat-value" id="statPoints">0</div>
+            </div>
+          </div>
+          <div class="stat-tile" data-tone="blue">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">To next level</div>
+              <div class="stat-value" id="statToNext">100</div>
+            </div>
+          </div>
+          <div class="stat-tile" data-tone="green">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 14.5 9.5 21 10.5 16 15 17.5 21.5 12 18 6.5 21.5 8 15 3 10.5 9.5 9.5 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Level progress</div>
+              <div class="stat-value" id="statLevelPct">0%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-ring-wrap">
+          <div class="stats-ring" id="statsRing" style="--pct: 0">
+            <div class="stats-ring-inner">
+              <div class="lvl-kicker">Level</div>
+              <div class="lvl-num" id="statLevelNum">1</div>
+            </div>
+          </div>
+          <div class="stats-next">
+            <span id="statsNextLabel">until next &mdash; 0%</span>
+            <div class="stats-next-bar"><i id="statsNextFill"></i></div>
+          </div>
+        </div>
+
+        <div class="stats-col">
+          <div class="stat-tile" data-tone="gold">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 16V10M12 16V7M16 16v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Units passed</div>
+              <div class="stat-value" id="statUnitsPassed">0 / 12</div>
+            </div>
+          </div>
+          <div class="stat-tile" data-tone="violet">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Course track</div>
+              <div class="stat-value">B2 First</div>
+            </div>
+          </div>
+          <div class="stat-tile" data-tone="coral">
+            <div class="stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c1.8 2.4 3 4.4 3 6.5a3 3 0 1 1-6 0C9 7.4 10.2 5.4 12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.2 14.2c.9 2.6 2.4 4.3 3.8 5.3 1.4-1 2.9-2.7 3.8-5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Shadowing streak</div>
+              <div class="stat-value" id="statShadowStreak">0 days</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-week">
+        <h3>Your week</h3>
+        <div class="week-bars" id="weekBars"></div>
+        <p class="stats-week-note">
+          Real activity on this device: hub visits + points + shadowing listens.
+          Listen to audio every day to grow your shadowing streak. Reset clears the week and streak too.
+        </p>
+      </div>
+      </div>
+
+      <div class="stats-pane" id="paneUnits" role="tabpanel" aria-labelledby="tabUnits" hidden>
+        <p class="prog-note">
+          Passed = every skill on that unit hub averages <strong>60%+</strong> (best score per exercise).
+          Tap a unit to see skills.
+        </p>
+        <div id="unitsListView">
+          <div class="prog-bars" id="unitsBars"></div>
+        </div>
+        <div id="unitDetailView" class="hidden">
+          <div class="prog-detail-head">
+            <button type="button" class="prog-back" id="unitDetailBack">&larr; All units</button>
+            <div class="prog-detail-title" id="unitDetailTitle">Unit</div>
+          </div>
+          <div class="prog-bars" id="unitSkillBars"></div>
+        </div>
+      </div>
+
+      <div class="stats-pane" id="paneSkills" role="tabpanel" aria-labelledby="tabSkills" hidden>
+        <p class="prog-note">
+          Average best % across units that include each skill. Empty skills stay at 0 until you check an exercise.
+        </p>
+        <div class="prog-bars" id="skillsBars"></div>
+      </div>
+    </div>
+  </section>
 
   <section id="authLayer" class="auth-layer hidden">
     <form id="nameForm" class="auth-box" autocomplete="off">
@@ -260,6 +1127,9 @@
     </form>
   </section>
 
+  <script src="js/mastering-b2-daily-activity.js"></script>
+  <script src="js/mastering-b2-skill-progress.js"></script>
+  <script src="js/mastering-b2-hub-marks.js"></script>
   <script>
     try {
       sessionStorage.setItem("mb2FceSession", "1");
@@ -267,16 +1137,32 @@
 
     const nameKey = "masteringB2PlayerName";
     const scoreKey = "masteringB2Score";
-    const nextLevelScore = 100;
+    const pointsPerLevel = 100;
+    const Daily = window.MasteringB2Daily;
+    const SkillProg = window.MasteringB2Progress;
 
     const authLayer = document.getElementById("authLayer");
     const playerNameEl = document.getElementById("playerName");
     const scoreEl = document.getElementById("scoreValue");
     const pointsToNextEl = document.getElementById("pointsToNext");
+    const progressFill = document.getElementById("progressFill");
     const nameForm = document.getElementById("nameForm");
     const englishNameInput = document.getElementById("englishName");
     const errorText = document.getElementById("errorText");
     const resetData = document.getElementById("resetData");
+    const progressBox = document.getElementById("progressBox");
+    const statsLayer = document.getElementById("statsLayer");
+    const statsClose = document.getElementById("statsClose");
+    const weekBars = document.getElementById("weekBars");
+    const unitsBars = document.getElementById("unitsBars");
+    const skillsBars = document.getElementById("skillsBars");
+    const unitsListView = document.getElementById("unitsListView");
+    const unitDetailView = document.getElementById("unitDetailView");
+    const unitSkillBars = document.getElementById("unitSkillBars");
+    const unitDetailTitle = document.getElementById("unitDetailTitle");
+    const unitDetailBack = document.getElementById("unitDetailBack");
+
+    let selectedUnit = null;
 
     function isEnglishName(value) {
       return /^[A-Za-z][A-Za-z -]{1,30}$/.test(value.trim());
@@ -288,10 +1174,223 @@
       return Number.isFinite(num) && num >= 0 ? Math.floor(num) : 0;
     }
 
+    function levelInfo(score) {
+      const level = Math.floor(score / pointsPerLevel) + 1;
+      const intoLevel = score % pointsPerLevel;
+      const left = pointsPerLevel - intoLevel;
+      const pct = Math.round((intoLevel / pointsPerLevel) * 100);
+      return { level: level, intoLevel: intoLevel, left: left, pct: pct };
+    }
+
+    function syncDaily() {
+      if (!Daily) return;
+      Daily.recordHubVisit();
+      Daily.syncScoreDelta(getScore());
+    }
+
+    function renderWeek() {
+      if (Daily && weekBars) Daily.renderWeekBars(weekBars);
+    }
+
+    function barHtml(opts) {
+      const pct = opts.percent == null ? 0 : opts.percent;
+      const show = opts.percent == null ? "—" : pct + "%";
+      const tone = opts.percent == null ? "muted" : opts.passed ? "gold" : "default";
+      const toneAttr = tone === "default" ? "" : ' data-tone="' + tone + '"';
+      const tag = opts.clickable ? "button" : "div";
+      const typeAttr = opts.clickable ? ' type="button"' : "";
+      const cls = "prog-row" + (opts.clickable ? "" : " is-static");
+      const dataUnit = opts.unit != null ? ' data-unit="' + opts.unit + '"' : "";
+      return (
+        "<" +
+        tag +
+        typeAttr +
+        ' class="' +
+        cls +
+        '"' +
+        dataUnit +
+        ">" +
+        '<span class="prog-row-label">' +
+        opts.label +
+        "</span>" +
+        '<div class="prog-track"><i class="prog-fill"' +
+        toneAttr +
+        ' style="width:' +
+        pct +
+        '%"></i></div>' +
+        '<span class="prog-meta"><span class="prog-pct">' +
+        show +
+        '</span><span class="prog-badge" data-status="' +
+        (opts.status || "") +
+        '">' +
+        (opts.badge || "") +
+        "</span></span>" +
+        "</" +
+        tag +
+        ">"
+      );
+    }
+
+    function renderUnitsList() {
+      if (!SkillProg || !unitsBars) return;
+      const units = SkillProg.getAllUnits();
+      unitsBars.innerHTML = units
+        .map(function (u) {
+          return barHtml({
+            label: "Unit " + u.unit,
+            percent: u.percent,
+            status: u.status,
+            badge: SkillProg.statusLabel(u.status),
+            passed: u.passed,
+            clickable: true,
+            unit: u.unit,
+          });
+        })
+        .join("");
+    }
+
+    function renderUnitDetail(unitNum) {
+      if (!SkillProg || !unitSkillBars) return;
+      const summary = SkillProg.getUnitSummary(unitNum);
+      if (unitDetailTitle) unitDetailTitle.textContent = "Unit " + unitNum + " · skills";
+      if (!summary.skills.length) {
+        unitSkillBars.innerHTML =
+          '<p class="prog-note">No skill trainers linked on this unit hub yet.</p>';
+        return;
+      }
+      unitSkillBars.innerHTML = summary.skills
+        .map(function (sk) {
+          return barHtml({
+            label: sk.label,
+            percent: sk.percent,
+            status: sk.passed ? "passed" : sk.started ? "in_progress" : "not_started",
+            badge: sk.passed ? "60%+" : sk.started ? "Working" : "—",
+            passed: sk.passed,
+            clickable: false,
+          });
+        })
+        .join("");
+    }
+
+    function showUnitsList() {
+      selectedUnit = null;
+      if (unitsListView) unitsListView.classList.remove("hidden");
+      if (unitDetailView) unitDetailView.classList.add("hidden");
+      renderUnitsList();
+    }
+
+    function showUnitDetail(unitNum) {
+      selectedUnit = unitNum;
+      if (unitsListView) unitsListView.classList.add("hidden");
+      if (unitDetailView) unitDetailView.classList.remove("hidden");
+      renderUnitDetail(unitNum);
+    }
+
+    function renderSkillsList() {
+      if (!SkillProg || !skillsBars) return;
+      skillsBars.innerHTML = SkillProg.getAllSkills()
+        .map(function (sk) {
+          return barHtml({
+            label: sk.label,
+            percent: sk.percent,
+            status: sk.started ? (sk.percent >= 60 ? "passed" : "in_progress") : "not_started",
+            badge: sk.started ? "Across units" : "—",
+            passed: sk.percent != null && sk.percent >= 60,
+            clickable: false,
+          });
+        })
+        .join("");
+    }
+
+    function setStatsTab(tabId) {
+      const tabs = document.querySelectorAll(".stats-tab");
+      const panes = {
+        overview: document.getElementById("paneOverview"),
+        units: document.getElementById("paneUnits"),
+        skills: document.getElementById("paneSkills"),
+      };
+      tabs.forEach(function (tab) {
+        const on = tab.getAttribute("data-tab") === tabId;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      Object.keys(panes).forEach(function (key) {
+        const pane = panes[key];
+        if (!pane) return;
+        const on = key === tabId;
+        pane.classList.toggle("is-active", on);
+        if (on) pane.removeAttribute("hidden");
+        else pane.setAttribute("hidden", "");
+      });
+      if (tabId === "units") showUnitsList();
+      if (tabId === "skills") renderSkillsList();
+    }
+
     function renderProgress(score) {
+      const info = levelInfo(score);
       scoreEl.textContent = String(score);
-      const left = Math.max(nextLevelScore - score, 0);
-      pointsToNextEl.textContent = String(left);
+      pointsToNextEl.textContent = String(info.left);
+      if (progressFill) progressFill.style.width = info.pct + "%";
+
+      const sp = document.getElementById("statPoints");
+      const sn = document.getElementById("statToNext");
+      const slp = document.getElementById("statLevelPct");
+      const sln = document.getElementById("statLevelNum");
+      const ring = document.getElementById("statsRing");
+      const nextLabel = document.getElementById("statsNextLabel");
+      const nextFill = document.getElementById("statsNextFill");
+      const statsPlayer = document.getElementById("statsPlayerName");
+      if (sp) sp.textContent = String(score);
+      if (sn) sn.textContent = String(info.left);
+      if (slp) slp.textContent = info.pct + "%";
+      if (sln) sln.textContent = String(info.level);
+      if (ring) ring.style.setProperty("--pct", String(info.pct));
+      if (nextLabel) nextLabel.textContent = "until next — " + info.pct + "%";
+      if (nextFill) nextFill.style.width = info.pct + "%";
+      if (statsPlayer) statsPlayer.textContent = playerNameEl.textContent || "Guest";
+      const streakEl = document.getElementById("statShadowStreak");
+      if (streakEl && Daily) {
+        streakEl.textContent = Daily.formatShadowingStreak(Daily.getShadowingStreak());
+      }
+      const passedEl = document.getElementById("statUnitsPassed");
+      let passedCount = 0;
+      let courseAvg = 0;
+      if (SkillProg) {
+        const units = SkillProg.getAllUnits();
+        passedCount = units.filter(function (u) {
+          return u.passed;
+        }).length;
+        let sum = 0;
+        units.forEach(function (u) {
+          sum += u.percent == null ? 0 : u.percent;
+        });
+        courseAvg = Math.round(sum / 12);
+        if (passedEl) passedEl.textContent = passedCount + " / 12";
+      }
+      const coursePctEl = document.getElementById("coursePct");
+      const courseUnitsEl = document.getElementById("courseUnits");
+      if (coursePctEl) coursePctEl.textContent = courseAvg + "%";
+      if (courseUnitsEl) courseUnitsEl.textContent = passedCount + " / 12";
+      const courseFill = document.getElementById("courseFill");
+      if (courseFill) courseFill.style.width = courseAvg + "%";
+      renderWeek();
+      if (selectedUnit) renderUnitDetail(selectedUnit);
+      else if (document.getElementById("paneUnits") && document.getElementById("paneUnits").classList.contains("is-active")) {
+        renderUnitsList();
+      }
+      if (document.getElementById("paneSkills") && document.getElementById("paneSkills").classList.contains("is-active")) {
+        renderSkillsList();
+      }
+    }
+
+    function openStats() {
+      syncDaily();
+      renderProgress(getScore());
+      setStatsTab("overview");
+      statsLayer.classList.remove("hidden");
+    }
+
+    function closeStats() {
+      statsLayer.classList.add("hidden");
     }
 
     const savedName = localStorage.getItem(nameKey);
@@ -301,7 +1400,41 @@
       authLayer.classList.remove("hidden");
     }
 
+    syncDaily();
     renderProgress(getScore());
+
+    progressBox.addEventListener("click", openStats);
+    progressBox.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openStats();
+      }
+    });
+    statsClose.addEventListener("click", closeStats);
+    statsLayer.addEventListener("click", function (e) {
+      if (e.target === statsLayer) closeStats();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !statsLayer.classList.contains("hidden")) closeStats();
+    });
+
+    document.querySelectorAll(".stats-tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        setStatsTab(tab.getAttribute("data-tab"));
+      });
+    });
+
+    if (unitsBars) {
+      unitsBars.addEventListener("click", function (e) {
+        const row = e.target.closest("[data-unit]");
+        if (!row) return;
+        const n = parseInt(row.getAttribute("data-unit"), 10);
+        if (n) showUnitDetail(n);
+      });
+    }
+    if (unitDetailBack) {
+      unitDetailBack.addEventListener("click", showUnitsList);
+    }
 
     nameForm.addEventListener("submit", function (event) {
       event.preventDefault();
@@ -315,6 +1448,7 @@
       errorText.textContent = "";
       authLayer.classList.add("hidden");
       englishNameInput.value = "";
+      renderProgress(getScore());
     });
 
     resetData.addEventListener("click", function () {
@@ -323,6 +1457,8 @@
       localStorage.removeItem("masteringB2Unit12ListeningCount");
       localStorage.removeItem("masteringB2Unit12Listening_healthMatters");
       localStorage.removeItem("masteringB2Unit12Shadowing_naomiPriceHealthMatters");
+      if (Daily) Daily.clearAll();
+      if (SkillProg) SkillProg.clearAll();
       location.reload();
     });
   </script>

@@ -169,9 +169,13 @@
       outline-offset: 2px;
     }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
 </head>
 <body>
-  <main class="page">
+  <main class="page" data-mb2-unit="12" data-mb2-skill="listening" data-mb2-ex="listening-12-1">
     <header class="top">
       <h1>Listening 12.1 — Five speakers</h1>
       <a class="back" href="unit12-shadowing.html">Back to Shadowing</a>
@@ -212,6 +216,8 @@
     </section>
   </main>
 
+  <script src="../js/mastering-b2-daily-activity.js"></script>
+  <script src="../js/mastering-b2-skill-progress.js"></script>
   <script>
     const scoreKey = "masteringB2Score";
     const listenCountKey = "masteringB2Unit12Shadowing_listening121";
@@ -312,6 +318,10 @@
 
     function addScore(points) {
       setScore(getScore() + points);
+      if (window.MasteringB2Daily) {
+        MasteringB2Daily.addPoints(points);
+        MasteringB2Daily.recordShadowing();
+      }
     }
 
     function rewardIfPossible() {
@@ -326,6 +336,9 @@
       }
       saveListenCount(count + 1);
       addScore(reward);
+      if (window.MasteringB2Progress) {
+        MasteringB2Progress.recordCheckFromDom(getListeningCount(), targetCount);
+      }
       const left = targetCount - getListeningCount();
       messageEl.classList.add("message-strong");
       messageEl.textContent =
@@ -384,6 +397,7 @@
 
     audioWithText.addEventListener("ended", function () {
       withTextCanReward = true;
+      if (window.MasteringB2Daily) MasteringB2Daily.recordShadowing();
       if (withTextCanReward) {
         rewardIfPossible();
         withTextCanReward = false;
@@ -397,6 +411,7 @@
 
     audioNoText.addEventListener("ended", function () {
       noTextCanReward = true;
+      if (window.MasteringB2Daily) MasteringB2Daily.recordShadowing();
       doneNoText.classList.add("show");
     });
 
@@ -423,5 +438,6 @@
       }
     })();
   </script>
+<script src="../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

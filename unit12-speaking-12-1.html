@@ -48,6 +48,10 @@
     .read-h { color:var(--title-read); } .retell-h { color:var(--title-retell); }
     .phrase-hl { text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px; color:#bae6fd; font-weight:500; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/mastering-b2-page-skin.css" />
 </head>
 <body>
   <div class="shell">
@@ -100,6 +104,7 @@
     </div>
   </div>
 
+  <script src="js/mastering-b2-daily-activity.js"></script>
   <script>
     var scoreKey = "masteringB2Score";
     var POINTS_PER_BLOCK = 5;
@@ -208,7 +213,10 @@
 
     function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
     function getScore(){ var raw=localStorage.getItem(scoreKey); var n=Number(raw); return Number.isFinite(n)&&n>=0?Math.floor(n):0; }
-    function addScore(pts){ localStorage.setItem(scoreKey, String(getScore()+pts)); }
+    function addScore(pts){
+      localStorage.setItem(scoreKey, String(getScore()+pts));
+      if (window.MasteringB2Daily) MasteringB2Daily.addPoints(pts);
+    }
     function wrapPhrasesInText(text, phrases){ var pairs=phrases.filter(function(p){return text.indexOf(p)>=0;}).map(function(phrase){return {idx:text.indexOf(phrase),phrase:phrase};}).sort(function(a,b){return a.idx-b.idx;}); var out=""; var cursor=0; pairs.forEach(function(p){ out+=escapeHtml(text.slice(cursor,p.idx)); out+='<span class="phrase-hl">'+escapeHtml(p.phrase)+"</span>"; cursor=p.idx+p.phrase.length; }); out+=escapeHtml(text.slice(cursor)); return out; }
     function renderReadPassageHtml(block){ return "<p>"+wrapPhrasesInText(block.passage, block.phrases)+"</p>"; }
     ringProgress.style.strokeDasharray = String(CIRC); ringProgress.style.strokeDashoffset = "0";
@@ -274,5 +282,7 @@
     applySpeakingTrack();
     renderSegment();
   </script>
+<script src="js/mastering-b2-skill-progress.js"></script>
+<script src="js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

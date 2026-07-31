@@ -1,0 +1,165 @@
+/* Soft skin for deep FCE exercise pages — keeps local layout, matches hub atmosphere */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Manrope, "Segoe UI", system-ui, sans-serif !important;
+  background:
+    radial-gradient(900px 480px at 12% -10%, rgba(56, 130, 190, 0.28), transparent 55%),
+    radial-gradient(700px 420px at 92% 8%, rgba(232, 197, 106, 0.09), transparent 50%),
+    radial-gradient(800px 500px at 50% 110%, rgba(61, 214, 160, 0.07), transparent 55%),
+    linear-gradient(165deg, #081428 0%, #050d1f 45%, #0a1528 100%) !important;
+  color: #eef4ff;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+/* Do not put z-index on main — it flattens 3D flip cards */
+main,
+.page,
+.shell,
+.app {
+  position: relative;
+  z-index: 1;
+}
+
+.page,
+.shell,
+.app,
+main.page {
+  border-radius: 22px !important;
+  border-color: rgba(120, 160, 210, 0.18) !important;
+  background:
+    linear-gradient(145deg, rgba(36, 54, 88, 0.55) 0%, rgba(16, 28, 50, 0.92) 42%, rgba(14, 24, 44, 0.96) 100%) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 24px 70px rgba(0, 0, 0, 0.4) !important;
+  /* backdrop-filter breaks preserve-3d in Chromium */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.top h1,
+header.top h1,
+.page > header h1 {
+  font-family: Fraunces, Georgia, serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* Only nav back-links — never match .flip-back */
+a.back,
+.top a.back,
+header.top a.back,
+a.back.back {
+  border-radius: 999px;
+  border: 1px solid rgba(94, 200, 240, 0.28);
+  background: rgba(10, 20, 38, 0.45);
+  padding: 6px 12px;
+  font-weight: 700 !important;
+}
+
+/* Kill default browser white controls on dark FCE pages */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]),
+textarea,
+select {
+  background: #12264b !important;
+  color: #eef4ff !important;
+  border: 1.5px solid #4d6fa1 !important;
+  border-radius: 10px;
+  caret-color: #5ec8f0;
+  color-scheme: dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8fa3c4 !important;
+  opacity: 1;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #5ec8f0 !important;
+  box-shadow: 0 0 0 3px rgba(94, 200, 240, 0.18);
+}
+
+/* Action buttons only — do not restyle flip cards / tile buttons */
+button.btn-check,
+button.btn-next,
+button.btn-reset,
+button.btn-primary,
+button.btn-secondary,
+button.btn,
+.btn-check,
+.btn-next,
+.btn-reset,
+.btn-row > button,
+#btnCheck,
+#btnNext,
+#btnReset,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  background: #1a335c !important;
+  color: #eef4ff !important;
+  border: 1px solid rgba(120, 160, 210, 0.35) !important;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  color-scheme: dark;
+  padding: 0.55em 1em;
+}
+
+.btn-row > button:hover,
+button.btn-check:hover,
+button.btn-next:hover,
+.btn-check:hover,
+.btn-next:hover,
+#btnCheck:hover,
+#btnNext:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background: #234275 !important;
+  border-color: rgba(94, 200, 240, 0.45) !important;
+}
+
+button:disabled,
+input:disabled,
+.btn-check:disabled,
+.btn-next:disabled,
+#btnCheck:disabled,
+#btnNext:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.btn-check,
+.btn-check,
+#btnCheck {
+  background: linear-gradient(180deg, #2a6ea8 0%, #1e5688 100%) !important;
+  border-color: rgba(94, 200, 240, 0.45) !important;
+}
+
+/* Bare unclassed buttons inside exercise cards (common textbook pattern) */
+.card > button:not([class]),
+.card .btn-row button:not([class]),
+main.page > button:not([class]),
+.page section button:not([class]) {
+  background: #1a335c !important;
+  color: #eef4ff !important;
+  border: 1px solid rgba(120, 160, 210, 0.35) !important;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 0.55em 1em;
+  cursor: pointer;
+}

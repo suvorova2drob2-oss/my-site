@@ -1,0 +1,236 @@
+/* One-card flip deck — dark faces, reliable 3D (FCE Mastering B2) */
+.mb2-flip-stage {
+  margin: 8px 0 4px;
+}
+
+.mb2-flip-progress {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5ec8f0;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.mb2-flip-card {
+  perspective: 1400px;
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 16px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  color-scheme: dark;
+}
+
+.mb2-flip-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(94, 200, 240, 0.45);
+}
+
+.mb2-flip-inner {
+  position: relative;
+  width: 100%;
+  min-height: 240px;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.mb2-flip-card.is-flipped .mb2-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.mb2-flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(120, 160, 210, 0.28);
+  padding: 18px 20px;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  overflow: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.mb2-flip-front {
+  background: #1c2f4f !important;
+  color: #eef4ff !important;
+  transform: rotateY(0deg);
+}
+
+.mb2-flip-back {
+  background: #152640 !important;
+  color: #eef4ff !important;
+  transform: rotateY(180deg);
+}
+
+.mb2-flip-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.mb2-flip-front .mb2-flip-kicker {
+  color: #fda4af;
+}
+
+.mb2-flip-back .mb2-flip-kicker {
+  color: #86efac;
+}
+
+.mb2-flip-body {
+  overflow-wrap: anywhere;
+  color: #eef4ff !important;
+}
+
+.mb2-flip-tap {
+  margin-top: 14px;
+  font-size: 0.78rem;
+  color: #8fa3c4;
+}
+
+.mb2-flip-note {
+  margin-top: 12px;
+  font-size: 0.84rem;
+  color: #8fa3c4;
+  line-height: 1.45;
+}
+
+.mb2-flip-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+  align-items: center;
+}
+
+.mb2-flip-nav button {
+  background: #1a335c !important;
+  color: #eef4ff !important;
+  border: 1px solid rgba(120, 160, 210, 0.35) !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  padding: 0.55em 1em !important;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.mb2-flip-nav button:hover:not(:disabled) {
+  background: #234275 !important;
+}
+
+.mb2-flip-nav button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mb2-flip-nav .mb2-flip-flipbtn {
+  background: linear-gradient(180deg, #2a6ea8 0%, #1e5688 100%) !important;
+  border-color: rgba(94, 200, 240, 0.45) !important;
+  margin-left: auto;
+}
+
+@media (max-width: 560px) {
+  .mb2-flip-nav .mb2-flip-flipbtn {
+    margin-left: 0;
+    width: 100%;
+  }
+  .mb2-flip-inner {
+    min-height: 260px;
+  }
+}
+
+.mb2-flip-face ul {
+  margin: 8px 0 0 1.1em;
+  padding: 0;
+  color: #eef4ff;
+}
+
+.mb2-flip-face li {
+  margin-bottom: 8px;
+}
+
+.mb2-flip-face .pair-block {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(8, 18, 36, 0.35);
+  border: 1px solid rgba(120, 160, 210, 0.18);
+}
+
+.mb2-flip-face .pair-ab {
+  font-weight: 800;
+  color: #5ec8f0;
+  margin-right: 6px;
+}
+
+.mb2-flip-face .gap {
+  display: inline-block;
+  min-width: 3.5em;
+  border-bottom: 1px solid rgba(143, 163, 196, 0.55);
+}
+
+.mb2-flip-face .hint-brackets {
+  color: #8fa3c4;
+  font-size: 0.88em;
+}
+
+.mb2-flip-face .situation-lead,
+.mb2-flip-face .flip-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.mb2-flip-face .situation-lead {
+  color: #fda4af;
+}
+
+.mb2-flip-face .flip-tag {
+  color: #86efac;
+}
+
+.mb2-flip-face .tap-hint {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #8fa3c4;
+}
+
+/* Legacy class aliases used by older decks while migrating */
+.flip-card.mb2-flip-card,
+button.flip-card {
+  background: transparent !important;
+  color-scheme: dark;
+}
+.flip-front,
+.flip-back {
+  color: #eef4ff !important;
+}
+.flip-front {
+  background: #1c2f4f !important;
+}
+.flip-back {
+  background: #152640 !important;
+}
+
+/* Harden Unit 10 scene trainers without fighting their local layout */
+.flip-scene {
+  perspective: 1400px;
+}
+.flip-scene .flip-front,
+.flip-scene .flip-back {
+  color: #eef4ff !important;
+}

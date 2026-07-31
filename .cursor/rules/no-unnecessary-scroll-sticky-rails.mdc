@@ -1,0 +1,30 @@
+---
+description: No unnecessary scroll — sticky phrase rails and checklists must fit on screen
+alwaysApply: true
+---
+
+# No unnecessary scroll (sticky rails / checklists)
+
+When a panel must stay **in front of the learner’s eyes** while they look at photos, cards, or a second task (sticky rail, phrase bank, useful-language checklist, “липкая лента”):
+
+## Hard preference
+
+1. **Fit without an inner scrollbar.** Shrink padding, font, gaps, and chrome until **all checklist rows + mission + Done** are visible at once on a typical laptop viewport (~900–1080px tall).
+2. **Do not** put `overflow: auto` / `overflow-y: scroll` on the phrase list as the default fix.
+3. If content still cannot fit: **split into tabs** (e.g. Student A | Student B) or a **two-column compact grid** of chips — still no nested scroll if possible.
+4. The **page** may scroll (photos below), but the **sticky rail** should show its full checklist without its own scrollbar.
+
+## Sticky behaviour
+
+- Desktop: `position: sticky` so the same tape stays visible for **task 1 and task 2** photo sets.
+- The sticky column’s grid/flex parent must **stretch** to the full height of the photo column (`align-items: stretch`, not `start`). If the rail’s parent is only as tall as the rail, sticky dies when the learner scrolls to the second photo set — empty right column.
+- Mobile: full-height drawer / FAB is OK; inside the drawer prefer **compact no-scroll** layout, not a tall scrollable list.
+
+## Anti-patterns
+
+- Large serif paragraphs + big padding + `max-height: 100vh` + `overflow: auto` on the list.
+- Hiding half the useful language behind a scrollbar while the learner is looking at pictures.
+
+## Reference
+
+`unit1-speaking/long-turn/index.html` — sticky Useful language checklist next to lifestyle photos.

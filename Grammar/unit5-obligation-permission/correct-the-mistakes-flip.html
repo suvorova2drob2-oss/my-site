@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit 5 Grammar — Correct the mistakes (flip cards)</title>
-  <style>
+<style>
     :root {
       --panel: #1d2b4a;
       --line: #324a71;
@@ -168,6 +169,11 @@
     }
     .hub a { color: var(--accent); font-weight: 600; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-flip-deck.css" />
 </head>
 <body>
   <main class="page">
@@ -180,11 +186,11 @@
     </header>
 
     <p class="instr">
-      <strong>There is a mistake</strong> in each sentence (modals, obligation, passive, etc.). Read the line on the front, then <strong>tap the card</strong> (or press Space/Enter) to see a corrected version.
+      <strong>There is a mistake</strong> in each sentence (modals, obligation, passive, etc.). Read the line on the front, then <strong>tap the card</strong> (or press Flip) to see a corrected version. Use <strong>Next</strong> for the following sentence.
     </p>
-    <p class="hint">Front = original sentence from the book with the error. Back = one possible correct sentence.</p>
+    <p class="hint">Front = original sentence from the book with the error. Back = one possible correct sentence. One card at a time.</p>
 
-    <div id="deck" aria-label="Eight correction flip cards"></div>
+    <div id="mb2FlipDeck" aria-label="Eight correction flip cards"></div>
 
     <p class="hub">
       <a href="index.html">&larr; Grammar folder</a>
@@ -193,6 +199,7 @@
     </p>
   </main>
 
+  <script src="../../js/mastering-b2-flip-deck.js"></script>
   <script>
 (function () {
   var CARDS = [
@@ -254,70 +261,18 @@
     }
   ];
 
-  function escapeHtml(t) {
-    return String(t)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  var deck = document.getElementById("deck");
-  deck.innerHTML = CARDS.map(function (c, i) {
-    var n = i + 1;
-    var note = c.note
-      ? '<p class="back-note">' + escapeHtml(c.note) + "</p>"
-      : "";
-    return (
-      '<div class="card-wrap">' +
-      '<p class="card-meta">Sentence ' +
-      n +
-      " / " +
-      CARDS.length +
-      "</p>" +
-      '<button type="button" class="flip-card" aria-pressed="false" aria-label="Sentence ' +
-      n +
-      '. Flip to see correction.">' +
-      '<div class="flip-inner">' +
-      '<div class="flip-face flip-front">' +
-      '<div class="situation-lead">With a mistake</div>' +
-      '<p class="flip-body"><strong>' +
-      n +
-      ".</strong> " +
-      escapeHtml(c.wrong) +
-      "</p>" +
-      '<div class="tap-hint">Tap to flip</div>' +
-      "</div>" +
-      '<div class="flip-face flip-back">' +
-      '<div class="flip-tag">Corrected</div>' +
-      '<p class="flip-body">' +
-      escapeHtml(c.correct) +
-      "</p>" +
-      note +
-      "</div>" +
-      "</div>" +
-      "</button>" +
-      "</div>"
-    );
-  }).join("");
-
-  document.querySelectorAll(".flip-card").forEach(function (card) {
-    function toggle() {
-      var on = card.classList.toggle("is-flipped");
-      card.setAttribute("aria-pressed", on ? "true" : "false");
-    }
-    card.addEventListener("click", function (e) {
-      e.preventDefault();
-      toggle();
-    });
-    card.addEventListener("keydown", function (e) {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        toggle();
-      }
-    });
+  if (!window.MasteringB2FlipDeck) return;
+  var mapped = CARDS.map(function (c, i) {
+    return MasteringB2FlipDeck.correctionCard(c, i, CARDS.length);
+  });
+  MasteringB2FlipDeck.mount(document.getElementById("mb2FlipDeck"), mapped, {
+    progressLabel: "Sentence"
   });
 })();
   </script>
+
+<script src="../../js/mastering-b2-skill-progress.js"></script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

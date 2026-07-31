@@ -154,9 +154,13 @@
     }
     .feedback.show { display: block; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
 </head>
 <body>
-  <main class="page">
+  <main class="page" data-mb2-unit="6" data-mb2-skill="vocabulary" data-mb2-ex="personality-pairs">
     <header class="top">
       <div>
         <span class="tag">Unit 6 &middot; Vocabulary</span>
@@ -226,6 +230,7 @@
     <div class="feedback" id="feedback" aria-live="polite"></div>
   </main>
 
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
   <script>
     (function () {
       var ORDER = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -292,6 +297,7 @@
             ? "All 8 correct. Each pair combines adjectives with a similar shade of meaning."
             : "Score: " + score + " / 8. Adjust the red gaps or compare with the word bank (each word once).";
         fb.classList.add("show");
+        if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(score, ORDER.length);
       });
 
       document.getElementById("btnReset").addEventListener("click", function () {
@@ -305,5 +311,7 @@
       });
     })();
   </script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

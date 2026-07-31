@@ -94,6 +94,10 @@
     .all-done.show { display: block; }
     .score-line { font-size: 0.95rem; color: var(--muted); margin-bottom: 8px; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
 </head>
 <body>
   <div class="wrap">
@@ -122,6 +126,7 @@
     </div>
     <p class="all-done" id="allDone">All rounds complete — switch back to the hub or shuffle the Sticky Board.</p>
   </div>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
   <script>
     var scoreKey = "masteringB2Score";
     function getScore() {
@@ -130,6 +135,7 @@
     }
     function addScore(x) {
       localStorage.setItem(scoreKey, String(getScore() + x));
+      if (window.MasteringB2Daily) MasteringB2Daily.addPoints(x);
     }
 
     var ROUNDS = [
@@ -343,5 +349,7 @@
 
     render();
   </script>
+<script src="../../js/mastering-b2-skill-progress.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>

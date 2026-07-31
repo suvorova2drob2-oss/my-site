@@ -144,6 +144,10 @@
       display: none;
     }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/mastering-b2-page-skin.css" />
 </head>
 <body>
   <div class="shell">
@@ -194,6 +198,7 @@
     </section>
   </div>
 
+  <script src="js/mastering-b2-daily-activity.js"></script>
   <script>
     const scoreKey = "masteringB2Score";
     const CARDS_MARKS_KEY = "masteringB2Unit12DefinitionCardsMarks";
@@ -205,7 +210,10 @@
       const n = Number(localStorage.getItem(scoreKey));
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
     }
-    function addScore(x) { localStorage.setItem(scoreKey, String(getScore() + x)); }
+    function addScore(x) {
+      localStorage.setItem(scoreKey, String(getScore() + x));
+      if (window.MasteringB2Daily) MasteringB2Daily.addPoints(x);
+    }
 
     const NAOMI = [
       { id: "N::A Opening::carry out a needs analysis", p: "Explain what a trainer does before creating a plan.", t: "carry out a needs analysis" },
@@ -433,5 +441,7 @@
 
     render();
   </script>
+<script src="js/mastering-b2-skill-progress.js"></script>
+<script src="js/mastering-b2-exercise-auto.js"></script>
 </body>
 </html>
