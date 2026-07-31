@@ -57,108 +57,1096 @@
         {
           id: "part-dickhead",
           label: "Part dickhead",
-          teacher: "Clip 1 · opening energy.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Opening beat · ‘perfect boyfriend’ list → punchline. Cool phrases from the clip. Discussion: why ‘nice’ can feel wrong / boring / dangerous.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "run baths",
+            "hoover",
+            "kind and supportive",
+            "laugh at all of my jokes",
+            "really fucking affectionate",
+            "Sounds like a dickhead",
+          ],
           watch: {
             videoUrl: "media/s01e01/01-part-dickhead.mp4",
-            note: "~40 s",
+            note:
+              "~40 s · He’d cook all the time, run baths, hoover… kind and supportive… laugh at all of my jokes… really fucking affectionate. — Sounds like a dickhead.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · domestic care + soft-partner labels + the punchline",
+            meanings: [
+              "run a bath / run baths = fill the tub with water for someone (caring, intimate chore).",
+              "hoover (BrE verb) = vacuum-clean (from the brand Hoover) — He’d hoover = he’d do the housework.",
+              "kind and supportive = warm + emotionally on your side (praise… or a flat ‘nice guy’ label).",
+              "laugh at all of my jokes = always find you funny — love, or people-pleasing?",
+              "really fucking affectionate (18+) = very physically / emotionally loving (show energy; in class you can soften to really affectionate).",
+              "Sounds like a dickhead = punchline: after a perfect list, she / we reject the ‘too good’ type — comic, cruel, or honest?",
+            ],
+            examples: [
+              "RUN A BATH — run a bath · run baths · run someone a bath · I’ve run you a bath.",
+              "He’d cook all the time, run baths, hoover.",
+              "She ran me a bath after a brutal day.",
+              "HOOVER — hoover the flat / the stairs / after dinner · give the place a quick hoover · (AmE: vacuum).",
+              "He’d hoover without being asked.",
+              "Can you hoover before they arrive?",
+              "KIND AND SUPPORTIVE — kind and supportive · emotionally supportive · supportive of my choices / career.",
+              "He was kind and supportive — and somehow I still felt bored.",
+              "LAUGH AT … JOKE(S) — laugh at my jokes · laugh at everything I say · never laughs at my jokes.",
+              "He’d laugh at all of my jokes.",
+              "If they laugh at absolutely everything, is it love — or no real opinion?",
+              "AFFECTIONATE — really / fucking affectionate · physically affectionate · not very affectionate · affectionate with strangers (awkward).",
+              "Plus, he was really fucking affectionate.",
+              "SOUNDS LIKE A… — Sounds like a dickhead. · Sounds like a catch. · Sounds like a red flag. · Sounds like my ex.",
+              "Sounds like a dickhead.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "He’d cook / run baths / hoover — and somehow…",
+              "Kind and supportive is great, but…",
+              "He’d laugh at all of my jokes, which made me wonder…",
+              "Too affectionate can feel like…",
+              "Sounds like a dickhead — because…",
+            ],
+            questions: [
+              {
+                q: "The “Dickhead” Paradox: Why does a partner who is kind, supportive, and cooks / hoovers make some people feel uncomfortable? Is there a fine line between being supportive and being boring?",
+                examples: [
+                  "They’re perfect on paper — zero spark.",
+                  "You feel guilty for wanting more drama / edge.",
+                  "Supportive starts to feel like a parent, not a partner.",
+                  "You sabotage ‘nice’ because it feels safer than being happy.",
+                ],
+              },
+              {
+                q: "Gender roles: In your culture, is a man who does all the cooking and cleaning viewed as the perfect catch, or is he subtly judged? Should chores be split 50/50?",
+                examples: [
+                  "Perfect catch — finally, emotional labour shared.",
+                  "Judged as ‘not masculine’ by family / friends.",
+                  "50/50 sounds fair — real life is messier (shifts, kids, energy).",
+                  "Who notices the invisible chores (planning, remembering)?",
+                ],
+              },
+              {
+                q: "Too affectionate: How can you tell the difference between genuine affection and love bombing at the beginning? Why does someone being “too nice” sometimes trigger our alarm bells?",
+                examples: [
+                  "Genuine: steady, consistent, respects no.",
+                  "Love bombing: too much too fast · future talk on date two.",
+                  "Alarm bells: you’re being rushed past your usual pace.",
+                  "Past hurt: ‘nice’ feels like a mask you’ve seen before.",
+                ],
+              },
+              {
+                q: "The Humor Test: He’d laugh at all of my jokes. If a partner laughs at absolutely everything you say, does it show deep love — or that they’re just trying to please you and lack their own opinion?",
+                examples: [
+                  "Deep love: they delight in you, not every punchline.",
+                  "People-pleasing: they never disagree, even on bad jokes.",
+                  "You start testing them with worse jokes on purpose.",
+                  "Best: they laugh when it’s funny — and gently roast you when it isn’t.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · practise the patterns out loud. Short turns. Then open Discussion for the deep talk.",
+            drills: [
+              {
+                label: "RUN A BATH / HOOVER",
+                bank: "run a bath · run someone a bath · hoover the flat / the stairs · cook all the time",
+                task: "Two lines: “He’d ___ without being asked” and “The kindest domestic thing someone did for me was…”",
+              },
+              {
+                label: "KIND AND SUPPORTIVE",
+                bank: "kind and supportive · emotionally supportive · supportive of my choices",
+                task: "Say when ‘kind and supportive’ is exactly what you need — and when it feels flat / boring.",
+              },
+              {
+                label: "LAUGH AT MY JOKES",
+                bank: "laugh at all of my jokes · never laughs at my jokes · laugh along",
+                task: "Finish: “If they laugh at absolutely everything I say, I feel ___ because…”",
+              },
+              {
+                label: "AFFECTIONATE / DICKHEAD",
+                bank: "really affectionate · too affectionate · Sounds like a dickhead / a catch / a red flag",
+                task: "Describe a ‘perfect on paper’ partner in 2 sentences — then land the punchline: “Sounds like a ___.”",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "DOMESTIC CARE",
+                bank: "run baths · hoover · cook all the time",
+                models: [
+                  "He’d cook all the time, run baths, hoover.",
+                  "She ran me a bath after a brutal day.",
+                  "He’d hoover without being asked.",
+                ],
+                say: "Your turn (30–40 s): a real moment of domestic care — cooking, baths, hoovering — that felt loving… or strangely empty. What happened?",
+              },
+              {
+                label: "NICE → PUNCHLINE",
+                bank: "kind and supportive · laugh at all of my jokes · really affectionate · Sounds like a dickhead",
+                models: [
+                  "He was kind and supportive — and somehow I still felt bored.",
+                  "He’d laugh at all of my jokes.",
+                  "Plus, he was really fucking affectionate.",
+                  "Sounds like a dickhead.",
+                ],
+                say: "Your turn: list someone’s ‘perfect partner’ qualities — then land your honest punchline: Sounds like a ___ (dickhead / catch / red flag / my ex).",
+              },
+            ],
+          },
         },
         {
           id: "startup-loan",
           label: "Startup loan",
-          teacher: "Clip 2 · pitching / the loan.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Bank pitch + wardrobe fail. Cool BrE chunks first (iron out / bits and pieces / get you far). Discussion: awkward recoveries → calculated risk vs madness.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "iron out (the) details",
+            "bits and pieces",
+            "won't get you very far",
+            "considering a loan",
+            "a top on underneath",
+          ],
           watch: {
             videoUrl: "media/s01e01/02-startup-loan.mp4",
-            note: "~1.5 min",
+            note:
+              "~1.5 min · We really appreciate you considering us for a startup loan… details to iron out… bits and pieces… won’t get you very far… I thought I had a top on underneath.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · soft bank English + the wardrobe punchline",
+            meanings: [
+              "iron out (the) details = smooth away small problems / disagreements before a deal (literally: press with an iron).",
+              "bits and pieces = various small things / leftover odds and ends / minor points still unclear.",
+              "get someone far / won’t get you very far = help you succeed — or the opposite: that approach won’t take you far here.",
+              "considering a loan / considering us for a startup loan = reviewing / weighing up a loan application (polite bank speak).",
+              "a top on underneath = a top (T-shirt / vest) under the outer layer — Fleabag’s failed cover story when she’s… not dressed for a bank.",
+            ],
+            examples: [
+              "IRON OUT — iron out the details / a few issues / our differences · We’ve still got a couple of things to iron out.",
+              "There are a couple of details that we need to iron out.",
+              "Let’s iron out the contract before we sign.",
+              "BITS AND PIECES — bits and pieces of evidence / information · one or two bits and pieces · pack up your bits and pieces.",
+              "One or two bits and pieces I’m going to need to see some more on.",
+              "I still need a few bits and pieces for the application.",
+              "GET … FAR — hard work will get you far · that kind of thing won’t get you very far · charm only gets you so far.",
+              "I’m sorry, that kind of thing won’t get you very far here any more.",
+              "Politeness gets you far — until they need the paperwork.",
+              "CONSIDERING A LOAN — considering a loan · considering us for a startup loan · We’re still considering your application.",
+              "We really appreciate you considering us for a startup loan.",
+              "Would you ever consider a loan for a dream project?",
+              "A TOP ON UNDERNEATH — I thought I had a top on underneath · nothing on underneath · wear something underneath.",
+              "Oh, no, sorry. I thought I had a top on underneath.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit.",
+            starters: [
+              "We still need to iron out…",
+              "There are a few bits and pieces…",
+              "That kind of thing won’t get you very far when…",
+              "When I was considering a loan…",
+              "I thought I had a top on underneath — classic me when…",
+            ],
+            questions: [
+              {
+                q: "Fleabag made a ridiculous mistake because she forgot what she was wearing. What is the most awkward or embarrassing thing that has ever happened to you during an important meeting, exam, or job interview?",
+                examples: [
+                  "Wrong clothes / zipper / coffee spill / wrong name.",
+                  "Tech fail: shared the wrong screen / mute for 10 minutes.",
+                  "Blank mind: forgot your own CV story.",
+                  "Said the quiet part out loud — then froze.",
+                ],
+              },
+              {
+                q: "How do you recover after a complete disaster in a conversation? Do you try to laugh it off, or do you run away in panic?",
+                examples: [
+                  "Laugh it off + one clean apology.",
+                  "Name it fast: ‘That was awkward — can we restart?’",
+                  "Panic exit / change the subject / hide in the bathroom.",
+                  "Send a follow-up message later — safer than live repair.",
+                ],
+              },
+              {
+                q: "When considering a loan to start a business, where is the line between a “calculated risk” and “pure madness”? Would you ever risk your own savings for a dream project like Fleabag did?",
+                examples: [
+                  "Calculated: numbers, plan B, money you can lose.",
+                  "Madness: rent money, no plan, vibes only.",
+                  "Yes — once, for something that mattered more than safety.",
+                  "Never — I’d rather bootstrap slowly / find a partner.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · practise the bank English out loud. Short turns. Then Discussion.",
+            drills: [
+              {
+                label: "IRON OUT / BITS AND PIECES",
+                bank: "iron out the details / a few issues · one or two bits and pieces · see some more on…",
+                task: "Bank voice (20 s): “We really appreciate you considering us… There are a couple of details we need to iron out, and one or two bits and pieces…” — finish the sentence.",
+              },
+              {
+                label: "WON’T GET YOU VERY FAR",
+                bank: "won’t get you very far · gets you far · only gets you so far",
+                task: "Two lines: “___ will get you far in life” and “___ won’t get you very far in a bank / exam / first date.”",
+              },
+              {
+                label: "CONSIDERING A LOAN",
+                bank: "considering a loan · considering us for a startup loan · still considering your application",
+                task: "30 s: Would you consider a loan for a café / app / course? What’s the one detail you’d need to iron out first?",
+              },
+              {
+                label: "TOP ON UNDERNEATH",
+                bank: "I thought I had a top on underneath · nothing on underneath · wear something underneath",
+                task: "One awkward recovery line after a wardrobe / appearance fail — laugh it off in English.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "SOFT BANK ENGLISH",
+                bank: "iron out (the) details · bits and pieces · won’t get you very far · considering a loan",
+                models: [
+                  "We really appreciate you considering us for a startup loan.",
+                  "There are a couple of details that we need to iron out.",
+                  "One or two bits and pieces I’m going to need to see some more on.",
+                  "I’m sorry, that kind of thing won’t get you very far here any more.",
+                ],
+                say: "Your turn (30–40 s): a real ‘almost yes’ moment — job, visa, bank, landlord — where they still needed to iron out details / bits and pieces. What happened?",
+              },
+              {
+                label: "AWKWARD RECOVERY",
+                bank: "a top on underneath · laugh it off · won’t get you very far",
+                models: [
+                  "Oh, no, sorry. I thought I had a top on underneath.",
+                  "Charm won’t get you very far once the paperwork starts.",
+                ],
+                say: "Your turn: an embarrassing meeting / exam / interview moment — and how you recovered (or didn’t).",
+              },
+            ],
+          },
         },
         {
           id: "sister",
           label: "Sister",
-          teacher: "Clip 3 · with Claire.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Claire + café + pride + nuclear sibling ammo. Cool phrases: bail out / bringing that up / ‘really well’. Discussion: family money → dirty secrets used as weapons.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "doing really well",
+            "the top that she lost years ago",
+            "super-high-powered",
+            "bail someone out",
+            "The only thing harder than… is…",
+            "When are you going to stop bringing that up?",
+          ],
           watch: {
             videoUrl: "media/s01e01/03-sister.mp4",
-            note: "~1.5 min",
+            note:
+              "~1.5 min · lecture-hall sister energy · café check-in · top she lost… bail you out… When are you going to stop bringing that up? · sink nuclear option.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · façade English + money/pride + weaponised past",
+            meanings: [
+              "doing really well = the ‘I’m fine’ mask — often said when you’re exhausted or breaking inside.",
+              "the top that she lost years ago = Fleabag’s quiet jab / theft as sibling score-keeping (I’m wearing what you ‘lost’).",
+              "super-high-powered = very successful, high-status, intimidatingly competent (job / sister / boss energy).",
+              "bail someone out = rescue them from trouble — especially money / debt / a mess they can’t fix alone.",
+              "The only thing harder than A is B = set up two painful options; B is worse (here: confess failure < ask for money).",
+              "bring something up = mention an old topic again — often a wound. When are you going to stop bringing that up? = stop dragging that shame into every fight.",
+            ],
+            examples: [
+              "DOING REALLY WELL — I’m doing really well · We’re doing really well, thanks · (said through gritted teeth).",
+              "How’s the café? — Oh, doing really well.",
+              "People say they’re doing really well when they can’t admit they’re tired.",
+              "THE TOP SHE LOST — I’m wearing the top that she lost years ago · the one you ‘lost’ · still wearing your jumper.",
+              "I’m wearing the top that she lost years ago, so…",
+              "SUPER-HIGH-POWERED — a super-high-powered sister / job / lawyer · high-powered career · high-flyer.",
+              "Having to tell your super-high-powered sister you’ve failed…",
+              "BAIL … OUT — bail someone out · ask her to bail you out · bail me out financially · I can’t keep bailing you out.",
+              "The only thing harder… is having to ask her to bail you out.",
+              "Would you rather take a bank loan or ask a relative to bail you out?",
+              "THE ONLY THING HARDER THAN… IS… — The only thing harder than failing is asking for help. · The only thing harder than saying no is feeling used.",
+              "The only thing harder than having to tell your super-high-powered sister… is having to ask her to bail you out.",
+              "BRING THAT UP — bring something up · stop bringing that up · Why are you bringing that up now? · Don’t bring that up in front of people.",
+              "When are you going to stop bringing that up?",
+              "She brings up the sink every time Claire gets moral.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit.",
+            starters: [
+              "I’m doing really well — which usually means…",
+              "She asked in public so that…",
+              "The only thing harder than ___ is…",
+              "I’d rather take a bank loan than ask family to bail me out because…",
+              "I hide failures from loved ones when…",
+              "I’ll bail you out once — but the line is…",
+              "When are you going to stop bringing that up?",
+              "I only bring up old mistakes when…",
+            ],
+            questions: [
+              {
+                q: "Why do people often try to look perfectly fine and say they are doing “really well” even when they are exhausted or broken inside? Is it hard for you to admit you’re tired or struggling — and in your culture, is complaining acceptable, or are you expected to always be positive?",
+                examples: [
+                  "Pride / don’t want pity / don’t want to be a burden.",
+                  "Work culture: ‘I’m fine’ is the default.",
+                  "Family expects strength — soft feelings stay private.",
+                  "You can complain a little — but not look ‘weak’.",
+                ],
+              },
+              {
+                q: "Fleabag and Claire are in a quiet lecture hall. Why does Claire choose this public place to ask about the failing café — genuine interest, or so Fleabag won’t make a scene? Why is “How is it going with the café?” so hard to hear in front of other people?",
+                examples: [
+                  "Public = safer for Claire; Fleabag can’t explode.",
+                  "Genuine worry wrapped in control.",
+                  "Shame: failure becomes a performance for strangers.",
+                  "Defensive fast = the question hits the wound she was hiding.",
+                ],
+              },
+              {
+                q: "Fleabag says the only thing harder than admitting failure to her super-high-powered sister is asking her to bail her out. Why is family money so humiliating? Would you rather take a high-interest bank loan — or ask a relative to bail you out? Why?",
+                examples: [
+                  "Bank = cold, but no lifelong scoreboard.",
+                  "Family help = love… and leverage / lectures forever.",
+                  "Humiliation: they already think you’re chaotic.",
+                  "I’d ask once, with a clear repayment plan.",
+                ],
+              },
+              {
+                q: "Have you ever hidden failures or problems from loved ones so they wouldn’t worry — or look down on you? Is total independence always worth that stress?",
+                examples: [
+                  "Hid debt / a breakup / a failed exam / a job loss.",
+                  "Independence felt like dignity — until it became loneliness.",
+                  "Telling one safe person helped more than ‘handling it alone’.",
+                  "Some secrets protect others; some just protect your ego.",
+                ],
+              },
+              {
+                q: "If someone constantly asks you to help or bail them out, where is the line between being supportive and being used? How do you say “no” without drowning in guilt?",
+                examples: [
+                  "Once = support. Pattern + no change = being used.",
+                  "Soft no: ‘I can’t do money — I can help you look at a plan.’",
+                  "Hard no: ‘I can’t bail you out this time.’",
+                  "Guilt is normal — resentment is the warning light.",
+                ],
+              },
+              {
+                q: "When Claire goes superior / moral, Fleabag fires the nuclear line about the sink. Why that weapon — can’t she handle being looked down on, so she has to drag Claire down to her level? In your arguments, do you ever bring up someone’s embarrassing past just to defend yourself — cheap tactic, or fair when they’re too judgmental?",
+                examples: [
+                  "Nuclear option: equalise the shame fast.",
+                  "If you look down on me, I burn your façade.",
+                  "Cheap: old dirt that isn’t about this fight.",
+                  "Fair-ish: they started the morality lecture — you refuse the pedestal.",
+                ],
+              },
+              {
+                q: "Claire has degrees, career, husband, Burberry — and Fleabag reduces her to the sink. How does that line crack the perfect façade vs the shamed past? Why are ‘flawless’ people so sensitive to old mistakes — and why do we find it so satisfying when an ‘ideal’ person turns out messy?",
+                examples: [
+                  "One dirty secret can outweigh the whole résumé in a fight.",
+                  "Perfect image = fragile; one stain feels fatal.",
+                  "Schadenfreude: relief that they’re human too.",
+                  "We hate judgment more than we love honesty — until the mask slips.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · patterns out loud. Short turns. Then Discussion.",
+            drills: [
+              {
+                label: "DOING REALLY WELL",
+                bank: "doing really well · I’m fine · hanging in there · surviving",
+                task: "Say a ‘mask’ answer and then the honest one: “I’m doing really well” → “Actually…”",
+              },
+              {
+                label: "BAIL SOMEONE OUT",
+                bank: "bail someone out · bail me out financially · I can’t keep bailing you out",
+                task: "Two lines: “I’d bail them out if…” and “I won’t bail them out when…”",
+              },
+              {
+                label: "SUPER-HIGH-POWERED",
+                bank: "super-high-powered sister / job / lawyer · high-flyer · intimidatingly successful",
+                task: "Describe a ‘Claire type’ in one sentence — no names needed.",
+              },
+              {
+                label: "THE ONLY THING HARDER THAN… IS…",
+                bank: "The only thing harder than A is B",
+                task: "Fire three finishes about pride, money, or family. One funny, one honest, one dark.",
+              },
+              {
+                label: "BRING THAT UP",
+                bank: "bring that up · stop bringing that up · Why are you bringing that up now?",
+                task: "Two lines: “When are you going to stop bringing that up?” and “I only bring it up when…”",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "FAÇADE",
+                bank: "doing really well · How’s it going with…?",
+                models: [
+                  "How’s the café? — Oh, doing really well.",
+                  "People say they’re doing really well when they can’t admit they’re tired.",
+                ],
+                say: "Your turn (30–40 s): a time you said you were doing really well — what was actually going on underneath?",
+              },
+              {
+                label: "PRIDE & BAIL-OUT",
+                bank: "super-high-powered · bail someone out · The only thing harder than… is…",
+                models: [
+                  "The only thing harder than having to tell your super-high-powered sister… is having to ask her to bail you out.",
+                  "I’d rather take a bank loan than ask family to bail me out.",
+                  "I’m wearing the top that she lost years ago, so…",
+                ],
+                say: "Your turn: asking family for money/help — or being the one who bails others out. What happened, and where was the line?",
+              },
+              {
+                label: "WEAPONISED PAST",
+                bank: "When are you going to stop bringing that up? · bring that up · perfect façade",
+                models: [
+                  "When are you going to stop bringing that up?",
+                  "She brings up the sink every time Claire gets moral.",
+                  "Don’t bring that up in front of people.",
+                ],
+                say: "Your turn: a fight where someone dragged up an old embarrassing mistake — or you did. Cheap shot, or fair defence?",
+              },
+            ],
+          },
         },
         {
           id: "shopping",
           label: "Shopping",
-          teacher: "Clip 4 · shopping beat.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Cheap clothes joke with Boo. One nuclear cool chunk: they give me the thrush (+ fanny breathe). Discussion: comfort vs look vs budget — keep it light, laugh allowed.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "they give me the thrush",
+            "They don’t let your fanny breathe",
+          ],
           watch: {
             videoUrl: "media/s01e01/04-shopping.mp4",
-            note: "~50 s",
+            note:
+              "~50 s · cheap trousers joke with Boo · they give me the thrush · They don’t let your fanny breathe.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · body + clothes humour (18+ BrE · classroom-safe paraphrase OK)",
+            meanings: [
+              "give someone the thrush = (joke) cheap / synthetic trousers so unbreathable they cause thrush — comic exaggeration of ‘these clothes are bad for your body’.",
+              "They don’t let your fanny breathe (BrE, 18+) = the fabric traps heat / moisture; nothing ‘breathes’. Softer classroom version: They don’t let anything breathe / the fabric isn’t breathable.",
+            ],
+            examples: [
+              "THRUSH / TROUSERS — they give me the thrush · these trousers give you the thrush · cheap synthetics = no air.",
+              "We buy the cheap ones even though they give me the thrush.",
+              "DON’T LET … BREATHE — They don’t let your fanny breathe · the fabric doesn’t breathe · nothing breathable about them.",
+              "They look great — they just don’t let your fanny breathe.",
+              "BREATHABLE — breathable fabric / cotton · nothing breathable · completely unbreathable.",
+              "Claire wants breathable quality; Fleabag and Boo want the bargain and the joke.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 45–60 s · steal the joke energy, not every rude word if that feels safer.",
+            starters: [
+              "They looked amazing, but they give me the thrush…",
+              "They don’t let your fanny breathe — classic when…",
+              "I bought it because it was cheap / stunning, and then…",
+              "My priority is price / look / comfort because…",
+            ],
+            questions: [
+              {
+                q: "Fleabag and Boo joke about buying cheap clothes they know aren’t comfortable — they’d rather laugh than stress about the budget. Have you ever bought something that looked amazing or was incredibly cheap, but turned out completely unwearable or terribly uncomfortable? Worth it, or instant regret?",
+                examples: [
+                  "Sale heels you wore once and cried.",
+                  "Skinny jeans that cut off circulation.",
+                  "Synthetic top that looked chic and felt like a plastic bag.",
+                  "Worth it for one photo — never again.",
+                ],
+              },
+              {
+                q: "For Claire, expensive breathable clothes are basic; for Fleabag and Boo, cheap is reality turned into a joke. When you buy clothes, what’s the main priority — price, look, or how comfortable / “breathable” the material is? Have you ever bought something synthetic and awful just because it looked stunning or was on a massive sale?",
+                examples: [
+                  "Price first — student / survival mode.",
+                  "Look first — comfort is tomorrow’s problem.",
+                  "Breathable fabric or I won’t wear it twice.",
+                  "Sale brain: 70% off overrides common sense.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "Warm-up · short & cheeky. Then Discussion.",
+            drills: [
+              {
+                label: "GIVE ME THE THRUSH",
+                bank: "they give me the thrush · these ___ give you the thrush · cheap synthetics",
+                task: "Finish: “I still buy them even though they give me the thrush because…”",
+              },
+              {
+                label: "DON’T LET … BREATHE",
+                bank: "They don’t let your fanny breathe · the fabric doesn’t breathe · nothing breathable",
+                task: "Describe one unwearable item in one comic line — use breathe / breathable / thrush if you dare.",
+              },
+              {
+                label: "PRICE / LOOK / COMFORT",
+                bank: "on a massive sale · looked stunning · completely unwearable · breathable fabric",
+                task: "Rank your triad out loud: price · look · comfort — then defend #1 in 15 seconds.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "CHEAP JOKE",
+                bank: "they give me the thrush · They don’t let your fanny breathe",
+                models: [
+                  "We buy the cheap ones even though they give me the thrush.",
+                  "They look great — they just don’t let your fanny breathe.",
+                ],
+                say: "Your turn (30–40 s): a clothing fail — cheap or gorgeous — that was unwearable. Was it worth the joke / the photo / the regret?",
+              },
+            ],
+          },
         },
         {
           id: "bad-feminists",
           label: "Bad feminists",
-          teacher: "Clip 5.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Lecture-hall hands up · shared insecurity. Cool chunks: trade 5 years… / hairy nipples. Discussion: automatic honesty → toxic perfection → would you press the button?",
+          blocks: ["watch", "context"],
+          phrases: [
+            "trade 5 years of your life for the perfect body",
+            "Raise your hand if…",
+            "I’ve got really hairy nipples",
+          ],
           watch: {
             videoUrl: "media/s01e01/05-bad-feminists.mp4",
-            note: "~45 s",
+            note:
+              "~45 s · Raise your hand if you’d trade 5 years… · both hands up · I’ve got really hairy nipples.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · body honesty + the ‘deal with the devil’ question",
+            meanings: [
+              "Raise your hand if… = public poll / confession format — your body answers before your filter does.",
+              "trade X for Y = give up something valuable to get something else (here: years of life ↔ perfect body).",
+              "I’ve got really hairy nipples = blunt body confession / punchline honesty — break the solemn mood with something raw and human.",
+            ],
+            examples: [
+              "RAISE YOUR HAND IF… — Raise your hand if you’ve ever… · Raise your hand if you’d… · Keep your hand up if…",
+              "Raise your hand if you’d trade 5 years of your life for the perfect body.",
+              "TRADE … FOR… — trade 5 years for the perfect body · trade freedom for security · I wouldn’t trade that for anything.",
+              "Would you trade five years of your life for ___?",
+              "They raise their hands before the brain can negotiate.",
+              "HAIRY NIPPLES / BODY HONESTY — I’ve got really hairy nipples · nobody’s perfect · the unfiltered detail.",
+              "I’ve got really hairy nipples.",
+              "Sometimes the funniest line is just an ugly truth said out loud.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · be as honest as the room allows.",
+            starters: [
+              "Raise your hand if… — my body answered before my brain…",
+              "I’d trade 5 years for ___ because…",
+              "I wouldn’t press that button because…",
+              "We’re so different, but we both…",
+              "I’ve got really hairy nipples energy = I’d rather say the ugly truth than…",
+            ],
+            questions: [
+              {
+                q: "When the speaker asks about trading 5 years for the perfect body, Fleabag and Claire both raise their hands instantly — sisters who disagree on everything else. Why the same automatic reaction? What does that say about a hidden, shared insecurity? Have you ever blurted an answer or made a gesture in public before your brain could filter it — and was it scary when your body revealed a truth you wanted to keep secret?",
+                examples: [
+                  "Twin instinct: same wound, different lives.",
+                  "Hand up = desire they pretend they don’t have.",
+                  "Blurted a crush / salary / insecurity in a room.",
+                  "Scary: everyone saw it; also freeing.",
+                ],
+              },
+              {
+                q: "They realise they’re the only ones in the hall with hands up — and feel ashamed. Why so deep? Be Fleabag-honest: if a magical button gave you your dream appearance, career, or skill for exactly 5 years of your life, would you press it? Why or why not?",
+                examples: [
+                  "Shame: ‘bad feminist’ / vain / weak in public.",
+                  "Yes — for health, face, voice, a skill I’d kill for.",
+                  "No — time is the only non-refundable currency.",
+                  "Maybe for someone I love — not for Instagram.",
+                ],
+              },
+              {
+                q: "Claire has career and money; Fleabag is free and chaotic — yet both would sacrifice years for physical perfection. Why does changing the outside so often feel like it will magically fix the inside? Does modern society put too much pressure on women (and men) to look flawless — and how do you handle beauty standards when scrolling social media?",
+                examples: [
+                  "If I look ‘done’, maybe I’ll finally feel enough.",
+                  "Outside fix = temporary anaesthetic for inside noise.",
+                  "Mute / unfollow / reality-check the lighting.",
+                  "I feel the pressure — and I still catch myself comparing.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "Warm-up · patterns out loud. Then Discussion.",
+            drills: [
+              {
+                label: "RAISE YOUR HAND IF…",
+                bank: "Raise your hand if you’ve ever… / you’d… / you’d trade…",
+                task: "Invent two poll questions for this room — one silly, one dangerously honest.",
+              },
+              {
+                label: "TRADE … FOR…",
+                bank: "trade 5 years for the perfect body · trade X for Y · I wouldn’t trade that for anything",
+                task: "Three deals: one you’d take, one you’d refuse, one you’d only take at 3 a.m.",
+              },
+              {
+                label: "UGLY TRUTH LINE",
+                bank: "I’ve got really hairy nipples · nobody’s perfect · the unfiltered detail",
+                task: "One comic ‘I’ve got ___’ body-or-life confession (keep it classroom-OK if you need to).",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "THE DEAL",
+                bank: "Raise your hand if… · trade 5 years… for the perfect body",
+                models: [
+                  "Raise your hand if you’d trade 5 years of your life for the perfect body.",
+                  "Would you trade five years of your life for ___?",
+                  "They raise their hands before the brain can negotiate.",
+                ],
+                say: "Your turn (30–40 s): your automatic reaction to that question — and whether you’d press the 5-year button for looks, career, or a skill.",
+              },
+              {
+                label: "RAW HONESTY",
+                bank: "I’ve got really hairy nipples · unfiltered truth",
+                models: [
+                  "I’ve got really hairy nipples.",
+                  "Sometimes the funniest line is just an ugly truth said out loud.",
+                ],
+                say: "Your turn: a time your body / mouth told the truth in public before you could filter it — what slipped out?",
+              },
+            ],
+          },
         },
         {
           id: "hugs",
           label: "Hugs",
-          teacher: "Clip 6 · the hug.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Grateful hug → panic. Cool punchline: That’s terrifying. Never do that again. Discussion: intimacy fear → joke as shield → hugger vs personal space.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "That’s terrifying",
+            "Never do that again",
+          ],
           watch: {
             videoUrl: "media/s01e01/06-hugs.mp4",
-            note: "~30 s",
+            note:
+              "~30 s · Claire hugs Fleabag (gratitude) → That’s terrifying. Never do that again.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · shutting down warmth after a rare soft moment",
+            meanings: [
+              "That’s terrifying = the closeness itself feels dangerous — not the hug as violence, but intimacy as threat.",
+              "Never do that again = comic hard boundary after a soft moment: kill the warmth before it becomes a habit / a need.",
+            ],
+            examples: [
+              "TERRIFYING — That’s terrifying · It was terrifying how easy that felt · terrifyingly honest.",
+              "That’s terrifying.",
+              "The hug wasn’t scary — needing it was.",
+              "NEVER DO THAT AGAIN — Never do that again · Don’t ever do that again · Let’s never speak of this.",
+              "Never do that again.",
+              "Thank you… and also never do that again.",
+              "SOFT → HARD — gratitude / love → joke / sarcasm / shutdown.",
+              "Instead of ‘I love you’, she ruins the moment on purpose.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit.",
+            starters: [
+              "That’s terrifying — because…",
+              "Never do that again — I say that when…",
+              "Hugging family feels harder than hugging friends because…",
+              "When someone gets soft with me, I usually…",
+              "I’m a hugger / I protect my space — so I say…",
+            ],
+            questions: [
+              {
+                q: "Claire hugs Fleabag because she’s secretly grateful — then panics: “That’s terrifying. Never do that again.” Why are both sisters so uncomfortable with physical affection and genuine warmth? Do you find it hard to hug certain family members even if you love them — and why can hugging a parent or sibling feel more awkward or “terrifying” than hugging a friend or partner?",
+                examples: [
+                  "Family history = touch was rare / tense / loaded.",
+                  "Partner/friend hugs are chosen; family hugs feel obligatory.",
+                  "Warmth opens a door you’re not ready to walk through.",
+                  "Love is there — the body just doesn’t know the choreography.",
+                ],
+              },
+              {
+                q: "Claire can’t say “Thank you for saving me, I love you” — she kills the moment with a harsh joke. How do you usually react when someone suddenly becomes very emotional, vulnerable, or sweet with you? Do you embrace it — or instantly ruin the tension with a joke / sarcasm because you feel too unprotected?",
+                examples: [
+                  "Joke = armour; softness feels naked.",
+                  "I freeze, then change the subject.",
+                  "I can receive it — if it’s private, not public.",
+                  "I match their softness… then overthink it for three days.",
+                ],
+              },
+              {
+                q: "Fleabag looks shocked / paralyzed by Claire’s sudden touch — the hug broke their usual boundaries. Are you a “hugger” who loves physical contact, or do you closely protect your personal space? How do you politely signal “please don’t touch / hug me” without offending people or making a scene?",
+                examples: [
+                  "Hugger with friends; fortress with family.",
+                  "Side-hug / handshake / wave from afar.",
+                  "Soft no: ‘I’m not much of a hugger — no offence.’",
+                  "Step back + smile + change subject before arms open.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "Warm-up · short patterns. Then Discussion.",
+            drills: [
+              {
+                label: "THAT’S TERRIFYING",
+                bank: "That’s terrifying · terrifyingly honest · It was terrifying how…",
+                task: "Finish two lines: “That’s terrifying when someone…” and “That’s terrifying because it means…”",
+              },
+              {
+                label: "NEVER DO THAT AGAIN",
+                bank: "Never do that again · Don’t ever do that again · Let’s never speak of this",
+                task: "Say a soft moment + the hard shutdown after it (grateful → joke / boundary).",
+              },
+              {
+                label: "HUGGER VS SPACE",
+                bank: "I’m not much of a hugger · I need my space · no offence · personal space",
+                task: "Practise one polite refusal of a hug — warm tone, clear boundary.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "SOFT → SHUTDOWN",
+                bank: "That’s terrifying · Never do that again",
+                models: [
+                  "That’s terrifying.",
+                  "Never do that again.",
+                  "Thank you… and also never do that again.",
+                ],
+                say: "Your turn (30–40 s): a rare warm moment with family — hug, thanks, ‘I love you’ — and how someone (or you) killed it with a joke or panic.",
+              },
+            ],
+          },
         },
         {
           id: "dating",
           label: "Dating",
-          teacher: "Clip 7 · dating beat.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Bus Rodent small talk. Cool idiom: jump down someone’s throat. Discussion: anxious over-explaining → temper → dating as distraction.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "jump down someone’s throat",
+            "I wouldn’t jump down the throat of someone…",
+          ],
           watch: {
             videoUrl: "media/s01e01/07-dating.mp4",
-            note: "~30 s",
+            note:
+              "~30 s · Bus Rodent date · I wouldn’t jump down the throat of someone… (over colour / clothes) · Fleabag checked out.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · anger idiom + awkward-date energy",
+            meanings: [
+              "jump down someone’s throat = attack them with criticism / snap at them aggressively (literally: leap into their throat).",
+              "I wouldn’t jump down the throat of someone… = ‘I’m not the type to judge / snap’ — often said by someone already over-anxious and defensive.",
+            ],
+            examples: [
+              "JUMP DOWN SOMEONE’S THROAT — jump down my / his / her throat · don’t jump down my throat · ready to jump down someone’s throat.",
+              "Don’t jump down my throat — I was only asking.",
+              "She jumped down his throat over a tiny mistake.",
+              "I WOULDN’T… — I wouldn’t jump down the throat of someone for wearing ___ / liking ___ / saying ___.",
+              "I wouldn’t jump down the throat of someone just because they chose a weird colour.",
+              "He treats clothing colour like a topic you could get attacked for — classic over-anxious defence.",
+              "HOT-TEMPERED — hot-tempered · quick to snap · stay quiet and patient · emotionally checked out.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal the idiom when it fits.",
+            starters: [
+              "I wouldn’t jump down the throat of someone who…",
+              "He was so nervous he over-explained…",
+              "I can jump down someone’s throat when…",
+              "I stay quiet even when the date is weird because…",
+              "I went out just to fill a void when…",
+            ],
+            questions: [
+              {
+                q: "The “Bus Rodent” guy treats choosing a clothing colour like something you could “jump down his throat” over. How does that line show an over-anxious, slightly defensive personality? Have you been on a date or in a conversation with someone so nervous they over-explained unimportant things (a colour, a food)? How do you make a socially awkward person comfortable without exhausting yourself?",
+                examples: [
+                  "He pre-defends against judgment that isn’t coming.",
+                  "Tiny topics balloon into ‘please don’t attack me’.",
+                  "Soft questions + smile + don’t fix them.",
+                  "Kind for 20 minutes — then protect your energy / exit.",
+                ],
+              },
+              {
+                q: "While he’s trying to sound polite and non-judgmental, Fleabag is just hunting an emotional distraction. Are you hot-tempered — easy to jump down someone’s throat when they say something foolish — or do you stay quiet and patient even when the conversation is boring or weird?",
+                examples: [
+                  "Hot temper: snap first, apologise later.",
+                  "Quiet patience: endure, then ghost.",
+                  "I only jump down throats with people I love / feel safe with.",
+                  "Boredom ≠ anger — I just check out like Fleabag.",
+                ],
+              },
+              {
+                q: "Fleabag looks indifferent and emotionally checked out — she didn’t choose him for his personality; she’s filling a loneliness void. Have you ever gone out with someone just because you were bored, lonely, or needed a distraction? Is it fair to use “random” people as a coping mechanism — or does it always end in an awkward disaster?",
+                examples: [
+                  "Fair-ish if both are honest about low stakes.",
+                  "Not fair: they think it’s a real date; you’re using a body as anaesthetic.",
+                  "Sometimes it stays light; sometimes someone gets hurt.",
+                  "Better distraction: friend, walk, hobby — not a human placeholder.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "Warm-up · idiom muscle. Then Discussion.",
+            drills: [
+              {
+                label: "JUMP DOWN SOMEONE’S THROAT",
+                bank: "jump down my throat · don’t jump down my throat · ready to jump down someone’s throat",
+                task: "Two lines: “Don’t jump down my throat — I only…” and “I jumped down their throat when…”",
+              },
+              {
+                label: "I WOULDN’T…",
+                bank: "I wouldn’t jump down the throat of someone for… / just because…",
+                task: "Bus-Rodent voice (20 s): over-explain a tiny preference and add the ‘I wouldn’t jump down…’ defence.",
+              },
+              {
+                label: "CHECKED OUT",
+                bank: "emotionally checked out · hot-tempered · stay quiet and patient",
+                task: "Describe your date style in one sentence: jumper / patient / checked out.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "THE IDIOM",
+                bank: "jump down someone’s throat · I wouldn’t jump down the throat of someone…",
+                models: [
+                  "Don’t jump down my throat — I was only asking.",
+                  "I wouldn’t jump down the throat of someone just because they chose a weird colour.",
+                  "She jumped down his throat over a tiny mistake.",
+                ],
+                say: "Your turn (30–40 s): a nervous over-explanation on a date / chat — or a time you (almost) jumped down someone’s throat.",
+              },
+              {
+                label: "DATING AS DISTRACTION",
+                bank: "emotionally checked out · fill the void · awkward disaster",
+                models: [
+                  "She didn’t choose him for his personality — she needed a distraction.",
+                  "Using random people as a coping mechanism usually gets messy.",
+                ],
+                say: "Your turn: a bored / lonely / distraction date — fair, or awkward disaster?",
+              },
+            ],
+          },
         },
         {
           id: "dad",
           label: "Dad",
-          teacher: "Clip 8 · with Dad.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "2 a.m. confession · dad frozen. Cool words: pathetic / apathetic / cynical / depraved. Discussion: parental awkwardness → imposter guilt → how you handle a breakdown.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "You’re pathetic",
+            "apathetic",
+            "cynical",
+            "depraved",
+          ],
           watch: {
             videoUrl: "media/s01e01/08-dad.mp4",
-            note: "~1.5 min",
+            note:
+              "~1.5 min · 2 a.m. at Dad’s · You’re pathetic… apathetic, cynical, depraved… feminist guilt · he freezes.",
           },
-          speak: { themes: [], questions: [] },
+          context: {
+            tone: "Lexical · self-attack adjectives + parental freeze",
+            meanings: [
+              "pathetic = pitiful / contemptibly weak (harsh self-insult or insult to someone else).",
+              "apathetic = showing no interest, enthusiasm, or concern — emotionally flat.",
+              "cynical = believing people are selfish; bitter / distrustful of sincerity.",
+              "depraved = morally corrupt / wicked (heavy, almost theatrical self-condemnation).",
+            ],
+            examples: [
+              "PATHETIC — You’re pathetic · I feel pathetic · a pathetic attempt / excuse.",
+              "You’re pathetic.",
+              "She called herself pathetic before anyone else could.",
+              "APATHETIC — apathetic · total apathy · reacted with apathy · emotionally flat.",
+              "His awkward small talk felt like apathy when she needed a hug.",
+              "CYNICAL — cynical · bitterly cynical · a cynical take on love / feminism / family.",
+              "DEPRAVED — depraved · morally bankrupt · morally depraved (show-scale self-attack).",
+              "Apathetic, cynical, depraved — she stacks the insults like a courtroom verdict on herself.",
+              "MORALLY BANKRUPT — feel morally bankrupt · can’t even call myself a feminist…",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal the adjectives when they fit (carefully).",
+            starters: [
+              "You’re pathetic — I’d only say that when…",
+              "Apathetic / cynical / depraved — the one that hits me is…",
+              "It’s harder to get support from parents because…",
+              "I felt like an imposter when…",
+              "When someone breaks down in front of me, I…",
+            ],
+            questions: [
+              {
+                q: "Dad is paralyzed by Fleabag at 2 a.m. — he loves her but is trapped in social anxiety and fear of making a scene. Why is emotional support sometimes harder from parents than from strangers or friends? How do you react when someone you love meets your pain with apathy or awkward small talk instead of a hug?",
+                examples: [
+                  "Parents freeze in the role they never practised.",
+                  "Friends chose you; parents carry history and shame.",
+                  "I get angry — then lonely.",
+                  "I translate their awkwardness as love with no tools.",
+                ],
+              },
+              {
+                q: "Fleabag cries she’s morally bankrupt — can’t call herself a feminist because she’d trade years for a perfect body. Too hard on herself, or hypocritical to support a movement while secretly wanting something that contradicts its values? Have you felt like an “imposter” in your beliefs, lifestyle, or job — high values in public, failure in private? How do you live with that conflict?",
+                examples: [
+                  "Human: ideals ≠ 24/7 purity.",
+                  "Hypocrisy only if you shame others for what you hide.",
+                  "Imposter at work / in activism / in ‘having it together’.",
+                  "Deal: name the gap without destroying yourself.",
+                ],
+              },
+              {
+                q: "When Fleabag opens her heart, Dad stands frozen — he can’t hug her or find words. Why is it often so hard for parents to handle adult children’s breakdowns? If a close friend or relative suddenly sobs that they feel lost, broken, or morally bankrupt — what’s your automatic reaction: hug, practical advice, or freeze because you don’t know what to say?",
+                examples: [
+                  "Parents fear saying the wrong thing forever.",
+                  "Adult child + tears = their failure movie starts playing.",
+                  "I hug first, words later.",
+                  "I solve / advise — and miss the feeling.",
+                  "I freeze — then send a message at 3 a.m.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "Warm-up · adjective muscle. Then Discussion.",
+            drills: [
+              {
+                label: "PATHETIC",
+                bank: "You’re pathetic · I feel pathetic · a pathetic excuse",
+                task: "One self-attack line and one kinder rewrite of the same feeling.",
+              },
+              {
+                label: "APATHETIC / CYNICAL / DEPRAVED",
+                bank: "apathetic · cynical · depraved · morally bankrupt",
+                task: "Pick TWO and finish: “People call me ___ when…” / “I feel ___ when…”",
+              },
+              {
+                label: "FREEZE VS HUG",
+                bank: "freeze up · awkward small talk · give someone a hug · I don’t know what to say",
+                task: "30 s: your default when someone cries — freeze, fix, or hold.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "SELF-VERDICT",
+                bank: "You’re pathetic · apathetic · cynical · depraved",
+                models: [
+                  "You’re pathetic.",
+                  "Apathetic, cynical, depraved.",
+                  "She stacks the insults like a courtroom verdict on herself.",
+                ],
+                say: "Your turn (30–40 s): a time you (or someone) was brutally hard on yourself — too harsh, or honest?",
+              },
+              {
+                label: "PARENTAL FREEZE",
+                bank: "apathetic · awkward small talk · freeze up · hug",
+                models: [
+                  "His awkward small talk felt like apathy when she needed a hug.",
+                  "He loves her — he just has no tools for the collapse.",
+                ],
+                say: "Your turn: needing support from a parent — or handling someone’s breakdown. Hug, advice, or freeze?",
+              },
+            ],
+          },
         },
         {
           id: "step-mother",
           label: "Step-mother",
-          teacher: "Clip 9 · godmother / step-mother energy.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher:
+            "Godmother / step-mother energy. Cool phrases only this beat — swing by · ghastly, darling.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "I just thought I’d swing by",
+            "step-mother",
+            "You really do look ghastly, darling",
+          ],
           watch: {
             videoUrl: "media/s01e01/09-step-mother.mp4",
-            note: "~2 min",
+            note:
+              "~2 min · Yeah, I just thought I’d swing by… · step-mother… You really do look ghastly, darling.",
+          },
+          context: {
+            tone: "Lexical · soft entrance + velvet insult",
+            meanings: [
+              "swing by = drop in casually / visit briefly without a big plan (Yeah, I just thought I’d swing by).",
+              "step-mother = father’s new partner (here: the godmother figure Fleabag refuses to soften).",
+              "ghastly = awful / terrible-looking (old-fashioned, cutting) — You really do look ghastly, darling = sugar-coated cruelty.",
+            ],
+            examples: [
+              "SWING BY — swing by · swing by later · I thought I’d swing by · just swinging by.",
+              "Yeah, I just thought I’d swing by.",
+              "I’ll swing by after work — only ten minutes.",
+              "STEP-MOTHER — step-mother · stepmother · my dad’s wife · don’t call her Mum.",
+              "GHASTLY — look ghastly · a ghastly colour / idea / evening · You really do look ghastly, darling.",
+              "You really do look ghastly, darling.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
@@ -196,91 +1184,184 @@
         {
           id: "period-coming",
           label: "Period coming",
-          teacher: "Clip 1.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 1 · cool phrase only.",
+          blocks: ["watch", "context"],
+          phrases: ["I think my period is coming"],
           watch: {
             videoUrl: "media/s01e02/01-my-period-is-coming.mp4",
-            note: "~35 s",
+            note: "~35 s · I think my period is coming.",
+          },
+          context: {
+            tone: "Lexical · body excuse / aside",
+            meanings: [
+              "I think my period is coming = soft prediction / excuse energy — something’s about to hit (literal PMS, or comic cover).",
+            ],
+            examples: [
+              "PERIOD COMING — I think my period is coming · my period’s coming · I’ve got my period.",
+              "I think my period is coming.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "keep-up",
           label: "Keep up",
-          teacher: "Clip 2.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 2 · cool phrases only.",
+          blocks: ["watch", "context"],
+          phrases: ["you can keep up", "patch things up with Harry"],
           watch: {
             videoUrl: "media/s01e02/02-you-can-keep-up.mp4",
-            note: "~30 s",
+            note: "~30 s · you can keep up · patch things up with Harry.",
+          },
+          context: {
+            tone: "Lexical · pace + repair a relationship",
+            meanings: [
+              "you can keep up = you’re able to stay at the same pace / level (conversation, life, banter) — not fall behind.",
+              "patch things up (with someone) = make peace after a fight / try to repair the relationship (here: with Harry).",
+            ],
+            examples: [
+              "KEEP UP — keep up · you can keep up · keep up with someone / something · can’t keep up.",
+              "You can keep up.",
+              "I can’t keep up with her.",
+              "PATCH THINGS UP — patch things up · patch things up with someone · try to patch things up · we patched it up.",
+              "I should patch things up with Harry.",
+              "They’re trying to patch things up after the breakup.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "commit-breakups",
           label: "Commit to break-ups",
-          teacher: "Clip 3.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 3 · cool phrase only.",
+          blocks: ["watch", "context"],
+          phrases: ["commit to a break-up"],
           watch: {
             videoUrl: "media/s01e02/03-commit-to-break-ups.mp4",
-            note: "~55 s",
+            note: "~55 s · commit to a break-up.",
+          },
+          context: {
+            tone: "Lexical · follow through on ending it",
+            meanings: [
+              "commit to a break-up = actually stick with ending the relationship — not soft-launch, not ‘maybe’, the full decision.",
+            ],
+            examples: [
+              "COMMIT TO — commit to a break-up · commit to the decision · can’t commit · fully commit.",
+              "She can’t commit to a break-up — she keeps going back.",
+              "If you’re done, commit to the break-up.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "hooker-slag",
           label: "Labels",
-          teacher: "Clip 4.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 4 · cool phrase only (18+).",
+          blocks: ["watch", "context"],
+          phrases: ["hooker slag"],
           watch: {
             videoUrl: "media/s01e02/04-hooker-slag.mp4",
-            note: "~30 s",
+            note: "~30 s · hooker slag.",
+          },
+          context: {
+            tone: "Lexical · crude insult label (18+ · teach tone, don’t normalise)",
+            meanings: [
+              "hooker slag (18+) = stacked crude insults about someone’s sexual reputation — harsh, misogynistic labelling (show the cruelty of the line, not a model to copy).",
+            ],
+            examples: [
+              "LABELS — cruel labels · call someone a ___ · don’t throw labels like that.",
+              "hooker slag (show line — discuss the violence of the label).",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "relentlessly-profound",
           label: "Profound",
-          teacher: "Clip 5.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 5 · cool phrases only.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "relentlessly profound",
+            "shit got real",
+            "utterly inaccessible",
+            "lose currency of youth",
+          ],
           watch: {
             videoUrl: "media/s01e02/05-relentlessly-profound.mp4",
-            note: "~50 s",
+            note:
+              "~50 s · relentlessly profound · shit got real · utterly inaccessible · lose currency of youth.",
+          },
+          context: {
+            tone: "Lexical · intensity + out of reach + ageing value",
+            meanings: [
+              "relentlessly profound = intensely deep / meaningful without letting up (comic or sincere).",
+              "shit got real (informal) = the situation suddenly became serious / intense.",
+              "utterly inaccessible = completely unreachable / impossible to get to (emotionally, socially, or literally).",
+              "lose (the) currency of youth = stop having the ‘value’ / social power that youth gives you — ageing as losing a kind of money.",
+            ],
+            examples: [
+              "RELENTLESSLY PROFOUND — relentlessly profound · relentlessly honest / positive / annoying.",
+              "It all got relentlessly profound.",
+              "SHIT GOT REAL — shit got real · things got real · it got serious fast.",
+              "Then shit got real.",
+              "UTTERLY INACCESSIBLE — utterly inaccessible · emotionally inaccessible · completely out of reach.",
+              "He’s become utterly inaccessible.",
+              "CURRENCY OF YOUTH — lose (the) currency of youth · the currency of youth · youth as currency.",
+              "She’s afraid of losing the currency of youth.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "how-behind",
           label: "How behind",
-          teacher: "Clip 6.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 6 · cool phrase only.",
+          blocks: ["watch", "context"],
+          phrases: ["How behind are you?"],
           watch: {
             videoUrl: "media/s01e02/06-how-behind-are-you.mp4",
-            note: "~1 min",
+            note: "~1 min · How behind are you?",
+          },
+          context: {
+            tone: "Lexical · delayed / lagging",
+            meanings: [
+              "How behind are you? = how late / how far behind schedule (work, life, rent, emotions) are you?",
+            ],
+            examples: [
+              "BEHIND — How behind are you? · I’m so behind · fall behind · get behind on rent / work.",
+              "How behind are you?",
+              "I’m ridiculously behind this week.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "point-fingers",
           label: "Point fingers",
-          teacher: "Clip 7.",
-          blocks: ["watch", "phrases", "speak"],
-          phrases: [],
+          teacher: "Clip 7 · cool phrase only.",
+          blocks: ["watch", "context"],
+          phrases: ["point fingers at"],
           watch: {
             videoUrl: "media/s01e02/07-point-fingers.mp4",
-            note: "~1 min",
+            note: "~1 min · point fingers at…",
+          },
+          context: {
+            tone: "Lexical · blame",
+            meanings: [
+              "point fingers at (someone) = blame them / accuse them (often unfairly or publicly).",
+            ],
+            examples: [
+              "POINT FINGERS — point fingers at someone · stop pointing fingers · no one is pointing fingers · easy to point fingers.",
+              "Don’t point fingers at me.",
+              "Everyone started pointing fingers.",
+            ],
           },
           speak: { themes: [], questions: [] },
         },
         {
           id: "surprise",
           label: "Surprise",
-          teacher: "Clip 8.",
+          teacher: "Clip 8 · phrases TBD.",
           blocks: ["watch", "phrases", "speak"],
           phrases: [],
           watch: {

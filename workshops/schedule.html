@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Расписание · Speaking clubs</title>
+  <link rel="stylesheet" href="../b2-summer-intensive/css/intensive-shell.css" />
+  <style>
+    body.intensive-body--schedule {
+      background:
+        radial-gradient(900px 520px at 50% -15%, rgba(56, 189, 248, 0.14) 0%, transparent 55%),
+        radial-gradient(600px 400px at 0% 60%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #060d18 0%, #040810 50%, #020508 100%);
+    }
+    .sch-next {
+      margin-bottom: 22px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      background:
+        linear-gradient(125deg, rgba(52, 211, 153, 0.14) 0%, transparent 50%),
+        linear-gradient(180deg, #0c1820 0%, #081218 100%);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(52, 211, 153, 0.1);
+    }
+    .sch-next-kicker {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #34d399;
+      margin-bottom: 6px;
+    }
+    .sch-next-title {
+      font-size: clamp(1.2rem, 4vw, 1.45rem);
+      font-weight: 800;
+      color: #f0fdf4;
+      margin: 0 0 6px;
+    }
+    .sch-next-meta {
+      margin: 0;
+      color: #a7f3d0;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    .sch-card {
+      border-radius: 18px;
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      background: linear-gradient(165deg, #0f1a2e 0%, #0a1220 100%);
+      padding: 20px 20px 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    }
+    .sch-card + .sch-card {
+      margin-top: 14px;
+    }
+    .sch-when {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      margin-bottom: 8px;
+    }
+    .sch-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f0f9ff;
+      margin: 0 0 8px;
+    }
+    .sch-desc {
+      margin: 0 0 14px;
+      color: #94b8d9;
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+    .sch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sch-spots {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #6ee7b7;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      background: rgba(52, 211, 153, 0.1);
+    }
+    .sch-spots.is-full {
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.4);
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .sch-book {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      color: #f0f9ff;
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+      text-decoration: none;
+      display: inline-block;
+      touch-action: manipulation;
+    }
+    .sch-book:hover {
+      filter: brightness(1.06);
+    }
+    .sch-book:disabled,
+    .sch-book.is-disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      cursor: default;
+    }
+    .sch-form-wrap {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      display: none;
+    }
+    .sch-form-wrap.is-open {
+      display: block;
+    }
+    .sch-form {
+      display: grid;
+      gap: 10px;
+      max-width: 420px;
+    }
+    .sch-form label {
+      display: grid;
+      gap: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sch-form input,
+    .sch-form select,
+    .sch-form textarea {
+      appearance: none;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(8, 18, 32, 0.9);
+      color: #f0f9ff;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    .sch-form textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+    .sch-form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .sch-btn-ghost {
+      appearance: none;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: transparent;
+      color: #e0f2fe;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .sch-done {
+      display: none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      background: rgba(52, 211, 153, 0.1);
+      color: #d1fae5;
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+    .sch-done.is-show {
+      display: block;
+    }
+    .sch-pay {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      background: rgba(251, 191, 36, 0.12);
+      color: #fde68a;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .sch-note {
+      margin-top: 20px;
+      font-size: 0.84rem;
+      color: #5a7a9a;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body class="intensive-body intensive-body--schedule">
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">Speaking clubs</span>
+        <h1 class="int-title">Расписание</h1>
+        <p class="int-sub">Ближайшие встречи · бронь на сайте · оплата по ссылке.</p>
+      </div>
+      <a class="int-back" href="../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <div class="sch-next">
+      <div class="sch-next-kicker">Следующая встреча</div>
+      <p class="sch-next-title">Суббота, 8 августа · 14:00 МСК</p>
+      <p class="sch-next-meta">Есть места · Fleabag speaking club · онлайн</p>
+    </div>
+
+    <article class="sch-card" data-session="2026-08-08-fleabag">
+      <div class="sch-when">Суббота · 8 августа 2026 · 14:00 МСК</div>
+      <h2 class="sch-name">Fleabag · speaking club</h2>
+      <p class="sch-desc">
+        Клип → cool phrases → разговор. ~90 мин · онлайн.
+        Разово 650 ₽ · места ограничены.
+      </p>
+      <div class="sch-row">
+        <span class="sch-spots" id="sch-spots">Записалось 0 из 8 · места есть</span>
+        <button type="button" class="sch-book" id="sch-open-form">Забронировать →</button>
+      </div>
+
+      <div class="sch-form-wrap" id="sch-form-wrap">
+        <form class="sch-form" id="sch-form">
+          <label>
+            Имя
+            <input name="name" required autocomplete="name" placeholder="Как к вам обращаться" />
+          </label>
+          <label>
+            Telegram или телефон
+            <input name="contact" required autocomplete="tel" placeholder="@username или +7…" />
+          </label>
+          <label>
+            Тариф
+            <select name="tariff">
+              <option value="single">Разово · 650 ₽</option>
+              <option value="pass">Абонемент · уточним в переписке</option>
+            </select>
+          </label>
+          <label>
+            Комментарий
+            <textarea name="note" placeholder="Необязательно"></textarea>
+          </label>
+          <div class="sch-form-actions">
+            <button type="submit" class="sch-book">Отправить бронь</button>
+            <button type="button" class="sch-btn-ghost" id="sch-cancel">Отмена</button>
+          </div>
+        </form>
+        <div class="sch-done" id="sch-done" role="status">
+          <strong>Бронь принята на 24 часа.</strong>
+          Напишите в Telegram для подтверждения и оплаты — место держим до завтра вечером.
+          <br />
+          <!-- Подставь свою ссылку оплаты -->
+          <a class="sch-pay" id="sch-pay" href="#" target="_blank" rel="noopener">Перейти к оплате →</a>
+        </div>
+      </div>
+    </article>
+
+    <p class="sch-note">
+      Пока заявки сохраняются локально в браузере (для теста) и копируются в буфер — пришли текст себе в Telegram.
+      Позже подключим уведомление и настоящую ссылку оплаты.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      var openBtn = document.getElementById("sch-open-form");
+      var wrap = document.getElementById("sch-form-wrap");
+      var form = document.getElementById("sch-form");
+      var cancel = document.getElementById("sch-cancel");
+      var done = document.getElementById("sch-done");
+      var pay = document.getElementById("sch-pay");
+
+      /* Подставь свою платёжную ссылку */
+      var PAY_URL = "";
+
+      if (PAY_URL) pay.href = PAY_URL;
+      else {
+        pay.addEventListener("click", function (e) {
+          e.preventDefault();
+          alert("Ссылку на оплату ещё нужно вставить в schedule.html (переменная PAY_URL).");
+        });
+      }
+
+      openBtn.addEventListener("click", function () {
+        wrap.classList.add("is-open");
+        done.classList.remove("is-show");
+        form.hidden = false;
+        form.querySelector("input[name=name]").focus();
+      });
+
+      cancel.addEventListener("click", function () {
+        wrap.classList.remove("is-open");
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var data = {
+          session: "Суббота 8 августа 2026 · 14:00 · Fleabag",
+          name: form.name.value.trim(),
+          contact: form.contact.value.trim(),
+          tariff: form.tariff.value,
+          note: form.note.value.trim(),
+          at: new Date().toISOString(),
+        };
+        try {
+          var key = "prep_club_bookings";
+          var list = JSON.parse(localStorage.getItem(key) || "[]");
+          list.push(data);
+          localStorage.setItem(key, JSON.stringify(list));
+        } catch (err) {}
+
+        var text =
+          "Бронь клуба\n" +
+          data.session +
+          "\nИмя: " +
+          data.name +
+          "\nКонтакт: " +
+          data.contact +
+          "\nТариф: " +
+          data.tariff +
+          (data.note ? "\nКоммент: " + data.note : "");
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(function () {});
+        }
+
+        form.hidden = true;
+        done.classList.add("is-show");
+      });
+    })();
+  </script>
+</body>
+</html>

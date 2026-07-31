@@ -151,6 +151,7 @@
     var idx = 0;
     var score = 0;
     var locked = false;
+    var advanceTimer = null;
 
     var root = document.createElement("div");
     root.className = "fb-fyp";
@@ -160,7 +161,15 @@
     document.body.appendChild(root);
     document.body.classList.add("fb-fyp-open");
 
+    function clearAdvance() {
+      if (advanceTimer) {
+        clearTimeout(advanceTimer);
+        advanceTimer = null;
+      }
+    }
+
     function close() {
+      clearAdvance();
       document.body.classList.remove("fb-fyp-open");
       if (root.parentNode) root.parentNode.removeChild(root);
       document.removeEventListener("keydown", onKey);
@@ -186,6 +195,7 @@
         "</div>";
       root.querySelector("[data-fyp-close]").onclick = close;
       root.querySelector("[data-fyp-again]").onclick = function () {
+        clearAdvance();
         idx = 0;
         score = 0;
         locked = false;
@@ -214,6 +224,7 @@
         items.length +
         "</div>" +
         "</header>" +
+        '<div class="fb-fyp-scroll">' +
         '<p class="fb-fyp-kicker">For you · ' +
         esc(modeLabel) +
         "</p>" +
@@ -239,11 +250,14 @@
           .join("") +
         "</div>" +
         '<p class="fb-fyp-feedback" data-fyp-fb hidden></p>' +
+        "</div>" +
+        '<footer class="fb-fyp-foot">' +
         '<button type="button" class="fb-fyp-next" data-fyp-next hidden>Next ▾</button>' +
-        '<aside class="fb-fyp-rail" aria-hidden="true">' +
+        '<div class="fb-fyp-rail" aria-hidden="true">' +
         '<div class="fb-fyp-rail-btn" data-fyp-heart>♥</div>' +
         '<div class="fb-fyp-rail-lbl">save</div>' +
-        "</aside>" +
+        "</div>" +
+        "</footer>" +
         "</div>";
 
       root.querySelector("[data-fyp-close]").onclick = close;
@@ -252,9 +266,14 @@
       var heart = root.querySelector("[data-fyp-heart]");
 
       nextBtn.onclick = function () {
+        goNext();
+      };
+
+      function goNext() {
+        clearAdvance();
         idx += 1;
         renderCard();
-      };
+      }
 
       root.querySelectorAll("[data-opt]").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -280,8 +299,10 @@
           fb.className =
             "fb-fyp-feedback " + (ok ? "is-right" : "is-wrong");
           if (ok && heart) heart.classList.add("is-pop");
+          /* Auto-advance — Next stays as a skip if you want faster */
           nextBtn.hidden = false;
-          nextBtn.focus();
+          clearAdvance();
+          advanceTimer = setTimeout(goNext, ok ? 750 : 1100);
         });
       });
     }

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Movie Club · B2+ speaking</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <style>
+    body.intensive-body--movieclub {
+      background:
+        radial-gradient(900px 520px at 50% -15%, rgba(251, 191, 36, 0.14) 0%, transparent 55%),
+        radial-gradient(600px 400px at 100% 40%, rgba(244, 114, 182, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #100e16 0%, #0c0a12 50%, #08060c 100%);
+      --int-gold: #fbbf24;
+      --int-gold-soft: rgba(251, 191, 36, 0.14);
+      --int-coral: #f9a8d4;
+      --int-panel: #16121c;
+      --int-panel-soft: #1c1624;
+      --int-line: #3d2a40;
+      --int-muted: #c4b5d0;
+      --int-dim: #8a7396;
+      --int-text: #fdf4ff;
+    }
+    .intensive-body--movieclub .int-kicker {
+      color: #f9a8d4;
+      text-shadow: 0 0 18px rgba(244, 114, 182, 0.35);
+    }
+    .intensive-body--movieclub .int-title {
+      background: linear-gradient(120deg, #fffbeb 0%, #fde68a 45%, #f9a8d4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .intensive-body--movieclub .int-back {
+      border-color: rgba(251, 191, 36, 0.35);
+      background: rgba(251, 191, 36, 0.08);
+    }
+    .mc-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 22px 28px;
+      margin-bottom: 28px;
+      padding: 24px 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(244, 114, 182, 0.3);
+      background:
+        linear-gradient(125deg, rgba(251, 191, 36, 0.1) 0%, rgba(244, 114, 182, 0.08) 45%, transparent 60%),
+        linear-gradient(180deg, #1a1420 0%, #100e16 100%);
+      box-shadow:
+        0 0 0 1px rgba(251, 191, 36, 0.06),
+        0 28px 64px rgba(0, 0, 0, 0.4),
+        0 0 64px rgba(244, 114, 182, 0.12);
+      overflow: hidden;
+      position: relative;
+    }
+    .mc-hero::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #f472b6, #fbbf24, #f472b6, transparent);
+      opacity: 0.55;
+    }
+    .mc-hero-visual {
+      position: relative;
+      flex: 0 0 auto;
+    }
+    .mc-hero-thumb {
+      display: block;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 22px;
+      border: 2px solid rgba(251, 191, 36, 0.42);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 32px rgba(244, 114, 182, 0.2);
+    }
+    .mc-hero-ring {
+      position: absolute;
+      inset: -7px;
+      border-radius: 26px;
+      border: 1px solid rgba(244, 114, 182, 0.3);
+      pointer-events: none;
+    }
+    .mc-hero-copy {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+    .mc-hero-copy h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.35rem, 4vw, 1.75rem);
+      font-weight: 800;
+      color: #fdf4ff;
+    }
+    .mc-hero-copy p {
+      margin: 0;
+      color: #c4b5d0;
+      line-height: 1.5;
+      max-width: 52ch;
+    }
+    .mc-flow {
+      margin-top: 14px;
+      font-size: 0.82rem;
+      color: #fbbf24;
+      letter-spacing: 0.02em;
+      font-weight: 600;
+    }
+    .mc-grid {
+      display: grid;
+      gap: 14px;
+    }
+    @media (min-width: 720px) {
+      .mc-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .mc-hero-thumb {
+        width: 148px;
+        height: 148px;
+      }
+    }
+    .mc-film {
+      display: block;
+      padding: 18px 18px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(244, 114, 182, 0.22);
+      background: linear-gradient(165deg, #1a1420 0%, #100e16 100%);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .mc-film:hover {
+      border-color: rgba(251, 191, 36, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 28px rgba(244, 114, 182, 0.14);
+    }
+    .mc-film-kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f9a8d4;
+      margin-bottom: 6px;
+    }
+    .mc-film-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fdf4ff;
+      margin-bottom: 6px;
+    }
+    .mc-film-desc {
+      font-size: 0.88rem;
+      color: #c4b5d0;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .mc-film-meta {
+      font-size: 0.78rem;
+      color: #8a7396;
+      font-weight: 600;
+    }
+    .mc-note {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(251, 191, 36, 0.22);
+      background: rgba(251, 191, 36, 0.06);
+      font-size: 0.86rem;
+      color: #c4b5d0;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body class="intensive-body intensive-body--movieclub">
+  <script src="../js/workshop-gate.js"></script>
+  <script>WorkshopGate.guardPage({ homeHref: "../../b2-intensive.html" });</script>
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">Workshop · B2+ – C1</span>
+        <h1 class="int-title">English Movie Club</h1>
+        <p class="int-sub">
+          Cult films · ~10 scenes × ~2 min · cool phrases · talk from every angle.
+          Bring your own licensed clips / timecodes.
+        </p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <section class="mc-hero">
+      <div class="mc-hero-visual">
+        <img
+          class="mc-hero-thumb"
+          src="img/movie-club-cover.png"
+          alt=""
+          width="160"
+          height="160"
+          loading="eager"
+        />
+        <span class="mc-hero-ring" aria-hidden="true"></span>
+      </div>
+      <div class="mc-hero-copy">
+        <h2>Speak the scene · steal the line</h2>
+        <p>
+          One cult film per session. Short clips, living English, and discussion
+          that hits career, love, status, friendship, and “who did I become?”
+        </p>
+        <p class="mc-flow">warm-up → scene → harvest → speak → freer → homework</p>
+      </div>
+    </section>
+
+    <div class="mc-grid">
+      <article class="mc-film">
+        <div class="mc-film-kicker">Coming first</div>
+        <div class="mc-film-title">The Devil Wears Prada</div>
+        <p class="mc-film-desc">Ambition, toxic gloss, friendship vs career — 10 scenes.</p>
+        <div class="mc-film-meta">~10 beats · cool phrases · speak</div>
+      </article>
+      <article class="mc-film">
+        <div class="mc-film-kicker">Cult lineup</div>
+        <div class="mc-film-title">Bridget Jones’s Diary</div>
+        <p class="mc-film-desc">Awkward dating, self-worth, body talk — soft UK energy.</p>
+        <div class="mc-film-meta">Scenes TBD</div>
+      </article>
+      <article class="mc-film">
+        <div class="mc-film-kicker">Cult lineup</div>
+        <div class="mc-film-title">Mean Girls</div>
+        <p class="mc-film-desc">Envy, belonging, reputation — reads differently after 30.</p>
+        <div class="mc-film-meta">Scenes TBD</div>
+      </article>
+      <article class="mc-film">
+        <div class="mc-film-kicker">Cult lineup</div>
+        <div class="mc-film-title">Gone Girl · Black Swan · Little Women</div>
+        <p class="mc-film-desc">Dark marriage, perfectionism, sisters &amp; choice — pick your night.</p>
+        <div class="mc-film-meta">More films unlocking soon</div>
+      </article>
+    </div>
+
+    <p class="mc-note">
+      Architecture ready — same beat pattern as Fleabag (clip → phrases → talk).
+      First full film pack coming next: <strong style="color:#fde68a">The Devil Wears Prada</strong>.
+    </p>
+  </div>
+</body>
+</html>

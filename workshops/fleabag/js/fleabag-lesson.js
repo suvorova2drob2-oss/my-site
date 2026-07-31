@@ -593,7 +593,8 @@
         '<div class="fb-context-label">Lexis · what goes with these words</div><ul class="fb-context-examples fb-context-examples--say">' +
         examples
           .map(function (ex) {
-            var isHead = /^(FLAUNT|INAPPROPRIATE|I CAN.?T WAIT|IF IT.?S ANY CONSOLATION)/i.test(
+            // Lex bank heads look like "RUN A BATH — …" (ALL CAPS label + em dash)
+            var isHead = /^[A-Z0-9][A-Z0-9 /…'.\-]{1,48} —/.test(
               String(ex).trim()
             );
             return (
