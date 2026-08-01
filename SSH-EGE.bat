@@ -1,36 +1,29 @@
 @echo off
 cd /d "%~dp0"
+title EGE update - keep this window open
+color 0A
+
 echo.
 echo  ========================================
 echo   EGE Live - update from GitHub
 echo  ========================================
 echo.
-echo  On GitHub we need commit:
-echo    05de637  Harden EGE Live rooms...
+echo  1) Click inside this black window
+echo  2) Type password - NOTHING will appear
+echo     (that is normal)
+echo  3) Press Enter
+echo  4) Wait. Do NOT close the window.
 echo.
-echo  Connecting and updating...
-echo  (if password asked - type it, Enter)
+echo  Connecting...
 echo.
 
-ssh ege "bash /root/my-site/server/update-live-on-vps.sh && echo. && echo === SERVER NOW === && cd /root/my-site && git log -1 --oneline && systemctl is-active ege-live-rooms"
+ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no ege "bash /root/my-site/server/update-live-on-vps.sh; echo; echo === SERVER NOW ===; cd /root/my-site; git log -1 --oneline; systemctl is-active ege-live-rooms"
 
 echo.
-if errorlevel 1 (
-  echo  ----------------------------------------
-  echo   FAILED - server did NOT update.
-  echo   Common reasons:
-  echo   - wrong password / SSH not connected
-  echo   - window closed too early
-  echo  ----------------------------------------
-) else (
-  echo  ----------------------------------------
-  echo   Look above for line like:
-  echo     05de637 Harden EGE Live rooms...
-  echo   If you see an OLDER hash - pull failed.
-  echo  ----------------------------------------
-  echo.
-  echo   Then open Incognito + Ctrl+F5:
-  echo   http://77.110.113.165:8787/ege/ege-reading-matching-headlines.html
-)
+echo  ========================================
+echo   END. Read the lines ABOVE.
+echo   Need a commit hash + word: active
+echo  ========================================
 echo.
+echo  This window will stay until you press a key.
 pause

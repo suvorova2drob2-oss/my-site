@@ -1168,7 +1168,7 @@
           "Tell the camera one moment you grasped at anything to keep your head above water — use at least 4 phrases from the tape.",
       },
       homework: {
-        note: "Shadow 3–5 lines from tonight’s beats · 3 takes each.",
+        note: "Play tonight’s clips in order (audio only) · shadow 3–5 lines × 3 takes each.",
       },
     },
     {
@@ -1376,7 +1376,7 @@
           "Improvisation: a distraction that almost worked — romance, a sale, a joke — while something heavier sat underneath. 60 s · use at least 4 tape phrases.",
       },
       homework: {
-        note: "Shadow 3–5 lines · optional 45 s aside to camera.",
+        note: "Play tonight’s clips in order (audio only) · shadow 3–5 lines · optional 45 s aside to camera.",
       },
     },
     {
@@ -1401,9 +1401,45 @@
             "I can’t wait to be old",
             "if it’s any consolation",
           ],
+          phraseClips: [
+            {
+              phrase: "really inappropriate",
+              clips: [
+                {
+                  label: "really inappropriate",
+                  videoUrl: "media/s01e03/phrase-really-inappropriate.mp4",
+                },
+                {
+                  label: "really inappropriate · 2",
+                  videoUrl: "media/s01e03/phrase-really-inappropriate-2.mp4",
+                },
+              ],
+            },
+            {
+              phrase: "if it’s any consolation",
+              videoUrl: "media/s01e03/phrase-if-its-any-consolation.mp4",
+            },
+            {
+              phrase: "flaunt your life",
+              videoUrl: "media/s01e03/phrase-flaunt.mp4",
+            },
+            {
+              phrase: "I can’t wait to be old",
+              clips: [
+                {
+                  label: "I can’t wait to…",
+                  videoUrl: "media/s01e03/phrase-i-cant-wait-to.mp4",
+                },
+                {
+                  label: "I can’t wait to leave",
+                  videoUrl: "media/s01e03/phrase-i-cant-wait-to-leave.mp4",
+                },
+              ],
+            },
+          ],
           watch: {
-            timecode: "S1E3 · sisters clip TBD",
-            note: "Add videoUrl when the clip file is ready",
+            videoUrl: "media/s01e03/01-flaunt-your-life.mp4",
+            note: "really inappropriate · flaunt your life · I can’t wait to be old · if it’s any consolation",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -1550,9 +1586,9 @@
             "one of those people who…",
           ],
           watch: {
-            timecode: "S1E3 · Martin / inappropriate aside TBD",
+            videoUrl: "media/s01e03/02-take-offence.mp4",
             note:
-              "He’s one of those men who is explosively sexually inappropriate with everyone, but makes you feel bad if you take offence because he was “just being fun”. Add videoUrl later.",
+              "He’s one of those men who is explosively sexually inappropriate with everyone, but makes you feel bad if you take offence because he was “just being fun”.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -1689,9 +1725,9 @@
             "having an affair",
           ],
           watch: {
-            timecode: "S1E3 · Martin · advice / affair",
+            videoUrl: "media/s01e03/03-tipping-your-prime.mp4",
             note:
-              "Are you having an affair? → A little marital poke isn’t going to kill you. → Would it kill her to take me out to dinner? → get yourself out there… tipping your prime. Add videoUrl later.",
+              "Are you having an affair? → A little marital poke isn’t going to kill you. → Would it kill her to take me out to dinner? → get yourself out there… tipping your prime.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -1827,8 +1863,8 @@
           blocks: ["watch", "context"],
           phrases: ["I couldn’t bear it"],
           watch: {
-            timecode: "S1E3 · birthday / surprise clip TBD",
-            note: "Don’t do a jumpy-outy surprise… don’t sing Happy Birthday — I couldn’t bear it. Add videoUrl later.",
+            videoUrl: "media/s01e03/04-i-couldnt-bear-it.mp4",
+            note: "Don’t do a jumpy-outy surprise… don’t sing Happy Birthday — I couldn’t bear it.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -1929,9 +1965,9 @@
           blocks: ["watch"],
           phrases: [],
           watch: {
-            timecode: "S1E3 · shoe shop / gift for Claire",
+            videoUrl: "media/s01e03/05-get-her-something.mp4",
             note:
-              "What about these? → Get her something she’d never get herself. Surprise her. → She’ll think I’ve gone nuts. → No, she’ll think you see her as this person, and everyone wants to be this person. Add videoUrl later.",
+              "What about these? → Get her something she’d never get herself. Surprise her. → She’ll think I’ve gone nuts. → No, she’ll think you see her as this person, and everyone wants to be this person.",
           },
           speak: {
             mission:
@@ -1987,8 +2023,8 @@
           blocks: ["watch", "context"],
           phrases: ["throw the net out"],
           watch: {
-            timecode: "S1E3 · Time to throw the net out",
-            note: "Time to throw the net out. (Dating hunt starts.) Add videoUrl later.",
+            videoUrl: "media/s01e03/06-time-to-throw-the-net-out.mp4",
+            note: "Time to throw the net out. (Dating hunt starts.)",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -2073,9 +2109,9 @@
             "I’m such a toolbox",
           ],
           watch: {
-            timecode: "S1E3 · Harry / Tube coat / soap",
+            videoUrl: "media/s01e03/07-toolbox.mp4",
             note:
-              "I was not expecting to see you again… I’m chuffed to my boots… thank you for the text, saucy… I’m such a tool box… coat on the Tube… sister’s surprise… soap shop. Add videoUrl later.",
+              "I was not expecting to see you again… I’m chuffed to my boots… thank you for the text, saucy… I’m such a tool box… coat on the Tube… sister’s surprise… soap shop.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -2209,9 +2245,9 @@
             "quite relentless",
           ],
           watch: {
-            timecode: "S1E3 · sex shop / cheap thrill",
+            videoUrl: "media/s01e03/08-what-are-you-craving.mp4",
             note:
-              "What are you craving? → a really, really cheap thrill → sexually frustrated sister → basic bunny → It’s all in the twist → You got me / Didn’t get it → half price because it’s quite relentless. Add videoUrl later.",
+              "What are you craving? → a really, really cheap thrill → sexually frustrated sister → basic bunny → It’s all in the twist → You got me / Didn’t get it → half price because it’s quite relentless.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -2355,9 +2391,9 @@
             "May I cut in?",
           ],
           watch: {
-            timecode: "S1E3 · party · alone / lonely (optional)",
+            videoUrl: "media/s01e03/09-can-i-cut-in.mp4",
             note:
-              "I’m blown away. I had absolutely no idea. Can I just grab you for a second? …can’t stop conjuring an image of you… all alone, feeling so terribly lonely. Just can’t stop picturing it. → I don’t think you have to be alone to be lonely. May I cut in? Add videoUrl later.",
+              "I’m blown away. I had absolutely no idea. Can I just grab you for a second? …can’t stop conjuring an image of you… all alone, feeling so terribly lonely. Just can’t stop picturing it. → I don’t think you have to be alone to be lonely. May I cut in?",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -2472,9 +2508,9 @@
             "could be life-changing",
           ],
           watch: {
-            timecode: "S1E3 · party · birthday business",
+            videoUrl: "media/s01e03/10-jinx-anything.mp4",
             note:
-              "Good birthday business? → Huge… I don’t want to jinx anything, but huge. Could be life-changing. Add videoUrl later.",
+              "Good birthday business? → Huge… I don’t want to jinx anything, but huge. Could be life-changing.",
           },
           context: {
             tone: "Lexical · common patterns with these words",
@@ -2771,7 +2807,7 @@
         ],
       },
       homework: {
-        note: "Re-shadow 3–5 favourite lines · 3 takes. Then open Sticker FYP — swipe through situations, pick the cool phrase (1 of 4).",
+        note: "Play clips in order (audio) · Phrase vault (def → English, forgetting curve) · then FYP / Swipe.",
       },
     },
     {
@@ -2962,6 +2998,7 @@
         teacher: b.teacher || "",
         blocks: b.blocks || ["watch", "phrases", "speak"],
         phrases: b.phrases || [],
+        phraseClips: b.phraseClips || [],
         watch: b.watch || null,
         context: b.context || null,
         speak: b.speak || null,
@@ -2981,13 +3018,27 @@
       prompt: (session && session.finale && session.finale.prompt) || "Improvise with the tape phrases.",
       time: "10–15 min",
     });
+    var clips = [];
+    beats.forEach(function (b, i) {
+      var url = b && b.watch && b.watch.videoUrl;
+      if (!url || /youtu\.be\/|youtube\.com\//i.test(String(url))) return;
+      clips.push({
+        label: (b && b.label) || "Clip " + (i + 1),
+        src: String(url),
+        optional: !!(b && b.optional),
+      });
+    });
     screens.push({
       kind: "homework",
       id: "homework",
       label: "Homework",
       short: "HW",
-      teacher: "Shadowing at home — short lines, several takes.",
-      note: (session && session.homework && session.homework.note) || "Shadow 3–5 lines × 3 takes.",
+      teacher:
+        "Shadowing at home — audio only, clips play one after another. No video.",
+      note:
+        (session && session.homework && session.homework.note) ||
+        "Play the clips in order (audio only) · shadow 3–5 lines × 3 takes.",
+      clips: clips,
       time: "20–30 min",
     });
     return screens;

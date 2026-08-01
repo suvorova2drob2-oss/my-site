@@ -27,7 +27,7 @@ if errorlevel 1 (
   goto end
 )
 
-scp -o PreferredAuthentications=password -o PubkeyAuthentication=no -r "workshops/fleabag/media/s01e01" "workshops/fleabag/media/s01e02" "workshops/fleabag/media/README.md" ege:/root/my-site/workshops/fleabag/media/
+scp -o PreferredAuthentications=password -o PubkeyAuthentication=no -r "workshops/fleabag/media/s01e01" "workshops/fleabag/media/s01e02" "workshops/fleabag/media/s01e03" "workshops/fleabag/media/README.md" ege:/root/my-site/workshops/fleabag/media/
 
 echo.
 echo  ========================================

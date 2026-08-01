@@ -48,6 +48,12 @@
           <span class="int-pill">Improv + HW</span>
         </div>
       </div>
+      <aside
+        id="fb-speak-chip-host"
+        class="fb-speak-rail-host"
+        data-fb-chip-variant="rail"
+        aria-label="Speak Club stats"
+      ></aside>
     </section>
 
     <div class="fb-season-tabs" role="tablist" aria-label="Series">
@@ -63,10 +69,19 @@
   </div>
 
   <script src="js/fleabag-workshop.js"></script>
+  <script src="js/fleabag-speak-desk.js"></script>
   <script>
     (function () {
       var grid = document.getElementById("session-grid");
       var tabs = document.querySelectorAll(".fb-season-tab");
+      if (
+        window.FLEABAG_SPEAK_DESK &&
+        typeof window.FLEABAG_SPEAK_DESK.mountCourseChip === "function"
+      ) {
+        window.FLEABAG_SPEAK_DESK.mountCourseChip(
+          document.getElementById("fb-speak-chip-host")
+        );
+      }
       if (!grid || typeof FLEABAG_WORKSHOP_getSessionsBySeason !== "function") return;
 
       function seasonFromHash() {
