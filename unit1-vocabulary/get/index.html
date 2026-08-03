@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 Vocabulary &mdash; Get</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      font-size: 18px;
+    }
+    .page {
+      width: min(940px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.35rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 1rem; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+      margin-bottom: 18px;
+    }
+    .task h2 { font-size: 1.15rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .meanings-box {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px dashed rgba(134, 239, 172, 0.45);
+      background: rgba(34, 197, 94, 0.08);
+      margin-bottom: 18px;
+    }
+    .meanings-box strong {
+      display: block;
+      color: #86efac;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .meanings-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+    }
+    .meaning-chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.45);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e8f0ff;
+    }
+    .match-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 15rem);
+      gap: 10px 14px;
+      align-items: start;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    @media (max-width: 700px) {
+      .match-row { grid-template-columns: 1fr; }
+    }
+    .match-ans { display: flex; flex-direction: column; min-width: 0; }
+    .match-sent {
+      font-size: 1.02rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+    }
+    .match-sent .get-hl {
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .match-select {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .match-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .match-select.is-ok {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35) !important;
+    }
+    .match-select.is-bad {
+      border-color: #f87171 !important;
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35) !important;
+    }
+    .endings-box {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.45);
+    }
+    .endings-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #bae6fd;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .ending-item {
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+      margin: 0 0 6px;
+    }
+    .ending-item .get-hl {
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .match-row--pair {
+      grid-template-columns: minmax(0, 1fr) minmax(5.5rem, 7rem);
+    }
+    @media (max-width: 700px) {
+      .match-row--pair { grid-template-columns: 1fr; }
+    }
+
+    .example-box {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.06);
+      font-size: 1.02rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: #e8f0ff;
+    }
+    .example-box .ok-opt {
+      font-weight: 800;
+      color: #86efac;
+      text-decoration: underline;
+    }
+    .choice-sent {
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .opt-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      vertical-align: middle;
+      margin: 0 2px;
+    }
+    .opt-btn {
+      border: 1px solid #3d5680;
+      background: #132544;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.3;
+    }
+    .opt-btn:hover { border-color: var(--accent); background: rgba(86, 204, 242, 0.14); }
+    .opt-btn.is-on {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.28);
+      color: #e0f2fe;
+    }
+    .opt-btn.is-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.28);
+    }
+    .opt-btn.is-bad {
+      border-color: #f87171;
+      background: rgba(239, 68, 68, 0.22);
+    }
+    .opt-btn:disabled { cursor: default; opacity: 0.9; }
+    .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.btn-check, button.btn-reset {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    .discuss-block {
+      margin-top: 8px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+    .discuss-block > h2 { font-size: 1.15rem; margin-bottom: 10px; color: #bae6fd; }
+    .discuss-layout { display: grid; gap: 16px; margin-top: 14px; }
+    @media (min-width: 760px) {
+      .discuss-layout { grid-template-columns: 1.35fr 0.9fr; align-items: start; }
+    }
+    .q-stage {
+      border: 1px solid rgba(120, 160, 210, 0.28);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(36, 58, 92, 0.7) 0%, rgba(18, 32, 56, 0.95) 100%);
+      padding: 20px 18px 16px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+    }
+    .q-progress {
+      font-size: 0.82rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px;
+    }
+    .q-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.1rem; height: 2.1rem; border-radius: 999px;
+      background: rgba(94, 200, 240, 0.16); border: 1px solid rgba(94, 200, 240, 0.35);
+      color: #bae6fd; font-weight: 800; margin-bottom: 12px;
+    }
+    .q-text {
+      font-size: clamp(1.15rem, 2.4vw, 1.4rem); font-weight: 600; line-height: 1.4;
+      color: #f4efe4; flex: 1; margin-bottom: 12px;
+    }
+    .q-text strong { color: #fde68a; font-weight: 700; }
+    .speak-cue {
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid rgba(251, 191, 36, 0.35); background: rgba(251, 191, 36, 0.1);
+      color: #fde68a; font-size: 0.95rem; font-weight: 700; line-height: 1.4;
+    }
+    .speak-cue span {
+      display: block; margin-top: 4px; font-weight: 500; color: #fef3c7; font-size: 0.86rem;
+    }
+    .q-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .q-nav button {
+      font: inherit; font-weight: 700; padding: 0.55em 1em; border-radius: 10px; cursor: pointer;
+      border: 1px solid rgba(120, 160, 210, 0.35); background: #1a335c; color: #eef4ff;
+    }
+    .q-nav button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .q-nav #dqNext.is-done {
+      background: linear-gradient(180deg, #2a9a6a 0%, #1e7a54 100%);
+      border-color: rgba(52, 211, 153, 0.45);
+    }
+    .q-dots { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    .q-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(143, 163, 196, 0.35); cursor: pointer;
+    }
+    .q-dot.is-on { background: #5ec8f0; box-shadow: 0 0 0 3px rgba(94, 200, 240, 0.2); }
+    .tips {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(120, 160, 210, 0.28); background: rgba(14, 26, 48, 0.85);
+    }
+    .tips-head {
+      background: linear-gradient(135deg, #1e3a5f 0%, #243b66 100%);
+      padding: 12px 16px; font-size: 0.78rem; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase; color: #dbeafe;
+    }
+    .tips-body { padding: 14px 16px 16px; }
+    .tips-body ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 10px; }
+    .tips-body li { color: #dbeafe; font-size: 0.98rem; line-height: 1.5; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+</head>
+<body>
+  <main class="page" data-mb2-unit="1" data-mb2-skill="vocabulary" data-mb2-ex="get">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary &middot; Get</span>
+        <h1>Vocabulary &mdash; <em style="color:#bae6fd;font-style:normal;">Get</em></h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 1 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <a href="../lifestyle/my-lifestyle.html">Lifestyle</a>
+      <span>|</span>
+      <a href="../clothes-opposites/index.html">Clothes</a>
+      <span>|</span>
+      <span><strong>Get</strong></span>
+      <span>|</span>
+      <a href="#discuss">Discussion</a>
+    </nav>
+
+    <!-- Exercise 1 -->
+    <section class="task" id="ex1">
+      <h2>1 &mdash; Meanings of <em>get</em></h2>
+      <p class="instr">
+        Read the extracts from the listening. Match each use of <strong>get</strong>, together with any associated words in bold, to one of the meanings in the box.
+      </p>
+
+      <div class="meanings-box" aria-label="Meanings">
+        <strong>Meanings</strong>
+        <div class="meanings-list">
+          <span class="meaning-chip">arrive at</span>
+          <span class="meaning-chip">become</span>
+          <span class="meaning-chip">buy</span>
+          <span class="meaning-chip">have the opportunity to</span>
+          <span class="meaning-chip">obtain</span>
+          <span class="meaning-chip">remove from</span>
+        </div>
+      </div>
+
+      <div class="match-row">
+        <p class="match-sent"><strong>1</strong> I <span class="get-hl">get</span> most of what I wear from charity shops.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m1" aria-label="Meaning for sentence 1">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m1"></span>
+        </div>
+      </div>
+      <div class="match-row">
+        <p class="match-sent"><strong>2</strong> You <span class="get-hl">get to</span> support good causes.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m2" aria-label="Meaning for sentence 2">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m2"></span>
+        </div>
+      </div>
+      <div class="match-row">
+        <p class="match-sent"><strong>3</strong> I <span class="get-hl">get</span> suspicious when &hellip; I see that everything on sale is incredibly cheap.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m3" aria-label="Meaning for sentence 3">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m3"></span>
+        </div>
+      </div>
+      <div class="match-row">
+        <p class="match-sent"><strong>4</strong> I usually <span class="get-hl">get</span> that kind of information online.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m4" aria-label="Meaning for sentence 4">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m4"></span>
+        </div>
+      </div>
+      <div class="match-row">
+        <p class="match-sent"><strong>5</strong> I can <span class="get-hl">get</span> something <span class="get-hl">out of</span> the wardrobe and any feelings of insecurity &hellip; will just disappear.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m5" aria-label="Meaning for sentence 5">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m5"></span>
+        </div>
+      </div>
+      <div class="match-row">
+        <p class="match-sent"><strong>6</strong> When I <span class="get-hl">get to</span> work and someone says, &lsquo;Hey, that shirt really suits you&rsquo;, it gives me a real lift.</p>
+        <div class="match-ans">
+          <select class="match-select" id="m6" aria-label="Meaning for sentence 6">
+            <option value="">&mdash; meaning &mdash;</option>
+            <option value="arrive at">arrive at</option>
+            <option value="become">become</option>
+            <option value="buy">buy</option>
+            <option value="have the opportunity to">have the opportunity to</option>
+            <option value="obtain">obtain</option>
+            <option value="remove from">remove from</option>
+          </select>
+          <span class="mb2-key-hint" data-for="m6"></span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check-1">Check Ex. 1</button>
+        <button type="button" class="btn-reset" id="btn-reset-1">Reset Ex. 1</button>
+      </div>
+      <div class="feedback" id="fb1" aria-live="polite"></div>
+    </section>
+
+    <!-- Exercise 2 — coursebook matching -->
+    <section class="task" id="ex2">
+      <h2>2 &mdash; Match beginnings and endings</h2>
+      <p class="instr">
+        Match each beginning 1&ndash;7 with an appropriate ending a&ndash;g.
+      </p>
+
+      <div class="endings-box" aria-label="Endings a to g">
+        <strong>Endings</strong>
+        <p class="ending-item"><strong>a</strong> <span class="get-hl">ready.</span> I won&rsquo;t keep you waiting long.</p>
+        <p class="ending-item"><strong>b</strong> <span class="get-hl">the chance to</span> go diving on a coral reef there.</p>
+        <p class="ending-item"><strong>c</strong> <span class="get-hl">in touch with</span> our sales team if you have any questions.</p>
+        <p class="ending-item"><strong>d</strong> <span class="get-hl">over my shyness</span> and talked to a few people.</p>
+        <p class="ending-item"><strong>e</strong> <span class="get-hl">paid</span> enough for the work I do here.</p>
+        <p class="ending-item"><strong>f</strong> <span class="get-hl">stuck</span> in the snow and I had to walk.</p>
+        <p class="ending-item"><strong>g</strong> <span class="get-hl">by</span> without one. I just use public transport.</p>
+      </div>
+
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>1</strong> Please do not hesitate to <span class="get-hl">get</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-1" aria-label="Ending for beginning 1">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-1"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>2</strong> Come in. I have to finish <span class="get-hl">getting</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-2" aria-label="Ending for beginning 2">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-2"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>3</strong> I want to change jobs. I don&rsquo;t <span class="get-hl">get</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-3" aria-label="Ending for beginning 3">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-3"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>4</strong> I&rsquo;m sorry I&rsquo;m so late. My bus <span class="get-hl">got</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-4" aria-label="Ending for beginning 4">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-4"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>5</strong> I don&rsquo;t own a car; I can easily <span class="get-hl">get</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-5" aria-label="Ending for beginning 5">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-5"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>6</strong> When we lived in Australia, I <span class="get-hl">got</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-6" aria-label="Ending for beginning 6">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-6"></span>
+        </div>
+      </div>
+      <div class="match-row match-row--pair">
+        <p class="match-sent"><strong>7</strong> I enjoyed the party once I had <span class="get-hl">got</span></p>
+        <div class="match-ans">
+          <select class="match-select" id="g2-7" aria-label="Ending for beginning 7">
+            <option value="">&mdash;</option>
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+            <option value="d">d</option>
+            <option value="e">e</option>
+            <option value="f">f</option>
+            <option value="g">g</option>
+          </select>
+          <span class="mb2-key-hint" data-for="g2-7"></span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check-2">Check Ex. 2</button>
+        <button type="button" class="btn-reset" id="btn-reset-2">Reset Ex. 2</button>
+      </div>
+      <div class="feedback" id="fb2" aria-live="polite"></div>
+    </section>
+
+    <!-- Exercise 3 — extra practice (choose the word) -->
+    <section class="task" id="ex3">
+      <h2>3 &mdash; Phrasal verbs and expressions</h2>
+      <p class="instr">
+        Choose the correct options to complete the phrasal verbs and expressions. There is an example at the beginning (0).
+      </p>
+
+      <div class="example-box">
+        <strong>0</strong> That jumper looks so scruffy. When are you going to get away / along / lost / <span class="ok-opt">rid</span> of it?
+      </div>
+
+      <p class="choice-sent" data-q="1">
+        <strong>1</strong> Here&rsquo;s my phone number in case you need to get in
+        <span class="opt-group" role="group" aria-label="Question 1">
+          <button type="button" class="opt-btn" data-val="talk">talk</button>
+          <button type="button" class="opt-btn" data-val="speak">speak</button>
+          <button type="button" class="opt-btn" data-val="touch">touch</button>
+          <button type="button" class="opt-btn" data-val="tact">tact</button>
+        </span>
+        with me.
+      </p>
+      <p class="choice-sent" data-q="2">
+        <strong>2</strong> He was a lovely man &ndash; a pity you never got the
+        <span class="opt-group" role="group" aria-label="Question 2">
+          <button type="button" class="opt-btn" data-val="way">way</button>
+          <button type="button" class="opt-btn" data-val="event">event</button>
+          <button type="button" class="opt-btn" data-val="ability">ability</button>
+          <button type="button" class="opt-btn" data-val="chance">chance</button>
+        </span>
+        to meet him.
+      </p>
+      <p class="choice-sent" data-q="3">
+        <strong>3</strong> I asked Emma how much she got
+        <span class="opt-group" role="group" aria-label="Question 3">
+          <button type="button" class="opt-btn" data-val="paid">paid</button>
+          <button type="button" class="opt-btn" data-val="earned">earned</button>
+          <button type="button" class="opt-btn" data-val="money">money</button>
+          <button type="button" class="opt-btn" data-val="salary">salary</button>
+        </span>
+        but she refused to tell me.
+      </p>
+      <p class="choice-sent" data-q="4">
+        <strong>4</strong> Come on, hurry up and get
+        <span class="opt-group" role="group" aria-label="Question 4">
+          <button type="button" class="opt-btn" data-val="moved">moved</button>
+          <button type="button" class="opt-btn" data-val="ready">ready</button>
+          <button type="button" class="opt-btn" data-val="ordered">ordered</button>
+          <button type="button" class="opt-btn" data-val="fit">fit</button>
+        </span>
+        ! Your bus leaves in five minutes.
+      </p>
+      <p class="choice-sent" data-q="5">
+        <strong>5</strong> Paul&rsquo;s parents are concerned about his behaviour. He&rsquo;s always getting into
+        <span class="opt-group" role="group" aria-label="Question 5">
+          <button type="button" class="opt-btn" data-val="problem">problem</button>
+          <button type="button" class="opt-btn" data-val="trouble">trouble</button>
+          <button type="button" class="opt-btn" data-val="punishment">punishment</button>
+          <button type="button" class="opt-btn" data-val="damage">damage</button>
+        </span>
+        at school.
+      </p>
+      <p class="choice-sent" data-q="6">
+        <strong>6</strong> Amy was upset when her sister moved out, but she got
+        <span class="opt-group" role="group" aria-label="Question 6">
+          <button type="button" class="opt-btn" data-val="out">out</button>
+          <button type="button" class="opt-btn" data-val="off">off</button>
+          <button type="button" class="opt-btn" data-val="by">by</button>
+          <button type="button" class="opt-btn" data-val="over">over</button>
+        </span>
+        it eventually.
+      </p>
+      <p class="choice-sent" data-q="7">
+        <strong>7</strong> I can&rsquo;t speak French, but I always manage to get
+        <span class="opt-group" role="group" aria-label="Question 7">
+          <button type="button" class="opt-btn" data-val="across">across</button>
+          <button type="button" class="opt-btn" data-val="through">through</button>
+          <button type="button" class="opt-btn" data-val="by">by</button>
+          <button type="button" class="opt-btn" data-val="over">over</button>
+        </span>
+        with a dictionary and a few gestures.
+      </p>
+      <p class="choice-sent" data-q="8">
+        <strong>8</strong> We got
+        <span class="opt-group" role="group" aria-label="Question 8">
+          <button type="button" class="opt-btn" data-val="stuck">stuck</button>
+          <button type="button" class="opt-btn" data-val="held">held</button>
+          <button type="button" class="opt-btn" data-val="kept">kept</button>
+          <button type="button" class="opt-btn" data-val="halted">halted</button>
+        </span>
+        in a traffic jam and missed the beginning of the concert.
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check-3">Check Ex. 3</button>
+        <button type="button" class="btn-reset" id="btn-reset-3">Reset Ex. 3</button>
+      </div>
+      <div class="feedback" id="fb3" aria-live="polite"></div>
+    </section>
+
+    <section class="discuss-block task" id="discuss" style="margin-bottom:0;">
+      <h2>Discussion</h2>
+      <p class="instr">
+        Discuss the following questions. Use the bold <em>get</em> phrases in your answers.
+      </p>
+      <div class="discuss-layout">
+        <div class="q-stage" aria-live="polite">
+          <p class="q-progress" id="qProgress">Question 1 / 5</p>
+          <div class="q-num" id="qNum" aria-hidden="true">1</div>
+          <p class="q-text" id="qText"></p>
+          <p class="speak-cue">Try to use the highlighted phrase naturally.</p>
+          <div class="q-nav">
+            <button type="button" id="dqPrev">&larr; Previous</button>
+            <button type="button" id="dqNext">Next &rarr;</button>
+            <div class="q-dots" id="qDots" aria-hidden="true"></div>
+          </div>
+        </div>
+        <aside class="tips">
+          <div class="tips-head">Key chunks</div>
+          <div class="tips-body">
+            <ul>
+              <li><strong>get ready for school / work</strong></li>
+              <li><strong>get to school / work</strong></li>
+              <li><strong>get into trouble</strong></li>
+              <li><strong>get rid of</strong></li>
+              <li><strong>get angry</strong> / <strong>get over your anger</strong></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var KEY1 = {
+    1: "buy",
+    2: "have the opportunity to",
+    3: "become",
+    4: "obtain",
+    5: "remove from",
+    6: "arrive at"
+  };
+
+  /** Coursebook Ex. 2 key: 1c 2a 3e 4f 5g 6b 7d */
+  var KEY2 = {
+    1: "c",
+    2: "a",
+    3: "e",
+    4: "f",
+    5: "g",
+    6: "b",
+    7: "d"
+  };
+
+  var SHOW2 = {
+    1: "→ c (get in touch with …)",
+    2: "→ a (getting ready …)",
+    3: "→ e (get paid …)",
+    4: "→ f (got stuck …)",
+    5: "→ g (get by without one …)",
+    6: "→ b (got the chance to …)",
+    7: "→ d (got over my shyness …)"
+  };
+
+  var KEY3 = {
+    1: "touch",
+    2: "chance",
+    3: "paid",
+    4: "ready",
+    5: "trouble",
+    6: "over",
+    7: "by",
+    8: "stuck"
+  };
+
+  var SHOW3 = {
+    1: "get in touch with",
+    2: "got the chance to",
+    3: "got paid",
+    4: "get ready",
+    5: "getting into trouble",
+    6: "got over it",
+    7: "get by",
+    8: "got stuck"
+  };
+
+  var answers3 = {};
+
+  function setKeyHint(selectEl, show, keyText) {
+    var hint = selectEl.parentNode && selectEl.parentNode.querySelector(".mb2-key-hint");
+    if (!hint) return;
+    hint.textContent = show ? keyText : "";
+    hint.classList.toggle("is-show", !!show);
+  }
+
+  document.querySelectorAll("#ex1 .match-select").forEach(function (el) {
+    el.addEventListener("change", function () {
+      this.classList.remove("is-ok", "is-bad");
+      setKeyHint(this, false, "");
+      document.getElementById("fb1").classList.remove("show");
+    });
+  });
+
+  document.querySelectorAll("#ex2 .match-select").forEach(function (el) {
+    el.addEventListener("change", function () {
+      this.classList.remove("is-ok", "is-bad");
+      setKeyHint(this, false, "");
+      document.getElementById("fb2").classList.remove("show");
+    });
+  });
+
+  document.getElementById("btn-check-1").addEventListener("click", function () {
+    var okc = 0;
+    var n = 6;
+    for (var i = 1; i <= n; i++) {
+      var el = document.getElementById("m" + i);
+      var key = KEY1[i];
+      var ok = el.value === key;
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(ok ? "is-ok" : "is-bad");
+      setKeyHint(el, !ok, key);
+      if (ok) okc++;
+    }
+    var fb = document.getElementById("fb1");
+    fb.classList.add("show");
+    fb.innerHTML =
+      okc === n
+        ? "<strong>All 6 correct.</strong>"
+        : "Score: <strong>" + okc + "</strong> / " + n + ". Green = correct; red = wrong (key shown under the box).";
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+  });
+
+  document.getElementById("btn-reset-1").addEventListener("click", function () {
+    for (var i = 1; i <= 6; i++) {
+      var el = document.getElementById("m" + i);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+      setKeyHint(el, false, "");
+    }
+    var fb = document.getElementById("fb1");
+    fb.classList.remove("show");
+    fb.textContent = "";
+  });
+
+  document.getElementById("btn-check-2").addEventListener("click", function () {
+    var okc = 0;
+    var n = 7;
+    for (var i = 1; i <= n; i++) {
+      var el = document.getElementById("g2-" + i);
+      var key = KEY2[i];
+      var ok = el.value === key;
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(ok ? "is-ok" : "is-bad");
+      setKeyHint(el, !ok, SHOW2[i]);
+      if (ok) okc++;
+    }
+    var fb = document.getElementById("fb2");
+    fb.classList.add("show");
+    fb.innerHTML =
+      okc === n
+        ? "<strong>All 7 correct.</strong>"
+        : "Score: <strong>" + okc + "</strong> / " + n + ". Green = correct; red = wrong (key under the box).";
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+  });
+
+  document.getElementById("btn-reset-2").addEventListener("click", function () {
+    for (var i = 1; i <= 7; i++) {
+      var el = document.getElementById("g2-" + i);
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+      setKeyHint(el, false, "");
+    }
+    var fb = document.getElementById("fb2");
+    fb.classList.remove("show");
+    fb.textContent = "";
+  });
+
+  document.querySelectorAll("#ex3 .choice-sent").forEach(function (row) {
+    var q = row.getAttribute("data-q");
+    row.querySelectorAll(".opt-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.disabled) return;
+        row.querySelectorAll(".opt-btn").forEach(function (b) {
+          b.classList.remove("is-on", "is-ok", "is-bad");
+        });
+        btn.classList.add("is-on");
+        answers3[q] = btn.getAttribute("data-val");
+        document.getElementById("fb3").classList.remove("show");
+      });
+    });
+  });
+
+  document.getElementById("btn-check-3").addEventListener("click", function () {
+    var okc = 0;
+    var n = 8;
+    for (var i = 1; i <= n; i++) {
+      var row = document.querySelector('#ex3 .choice-sent[data-q="' + i + '"]');
+      var chosen = answers3[i];
+      var correct = KEY3[i];
+      var ok = chosen === correct;
+      row.querySelectorAll(".opt-btn").forEach(function (b) {
+        b.disabled = true;
+        b.classList.remove("is-ok", "is-bad");
+        var v = b.getAttribute("data-val");
+        if (v === correct) b.classList.add("is-ok");
+        else if (v === chosen && chosen !== correct) b.classList.add("is-bad");
+      });
+      var hint = row.querySelector(".mb2-key-hint");
+      if (!hint) {
+        hint = document.createElement("span");
+        hint.className = "mb2-key-hint";
+        row.appendChild(hint);
+      }
+      hint.textContent = ok ? "" : SHOW3[i];
+      hint.classList.toggle("is-show", !ok);
+      if (ok) okc++;
+    }
+    var fb = document.getElementById("fb3");
+    fb.classList.add("show");
+    fb.innerHTML =
+      okc === n
+        ? "<strong>All 8 correct.</strong>"
+        : "Score: <strong>" + okc + "</strong> / " + n + ". Green = correct option; red = your wrong pick (key under the line).";
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+  });
+
+  document.getElementById("btn-reset-3").addEventListener("click", function () {
+    answers3 = {};
+    document.querySelectorAll("#ex3 .choice-sent .opt-btn").forEach(function (b) {
+      b.disabled = false;
+      b.classList.remove("is-on", "is-ok", "is-bad");
+    });
+    document.querySelectorAll("#ex3 .choice-sent .mb2-key-hint").forEach(function (h) {
+      h.textContent = "";
+      h.classList.remove("is-show");
+    });
+    var fb = document.getElementById("fb3");
+    fb.classList.remove("show");
+    fb.textContent = "";
+  });
+})();
+
+(function () {
+  var QUESTIONS = [
+    "How quickly do you <strong>get ready for school/work</strong> in the morning?",
+    "How do you <strong>get to school/work</strong>? How long does it take you to get there?",
+    "Did/Do you often <strong>get into trouble</strong> at school? What was the worst thing you ever did?",
+    "Have you <strong>got rid of</strong> all your childhood toys and books? Why/Why not?",
+    "What sort of things do you do when you <strong>get angry</strong>? How quickly do you <strong>get over your anger</strong>?"
+  ];
+  var idx = 0;
+  var awardedDone = false;
+  var progress = document.getElementById("qProgress");
+  var num = document.getElementById("qNum");
+  var text = document.getElementById("qText");
+  var dots = document.getElementById("qDots");
+  var btnPrev = document.getElementById("dqPrev");
+  var btnNext = document.getElementById("dqNext");
+
+  dots.innerHTML = QUESTIONS.map(function (_, i) {
+    return '<span class="q-dot" data-i="' + i + '"></span>';
+  }).join("");
+
+  function saveProgressDone() {
+    if (!window.MasteringB2Progress) return;
+    var res = MasteringB2Progress.record({
+      unit: 1,
+      skill: "vocabulary",
+      exerciseId: "get-speak",
+      percent: 100
+    });
+    if (res && res.updated && res.percent >= 100 && !awardedDone) {
+      awardedDone = true;
+      try {
+        var k = "masteringB2Score";
+        var s = Math.max(0, Math.floor(Number(localStorage.getItem(k)) || 0));
+        localStorage.setItem(k, String(s + 8));
+      } catch (e) {}
+      if (window.MasteringB2Daily) MasteringB2Daily.addPoints(8);
+    }
+  }
+
+  function render() {
+    var last = idx >= QUESTIONS.length - 1;
+    progress.textContent = "Question " + (idx + 1) + " / " + QUESTIONS.length;
+    num.textContent = String(idx + 1);
+    text.innerHTML = QUESTIONS[idx];
+    btnPrev.disabled = idx <= 0;
+    btnNext.textContent = last ? "Done" : "Next \u2192";
+    btnNext.classList.toggle("is-done", last);
+    dots.querySelectorAll(".q-dot").forEach(function (d, i) {
+      d.classList.toggle("is-on", i === idx);
+    });
+  }
+
+  btnPrev.addEventListener("click", function () {
+    if (idx > 0) { idx -= 1; render(); }
+  });
+  btnNext.addEventListener("click", function () {
+    if (idx >= QUESTIONS.length - 1) {
+      saveProgressDone();
+      return;
+    }
+    idx += 1;
+    render();
+  });
+  dots.addEventListener("click", function (e) {
+    var t = e.target.closest(".q-dot");
+    if (!t) return;
+    idx = parseInt(t.getAttribute("data-i"), 10) || 0;
+    render();
+  });
+  render();
+})();
+  </script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

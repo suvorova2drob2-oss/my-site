@@ -1,0 +1,43 @@
+---
+description: Mastering B2 — real progress only; done at 80–100%; no % for mere page open
+globs: js/mastering-b2*.js,**/unit*.html,unit*-*/**/index.html,css/mastering-b2*.css
+alwaysApply: false
+---
+
+# Mastering B2 — real progress & “done”
+
+## Real percent only (everywhere)
+
+- **Never** write progress just because the learner **opened** a page or flipped speaking questions.
+- **Never** invent engagement placeholders (old bug: auto **35%** / floor **60%**).
+- Written tasks: record only after **Check** with a real score → `recordCheck` / `recordCheckFromDom(correct, total)`.
+- Speaking / Discussion: record only when they press **Done** on the last step (typically **100%**). Do **not** call `record` from `render()` / on load / on Next.
+- Hub badges show that exercise’s stored % — if nothing was submitted, show **no** percent (not started).
+
+## Done threshold
+
+- **Done / Passed** only if best score is **80–100%** (`PASS_THRESHOLD = 80` in `js/mastering-b2-skill-progress.js`).
+- In progress: `0 < percent < 80` → show **%**, not ✓ / “done”.
+
+## Hub vs exercise cards
+
+| Card type | Attributes | Status source |
+|-----------|------------|---------------|
+| Skill folder on `unitN.html` | `data-mb2-hub="skill"` + `data-mb2-skill` | **Every required** leaf in `UNIT_SKILL_EXERCISES[unit][skill]` ≥ 80% (missing = not done) |
+| Leaf exercise | `data-mb2-unit` + `data-mb2-skill` + **`data-mb2-ex`** — **no** `hub="skill"` | That **exact** `exerciseId` only |
+
+When you **add a new exercise** under a skill, also add its `data-mb2-ex` to **`UNIT_SKILL_EXERCISES`** in `js/mastering-b2-skill-progress.js`. Otherwise the skill folder can keep the green ✓ from older completed items only.
+
+**Forbidden:**
+
+- `data-mb2-hub="skill"` on a single worksheet (false whole-skill “done”).
+- Loose `exerciseId` matching (`get` ↔ `get-speak`) — use **exact** ids.
+- Treating “all stored rows ≥ 80%” as skill done when the catalog lists more activities.
+
+## Auto helper
+
+`js/mastering-b2-exercise-auto.js`: harvest score after Check; if no score → **write nothing**. Done/Save → 100% only for explicit completion labels.
+
+## Cleanup
+
+`purgePhantomScores()` (once per browser via `masteringB2ProgressPurgeV3`) drops old 35% engagement rows and speaking/discussion browse scores under 100%.

@@ -1,6 +1,9 @@
 /**
  * CPE Reading Part 7 — multiple matching (sections A–F, reusable pack).
  * mountPage({ pack }) — see unit3-reading-innovation-limits-data.js
+ *
+ * UX: sticky question rail + letter chips (not &lt;select&gt;), aligned with
+ * FCE Part 7 — see .cursor/rules/fce-reading-part7-matching-sticky-rail.mdc
  */
 (function (W) {
   "use strict";
@@ -19,6 +22,18 @@
     var L = String(letter || "");
     if (names[L]) return L + " (" + names[L] + ")";
     return L;
+  }
+
+  function setLetterButtons(item, chosen) {
+    item.querySelectorAll(".letter-btn").forEach(function (btn) {
+      btn.classList.toggle("is-on", btn.getAttribute("data-letter") === chosen);
+    });
+  }
+
+  function setLettersDisabled(item, disabled) {
+    item.querySelectorAll(".letter-btn").forEach(function (btn) {
+      btn.disabled = disabled;
+    });
   }
 
   function persistExamResult(pack, correct, total) {
@@ -41,7 +56,7 @@
       p.exams[examId].attempts.push({
         at: new Date().toISOString(),
         correct: correct,
-        total: total,
+        total: total
       });
       if (p.exams[examId].attempts.length > 20) {
         p.exams[examId].attempts = p.exams[examId].attempts.slice(-20);
@@ -63,16 +78,15 @@
 
     var key = pack.key || {};
     var explanations = pack.explanations || {};
-    var selectLabel = pack.selectLabel || "Section";
     var submitted = false;
     var answers = {};
 
     function renderPassages() {
       var root = document.getElementById("passages-root");
       var strip = document.getElementById("tab-strip");
-      if (!root || !strip) return;
+      if (!root) return;
       root.innerHTML = "";
-      strip.innerHTML = "";
+      if (strip) strip.innerHTML = "";
 
       pack.passages.forEach(function (p, idx) {
         var article = el("article", "passage");
@@ -90,6 +104,7 @@
         article.appendChild(body);
         root.appendChild(article);
 
+        if (!strip) return;
         var tab = document.createElement("button");
         tab.type = "button";
         tab.textContent = p.short ? p.letter + " · " + p.short : p.letter;
@@ -120,33 +135,33 @@
         var item = el("div", "q-item");
         item.dataset.qid = String(s.id);
 
-        item.appendChild(el("div", "q-num", "Question " + s.id));
+        item.appendChild(el("div", "q-num", String(s.id) + "."));
         item.appendChild(el("div", "q-text", s.text));
 
-        var wrap = el("div", "q-select-wrap");
-        wrap.appendChild(el("label", null, selectLabel));
-        var sel = document.createElement("select");
-        sel.id = "sel-" + s.id;
-        sel.dataset.qid = String(s.id);
-        var opt0 = document.createElement("option");
-        opt0.value = "";
-        opt0.textContent = "\u2014";
-        sel.appendChild(opt0);
+        var lettersWrap = el("div", "q-letters");
+        lettersWrap.setAttribute("role", "group");
+        lettersWrap.setAttribute("aria-label", "Answer for statement " + s.id);
         letters.forEach(function (L) {
-          var o = document.createElement("option");
-          o.value = L;
-          o.textContent = labelForLetter(pack, L);
-          sel.appendChild(o);
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letter-btn";
+          btn.setAttribute("data-letter", L);
+          btn.textContent = L;
+          btn.title = labelForLetter(pack, L);
+          btn.addEventListener("click", function () {
+            if (submitted) return;
+            if (answers[s.id] === L) {
+              delete answers[s.id];
+              setLetterButtons(item, "");
+            } else {
+              answers[s.id] = L;
+              setLetterButtons(item, L);
+            }
+            updateSubmitState();
+          });
+          lettersWrap.appendChild(btn);
         });
-        sel.addEventListener("change", function () {
-          if (submitted) return;
-          var v = sel.value;
-          if (v) answers[s.id] = v;
-          else delete answers[s.id];
-          updateSubmitState();
-        });
-        wrap.appendChild(sel);
-        item.appendChild(wrap);
+        item.appendChild(lettersWrap);
 
         var res = el("div", "result-line");
         res.id = "res-" + s.id;
@@ -171,15 +186,10 @@
         var expl = el("div", "explanation");
         expl.id = "expl-" + s.id;
         var ex = explanations[s.id] || {};
-        var who =
-          "Answer: " +
-          (ex.letter || key[s.id] || "?") +
-          (ex.letter && pack.names && pack.names[ex.letter]
-            ? " (" + pack.names[ex.letter] + ")"
-            : "");
+        var whoLetter = ex.letter || key[s.id] || "?";
         expl.innerHTML =
-          "<div class=\"who\">" +
-          who +
+          "<div class=\"who\">Answer: " +
+          labelForLetter(pack, whoLetter) +
           "</div><blockquote>&ldquo;" +
           (ex.quote || "") +
           "&rdquo;</blockquote>";
@@ -201,7 +211,6 @@
       var correctCount = 0;
       pack.statements.forEach(function (s) {
         var item = document.querySelector('.q-item[data-qid="' + s.id + '"]');
-        var sel = document.getElementById("sel-" + s.id);
         var res = document.getElementById("res-" + s.id);
         var why = document.getElementById("why-" + s.id);
         var correct = key[s.id];
@@ -228,7 +237,7 @@
         why.disabled = false;
         why.textContent = "Why?";
         item.querySelector(".explanation").classList.remove("open");
-        sel.disabled = true;
+        setLettersDisabled(item, true);
       });
       var btn = document.getElementById("btn-submit");
       if (btn) btn.disabled = true;
@@ -240,11 +249,8 @@
       answers = {};
       pack.statements.forEach(function (s) {
         var item = document.querySelector('.q-item[data-qid="' + s.id + '"]');
-        var sel = document.getElementById("sel-" + s.id);
-        if (sel) {
-          sel.value = "";
-          sel.disabled = false;
-        }
+        setLetterButtons(item, "");
+        setLettersDisabled(item, false);
         item.classList.remove("correct", "incorrect");
         var res = document.getElementById("res-" + s.id);
         if (res) res.style.display = "none";

@@ -9,7 +9,10 @@
   "use strict";
 
   var STORAGE_KEY = "masteringB2SkillProgress";
-  var PASS_THRESHOLD = 60;
+  /** One-time cleanup of browse/engagement fake percents (see purgePhantomScores). */
+  var PURGE_FLAG = "masteringB2ProgressPurgeV3";
+  /** Done / Passed only at 80–100% (never mark done for engagement-only scores). */
+  var PASS_THRESHOLD = 80;
 
   var SKILL_LABELS = {
     reading: "Reading",
@@ -22,8 +25,8 @@
 
   /** Skills required on each unit hub (from unitN.html cards). */
   var UNIT_SKILLS = {
-    1: ["speaking", "vocabulary"],
-    2: ["uoe"],
+    1: ["speaking", "vocabulary", "uoe"],
+    2: ["speaking", "uoe"],
     3: ["listening", "reading", "uoe", "grammar"],
     4: ["uoe"],
     5: ["reading", "listening", "grammar", "uoe"],
@@ -34,6 +37,28 @@
     10: ["reading", "listening", "grammar", "uoe", "vocabulary", "speaking"],
     11: ["vocabulary", "reading", "listening", "grammar", "uoe"],
     12: ["listening", "reading", "vocabulary", "grammar", "uoe"],
+  };
+
+  /**
+   * Leaf exerciseIds that must be done for a skill folder ✓ on unitN.html.
+   * When you add a new activity, add its data-mb2-ex here — otherwise the skill
+   * stays “done” from older completed items only.
+   * Units/skills omitted → legacy fallback (average of whatever is already stored).
+   */
+  var UNIT_SKILL_EXERCISES = {
+    1: {
+      speaking: ["interview-part1", "long-turn-lifestyle", "get-used-to"],
+      vocabulary: ["my-lifestyle", "clothes-opposites", "get"],
+      uoe: [
+        "unit1-p1-young-entrepreneurs",
+        "unit1-p2-blue-zones",
+        "unit1-p4-kwt",
+      ],
+    },
+    2: {
+      speaking: ["interview-part1"],
+      uoe: ["unit2-uoe"],
+    },
   };
 
   function pad(n) {
@@ -97,6 +122,43 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
     } catch (e) {}
   }
+
+  /**
+   * Remove percents that were never real submissions:
+   * - engagement fallback 35%
+   * - speaking/discussion browse progress (&lt; 100%)
+   */
+  function purgePhantomScores() {
+    try {
+      if (localStorage.getItem(PURGE_FLAG) === "1") return;
+    } catch (e0) {}
+    var store = load();
+    var changed = false;
+    Object.keys(store).forEach(function (k) {
+      var row = store[k];
+      if (!row || typeof row.percent !== "number") return;
+      var pct = clampPercent(row.percent);
+      var ex = k.split(":")[2] || "";
+      var speakLike = /(?:^|-)(discussion|speak|interview)(?:-|$)/i.test(ex);
+      if (pct === 35) {
+        delete store[k];
+        changed = true;
+        return;
+      }
+      if (speakLike && pct < 100) {
+        delete store[k];
+        changed = true;
+      }
+    });
+    if (changed) save(store);
+    try {
+      localStorage.setItem(PURGE_FLAG, "1");
+    } catch (e1) {}
+  }
+
+  try {
+    purgePhantomScores();
+  } catch (ePurge) {}
 
   /**
    * Record best percent for an exercise.
@@ -178,14 +240,54 @@
     return out;
   }
 
+  function requiredExercises(unit, skill) {
+    var u = normUnit(unit);
+    var s = normSkill(skill);
+    var byUnit = UNIT_SKILL_EXERCISES[u];
+    if (!byUnit || !s || !byUnit[s] || !byUnit[s].length) return null;
+    return byUnit[s].slice();
+  }
+
   function skillAverage(unit, skill) {
+    var required = requiredExercises(unit, skill);
+    if (required && required.length) {
+      var sum = 0;
+      var any = false;
+      for (var i = 0; i < required.length; i++) {
+        var p = getExercisePercent(unit, skill, required[i]);
+        if (p != null) any = true;
+        sum += p == null ? 0 : p;
+      }
+      if (!any) return null;
+      return Math.round(sum / required.length);
+    }
     var rows = exercisesFor(unit, skill);
     if (!rows.length) return null;
-    var sum = 0;
+    var sum2 = 0;
     rows.forEach(function (r) {
-      sum += r.percent;
+      sum2 += r.percent;
     });
-    return Math.round(sum / rows.length);
+    return Math.round(sum2 / rows.length);
+  }
+
+  /**
+   * Skill folder ✓ only when every required exercise is ≥ PASS_THRESHOLD.
+   * Missing catalog items count as not done (so new activities clear the badge).
+   */
+  function skillAllGood(unit, skill) {
+    var required = requiredExercises(unit, skill);
+    if (required && required.length) {
+      for (var i = 0; i < required.length; i++) {
+        if (!isGoodPercent(getExercisePercent(unit, skill, required[i]))) return false;
+      }
+      return true;
+    }
+    var rows = exercisesFor(unit, skill);
+    if (!rows.length) return false;
+    for (var j = 0; j < rows.length; j++) {
+      if (!isGoodPercent(rows[j].percent)) return false;
+    }
+    return true;
   }
 
   function unitSkills(unit) {
@@ -203,7 +305,7 @@
         label: SKILL_LABELS[sk] || sk,
         percent: avg,
         started: avg != null,
-        passed: avg != null && avg >= PASS_THRESHOLD,
+        passed: skillAllGood(u, sk),
       };
     });
     var startedSkills = skillRows.filter(function (r) {
@@ -223,7 +325,7 @@
     var passed =
       skills.length > 0 &&
       skillRows.every(function (r) {
-        return r.passed;
+        return skillAllGood(u, r.skill);
       });
     var status = "not_started";
     if (passed) status = "passed";
@@ -298,18 +400,29 @@
     if (!u || !s || !ex) return null;
     var row = load()[makeKey(u, s, ex)];
     if (row && typeof row.percent === "number") return clampPercent(row.percent);
-    // Loose match: collocation-builder ↔ lifestyle-collocation-builder
-    var rows = exercisesFor(u, s);
-    for (var i = 0; i < rows.length; i++) {
-      var id = rows[i].exerciseId;
-      if (id === ex) return rows[i].percent;
-      if (id.indexOf(ex) !== -1 || ex.indexOf(id) !== -1) return rows[i].percent;
-    }
+    // Exact id only — never let "get" steal percent from "get-speak"
     return null;
   }
 
   function isGoodPercent(percent) {
-    return percent != null && percent >= PASS_THRESHOLD;
+    return percent != null && percent >= PASS_THRESHOLD && percent <= 100;
+  }
+
+  /** True for unitN-vocabulary / speaking / … folder hubs — not leaf exercises. */
+  function isSkillFolderExerciseId(exerciseId) {
+    var ex = String(exerciseId || "").toLowerCase();
+    if (!ex) return true;
+    if (/^unit\d+-(speaking|vocabulary|reading|listening|grammar|uoe)$/i.test(ex)) return true;
+    if (
+      ex === "speaking" ||
+      ex === "vocabulary" ||
+      ex === "reading" ||
+      ex === "listening" ||
+      ex === "grammar" ||
+      ex === "uoe"
+    )
+      return true;
+    return false;
   }
 
   /** Infer unit / skill / exerciseId from a URL path (FCE folders). */
@@ -381,20 +494,36 @@
     var unit = normUnit(opts.unit);
     var skill = normSkill(opts.skill);
     if (!unit) return { status: "not_started", percent: null, good: false };
-    if (opts.hubKind === "skill" && skill) {
+    var exId = String(opts.exerciseId || "")
+      .replace(/[^\w\-]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 64);
+    // Skill folder tiles (unit1-vocabulary/, …): average across that skill.
+    // Leaf exercise cards must NOT use hub="skill" — if they do, prefer exercise %.
+    if (opts.hubKind === "skill" && skill && isSkillFolderExerciseId(exId)) {
       var avg = skillAverage(unit, skill);
+      var allGood = skillAllGood(unit, skill);
       return {
-        status: avg == null ? "not_started" : isGoodPercent(avg) ? "passed" : "in_progress",
+        status: avg == null ? "not_started" : allGood ? "passed" : "in_progress",
         percent: avg,
-        good: isGoodPercent(avg),
+        good: allGood,
       };
     }
-    if (skill && opts.exerciseId) {
-      var pct = getExercisePercent(unit, skill, opts.exerciseId);
+    if (skill && exId && !isSkillFolderExerciseId(exId)) {
+      var pct = getExercisePercent(unit, skill, exId);
       return {
         status: pct == null ? "not_started" : isGoodPercent(pct) ? "passed" : "in_progress",
         percent: pct,
         good: isGoodPercent(pct),
+      };
+    }
+    if (opts.hubKind === "skill" && skill) {
+      var avg2 = skillAverage(unit, skill);
+      var allGood2 = skillAllGood(unit, skill);
+      return {
+        status: avg2 == null ? "not_started" : allGood2 ? "passed" : "in_progress",
+        percent: avg2,
+        good: allGood2,
       };
     }
     var summary = getUnitSummary(unit);
@@ -434,6 +563,8 @@
     PASS_THRESHOLD: PASS_THRESHOLD,
     SKILL_LABELS: SKILL_LABELS,
     UNIT_SKILLS: UNIT_SKILLS,
+    UNIT_SKILL_EXERCISES: UNIT_SKILL_EXERCISES,
+    requiredExercises: requiredExercises,
     record: record,
     recordCheck: recordCheck,
     recordCheckFromDom: recordCheckFromDom,
@@ -450,9 +581,11 @@
     getAllSkills: getAllSkills,
     unitSkills: unitSkills,
     skillAverage: skillAverage,
+    skillAllGood: skillAllGood,
     exercisesFor: exercisesFor,
     bumpScore: bumpScore,
     clearAll: clearAll,
+    purgePhantomScores: purgePhantomScores,
     statusLabel: statusLabel,
   };
 })(window);

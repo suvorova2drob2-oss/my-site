@@ -855,8 +855,6 @@
     return true;
   }
 
-  var afterAnswerReveal = null;
-
   function applyMcOptsPct(pct) {
     var n = Math.round(Number(pct));
     if (!isFinite(n)) return;
@@ -979,12 +977,24 @@
     });
   }
 
+  function clearGapInlineHint(block) {
+    if (!block) return;
+    var hint = block.querySelector(".p1mc-inline-hint");
+    if (hint) hint.remove();
+  }
+
   function clearCheckState() {
     state.blocks.forEach(function (el) {
       clearLabelMarks(el);
+      clearGapInlineHint(el);
     });
     feedback.className = "feedback";
     feedback.textContent = "";
+    if (answerRevealLayer) {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
   }
 
   function applyMarksForQuestion(index) {
@@ -1008,32 +1018,70 @@
     });
   }
 
-  function openAnswerReveal(keyText, explainHtml) {
-    var keyBlock =
-      '<div class="reveal-key-block">' +
-      esc(keyText).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>") +
-      "</div>";
-    answerRevealBody.innerHTML = keyBlock + (explainHtml || "");
-    answerRevealLayer.classList.add("is-open");
-    answerRevealLayer.style.display = "flex";
-    answerRevealLayer.setAttribute("aria-hidden", "false");
-    answerRevealBtn.focus();
+  function applyInlineHintForQuestion(index, pick) {
+    var block = state.blocks[index];
+    if (!block) return;
+    clearGapInlineHint(block);
+    var it = state.exercise.items[index];
+    if (!it) return;
+    var correct = String(Number(it.correctIndex) || 0);
+    if (pick === correct) return;
+
+    var Lc = displayLetterForSlot(index, correct);
+    var word = String(it.options[Number(correct)] || "").trim();
+    var ec = it.explainCorrect != null ? String(it.explainCorrect).trim() : "";
+    var eic = it.explainIfChosen || {};
+    var ynote = lookupExplainChosen(eic, pick);
+    var Lp = pick ? displayLetterForSlot(index, pick) : "?";
+
+    var hint = document.createElement("div");
+    hint.className = "p1mc-inline-hint";
+    var html =
+      '<p class="p1mc-inline-hint__key"><span class="reveal-tag reveal-tag--ok">Correct</span> ' +
+      esc(Lc) +
+      (word ? " · " + esc(word) : "") +
+      "</p>";
+    if (ec) {
+      html +=
+        '<p class="p1mc-inline-hint__line"><span class="reveal-tag reveal-tag--ok">Why</span> ' +
+        esc(ec) +
+        "</p>";
+    }
+    html +=
+      '<p class="p1mc-inline-hint__line"><span class="reveal-tag reveal-tag--bad">Why not ' +
+      esc(Lp) +
+      "</span> " +
+      esc(
+        ynote ||
+          "This option doesn't fit the meaning or usual collocation here — compare with " +
+            Lc +
+            "."
+      ) +
+      "</p>";
+    hint.innerHTML = html;
+    block.appendChild(hint);
+  }
+
+  function openAnswerReveal() {
+    if (answerRevealLayer) {
+      answerRevealLayer.classList.remove("is-open");
+      answerRevealLayer.style.display = "none";
+      answerRevealLayer.setAttribute("aria-hidden", "true");
+    }
   }
 
   function closeAnswerReveal() {
+    if (!answerRevealLayer) return;
     answerRevealLayer.classList.remove("is-open");
     answerRevealLayer.style.display = "none";
     answerRevealLayer.setAttribute("aria-hidden", "true");
   }
 
-  answerRevealBtn.addEventListener("click", function () {
-    closeAnswerReveal();
-    if (typeof afterAnswerReveal === "function") {
-      var fn = afterAnswerReveal;
-      afterAnswerReveal = null;
-      fn();
-    }
-  });
+  if (answerRevealBtn) {
+    answerRevealBtn.addEventListener("click", function () {
+      closeAnswerReveal();
+    });
+  }
 
   function wireRadios() {
     state.names.forEach(function (nm) {
@@ -1046,7 +1094,6 @@
 
   function onRadioChange() {
     clearCheckState();
-    afterAnswerReveal = null;
   }
 
   btnCheck.addEventListener("click", function () {
@@ -1061,48 +1108,38 @@
     }
     if (missing) {
       feedback.className = "feedback show";
-      feedback.textContent = "Отметьте вариант по каждому вопросу, затем Submit.";
+      feedback.textContent = "Choose an option for every gap, then Submit.";
       return;
     }
 
     var CORRECT = buildCorrectChoiceValues(state.exercise);
     var score = 0;
+    var picks = [];
     for (var j = 0; j < n; j++) {
+      var pick = getChoice(j);
+      picks.push(pick);
       applyMarksForQuestion(j);
-      if (getChoice(j) === CORRECT[j]) {
-        score += 1;
-      }
+      applyInlineHintForQuestion(j, pick);
+      if (pick === CORRECT[j]) score += 1;
     }
 
+    closeAnswerReveal();
+    feedback.className = "feedback show";
     if (score === n) {
-      feedback.className = "feedback show";
       feedback.innerHTML = "Excellent! All <strong>" + n + "</strong> answers are correct.";
       return;
     }
 
     var wrong = n - score;
-    feedback.className = "feedback";
-    feedback.textContent = "";
-    var picks = [];
-    for (var pi = 0; pi < n; pi++) {
-      picks.push(getChoice(pi));
-    }
-    var explainHtml = buildExplainHtml(state.exercise, picks);
-    afterAnswerReveal = function () {
-      feedback.className = "feedback show";
-      feedback.innerHTML =
-        "Correct: <strong>" +
-        score +
-        "</strong>, still to fix: <strong>" +
-        wrong +
-        "</strong>. " +
-        "Green = right letter; if you chose wrong, your choice is red. Press <strong>Submit</strong> again after changes.";
-    };
-    openAnswerReveal(buildRevealLines(state.exercise), explainHtml);
+    feedback.innerHTML =
+      "Correct: <strong>" +
+      score +
+      "</strong>, incorrect: <strong>" +
+      wrong +
+      "</strong>. Green = right; red = your wrong pick. Key and explanations are under each wrong gap.";
   });
 
   btnReset.addEventListener("click", function () {
-    afterAnswerReveal = null;
     state.names.forEach(function (nm) {
       document.querySelectorAll('input[name="' + nm + '"]').forEach(function (r) {
         r.checked = false;

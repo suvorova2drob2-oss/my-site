@@ -1,0 +1,67 @@
+---
+description: FCE/B2 Reading Part 7 — sticky answer rail + letter chips A–D (not select); shared engine + shell.
+globs: unit*-reading/**/*.html,use-of-english/part7-*/**,unit11-reading-*/**/part7*,unit11-reading-*/**/u11-part7*,js/fce-reading-part7*.js,css/fce-reading-part7*.css,js/cpe-reading-part7*.js,css/cpe-reading-part7*.css
+alwaysApply: false
+---
+
+# Reading Part 7 multiple matching — sticky rail + letter chips
+
+## Тип задания
+
+**Part 7 = несколько коротких текстов (обычно A–D) + 10 statements** multiple matching. People/sections may be chosen more than once.
+
+## Единственный FCE-движок
+
+| Роль | Путь |
+|------|------|
+| **Engine** | `js/fce-reading-part7-matching-engine.js` → `FCE_READING_PART7.mountPage({ pack })` |
+| **Styles** | `css/fce-reading-part7-shell.css` |
+| **Данные** | pack в page JS (`part7-*.js` / `u11-part7-*-exam.js`) — только контент + `mountPage` |
+| **Эталон страницы** | `unit1-reading/this-is-your-life/` |
+
+**CPE** (A–F и т.п.): тот же UX в `js/cpe-reading-part7-matching-engine.js` + `css/cpe-reading-part7-shell.css` — **letter chips**, не `<select>`.
+
+## UX (обязательно)
+
+1. **Тексты** — одна колонка **A → B → C → D** (на desktop все подряд; на mobile — вкладки A–D).
+2. **Правая колонка** — **sticky** rail со **всеми** statements (обычно 10); родитель `.layout` с **`align-items: stretch`**.
+3. Ответы — **letter chips** (`.letter-btn` A/B/C/D…), **не** `<select>`. Компактные однострочные `.q-item`.
+4. **Без nested scroll** на rail: **не** `overflow-y: auto` / `max-height: 100vh` на `.questions-sidebar` как дефолт. Скроллит **страница**; rail остаётся рядом при чтении C/D.
+5. После Submit — Correct / Incorrect + **Why?** с цитатой; ключ не спойлерить до проверки.
+
+Связано: `no-unnecessary-scroll-sticky-rails.mdc`.
+
+## Pack shape
+
+```javascript
+FCE_READING_PART7.mountPage({
+  pack: {
+    letters: ["A", "B", "C", "D"],
+    names: { A: "…", B: "…", C: "…", D: "…" },
+    key: { 1: "A", /* … */ 10: "B" },
+    explanations: { 1: { letter: "A", quote: "…" }, /* … */ },
+    statements: [{ id: 1, text: "…" }, /* … */],
+    passages: [{ letter: "A", short: "Lucas", name: "…", body: "<p>…</p>" }, /* … */],
+    examId: "optionalProgressId",
+    examLabel: "optional label for My progress"
+  }
+});
+```
+
+## Shell markup (минимум)
+
+- `#passages-root`, `#tab-strip` (mobile), `#questions-root`
+- `#btn-submit`, `#btn-reset`
+- Hint в rail: ответы остаются видимыми, пока ученик читает A/B, затем C/D
+
+## Запрещено
+
+- Новый Part 7 с `<select>` «Person A–D»
+- Двухколоночная сетка текстов A|B / C|D, если из‑за неё пропадают ответы при скролле
+- Inner scrollbar на списке вопросов как «решение» нехватки места — сначала сжать `.q-item` / chips
+
+## При новом Part 7
+
+1. Скопировать shell с `unit1-reading/this-is-your-life/index.html`.
+2. Подключить `css/fce-reading-part7-shell.css` + `js/fce-reading-part7-matching-engine.js`.
+3. В page JS — только pack + `mountPage` (не копировать движок).

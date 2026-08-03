@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 &mdash; Listening Part 2 &middot; Sentence completion (SB 5.1)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.58;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.25rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.94rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .instr {
+      font-size: 0.95rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .exam-strip {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
+    .gaps {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .gap-block { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #34507d; }
+    .gap-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .gap-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .sent {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+    }
+    .sent input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 10rem;
+      max-width: min(100%, 22rem);
+      margin: 2px 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .sent input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .sent input.is-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.55);
+      color: #ecfdf5;
+    }
+    .sent input.is-bad {
+      border-color: #f87171;
+      background: rgba(239, 68, 68, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
+      color: #fff1f2;
+    }
+    .gap-key {
+      display: none;
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(74, 222, 128, 0.45);
+      white-space: nowrap;
+    }
+    .gap-key.show { display: inline; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      min-height: 1.2em;
+    }
+    .feedback.score-ok {
+      border-color: rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+    }
+    .feedback.score-partial {
+      border-color: rgba(250, 204, 21, 0.45);
+      background: rgba(250, 204, 21, 0.08);
+      color: #fde68a;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
+</head>
+<body>
+  <main class="page" data-mb2-unit="5" data-mb2-skill="listening" data-mb2-ex="sb-5-1">
+    <header class="top">
+      <div>
+        <span class="tag">Listening Part 2 &middot; Sentence completion</span>
+        <h1>Student&rsquo;s Book 5.1 &mdash; Mike Swift, City College</h1>
+        <p class="lead">RfB2 First Skills Booster. Complete each gap with a word or short phrase.</p>
+      </div>
+      <a class="back" href="../unit5-listening/index.html">&larr; Unit 5 Listening</a>
+    </header>
+
+    <div class="audio-wrap">
+      <label for="track">Audio (Yandex Object Storage)</label>
+      <audio id="track" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/fce/RfB2First_SB_Track%205.1.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <p class="instr">
+      You will hear a man called <strong>Mike Swift</strong> talking to a group of teenagers about the vocational courses offered by the college where he works. For questions <strong>1&ndash;10</strong>, complete the sentences with a <strong>word or short phrase</strong>.
+    </p>
+    <p class="exam-strip">
+      Track: <code>fce/RfB2First_SB_Track 5.1.mp3</code>.
+      Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
+    </p>
+
+    <div class="gaps" id="gaps-root"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btn-check">Check answers</button>
+      <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+    </div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+  </main>
+
+  <script src="../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ACCEPT = [
+    ["five", "5"],
+    ["television", "tv", "T.V."],
+    ["radio producer"],
+    ["Events", "events"],
+    ["team management"],
+    ["work experience"],
+    ["business"],
+    ["maths", "math", "mathematics"],
+    ["Study Options", "study options", "Study Options section", "section of study options", "Study Options heading"],
+    ["evening"]
+  ];
+
+  /** Canonical form shown next to a wrong gap */
+  var SHOW = [
+    "five",
+    "television",
+    "radio producer",
+    "Events",
+    "team management",
+    "work experience",
+    "business",
+    "maths",
+    "Study Options",
+    "evening"
+  ];
+
+  var TASK = [
+    {
+      before: "There are currently",
+      after: "different faculties at Mike's college."
+    },
+    {
+      before: "Mike says that the",
+      after: "studio in the Creative Skills faculty is unique for a college in the area."
+    },
+    {
+      before: "Mike is particularly impressed that one former student of the college is already working as a",
+      after: "."
+    },
+    {
+      before: "Increasing numbers of people are enrolling on courses in the",
+      after: "Department."
+    },
+    {
+      before: "Mike says that both the ability to work in an organised manner and good",
+      after: "skills are important in a variety of jobs."
+    },
+    {
+      before: "Some courses at Mike's college include a period of",
+      after: "."
+    },
+    {
+      before: "Most information technology courses are offered by the",
+      after: "faculty."
+    },
+    {
+      before: "Mike says that applicants for the computer games development course need high marks in",
+      after: ", as well as passes in other exams."
+    },
+    {
+      before: "Mike says that guidance on what to study is available in the",
+      after: "of the college website."
+    },
+    {
+      before: "The",
+      after: "courses at Mike's college normally last five months."
+    }
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\./g, "")
+      .replace(/\s+/g, " ")
+      .replace(/^['"]|['"]$/g, "")
+      .trim();
+  }
+
+  function matches(val, acceptableList) {
+    var n = norm(val);
+    if (!n) return false;
+    for (var i = 0; i < acceptableList.length; i++) {
+      if (n === norm(acceptableList[i])) return true;
+    }
+    return false;
+  }
+
+  var root = document.getElementById("gaps-root");
+  var fb = document.getElementById("feedback");
+
+  function render() {
+    root.innerHTML = "";
+    for (var i = 0; i < TASK.length; i++) {
+      var item = TASK[i];
+      var block = document.createElement("div");
+      block.className = "gap-block";
+      var p = document.createElement("p");
+      p.className = "sent";
+      var num = document.createElement("span");
+      num.className = "gap-num";
+      num.textContent = String(i + 1) + ".";
+      p.appendChild(num);
+      p.appendChild(document.createTextNode(" " + item.before + " "));
+      var inp = document.createElement("input");
+      inp.type = "text";
+      inp.id = "g" + String(i + 1);
+      inp.setAttribute("autocomplete", "off");
+      inp.setAttribute("spellcheck", "true");
+      inp.setAttribute("aria-label", "Gap " + String(i + 1));
+      p.appendChild(inp);
+      var key = document.createElement("span");
+      key.className = "gap-key";
+      key.id = "key" + String(i + 1);
+      key.setAttribute("aria-live", "polite");
+      p.appendChild(key);
+      p.appendChild(document.createTextNode(" " + item.after));
+      block.appendChild(p);
+      root.appendChild(block);
+    }
+  }
+
+  function clearMarks() {
+    for (var k = 0; k < TASK.length; k++) {
+      var inp = document.getElementById("g" + String(k + 1));
+      var key = document.getElementById("key" + String(k + 1));
+      if (inp) inp.classList.remove("is-ok", "is-bad");
+      if (key) {
+        key.classList.remove("show");
+        key.textContent = "";
+      }
+    }
+    fb.classList.remove("score-ok", "score-partial");
+    fb.textContent = "";
+  }
+
+  render();
+
+  root.querySelectorAll("input").forEach(function (inp) {
+    inp.addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      var id = this.id.replace(/^g/, "key");
+      var key = document.getElementById(id);
+      if (key) {
+        key.classList.remove("show");
+        key.textContent = "";
+      }
+      fb.classList.remove("score-ok", "score-partial");
+      fb.textContent = "";
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var n = TASK.length;
+    var okc = 0;
+    for (var j = 0; j < n; j++) {
+      var inp = document.getElementById("g" + String(j + 1));
+      var key = document.getElementById("key" + String(j + 1));
+      inp.classList.remove("is-ok", "is-bad");
+      key.classList.remove("show");
+      key.textContent = "";
+      if (matches(inp.value, ACCEPT[j])) {
+        inp.classList.add("is-ok");
+        okc++;
+      } else {
+        inp.classList.add("is-bad");
+        key.textContent = "→ " + SHOW[j];
+        key.classList.add("show");
+      }
+    }
+    fb.classList.remove("score-ok", "score-partial");
+    if (okc === n) {
+      fb.classList.add("score-ok");
+      fb.innerHTML = "<strong>All " + n + " correct.</strong>";
+    } else {
+      fb.classList.add("score-partial");
+      fb.innerHTML =
+        "Score: <strong>" +
+        okc +
+        "</strong> / " +
+        n +
+        " correct. <span style=\"color:#86efac\">Green</span> = right; <span style=\"color:#fca5a5\">red</span> = wrong (key shown next to the gap).";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    for (var k = 0; k < TASK.length; k++) {
+      var inp = document.getElementById("g" + String(k + 1));
+      if (inp) inp.value = "";
+    }
+    clearMarks();
+  });
+})();
+  </script>
+<script src="../js/mastering-b2-daily-activity.js"></script>
+<script src="../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

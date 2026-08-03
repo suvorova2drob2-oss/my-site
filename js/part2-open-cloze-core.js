@@ -168,6 +168,9 @@
   var bundledGigamansions =
     String(contextId) === "p2-gigamansions" ||
     /published-gigamansions\.json\s*$/i.test(dataSrc);
+  var bundledUnit1BlueZones =
+    String(contextId) === "unit1-p2-blue-zones" ||
+    /published-unit1-p2-blue-zones\.json\s*$/i.test(dataSrc);
   var bundledUnit1JobTitles =
     String(contextId) === "unit1-p2-job-titles" ||
     /published-unit1-p2-job-titles\.json\s*$/i.test(dataSrc);
@@ -263,6 +266,16 @@
         try {
           return JSON.parse(elGi.textContent.trim());
         } catch (eGi) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit1BlueZones) {
+      var elU1bz = document.getElementById("part2-open-bundled-unit1-blue-zones");
+      if (elU1bz) {
+        try {
+          return JSON.parse(elU1bz.textContent.trim());
+        } catch (eU1bz) {
           return null;
         }
       }
@@ -707,6 +720,22 @@
             input.classList.remove("ok", "bad");
             input.classList.add(ok ? "ok" : "bad");
             input.removeAttribute("title");
+            var tip = input.nextElementSibling;
+            if (tip && tip.classList && tip.classList.contains("p2-inline-key")) {
+              tip.parentNode.removeChild(tip);
+            }
+            if (!ok) {
+              var keySpan = document.createElement("span");
+              keySpan.className = "p2-inline-key";
+              keySpan.textContent = "→ " + acceptedAnswersDisplay(raw);
+              var expl =
+                data.explanations &&
+                (data.explanations[idx] != null
+                  ? data.explanations[idx]
+                  : data.explanations[parseInt(idx, 10)]);
+              if (expl) keySpan.title = String(expl);
+              input.insertAdjacentElement("afterend", keySpan);
+            }
             gapResults.push({
               num: idx,
               userDisplay: String(input.value).trim(),
@@ -730,7 +759,7 @@
                 score +
                 "</strong>, incorrect: <strong>" +
                 wrong +
-                "</strong>. Fix the red gaps or use the answer key panel — or Reset.";
+                "</strong>. Red gaps show the key next to them; more detail is in the side panel.";
             }
           }
         });
@@ -742,6 +771,10 @@
             input.value = "";
             input.classList.remove("ok", "bad");
             input.removeAttribute("title");
+            var tip = input.nextElementSibling;
+            if (tip && tip.classList && tip.classList.contains("p2-inline-key")) {
+              tip.parentNode.removeChild(tip);
+            }
           });
           hideInlinePanel();
           if (feedback) {

@@ -1,0 +1,45 @@
+---
+description: Mastering B2 — after Check, green/red on answers + show key next to wrongs
+globs: unit*-*/**/*.{html,js,css},Grammar/**/*.html,css/mastering-b2*.css,js/mastering-b2*.js
+alwaysApply: false
+---
+
+# Mastering B2 — Check feedback (everywhere)
+
+After the learner presses **Check**:
+
+1. **Green** on each correct control (`.is-ok`).
+2. **Red** on each incorrect / empty control (`.is-bad`).
+3. **Next to every wrong** (or under it): show the **correct answer** in a `.mb2-key-hint.is-show` (e.g. `→ buy`). Hide hints on Reset / when they change the answer.
+4. Optional score line in `.feedback` is fine, but **not** a substitute for per-item colour + key.
+
+## CSS
+
+- Global tokens live in `css/mastering-b2-page-skin.css` (`.is-ok` / `.is-bad` / `.mb2-key-hint`) with **`!important`** so they beat the dark-skin `select`/`input` border rules.
+- Page-local styles for ok/bad **must not** omit `!important` if the page loads `mastering-b2-page-skin.css`.
+
+## JS pattern
+
+```js
+el.classList.toggle("is-ok", ok);
+el.classList.toggle("is-bad", !ok);
+var hint = el.parentNode.querySelector(".mb2-key-hint");
+if (hint) {
+  hint.textContent = ok ? "" : KEY[i];
+  hint.classList.toggle("is-show", !ok);
+}
+```
+
+Empty answers count as **wrong** and still show the key.
+
+## Use of English engines (Part 1 / Part 2)
+
+- **No fullscreen “answer reveal” modal** after Submit (no mojibake motivate popups).
+- **Part 1** (`part1-mc-cloze-core.js`): green/red on options; under each **wrong** gap — Correct letter·word + Why / Why not.
+- **Part 2** (`part2-open-cloze-core.js`): green/red inputs; **→ key** next to wrong gaps; side panel for fuller notes.
+
+## Forbidden
+
+- Check that only updates a bottom “Keys: …” blurb with no red/green on items.
+- Relying on `border-color` alone without `!important` under the page skin.
+- Opening `#answerRevealLayer` / motivate overlays for student Check.

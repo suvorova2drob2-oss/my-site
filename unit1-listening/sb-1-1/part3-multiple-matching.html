@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 &mdash; SB 1.1 · Part 3 Multiple matching (clothes)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.28rem; line-height: 1.3; }
+    .lead { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .instr {
+      color: #d5e2f8;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      background: var(--panel-soft);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .exam-strip {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .task-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.75fr);
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 760px) {
+      .task-split { grid-template-columns: 1fr; }
+    }
+    .options,
+    .match-block {
+      background: #203556;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a4065;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .letter { font-weight: 800; color: var(--accent); }
+    .match-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a4065;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-row label {
+      font-weight: 700;
+      min-width: 6.2rem;
+      font-size: 1rem;
+    }
+    select {
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 1rem;
+      width: 5.5rem;
+    }
+    select.correct {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.55);
+    }
+    select.wrong {
+      border-color: #f87171;
+      background: rgba(239, 68, 68, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
+    }
+    .gap-key {
+      display: none;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(74, 222, 128, 0.45);
+    }
+    .gap-key.show { display: inline; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      line-height: 1.45;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      min-height: 1.4em;
+    }
+    .feedback.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border-color: var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback.partial {
+      background: rgba(250, 204, 21, 0.08);
+      border-color: rgba(250, 204, 21, 0.45);
+      color: #fde68a;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+</head>
+<body data-mb2-unit="1" data-mb2-skill="listening" data-mb2-ex="sb-1-1">
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Listening Part 3 &middot; Multiple matching</span>
+        <h1>Student&rsquo;s Book 1.1 &mdash; Clothes</h1>
+        <p class="lead">Five speakers &middot; options A&ndash;H</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 1 Listening</a>
+    </header>
+
+    <p class="instr">
+      You will hear <strong>five different people</strong> talking about <strong>clothes</strong>.
+      For questions <strong>1&ndash;5</strong>, choose from the list (<strong>A&ndash;H</strong>) what each speaker says.
+      Use the <strong>letters only once</strong>. There are <strong>three extra</strong> letters which you do not need to use.
+    </p>
+    <p class="exam-strip">
+      Track: <code>fce/RfB2First_SB_Track 1.1.mp3</code>.
+      Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
+    </p>
+
+    <div class="audio-wrap">
+      <label for="track-audio">Audio (Yandex Object Storage)</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/fce/RfB2First_SB_Track%201.1.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <div class="task-split">
+      <section class="options" aria-labelledby="optHeading">
+        <h2 id="optHeading">Options A&ndash;H</h2>
+        <div id="optionsList"></div>
+      </section>
+      <section class="match-block" aria-labelledby="matchHeading">
+        <h2 id="matchHeading">Speakers 1&ndash;5</h2>
+        <div id="matchRows"></div>
+      </section>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear choices</button>
+    </div>
+    <div class="feedback" id="feedback" role="status"></div>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ANSWER_KEY = ["E", "B", "D", "H", "F"];
+
+  var OPTIONS = [
+    { letter: "A", text: "I tend to wear the same clothes all the time." },
+    { letter: "B", text: "I don't really care what clothes I wear." },
+    { letter: "C", text: "I refuse to wear designer clothes." },
+    { letter: "D", text: "I'm careful to check the origin of the clothes I buy." },
+    { letter: "E", text: "I generally wear second-hand clothes." },
+    { letter: "F", text: "I only throw clothes away when absolutely necessary." },
+    { letter: "G", text: "I buy quality clothes that are guaranteed to last." },
+    { letter: "H", text: "I wear clothes that give me self-confidence." }
+  ];
+
+  var optionsList = document.getElementById("optionsList");
+  var matchRows = document.getElementById("matchRows");
+  var feedback = document.getElementById("feedback");
+  var selects = [];
+  var keySpans = [];
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  optionsList.innerHTML = OPTIONS.map(function (o) {
+    return (
+      '<div class="opt-row"><span class="letter">' +
+      escapeHtml(o.letter) +
+      "</span><span>" +
+      escapeHtml(o.text) +
+      "</span></div>"
+    );
+  }).join("");
+
+  function getValues() {
+    return selects.map(function (s) {
+      return s.value;
+    });
+  }
+
+  function rebuildSelects() {
+    var vals = getValues();
+    selects.forEach(function (sel, idx) {
+      var current = vals[idx];
+      var usedElsewhere = {};
+      vals.forEach(function (v, j) {
+        if (j !== idx && v) usedElsewhere[v] = true;
+      });
+      sel.innerHTML = "";
+      var opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "A\u2013H";
+      sel.appendChild(opt0);
+      OPTIONS.forEach(function (o) {
+        var L = o.letter;
+        if (!usedElsewhere[L] || L === current) {
+          var opt = document.createElement("option");
+          opt.value = L;
+          opt.textContent = L;
+          if (L === current) opt.selected = true;
+          sel.appendChild(opt);
+        }
+      });
+    });
+  }
+
+  function clearMarks() {
+    selects.forEach(function (s) {
+      s.classList.remove("correct", "wrong");
+    });
+    keySpans.forEach(function (k) {
+      k.classList.remove("show");
+      k.textContent = "";
+    });
+    feedback.className = "feedback";
+    feedback.textContent = "";
+  }
+
+  for (var i = 0; i < 5; i += 1) {
+    var row = document.createElement("div");
+    row.className = "match-row";
+    var lab = document.createElement("label");
+    lab.setAttribute("for", "spk" + i);
+    lab.textContent = "Speaker " + (i + 1);
+    var sel = document.createElement("select");
+    sel.id = "spk" + i;
+    sel.setAttribute("aria-label", "Answer for speaker " + (i + 1));
+    sel.addEventListener("change", function (ev) {
+      var target = ev.target;
+      var newVal = target.value;
+      if (newVal) {
+        selects.forEach(function (other) {
+          if (other !== target && other.value === newVal) other.value = "";
+        });
+      }
+      clearMarks();
+      rebuildSelects();
+    });
+    var key = document.createElement("span");
+    key.className = "gap-key";
+    key.setAttribute("aria-live", "polite");
+    row.appendChild(lab);
+    row.appendChild(sel);
+    row.appendChild(key);
+    matchRows.appendChild(row);
+    selects.push(sel);
+    keySpans.push(key);
+  }
+  rebuildSelects();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var vals = getValues();
+    var okc = 0;
+    for (var j = 0; j < 5; j++) {
+      var sel = selects[j];
+      var keyEl = keySpans[j];
+      var keyLetter = ANSWER_KEY[j];
+      sel.classList.remove("correct", "wrong");
+      keyEl.classList.remove("show");
+      keyEl.textContent = "";
+      if (vals[j] && vals[j] === keyLetter) {
+        sel.classList.add("correct");
+        okc++;
+      } else {
+        sel.classList.add("wrong");
+        keyEl.textContent = "\u2192 " + keyLetter;
+        keyEl.classList.add("show");
+      }
+    }
+    if (okc === 5) {
+      feedback.className = "feedback ok";
+      feedback.innerHTML = "<strong>All 5 correct.</strong>";
+    } else {
+      feedback.className = "feedback partial";
+      feedback.innerHTML =
+        "Score: <strong>" +
+        okc +
+        "</strong> / 5 correct. Green = right; red = wrong (key shown next to the speaker).";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, 5);
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    selects.forEach(function (s) {
+      s.value = "";
+    });
+    clearMarks();
+    rebuildSelects();
+  });
+})();
+  </script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

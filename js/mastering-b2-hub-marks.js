@@ -50,16 +50,21 @@
   function paint(el, status) {
     el.classList.remove("is-mb2-done", "is-mb2-progress", "is-mb2-idle");
     var badge = ensureBadge(el);
-    if (status.good || status.status === "passed") {
+    var pct = status.percent;
+    // Done only at 80–100% (same as MasteringB2Progress.PASS_THRESHOLD)
+    var good =
+      status.good === true ||
+      (status.status === "passed" && pct != null && pct >= 80);
+    if (good && pct != null && pct >= 80) {
       el.classList.add("is-mb2-done");
       badge.textContent = "✓";
-      badge.title = status.percent != null ? "Done · " + status.percent + "%" : "Done";
+      badge.title = "Done · " + pct + "%";
       return;
     }
-    if (status.status === "in_progress" || (status.percent != null && status.percent > 0)) {
+    if (status.status === "in_progress" || (pct != null && pct > 0)) {
       el.classList.add("is-mb2-progress");
-      badge.textContent = status.percent != null ? status.percent + "%" : "…";
-      badge.title = "In progress";
+      badge.textContent = pct != null ? pct + "%" : "…";
+      badge.title = pct != null && pct < 80 ? "In progress · need 80%+" : "In progress";
       return;
     }
     el.classList.add("is-mb2-idle");

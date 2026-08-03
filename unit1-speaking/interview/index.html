@@ -254,10 +254,7 @@
         <p class="q-progress" id="qProgress">Question 1 / 5</p>
         <div class="q-num" id="qNum" aria-hidden="true">1</div>
         <p class="q-text" id="qText"></p>
-        <p class="speak-cue">
-          Open your mouth and answer out loud.
-          <span>Don&rsquo;t whisper to yourself &mdash; speak so your partner can hear you.</span>
-        </p>
+        <p class="speak-cue">Answer out loud &mdash; speak so your partner can hear you.</p>
         <p class="q-hint">Say more than yes/no &mdash; add a reason or a short example.</p>
         <div class="q-nav">
           <button type="button" id="btnPrev">← Previous</button>
@@ -308,18 +305,16 @@
     return '<span class="q-dot" data-i="' + i + '"></span>';
   }).join("");
 
-  function saveProgress(done) {
+  /** Record only on Done — never on open / browsing questions. */
+  function saveProgressDone() {
     if (!window.MasteringB2Progress) return;
-    var seen = Math.max(maxReached + 1, done ? QUESTIONS.length : idx + 1);
-    var pct = Math.round((seen / QUESTIONS.length) * 100);
-    if (done) pct = 100;
     var res = MasteringB2Progress.record({
       unit: 1,
       skill: "speaking",
       exerciseId: "interview-part1",
-      percent: pct
+      percent: 100
     });
-    if (done && res && res.updated && res.percent >= 100 && !awardedDone) {
+    if (res && res.updated && res.percent >= 100 && !awardedDone) {
       awardedDone = true;
       try {
         var k = "masteringB2Score";
@@ -343,7 +338,6 @@
     dots.querySelectorAll(".q-dot").forEach(function (d, i) {
       d.classList.toggle("is-on", i === idx);
     });
-    saveProgress(false);
   }
 
   btnPrev.addEventListener("click", function () {
@@ -354,7 +348,7 @@
   });
   btnNext.addEventListener("click", function () {
     if (idx >= QUESTIONS.length - 1) {
-      saveProgress(true);
+      saveProgressDone();
       window.location.href = "../index.html";
       return;
     }

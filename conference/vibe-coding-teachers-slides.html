@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вайбкодинг для преподавателей: слайды</title>
+  <style>
+    :root {
+      --ink: #182433;
+      --muted: #3d4a5c;
+      --line: #cfd6e0;
+      --bg: #f6f3ec;
+      --card: #ffffff;
+      --accent: #0c5c4f;
+      --accent-soft: #dff0eb;
+      --warm: #b45309;
+      --warm-bg: #fff1e0;
+      --ink-soft: #243044;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "PT Sans Caption", "PT Sans", system-ui, sans-serif;
+      background: #b8c0cc;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .toolbar button {
+      font: inherit;
+      border: 0;
+      border-radius: 6px;
+      padding: 0.4rem 0.85rem;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .slide {
+      background: var(--bg);
+      border: 1px solid #8e9aab;
+      border-radius: 4px;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      padding: 1.35rem 1.6rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+    }
+
+    .slide-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .slide h1, .slide h2 {
+      font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      color: var(--ink);
+    }
+    .slide h1 { font-size: 2.85rem; }
+    .slide h2 { font-size: 2.15rem; max-width: 22ch; }
+
+    .slide-num {
+      font-size: 1rem;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .slide-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.65rem;
+    }
+
+    .kicker {
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .lead {
+      font-size: 1.45rem;
+      color: var(--ink-soft);
+      max-width: 38ch;
+      line-height: 1.35;
+    }
+
+    .hook {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.25;
+    }
+
+    ul.big {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+    }
+    ul.big li {
+      position: relative;
+      padding-left: 1.35rem;
+      font-size: 1.4rem;
+      line-height: 1.3;
+    }
+    ul.big li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      flex: 1;
+      min-height: 0;
+    }
+    .three {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.65rem;
+      flex: 1;
+    }
+
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .box h3 {
+      font-size: 1.25rem;
+      color: var(--accent);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .box p { font-size: 1.2rem; color: var(--ink); line-height: 1.3; }
+    .box ul {
+      list-style: none;
+      display: grid;
+      gap: 0.3rem;
+    }
+    .box ul li {
+      padding-left: 1rem;
+      position: relative;
+      font-size: 1.2rem;
+      line-height: 1.28;
+    }
+    .box ul li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .prompt {
+      background: #182433;
+      color: #f3f6fa;
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    table.cmp {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.28rem;
+      background: var(--card);
+    }
+    table.cmp th, table.cmp td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: middle;
+      line-height: 1.25;
+    }
+    table.cmp th {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+      width: 42%;
+      font-size: 1.22rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .tag.warm {
+      background: var(--warm-bg);
+      color: var(--warm);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      flex: 1;
+    }
+    .step-n {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      font-family: Georgia, serif;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem 1rem;
+      font-size: 1.28rem;
+    }
+    .checklist label {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      line-height: 1.25;
+    }
+    .checklist .box-check {
+      width: 1.15rem;
+      height: 1.15rem;
+      border: 2px solid var(--ink);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .title-slide .slide-body {
+      justify-content: center;
+      gap: 0.7rem;
+    }
+    .title-slide h1 {
+      font-size: 3.1rem;
+      max-width: 16ch;
+    }
+    .subtitle {
+      font-size: 1.5rem;
+      color: var(--muted);
+      max-width: 34ch;
+      line-height: 1.35;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.25rem;
+    }
+
+    .foot-note {
+      margin-top: auto;
+      font-size: 1.05rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--line);
+      padding-top: 0.4rem;
+      line-height: 1.3;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .toolbar { display: none !important; }
+      .deck { padding: 0; max-width: none; gap: 0; }
+      .slide {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        aspect-ratio: auto;
+        margin: 0;
+        page-break-after: always;
+        break-after: page;
+        padding: 1cm 1.15cm 0.85cm;
+      }
+      .slide:last-child { page-break-after: auto; }
+      @page { size: landscape; margin: 0; }
+    }
+
+    @media (max-width: 900px) {
+      .slide { aspect-ratio: auto; height: auto; }
+      .slide h1 { font-size: 2.2rem; }
+      .slide h2 { font-size: 1.7rem; }
+      ul.big li, .box p, .box ul li, table.cmp { font-size: 1.1rem; }
+      .two, .three, .steps, .checklist { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>Слайды для PDF · вайбкодинг для преподавателей</strong>
+    <span>Печать → «Сохранить как PDF» · альбомная · поля: нет</span>
+    <button type="button" onclick="window.print()">Печать / PDF</button>
+  </div>
+
+  <div class="deck">
+
+    <!-- 1 -->
+    <section class="slide title-slide">
+      <div class="slide-top">
+        <p class="kicker">Бонус участникам конференции</p>
+        <span class="slide-num">1 / 11</span>
+      </div>
+      <div class="slide-body">
+        <h1>Сайт к уроку своими руками</h1>
+        <p class="subtitle">Вайбкодинг для преподавателей: без курса программирования, с понятными кнопками и живым результатом.</p>
+        <div class="meta-row">
+          <span class="tag">вы придумываете</span>
+          <span class="tag">ИИ собирает</span>
+          <span class="tag">ученики кликают</span>
+        </div>
+      </div>
+      <p class="foot-note">Короткий маршрут: скачать → попросить → открыть в браузере → дать ссылку классу</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Знакомое чувство?</h2>
+        <span class="slide-num">2 / 11</span>
+      </div>
+      <div class="slide-body">
+        <p class="hook">Хочется тренажёр «под свой класс», а в конструкторе снова чужие рамки.</p>
+        <div class="two">
+          <div class="box">
+            <h3>Как это выглядит</h3>
+            <ul>
+              <li>Пишете, как ассистенту: «сделай карточки по Present Perfect»</li>
+              <li>Смотрите страницу в браузере</li>
+              <li>Говорите: «крупнее», «добавь Проверить», «убери лишнее»</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Вы остаётесь учителем</h3>
+            <ul>
+              <li>Тема, формулировки, логика урока: ваши</li>
+              <li>ИИ не заменяет методику</li>
+              <li>Он просто быстро «сшивает» экран</li>
+            </ul>
+          </div>
+        </div>
+        <p class="foot-note">Главное: ясно сказать, что должно появиться на экране.</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>На стол: три вещи</h2>
+        <span class="slide-num">3 / 11</span>
+      </div>
+      <div class="slide-body">
+        <table class="cmp">
+          <tr>
+            <th>Cursor</th>
+            <td>Программа, где вы болтаете с ИИ и он делает файлы. Сайт: <strong>cursor.com</strong></td>
+          </tr>
+          <tr>
+            <th>Браузер</th>
+            <td>Chrome или Edge: сюда смотрите результат, как на доску</td>
+          </tr>
+          <tr>
+            <th>Папка на компьютере</th>
+            <td>Например <strong>moi-urok</strong> на рабочем столе: ваш «кабинет файлов»</td>
+          </tr>
+        </table>
+        <p class="foot-note">Позже можно добавить GitHub Desktop. Сейчас не обязательно. Python «с нуля» учить не надо.</p>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Три клика, и вы в деле</h2>
+        <span class="slide-num">4 / 11</span>
+      </div>
+      <div class="slide-body">
+        <div class="steps">
+          <div class="box">
+            <div class="step-n">1</div>
+            <h3>Открыть папку</h3>
+            <p>File → <strong>Open Folder</strong> → ваша папка на рабочем столе</p>
+          </div>
+          <div class="box">
+            <div class="step-n">2</div>
+            <h3>Написать в чат</h3>
+            <p><strong>Ctrl+I</strong> (режим Agent): ИИ сам создаёт файлы. Пишите по-русски</p>
+          </div>
+          <div class="box">
+            <div class="step-n">3</div>
+            <h3>Открыть в браузере</h3>
+            <p>Файл <strong>index.html</strong> → Open with Chrome → смотрите, как ученик</p>
+          </div>
+        </div>
+        <p class="foot-note">На первом шаге хватит чата и браузера.</p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Скажите это ИИ сегодня вечером</h2>
+        <span class="slide-num">5 / 11</span>
+      </div>
+      <div class="slide-body">
+        <div class="prompt">Сделай index.html: 5 карточек-перевёртышей по теме [моя тема].
+С одной стороны подсказка по-русски, с другой английский.
+Кнопка «Перемешать». Один файл, ничего не устанавливать.
+Напиши, как открыть в браузере.</div>
+        <div class="two" style="flex: 0 0 auto;">
+          <div class="box">
+            <h3>Потом короткие реплики</h3>
+            <ul>
+              <li>«Шрифт крупнее»</li>
+              <li>«Добавь кнопку Проверить»</li>
+              <li>«Сделай спокойные цвета»</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Волшебная фраза</h3>
+            <ul>
+              <li>«Не удаляй то, что уже есть, только добавь…»</li>
+              <li>Свой текст заданий вставляйте целиком</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Где «живёт» ваш урок</h2>
+        <span class="slide-num">6 / 11</span>
+      </div>
+      <div class="slide-body">
+        <p class="lead">Три ступени: как от черновика на парте до своего кабинета.</p>
+        <div class="three">
+          <div class="box">
+            <h3>На своём компьютере</h3>
+            <p><span class="tag">черновик</span></p>
+            <ul>
+              <li>Только вы видите</li>
+              <li>Безопасно пробовать</li>
+              <li>Ученикам ссылку пока не даёте</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Ссылка в чат класса</h3>
+            <p><span class="tag">бесплатно</span></p>
+            <ul>
+              <li>Перетащили папку на Netlify Drop</li>
+              <li>Получили https://…</li>
+              <li>Отправили ученикам</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Свой маленький сервер</h3>
+            <p><span class="tag warm">по желанию</span></p>
+            <ul>
+              <li>Компьютер «в облаке» за сотни ₽/мес</li>
+              <li>Сайт всегда онлайн</li>
+              <li>Когда нужна «живая» комната</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Сначала у себя дома</h2>
+        <span class="slide-num">7 / 11</span>
+      </div>
+      <div class="slide-body">
+        <div class="two">
+          <div class="box">
+            <h3>Одна страница</h3>
+            <ul>
+              <li>Правый клик по index.html</li>
+              <li>Open with → Chrome</li>
+              <li>Готово: вы уже «на уроке»</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Несколько страниц</h3>
+            <ul>
+              <li>Напишите ИИ: «открой это как сайт на моём компьютере»</li>
+              <li>В браузере появится адрес вроде localhost</li>
+              <li>Это всё ещё только ваш ПК</li>
+            </ul>
+          </div>
+        </div>
+        <p class="foot-note">С телефона ученика пока не зайти, зато вы спокойно учитесь и ничего в сети не ломаете.</p>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>А теперь ссылка классу</h2>
+        <span class="slide-num">8 / 11</span>
+      </div>
+      <div class="slide-body">
+        <ul class="big">
+          <li>В папке лежит <strong>index.html</strong> (и рядом картинки, если есть)</li>
+          <li>Откройте <strong>app.netlify.com/drop</strong></li>
+          <li><strong>Перетащите папку</strong> мышкой, как файл в чат</li>
+          <li>Скопируйте ссылку и отправьте ученикам</li>
+        </ul>
+        <div class="box">
+          <h3>Этого хватает для большинства уроков</h3>
+          <p>Карточки, квиз, тренажёр с кнопкой «Проверить». Свой сервер понадобится позже, если захотите совсем «живые» штуки.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Дешёвый сервер без страха</h2>
+        <span class="slide-num">9 / 11</span>
+      </div>
+      <div class="slide-body">
+        <p class="hook">Вы арендуете крошечный компьютер в интернете: он работает круглосуточно, пока вы спите.</p>
+        <div class="two">
+          <div class="box">
+            <h3>Зачем он бывает нужен</h3>
+            <ul>
+              <li>Сайт всегда доступен по вашему адресу</li>
+              <li>Можно сделать то, чего нет в конструкторе</li>
+              <li>Цена часто как пара кофе в месяц</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Как это выглядит в жизни</h3>
+            <ul>
+              <li>Поправили урок у себя</li>
+              <li>Обновили на сервере</li>
+              <li>Пароль в чёрном окне <strong>не печатается</strong>: это нормально, не баг</li>
+            </ul>
+          </div>
+        </div>
+        <p class="foot-note">Сначала карточки дома, потом ссылка через Drop. Сервер: когда уже упрётесь в потолок.</p>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide">
+      <div class="slide-top">
+        <h2>Чтобы не было больно</h2>
+        <span class="slide-num">10 / 11</span>
+      </div>
+      <div class="slide-body">
+        <div class="two">
+          <div class="box">
+            <h3>Привычки, которые спасают</h3>
+            <ul>
+              <li>Перед большой правкой: копия папки</li>
+              <li>Сломалось? Откройте копию и спокойно продолжайте</li>
+              <li>Смотрите результат глазами в браузере</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Осторожнее с этим</h3>
+            <ul>
+              <li>Пароли и ключи лучше не кидать в чат</li>
+              <li>Фраза «удали всё и сделай заново» легко всё сносит</li>
+              <li>На скринах закрывайте секреты</li>
+            </ul>
+          </div>
+        </div>
+        <div class="checklist">
+          <label><span class="box-check"></span> Cursor скачан и открывается</label>
+          <label><span class="box-check"></span> Папка урока открыта</label>
+          <label><span class="box-check"></span> Страница видна в браузере</label>
+          <label><span class="box-check"></span> Попросили правку и увидели изменение</label>
+          <label><span class="box-check"></span> Есть запасная копия папки</label>
+          <label><span class="box-check"></span> (Потом) ссылка для класса готова</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide title-slide">
+      <div class="slide-top">
+        <p class="kicker">Ваш старт</p>
+        <span class="slide-num">11 / 11</span>
+      </div>
+      <div class="slide-body">
+        <h1>Сегодня: один файл и пять карточек</h1>
+        <p class="subtitle">Завтра ссылка классу. Потом, если захочется больше свободы: свой маленький сервер.</p>
+        <div class="meta-row">
+          <span class="tag">говорите коротко</span>
+          <span class="tag">смотрите в браузере</span>
+          <span class="tag">не стирайте всё сразу</span>
+        </div>
+      </div>
+      <p class="foot-note">Бонус для преподавателей · вайбкодинг с нуля · можно вставить в PDF конференции</p>
+    </section>
+
+  </div>
+</body>
+</html>

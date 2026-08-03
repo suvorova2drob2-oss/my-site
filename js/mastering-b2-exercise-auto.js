@@ -180,9 +180,7 @@
         setTimeout(tick, 60);
         return;
       }
-      // Engagement fallback so the exercise appears in stats (not “good” yet)
-      var prev = Prog.getExercisePercent(meta.unit, meta.skill, meta.exerciseId);
-      if (prev == null) recordPercent(Prog, meta, 35);
+      // No score found → do not invent a percent (opening / empty Check must stay 0)
     }
     setTimeout(tick, 40);
   }
@@ -217,13 +215,17 @@
             return;
           }
           if (isDoneControl(btn)) {
-            // Speaking / self-select completion
-            var pct = 100;
+            // Only real completion: scored Check, or explicit Done (speaking / save) → 100%
             var scored = harvestScore();
             if (scored && scored.total > 0) {
-              pct = Math.round((scored.correct / scored.total) * 100);
+              recordPercent(Prog, meta, Math.round((scored.correct / scored.total) * 100));
+              return;
             }
-            recordPercent(Prog, meta, Math.max(pct, 60));
+            var txt = (btn.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+            // "Done" on last speaking step / Save selection — full completion only
+            if (/^(done|finish|complete|save selection|сохранить)$/i.test(txt)) {
+              recordPercent(Prog, meta, 100);
+            }
           }
         },
         true

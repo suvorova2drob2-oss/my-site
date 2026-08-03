@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 Vocabulary &mdash; Clothes adjectives (opposites)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .top h1 { font-size: 1.12rem; line-height: 1.3; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .back:hover { text-decoration: underline; }
+    .voc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+    }
+    .voc-nav a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: var(--muted); }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 22px;
+      background: var(--panel-soft);
+    }
+    .task h2 { font-size: 1.05rem; margin-bottom: 10px; color: #bae6fd; }
+    .instr {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .hint-bar {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(86, 204, 242, 0.08);
+      border: 1px solid rgba(86, 204, 242, 0.22);
+      font-size: 0.88rem;
+      color: #bae6fd;
+      margin-bottom: 14px;
+    }
+    .word-box {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      margin-bottom: 18px;
+      background: rgba(15, 36, 68, 0.45);
+    }
+    .word-box strong { color: #bae6fd; display: block; margin-bottom: 10px; }
+    .word-box-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: center;
+    }
+    .bank-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #3d5680;
+      background: rgba(8, 22, 48, 0.5);
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: #e8f0ff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+    }
+    .bank-chip:hover {
+      border-color: var(--accent);
+      background: rgba(86, 204, 242, 0.16);
+    }
+    .gap-sent {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #e8f0ff;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8, 22, 48, 0.35);
+    }
+    .gap-sent .bold-cue { font-weight: 800; color: #fef08a; }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 9rem;
+      max-width: min(100%, 18rem);
+      width: 12rem;
+      margin: 0 4px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .gap-input:focus,
+    .gap-input.is-active {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35);
+    }
+    .gap-input.is-ok { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .gap-input.is-bad { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35); }
+    .btn-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button.btn-check, button.btn-reset {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #d5e2f8;
+    }
+    .feedback.show { display: block; }
+    @media (max-width: 600px) {
+      .gap-input { width: 100%; max-width: 100%; min-width: 0; }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+</head>
+<body>
+  <main class="page" data-mb2-unit="1" data-mb2-skill="vocabulary" data-mb2-ex="clothes-opposites">
+    <header class="top">
+      <div>
+        <span class="tag">Vocabulary &middot; Clothes</span>
+        <h1>Exercise 2 &mdash; Adjective opposites</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary</a>
+    </header>
+
+    <nav class="voc-nav" aria-label="Unit 1 vocabulary">
+      <a href="../index.html">Vocabulary hub</a>
+      <span>|</span>
+      <a href="../lifestyle/my-lifestyle.html">Lifestyle</a>
+      <span>|</span>
+      <span><strong>Clothes</strong></span>
+      <span>|</span>
+      <a href="../get/index.html">Get</a>
+    </nav>
+
+    <section class="task">
+      <h2>Clothes adjectives</h2>
+      <p class="instr">
+        Complete each gap with an adjective which is the opposite of the one in <strong>bold</strong> in the same sentence.
+      </p>
+
+      <p class="hint-bar">Click a gap, then click a word in the bank &mdash; or type in the box.</p>
+
+      <div class="word-box" id="word-bank" aria-label="Word bank">
+        <strong>Word box</strong>
+        <div class="word-box-line">
+          <button type="button" class="bank-chip" data-word="baggy">baggy</button>
+          <button type="button" class="bank-chip" data-word="brand new">brand new</button>
+          <button type="button" class="bank-chip" data-word="casual">casual</button>
+          <button type="button" class="bank-chip" data-word="colourful">colourful</button>
+          <button type="button" class="bank-chip" data-word="scruffy">scruffy</button>
+          <button type="button" class="bank-chip" data-word="unfashionable">unfashionable</button>
+        </div>
+      </div>
+
+      <p class="gap-sent">
+        <strong>1</strong> Charlie bought a great <span class="bold-cue">second-hand</span> designer sweatshirt in <em>Vintage Gear</em> &ndash; it looks
+        <input type="text" class="gap-input" id="gap-1" autocomplete="off" spellcheck="false" aria-label="Gap 1" />.
+      </p>
+      <p class="gap-sent">
+        <strong>2</strong> Haven&rsquo;t you got a more <span class="bold-cue">formal</span> jacket? That one&rsquo;s a little too
+        <input type="text" class="gap-input" id="gap-2" autocomplete="off" spellcheck="false" aria-label="Gap 2" />
+        for the wedding.
+      </p>
+      <p class="gap-sent">
+        <strong>3</strong> My sister prefers <span class="bold-cue">tight-fitting</span> tops and jeans, whereas I like everything to be really
+        <input type="text" class="gap-input" id="gap-3" autocomplete="off" spellcheck="false" aria-label="Gap 3" />.
+      </p>
+      <p class="gap-sent">
+        <strong>4</strong> Clothes that are considered <span class="bold-cue">trendy</span> and worn by everyone one year, are often
+        <input type="text" class="gap-input" id="gap-4" autocomplete="off" spellcheck="false" aria-label="Gap 4" />
+        and too embarrassing to be seen in the next.
+      </p>
+      <p class="gap-sent">
+        <strong>5</strong> She wore a <span class="bold-cue">plain</span> grey dress to the awards ceremony. We expected to see her in something far more
+        <input type="text" class="gap-input" id="gap-5" autocomplete="off" spellcheck="false" aria-label="Gap 5" />.
+      </p>
+      <p class="gap-sent">
+        <strong>6</strong> As a farmer, I don&rsquo;t have many <span class="bold-cue">smart</span> clothes; I spend most of my time in
+        <input type="text" class="gap-input" id="gap-6" autocomplete="off" spellcheck="false" aria-label="Gap 6" />
+        jeans and an old T-shirt.
+      </p>
+
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../js/prep-vocab-word-box-gaps.js"></script>
+  <script>
+(function () {
+  var ACCEPT = {
+    1: ["brand new"],
+    2: ["casual"],
+    3: ["baggy"],
+    4: ["unfashionable"],
+    5: ["colourful", "colorful"],
+    6: ["scruffy"]
+  };
+  var SHOW = {
+    1: "brand new",
+    2: "casual",
+    3: "baggy",
+    4: "unfashionable",
+    5: "colourful",
+    6: "scruffy"
+  };
+
+  function norm(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\.$/, "")
+      .replace(/\s+/g, " ");
+  }
+
+  var fb = document.getElementById("feedback");
+
+  PREP_VOCAB_WORD_BOX_GAPS.mount({
+    bankRoot: "#word-bank",
+    gapIds: [1, 2, 3, 4, 5, 6],
+    gapIdPrefix: "gap-",
+    onFill: function () {
+      fb.classList.remove("show");
+    }
+  });
+
+  function setGapHint(el, show, keyText) {
+    var sent = el.closest(".gap-sent");
+    if (!sent) return;
+    var hint = sent.querySelector(".mb2-key-hint");
+    if (!hint) {
+      hint = document.createElement("span");
+      hint.className = "mb2-key-hint";
+      sent.appendChild(hint);
+    }
+    hint.textContent = show ? keyText : "";
+    hint.classList.toggle("is-show", !!show);
+  }
+
+  document.querySelectorAll(".gap-input").forEach(function (el) {
+    el.addEventListener("input", function () {
+      this.classList.remove("is-ok", "is-bad");
+      setGapHint(this, false, "");
+      fb.classList.remove("show");
+    });
+  });
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var okc = 0;
+    var n = 6;
+    for (var i = 1; i <= n; i++) {
+      var el = document.getElementById("gap-" + i);
+      var u = norm(el.value);
+      var ok = false;
+      var list = ACCEPT[i];
+      for (var j = 0; j < list.length; j++) {
+        if (norm(list[j]) === u) {
+          ok = true;
+          break;
+        }
+      }
+      el.classList.remove("is-ok", "is-bad");
+      el.classList.add(ok ? "is-ok" : "is-bad");
+      setGapHint(el, !ok, SHOW[i]);
+      if (ok) okc++;
+    }
+    fb.classList.add("show");
+    fb.innerHTML =
+      okc === n
+        ? "<strong>All 6 correct.</strong>"
+        : "Score: <strong>" +
+          okc +
+          "</strong> / " +
+          n +
+          ". Green = correct; red = wrong (key under the sentence).";
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    document.querySelectorAll(".gap-input").forEach(function (el) {
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad", "is-active");
+      setGapHint(el, false, "");
+    });
+    fb.classList.remove("show");
+    fb.textContent = "";
+  });
+})();
+  </script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>
