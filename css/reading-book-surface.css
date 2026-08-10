@@ -1,0 +1,409 @@
+/* Shared book / worksheet surfaces for Reading Part 5 & 7
+   Imported by fce-reading-part7-shell.css, cpe-reading-part7-shell.css
+   (Part 5 maps its own pane classes onto the same tokens). */
+@import url("https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400;1,7..72,600&display=swap");
+
+:root {
+  --paper: #f3ebe0;
+  --ink: #2a241c;
+  --ink-soft: #5a5248;
+  --chapter: #3d5a4c;
+  --reader: "Literata", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+/* —— Book column (passages) —— */
+.texts-column,
+.cpe-p7-texts {
+  min-width: 0;
+  background:
+    linear-gradient(90deg, rgba(42, 36, 28, 0.06) 0, transparent 14px),
+    linear-gradient(180deg, #f7f1e8 0%, var(--paper) 38%, #efe6d8 100%);
+  color: var(--ink);
+  border-radius: 2px 14px 14px 2px;
+  border: 1px solid rgba(42, 36, 28, 0.12);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 18px 40px rgba(0, 0, 0, 0.28),
+    4px 0 0 rgba(42, 36, 28, 0.04);
+  padding: 1.15rem clamp(1rem, 2.2vw, 1.55rem) 1.35rem;
+}
+
+.texts-lead,
+.cpe-p7-texts-lead {
+  margin: 0 0 1rem;
+  padding: 0 0.15rem 0.85rem;
+  border-bottom: 1px solid rgba(42, 36, 28, 0.12);
+  font-family: var(--reader);
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+#passages-root {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.mobile-tabs { display: none; }
+
+.tab-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.tab-strip button {
+  border: 1px solid rgba(42, 36, 28, 0.18);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font, system-ui, sans-serif);
+}
+
+.tab-strip button.active {
+  border-color: var(--chapter);
+  color: #fff;
+  background: var(--chapter);
+}
+
+.passage {
+  margin: 0;
+  padding: 1.05rem 0.2rem 1.25rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  min-width: 0;
+  border-bottom: 1px solid rgba(42, 36, 28, 0.1);
+  width: 100%;
+  max-width: none;
+}
+
+.passage:last-child {
+  border-bottom: none;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0;
+}
+
+.passage-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(42, 36, 28, 0.16);
+}
+
+.passage-header .letter {
+  font-family: var(--reader);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--chapter);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.passage-header .name {
+  font-family: var(--reader);
+  font-weight: 600;
+  font-size: 1.12rem;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.passage-body {
+  font-family: var(--reader);
+  font-size: 1.08rem;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.72;
+  text-wrap: pretty;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-align: left;
+}
+
+.passage-body p {
+  margin: 0 0 0.85rem;
+  text-indent: 0;
+}
+
+.passage-body p:last-child { margin-bottom: 0; }
+
+/* —— Worksheet rail (questions) —— */
+.questions-sidebar,
+.cpe-p7-sidebar {
+  border: 1px solid rgba(42, 36, 28, 0.14);
+  border-radius: 2px 14px 14px 2px;
+  background: linear-gradient(180deg, #faf6ef 0%, #f0e8dc 100%);
+  color: var(--ink);
+  padding: 0.75rem 0.8rem 0.85rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 14px 32px rgba(0, 0, 0, 0.22);
+  position: sticky;
+  top: 0.5rem;
+  align-self: start;
+  height: fit-content;
+  z-index: 5;
+  font-size: 1rem;
+}
+
+.sidebar-title,
+.cpe-p7-sidebar-title {
+  font-family: var(--reader);
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin: 0 0 0.2rem;
+  color: var(--chapter);
+  line-height: 1.25;
+}
+
+.sidebar-hint {
+  margin: 0 0 0.55rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(42, 36, 28, 0.12);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+.sidebar-hint strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.q-item {
+  display: grid;
+  grid-template-columns: 1.45rem minmax(0, 1fr) auto;
+  gap: 0.2rem 0.4rem;
+  align-items: center;
+  margin: 0;
+  padding: 0.4rem 0;
+  border: none;
+  border-bottom: 1px solid rgba(42, 36, 28, 0.1);
+  border-radius: 0;
+  background: transparent;
+}
+
+.q-item:last-of-type { border-bottom: none; }
+
+.q-item.correct {
+  background: rgba(61, 90, 76, 0.12);
+  border-radius: 6px;
+  border-bottom-color: transparent;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  margin: 0.05rem 0;
+}
+
+.q-item.incorrect {
+  background: rgba(180, 83, 72, 0.12);
+  border-radius: 6px;
+  border-bottom-color: transparent;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  margin: 0.05rem 0;
+}
+
+.q-num {
+  font-family: var(--reader);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--chapter);
+  margin: 0;
+  text-transform: none;
+  letter-spacing: 0;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.q-text {
+  font-size: 0.92rem;
+  margin: 0;
+  line-height: 1.32;
+  grid-column: 2;
+  grid-row: 1;
+  color: var(--ink);
+}
+
+.q-letters {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.22rem;
+}
+
+.letter-btn {
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid rgba(42, 36, 28, 0.22);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--font, system-ui, sans-serif);
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.letter-btn:hover:not(:disabled) {
+  border-color: var(--chapter);
+  background: rgba(61, 90, 76, 0.12);
+}
+
+.letter-btn.is-on {
+  border-color: var(--chapter);
+  background: var(--chapter);
+  color: #f7f1e8;
+  box-shadow: 0 1px 0 rgba(42, 36, 28, 0.18);
+}
+
+.letter-btn:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.q-item.correct .letter-btn.is-on {
+  border-color: #2f6b4f;
+  background: #2f6b4f;
+  color: #f3faf6;
+  box-shadow: none;
+}
+
+.q-item.incorrect .letter-btn.is-on {
+  border-color: #b45348;
+  background: #b45348;
+  color: #fff8f6;
+  box-shadow: none;
+}
+
+.result-line {
+  grid-column: 2 / -1;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.result-line.ok { color: #2f6b4f; }
+.result-line.bad { color: #b45348; }
+
+.btn-why {
+  grid-column: 2 / -1;
+  margin: 0;
+  justify-self: start;
+  border: none;
+  background: transparent;
+  color: var(--chapter);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+
+.btn-why:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.explanation {
+  display: none;
+  grid-column: 2 / -1;
+  margin: 0.05rem 0 0.1rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(42, 36, 28, 0.14);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.explanation.open { display: block; }
+
+.explanation .who {
+  color: var(--chapter);
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.explanation blockquote {
+  margin: 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid rgba(61, 90, 76, 0.45);
+  color: var(--ink-soft);
+  font-style: italic;
+  font-family: var(--reader);
+}
+
+.actions {
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(42, 36, 28, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-submit {
+  background: var(--chapter);
+  color: #f7f1e8;
+}
+
+.btn-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-reset {
+  background: rgba(42, 36, 28, 0.08);
+  color: var(--ink);
+  border: 1px solid rgba(42, 36, 28, 0.18);
+}
+
+@media (max-width: 979px) {
+  .questions-sidebar,
+  .cpe-p7-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 719px) {
+  .mobile-tabs { display: block; }
+  .passage { display: none; }
+  .passage.visible { display: block; }
+  .q-item {
+    grid-template-columns: 1.45rem minmax(0, 1fr);
+  }
+  .q-letters {
+    grid-column: 2;
+    grid-row: 2;
+    flex-wrap: wrap;
+    max-width: none;
+  }
+}
