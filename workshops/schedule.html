@@ -209,6 +209,77 @@
       color: #5a7a9a;
       line-height: 1.45;
     }
+    .sch-edit {
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px dashed rgba(125, 211, 252, 0.35);
+      background: rgba(8, 47, 73, 0.35);
+    }
+    .sch-edit summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: #7dd3fc;
+      list-style: none;
+    }
+    .sch-edit summary::-webkit-details-marker { display: none; }
+    .sch-edit-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 560px) {
+      .sch-edit-grid { grid-template-columns: 1fr; }
+    }
+    .sch-edit label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .sch-edit label.sch-edit-wide { grid-column: 1 / -1; }
+    .sch-edit input,
+    .sch-edit select {
+      appearance: none;
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(2, 6, 23, 0.65);
+      color: #e2e8f0;
+      padding: 9px 11px;
+      font: inherit;
+    }
+    .sch-edit-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .sch-edit-actions button {
+      appearance: none;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      background: rgba(52, 211, 153, 0.14);
+      color: #6ee7b7;
+      font-weight: 800;
+      padding: 8px 14px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.86rem;
+    }
+    .sch-edit-actions button.sch-edit-ghost {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: transparent;
+      color: #94a3b8;
+    }
+    .sch-edit-hint {
+      margin: 10px 0 0;
+      font-size: 0.78rem;
+      color: #7dd3fc;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body class="intensive-body intensive-body--schedule">
@@ -224,12 +295,52 @@
 
     <div class="sch-next">
       <div class="sch-next-kicker">Следующая встреча</div>
-      <p class="sch-next-title">Суббота, 8 августа · 14:00 МСК</p>
-      <p class="sch-next-meta">Есть места · Fleabag speaking club · онлайн</p>
+      <p class="sch-next-title" id="speaking-next-sch-title">Суббота, 8 августа · 14:00 МСК</p>
+      <p class="sch-next-meta" id="speaking-next-sch-meta">Есть места · Fleabag speaking club · онлайн</p>
     </div>
 
+    <details class="sch-edit" id="sch-edit">
+      <summary>Изменить дату (для тебя)</summary>
+      <form id="sch-edit-form" class="sch-edit-grid">
+        <label>
+          Дата
+          <input type="date" name="date" required />
+        </label>
+        <label>
+          Время
+          <input type="time" name="time" required value="14:00" />
+        </label>
+        <label class="sch-edit-wide">
+          Клуб / трек
+          <input name="track" list="sch-track-list" placeholder="Fleabag" />
+          <datalist id="sch-track-list">
+            <option value="Fleabag"></option>
+            <option value="Friends"></option>
+            <option value="Films"></option>
+            <option value="Teens"></option>
+          </datalist>
+        </label>
+        <label class="sch-edit-wide">
+          Строка на хабе (под датой)
+          <input name="hubSpots" placeholder="Есть места · забронировать на сайте" />
+        </label>
+        <label class="sch-edit-wide">
+          Строка в расписании (под датой)
+          <input name="scheduleMeta" placeholder="Есть места · Fleabag speaking club · онлайн" />
+        </label>
+      </form>
+      <div class="sch-edit-actions">
+        <button type="button" id="sch-edit-save">Сохранить и скачать файл</button>
+        <button type="button" class="sch-edit-ghost" id="sch-edit-local">Только в этом браузере</button>
+        <button type="button" class="sch-edit-ghost" id="sch-edit-reset">Сбросить локальное</button>
+      </div>
+      <p class="sch-edit-hint" id="sch-edit-hint">
+        «Сохранить и скачать» → замени файл <code>workshops/js/speaking-next-data.js</code> скачанным и залей на сайт — тогда дату увидят все. «Только в этом браузере» — только у тебя на этом компьютере.
+      </p>
+    </details>
+
     <article class="sch-card" data-session="2026-08-08-fleabag">
-      <div class="sch-when">Суббота · 8 августа 2026 · 14:00 МСК</div>
+      <div class="sch-when" id="speaking-next-sch-when">Суббота · 8 августа 2026 · 14:00 МСК</div>
       <h2 class="sch-name">Fleabag · speaking club</h2>
       <p class="sch-desc">
         Клип → cool phrases → разговор. ~90 мин · онлайн.
@@ -282,6 +393,8 @@
     </p>
   </div>
 
+  <script src="js/speaking-next-data.js"></script>
+  <script src="js/speaking-next.js"></script>
   <script>
     (function () {
       var openBtn = document.getElementById("sch-open-form");
@@ -290,6 +403,67 @@
       var cancel = document.getElementById("sch-cancel");
       var done = document.getElementById("sch-done");
       var pay = document.getElementById("sch-pay");
+      var editForm = document.getElementById("sch-edit-form");
+      var hint = document.getElementById("sch-edit-hint");
+      var SN = window.SpeakingNext;
+
+      function fillEditForm() {
+        if (!SN || !editForm) return;
+        var cfg = SN.getConfig();
+        editForm.date.value = cfg.date || "";
+        editForm.time.value = cfg.time || "14:00";
+        editForm.track.value = cfg.track || "Fleabag";
+        editForm.hubSpots.value = cfg.hubSpots || "";
+        editForm.scheduleMeta.value = cfg.scheduleMeta || "";
+      }
+
+      function readEditForm() {
+        return {
+          date: editForm.date.value,
+          time: editForm.time.value,
+          track: editForm.track.value.trim() || "Fleabag",
+          hubSpots: editForm.hubSpots.value.trim(),
+          scheduleMeta: editForm.scheduleMeta.value.trim(),
+        };
+      }
+
+      fillEditForm();
+
+      var saveBtn = document.getElementById("sch-edit-save");
+      var localBtn = document.getElementById("sch-edit-local");
+      var resetBtn = document.getElementById("sch-edit-reset");
+
+      if (saveBtn && SN) {
+        saveBtn.addEventListener("click", function () {
+          var cfg = SN.saveStored(readEditForm());
+          SN.apply(cfg);
+          SN.downloadDataFile(cfg);
+          if (hint) {
+            hint.textContent =
+              "Скачан speaking-next-data.js — положи его в workshops/js/ (замени старый) и залей на сайт. Пока в этом браузере уже стоит новая дата.";
+          }
+        });
+      }
+      if (localBtn && SN) {
+        localBtn.addEventListener("click", function () {
+          var cfg = SN.saveStored(readEditForm());
+          SN.apply(cfg);
+          if (hint) {
+            hint.textContent =
+              "Ок: дата только в этом браузере. Чтобы все видели на сайте — нажми «Сохранить и скачать файл» и залей speaking-next-data.js.";
+          }
+        });
+      }
+      if (resetBtn && SN) {
+        resetBtn.addEventListener("click", function () {
+          SN.clearStored();
+          SN.apply(SN.getDefault());
+          fillEditForm();
+          if (hint) {
+            hint.textContent = "Локальная дата сброшена — снова из файла speaking-next-data.js.";
+          }
+        });
+      }
 
       /* Подставь свою платёжную ссылку */
       var PAY_URL = "";
@@ -315,8 +489,11 @@
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
+        var parts =
+          (window.__SPEAKING_NEXT_PARTS__ && window.__SPEAKING_NEXT_PARTS__.sessionLabel) ||
+          "Fleabag speaking club";
         var data = {
-          session: "Суббота 8 августа 2026 · 14:00 · Fleabag",
+          session: parts,
           name: form.name.value.trim(),
           contact: form.contact.value.trim(),
           tariff: form.tariff.value,

@@ -2819,13 +2819,1277 @@
       tagline: "Enforced silence · secrets · old acquaintance",
       synopsis:
         "Fleabag and her sister Claire reluctantly visit a female-only, silent retreat, courtesy of their father. Their enforced silence is interrupted, however, by an unusual neighbouring weekend workshop, explosive secrets coming to light, and a surprising connection with an old acquaintance.",
-      beats: defaultBeats(8),
+      beats: (function () {
+        var first = {
+          id: "dont-take-the-piss",
+          label: "Don’t take the piss",
+          teacher:
+            "Car scene = hook only. Meaning first → Lexis / Example → deep Discussion. Keep psycho light: labels & humour, not diagnosis. Sat Nav = gateway to ‘just do the obvious’ advice that can shame.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "take the piss",
+            "psycho",
+            "let go of the handle",
+            "Sat Nav on your phone",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/01-dont-take-the-piss.mp4",
+            note:
+              "take the piss · psycho · let go of the handle · Sat Nav on your phone",
+          },
+          context: {
+            tone: "Lexical · banter, labels, control, dismissive ‘help’",
+            meanings: [
+              "take the piss = BrE multi-tool: (1) tease / mock someone (often as closeness); (2) behave with outrageous cheek — take unfair advantage; (3) Are you taking the piss? = disbelief — you can’t be serious.",
+              "psycho = harsh casual label for ‘out of control / too much / scary-intense’ — joke, insult, or self-burn (not a clinical word here).",
+              "let go of the handle = in the clip: stop gripping the car; in life: stop clinging to control.",
+              "Sat Nav on your phone = ‘the answer’s already in your pocket’ — practical help that can sound like you’re useless.",
+            ],
+            examples: [
+              "TAKE THE PISS · 1 FRIENDLY TEASE — take the piss out of someone · don’t get mad, I’m just taking the piss · we take the piss out of each other.",
+              "Don’t get mad — I’m just taking the piss.",
+              "We take the piss out of each other; that’s how we show we’re close.",
+              "In the show: I sometimes need you not to take the piss (out of me while I’m driving).",
+              "TAKE THE PISS · 2 TAKING ADVANTAGE / CHEEK — They’re taking the piss · He’s really taking the piss · that price is taking the piss.",
+              "£20 for a coffee? They are taking the piss!",
+              "He leaves work early every day. He’s really taking the piss.",
+              "TAKE THE PISS · 3 DISBELIEF — Are you taking the piss? · You must be taking the piss.",
+              "Are you taking the piss? You can’t be serious.",
+              "There’s a line: loving banter vs taking the piss when someone’s already raw.",
+              "PSYCHO — look / sound / seem like a psycho · don’t call me psycho · that was a psycho move (joke) · I looked like a psycho in that argument.",
+              "Don’t call people psycho for having feelings.",
+              "In the show: a sharp aside — judgement + dark humour.",
+              "LET GO OF THE HANDLE — let go of the handle · still holding the handle · can’t let go.",
+              "Literal: Let go of the handle — you’re making me nervous.",
+              "Metaphor: I can’t let go of the handle at work / in the relationship.",
+              "SAT NAV ON YOUR PHONE — Sat Nav on your phone · just use your phone · just Google it · the answer’s in your pocket · just calm down / just call them.",
+              "Just use the Sat Nav on your phone.",
+              "‘Just Google it’ — helpful or humiliating?",
+              "When ‘simple advice’ means I don’t want to deal with your stress.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · use the tape phrases. If the main question feels big, pick one hook under it.",
+            starters: [
+              "I need you not to take the piss when…",
+              "People called it psycho, but really…",
+              "I still can’t let go of the handle with…",
+              "‘Just use the Sat Nav on your phone’ felt like…",
+            ],
+            questions: [
+              {
+                q: "When does banter feel like love — and when do you need someone not to take the piss? Tell a real moment (family, friends, couple, work).",
+                examples: [
+                  "Who is allowed to take the piss out of you — and who isn’t?",
+                  "Have you ever laughed on the outside and felt small inside?",
+                  "Did you say it out loud… or only go quiet?",
+                  "Are you the one who takes the piss too far?",
+                  "Scenes: joke about looks / money / a break-up · sister energy · work ‘banter’.",
+                ],
+              },
+              {
+                q: "Who gets called psycho in everyday life — and what does that word actually punish? Emotion? Volume? A woman saying no? You, about yourself?",
+                examples: [
+                  "A time you looked ‘too much’ and got a label.",
+                  "A time you used psycho as a joke — fair or lazy?",
+                  "What’s a kinder sentence than ‘you’re psycho’?",
+                  "Online: when does ‘psycho’ become entertainment?",
+                  "Scenes: chat fight · jealousy · parking rage · ‘crazy ex’ stories.",
+                ],
+              },
+              {
+                q: "Where are you still holding the handle — control, image, a person, a plan — and what are you afraid will happen if you let go?",
+                examples: [
+                  "Car / travel: are you a gripping passenger?",
+                  "Work: can’t delegate?",
+                  "Love: checking, planning, fixing someone’s mood?",
+                  "What would ‘hands off the handle’ look like for one week?",
+                ],
+              },
+              {
+                q: "When has ‘just do the simple thing’ (Sat Nav / Google / calm down / just call them) helped — and when did it make you feel stupid for struggling?",
+                examples: [
+                  "Advice you hate hearing when you’re stressed.",
+                  "Are you the person who jumps to fixes?",
+                  "Tech vs trust: app knows better than me / than you?",
+                  "What do you wish they’d said instead of ‘just…’?",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · practise the patterns out loud. Short turns. Then open Discussion for the deep talk.",
+            drills: [
+              {
+                label: "TAKE THE PISS",
+                bank: "I’m just taking the piss · They’re taking the piss · Are you taking the piss? · take the piss out of someone",
+                task: "Fire three lines — one for each sense: friendly tease · outrageous cheek · disbelief.",
+              },
+              {
+                label: "PSYCHO",
+                bank: "look / sound / seem like a psycho · don’t call me psycho · that was a psycho move (joke)",
+                task: "One line you’d never say to a friend + one self-ironic line you’re OK with.",
+              },
+              {
+                label: "LET GO OF THE HANDLE",
+                bank: "let go of the handle · still holding the handle · can’t let go",
+                task: "One literal car line + one life metaphor. “I can’t let go of the handle with…”",
+              },
+              {
+                label: "SAT NAV ON YOUR PHONE",
+                bank: "Sat Nav on your phone · just use your phone · just Google it · the answer’s in your pocket",
+                task: "Say the ‘helpful’ line, then rewrite it so it doesn’t shame.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Read the bank + model lines (context). Then tell a real-life situation using the phrase — not a random drill, a short story on theme.",
+            items: [
+              {
+                label: "TAKE THE PISS",
+                bank: "I’m just taking the piss · They’re taking the piss · Are you taking the piss? · take the piss out of someone",
+                models: [
+                  "Don’t get mad — I’m just taking the piss.",
+                  "£20 for a coffee? They are taking the piss!",
+                  "He leaves work early every day. He’s really taking the piss.",
+                  "Are you taking the piss? You can’t be serious.",
+                ],
+                say: "Your turn (30–40 s): one real moment — tease, cheek, or disbelief. Say which sense you mean.",
+              },
+              {
+                label: "PSYCHO",
+                bank: "look / sound / seem like a psycho · don’t call me psycho · that was a psycho move (joke)",
+                models: [
+                  "Don’t call people psycho for having feelings.",
+                  "I looked like a psycho in that argument — I hate that.",
+                  "In the show: a sharp aside — judgement + dark humour.",
+                ],
+                say: "Your turn: a label moment (you or someone else). What was really going on under the word psycho?",
+              },
+              {
+                label: "LET GO OF THE HANDLE",
+                bank: "let go of the handle · still holding the handle · can’t let go",
+                models: [
+                  "Let go of the handle — you’re making me nervous.",
+                  "I can’t let go of the handle at work / in the relationship.",
+                  "Who’s the passenger who still grips everything?",
+                ],
+                say: "Your turn: one thing you’re still gripping this month — and what you’re afraid will happen if you let go.",
+              },
+              {
+                label: "SAT NAV ON YOUR PHONE",
+                bank: "Sat Nav on your phone · just use your phone · just Google it · just calm down / just call them",
+                models: [
+                  "Just use the Sat Nav on your phone.",
+                  "‘Just Google it’ — helpful or humiliating?",
+                  "When ‘simple advice’ means I don’t want to deal with your stress.",
+                ],
+                say: "Your turn: a ‘just…’ advice moment — help or slap? What do you wish they’d said instead?",
+              },
+            ],
+          },
+        };
+        var second = {
+          id: "splash-out-retreat",
+          label: "Splash out · silent retreat",
+          teacher:
+            "Big theme: forced rest & forced closeness — retreats, digital detox, sister/family bonding trips. Meaning → Lexis / Example (short story + phrase) → Discussion (two sides: gift vs trap). No dark punchlines from the door joke.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "splash out",
+            "you’ve been gifted…",
+            "We’re not supposed to bond on this",
+            "I really don’t think that’s going to end well",
+            "keep the outside world on the outside",
+            "every cloud has a silver lining",
+            "beyond disturbing",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/02-splash-out-retreat.mp4",
+            note:
+              "splash out · gifted this retreat · not supposed to bond · not going to end well · outside world on the outside · every cloud… · beyond disturbing",
+          },
+          context: {
+            tone: "Lexical · money-gifts, retreats, bonding, detox, mindset",
+            meanings: [
+              "splash out (on something) = spend a lot of money, often generously / more than usual.",
+              "be gifted something = receive something as a gift (often an experience) — can feel lucky or chosen-for-you.",
+              "We’re not supposed to bond on this = forced closeness isn’t the plan / we shouldn’t try to get emotionally closer here.",
+              "I really don’t think that’s going to end well = soft pessimism — I can already see this going wrong.",
+              "keep the outside world on the outside = shut out news, work, phones, normal life for a while (detox / retreat rule).",
+              "every cloud has a silver lining = even a bad situation has a bright side (comfort… or fake positivity).",
+              "beyond disturbing = stronger than ‘weird’ / ‘wrong’ — that thought or joke goes too far.",
+            ],
+            examples: [
+              "SPLASH OUT — splash out on a holiday / dinner / wedding / spa weekend · really splash out · splash out this time.",
+              "Dad really splashed out this time.",
+              "We splashed out on a silent retreat — then regretted the no-Wi-Fi rule.",
+              "GIFTED — you’ve been gifted this retreat / experience / weekend · how lucky you are.",
+              "I see you’ve been gifted this retreat. How lucky you both are.",
+              "They gifted us a detox weekend — we didn’t choose it.",
+              "BOND — bond with someone · forced bonding · we’re not supposed to bond on this · a bonding trip / sibling weekend.",
+              "We’re not supposed to bond on this, are we?",
+              "Family holidays sometimes force a bond you didn’t ask for.",
+              "NOT GOING TO END WELL — I don’t think this is going to end well · that’s not going to end well · I can already see how this ends.",
+              "I really don’t think that’s going to end well.",
+              "Silent retreat with my sister? That’s not going to end well.",
+              "OUTSIDE WORLD — keep the outside world on the outside · shut the world out · no phones / no news / digital detox.",
+              "We try to keep the outside world on the outside during your stay.",
+              "Can you actually keep the outside world on the outside for a weekend?",
+              "SILVER LINING — every cloud has a silver lining · look on the bright side · at least…",
+              "Every cloud has a silver lining — at least we’re rested.",
+              "Sometimes you don’t want a silver lining; you want honesty.",
+              "BEYOND DISTURBING — beyond weird / awkward / me · the fact that… is beyond disturbing.",
+              "The fact that your mind even goes there is beyond disturbing.",
+            ],
+          },
+          speak: {
+            mission:
+              "Discussion · retreats, rest, and closeness. Use tape phrases. Argue both sides where you can — gift vs trap, dream vs nightmare.",
+            starters: [
+              "Dad / someone really splashed out on…",
+              "We’ve been gifted a weekend away, but…",
+              "We’re not supposed to bond on this, but…",
+              "I really don’t think that’s going to end well because…",
+              "I can’t keep the outside world on the outside when…",
+              "Every cloud has a silver lining — for me that was…",
+            ],
+            questions: [
+              {
+                q: "Someone splashes out and gifts you a retreat / spa / detox weekend. Is that real care — or a choice made for you? Would you go on a silent retreat?",
+                examples: [
+                  "With a sister / parent / friend — who pays, who chooses?",
+                  "Can you say no to a ‘lucky’ gift?",
+                  "Experience gifts vs things: which feels kinder?",
+                  "Other side: you’d love someone to force you to rest.",
+                ],
+              },
+              {
+                q: "We’re not supposed to bond on this — when does a forced bonding trip (sisters, siblings, family weekend, friends’ getaway) actually bring you closer… and when do you know it won’t end well?",
+                examples: [
+                  "A trip that surprised you and softened things.",
+                  "A trip that made everything worse / more awkward.",
+                  "Mother’s Day / birthday weekends with an agenda.",
+                  "Other side: some people only open up away from home.",
+                ],
+              },
+              {
+                q: "Keep the outside world on the outside — no Wi‑Fi, no news, no phone. Is that real rest for you, or panic? What is hardest to shut out: work, chats, or ‘just checking’?",
+                examples: [
+                  "Best digital detox you’ve had (even one evening).",
+                  "Worst: you lasted an hour.",
+                  "Do retreats / no-phone rules help relationships in the room — or create tension?",
+                  "Other side: staying reachable is how you feel safe.",
+                ],
+              },
+              {
+                q: "On a ‘rest & bond’ weekend, are you more every cloud has a silver lining — or I really don’t think that’s going to end well? Tell a trip where your mindset was right… or completely wrong.",
+                examples: [
+                  "Pessimist who got a good surprise.",
+                  "Optimist who should have listened to the bad feeling.",
+                  "Silver lining after a messy family weekend — honest or forced?",
+                  "Optional sharp edge: a joke about closeness that felt beyond disturbing — when is sibling humour too far?",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · patterns out loud. Short turns. Then Discussion on retreats & bonding.",
+            drills: [
+              {
+                label: "SPLASH OUT / GIFTED",
+                bank: "splash out on a holiday / retreat / dinner · you’ve been gifted this weekend · how lucky",
+                task: "One generous line + one suspicious line: ‘They splashed out because…’ / ‘We’ve been gifted this, but…’",
+              },
+              {
+                label: "BOND / END WELL",
+                bank: "bond with · forced bonding · we’re not supposed to bond on this · not going to end well",
+                task: "Say the Fleabag line, then your version for a real trip. Optimistic + pessimistic finish.",
+              },
+              {
+                label: "OUTSIDE WORLD",
+                bank: "keep the outside world on the outside · no Wi‑Fi · digital detox · shut the world out",
+                task: "Two lines: why you’d love that rule · why you’d hate it.",
+              },
+              {
+                label: "SILVER LINING / BEYOND…",
+                bank: "every cloud has a silver lining · at least… · beyond disturbing / weird / awkward",
+                task: "Give a real silver lining for a bad weekend. Then one ‘beyond ___’ line about forced closeness humour.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short personal story + the phrase (30–40 s). Not the big debate — that is Discussion.",
+            items: [
+              {
+                label: "SPLASH OUT",
+                bank: "splash out on a holiday / dinner / spa / retreat · really splash out",
+                models: [
+                  "Dad really splashed out this time.",
+                  "We splashed out on a weekend away.",
+                ],
+                say: "Your turn: who splashed out on whose rest or trip — and what was the occasion?",
+              },
+              {
+                label: "GIFTED / BOND",
+                bank: "you’ve been gifted this retreat · we’re not supposed to bond on this · bonding trip",
+                models: [
+                  "I see you’ve been gifted this retreat. How lucky you both are.",
+                  "We’re not supposed to bond on this, are we?",
+                ],
+                say: "Your turn: a time someone tried to ‘gift’ closeness or a bonding weekend. What happened in one minute of story?",
+              },
+              {
+                label: "END WELL / OUTSIDE WORLD",
+                bank: "not going to end well · keep the outside world on the outside · no phones",
+                models: [
+                  "I really don’t think that’s going to end well.",
+                  "We try to keep the outside world on the outside during your stay.",
+                ],
+                say: "Your turn: before a trip you thought ‘this won’t end well’ — or a day you tried to shut the outside world out. One concrete scene.",
+              },
+              {
+                label: "SILVER LINING / BEYOND DISTURBING",
+                bank: "every cloud has a silver lining · beyond disturbing / weird / awkward",
+                models: [
+                  "Every cloud has a silver lining — at least we slept.",
+                  "The fact that your mind even goes there is beyond disturbing.",
+                ],
+                say: "Your turn: your silver lining after a messy getaway — or a closeness-joke that felt beyond ___. Keep it light; no trauma dump.",
+              },
+            ],
+          },
+        };
+        var third = {
+          id: "let-go-thought-prison",
+          label: "Let go · thought prison",
+          teacher:
+            "Women’s silent retreat ideology — let go, thought prison, menial tasks. Believe it or find it bit on the nose. Different from Beat 2 (trip & sisters) and Beat 4 (men’s workshop). Example = short personal try; Discussion = believer vs sceptic.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "bit on the nose",
+            "let go of your past",
+            "thought prison",
+            "partaking of menial tasks",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/03-let-go-thought-prison.mp4",
+            note:
+              "bit on the nose · let go of your past · thought prison · partaking of menial tasks",
+          },
+          context: {
+            tone: "Lexical · C1–C2 retreat / self-help register (skip poster English)",
+            meanings: [
+              "bit on the nose = too obvious / unsubtle — the point is hammered home (BrE; also: too on the nose).",
+              "let go of your past = wellness stock phrase for releasing old pain/identity — useful to critique, not only to preach.",
+              "thought prison = metaphor for enforced inner silence — thoughts locked in, not aired.",
+              "partaking of menial tasks = elevated, quasi-religious wording for doing dull chores (partake of = take part in; menial = low-status labour).",
+            ],
+            examples: [
+              "BIT ON THE NOSE — a bit on the nose · too on the nose · that slogan / metaphor / speech is bit on the nose.",
+              "‘Let go of your past’ — bit on the nose.",
+              "The whole opening was inspiring and a bit on the nose.",
+              "LET GO — let go of your past · now is the time to let it go · I can’t let that version of me go.",
+              "Let go of your past.",
+              "Now is the time to let it go.",
+              "THOUGHT PRISON — thought prison in your mind · leave your voice in your head.",
+              "Think of it as a thought prison in your mind.",
+              "MENIAL / PARTAKE — partaking of menial tasks · find sanctuary in the partaking of menial tasks · menial work dressed as ritual.",
+              "Then we will find our sanctuary in the partaking of menial tasks, all in perfect silence.",
+              "Translate the host: ‘We’ll wash up quietly and call it sanctuary.’",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · retreat ideology & self-help language. Believer vs sceptic. Use the tape — not basic ‘live in the moment’ lines.",
+            starters: [
+              "That line was a bit on the nose…",
+              "‘Let go of your past’ only works if…",
+              "A thought prison is appealing when… / terrifying when…",
+              "‘Partaking of menial tasks’ is just…",
+            ],
+            questions: [
+              {
+                q: "When does ‘let go of your past’ land as wisdom — and when is it bit on the nose? Who is allowed to say it to you?",
+                examples: [
+                  "A time releasing an old story actually freed you.",
+                  "A time the phrase erased something that still needed language.",
+                  "Therapist vs friend vs retreat stranger vs Instagram.",
+                  "Other side: refusing to let anything go as a personality.",
+                ],
+              },
+              {
+                q: "Thought prison — healthy containment, or a polished name for rumination? When has silence healed you, and when has it made the inner noise worse?",
+                examples: [
+                  "Forced no-talk day — calm or pressure cooker?",
+                  "The difference between chosen silence and a rule.",
+                  "Writing on a board instead of speaking — dignity or control?",
+                  "Other side: some minds only settle when speech is banned for a while.",
+                ],
+              },
+              {
+                q: "Partaking of menial tasks as sanctuary — do you buy the elevated register, or is it chores with incense? Would you pay for a weekend of silent labour + meditation?",
+                examples: [
+                  "A menial task that genuinely clears your head.",
+                  "When wellness language makes ordinary work feel profound — or fake.",
+                  "Translate the host into plain English; what remains?",
+                  "Other side: the body needs repetition; the vocabulary is optional.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "C1–C2 · register play — guru voice vs plain English. Then Discussion.",
+            drills: [
+              {
+                label: "BIT ON THE NOSE / LET GO",
+                bank: "bit on the nose · too on the nose · let go of your past · now is the time to let it go",
+                task: "Guru delivery of ‘Let go of your past’ → deadpan ‘Bit on the nose.’ Then one nuanced line (when it is / isn’t fair).",
+              },
+              {
+                label: "THOUGHT PRISON",
+                bank: "thought prison · thought prison in your mind · leave your voice in your head",
+                task: "Explain the metaphor without wellness clichés. Then: does the image attract you or repel you?",
+              },
+              {
+                label: "PARTAKING OF MENIAL TASKS",
+                bank: "partaking of menial tasks · find sanctuary in… · menial · perfect silence",
+                task: "Pitch it as the host (elevated). Demolish it in one dry C2 sentence.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + tape phrase (30–40 s). Keep lexis sharp — no ‘live now / be mindful’ filler.",
+            items: [
+              {
+                label: "BIT ON THE NOSE / LET GO",
+                bank: "bit on the nose · let go of your past · let it go",
+                models: [
+                  "Bit on the nose.",
+                  "Let go of your past.",
+                  "Now is the time to let it go.",
+                ],
+                say: "Your turn: advice to ‘let go’ that either earned respect — or was bit on the nose. One scene.",
+              },
+              {
+                label: "THOUGHT PRISON",
+                bank: "thought prison · thought prison in your mind",
+                models: [
+                  "Think of it as a thought prison in your mind.",
+                  "It’s about leaving your voice in your head.",
+                ],
+                say: "Your turn: a stretch when your head felt like a thought prison — what was locked in, and what (if anything) got out?",
+              },
+              {
+                label: "PARTAKING OF MENIAL TASKS",
+                bank: "partaking of menial tasks · sanctuary in… · menial tasks",
+                models: [
+                  "Then we will find our sanctuary in the partaking of menial tasks, all in perfect silence.",
+                ],
+                say: "Your turn: a menial task you’d dress as sanctuary — or refuse to romanticise. Use the elevated phrase once, then plain English.",
+              },
+            ],
+          },
+        };
+        var fourth = {
+          id: "turn-that-around",
+          label: "Turn that around",
+          teacher:
+            "Men’s workshop next door — different theme from the women’s retreat. Tape focus: time to turn that around. Skip chanting the slur; dig into motives. Not only ‘be alpha / hate women’ — why THIS product (adapt / reprogram / better man) when some men feel women hold more space in the world. Later Beat 9 (Fair enough): can you excuse the bank manager — or is the cups speech a trap for our sympathy?",
+          blocks: ["watch", "context"],
+          phrases: ["time to turn that around"],
+          watch: {
+            videoUrl: "media/s01e04/04-turn-that-around.mp4",
+            note: "now is the time to turn that around · reprogram · better man",
+          },
+          context: {
+            tone: "Lexical · C1–C2 ‘better man’ workshop register",
+            meanings: [
+              "time to turn that around / now is the time to turn that around = forced pivot — reverse the pattern (habit, upbringing, how you treat women). Workshop English for ‘rewrite yourself’.",
+            ],
+            examples: [
+              "TURN THAT AROUND — now is the time to turn that around · turn it around · reprogram your mind / body / mouth · be the better man.",
+              "Wherever it’s come from — your upbringing, your experiences with women — now is the time to turn that around.",
+              "To reprogram your mind, your body and your mouth… to be the better man.",
+              "Two markets for men: ‘be bolder / resent women’ vs ‘adapt — turn that around / be better with women’. Same fear of losing ground can feed both.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · why men buy the ‘better man / turn that around’ product. Two sides. Don’t reduce anyone to a cartoon — dig into motives. Use the tape.",
+            starters: [
+              "Now is the time to turn that around — but turn what, exactly…",
+              "Some men hear ‘women are dominating’ and…",
+              "Reprogram your mouth sounds like…",
+              "The ‘better man’ pitch vs the ‘be alpha’ pitch…",
+            ],
+            questions: [
+              {
+                q: "‘Now is the time to turn that around’ — reprogram mind, body, mouth; be the better man. Why do some men buy THIS product (fix how you are with women / catch up with a world where women hold more space)… instead of the louder market of ‘be bolder / dominate / resent women’?",
+                examples: [
+                  "Motive A — status panic: ‘women are dominating work / dating / culture; I must adapt or disappear.’ Is that fear real, exaggerated, or useful to sell courses?",
+                  "Motive B — guilt / upbringing: experiences with women + old scripts → sincere wish to turn it around.",
+                  "Motive C — performance: same old contempt with nicer vocabulary (the show’s irony: ‘better man’ energy beside the slur).",
+                  "Other side: equality gains aren’t simply ‘female domination’ — but some men experience them as loss. Can you name that feeling without endorsing hate?",
+                  "Which pitch is more dangerous long-term: open misogyny, or ‘reprogram yourself’ that never actually changes behaviour?",
+                ],
+              },
+              {
+                q: "If a man feels the ground shifting — women more visible at work, in dating, in culture — what does a healthy turn that around look like… and what does a bitter one look like?",
+                examples: [
+                  "Healthy: new skills, respect, sharing power, updating old scripts.",
+                  "Bitter: shame → silence → explosion, or a workshop mask over the same rage.",
+                  "Have you seen either version in real life (family, colleagues, online)?",
+                  "Other side: some men aren’t ‘left behind’ — they’re refusing to share space. How do you tell the difference?",
+                ],
+              },
+              {
+                q: "Upbringing and ‘experiences with women’ as the source — explanation, excuse, or both? When is it fair to say the past shaped you… and when is it time to stop using that as cover?",
+                examples: [
+                  "A script from home that needed turning around.",
+                  "A course / book / boss that used this language well — or badly.",
+                  "Who gets to decide ‘now is the time’ — you, a partner, a guru, HR?",
+                  "Other side: without naming the past, people can’t turn anything around.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "C1–C2 · workshop voice vs plain English. Then Discussion.",
+            drills: [
+              {
+                label: "TURN THAT AROUND",
+                bank: "now is the time to turn that around · turn it around · time to turn that around",
+                task: "Host voice: deliver the line. Then plain English: what are they actually selling — change, status, or relief from feeling left behind?",
+              },
+              {
+                label: "REPROGRAM / BETTER MAN",
+                bank: "reprogram your mind / body / mouth · better man · upbringing · experiences with women",
+                task: "Build one sincere pitch and one cynical pitch with the same lexis. Which would you trust — and why?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + tape phrase (30–40 s). Not the big gender debate — that is Discussion.",
+            items: [
+              {
+                label: "TURN THAT AROUND",
+                bank: "time to turn that around · now is the time to turn that around",
+                models: [
+                  "Now is the time to turn that around.",
+                  "Wherever it’s come from — your upbringing, your experiences with women — now is the time to turn that around.",
+                ],
+                say: "Your turn: a time someone (or a course / book / boss) said it was time to turn that around — for a man, or for you. What was under the slogan?",
+              },
+              {
+                label: "REPROGRAM / BETTER MAN",
+                bank: "reprogram your mind / body / mouth · better man",
+                models: [
+                  "To reprogram your mind, your body and your mouth… to be the better man.",
+                ],
+                say: "Your turn: have you ever watched (or done) a ‘fix yourself’ pitch aimed at men? One concrete scene — sincere or bit on the nose.",
+              },
+            ],
+          },
+        };
+        var fifth = {
+          id: "spill-the-beans",
+          label: "Spill the beans",
+          teacher:
+            "Core drama: Fleabag needling Martin · Claire spills (stole → gave to Martin) · ‘thoughtful present’ with dirt on it. LOCK the chunk pride of place in Claire’s line — students must say it, not paraphrase. Discussion = loyalty vs truth about a sister’s husband.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "spill the beans",
+            "a really thoughtful present",
+            "bent over backwards",
+            "pride of place",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/05-spill-the-beans.mp4",
+            note:
+              "spill the beans · thoughtful present · bent over backwards · Just don’t put it pride of place when they come over",
+          },
+          context: {
+            tone: "Lexical · C1–C2 confession + must-learn chunk: pride of place",
+            meanings: [
+              "spill the beans = reveal a secret (often suddenly / under pressure) — confess what was hidden.",
+              "a really thoughtful present = sounds like pure gratitude; here it can mask guilt, theft, or a story you can’t tell Dad.",
+              "bent over backwards (to…) = go to extreme lengths / put yourself out hugely to get or do something.",
+              "pride of place = the best / most visible spot for something you want admired (mantelpiece, centre of the shelf, hall table). Fixed frames: put it pride of place · give something pride of place · take pride of place. In the show: don’t display the dirty gift where Dad / they will see it.",
+            ],
+            examples: [
+              "SPILL THE BEANS — spill the beans · she finally spilled the beans · don’t spill · keep it quiet.",
+              "In silence, the beans still spill — Claire cracks; Fleabag has been badmouthing Martin for seasons.",
+              "THOUGHTFUL PRESENT — It’s actually a really thoughtful present. Thank you.",
+              "A ‘thoughtful present’ hits different once you know she stole it and gave it to Martin.",
+              "BENT OVER BACKWARDS — bend over backwards to get / find / arrange something · He must have bent over backwards to get something like that.",
+              "He must have bent over backwards to get something like that.",
+              "PRIDE OF PLACE — say the chunk, don’t swap it for ‘in a nice place’:",
+              "Just don’t put it pride of place when Dad… when they come over.",
+              "We gave the wedding photo pride of place in the hall.",
+              "That ugly vase somehow took pride of place on her desk.",
+              "In our scene: thoughtful present + bent over backwards… but it must NOT sit pride of place when the family walks in.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · sisters, secrets, Martin. At least once you must use pride of place out loud (not ‘on the shelf’ / ‘in the middle’). Tape on.",
+            starters: [
+              "She finally spilled the beans…",
+              "It looked like a really thoughtful present, until…",
+              "He must have bent over backwards to…",
+              "Just don’t put it pride of place when they come over…",
+              "We gave ___ pride of place, but…",
+            ],
+            questions: [
+              {
+                q: "Spill the beans — when a sister (or you) finally confesses something ugly about the marriage / the husband / a ‘perfect’ gift, is that betrayal… or the only honest love left?",
+                examples: [
+                  "Claire energy: steal, cover, then crack in a quiet room.",
+                  "Fleabag energy: already speaking badly about Martin — does that push the spill, or poison it?",
+                  "Have you kept a sibling’s secret about their partner — and regretted either silence or truth?",
+                  "Other side: some beans should stay unspilled; the family can’t hold them.",
+                ],
+              },
+              {
+                q: "It’s actually a really thoughtful present — until you know the origin (stolen, redirected to Martin, bought with guilt). When have you praised a gift / a husband / a home that you privately didn’t trust?",
+                examples: [
+                  "Polite thank-you vs the real story.",
+                  "Performing ‘Martin’s lovely’ for Dad / guests.",
+                  "Other side: sometimes the present IS thoughtful and the mess is elsewhere — can both be true?",
+                ],
+              },
+              {
+                q: "Pride of place — lock Claire’s warning: “Just don’t put it pride of place when Dad… when they come over.” What in your home (or a couple’s home) gets pride of place for guests — and what gets moved before family arrives? You must say pride of place in your answer.",
+                examples: [
+                  "Frame A: We put ___ pride of place so everyone sees the happy story.",
+                  "Frame B: Don’t put ___ pride of place when they come over — too expensive / too stolen / too honest.",
+                  "Frame C: ___ took pride of place and everyone pretended not to notice the crack underneath.",
+                  "Other side: leaving something pride of place as quiet rebellion.",
+                ],
+              },
+              {
+                q: "He bent over backwards for a gift that can’t sit pride of place — effort vs display. Speaking badly about a sister’s husband: protecting her, or humiliating her life?",
+                examples: [
+                  "Extreme effort + hidden object = the marriage performance.",
+                  "You saw the red flags; she wasn’t ready.",
+                  "Your contempt made her defend him harder.",
+                  "Other side: sisters owe each other an unfiltered read — even if it hurts.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "C1–C2 · confession + gift idioms. Drill pride of place until it sticks — exact chunk.",
+            drills: [
+              {
+                label: "SPILL THE BEANS",
+                bank: "spill the beans · finally spilled · don’t spill · keep it quiet",
+                task: "Two lines: the moment before spilling · the first sentence after. Keep it sharp.",
+              },
+              {
+                label: "THOUGHTFUL PRESENT / BENT OVER BACKWARDS",
+                bank: "a really thoughtful present · bent over backwards to get something like that",
+                task: "Link them: thoughtful present + who bent over backwards — one short story line.",
+              },
+              {
+                label: "PRIDE OF PLACE (lock it)",
+                bank: "put it pride of place · give something pride of place · take pride of place · Just don’t put it pride of place when they come over",
+                task: "Say Claire’s line once word-for-word. Then invent TWO new lines with pride of place (home / office / Instagram grid). No synonyms — the chunk must appear.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + phrase (30–40 s). Pride of place gets its own turn so it isn’t forgotten.",
+            items: [
+              {
+                label: "SPILL THE BEANS",
+                bank: "spill the beans · finally spilled the beans",
+                models: [
+                  "She finally spilled the beans.",
+                  "I didn’t mean to spill the beans — it just came out.",
+                ],
+                say: "Your turn: a secret about a relationship that got spilled (yours or someone close). What cracked open?",
+              },
+              {
+                label: "THOUGHTFUL PRESENT / BENT OVER BACKWARDS",
+                bank: "a really thoughtful present · bent over backwards",
+                models: [
+                  "It’s actually a really thoughtful present. Thank you.",
+                  "He must have bent over backwards to get something like that.",
+                ],
+                say: "Your turn: a present that looked thoughtful — who bent over backwards, and what was underneath?",
+              },
+              {
+                label: "PRIDE OF PLACE",
+                bank: "pride of place · put it pride of place · Just don’t put it pride of place when they come over",
+                models: [
+                  "Just don’t put it pride of place when Dad… when they come over.",
+                  "We gave the photo pride of place in the hall.",
+                  "That trophy took pride of place — and everyone hated looking at it.",
+                ],
+                say: "Your turn (must use pride of place twice): one thing that deserves pride of place · one thing that must NOT sit pride of place when family comes over. Our scene = stolen ‘thoughtful’ gift for Martin.",
+              },
+            ],
+          },
+        };
+        var sixth = {
+          id: "delve-change-anything",
+          label: "Delve · change anything",
+          teacher:
+            "Retreat guided exercise — different from Beat 3 ideology. Here: delve → can’t let go → tension / peace → then body honesty (face / thighs) and the world-scale question. Forced vulnerability. Example = short personal; Discussion = insecurity & what we’d change.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "delve into your past",
+            "can’t let go of",
+            "a moment of tension",
+            "insecure about…",
+            "If you could change anything…",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/06-delve-change-anything.mp4",
+            note:
+              "delve · can’t let go · a moment of tension · insecure · change anything",
+          },
+          context: {
+            tone: "Lexical · C1–C2 guided-retreat prompts + body insecurity",
+            meanings: [
+              "delve into your past = dig deep into memory / old material (stronger, more deliberate than ‘think about’).",
+              "can’t let go of (something) = still gripping a memory, feeling, or insecurity — personal, not the poster slogan ‘let go of your past’.",
+              "a moment of tension = retreat prompt frame: name a flash of strain (later contrasted with peace).",
+              "a moment when you were peaceful = the counter-prompt — contrast to tension.",
+              "insecure about… = long-running self-doubt tied to a feature or trait (face, body, voice, success).",
+              "If you could change anything (in the whole world)… = huge hypothetical that often collapses into something intimate / bodily.",
+            ],
+            examples: [
+              "DELVE — delve into your past · delve into a memory / a feeling · don’t just skim — delve.",
+              "Delve into your past.",
+              "Think of something you can’t let go of.",
+              "TENSION / PEACE — a moment of tension · a moment when you were peaceful · Not for now… Now…",
+              "A moment of tension.",
+              "Now… a moment when you were peaceful.",
+              "INSECURE — I’ve always been insecure about my face / my body / my accent / my success.",
+              "I’ve always been insecure about my face. You know that. — I know.",
+              "CHANGE ANYTHING — If you could change anything in the whole world, what would it be?",
+              "If you could change anything in the whole world, what would it be? — My thighs.",
+              "The ‘whole world’ question; the answer is often one body part.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · forced vulnerability, body insecurity, what we’d change. Two sides. Use the tape. Keep it human — not a therapy session.",
+            starters: [
+              "If I delve into my past, I still can’t let go of…",
+              "A moment of tension for me was…",
+              "A moment when I was peaceful…",
+              "I’ve always been insecure about…",
+              "If I could change anything in the whole world…",
+            ],
+            questions: [
+              {
+                q: "Delve into your past — think of something you can’t let go of. What still has a grip: a moment of tension… or the absence of peace? Tell one concrete flash (keep boundaries).",
+                examples: [
+                  "Tension = waiting, a look, a body in a mirror.",
+                  "Peace = rare; why that moment stuck.",
+                  "Other side: some people refuse to delve on command — is that wisdom or avoidance?",
+                ],
+              },
+              {
+                q: "I’ve always been insecure about… — and someone close already knows. Is that intimacy… or a label you can never take off? Face, body, voice, career — what has followed you?",
+                examples: [
+                  "Sister / partner / friend who can finish the sentence.",
+                  "When naming it helps vs when it freezes you there.",
+                  "Other side: sharing the insecurity became your bond — and also your cage.",
+                ],
+              },
+              {
+                q: "If you could change anything in the whole world, what would it be? Why do huge questions so often land on the body (thighs, face, weight) — and is that shallow… or the most honest answer?",
+                examples: [
+                  "Your real answer today (world-scale or body-scale).",
+                  "Would you say it aloud on a retreat with strangers?",
+                  "Other side: changing the world vs changing the mirror — which feels more possible?",
+                ],
+              },
+              {
+                q: "Retreat prompts (tension → peace → change anything) — useful structure for reflection, or emotional strip-search? When is guided vulnerability a gift… and when is it pressure?",
+                examples: [
+                  "A prompt that unlocked something useful.",
+                  "A prompt that felt bit on the nose or unsafe.",
+                  "Other side: without a script, some people never look.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "C1–C2 · retreat-prompt English + insecurity frames. Then Discussion.",
+            drills: [
+              {
+                label: "DELVE / CAN’T LET GO",
+                bank: "delve into your past · can’t let go of · still gripping…",
+                task: "Complete: ‘If I delve into my past, I can’t let go of…’ — one precise noun phrase.",
+              },
+              {
+                label: "TENSION / PEACE",
+                bank: "a moment of tension · a moment when you were peaceful",
+                task: "Two short lines — tension, then peace — same week of your life if you can.",
+              },
+              {
+                label: "INSECURE ABOUT / CHANGE ANYTHING",
+                bank: "insecure about my… · If you could change anything in the whole world…",
+                task: "One insecurity line + one ‘change anything’ answer. Honest length — not a slogan.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + phrase (30–40 s). Not the full vulnerability debate — that is Discussion.",
+            items: [
+              {
+                label: "DELVE / CAN’T LET GO",
+                bank: "delve into your past · can’t let go of",
+                models: [
+                  "Delve into your past.",
+                  "Think of something you can’t let go of.",
+                ],
+                say: "Your turn: one thing you still can’t let go of — name it without the whole autobiography.",
+              },
+              {
+                label: "TENSION / PEACE",
+                bank: "a moment of tension · a moment when you were peaceful",
+                models: [
+                  "A moment of tension.",
+                  "Now… a moment when you were peaceful.",
+                ],
+                say: "Your turn: pick tension or peace and tell the moment in 30 s.",
+              },
+              {
+                label: "INSECURE / CHANGE ANYTHING",
+                bank: "insecure about… · If you could change anything in the whole world…",
+                models: [
+                  "I’ve always been insecure about my face. You know that.",
+                  "If you could change anything in the whole world, what would it be?",
+                ],
+                say: "Your turn: insecurity someone already knows — or your honest ‘change anything’ answer (body or world).",
+              },
+            ],
+          },
+        };
+        var seventh = {
+          id: "flagrant-lack-of-respect",
+          label: "Flagrant lack of respect",
+          teacher:
+            "Retreat authority voice — schoolteacher energy, one rule, ‘it will benefit you’. C1–C2 idioms only. Example = short story; Discussion = care vs control when institutions police you ‘for your own good’.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "come down on someone",
+            "flagrant lack of respect",
+            "it will benefit you",
+            "I swear by my soul",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/07-flagrant-lack-of-respect.mp4",
+            note:
+              "come down on you · flagrant lack of respect · it will benefit you · I swear by my soul",
+          },
+          context: {
+            tone: "Lexical · C1–C2 authority / reprimand register",
+            meanings: [
+              "come down on someone = reprimand / punish firmly (often: come down on you like a schoolteacher / like a ton of bricks).",
+              "flagrant lack of respect = obvious, shameless disrespect — flagrant = blatant, impossible to miss.",
+              "it will benefit you = soft-power pressure: the rule/pain is framed as being for your own good.",
+              "I swear by my soul = solemn vow (old-fashioned / elevated) — absolute certainty, almost ritual.",
+            ],
+            examples: [
+              "COME DOWN ON — come down on someone · come down hard on · come down on you like a schoolteacher.",
+              "I don’t want to come down on you like a schoolteacher, but…",
+              "They came down hard on anyone who broke the one rule.",
+              "FLAGRANT — flagrant lack of respect · flagrant disregard · a flagrant breach of the rules.",
+              "Your flagrant lack of respect for the one rule… is now affecting the other students.",
+              "BENEFIT YOU — it will benefit you · for your own good · trust the process.",
+              "It will benefit you.",
+              "SWEAR BY MY SOUL — I swear by my soul · I swear · on my life.",
+              "I swear by my soul.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · rules sold as care. Two sides. Use the tape — solid chunks, not cute one-liners.",
+            starters: [
+              "They came down on me like…",
+              "It was a flagrant lack of respect when…",
+              "‘It will benefit you’ usually means…",
+              "I swear by my soul — I’d only say that if…",
+            ],
+            questions: [
+              {
+                q: "When has someone come down on you like a schoolteacher — and was the flagrant lack of respect real… or just their need for control?",
+                examples: [
+                  "Work / retreat / family / classroom energy.",
+                  "One rule that mattered vs a rule that only performed power.",
+                  "Other side: without a firm come-down, some groups collapse.",
+                ],
+              },
+              {
+                q: "It will benefit you / I swear by my soul — when does ‘for your own good’ land as love… and when do you smell a trap?",
+                examples: [
+                  "A rule that later really helped.",
+                  "A vow that was theatre.",
+                  "Other side: sometimes you only grow after a hard come-down.",
+                ],
+              },
+              {
+                q: "Your behaviour affecting the other students / the group — fair argument, or emotional blackmail dressed as community?",
+                examples: [
+                  "When one person’s breach ruins the room.",
+                  "When ‘think of the others’ shuts down a legitimate need.",
+                  "Other side: groups need that line sometimes.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission: "C1–C2 · reprimand English. Then Discussion.",
+            drills: [
+              {
+                label: "COME DOWN ON / FLAGRANT",
+                bank: "come down on someone · like a schoolteacher · flagrant lack of respect · flagrant disregard",
+                task: "Build one warning line a host would say — then rewrite it without making yourself sound like a schoolteacher.",
+              },
+              {
+                label: "BENEFIT YOU / SWEAR",
+                bank: "it will benefit you · for your own good · I swear by my soul",
+                task: "Sincere vow vs manipulative vow — same lexis, two deliveries.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + tape phrase (30–40 s). Not the full power debate — that is Discussion.",
+            items: [
+              {
+                label: "COME DOWN ON / FLAGRANT",
+                bank: "come down on someone · flagrant lack of respect",
+                models: [
+                  "I don’t want to come down on you like a schoolteacher, but…",
+                  "Your flagrant lack of respect for the one rule…",
+                ],
+                say: "Your turn: a time someone came down on you — fair call or overkill?",
+              },
+              {
+                label: "BENEFIT YOU / SWEAR BY MY SOUL",
+                bank: "it will benefit you · I swear by my soul",
+                models: [
+                  "It will benefit you.",
+                  "I swear by my soul.",
+                ],
+                say: "Your turn: a ‘this will benefit you’ moment you believed — or didn’t.",
+              },
+            ],
+          },
+        };
+        var eighth = {
+          id: "turn-it-down",
+          label: "Turn it down",
+          teacher:
+            "Claire’s career crack: Finland promotion, turn it down, unfair on Jake, don’t let other people get in the way of what you really want. Fleabag went through her bag — detective sister, trying to see what’s wrong. Tape = solid idioms only (no thin ‘husband isn’t other people’ line). Discussion = ambition vs family pressure + sister snooping as care.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "turn something down",
+            "unfair on someone",
+            "get in the way of what you really want",
+            "I went through your bag",
+          ],
+          watch: {
+            videoUrl: "media/s01e04/08-turn-it-down.mp4",
+            note:
+              "turn it down · unfair on Jake · get in the way of what you really want · I went through your bag",
+          },
+          context: {
+            tone: "Lexical · C1–C2 ambition, fairness, boundaries, sister detective work",
+            meanings: [
+              "turn something down = refuse an offer (job, promotion, invitation) — I’m turning it down.",
+              "unfair on someone = creates an unjust burden or disadvantage for them (BrE: unfair on Jake / on the kids).",
+              "get in the way of what you really want = block or obstruct a deep desire / ambition (people, fear, duty as obstacles).",
+              "I went through your bag / go through someone’s bag = search their bag thoroughly — here: Fleabag rummaging to diagnose Claire, not the retreat police.",
+            ],
+            examples: [
+              "TURN DOWN — turn something down · turn down a promotion / job / offer · I’m turning it down.",
+              "I’m turning it down. Finland promotion.",
+              "She turned down the role — and resented everyone involved.",
+              "UNFAIR ON — unfair on someone · it would be unfair on Jake / the kids / the team.",
+              "Martin says it would be unfair on Jake.",
+              "GET IN THE WAY — don’t let other people get in the way of what you really want · get in the way of your career / your life.",
+              "Don’t let other people get in the way of what you really want.",
+              "Duty, kids, a partner’s opinion — what gets in the way, and what is the life?",
+              "GO THROUGH A BAG — go through someone’s bag · I went through your bag · rummage through.",
+              "I went through your bag — Fleabag trying to read what was wrong with Claire.",
+              "Going through a bag can be violation… or desperate care.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · turning down a life you want · who gets to call it ‘unfair’ · sister who goes through the bag to understand you. Use the tape idioms.",
+            starters: [
+              "I’m turning it down because…",
+              "They said it would be unfair on…",
+              "I won’t let ___ get in the way of what I really want…",
+              "I went through her bag because…",
+            ],
+            questions: [
+              {
+                q: "Turn it down — when have you (or someone close) refused a promotion / move / big chance because it would be unfair on a partner or child? Was that love… or a career disappearing politely?",
+                examples: [
+                  "Finland energy: the offer was real; the no came wrapped in family.",
+                  "Who said ‘unfair on Jake’ — Martin, Claire, or both?",
+                  "Other side: sometimes turning it down is the adult choice, not a tragedy.",
+                ],
+              },
+              {
+                q: "Don’t let other people get in the way of what you really want — sharp advice, or a slogan that erases real people? Where is the line between obstacle and family?",
+                examples: [
+                  "A person who genuinely blocked you.",
+                  "A duty you called ‘other people’ so you could leave.",
+                  "Other side: ambition language that treats kids/partners as furniture.",
+                  "Keep the debate in idioms — don’t lean on thin TV one-liners.",
+                ],
+              },
+              {
+                q: "I went through your bag — Fleabag digging to see what’s wrong with Claire. When is snooping a sister’s desperate care… and when is it just control?",
+                examples: [
+                  "You searched a phone / bag / email because someone was disappearing.",
+                  "You were searched — and it broke trust.",
+                  "Other side: if you’d asked directly, would Claire have spilled?",
+                ],
+              },
+              {
+                q: "Unfair on someone — who gets to use that sentence in a couple? When is it protection… and when is it a veto dressed as fairness?",
+                examples: [
+                  "Martin says… — second-hand fairness.",
+                  "A time ‘unfair on the kids’ ended an argument.",
+                  "Other side: without that phrase, selfish decisions get romanticised as freedom.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "C1–C2 · refuse / fairness / ambition / search. Then Discussion.",
+            drills: [
+              {
+                label: "TURN DOWN / UNFAIR ON",
+                bank: "turn something down · turn down a promotion · unfair on someone · unfair on Jake",
+                task: "One line refusing an offer + one ‘unfair on…’ justification. Then: do you buy it?",
+              },
+              {
+                label: "GET IN THE WAY / GO THROUGH A BAG",
+                bank: "get in the way of what you really want · don’t let other people get in the way · go through someone’s bag · I went through your bag",
+                task: "Ambition advice in one sentence. Sister-detective line in one sentence. Which would you forgive?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Short story + idiom (30–40 s). Not the full marriage/ambition war — that is Discussion.",
+            items: [
+              {
+                label: "TURN DOWN / UNFAIR ON",
+                bank: "turn something down · unfair on someone",
+                models: [
+                  "I’m turning it down.",
+                  "Martin says it would be unfair on Jake.",
+                ],
+                say: "Your turn: a chance that got turned down ‘for someone else’. What was the offer — and who named the unfairness?",
+              },
+              {
+                label: "GET IN THE WAY",
+                bank: "get in the way of what you really want · don’t let other people get in the way",
+                models: [
+                  "Don’t let other people get in the way of what you really want.",
+                ],
+                say: "Your turn: what (or who) has got in the way of what you really wanted — and were they right to?",
+              },
+              {
+                label: "GO THROUGH SOMEONE’S BAG",
+                bank: "go through someone’s bag · I went through your bag",
+                models: [
+                  "I went through your bag.",
+                ],
+                say: "Your turn: a time you (or someone) went through a bag / phone to understand what was wrong — care or crossing the line?",
+              },
+            ],
+          },
+        };
+        var ninth = {
+          id: "fair-enough",
+          label: "Fair enough",
+          teacher:
+            "ONE tape chunk: fair enough. Ethical discomfort: can you excuse him / why did he do it / are the cups a sympathy trap? THROUGH-LINE of the episode (and season): he is not the only guilty person on that hill. Fleabag’s ‘I just want to cry all the time’ is her shame sitting next to his — later we learn she betrayed Boo; she still calls / listens to Boo’s voicemail though Boo is dead (talking into a void that can’t answer — same shape as silence / confession without reply). Episode 1 sting: he policed ‘harassment’ optics, then became the case. Keep two-sided; no trauma dump.",
+          blocks: ["watch", "context"],
+          phrases: ["fair enough"],
+          watch: {
+            videoUrl: "media/s01e04/09-fair-enough.mp4",
+            note:
+              "Fair enough · (scene: touched a colleague · disappointing man · come back home · clean cups — discuss, don’t tape all of it)",
+          },
+          context: {
+            tone: "Lexical · one chunk · ethical scene frame",
+            meanings: [
+              "fair enough = BrE: I accept that; I won’t argue. After a hard truth it can mean maturity — or a soft landing that stops the harder work of repair.",
+            ],
+            examples: [
+              "I thought I recognised you. — Fair enough.",
+              "Fair enough. (= there’s nothing left to defend.)",
+              "SCENE FACTS (for talk, not as tape phrases): I touched a colleague’s breast · I’m just a very disappointing man · I want to come back home · clean cups out of the dishwasher · make her feel good · Fleabag: I just want to cry, all the time.",
+              "EPISODE 1 echo: at the loan meeting he recoils from ‘sexual harassment’ energy — ‘that won’t get you very far here any more’ — then in E4 we meet him as the man in the harassment workshop. Hypocrisy, shame, or both?",
+              "The show does not give a noble ‘why’ for the touch. Looking for a poetic motive is already half an excuse.",
+            ],
+          },
+          speak: {
+            mission:
+              "C1–C2 Discussion · excuse, motive, and audience sympathy. Use fair enough when you accept a hard line. Argue. Don’t sermonise.",
+            starters: [
+              "Fair enough — but…",
+              "I almost excused him when…",
+              "Why did he do it? I think…",
+              "The cups speech made me feel ___ — and that worries me because…",
+              "You can understand someone without…",
+            ],
+            questions: [
+              {
+                q: "Can you excuse this man? He touched a colleague’s breast; he calls himself a disappointing man; he wants cups, home, to make his wife feel good. Where is the line between understanding his grief and letting pathos become an excuse?",
+                examples: [
+                  "Side A — Feeling for him is human; excuse means wiping the act.",
+                  "Side B — The beautiful speech is already doing PR for him; resist it.",
+                  "Side C — Fair enough is the only honest sentence: no defence, no poetry.",
+                  "What would ‘not excusing’ still allow: listening, loan later, cigarette, nothing?",
+                ],
+              },
+              {
+                q: "Why did he do it? The show refuses a tidy motive. What reasons do people invent anyway (impulse, power, drink, loneliness, ‘I didn’t think’) — and why do we hunt for a why? Does a why ever make it fair enough?",
+                examples: [
+                  "Motive as curiosity vs motive as soft pardon.",
+                  "‘Disappointing man’ vs ‘predator’ — which label are you tempted to use, and who does it protect?",
+                  "Other side: without asking why, we can’t prevent repeats — but prevention ≠ absolution.",
+                  "Honest answer some students land on: he did it because he could / he wanted to in that moment. Sit with how ugly that is.",
+                ],
+              },
+              {
+                q: "What is Waller-Bridge doing to us? Music, Hugh Dennis, dishwasher cups, Fleabag almost silent — we are pushed to ache for him while the men’s workshop still shouts slurs over the hill. Is the scene a test of whether you’ll excuse a man who cries well?",
+                examples: [
+                  "Did you cry / soften — and what does that say?",
+                  "Episode 1 irony: he policed ‘sexual harassment’ optics with Fleabag, then became the case.",
+                  "Later he tells her ‘people make mistakes’ and helps with the loan — mutual soft absolution. Comforting? Corrupt? Both?",
+                  "Other side: art can show a full human without asking you to vote ‘innocent’.",
+                ],
+              },
+              {
+                q: "He wants to come back home and make his wife feel good after violating another woman’s body. Who is centred in his repair fantasy — usually him and his house. What would real repair look like that isn’t mainly about his ordinary mornings?",
+                examples: [
+                  "Colleague / workplace / wife’s veto / time without access to ‘home’.",
+                  "When ‘I want to move on’ is said too early.",
+                  "Fair enough as what he owes the room before any cups speech.",
+                  "Other side: permanently exiling people can also be a fantasy of purity — argue it.",
+                ],
+              },
+              {
+                q: "How this short scene hooks the whole episode / season: Fleabag sits with a ‘disappointing man’ while carrying her own unspeakable guilt (Boo — she will still reach a phone / voicemail that cannot answer). Same shape everywhere today: silent retreat, Claire’s secrets, workshop slogans, his cups, her cry. Who are you when you talk to someone who can’t answer — and who are you when you listen without fixing?",
+                examples: [
+                  "Bank manager ↔ Fleabag: two shames, not equal crimes.",
+                  "Calling the dead / the voicemail = confession with no reply (like her silence for him).",
+                  "Later payoff: he is the one who can hear her café confession — ‘people make mistakes’ — because this hill happened.",
+                  "Other side: does pairing their loneliness falsely equalise his harassment and her betrayal of Boo?",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Lock fair enough in the mouth — then use it inside the moral argument.",
+            drills: [
+              {
+                label: "FAIR ENOUGH",
+                bank: "fair enough · yeah, fair enough · fair enough, I can’t argue with that",
+                task: "Three deliveries: accepting a fair accusation · accepting a fair boundary · accepting you don’t get a noble ‘why’. Same two words.",
+              },
+              {
+                label: "FAIR ENOUGH IN ARGUMENT",
+                bank: "Fair enough — but that doesn’t mean… · Fair enough. Full stop.",
+                task: "One line that uses fair enough to refuse an excuse. One line that uses it to accept complexity without pardoning.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "30–40 s · you must land on fair enough. Story first; moral slogan last.",
+            items: [
+              {
+                label: "FAIR ENOUGH",
+                bank: "fair enough",
+                models: [
+                  "I thought I recognised you. — Fair enough.",
+                  "Fair enough. I can’t argue with that.",
+                ],
+                say: "Your turn: a time someone named what you’d done (or what you are) and the only adult reply was fair enough. What were you tempted to add — and did adding it become an excuse?",
+              },
+              {
+                label: "WATCHING HIM",
+                bank: "fair enough",
+                models: [
+                  "Fair enough.",
+                ],
+                say: "Your turn after the clip: one sentence on whether you excuse him. End with fair enough or explain why you refuse those two words.",
+              },
+            ],
+          },
+        };
+        return [
+          first,
+          second,
+          third,
+          fourth,
+          fifth,
+          sixth,
+          seventh,
+          eighth,
+          ninth,
+        ];
+      })(),
       finale: {
         prompt:
-          "Improvisation: a time silence (or a forced ‘calm’ weekend) made everything louder — secrets, awkwardness, or an unexpected connection. Use at least 5 tape phrases.",
+          "Thread the episode: silence that can’t hold secrets · Claire’s hidden marriage/career mess · ‘better man’ slogans · a disappointing man you may or may not excuse (fair enough) · Fleabag’s parallel shame (Boo — a call / voicemail into a void). 60–90 s: when did you talk to someone who couldn’t answer — or listen without fixing? Use at least 4 tape phrases from tonight.",
       },
       homework: {
-        note: "Shadow 3–5 lines · 3 takes.",
+        note: "Play clips in order (audio) · Phrase vault · then FYP / Swipe. Shadow the tape lines × 3.",
       },
     },
     {

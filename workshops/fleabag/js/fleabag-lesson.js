@@ -30,6 +30,69 @@
   var maxVisited = 0;
   var hwAudio = null;
   var hwQueueIndex = -1;
+  var HW_SHADOW_GOAL = 7;
+  var HW_SHADOW_KEY = "fleabag_hw_shadow_v1";
+
+  function hwClipKey(clip) {
+    return (
+      String(session.id || sessionId || "session") +
+      "::" +
+      String((clip && clip.src) || "")
+    );
+  }
+
+  function loadHwShadow() {
+    try {
+      var raw = localStorage.getItem(HW_SHADOW_KEY);
+      if (!raw) return {};
+      var o = JSON.parse(raw);
+      return o && typeof o === "object" ? o : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveHwShadow(store) {
+    try {
+      localStorage.setItem(HW_SHADOW_KEY, JSON.stringify(store));
+    } catch (e) {}
+  }
+
+  function getHwListens(clip) {
+    var store = loadHwShadow();
+    var n = Number(store[hwClipKey(clip)] || 0);
+    return Math.max(0, Math.min(HW_SHADOW_GOAL, n));
+  }
+
+  function bumpHwListen(clip) {
+    if (!clip || !clip.src) return 0;
+    var store = loadHwShadow();
+    var key = hwClipKey(clip);
+    var n = Number(store[key] || 0) + 1;
+    if (n > HW_SHADOW_GOAL) n = HW_SHADOW_GOAL;
+    store[key] = n;
+    saveHwShadow(store);
+    return n;
+  }
+
+  function marksHtml(count) {
+    var n = Math.max(0, Math.min(HW_SHADOW_GOAL, Number(count) || 0));
+    if (n >= HW_SHADOW_GOAL) {
+      return '<span class="fb-hw-marks fb-hw-marks--done" title="7 full listens">DONE</span>';
+    }
+    if (!n) return '<span class="fb-hw-marks" data-hw-marks></span>';
+    var ticks = "";
+    for (var i = 0; i < n; i++) ticks += "✓";
+    return (
+      '<span class="fb-hw-marks" data-hw-marks title="' +
+      n +
+      " / " +
+      HW_SHADOW_GOAL +
+      ' listens">' +
+      ticks +
+      "</span>"
+    );
+  }
 
   function stopHwAudio() {
     if (hwAudio) {
@@ -63,8 +126,11 @@
     if (!clips || !clips.length) return "";
     var rows = clips
       .map(function (c, i) {
+        var listens = getHwListens(c);
         return (
-          '<li class="fb-hw-track" data-hw-i="' +
+          '<li class="fb-hw-track' +
+          (listens >= HW_SHADOW_GOAL ? " is-shadow-done" : "") +
+          '" data-hw-i="' +
           i +
           '">' +
           '<button type="button" class="fb-hw-track-btn" data-hw-play="' +
@@ -77,6 +143,7 @@
           escapeHtml(c.label) +
           (c.optional ? ' <em class="fb-hw-opt">(optional)</em>' : "") +
           "</span>" +
+          marksHtml(listens) +
           '<span class="fb-hw-track-state" data-hw-state></span>' +
           "</button></li>"
         );
@@ -88,7 +155,7 @@
       '<span class="fb-hw-audio-title">Shadow playlist · audio only</span>' +
       '<span class="fb-hw-audio-count">' +
       clips.length +
-      " clips · play in order</span></div>" +
+      " clips · 7 full listens → DONE</span></div>" +
       '<div class="fb-hw-audio-controls">' +
       '<button type="button" class="fb-hw-btn fb-hw-btn--play" id="fb-hw-play-all">▶ Play all</button>' +
       '<button type="button" class="fb-hw-btn fb-hw-btn--stop" id="fb-hw-stop" disabled>⏹ Stop</button>' +
@@ -96,7 +163,7 @@
       '<ol class="fb-hw-tracklist">' +
       rows +
       "</ol>" +
-      '<p class="fb-hw-audio-hint">No video — listen and shadow. When one clip ends, the next starts automatically.</p>' +
+      '<p class="fb-hw-audio-hint">Listen to the end to earn a ✓. Seven full listens on a clip → DONE. Next clip starts automatically.</p>' +
       "</div>"
     );
   }
@@ -109,14 +176,32 @@
     var btnStop = box.querySelector("#fb-hw-stop");
     var tracks = box.querySelectorAll(".fb-hw-track");
 
+    function paintMarks() {
+      tracks.forEach(function (li, i) {
+        var clip = clips[i];
+        var n = getHwListens(clip);
+        li.classList.toggle("is-shadow-done", n >= HW_SHADOW_GOAL);
+        var btn = li.querySelector(".fb-hw-track-btn");
+        if (!btn) return;
+        var old = btn.querySelector(".fb-hw-marks");
+        var wrap = document.createElement("div");
+        wrap.innerHTML = marksHtml(n);
+        var neu = wrap.firstChild;
+        if (old && neu) old.replaceWith(neu);
+        else if (neu && !old) {
+          var st = btn.querySelector("[data-hw-state]");
+          if (st) btn.insertBefore(neu, st);
+          else btn.appendChild(neu);
+        }
+      });
+    }
+
     function setStates(activeIdx, status) {
       tracks.forEach(function (li, i) {
         li.classList.toggle("is-playing", i === activeIdx && status === "playing");
-        li.classList.toggle("is-done", i < activeIdx || (status === "done" && i === activeIdx));
         var st = li.querySelector("[data-hw-state]");
         if (!st) return;
         if (i === activeIdx && status === "playing") st.textContent = "playing";
-        else if (i < activeIdx || (status === "done" && i <= activeIdx)) st.textContent = "done";
         else st.textContent = "";
       });
       if (btnStop) btnStop.disabled = status !== "playing";
@@ -129,7 +214,13 @@
     function playFrom(startIdx) {
       stopHwAudio();
       if (startIdx < 0 || startIdx >= clips.length) {
-        setStates(clips.length - 1, "done");
+        setStates(-1, "idle");
+        paintMarks();
+        if (btnStop) btnStop.disabled = true;
+        if (btnAll) {
+          btnAll.disabled = false;
+          btnAll.textContent = "▶ Play all";
+        }
         return;
       }
       hwQueueIndex = startIdx;
@@ -138,6 +229,8 @@
       hwAudio.src = clips[startIdx].src;
       setStates(startIdx, "playing");
       hwAudio.addEventListener("ended", function onEnd() {
+        bumpHwListen(clips[startIdx]);
+        paintMarks();
         playFrom(startIdx + 1);
       });
       hwAudio.addEventListener("error", function () {
@@ -146,7 +239,8 @@
       var p = hwAudio.play();
       if (p && typeof p.catch === "function") {
         p.catch(function () {
-          setStates(startIdx, "done");
+          setStates(-1, "idle");
+          paintMarks();
           if (btnStop) btnStop.disabled = true;
           if (btnAll) {
             btnAll.disabled = false;
@@ -165,11 +259,7 @@
       btnStop.addEventListener("click", function () {
         stopHwAudio();
         setStates(-1, "idle");
-        tracks.forEach(function (li) {
-          li.classList.remove("is-playing", "is-done");
-          var st = li.querySelector("[data-hw-state]");
-          if (st) st.textContent = "";
-        });
+        paintMarks();
         btnStop.disabled = true;
         if (btnAll) {
           btnAll.disabled = false;
@@ -183,6 +273,7 @@
         if (!isNaN(i)) playFrom(i);
       });
     });
+    paintMarks();
   }
 
   document.title = session.title + " · Fleabag Workshop";

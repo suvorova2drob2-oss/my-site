@@ -8,7 +8,7 @@
  */
 (function (global) {
   var STORAGE_KEY = "prep_workshop_gate_v1";
-  var PASS = "suvorova2drob2";
+  var PASS = "LaNtern!8";
 
   function isUnlocked() {
     try {

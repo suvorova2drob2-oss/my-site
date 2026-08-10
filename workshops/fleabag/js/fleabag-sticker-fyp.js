@@ -87,17 +87,33 @@
     return use;
   }
 
+  /** Gap is useless if almost nothing remains around the blank. */
+  function isWeakGap(blanked, phrase) {
+    if (!blanked) return true;
+    if (spoilsAnswer(blanked, phrase)) return true;
+    var rest = String(blanked)
+      .replace(/_+/g, " ")
+      .replace(/\.{2,}|…/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (rest.length < 22) return true;
+    var words = rest.split(/\s+/).filter(Boolean);
+    if (words.length < 4) return true;
+    return false;
+  }
+
   function buildItems(stickers) {
     var pool = (stickers || [])
       .map(function (s) {
         return {
           phrase: String(s.phrase || s.text || "").trim(),
           use: String(s.use || s.example || "").trim(),
+          def: String(s.def || s.definition || "").trim(),
           ctx: String(s.ctx || s.scene || "").trim(),
         };
       })
       .filter(function (s) {
-        return s.phrase && s.use;
+        return s.phrase && (s.use || s.def);
       });
     if (pool.length < 2) return [];
 
@@ -114,22 +130,35 @@
         distractors.push(others[distractors.length % others.length]);
       }
       var options = shuffle([item.phrase].concat(distractors.slice(0, 3)));
-      var blanked = blankUse(item.phrase, item.use);
+      var blanked = item.use ? blankUse(item.phrase, item.use) : "";
       var prompt;
       var mode;
-      if (blanked && blanked !== item.use && !spoilsAnswer(blanked, item.phrase)) {
+      var howto;
+      if (
+        blanked &&
+        blanked !== item.use &&
+        !isWeakGap(blanked, item.phrase)
+      ) {
         prompt = blanked;
         mode = "gap";
+        howto = "Pick the phrase that fills the blank.";
+      } else if (item.def) {
+        prompt = item.def;
+        mode = "meaning";
+        howto = "Pick the English phrase that matches this meaning.";
       } else {
-        prompt = "Which cool phrase fits this scene?";
+        prompt = item.use || "Which cool phrase fits this scene?";
         mode = "pick";
+        howto = "Pick the cool phrase that fits.";
       }
       return {
         phrase: item.phrase,
         use: item.use,
+        def: item.def,
         ctx: item.ctx,
         prompt: prompt,
         mode: mode,
+        howto: howto,
         options: options,
       };
     });
@@ -212,7 +241,18 @@
       locked = false;
       var item = items[idx];
       var modeLabel =
-        item.mode === "gap" ? "Fill the gap" : "Pick the phrase";
+        item.mode === "gap"
+          ? "Fill the gap"
+          : item.mode === "meaning"
+            ? "Match the meaning"
+            : "Pick the phrase";
+      var howto =
+        item.howto ||
+        (item.mode === "gap"
+          ? "Pick the phrase that fills the blank."
+          : item.mode === "meaning"
+            ? "Pick the English phrase that matches this meaning."
+            : "Pick the cool phrase that fits.");
 
       root.innerHTML =
         '<div class="fb-fyp-reel">' +
@@ -228,10 +268,15 @@
         '<p class="fb-fyp-kicker">For you · ' +
         esc(modeLabel) +
         "</p>" +
+        '<p class="fb-fyp-howto">' +
+        esc(howto) +
+        "</p>" +
         (item.ctx
           ? '<p class="fb-fyp-ctx">' + esc(item.ctx) + "</p>"
           : "") +
-        '<p class="fb-fyp-prompt">' +
+        '<p class="fb-fyp-prompt' +
+        (item.mode === "meaning" ? " fb-fyp-prompt--meaning" : "") +
+        '">' +
         esc(item.prompt) +
         "</p>" +
         '<div class="fb-fyp-options" role="group" aria-label="Answers">' +
