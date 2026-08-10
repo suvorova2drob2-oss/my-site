@@ -2,9 +2,9 @@
  * Soft preview lock for workshop tracks (except Fleabag).
  * Client-side only — hides from casual visitors, not real security.
  *
- * Unlock lives in sessionStorage for this browser tab.
- * To lock again: close the tab, or in console:
- *   sessionStorage.removeItem("prep_workshop_gate_v1")
+ * Unlock lives in localStorage for this browser (survives close/reopen).
+ * To lock again, in console:
+ *   localStorage.removeItem("prep_workshop_gate_v1")
  */
 (function (global) {
   var STORAGE_KEY = "prep_workshop_gate_v1";
@@ -12,7 +12,14 @@
 
   function isUnlocked() {
     try {
-      return sessionStorage.getItem(STORAGE_KEY) === "1";
+      if (localStorage.getItem(STORAGE_KEY) === "1") return true;
+      // Migrate old session-only unlock so this tab stays open after the change
+      if (sessionStorage.getItem(STORAGE_KEY) === "1") {
+        localStorage.setItem(STORAGE_KEY, "1");
+        sessionStorage.removeItem(STORAGE_KEY);
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -20,12 +27,15 @@
 
   function unlock() {
     try {
-      sessionStorage.setItem(STORAGE_KEY, "1");
+      localStorage.setItem(STORAGE_KEY, "1");
+      // Drop old tab-only flag if present
+      sessionStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
   }
 
   function lockAgain() {
     try {
+      localStorage.removeItem(STORAGE_KEY);
       sessionStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
   }
