@@ -15,7 +15,10 @@
       <div class="int-brand">
         <span class="int-kicker">B2 · Summer 2026</span>
         <h1 class="int-title">Speaking Intensive</h1>
-        <p class="int-sub">16 lessons · small group · one theme per session. Standalone summer course — step by step from warm-up to wrap.</p>
+        <p class="int-sub">
+          Same beat flow as Fleabag — but <strong>text</strong>, not video:
+          paper profile → cool-words tape → talk → improv.
+        </p>
       </div>
       <a class="int-back" href="../b2-intensive.html">&larr; Home</a>
     </header>
@@ -34,22 +37,25 @@
       </div>
       <div class="summer-showcase-copy">
         <p class="summer-showcase-kicker">Summer speaking · B2</p>
-        <h2>Talk in pairs · live themes · real phrases</h2>
-        <p>Sixteen everyday topics — restaurants, travel, shopping — built for small groups who want to speak more, not just study.</p>
+        <h2>Start with Lifestyle</h2>
+        <p>
+          Lesson 01 opens with Lucas (paper-style text) and a full cool-words tape.
+          More themes use the same skeleton as you fill them.
+        </p>
       </div>
     </section>
 
     <section class="int-hero" aria-labelledby="hero-title">
       <h2 id="hero-title">How a lesson works</h2>
       <p>
-        Open a theme → follow the stepper: <strong>Warm-up</strong> → <strong>Input</strong> → <strong>Harvest</strong> → <strong>Controlled</strong> → <strong>Freer practice</strong> → <strong>Wrap</strong>.
-        Content slots are empty for now — architecture only. Teacher notes fold open on each step.
+        Open a theme → follow the beats: <strong>Read</strong> (paper) →
+        <strong>Cool words</strong> → <strong>Talk</strong> → <strong>Improv</strong> → homework.
       </p>
       <div class="int-meta-row">
-        <span class="int-pill int-pill--gold">16 themes</span>
-        <span class="int-pill">6 steps per lesson</span>
-        <span class="int-pill">Pairs · rotate</span>
-        <span class="int-pill">90–120 min</span>
+        <span class="int-pill int-pill--gold">Lifestyle first</span>
+        <span class="int-pill">Text beats</span>
+        <span class="int-pill">Cool-words tape</span>
+        <span class="int-pill">Improv + HW</span>
       </div>
     </section>
 
@@ -63,12 +69,18 @@
       if (!grid || !window.B2_INTENSIVE_THEMES) return;
 
       grid.innerHTML = B2_INTENSIVE_THEMES.map(function (t) {
+        var filled =
+          t.beats &&
+          t.beats.some(function (b) {
+            return b.phrases && b.phrases.length;
+          });
         return (
           '<a class="int-theme-card" href="lesson.html?theme=' +
           encodeURIComponent(t.id) +
           '">' +
           '<span class="int-theme-num">Lesson ' +
           String(t.num).padStart(2, "0") +
+          (filled ? "" : " · shell") +
           "</span>" +
           '<span class="int-theme-icon" aria-hidden="true">' +
           t.icon +
@@ -79,7 +91,7 @@
           '<span class="int-theme-tag">' +
           t.tagline +
           "</span>" +
-          '<span class="int-theme-go">Open lesson flow →</span></a>'
+          '<span class="int-theme-go">Open lesson →</span></a>'
         );
       }).join("");
     })();
