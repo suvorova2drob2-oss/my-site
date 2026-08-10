@@ -35,6 +35,20 @@
   document.title =
     "Lesson " + theme.num + " · " + theme.title + " · B2 Intensive";
 
+  // FCE return: Lifestyle ↔ Unit 1 Reading Part 7 (same profiles)
+  var elBackFce = document.getElementById("int-back-fce");
+  if (elBackFce) {
+    if (theme.id === "lifestyle") {
+      elBackFce.href = "../unit1-reading/this-is-your-life/index.html";
+      elBackFce.innerHTML = "&larr; FCE &middot; This is your life";
+      elBackFce.title = "Back to Unit 1 Reading Part 7";
+    } else {
+      elBackFce.href = "../fce.html";
+      elBackFce.innerHTML = "&larr; FCE";
+      elBackFce.title = "Back to Mastering B2 (FCE)";
+    }
+  }
+
   var headIcon = document.getElementById("lesson-icon");
   var headTitle = document.getElementById("lesson-title");
   var headTag = document.getElementById("lesson-tag");
