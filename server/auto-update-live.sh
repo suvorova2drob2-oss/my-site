@@ -25,17 +25,27 @@ git fetch origin "$BRANCH" >>"$LOG" 2>&1
 git reset --hard "origin/$BRANCH" >>"$LOG" 2>&1
 after="$(git rev-parse HEAD 2>/dev/null || true)"
 
+GAMES_ROOT="${ROBLOX_ROOT:-/root/roblox}"
+games_before=""
+games_after=""
+if [[ -d "$GAMES_ROOT/.git" ]]; then
+  games_before="$(git -C "$GAMES_ROOT" rev-parse HEAD 2>/dev/null || true)"
+  git -C "$GAMES_ROOT" fetch origin master >>"$LOG" 2>&1
+  git -C "$GAMES_ROOT" reset --hard origin/master >>"$LOG" 2>&1
+  games_after="$(git -C "$GAMES_ROOT" rev-parse HEAD 2>/dev/null || true)"
+fi
+
 if [[ -z "$before" || -z "$after" ]]; then
   log "ERROR: could not read git HEAD"
   exit 1
 fi
 
-if [[ "$before" == "$after" ]]; then
+if [[ "$before" == "$after" && "$games_before" == "$games_after" ]]; then
   # Quiet on no-op (avoid filling the log every 5 minutes)
   exit 0
 fi
 
-log "Updated $before -> $after"
+log "Updated my-site $before -> $after; games ${games_before:-missing} -> ${games_after:-missing}"
 
 if [[ -f "$ROOT/server/ege-live-rooms.service" ]]; then
   cp "$ROOT/server/ege-live-rooms.service" /etc/systemd/system/ege-live-rooms.service

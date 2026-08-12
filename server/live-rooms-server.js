@@ -8,10 +8,14 @@
 "use strict";
 
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 
 const PORT = Number(process.env.PORT || 8787);
 const ROOT = path.join(__dirname, "..");
+const ROBLOX_ROOT = String(
+  process.env.ROBLOX_ROOT || path.join(ROOT, "..", "roblox")
+);
 // Local default = this machine. On VPS set PUBLIC_ORIGIN in systemd (ege-live-rooms.service).
 const PUBLIC_ORIGIN = String(
   process.env.PUBLIC_ORIGIN || "http://127.0.0.1:8787"
@@ -52,6 +56,55 @@ function studentInviteUrl(roomCode, deckId, unitId) {
 
 /** @type {Map<string, object>} */
 const rooms = new Map();
+/** UNO classroom rooms, keyed by SuvorovaGames assignment id. */
+const unoRooms = new Map();
+
+function normalizeAssignId(value) {
+  return String(value || "")
+    .replace(/[^a-zA-Z0-9_-]/g, "")
+    .slice(0, 80);
+}
+
+function unoSnapshot(room) {
+  if (!room) return null;
+  return {
+    assignId: room.assignId,
+    started: !!room.started,
+    startedAt: room.startedAt || null,
+    players: room.players.slice(),
+    gameId: room.gameId || "genki-uno",
+    pack: room.pack || "vegetables",
+    state: room.state || null,
+    stateVersion: Number(room.stateVersion || 0),
+    updatedAt: Number(room.updatedAt || Date.now())
+  };
+}
+
+function ensureUnoRoom(assignId, seed) {
+  const id = normalizeAssignId(assignId);
+  if (!id) throw new Error("assignId required");
+  let room = unoRooms.get(id);
+  if (!room) {
+    room = {
+      assignId: id,
+      started: false,
+      startedAt: null,
+      players: [],
+      gameId: (seed && seed.gameId) || "genki-uno",
+      pack: (seed && seed.pack) || "vegetables",
+      state: null,
+      stateVersion: 0,
+      updatedAt: Date.now()
+    };
+    unoRooms.set(id, room);
+  }
+  return room;
+}
+
+function touchUno(room) {
+  room.updatedAt = Date.now();
+  return unoSnapshot(room);
+}
 
 function randToken(len) {
   const alphabet = "abcdefghijkmnopqrstuvwxyz23456789";
@@ -354,6 +407,85 @@ function handleOp(op, body) {
       rooms.delete(code);
       return { closed: true, roomCode: code };
     }
+    case "unoResetRoom": {
+      const id = normalizeAssignId(body && body.assignId);
+      if (!id) throw new Error("assignId required");
+      const previous = unoRooms.get(id);
+      const room = {
+        assignId: id,
+        started: false,
+        startedAt: null,
+        players: [],
+        gameId: String((body && body.gameId) || (previous && previous.gameId) || "genki-uno")
+          .slice(0, 40),
+        pack: String((body && body.pack) || (previous && previous.pack) || "vegetables")
+          .slice(0, 40),
+        state: null,
+        stateVersion: Number((previous && previous.stateVersion) || 0) + 1,
+        updatedAt: Date.now()
+      };
+      unoRooms.set(id, room);
+      return unoSnapshot(room);
+    }
+    case "unoJoinRoom": {
+      const room = ensureUnoRoom(body && body.assignId, body);
+      const name = String((body && body.name) || "").trim().slice(0, 40);
+      if (!name) throw new Error("Name required");
+      const key = name.toLowerCase();
+      const found = room.players.findIndex(function (player) {
+        return String(player.name || "").toLowerCase() === key;
+      });
+      const row = { name: name, joinedAt: new Date().toISOString() };
+      if (found >= 0) {
+        room.players[found] = row;
+      } else {
+        if (room.players.length >= 6) throw new Error("Room is full");
+        room.players.push(row);
+      }
+      if (body && body.gameId) room.gameId = String(body.gameId).slice(0, 40);
+      return touchUno(room);
+    }
+    case "unoGetRoom": {
+      const id = normalizeAssignId(body && body.assignId);
+      return unoSnapshot(unoRooms.get(id));
+    }
+    case "unoSetPack": {
+      const room = ensureUnoRoom(body && body.assignId, body);
+      room.pack = String((body && body.pack) || "vegetables").slice(0, 40);
+      return touchUno(room);
+    }
+    case "unoStartRoom": {
+      const room = ensureUnoRoom(body && body.assignId, body);
+      if (!room.players.length) throw new Error("No players");
+      room.started = true;
+      room.startedAt = new Date().toISOString();
+      return touchUno(room);
+    }
+    case "unoSaveState": {
+      const room = ensureUnoRoom(body && body.assignId, body);
+      const state = body && body.state;
+      if (!state || typeof state !== "object" || Array.isArray(state)) {
+        throw new Error("UNO state required");
+      }
+      if (JSON.stringify(state).length > 110000) throw new Error("UNO state too large");
+      room.state = state;
+      room.stateVersion = Math.max(
+        Number(room.stateVersion || 0) + 1,
+        Number((body && body.version) || 0)
+      );
+      return touchUno(room);
+    }
+    case "unoClearState": {
+      const room = ensureUnoRoom(body && body.assignId, body);
+      room.state = null;
+      room.stateVersion = Number(room.stateVersion || 0) + 1;
+      return touchUno(room);
+    }
+    case "unoCloseRoom": {
+      const id = normalizeAssignId(body && body.assignId);
+      const existed = unoRooms.delete(id);
+      return { closed: existed, assignId: id };
+    }
     default:
       throw new Error("Unknown op: " + op);
   }
@@ -379,7 +511,7 @@ app.use(function (req, res, next) {
 });
 
 app.get("/health", function (_req, res) {
-  res.json({ ok: true, rooms: rooms.size });
+  res.json({ ok: true, rooms: rooms.size, unoRooms: unoRooms.size });
 });
 
 app.post("/live", function (req, res) {
@@ -394,7 +526,18 @@ app.post("/live", function (req, res) {
 });
 
 // Serve the site so student links work without Vite / file://
+if (fs.existsSync(ROBLOX_ROOT)) {
+  app.use("/games", express.static(ROBLOX_ROOT, { index: false, fallthrough: true }));
+}
 app.use(express.static(ROOT, { index: false, fallthrough: true }));
+
+// Classroom rooms are temporary. Remove inactive UNO rooms after 12 hours.
+setInterval(function () {
+  const cutoff = Date.now() - 12 * 60 * 60 * 1000;
+  unoRooms.forEach(function (room, id) {
+    if (Number(room.updatedAt || 0) < cutoff) unoRooms.delete(id);
+  });
+}, 30 * 60 * 1000).unref();
 
 app.listen(PORT, "0.0.0.0", function () {
   console.log("[live-rooms] POST http://127.0.0.1:" + PORT + "/live");
@@ -406,6 +549,11 @@ app.listen(PORT, "0.0.0.0", function () {
   );
   console.log("[live-rooms] PUBLIC_ORIGIN " + PUBLIC_ORIGIN);
   console.log("[live-rooms] student links include ?room=CODE automatically");
+  if (fs.existsSync(ROBLOX_ROOT)) {
+    console.log("[live-rooms] games http://127.0.0.1:" + PORT + "/games/");
+  } else {
+    console.log("[live-rooms] ROBLOX_ROOT not found:", ROBLOX_ROOT);
+  }
   if (allowedOrigins.length) {
     console.log("[live-rooms] ALLOWED_ORIGINS:", allowedOrigins.join(", "));
   } else {
