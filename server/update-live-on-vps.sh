@@ -17,7 +17,7 @@ git fetch origin main
 git reset --hard origin/main
 
 GAMES_ROOT="${ROBLOX_ROOT:-$HOME/roblox}"
-GAMES_REPO="${ROBLOX_REPO_URL:-https://github.com/suvorova2drob2-oss/roblox.git}"
+GAMES_REPO="${ROBLOX_REPO_URL:-git@github.com:suvorova2drob2-oss/roblox.git}"
 if [[ ! -d "$GAMES_ROOT/.git" ]]; then
   echo "==> Cloning games repo to $GAMES_ROOT"
   git clone "$GAMES_REPO" "$GAMES_ROOT"

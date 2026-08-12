@@ -26,7 +26,7 @@ git reset --hard "origin/$BRANCH" >>"$LOG" 2>&1
 after="$(git rev-parse HEAD 2>/dev/null || true)"
 
 GAMES_ROOT="${ROBLOX_ROOT:-/root/roblox}"
-GAMES_REPO="${ROBLOX_REPO_URL:-https://github.com/suvorova2drob2-oss/roblox.git}"
+GAMES_REPO="${ROBLOX_REPO_URL:-git@github.com:suvorova2drob2-oss/roblox.git}"
 games_before=""
 games_after=""
 if [[ ! -d "$GAMES_ROOT/.git" ]]; then
