@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Speak · Topics</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/summer-intensive.css" />
+  <link rel="stylesheet" href="css/ielts-speak.css" />
+</head>
+<body class="intensive-body intensive-body--ielts">
+  <script src="../js/workshop-gate.js"></script>
+  <script>WorkshopGate.guardPage({ homeHref: "../../b2-intensive.html" });</script>
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">IELTS · Speaking Part 3 fuel</span>
+        <h1 class="int-title">IELTS Speak</h1>
+        <p class="int-sub">
+          Open a <strong>topic</strong> (Society, Nutrition, Environment…) — inside you’ll find many lessons.
+          Same idea as a Cambridge topic pack.
+        </p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <section class="ielts-showcase">
+      <img
+        class="ielts-showcase-mark"
+        src="img/ielts-speak-cover.png"
+        alt=""
+        width="96"
+        height="96"
+      />
+      <div class="ielts-showcase-copy">
+        <p class="ielts-showcase-kicker">Start here</p>
+        <h2>Pick a topic category</h2>
+        <p>
+          Example: <strong>Society</strong> → lesson “Is the world getting better?” (+ shells for more).
+          Later: Nutrition, Environment, and other Part 3 families.
+        </p>
+      </div>
+    </section>
+
+    <section class="int-hero" aria-labelledby="hero-title">
+      <h2 id="hero-title">How it works</h2>
+      <p>
+        <strong>Topic</strong> → <strong>Lesson</strong> → Read → Cool words → Talk → Improv.
+      </p>
+      <div class="int-meta-row">
+        <span class="int-pill int-pill--gold">Topic packs</span>
+        <span class="int-pill">Many lessons</span>
+        <span class="int-pill">Cool-words tape</span>
+        <span class="int-pill">Part 3 talk</span>
+      </div>
+    </section>
+
+    <nav class="int-theme-grid" id="topic-grid" aria-label="IELTS Speak topics"></nav>
+  </div>
+
+  <script src="js/ielts-speak-themes.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById("topic-grid");
+      if (!grid || !window.IELTS_SPEAK_TOPICS) return;
+
+      grid.innerHTML = IELTS_SPEAK_TOPICS.map(function (t) {
+        var n = (t.lessons && t.lessons.length) || 0;
+        var filled = (t.lessons || []).filter(function (lesson) {
+          return (
+            lesson.beats &&
+            lesson.beats.some(function (b) {
+              return b.phrases && b.phrases.length;
+            })
+          );
+        }).length;
+        return (
+          '<a class="int-theme-card" href="topic.html?topic=' +
+          encodeURIComponent(t.id) +
+          '">' +
+          '<span class="ielts-topic-pill">Topic pack</span>' +
+          '<span class="int-theme-num">0' +
+          t.num +
+          " · " +
+          filled +
+          "/" +
+          n +
+          " lessons ready</span>" +
+          '<span class="int-theme-icon" aria-hidden="true">' +
+          t.icon +
+          "</span>" +
+          '<span class="int-theme-name">' +
+          t.title +
+          "</span>" +
+          '<span class="int-theme-tag">' +
+          t.tagline +
+          "</span>" +
+          '<span class="int-theme-go">Open topic →</span></a>'
+        );
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

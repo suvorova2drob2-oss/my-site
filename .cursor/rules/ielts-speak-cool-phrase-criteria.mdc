@@ -1,0 +1,112 @@
+---
+description: IELTS Speak — how the teacher picks cool highlight phrases (not random / not basic)
+globs: workshops/ielts-speak/**
+alwaysApply: false
+---
+
+# IELTS Speak — cool phrase selection (teacher criteria)
+
+When building or editing **lexical blocks** for `workshops/ielts-speak/` (tapes, yellow highlights, meanings, Part 3 starters):
+
+## Source of truth
+
+1. **If the teacher lists phrases — use that list only.** Do not “improve”, pad, or swap for “stronger IELTS” guesses.
+2. Highlight strings must be **verbatim substrings** of the lesson `read.html` (so the engine can mark them). Prefer the teacher’s wording; if the text has a tiny insert (e.g. `U.S.`), keep the **exact text form** for the `phrases[]` array.
+3. Topic category follows **discourse function** (ads / brands / market myths ≠ Nutrition just because the product is food).
+
+## Hard level filter (B2+ → C1–C2)
+
+When the teacher has **not** listed phrases yet, agents must still avoid classroom B1 staples.
+
+| Prefer (plateau-breakers) | Reject (everyone already knows) |
+|---|---|
+| `highly effective as far as it's reasonable for a human being` | `creative thinking` |
+| `the extent to which … is underestimated` | `most alert` / bare `getting distracted` |
+| `appear simple on the surface` · `although trivial` | `decide what matters most` alone |
+| `not conducive to…` · `more to do with X than Y` | `clutter is a distraction` / `blood-sugar spikes` as lone “cool” picks |
+| `stop thinking about work without really focusing on anything else` | short generic nouns with no payload |
+| `the integration between different parts of the brain` | paraphrases of the plot in plain words |
+| `consolidating facts and reinforcing how to perform tasks` | |
+
+**Test:** would a strong B2 student already say this without teaching? If yes → skip. Prefer stems that sound **native + academic** and raise Lexical Resource on Part 3.
+
+**Best workflow:** teacher pastes the highlight list; agent only wires it. Agent drafts are provisional until she approves.
+
+## What the teacher selects (criteria)
+
+From the ketchup / Grey Poupon gold list, the pattern is:
+
+### A. Steal-able Part 3 stems (argument / opinion)
+
+Short frames learners can drop into *any* brand / ads / business answer:
+
+- market power: `dominated … supermarket shelves`, `switched from`
+- campaign craft: `ran tasteful adverts in upscale food magazines`, `on a modest budget`, `the tagline`, `one of life's finer pleasures`, `impart to people's minds that`
+- results: `sales … rose … to …`
+- startup myth + reality check: `had a simple vision`, `the world will beat a path to your door`, `If only it were that easy`
+- innovation logic: `satisfy an unmet need`, `the rules which apply to…`
+
+### B. Cinema / story hooks (colour, not paraphrase)
+
+Concrete **scene** chunks from the text — useful for vivid speaking, not for “explaining the plot”:
+
+- discovery: `looked hard`, `in the specialty foods section`
+- product theatre: `foil packets`, `pulls up alongside`, `leans his head out the window`
+- business move: `enter the ketchup business`
+
+These look “simple” but are **chosen** — do not replace them with abstract “exam” paraphrases.
+
+### C. Prefer compact stems over long book sentences
+
+| Prefer (teacher) | Avoid (agent padding) |
+|---|---|
+| `switched from` | `a significant number of people who tried Grey Poupon switched` |
+| `impart to people's minds that` | only `truly different and superior` without impart |
+| `the rules which apply to` | mega-ellipsis of the whole Grey Poupon / olive oil clause unless teacher asks |
+
+### D. Hard rejects (do not highlight)
+
+- Obvious / beginner paraphrase of packaging or plot: `made it seem French`, `happy to pay more for a better quality product`, `build a better ketchup`, `an entire mustard section`
+- Long “logic” fillers the teacher did not pick: `just because mustard had always been yellow did not mean…`, `taste and habits were not fixed` (unless she lists them)
+- Bare weak verbs with no payload: `finding it difficult`, `high-end tomato paste`, `three times the price` — unless she lists them
+- Random “cool” synonyms that are **not** in the text
+
+## Talk questions (lexical approach — mandatory)
+
+Questions are **drills to hear and reuse the tape**, not abstract IELTS opinion prompts.
+
+| Do | Don’t |
+|----|--------|
+| Embed the target chunk **inside** the question (`…dominated the supermarket shelves…`, `…impart to people's minds that…`) | “Do you agree that…?” / “Can advertising always…?” with no tape language |
+| Personal slots: YOUR city / brand / friend / invented ad | Pure text-comprehension (“According to the article…”) |
+| Labels like `Lex · …` + finish-the-stem / invent-with-frame | Generic “discuss habits and quality” |
+| FINAL = every phrase on **this** tape once + partner ticks | FINAL that names phrases not on the current tape |
+
+Model: Speaking Intensive Fleabag / Mystery (`Lex drill · Finish “…”`, scene prompts with the exact collocation).
+
+## Improv + Homework questions
+
+For finale / homework, prefer **simple exam-shaped questions** + a visible **Use** line with the crown tape:
+
+| Question (easy) | Use (advanced stems required) |
+|---|---|
+| When you have too much to do…? | `In the face of pressure` · `rather than focusing on what is urgent` · … |
+
+Do **not** invent vague “discuss productivity” prompts with no steal line.
+
+## Workflow for agents
+
+1. Receive text (blocks) + **teacher phrase list** (numbered by block).
+2. Put **only** those phrases into `phrases[]` (exact match to HTML).
+3. Rewrite `meanings` / `examples` / `speak.starters` / Talk questions / FINAL checklists to match — no leftover stems from old lists.
+4. If unsure between two chunks — **ask**; do not invent a third.
+5. If the teacher pastes sample Talk wording — prefer that wording over agent inventing.
+
+## Gold reference (ketchup conundrum)
+
+Teacher-approved tapes:
+
+1. `dominated the U.S. supermarket shelves` · `looked hard` · `in the specialty foods section` · `switched from`
+2. `ran tasteful adverts in upscale food magazines` · `foil packets` · `on a modest budget` · `pulls up alongside` · `leans his head out the window` · `sales of Grey Poupon rose 40 to 50 percent` · `the tagline` · `one of life's finer pleasures` · `impart to people's minds that`
+3. `enter the ketchup business` · `had a simple vision` · `the world will beat a path to your door` · `If only it were that easy`
+4. `satisfy an unmet need` · `the rules which apply to`

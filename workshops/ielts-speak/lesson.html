@@ -3,28 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>B2 Speaking Intensive · Lesson</title>
-  <link rel="stylesheet" href="css/intensive-shell.css" />
-  <link rel="stylesheet" href="css/summer-intensive.css" />
-  <link rel="stylesheet" href="../workshops/fleabag/css/fleabag-workshop.css" />
+  <title>IELTS Speak · Lesson</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/summer-intensive.css" />
+  <link rel="stylesheet" href="../fleabag/css/fleabag-workshop.css" />
+  <link rel="stylesheet" href="css/ielts-speak.css" />
 </head>
-<body class="intensive-body intensive-body--summer">
-  <script src="../workshops/js/workshop-gate.js"></script>
-  <script>WorkshopGate.guardPage({ homeHref: "../b2-intensive.html" });</script>
+<body class="intensive-body intensive-body--ielts">
+  <script src="../js/workshop-gate.js"></script>
+  <script>WorkshopGate.guardPage({ homeHref: "../../b2-intensive.html" });</script>
   <div class="int-shell" id="lesson-root">
     <header class="int-topbar">
       <div class="int-brand">
-        <span class="int-kicker">Speaking Intensive</span>
+        <span class="int-kicker">IELTS Speak</span>
       </div>
       <nav class="int-topbar-links" aria-label="Back">
-        <a class="int-back" href="index.html">&larr; Themes</a>
-        <a
-          class="int-back int-back--fce"
-          id="int-back-fce"
-          href="../fce.html"
-          title="Back to Mastering B2 (FCE)"
-          >&larr; FCE</a
-        >
+        <a class="int-back" href="index.html" id="int-back-topics">&larr; Topics</a>
       </nav>
     </header>
 
@@ -38,7 +32,7 @@
             <div class="si-lesson-flow-card">
               <span class="si-lesson-flow-n">01</span>
               <strong>Text</strong>
-              <em>Paper profile · short read</em>
+              <em>Academic article · short read</em>
             </div>
             <div class="si-lesson-flow-card">
               <span class="si-lesson-flow-n">02</span>
@@ -48,12 +42,12 @@
             <div class="si-lesson-flow-card">
               <span class="si-lesson-flow-n">03</span>
               <strong>Talk</strong>
-              <em>Steal stems · discuss</em>
+              <em>Part 3 · steal stems</em>
             </div>
             <div class="si-lesson-flow-card">
               <span class="si-lesson-flow-n">04</span>
               <strong>Improv</strong>
-              <em>Use the tape · finale</em>
+              <em>Whole tape · finale</em>
             </div>
           </div>
           <details class="si-goal-note" id="si-goal-note">
@@ -74,10 +68,32 @@
     </footer>
   </div>
 
-  <script src="js/intensive-themes.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-phrase-srs.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-sticker-fyp.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-sticker-swipe.js"></script>
-  <script src="js/intensive-lesson.js"></script>
+  <script src="js/ielts-speak-themes.js"></script>
+  <script src="../fleabag/js/fleabag-phrase-srs.js"></script>
+  <script src="../fleabag/js/fleabag-sticker-fyp.js"></script>
+  <script src="../fleabag/js/fleabag-sticker-swipe.js"></script>
+  <script src="../../b2-summer-intensive/js/intensive-lesson.js"></script>
+  <script>
+    (function () {
+      if (document.title && /B2 Intensive/i.test(document.title)) {
+        document.title = document.title.replace(/B2 Intensive/i, "IELTS Speak");
+      }
+      var params = new URLSearchParams(window.location.search);
+      var themeId = params.get("theme") || "";
+      var topicId = params.get("topic") || "";
+      var theme =
+        typeof IELTS_SPEAK_getTheme === "function"
+          ? IELTS_SPEAK_getTheme(themeId)
+          : null;
+      if (!topicId && theme && theme.topicId) topicId = theme.topicId;
+      var back = document.getElementById("int-back-topics");
+      if (back && topicId) {
+        back.href = "topic.html?topic=" + encodeURIComponent(topicId);
+        back.innerHTML =
+          "&larr; " +
+          ((theme && theme.topicTitle) || "Topic");
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Speak · Topic</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/summer-intensive.css" />
+  <link rel="stylesheet" href="css/ielts-speak.css" />
+</head>
+<body class="intensive-body intensive-body--ielts">
+  <script src="../js/workshop-gate.js"></script>
+  <script>WorkshopGate.guardPage({ homeHref: "../../b2-intensive.html" });</script>
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">IELTS Speak · topic</span>
+        <h1 class="int-title" id="topic-title">Topic</h1>
+        <p class="int-sub" id="topic-sub">Lessons in this category</p>
+      </div>
+      <a class="int-back" href="index.html">&larr; All topics</a>
+    </header>
+
+    <p class="ielts-topic-lead" id="topic-blurb"></p>
+
+    <nav class="int-theme-grid" id="lesson-grid" aria-label="Lessons in this topic"></nav>
+  </div>
+
+  <script src="js/ielts-speak-themes.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var topicId = params.get("topic") || "";
+      var topic =
+        typeof IELTS_SPEAK_getTopic === "function"
+          ? IELTS_SPEAK_getTopic(topicId)
+          : null;
+      var titleEl = document.getElementById("topic-title");
+      var subEl = document.getElementById("topic-sub");
+      var blurbEl = document.getElementById("topic-blurb");
+      var grid = document.getElementById("lesson-grid");
+
+      if (!topic || !grid) {
+        if (titleEl) titleEl.textContent = "Topic not found";
+        if (grid) {
+          grid.innerHTML =
+            '<p class="int-error">Unknown topic. <a class="int-back" href="index.html">Back</a></p>';
+        }
+        return;
+      }
+
+      document.title = topic.title + " · IELTS Speak";
+      if (titleEl) titleEl.textContent = (topic.icon || "") + " " + topic.title;
+      if (subEl) subEl.textContent = topic.tagline || "";
+      if (blurbEl) blurbEl.textContent = topic.blurb || "";
+
+      grid.innerHTML = (topic.lessons || [])
+        .map(function (lesson) {
+          var filled =
+            lesson.beats &&
+            lesson.beats.some(function (b) {
+              return b.phrases && b.phrases.length;
+            });
+          return (
+            '<a class="int-theme-card" href="lesson.html?theme=' +
+            encodeURIComponent(lesson.id) +
+            "&topic=" +
+            encodeURIComponent(topic.id) +
+            '">' +
+            '<span class="int-theme-num">Lesson ' +
+            String(lesson.num).padStart(2, "0") +
+            (filled ? "" : " · shell") +
+            "</span>" +
+            '<span class="int-theme-icon" aria-hidden="true">' +
+            (lesson.icon || "📝") +
+            "</span>" +
+            '<span class="int-theme-name">' +
+            lesson.title +
+            "</span>" +
+            '<span class="int-theme-tag">' +
+            (lesson.tagline || "") +
+            "</span>" +
+            '<span class="int-theme-go">' +
+            (filled ? "Open lesson →" : "Shell · fill later →") +
+            "</span></a>"
+          );
+        })
+        .join("");
+    })();
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * B2 Summer Speaking Intensive — beat rail + sticky cool-words tape + paper text.
+ * B2 Speaking Intensive — beat rail + sticky cool-words tape + paper text.
  */
 (function () {
   var params = new URLSearchParams(window.location.search);
@@ -35,13 +35,18 @@
   document.title =
     "Lesson " + theme.num + " · " + theme.title + " · B2 Intensive";
 
-  // FCE return: Lifestyle ↔ Unit 1 Reading Part 7 (same profiles)
+  // FCE return: theme ↔ matching Mastering B2 exam page
   var elBackFce = document.getElementById("int-back-fce");
   if (elBackFce) {
     if (theme.id === "lifestyle") {
       elBackFce.href = "../unit1-reading/this-is-your-life/index.html";
       elBackFce.innerHTML = "&larr; FCE &middot; This is your life";
       elBackFce.title = "Back to Unit 1 Reading Part 7";
+    } else if (theme.id === "mystery") {
+      elBackFce.href = "../unit9.html";
+      elBackFce.innerHTML = "&larr; FCE &middot; Unit 9";
+      elBackFce.title =
+        "Unit 9 hub — Listening (Mountains / Ghost walk) & Reading (Mystery donors)";
     } else {
       elBackFce.href = "../fce.html";
       elBackFce.innerHTML = "&larr; FCE";
@@ -53,7 +58,15 @@
   var headTitle = document.getElementById("lesson-title");
   var headTag = document.getElementById("lesson-tag");
   if (headIcon) headIcon.textContent = theme.icon;
-  if (headTitle) headTitle.textContent = "Lesson " + theme.num + " · " + theme.title;
+  if (headTitle) {
+    headTitle.textContent =
+      "Lesson " +
+      theme.num +
+      " · " +
+      (theme.topicTitle || theme.topic || "") +
+      (theme.topicTitle || theme.topic ? " · " : "") +
+      theme.title;
+  }
   if (headTag) headTag.textContent = theme.tagline;
 
   function listHtml(items) {
@@ -115,6 +128,38 @@
   }
 
   renderGoalNote();
+
+  function renderExamQs(questions, kind) {
+    if (!questions || !questions.length) return "";
+    var cls = kind === "hw" ? "si-exam-qs si-exam-qs--hw" : "si-exam-qs";
+    return (
+      '<div class="' +
+      cls +
+      '">' +
+      questions
+        .map(function (item, i) {
+          var q = typeof item === "string" ? item : item.q || "";
+          var steal = typeof item === "string" ? "" : item.steal || "";
+          return (
+            '<div class="si-exam-q">' +
+            '<div class="si-exam-q-lab">Question ' +
+            (i + 1) +
+            "</div>" +
+            '<p class="si-exam-q-text">' +
+            escapeHtml(q) +
+            "</p>" +
+            (steal
+              ? '<p class="si-exam-steal"><span class="si-exam-steal-lab">Use</span> ' +
+                escapeHtml(steal) +
+                "</p>"
+              : "") +
+            "</div>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
 
   function escapeHtml(text) {
     return String(text)
@@ -872,7 +917,8 @@
         '<p class="si-finale-prompt">' +
         escapeHtml(screen.prompt) +
         "</p>" +
-        '<p class="si-finale-mission">How to run it: learners speak · you tap each phrase you hear. Soft green ✓ = counted.</p>' +
+        renderExamQs(screen.questions, "finale") +
+        '<p class="si-finale-mission">How to run it: answer the questions · steal the yellow Use line · partner taps the tape. Soft green ✓ = counted.</p>' +
         "</header>" +
         renderPhraseCards(stickers, "improv") +
         "</div>";
@@ -887,6 +933,7 @@
         '<p class="si-hw-note">' +
         escapeHtml(screen.note) +
         "</p>" +
+        renderExamQs(screen.questions, "hw") +
         renderHwGames() +
         "</article>";
       tape = renderTape(hwList, "finale", null);
