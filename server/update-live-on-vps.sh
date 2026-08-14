@@ -27,7 +27,7 @@ git -C "$GAMES_ROOT" fetch origin master
 git -C "$GAMES_ROOT" reset --hard origin/master
 
 CLUMSY_ROOT="${CLUMSY_ROOT:-/root/clumsy-and-his-friends}"
-CLUMSY_REPO="${CLUMSY_REPO_URL:-https://github.com/suvorova2drob2-oss/clumsy-and-his-friends.git}"
+CLUMSY_REPO="${CLUMSY_REPO_URL:-git@github.com:suvorova2drob2-oss/clumsy-and-his-friends.git}"
 if [[ ! -d "$CLUMSY_ROOT/.git" ]]; then
   echo "==> Cloning Clumsy repo to $CLUMSY_ROOT"
   git clone "$CLUMSY_REPO" "$CLUMSY_ROOT"
