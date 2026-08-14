@@ -26,6 +26,16 @@ echo "==> Updating $GAMES_ROOT"
 git -C "$GAMES_ROOT" fetch origin master
 git -C "$GAMES_ROOT" reset --hard origin/master
 
+CLUMSY_ROOT="${CLUMSY_ROOT:-/root/clumsy-and-his-friends}"
+CLUMSY_REPO="${CLUMSY_REPO_URL:-https://github.com/suvorova2drob2-oss/clumsy-and-his-friends.git}"
+if [[ ! -d "$CLUMSY_ROOT/.git" ]]; then
+  echo "==> Cloning Clumsy repo to $CLUMSY_ROOT"
+  git clone "$CLUMSY_REPO" "$CLUMSY_ROOT"
+fi
+echo "==> Updating $CLUMSY_ROOT"
+git -C "$CLUMSY_ROOT" fetch origin main
+git -C "$CLUMSY_ROOT" reset --hard origin/main
+
 echo "==> Installing/refreshing systemd service"
 cp "$ROOT/server/ege-live-rooms.service" /etc/systemd/system/ege-live-rooms.service
 systemctl daemon-reload
@@ -43,5 +53,6 @@ echo
 echo "OK. Open in Incognito (Ctrl+Shift+N):"
 echo "  http://77.110.113.165:8787/ege/ege-listening-matching.html"
 echo "  http://77.110.113.165:8787/games/GenkiUno/index.html"
+echo "  http://77.110.113.165:8787/clumsy/"
 echo "Live → Create room. Student link MUST contain ?room=CODE"
 echo "Hard refresh if needed: Ctrl+F5"

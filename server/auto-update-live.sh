@@ -40,17 +40,32 @@ if [[ -d "$GAMES_ROOT/.git" ]]; then
   games_after="$(git -C "$GAMES_ROOT" rev-parse HEAD 2>/dev/null || true)"
 fi
 
+CLUMSY_ROOT="${CLUMSY_ROOT:-/root/clumsy-and-his-friends}"
+CLUMSY_REPO="${CLUMSY_REPO_URL:-https://github.com/suvorova2drob2-oss/clumsy-and-his-friends.git}"
+clumsy_before=""
+clumsy_after=""
+if [[ ! -d "$CLUMSY_ROOT/.git" ]]; then
+  log "Cloning Clumsy repo to $CLUMSY_ROOT"
+  git clone "$CLUMSY_REPO" "$CLUMSY_ROOT" >>"$LOG" 2>&1
+fi
+if [[ -d "$CLUMSY_ROOT/.git" ]]; then
+  clumsy_before="$(git -C "$CLUMSY_ROOT" rev-parse HEAD 2>/dev/null || true)"
+  git -C "$CLUMSY_ROOT" fetch origin main >>"$LOG" 2>&1
+  git -C "$CLUMSY_ROOT" reset --hard origin/main >>"$LOG" 2>&1
+  clumsy_after="$(git -C "$CLUMSY_ROOT" rev-parse HEAD 2>/dev/null || true)"
+fi
+
 if [[ -z "$before" || -z "$after" ]]; then
   log "ERROR: could not read git HEAD"
   exit 1
 fi
 
-if [[ "$before" == "$after" && "$games_before" == "$games_after" ]]; then
+if [[ "$before" == "$after" && "$games_before" == "$games_after" && "$clumsy_before" == "$clumsy_after" ]]; then
   # Quiet on no-op (avoid filling the log every 5 minutes)
   exit 0
 fi
 
-log "Updated my-site $before -> $after; games ${games_before:-missing} -> ${games_after:-missing}"
+log "Updated my-site $before -> $after; games ${games_before:-missing} -> ${games_after:-missing}; clumsy ${clumsy_before:-missing} -> ${clumsy_after:-missing}"
 
 if [[ -f "$ROOT/server/ege-live-rooms.service" ]]; then
   cp "$ROOT/server/ege-live-rooms.service" /etc/systemd/system/ege-live-rooms.service

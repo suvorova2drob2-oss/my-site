@@ -16,6 +16,9 @@ const ROOT = path.join(__dirname, "..");
 const ROBLOX_ROOT = String(
   process.env.ROBLOX_ROOT || path.join(ROOT, "..", "roblox")
 );
+const CLUMSY_ROOT = String(
+  process.env.CLUMSY_ROOT || path.join(ROOT, "..", "clumsy-and-his-friends")
+);
 // Local default = this machine. On VPS set PUBLIC_ORIGIN in systemd (ege-live-rooms.service).
 const PUBLIC_ORIGIN = String(
   process.env.PUBLIC_ORIGIN || "http://127.0.0.1:8787"
@@ -468,6 +471,11 @@ function handleOp(op, body) {
         throw new Error("UNO state required");
       }
       if (JSON.stringify(state).length > 110000) throw new Error("UNO state too large");
+      // Two players may move at once; the older move loses and resyncs.
+      const base = body && body.baseVersion;
+      if (base != null && Number(base) < Number(room.stateVersion || 0)) {
+        throw new Error("conflict: stale UNO state");
+      }
       room.state = state;
       room.stateVersion = Math.max(
         Number(room.stateVersion || 0) + 1,
@@ -529,6 +537,9 @@ app.post("/live", function (req, res) {
 if (fs.existsSync(ROBLOX_ROOT)) {
   app.use("/games", express.static(ROBLOX_ROOT, { index: false, fallthrough: true }));
 }
+if (fs.existsSync(CLUMSY_ROOT)) {
+  app.use("/clumsy", express.static(CLUMSY_ROOT, { index: "index.html", fallthrough: true }));
+}
 app.use(express.static(ROOT, { index: false, fallthrough: true }));
 
 // Classroom rooms are temporary. Remove inactive UNO rooms after 12 hours.
@@ -553,6 +564,11 @@ app.listen(PORT, "0.0.0.0", function () {
     console.log("[live-rooms] games http://127.0.0.1:" + PORT + "/games/");
   } else {
     console.log("[live-rooms] ROBLOX_ROOT not found:", ROBLOX_ROOT);
+  }
+  if (fs.existsSync(CLUMSY_ROOT)) {
+    console.log("[live-rooms] clumsy http://127.0.0.1:" + PORT + "/clumsy/");
+  } else {
+    console.log("[live-rooms] CLUMSY_ROOT not found:", CLUMSY_ROOT);
   }
   if (allowedOrigins.length) {
     console.log("[live-rooms] ALLOWED_ORIGINS:", allowedOrigins.join(", "));
