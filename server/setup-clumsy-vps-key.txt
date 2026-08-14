@@ -1,0 +1,19 @@
+Clumsy deploy key (one-time)
+===========================
+
+Problem: the roblox VPS key only works for roblox repo.
+GitHub then says "Repository not found" for Clumsy.
+
+A new read-only deploy key "VPS Clumsy" is already added on GitHub.
+
+From Windows PowerShell (enter VPS password when asked):
+
+  scp $env:TEMP\id_ed25519_clumsy_vps ege:/root/.ssh/id_ed25519_clumsy
+  ssh ege "bash /root/my-site/server/setup-clumsy-on-vps.sh"
+
+If my-site is old, run first on VPS:
+
+  cd /root/my-site && git pull origin main
+
+Expected: clumsy: 200
+Student link: http://77.110.113.165:8787/clumsy/
