@@ -9,6 +9,55 @@
     return String(t).replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, "");
   }
 
+  var STICKY_STOP = new Set([
+    "a", "an", "the", "and", "or", "of", "to", "in", "on", "for", "with", "at", "by", "from",
+    "is", "are", "was", "were", "be", "been", "being", "that", "this", "these", "those",
+    "my", "your", "our", "their", "any", "all", "so", "as", "it", "its", "it's", "i", "we",
+    "you", "they", "he", "she", "them", "us", "me", "not", "but", "if", "when", "then"
+  ]);
+
+  /** One content word for Lexical trainer gaps (not multi-word chunks). */
+  function pickStickyKeyword(text) {
+    var words = String(text || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!words.length) return "";
+    if (words.length === 1) return normalizeToken(words[0]) || words[0];
+    var best = "";
+    var bestScore = -1;
+    var i;
+    for (i = 0; i < words.length; i += 1) {
+      var raw = words[i];
+      var w = normalizeToken(raw).toLowerCase();
+      if (!w || STICKY_STOP.has(w)) continue;
+      var score = w.length;
+      if (w.length >= 7) score += 4;
+      if (w.length >= 5) score += 1;
+      if (score > bestScore) {
+        bestScore = score;
+        best = normalizeToken(raw) || raw;
+      }
+    }
+    return best || normalizeToken(words[0]) || words[0];
+  }
+
+  function carveStickyFromContext(ctx, gap) {
+    var c = String(ctx || "").trim();
+    var g = String(gap || "").trim();
+    if (!g) return { stickyBefore: "", stickyAnswer: "", stickyAfter: "" };
+    if (!c) return { stickyBefore: "", stickyAnswer: g, stickyAfter: "" };
+    var ix = c.toLowerCase().indexOf(g.toLowerCase());
+    if (ix < 0) {
+      return { stickyBefore: c + " ", stickyAnswer: g, stickyAfter: "" };
+    }
+    return {
+      stickyBefore: c.slice(0, ix),
+      stickyAnswer: c.slice(ix, ix + g.length),
+      stickyAfter: c.slice(ix + g.length)
+    };
+  }
+
   function mk(phrase, hint) {
     var words = String(phrase).trim().split(/\s+/).filter(Boolean);
     var cleanWords = words.map(normalizeToken);
@@ -60,13 +109,29 @@
           var phrase = line.phrase || line;
           var hint = line.hint || "Stub — replace with real phrases.";
           var base = mk(phrase, hint);
+          var ctx = String(line.contextSentence || phrase || "").trim();
+          var authorGap = String(line.stickyAnswer || "").trim();
+          /* Keep authored cool-word chunks (multi-word OK). Only invent if missing. */
+          var gap = authorGap || String(base.answer || "").trim() || pickStickyKeyword(phrase);
+          var carved = carveStickyFromContext(ctx, gap);
+          var useAuthorCarve =
+            line.stickyBefore != null &&
+            authorGap &&
+            ctx.toLowerCase().indexOf(authorGap.toLowerCase()) >= 0;
           return Object.assign({}, base, {
             phrase: phrase,
-            stickyBefore: line.stickyBefore || "Type the missing bit: ",
-            stickyAnswer:
-              line.stickyAnswer || String(base.answer).split(/\s+/)[0] || "stub",
-            stickyAfter: line.stickyAfter != null ? line.stickyAfter : "",
-            contextSentence: line.contextSentence || phrase
+            stickyBefore: useAuthorCarve
+              ? line.stickyBefore
+              : carved.stickyBefore || line.stickyBefore || "Type the missing bit: ",
+            stickyAnswer: useAuthorCarve
+              ? authorGap
+              : carved.stickyAnswer || gap || "stub",
+            stickyAfter: useAuthorCarve
+              ? line.stickyAfter != null
+                ? line.stickyAfter
+                : ""
+              : carved.stickyAfter,
+            contextSentence: ctx || phrase
           });
         })
       };
@@ -105,8 +170,7 @@
   var UNIT_THEME_NAMES = {
     1: [
       ["Clothes / opposites", "Clothes", ["clothes", "opposites"]],
-      ["Get phrases", "Get", ["get phrases", "meeting my hero"]],
-      ["Listening / reading lexis", "Texts", ["listening", "reading"]]
+      ["Get phrases", "Get", ["get phrases", "meeting my hero"]]
     ],
     2: [
       ["Sport vocabulary", "Sport", ["sport"]],
@@ -189,7 +253,18 @@
     var themes = names.map(function (row) {
       return stubTheme(row[0], row[1], row[2]);
     });
+
+    /* Unit 1: Lifestyle Cool Words (This is your life A–D) first — real pack. */
+    if (
+      unit === 1 &&
+      W.FCE_U1_LIFESTYLE_LEXIS &&
+      typeof W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme === "function"
+    ) {
+      themes = [W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme()].concat(themes);
+    }
+
     var hub = vocabHubFor(unit);
+    var hasLifestyle = unit === 1 && themes[0] && themes[0].id === "lifestyle";
     return {
       unit: unit,
       title: "Lexical games — Unit " + unit,
@@ -197,10 +272,11 @@
       backLabel: "Back to Unit " + unit,
       vocabHubHref: hub,
       vocabHubLabel: hub ? "Unit " + unit + " Vocabulary hub →" : "",
-      subtitleHtml:
-        "<b>Lexical games, Unit " +
-        unit +
-        ".</b> Same trainers as Unit 12 (trainer, cards, drop, pick, express, echo, match, word bank). Stub packs — send phrase lists to fill.",
+      subtitleHtml: hasLifestyle
+        ? "<b>Lexical games, Unit 1.</b> <b>Lifestyle</b> pack = Cool Words from This is your life (A–D) with full reading context. Clothes / Get still stubs until lists arrive."
+        : "<b>Lexical games, Unit " +
+          unit +
+          ".</b> Same trainers as Unit 12 (trainer, cards, drop, pick, express, echo, match, word bank). Stub packs — send phrase lists to fill.",
       themes: themes
     };
   }
@@ -209,6 +285,8 @@
     forUnit: forUnit,
     stubTheme: stubTheme,
     packBlocks: packBlocks,
-    mk: mk
+    mk: mk,
+    pickStickyKeyword: pickStickyKeyword,
+    carveStickyFromContext: carveStickyFromContext
   };
 })(typeof window !== "undefined" ? window : globalThis);

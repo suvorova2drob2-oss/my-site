@@ -145,6 +145,9 @@
     function normalizeForCheck(text) {
       return String(text)
         .toLowerCase()
+        .replace(/[\u2018\u2019\u02bc]/g, "'")
+        .replace(/[\u201c\u201d]/g, '"')
+        .replace(/\u00a0/g, " ")
         .replace(/[^a-z0-9'\s-]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -207,6 +210,167 @@
         post
       };
     }
+    /** One content word for Lexical trainer gaps. */
+    function pickStickyKeyword(text) {
+      const stop = new Set([
+        "a","an","the","and","or","of","to","in","on","for","with","at","by","from",
+        "is","are","was","were","be","been","being","that","this","these","those",
+        "my","your","our","their","any","all","so","as","it","its","it's","i","we",
+        "you","they","he","she","them","us","me","not","but","if","when","then",
+        "like","as","soon","once","often","still","just","very","really"
+      ]);
+      const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return "";
+      if (words.length === 1) return normalizeToken(words[0]) || words[0];
+      let best = "";
+      let bestScore = -1;
+      for (let i = 0; i < words.length; i += 1) {
+        const raw = words[i];
+        const w = normalizeToken(raw).toLowerCase();
+        if (!w || stop.has(w)) continue;
+        let score = w.length;
+        if (w.length >= 7) score += 4;
+        if (w.length >= 5) score += 1;
+        /* Prefer the head of the cool chunk (idiom focus), not a late noun. */
+        if (i <= 3) score += 4;
+        if (i === 0) score += 2;
+        if (score > bestScore) {
+          bestScore = score;
+          best = normalizeToken(raw) || raw;
+        }
+      }
+      return best || normalizeToken(words[0]) || words[0];
+    }
+    function carveStickyFromContext(ctx, gap) {
+      const c = String(ctx || "").trim();
+      const g = String(gap || "").trim();
+      if (!g) return { before: "", answer: "", after: "" };
+      if (!c) return { before: "", answer: g, after: "" };
+      const ix = c.toLowerCase().indexOf(g.toLowerCase());
+      if (ix < 0) return { before: c + " ", answer: g, after: "" };
+      return {
+        before: c.slice(0, ix),
+        answer: c.slice(ix, ix + g.length),
+        after: c.slice(ix + g.length)
+      };
+    }
+
+    /** 1 = one key word · 2 = two words · 3 = full cool chunk (hard). */
+    let trainerLevel = 1;
+    let trainerLockedTo3 = false;
+    let trainerWinMode = "level"; // "level" | "master"
+
+    const trainerProgressKey =
+      "fceLexTrainerProgress_u" + String(unit || 0);
+
+    function defaultTrainerProgress() {
+      return {
+        level: 1,
+        maxCleared: 0,
+        lockedTo3: false,
+        stats: {
+          1: { clears: 0, points: 0, mistakes: 0 },
+          2: { clears: 0, points: 0, mistakes: 0 },
+          3: { clears: 0, points: 0, mistakes: 0 },
+          totalPoints: 0,
+          totalMistakes: 0,
+          sessions: 0
+        }
+      };
+    }
+
+    function loadTrainerProgress() {
+      try {
+        const raw = localStorage.getItem(trainerProgressKey);
+        if (!raw) return defaultTrainerProgress();
+        const p = JSON.parse(raw);
+        const d = defaultTrainerProgress();
+        return {
+          level: Math.min(3, Math.max(1, Number(p.level) || 1)),
+          maxCleared: Math.min(3, Math.max(0, Number(p.maxCleared) || 0)),
+          lockedTo3: !!p.lockedTo3,
+          stats: Object.assign(d.stats, p.stats || {})
+        };
+      } catch (e) {
+        return defaultTrainerProgress();
+      }
+    }
+
+    function saveTrainerProgress(p) {
+      try {
+        localStorage.setItem(trainerProgressKey, JSON.stringify(p));
+      } catch (e) {}
+    }
+
+    function applyTrainerProgress() {
+      const p = loadTrainerProgress();
+      trainerLockedTo3 = !!p.lockedTo3;
+      trainerLevel = trainerLockedTo3 ? 3 : Math.min(3, Math.max(1, Number(p.level) || 1));
+    }
+
+    function levelLabel(lv) {
+      if (lv >= 3) return "Level 3 · full phrase";
+      if (lv === 2) return "Level 2 · 2 words";
+      return "Level 1 · 1 word";
+    }
+
+    applyTrainerProgress();
+
+    /** Gap size by trainer level: 1 word / 2 words / full cool chunk. */
+    function pickGapByLevel(chunk, level) {
+      const stop = new Set([
+        "a","an","the","and","or","of","to","in","on","for","with","at","by","from",
+        "is","are","was","were","be","been","being","that","this","these","those",
+        "my","your","our","their","any","all","so","as","it","its","it's","i","we",
+        "you","they","he","she","them","us","me","not","but","if","when","then"
+      ]);
+      const words = String(chunk || "").trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return "";
+      const lv = Number(level) || 1;
+      if (lv >= 3 || words.length <= 1) return words.join(" ");
+      if (lv <= 1) return pickStickyKeyword(words.join(" "));
+      if (words.length === 2) return words.join(" ");
+      let best = words.slice(0, 2).join(" ");
+      let bestScore = -1;
+      for (let i = 0; i <= words.length - 2; i += 1) {
+        const a = normalizeToken(words[i]).toLowerCase();
+        const b = normalizeToken(words[i + 1]).toLowerCase();
+        let score = 0;
+        if (a && !stop.has(a)) score += a.length + 3;
+        if (b && !stop.has(b)) score += b.length + 3;
+        if (a.length >= 6) score += 2;
+        if (b.length >= 6) score += 2;
+        if (i <= 2) score += 3;
+        if (score > bestScore) {
+          bestScore = score;
+          best = words[i] + " " + words[i + 1];
+        }
+      }
+      return best;
+    }
+    function chunkForItem(it) {
+      return (
+        String((it && it.stickyAnswer) || "").trim() ||
+        String((it && it.answer) || "").trim() ||
+        String((it && it.phrase) || "").trim() ||
+        pickStickyKeyword((it && it.phrase) || "")
+      );
+    }
+    /** Prefer authored cool-word chunk, then shrink by trainerLevel. */
+    function resolveTrainerSticky(it) {
+      const ctx = String((it && (it.contextSentence || it.phrase)) || "").trim();
+      const fullChunk = chunkForItem(it);
+      const gap = pickGapByLevel(fullChunk, trainerLevel);
+      const carved = carveStickyFromContext(ctx, gap);
+      if (carved.answer) return carved;
+      const authorBefore = it && it.stickyBefore != null ? String(it.stickyBefore) : "";
+      const authorAfter = it && it.stickyAfter != null ? String(it.stickyAfter) : "";
+      return {
+        before: authorBefore || String((it && it.pre) || ""),
+        answer: gap,
+        after: authorAfter || String((it && it.post) || "")
+      };
+    }
     function fullPhraseFromItem(it) {
       if (it && it.phrase && String(it.phrase).trim()) return String(it.phrase).trim();
       const left = String(it.pre || "").replace(/^Phrase:\s*/i, "").trim();
@@ -218,20 +382,18 @@
     function fullAnswerOf(it) {
       return fullPhraseFromItem(it) || String(it.answer || "").trim();
     }
-    /** Typed gap: one sticky keyword when present, else trainer gap chunk. */
+    /** Typed gap: level-sized chunk from the reading sentence. */
     function typedGapAnswer(it) {
-      const st = it && it.stickyAnswer != null ? String(it.stickyAnswer).trim() : "";
-      if (st) return st;
-      return String((it && it.answer) || "").trim();
+      return resolveTrainerSticky(it).answer;
     }
     function trainerUsesSticky(it) {
-      return !!(it && it.stickyBefore != null && String(it.stickyAnswer || "").trim());
+      return !!(it && (it.stickyBefore != null || it.contextSentence || it.stickyAnswer || it.phrase));
     }
     function trainerPre(it) {
-      return trainerUsesSticky(it) ? String(it.stickyBefore) : String(it.pre || "");
+      return trainerUsesSticky(it) ? resolveTrainerSticky(it).before : String(it.pre || "");
     }
     function trainerPost(it) {
-      return trainerUsesSticky(it) ? String(it.stickyAfter || "") : String(it.post || "");
+      return trainerUsesSticky(it) ? resolveTrainerSticky(it).after : String(it.post || "");
     }
     const TRAINER = {
       phrasal: typeof UNIT10_PHRASAL_BLOCKS !== "undefined" ? UNIT10_PHRASAL_BLOCKS : [],
@@ -279,7 +441,6 @@
 
     const trainerHtml = `
       <div class="trainer-box">
-        <div class="scoreline">Home score: <b id="homeScore">0</b> · Session points: <b id="sessionScore">0</b></div>
         <div id="packChoice" class="pack-choice">
           <label class="pack-card pack-check">
             <input type="checkbox" id="packPhrasal" checked />
@@ -296,24 +457,46 @@
           <button class="continue-btn" id="btnContinuePacks" type="button">Continue</button>
         </div>
         <div id="trainerPlay" class="hidden">
-          <div class="pack-tabs">
-            <span class="tab active" id="packSummary">Pack</span>
-            <button class="small-link" id="btnBackPacks" type="button">← Back to packs</button>
+          <div class="lex-chrome" aria-label="Trainer status">
+            <div class="lex-chrome-row">
+              <span class="lives" id="lives" title="Lives">❤❤❤</span>
+              <span class="counter" id="counter">1 / 2</span>
+              <span class="lex-level-pill" id="trainerLevelPill" title="Difficulty">Level 1</span>
+              <span class="scoreline">Home <b id="homeScore">0</b> · Session <b id="sessionScore">0</b></span>
+            </div>
+            <div class="lex-chrome-row lex-chrome-nav">
+              <span class="tab active" id="packSummary">Pack</span>
+              <button class="small-link" id="btnBackPacks" type="button">← Packs</button>
+            </div>
+            <div class="speaker-tabs" id="speakerTabs"></div>
           </div>
-          <div class="top-row">
-            <div class="lives" id="lives">❤❤❤</div>
-            <div class="counter" id="counter">1 / 2</div>
+          <div class="lex-task">
+            <div class="hint-label">HINT (PARAPHRASE)</div>
+            <div class="hint-box" id="hintBox"></div>
+            <div class="line-box"><span id="linePre"></span><input id="answerInput" autocomplete="off" /><span id="linePost"></span></div>
+            <button class="check-btn" id="checkBtn" type="button">Check</button>
+            <div class="assist-row">
+              <button class="assist-btn" id="btnHintMore" type="button">Hint</button>
+              <button class="assist-btn" id="btnShowAnswer" type="button">Show answer</button>
+            </div>
+            <div class="msg" id="msg"></div>
           </div>
-          <div class="speaker-tabs" id="speakerTabs"></div>
-          <div class="hint-label">HINT (PARAPHRASE)</div>
-          <div class="hint-box" id="hintBox"></div>
-          <div class="line-box"><span id="linePre"></span><input id="answerInput" autocomplete="off" /><span id="linePost"></span></div>
-          <button class="check-btn" id="checkBtn" type="button">Check</button>
-          <div class="assist-row">
-            <button class="assist-btn" id="btnHintMore" type="button">Hint</button>
-            <button class="assist-btn" id="btnShowAnswer" type="button">Show answer</button>
+          <div id="trainerWin" class="lex-trainer-win" hidden>
+            <canvas id="trainerWinFireworks" class="lex-trainer-win-fw" aria-hidden="true"></canvas>
+            <div class="lex-trainer-win-card">
+              <p class="lex-trainer-win-kicker" id="trainerWinKicker">Level complete</p>
+              <h3 class="lex-trainer-win-title" id="trainerWinTitle">Well done!</h3>
+              <p class="lex-trainer-win-line" id="trainerWinLine">Keep it up.</p>
+              <div class="lex-trainer-win-stats" id="trainerWinStats"></div>
+              <p class="lex-trainer-win-tomorrow" id="trainerWinTomorrow" hidden>
+                Come back tomorrow — обязательно приходи завтра.
+              </p>
+              <div class="lex-trainer-win-actions">
+                <button type="button" class="check-btn" id="trainerWinAgain">Next level →</button>
+                <button type="button" class="assist-btn" id="trainerWinPacks">← Packs</button>
+              </div>
+            </div>
           </div>
-          <div class="msg" id="msg"></div>
         </div>
       </div>
     `;
@@ -500,13 +683,21 @@
       else if (key === "wordbank") pool.innerHTML = wordBankHtml;
       paintThemeLabelsIn(pool);
       folder.addEventListener("click", (e) => {
-        if (e.target.closest("button,input,label,.cards-box,.mini-game-box,.match-box")) return;
+        if (
+          e.target.closest(
+            "button,input,label,select,textarea,.trainer-box,.cards-box,.mini-game-box,.match-box,.drop-intro,.drop-play,.wb-shell"
+          )
+        ) {
+          return;
+        }
         const isOpen = folder.classList.contains("open");
         host.querySelectorAll(".folder").forEach(x => x.classList.remove("open"));
         host.classList.remove("single-open");
+        document.body.classList.remove("lex-game-focus");
         if (!isOpen) {
           folder.classList.add("open");
           host.classList.add("single-open");
+          document.body.classList.add("lex-game-focus");
           if (key === "cards") {
             cardsIdx = 0;
             cardsFlipped = false;
@@ -1061,9 +1252,252 @@
     let item = 0;
     let lives = 3;
     let sessionPoints = 0;
+    let trainerMistakes = 0;
+    let trainerShownAnswers = 0;
+    let trainerSkipPoint = false;
+    let trainerFwRaf = 0;
+    let trainerFwStopAt = 0;
+
+    const TRAINER_WIN_TITLES = [
+      "Well done!",
+      "You're awesome.",
+      "Incredible.",
+      "I'm proud of you.",
+      "You nailed it.",
+      "Keep it up!"
+    ];
+    const TRAINER_WIN_LINES = [
+      "Keep it up — you're getting stronger every round.",
+      "I'm passionate about progress — and today you proved it.",
+      "You didn't lose track of time: you used it well.",
+      "Fully qualified energy. It works for you.",
+      "Wherever you are tomorrow, keep that spark — feel alive.",
+      "Steady and secure: your phrases are landing."
+    ];
+    const TRAINER_LEVEL_CLEAR = {
+      1: {
+        kicker: "Level 1 complete",
+        title: "Well done!",
+        line: "Keep it up. Next: Level 2 — two key words."
+      },
+      2: {
+        kicker: "Level 2 complete",
+        title: "You're awesome!",
+        line: "Keep it up. Next: Level 3 — the full cool phrase."
+      },
+      3: {
+        kicker: "Level 3 mastered",
+        title: "Incredible — I'm proud of you.",
+        line: "From now on you train on Level 3. Come back tomorrow."
+      }
+    };
 
     function currentItems() { return activeSpeakers[speaker].items; }
     function current() { return currentItems()[item]; }
+
+    function trainerTotalItems() {
+      return activeSpeakers.reduce(function (n, s) {
+        return n + ((s.items && s.items.length) || 0);
+      }, 0);
+    }
+
+    function updateLevelPill() {
+      const el = document.getElementById("trainerLevelPill");
+      if (el) el.textContent = levelLabel(trainerLevel);
+    }
+
+    function recordLevelClear(clearedLevel) {
+      const p = loadTrainerProgress();
+      const lv = Math.min(3, Math.max(1, clearedLevel));
+      if (!p.stats[lv]) p.stats[lv] = { clears: 0, points: 0, mistakes: 0 };
+      p.stats[lv].clears += 1;
+      p.stats[lv].points += sessionPoints;
+      p.stats[lv].mistakes += trainerMistakes;
+      p.stats.totalPoints += sessionPoints;
+      p.stats.totalMistakes += trainerMistakes;
+      p.stats.sessions += 1;
+      p.maxCleared = Math.max(p.maxCleared || 0, lv);
+      if (lv >= 3) {
+        p.lockedTo3 = true;
+        p.level = 3;
+        trainerLockedTo3 = true;
+        trainerLevel = 3;
+      } else {
+        p.level = lv + 1;
+        trainerLevel = lv + 1;
+      }
+      saveTrainerProgress(p);
+    }
+
+    function hideTrainerWin() {
+      const win = document.getElementById("trainerWin");
+      const playInner = document.querySelector("#trainerPlay .lex-chrome");
+      const task = document.querySelector("#trainerPlay .lex-task");
+      document.body.classList.remove("lex-trainer-win-open");
+      if (win) win.hidden = true;
+      if (playInner) playInner.hidden = false;
+      if (task) task.hidden = false;
+      if (trainerFwRaf) {
+        cancelAnimationFrame(trainerFwRaf);
+        trainerFwRaf = 0;
+      }
+    }
+
+    function mountTrainerWinOverlay() {
+      const win = document.getElementById("trainerWin");
+      if (win && win.parentNode !== document.body) {
+        document.body.appendChild(win);
+      }
+    }
+
+    function runTrainerFireworks(canvas) {
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      function size() {
+        const w = canvas.clientWidth || window.innerWidth || 360;
+        const h = canvas.clientHeight || window.innerHeight || 420;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { w: w, h: h };
+      }
+      let dim = size();
+      const colors = ["#56ccf2", "#7dd3fc", "#fbbf24", "#f472b6", "#34d399", "#c4b5fd", "#fff"];
+      const bursts = [];
+      function spawnBurst() {
+        const x = dim.w * (0.18 + Math.random() * 0.64);
+        const y = dim.h * (0.18 + Math.random() * 0.42);
+        const color = colors[(Math.random() * colors.length) | 0];
+        const n = 28 + ((Math.random() * 18) | 0);
+        const parts = [];
+        for (let i = 0; i < n; i += 1) {
+          const ang = (Math.PI * 2 * i) / n + Math.random() * 0.2;
+          const sp = 1.6 + Math.random() * 3.8;
+          parts.push({
+            x: x,
+            y: y,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp,
+            life: 1,
+            decay: 0.012 + Math.random() * 0.018,
+            r: 1.5 + Math.random() * 2.2,
+            color: color
+          });
+        }
+        bursts.push({ parts: parts });
+      }
+      for (let k = 0; k < 5; k += 1) spawnBurst();
+      trainerFwStopAt = performance.now() + (trainerWinMode === "master" ? 5600 : 3800);
+      function frame(ts) {
+        dim = size();
+        ctx.clearRect(0, 0, dim.w, dim.h);
+        if (ts < trainerFwStopAt && Math.random() < 0.08) spawnBurst();
+        for (let b = bursts.length - 1; b >= 0; b -= 1) {
+          const parts = bursts[b].parts;
+          let alive = 0;
+          for (let i = 0; i < parts.length; i += 1) {
+            const p = parts[i];
+            if (p.life <= 0) continue;
+            alive += 1;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.045;
+            p.vx *= 0.99;
+            p.life -= p.decay;
+            ctx.globalAlpha = Math.max(0, p.life);
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          if (!alive) bursts.splice(b, 1);
+        }
+        ctx.globalAlpha = 1;
+        if (ts < trainerFwStopAt || bursts.length) {
+          trainerFwRaf = requestAnimationFrame(frame);
+        } else {
+          trainerFwRaf = 0;
+          ctx.clearRect(0, 0, dim.w, dim.h);
+        }
+      }
+      trainerFwRaf = requestAnimationFrame(frame);
+    }
+
+    function showTrainerWin() {
+      const clearedLevel = trainerLevel;
+      recordLevelClear(clearedLevel);
+      trainerWinMode = clearedLevel >= 3 ? "master" : "level";
+      mountTrainerWinOverlay();
+
+      const win = document.getElementById("trainerWin");
+      const playInner = document.querySelector("#trainerPlay .lex-chrome");
+      const task = document.querySelector("#trainerPlay .lex-task");
+      const msg = document.getElementById("msg");
+      if (!win) return;
+      if (playInner) playInner.hidden = true;
+      if (task) task.hidden = true;
+      if (msg) {
+        msg.textContent = "";
+        msg.className = "msg";
+      }
+      document.body.classList.add("lex-trainer-win-open");
+      win.hidden = false;
+
+      const meta = TRAINER_LEVEL_CLEAR[clearedLevel] || TRAINER_LEVEL_CLEAR[1];
+      const kicker = document.getElementById("trainerWinKicker");
+      const title = document.getElementById("trainerWinTitle");
+      const line = document.getElementById("trainerWinLine");
+      const stats = document.getElementById("trainerWinStats");
+      const tomorrow = document.getElementById("trainerWinTomorrow");
+      const again = document.getElementById("trainerWinAgain");
+      const total = trainerTotalItems();
+      const prog = loadTrainerProgress();
+
+      if (kicker) kicker.textContent = meta.kicker;
+      if (title) {
+        title.textContent =
+          meta.title ||
+          TRAINER_WIN_TITLES[(Math.random() * TRAINER_WIN_TITLES.length) | 0];
+      }
+      if (line) {
+        line.textContent =
+          meta.line ||
+          TRAINER_WIN_LINES[(Math.random() * TRAINER_WIN_LINES.length) | 0];
+      }
+      if (tomorrow) {
+        tomorrow.hidden = clearedLevel < 3;
+      }
+      if (again) {
+        again.textContent =
+          clearedLevel >= 3 ? "Train Level 3 again" : "Next level →";
+      }
+      if (stats) {
+        stats.innerHTML =
+          '<div class="lex-trainer-win-stat"><b>L' +
+          clearedLevel +
+          "</b><span>cleared</span></div>" +
+          '<div class="lex-trainer-win-stat"><b>' +
+          sessionPoints +
+          "</b><span>session points</span></div>" +
+          '<div class="lex-trainer-win-stat"><b>' +
+          total +
+          "</b><span>phrases</span></div>" +
+          '<div class="lex-trainer-win-stat"><b>' +
+          trainerMistakes +
+          "</b><span>mistakes</span></div>" +
+          '<div class="lex-trainer-win-stat"><b>' +
+          (prog.stats && prog.stats.totalPoints != null
+            ? prog.stats.totalPoints
+            : getScore()) +
+          "</b><span>all-time pts</span></div>" +
+          '<div class="lex-trainer-win-stat"><b>' +
+          getScore() +
+          "</b><span>home score</span></div>";
+      }
+      runTrainerFireworks(document.getElementById("trainerWinFireworks"));
+    }
 
     function buildActiveSpeakers() {
       const { phrasal: uN, crime: uL, stories: uV } = trainerPackFlags;
@@ -1089,9 +1523,21 @@
       tabs.querySelectorAll(".tab").forEach(btn => {
         btn.addEventListener("click", () => {
           speaker = Number(btn.getAttribute("data-sp"));
-          item = 0; lives = 3; renderTrainer();
+          item = 0; lives = 3; trainerSkipPoint = false;
+          hideTrainerWin();
+          renderTrainer();
         });
       });
+    }
+
+    function resetTrainerRoundCounters() {
+      speaker = 0;
+      item = 0;
+      lives = 3;
+      sessionPoints = 0;
+      trainerMistakes = 0;
+      trainerShownAnswers = 0;
+      trainerSkipPoint = false;
     }
 
     function renderTrainer() {
@@ -1102,11 +1548,15 @@
       if (!trainerActive) {
         chooser.classList.remove("hidden");
         play.classList.add("hidden");
+        hideTrainerWin();
         return;
       }
       chooser.classList.add("hidden");
       play.classList.remove("hidden");
+      const win = document.getElementById("trainerWin");
+      if (win && !win.hidden) return;
       updatePackSummary();
+      updateLevelPill();
       const c = current();
       document.getElementById("lives").textContent = "❤".repeat(lives) + "♡".repeat(Math.max(0,3-lives));
       document.getElementById("counter").textContent = (item + 1) + " / " + currentItems().length;
@@ -1119,13 +1569,19 @@
       renderTabs();
     }
 
-    function nextItem() {
+    /** @returns {boolean} true if pack finished */
+    function advanceAfterCorrect() {
       if (item < currentItems().length - 1) {
         item += 1;
-      } else {
-        item = 0;
-        speaker = (speaker + 1) % activeSpeakers.length;
+        return false;
       }
+      if (speaker < activeSpeakers.length - 1) {
+        speaker += 1;
+        item = 0;
+        lives = 3;
+        return false;
+      }
+      return true;
     }
 
     function handleCheck() {
@@ -1141,19 +1597,32 @@
         return;
       }
       if (got === expected) {
-        addScore(1);
-        sessionPoints += 1;
-        msg.textContent = "Correct! +1 point";
-        msg.className = "msg ok";
-        nextItem();
-        setTimeout(renderTrainer, 450);
+        if (trainerSkipPoint) {
+          trainerShownAnswers += 1;
+          trainerSkipPoint = false;
+          msg.textContent = "Moved on (no point for shown answer).";
+          msg.className = "msg ok";
+        } else {
+          addScore(1);
+          sessionPoints += 1;
+          msg.textContent = "Correct! +1 point";
+          msg.className = "msg ok";
+        }
+        const done = advanceAfterCorrect();
+        if (done) {
+          setTimeout(showTrainerWin, 500);
+        } else {
+          setTimeout(renderTrainer, 450);
+        }
       } else {
         lives -= 1;
+        trainerMistakes += 1;
         if (lives <= 0) {
           msg.textContent = "Incorrect. Expected: '" + expectedRaw + "'. No lives left — restarting this speaker.";
           msg.className = "msg bad";
           lives = 3;
           item = 0;
+          trainerSkipPoint = false;
           setTimeout(renderTrainer, 700);
         } else {
           msg.textContent = "Incorrect. Expected: '" + expectedRaw + "'.";
@@ -1178,12 +1647,21 @@
         }
         trainerPackFlags = { phrasal: usePhrasal, crime: useCrime, stories: useStories };
         buildActiveSpeakers();
+        applyTrainerProgress();
         trainerActive = true;
-        speaker = 0; item = 0; lives = 3;
+        resetTrainerRoundCounters();
+        hideTrainerWin();
         renderTrainer();
       }
-      if (e.target.id === "btnBackPacks") {
+      if (e.target.id === "btnBackPacks" || e.target.id === "trainerWinPacks") {
         trainerActive = false;
+        hideTrainerWin();
+        renderTrainer();
+      }
+      if (e.target.id === "trainerWinAgain") {
+        applyTrainerProgress();
+        resetTrainerRoundCounters();
+        hideTrainerWin();
         renderTrainer();
       }
       if (e.target.id === "checkBtn") {
@@ -1198,6 +1676,7 @@
       if (e.target.id === "btnShowAnswer") {
         const msg = document.getElementById("msg");
         document.getElementById("answerInput").value = typedGapAnswer(current());
+        trainerSkipPoint = true;
         msg.textContent = "Answer shown. Press Check to continue (no point for this line).";
         msg.className = "msg bad";
       }

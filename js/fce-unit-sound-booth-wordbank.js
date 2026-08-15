@@ -28,6 +28,31 @@
     return out;
   }
 
+  function rowsFromTheme(th, label, short) {
+    var items = [];
+    var blocks = (th && th.blocks) || [];
+    var b;
+    for (b = 0; b < blocks.length; b++) {
+      var blockItems = (blocks[b] && blocks[b].items) || [];
+      var i;
+      for (i = 0; i < blockItems.length; i++) {
+        var it = blockItems[i];
+        var ans =
+          (it && (it.phrase || it.coolWord || it.answer)) ||
+          "";
+        ans = String(ans).trim();
+        if (!ans || /^PLACEHOLDER/i.test(ans)) continue;
+        items.push({
+          ans: ans,
+          hint: String((it && it.hint) || "").trim() || ans,
+          contextSentence: String((it && it.contextSentence) || "").trim()
+        });
+      }
+    }
+    if (items.length >= 5) return items;
+    return padRows(label, short, 9);
+  }
+
   function buildFromStubs() {
     var pack =
       W.FCE_UNIT_LEX_STUBS && typeof W.FCE_UNIT_LEX_STUBS.forUnit === "function"
@@ -42,13 +67,15 @@
       var id = th.id || "theme-" + t;
       var label = th.label || th.short || "Theme " + (t + 1);
       var short = th.short || label;
+      var realRows = rowsFromTheme(th, label, short);
+      var isStub = realRows.length && /^PLACEHOLDER/i.test(realRows[0].ans);
       defs.push({
         id: id,
         title: label,
-        tagline: "Stub pack · send phrases",
+        tagline: isStub ? "Stub pack · send phrases" : "Cool Words · full context",
         icon: t === 0 ? "📘" : t === 1 ? "📗" : "📙"
       });
-      byId[id] = padRows(label, short, 9);
+      byId[id] = realRows;
     }
     if (!defs.length) {
       defs.push({
@@ -90,8 +117,11 @@
   W.FCE_SB_THEME_DEFINITIONS = DEFINITIONS;
   W.FCE_SB_THEME_DEFINITIONS_COMBINED = {
     id: COMBINED_ID,
-    title: "All stub themes",
-    tagline: "Unit " + unit + " · combined stub deck",
+    title: unit === 1 ? "All themes (Lifestyle + stubs)" : "All stub themes",
+    tagline:
+      unit === 1
+        ? "Unit 1 · Lifestyle Cool Words + other decks"
+        : "Unit " + unit + " · combined stub deck",
     icon: "✨"
   };
   W.FCE_SB_getLexRows = lexRowsForTheme;
