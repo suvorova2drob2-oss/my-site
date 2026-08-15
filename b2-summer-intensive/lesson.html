@@ -6,18 +6,25 @@
   <title>B2 Speaking Intensive · Lesson</title>
   <link rel="stylesheet" href="css/intensive-shell.css" />
   <link rel="stylesheet" href="css/summer-intensive.css" />
-  <link rel="stylesheet" href="../workshops/fleabag/css/fleabag-workshop.css" />
+  <!-- fleabag-workshop.css loads after first paint (intensive-boot.js) -->
 </head>
 <body class="intensive-body intensive-body--summer">
   <script src="../workshops/js/workshop-gate.js"></script>
-  <script>WorkshopGate.guardPage({ homeHref: "../b2-intensive.html" });</script>
+  <script>
+    /* FCE → Speaking: no password (handled inside WorkshopGate.guardPage / passIfFceEntry) */
+    if (window.WorkshopGate) {
+      if (!WorkshopGate.passIfFceEntry()) {
+        WorkshopGate.guardPage({ homeHref: "../b2-intensive.html" });
+      }
+    }
+  </script>
   <div class="int-shell" id="lesson-root">
     <header class="int-topbar">
       <div class="int-brand">
         <span class="int-kicker">Speaking Intensive</span>
       </div>
       <nav class="int-topbar-links" aria-label="Back">
-        <a class="int-back" href="index.html">&larr; Themes</a>
+        <a class="int-back" id="int-back-themes" href="index.html">&larr; Themes</a>
         <a
           class="int-back int-back--fce"
           id="int-back-fce"
@@ -62,10 +69,18 @@
           </details>
         </div>
       </div>
+      <aside
+        id="sc-speak-chip-host"
+        class="sc-speak-rail-host fb-speak-rail-host"
+        data-speak-club-host
+        aria-label="Speak Club stats"
+      ></aside>
       <nav class="int-stepper" id="lesson-stepper" aria-label="Lesson steps"></nav>
     </section>
 
-    <div id="lesson-stage"></div>
+    <div id="lesson-stage">
+      <p class="int-boot-wait" style="opacity:0.7;padding:1.25rem 0.25rem">Loading lesson…</p>
+    </div>
 
     <footer class="int-nav">
       <button type="button" class="int-btn int-btn--ghost" id="btn-prev">← Previous</button>
@@ -74,10 +89,6 @@
     </footer>
   </div>
 
-  <script src="js/intensive-themes.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-phrase-srs.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-sticker-fyp.js"></script>
-  <script src="../workshops/fleabag/js/fleabag-sticker-swipe.js"></script>
-  <script src="js/intensive-lesson.js"></script>
+  <script src="js/intensive-boot.js?v=3"></script>
 </body>
 </html>

@@ -88,6 +88,10 @@
   var unit1YoungEntrepreneursBundled =
     String(contextId) === "unit1-p1-young-entrepreneurs" ||
     /published-unit1-p1-young-entrepreneurs\.json\s*$/i.test(dataSrc);
+  /** Unit 1 FCE — I can't go to school — JSON in #part1-mc-bundled-unit1-cant-go-to-school. */
+  var unit1CantGoToSchoolBundled =
+    String(contextId) === "unit1-p1-cant-go-to-school" ||
+    /published-unit1-p1-cant-go-to-school\.json\s*$/i.test(dataSrc);
   /** Unit 1 CPE — Fashion for rent — JSON in #part1-mc-bundled-unit1-fashion-for-rent. */
   var unit1FashionForRentBundled =
     String(contextId) === "unit1-p1-fashion-for-rent" ||
@@ -116,6 +120,7 @@
     unit10ShakespeareBundled ||
     unit12FoodSupplementsBundled ||
     unit1YoungEntrepreneursBundled ||
+    unit1CantGoToSchoolBundled ||
     unit1FashionForRentBundled ||
     unit2AnotherWorldBundled ||
     unit5UoeBundled ||
@@ -2046,6 +2051,16 @@
         try {
           return JSON.parse(elU1ye.textContent.trim());
         } catch (eU1ye) {
+          return null;
+        }
+      }
+    }
+    if (unit1CantGoToSchoolBundled) {
+      var elU1cgs = document.getElementById("part1-mc-bundled-unit1-cant-go-to-school");
+      if (elU1cgs) {
+        try {
+          return JSON.parse(elU1cgs.textContent.trim());
+        } catch (eU1cgs) {
           return null;
         }
       }

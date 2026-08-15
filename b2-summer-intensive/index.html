@@ -6,9 +6,45 @@
   <title>B2 Speaking Intensive · Themes</title>
   <link rel="stylesheet" href="css/intensive-shell.css" />
   <link rel="stylesheet" href="css/summer-intensive.css" />
+  <link rel="stylesheet" href="../workshops/fleabag/css/fleabag-workshop.css" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400;1,7..72,600&display=swap"
+  />
 </head>
 <body class="intensive-body intensive-body--summer">
   <script src="../workshops/js/workshop-gate.js"></script>
+  <script>
+    /* FCE lock: block Themes hub when coming from an FCE Speaking deep link */
+    (function () {
+      var q = new URLSearchParams(window.location.search || "");
+      var locked = false;
+      var storedFrom = "";
+      try {
+        locked = sessionStorage.getItem("b2int_fce_lock") === "1";
+        storedFrom = sessionStorage.getItem("b2int_fce_from") || "";
+      } catch (_e) {}
+      var qHasFce =
+        q.get("src") === "fce" ||
+        q.get("course") === "fce" ||
+        !!q.get("from");
+      var fromLesson = /\/lesson\.html/i.test(String(document.referrer || ""));
+      if (!(qHasFce || (locked && fromLesson))) return;
+      var back = storedFrom || q.get("from") || "../fce.html";
+      try {
+        back = decodeURIComponent(String(back));
+      } catch (_e2) {}
+      back = String(back || "").trim();
+      if (
+        !back ||
+        /^(https?:|javascript:|data:)/i.test(back) ||
+        back.indexOf("//") === 0
+      ) {
+        back = "../fce.html";
+      }
+      window.location.replace(back);
+    })();
+  </script>
   <script>WorkshopGate.guardPage({ homeHref: "../b2-intensive.html" });</script>
   <div class="int-shell">
     <header class="int-topbar">
@@ -43,6 +79,12 @@
           More themes use the same skeleton as you fill them.
         </p>
       </div>
+      <aside
+        id="sc-speak-chip-host"
+        class="sc-speak-rail-host fb-speak-rail-host"
+        data-speak-club-host
+        aria-label="Speak Club stats"
+      ></aside>
     </section>
 
     <section class="int-hero" aria-labelledby="hero-title">
@@ -62,7 +104,10 @@
     <nav class="int-theme-grid" id="theme-grid" aria-label="Intensive themes"></nav>
   </div>
 
-  <script src="js/intensive-themes.js"></script>
+  <script src="js/intensive-core.js?v=1"></script>
+  <script src="js/intensive-themes.js?v=slim-1"></script>
+  <script src="js/themes/mystery.js?v=1"></script>
+  <script src="../workshops/js/speak-club.js"></script>
   <script>
     (function () {
       var grid = document.getElementById("theme-grid");

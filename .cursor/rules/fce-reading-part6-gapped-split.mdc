@@ -1,0 +1,48 @@
+---
+description: FCE Reading Part 6 gapped text — split layout with right-rail dropdowns only
+alwaysApply: true
+---
+
+# FCE Reading Part 6 — gapped text (split + Your answers)
+
+For **FCE / Mastering B2 Reading Part 6** (six gaps, seven sentences A–G, one extra):
+
+## Hard UX (Honesty / Oceans etalon)
+
+1. **Split pane:** article **left**, options + answers **right** (resizable on desktop).
+2. **Left:** light passage box, optional blue **banner** title, two-column text; gaps = **numbered chips only** (`1`…`6` in small squares) — **no `<select>` in the passage**.
+3. **Right:** full **A–G** sentence list, then **Your answers** with one **`<select>` per gap** (`— choose —` placeholder).
+4. **Check** colours gap chips + dropdown borders; optional cohesion explanations via `explainCorrect` / `wrongNote` in the data pack.
+
+## Shared engine (mandatory)
+
+| Role | Path |
+|------|------|
+| Engine | `js/fce-reading-part6-gapped.js` → **`FCE_READING_PART6.mount`** |
+| Styles | `css/fce-reading-part6-gapped.css` |
+| Data | `window.FCE_R6_PACK` in `js/unit*-reading-*-data.js` — body uses `{{1}}`…`{{6}}` placeholders |
+| Etalon page | `unit10-reading-honesty-is-the-best-policy/index.html` (layout reference) |
+
+**Live pages using this engine:** `unit2-reading/joys-of-capoeira/`, `unit7-reading-black-friday/`.
+
+## Don't
+
+- Inline `<select>` gaps inside the article (old single-column layout).
+- SHM / drag chips / third “bank” column for Part 6 gapped text.
+- One-off custom HTML+JS per unit when `FCE_R6_PACK` + `mount` suffices.
+- **Two mega-`<p>` bodies** — splits columns mid-sentence with empty space below (Capoeira bug).
+- Listening Part 3 patterns (`.fce-p3-opt` bank **above** a single-column article) for Part 6.
+
+## New Part 6 task rollout
+
+1. Copy `unit2-reading/joys-of-capoeira/index.html` shell.
+2. Add `js/unitN-reading-*-data.js` with `title`, `options`, `body` (`{{n}}`), `key`.
+3. **`body` must be several `<p>` blocks** (≈ one per gap), like Honesty — **never** two giant paragraphs; `column-count: 2` + `break-inside: avoid` breaks layout with long `<p>`.
+4. **Do not** use `column-fill: auto` or forced `min-height` on `.fce-r6-columns` — match Honesty (`column-count: 2` + `column-gap: 28px` only). Page width: **`fce-r6-page`** → `1180px` like Honesty.
+5. Wire `FCE_READING_PART6.mount({ rootId: "fce-r6-root" })`.
+6. Optional: `deck`, `explainCorrect`, `wrongNote`, `extraExplain` for rich check feedback (Honesty style).
+
+## Related
+
+- Listening Part 3 (speakers ↔ A–H): **different** engine — `reuse-existing-engines-first.mdc`.
+- Reading Part 7 matching: `js/fce-reading-part7-matching-engine.js`.

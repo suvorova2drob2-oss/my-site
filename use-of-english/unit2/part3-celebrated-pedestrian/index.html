@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2 Use of English &mdash; Part 3 Word formation</title>
+  <link rel="stylesheet" href="../../../css/cpe-uoe-part3-wf-shell.css" />
+  <link rel="stylesheet" href="../../../css/mastering-b2-back-link.css" />
+  <style>
+    button.btn-reset {
+      cursor: pointer;
+      border: 1px solid var(--cpe-p3-line, #324a71);
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: #334e78;
+      color: #e8f0ff;
+    }
+  </style>
+</head>
+<body class="cpe-p3-body" data-mb2-unit="2" data-mb2-skill="uoe" data-mb2-ex="unit2-p3-celebrated-pedestrian">
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+        <p class="tag">Unit 2 &middot; High Energy &middot; The Celebrated Pedestrian</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Use of English &mdash; Unit 2</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+    </p>
+
+    <div class="example">
+      <div class="lab">(0) &mdash; Example</div>
+      <p>
+        Pedestrianism, an early form of racewalking, was an <span class="done">EXTREMELY</span> popular sport in 18th- and 19th-century Britain, attracting huge crowds of spectators.
+        <span class="root">EXTREME</span>
+      </p>
+    </div>
+
+    <section class="block">
+      <div class="block-title">THE CELEBRATED PEDESTRIAN</div>
+      <p class="line">
+        Pedestrianism, an early form of racewalking, was an extremely popular sport in 18th- and 19th-century Britain, attracting huge crowds of
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="spectators" aria-label="Gap 1 SPECTATE" /> <span class="root">SPECTATE</span></span>.
+        Individuals would either aim to walk a certain
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="distance" aria-label="Gap 2 DISTANT" /> <span class="root">DISTANT</span></span>
+        within a specified period of time or else compete against other pedestrians. Cash prizes were offered but
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="participants" aria-label="Gap 3 PARTICIPATE" /> <span class="root">PARTICIPATE</span></span>
+        could also earn substantial amounts from the money gambled on events.
+      </p>
+      <p class="line" style="margin-top:14px;">
+        Perhaps the most famous
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="walker" aria-label="Gap 4 WALK" /> <span class="root">WALK</span></span>
+        was Captain Robert Barclay Allardice, whose
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="extraordinary" aria-label="Gap 5 ORDINARY" /> <span class="root">ORDINARY</span></span>
+        achievements earned him the title of &lsquo;The Celebrated Pedestrian&rsquo;. The Scotsman&rsquo;s most memorable
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="performance" aria-label="Gap 6 PERFORM" /> <span class="root">PERFORM</span></span>
+        took place in 1809, when he walked 1000 miles (1609 kilometres) in 1000 hours for a bet of 1000 guineas. Many considered it
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unlikely" aria-label="Gap 7 LIKELY" /> <span class="root">LIKELY</span></span>
+        that he would complete the challenge, which required him to walk a mile an hour, every hour, for forty-two days and nights. He proved them wrong, though the task was so
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="physically" aria-label="Gap 8 PHYSICAL" /> <span class="root">PHYSICAL</span></span>
+        demanding that by the end of the walk he had lost nearly fifteen kilos in weight.
+      </p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear</button>
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function accepts(el) {
+    return (el.getAttribute("data-accept") || "")
+      .split("|")
+      .map(norm)
+      .filter(Boolean);
+  }
+
+  function check() {
+    var ok = 0;
+    inputs.forEach(function (el) {
+      el.classList.remove("ok", "bad");
+      var got = norm(el.value);
+      if (!got) {
+        el.classList.add("bad");
+        return;
+      }
+      if (accepts(el).indexOf(got) >= 0) {
+        el.classList.add("ok");
+        ok++;
+      } else {
+        el.classList.add("bad");
+      }
+    });
+    document.getElementById("scoreNum").textContent = String(ok);
+    document.getElementById("scoreLine").hidden = false;
+    if (window.MasteringB2Progress) {
+      window.MasteringB2Progress.recordCheckFromDom(ok, inputs.length);
+    }
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+  document.getElementById("btnReset").addEventListener("click", function () {
+    inputs.forEach(function (el) {
+      el.value = "";
+      el.classList.remove("ok", "bad");
+    });
+    document.getElementById("scoreLine").hidden = true;
+  });
+  inputs.forEach(function (el) {
+    el.addEventListener("input", function () {
+      el.classList.remove("ok", "bad");
+      document.getElementById("scoreLine").hidden = true;
+    });
+  });
+})();
+  </script>
+  <script src="../../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

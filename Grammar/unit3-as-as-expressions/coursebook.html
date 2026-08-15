@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 3 — Expressions with as … as (coursebook)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+      --voc: #86efac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.65;
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px 26px 30px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.12rem; font-weight: 700; }
+    .badge-voc {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--voc);
+      border: 1px solid rgba(134, 239, 172, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .back { color: var(--accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
+    .back:hover { text-decoration: underline; }
+    .task {
+      margin-bottom: 28px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .task h2 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .instr {
+      font-size: 0.93rem;
+      color: #d5e2f8;
+      margin-bottom: 14px;
+    }
+    .mcq-row {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    .mcq-row.is-ok { border-color: rgba(54, 211, 153, 0.45); background: rgba(54, 211, 153, 0.08); }
+    .mcq-row.is-bad { border-color: rgba(248, 113, 113, 0.45); background: rgba(248, 113, 113, 0.06); }
+    .mcq-prompt { font-size: 0.95rem; line-height: 1.55; }
+    .mcq-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0 2px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #bae6fd;
+    }
+    .mcq-opt input { accent-color: var(--accent); }
+    .match-grid {
+      display: grid;
+      gap: 16px 20px;
+    }
+    @media (min-width: 640px) {
+      .match-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .match-col strong {
+      display: block;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .match-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+    .match-list li { margin-bottom: 8px; }
+    .match-ans-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+    }
+    .match-ans-row label {
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 1.4rem;
+    }
+    .match-ans-row select {
+      flex: 1;
+      border: 2px solid #4d6fa1;
+      border-radius: 8px;
+      background: #12264b;
+      color: #fff;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .match-ans-row select.is-ok { border-color: var(--ok); }
+    .match-ans-row select.is-bad { border-color: var(--bad); }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 12px;
+    }
+    button.check {
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #fff;
+    }
+    button.check:hover { filter: brightness(1.07); }
+    button.check--ghost {
+      background: transparent;
+      border: 1px solid rgba(86, 204, 242, 0.45);
+      color: #bae6fd;
+    }
+    .voc-feedback {
+      display: none;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .voc-feedback.show { display: block; }
+    .voc-feedback.is-ok { color: var(--ok); }
+    .voc-feedback.is-bad { color: #fca5a5; }
+    .hub-link {
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .hub-link a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+</head>
+<body>
+  <main
+    class="page"
+    data-mb2-unit="3"
+    data-mb2-skill="grammar"
+    data-mb2-ex="u3-as-as-coursebook"
+  >
+    <header class="top">
+      <div>
+        <span class="badge-voc">Vocabulary / Grammar</span>
+        <h1 style="margin-top:10px;">Expressions with <em>as &hellip; as</em></h1>
+      </div>
+      <a class="back" href="../unit3-grammar/index.html">&larr; Grammar hub</a>
+    </header>
+
+    <section class="task" aria-labelledby="ex1-h">
+      <h2 id="ex1-h">1 Choose the correct options</h2>
+      <p class="instr">Choose the correct option to complete each expression.</p>
+      <div id="mcq-root"></div>
+      <div class="btn-row">
+        <button type="button" class="check check--ghost" id="btn-check-mcq">Check Ex. 1</button>
+      </div>
+      <p class="voc-feedback" id="fb-mcq" role="status"></p>
+    </section>
+
+    <section class="task" aria-labelledby="ex2-h">
+      <h2 id="ex2-h">2 Match the expressions to a similar meaning</h2>
+      <p class="instr">Match expressions <strong>1&ndash;5</strong> to meanings <strong>a&ndash;e</strong>.</p>
+      <div id="match-root"></div>
+      <div class="btn-row">
+        <button type="button" class="check check--ghost" id="btn-check-match">Check Ex. 2</button>
+        <button type="button" class="check" id="btn-check-all">Check all (1 + 2)</button>
+      </div>
+      <p class="voc-feedback" id="fb-match" role="status"></p>
+      <p class="voc-feedback" id="fb-all" role="status"></p>
+    </section>
+
+    <p class="hub-link">
+      <a href="index.html">Listening gap fill (Speakers 2&ndash;5)</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../unit3-grammar/index.html">&larr; Grammar (Unit 3)</a>
+    </p>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../js/unit3-as-as-coursebook.js"></script>
+  <script>U3_AS_AS_COURSEBOOK.mount();</script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

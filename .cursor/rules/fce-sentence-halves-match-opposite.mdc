@@ -1,0 +1,62 @@
+---
+description: FCE beginnings↔endings SHM — vocab/grammar/writing only; NOT Listening Part 3
+globs: unit*-vocabulary/**/*.html,unit*-grammar/**/*.html,unit*-writing/**/*.html,css/fce-sentence-halves-match.css,js/fce-sentence-halves-match-engine.js
+alwaysApply: true
+---
+
+# Sentence halves matching — two columns, click to seat
+
+## Scope
+
+Use this engine for **beginnings ↔ endings** (vocab collocations, reporting verbs, writing purposes, etc.).
+
+**Do NOT use for Listening Part 3** (speakers ↔ A–H). Those pages stay on the classic **options list + `<select>`** pattern — etalons: `unit1-listening/sb-1-1/`, `listening/unit10/fce/telling-lies/`. See `reuse-existing-engines-first.mdc`.
+
+## Hard UX rule (SHM tasks only)
+
+1. **Exactly two columns** on screen: left fixed, right seats already lined up row-by-row. **No** third bank column, **no** empty “drop zone” column.
+2. **Primary:** click left **1**, then right **f** → **f swaps** into the seat opposite 1.
+3. Also works the other way; optional drag to swap.
+4. Do **not** use letter-only badges with a static options list for these SHM tasks.
+5. Readable type (~0.95rem). No nested bank scroll.
+
+## Shared engine
+
+| Role | Path |
+|------|------|
+| Engine | `js/fce-sentence-halves-match-engine.js` → **`FCE_SENTENCE_HALVES_MATCH.mount`** |
+| Styles | `css/fce-sentence-halves-match.css` |
+| Reference | `unit9-vocabulary/give-collocations-match/index.html` |
+
+Also: `unit9-grammar/reporting-verbs/index.html`, `unit9-vocabulary/give-workbook/index.html` (Ex. 2), `unit1-writing/article/` (Ex. 2 purposes — left = full paragraph text in order).
+
+If A–H has unused letters in an SHM task: add extra `.shm-pair` rows labelled **Not used** so every option stays seated (engine needs equal slots).
+
+**Writing / reading “match purpose”:** left column = the **actual paragraph text** (numbered in book order), right = purpose chips — never labels alone + `<select>`.
+
+## Markup
+
+```html
+<div class="shm-pair-head">
+  <div class="shm-col-title">Beginnings …</div>
+  <div class="shm-col-title">Endings …</div>
+</div>
+<div class="shm-pairs" id="match-rows">
+  <div class="shm-pair" data-line="1">
+    <div class="shm-begin">…</div>
+    <div class="shm-slot"></div>
+  </div>
+</div>
+<div id="endings-bank" class="shm-endings-box" hidden>
+  <button type="button" class="shm-ending" data-letter="a">…</button>
+</div>
+```
+
+Mount seats bank endings into slots (shuffled). Pairing = which letter sits opposite which line.
+
+## Don’t
+
+- Three-column layouts (begin | empty drop | bank).
+- “Drop ending here” labels.
+- Separate click engines with badges only.
+- **Listening Part 3** pages (use select etalon instead).

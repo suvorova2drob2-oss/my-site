@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice bingo · Unit 2 · Sound Booth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/fce-voice-bingo.css" />
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">Mastering B2 · Unit 2 · Sound Booth</p>
+        <h1>Voice bingo · 3×3</h1>
+      </div>
+      <a id="navBack" href="index.html">&larr; Sound Booth</a>
+    </div>
+    <details class="howfold">
+      <summary>Правила и подсказки</summary>
+      <p class="sub">
+        Девять клеток закрыты; сверху — <strong>определение</strong>.
+        Голос сравнивается мягко; можно ввести фразу вручную.
+        <strong>I don't know</strong> — без очка. Сейчас stub-колода — пришлите реальные фразы.
+      </p>
+    </details>
+
+    <div class="card">
+      <p class="wb-head">Тема (stub)</p>
+      <div class="theme-grid" id="bingoThemeRail" role="radiogroup" aria-label="Тема"></div>
+      <p class="deck-meta" id="bingoDeckMeta"></p>
+
+      <div class="vb-actions-top">
+        <button type="button" class="b-main" id="bingoNew">Новая игра</button>
+        <button type="button" class="b-sec b-dontknow" id="bingoDontKnow">I don't know / Не знаю</button>
+      </div>
+
+      <p class="clue-label">Определение (цель — произнести фразу)</p>
+      <p id="bingoClue" aria-live="polite"></p>
+
+      <div class="vb-grid" id="bingoGrid" aria-label="Сетка бинго"></div>
+
+      <p class="progress-row" id="bingoProgress" aria-live="polite"></p>
+
+      <p class="mic-label">Микрофон · распознавание скрыто</p>
+      <p class="vb-transcript" id="bingoTranscript" aria-live="polite"></p>
+
+      <p class="vb-type-label">Или введите ответ</p>
+      <div class="vb-type-row">
+        <input type="text" id="bingoType" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type the phrase…" />
+        <button type="button" class="b-main" id="bingoCheck">Проверить</button>
+      </div>
+
+      <p class="status-row" id="bingoStatus" aria-live="polite"></p>
+      <p class="win-banner" id="bingoWin" hidden></p>
+    </div>
+  </div>
+
+  <script>window.FCE_SOUND_BOOTH_UNIT = 2;</script>
+  <script src="../js/fce-unit-lexical-stub-packs.js"></script>
+  <script src="../js/fce-unit-sound-booth-wordbank.js"></script>
+  <script src="../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../js/prep-snowball-phrases-engine.js"></script>
+  <script src="../js/prep-voice-bingo-engine.js"></script>
+  <script>
+(function () {
+  var defs = window.FCE_SB_THEME_DEFINITIONS || [];
+  var combined = window.FCE_SB_THEME_DEFINITIONS_COMBINED;
+  var rail = document.getElementById("bingoThemeRail");
+  var deckMeta = document.getElementById("bingoDeckMeta");
+  function countLex(id) {
+    return typeof window.FCE_SB_getLexRows === "function"
+      ? window.FCE_SB_getLexRows(id).length
+      : 0;
+  }
+  if (rail && window.PREP_SNOWBALL_PHRASES && PREP_SNOWBALL_PHRASES.fillThemeRail) {
+    PREP_SNOWBALL_PHRASES.fillThemeRail(rail, {
+      definitions: defs,
+      combined: combined || null,
+      radioName: "bingoTheme",
+      inputClass: "theme-input",
+      deckMetaEl: deckMeta,
+      countPhrases: countLex,
+      formatDeckMeta: function (n) {
+        return n + " пар hint→phrase · нужно минимум 9 (stub).";
+      }
+    });
+  }
+  if (window.PREP_VOICE_BINGO && PREP_VOICE_BINGO.mount) {
+    PREP_VOICE_BINGO.mount({
+      els: {
+        grid: document.getElementById("bingoGrid"),
+        clue: document.getElementById("bingoClue"),
+        progress: document.getElementById("bingoProgress"),
+        status: document.getElementById("bingoStatus"),
+        transcript: document.getElementById("bingoTranscript"),
+        typeInput: document.getElementById("bingoType"),
+        btnCheck: document.getElementById("bingoCheck"),
+        btnDontKnow: document.getElementById("bingoDontKnow"),
+        btnNew: document.getElementById("bingoNew"),
+        winBanner: document.getElementById("bingoWin")
+      },
+      themeDefinitions: defs,
+      radioName: "bingoTheme",
+      getLexRows: function (themeId) {
+        return typeof window.FCE_SB_getLexRows === "function"
+          ? window.FCE_SB_getLexRows(themeId)
+          : [];
+      }
+    });
+  }
+})();
+  </script>
+</body>
+</html>

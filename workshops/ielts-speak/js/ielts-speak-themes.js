@@ -150,6 +150,28 @@
               },
             ],
           },
+          drill: {
+            title: "Partner drill · ×5",
+            how: "Main idea + crown stems + invent a detail for the slot.",
+            bigIdea:
+              "Bad headlines can leave us in despair — but they are not the full picture. Acknowledge trouble, then argue with the bigger historical claim.",
+            inventPrompt:
+              "Invent one concrete detail about YOUR {{slot}} (what you saw / scrolled / heard) and how it warped your mood this week.",
+            promptA: "Does the news make everything feel worse?",
+            promptAudio: {
+              f: "audio/drill/news-feel-worse-f.mp3?v=2",
+              m: "audio/drill/news-feel-worse-m.mp3?v=2",
+            },
+            modelB:
+              "{{slot}} can leave us feeling in despair, and yes — there are troubling situations in the world. But it’s not giving us the full picture. I’d argue we are living in a time that is not only the healthiest, wealthiest and best-educated in history, but also by far the least violent — invent how YOUR {{slot}} hides that.",
+            partners: [
+              { name: "Alex", slot: "Instagram news", voice: "m" },
+              { name: "Mira", slot: "evening TV", voice: "f" },
+              { name: "Jordan", slot: "Telegram channels", voice: "m" },
+              { name: "Sam", slot: "front-page headlines", voice: "f" },
+              { name: "Lea", slot: "doomscrolling before bed", voice: "f" },
+            ],
+          },
         },
         {
           id: "poverty-health",
@@ -224,6 +246,28 @@
               },
             ],
           },
+          drill: {
+            title: "Partner drill · ×5",
+            how: "Main idea + crown stems + invent a detail for the slot.",
+            bigIdea:
+              "Extreme poverty and basic health have improved on measurable rates — argue with numbers and hedges, not vibes.",
+            inventPrompt:
+              "Invent one concrete detail about YOUR {{slot}} (a number, a headline, a family story) that you’d use in Part 3.",
+            promptA: "Is the world really less poor than before?",
+            promptAudio: {
+              f: "audio/drill/world-less-poor-f.mp3?v=2",
+              m: "audio/drill/world-less-poor-m.mp3?v=2",
+            },
+            modelB:
+              "There has been a huge decline in recent years in the share of the world population in extreme poverty — and that very debate is a sign we’ve moved the goalposts. With fewer people suffering starvation, people saw their life expectancy increase by years, but this increase is not necessarily due to living longer — often to a drop in the child mortality rate. Even male heights have shot up. Invent your detail for {{slot}}.",
+            partners: [
+              { name: "Alex", slot: "extreme-poverty headlines", voice: "m" },
+              { name: "Mira", slot: "hunger debates at home", voice: "f" },
+              { name: "Jordan", slot: "life expectancy in my country", voice: "m" },
+              { name: "Sam", slot: "child mortality stats", voice: "f" },
+              { name: "Lea", slot: "nutrition / living standards", voice: "f" },
+            ],
+          },
         },
         {
           id: "violence-rates",
@@ -278,6 +322,28 @@
                   "…extent to which violence has declined… · death toll… shocking · shows an incredible decline in murder…",
                 ],
               },
+            ],
+          },
+          drill: {
+            title: "Partner drill · ×5",
+            how: "Main idea + crown stems + invent a detail for the slot.",
+            bigIdea:
+              "Raw death tolls shock us; rates tell a different story about personal risk. Use both — don’t panic with totals alone.",
+            inventPrompt:
+              "Invent one concrete detail about YOUR {{slot}} (a rate, a year, a place) — keep it careful, not ghoulish.",
+            promptA: "Is society more violent now?",
+            promptAudio: {
+              f: "audio/drill/society-more-violent-f.mp3?v=2",
+              m: "audio/drill/society-more-violent-m.mp3?v=2",
+            },
+            modelB:
+              "The extent to which violence has declined in every shape and form is astonishing. The death toll of big wars is shocking — invent how {{slot}} makes people forget rates — yet the data shows an incredible decline in murder when you look at risk per person.",
+            partners: [
+              { name: "Alex", slot: "city crime news", voice: "m" },
+              { name: "Mira", slot: "war casualty totals", voice: "f" },
+              { name: "Jordan", slot: "local murder rates", voice: "m" },
+              { name: "Sam", slot: "social-media panic", voice: "f" },
+              { name: "Lea", slot: "“safer than my parents’ time”", voice: "f" },
             ],
           },
         },
@@ -350,6 +416,28 @@
                   "Skeleton: largely responsible → violence as an acceptable solution… → resulting from growing literacy, mobility… → knowledge and reason… played a major part → pointless option → unthinkable… war today.",
                 ],
               },
+            ],
+          },
+          drill: {
+            title: "Partner drill · ×5",
+            how: "Main idea + crown stems + invent a detail for the slot.",
+            bigIdea:
+              "Peace isn’t luck — deeper forces (literacy, mobility, women’s status, reason) make violence look pointless and war unthinkable.",
+            inventPrompt:
+              "Invent one concrete detail about YOUR {{slot}} that pushes people away from violence as a “normal” solution.",
+            promptA: "Why might people fight less these days?",
+            promptAudio: {
+              f: "audio/drill/why-fight-less-f.mp3?v=2",
+              m: "audio/drill/why-fight-less-m.mp3?v=2",
+            },
+            modelB:
+              "{{slot}} is largely responsible, for me — we’ve moved away from viewing violence as an acceptable solution to disagreements, resulting from growing literacy, mobility and the media. The increased tendency to use knowledge and reason to make decisions has also played a major part. Violence is a pointless option, and it is unthinkable that anyone would look forward to war today. Invent your {{slot}} detail.",
+            partners: [
+              { name: "Alex", slot: "schools where I live", voice: "m" },
+              { name: "Mira", slot: "women in public life", voice: "f" },
+              { name: "Jordan", slot: "people moving cities", voice: "m" },
+              { name: "Sam", slot: "mass media exposure", voice: "f" },
+              { name: "Lea", slot: "“reason over rage” at uni", voice: "f" },
             ],
           },
         },
@@ -776,6 +864,28 @@
             },
           ],
         },
+        drill: {
+          title: "Partner drill · ×5",
+          how: "Main idea + crown stems + invent a detail for the slot.",
+          bigIdea:
+            "Under pressure, stop chasing every urgent ping — pick one main aim and protect your peak window for it.",
+          inventPrompt:
+            "Invent one concrete detail about YOUR {{slot}} (what it is, why it feels urgent, what you’ll protect instead).",
+          promptA: "Busy week?",
+          promptAudio: {
+            f: "audio/drill/busy-week-f.mp3?v=2",
+            m: "audio/drill/busy-week-m.mp3?v=2",
+          },
+          modelB:
+            "In the face of pressure with {{slot}}, I still try to be highly effective as far as it's reasonable for a human being. Rather than focusing on what is urgent — invent why {{slot}} keeps interrupting me — I decide on the main aim for the day, pinpoint the best time to achieve peak productivity, and keep that window devoted to the task with the highest priority.",
+          partners: [
+            { name: "Alex", slot: "emails", voice: "m" },
+            { name: "Mira", slot: "exams", voice: "f" },
+            { name: "Jordan", slot: "my inbox", voice: "m" },
+            { name: "Sam", slot: "my thesis", voice: "f" },
+            { name: "Lea", slot: "Monday’s deadline", voice: "f" },
+          ],
+        },
       },
       {
         id: "small-tasks-brain",
@@ -849,6 +959,28 @@
             },
           ],
         },
+        drill: {
+          title: "Partner drill · ×5",
+          how: "Main idea: tiny tasks drain you — reorder so deep work comes first.",
+          bigIdea:
+            "“Small” jobs look easy but tax the brain — so reorder: deep work first, less pressing stuff later.",
+          inventPrompt:
+            "Invent what YOUR {{slot}} looks like today (one message / one decision) and why it drained you.",
+          promptA: "Why so tired if you “only” did small jobs?",
+          promptAudio: {
+            f: "audio/drill/why-so-tired-f.mp3?v=2",
+            m: "audio/drill/why-so-tired-m.mp3?v=2",
+          },
+          modelB:
+            "Because the extent to which small tasks can tax our brains is underestimated. {{slot}} may appear simple on the surface, and although trivial, it can cause mental exhaustion — so I reorder the day and leave less pressing concerns until after the work target has been achieved. Invent your own tiny decision that wiped you out.",
+          partners: [
+            { name: "Alex", slot: "replying to group chats", voice: "m" },
+            { name: "Mira", slot: "scheduling emails", voice: "f" },
+            { name: "Jordan", slot: "forms and paperwork", voice: "m" },
+            { name: "Sam", slot: "quick yes/no decisions", voice: "f" },
+            { name: "Lea", slot: "notification pings", voice: "f" },
+          ],
+        },
       },
       {
         id: "body-clock",
@@ -916,6 +1048,28 @@
             },
           ],
         },
+        drill: {
+          title: "Partner drill · ×5",
+          how: "Main idea: some hours aren’t conducive — invent the real cause of your slump.",
+          bigIdea:
+            "Your brain has windows: some hours are not conducive to deep work, and a slump is often more to do with X than the myth people blame.",
+          inventPrompt:
+            "Invent YOUR real cause for the dip around {{slot}} (not “heavy lunch”) — be specific.",
+          promptA: "When should you NOT do serious study?",
+          promptAudio: {
+            f: "audio/drill/when-not-study-f.mp3?v=2",
+            m: "audio/drill/when-not-study-m.mp3?v=2",
+          },
+          modelB:
+            "{{slot}} is not conducive to serious study for me — if you looked at verbal reasoning and reaction times, you’d see the brain is not at its full potential then. My afternoon slump is more to do with feeling cold than a heavy lunch — invent your own real cause instead of the lunch myth.",
+          partners: [
+            { name: "Alex", slot: "the first hour after waking", voice: "m" },
+            { name: "Mira", slot: "midnight to 1am", voice: "f" },
+            { name: "Jordan", slot: "2–4pm", voice: "m" },
+            { name: "Sam", slot: "right after a long commute", voice: "f" },
+            { name: "Lea", slot: "late Sunday night", voice: "f" },
+          ],
+        },
       },
       {
         id: "daydream-breaks",
@@ -981,6 +1135,28 @@
                 "rather than being afraid… → day-dreaming → without really focusing… → integration… → cannot occur when…",
               ],
             },
+          ],
+        },
+        drill: {
+          title: "Partner drill · ×5",
+          how: "Main idea: quality of the break matters more than “taking a break”.",
+          bigIdea:
+            "Don’t fear distraction — choose soft day-dreaming over another screen, so the brain can integrate ideas.",
+          inventPrompt:
+            "Invent what you do instead of {{slot}} for 3–5 minutes (window, walk, stare at nothing) — make it vivid.",
+          promptA: "Phone break or something else?",
+          promptAudio: {
+            f: "audio/drill/phone-break-f.mp3?v=2",
+            m: "audio/drill/phone-break-m.mp3?v=2",
+          },
+          modelB:
+            "Rather than being afraid of getting distracted by {{slot}}, I go back to day-dreaming — I stop thinking about work without really focusing on anything else. That supports the integration between different parts of the brain, which cannot occur when the mind is required to focus on something specific like another feed. Invent your quiet alternative.",
+          partners: [
+            { name: "Alex", slot: "Instagram", voice: "m" },
+            { name: "Mira", slot: "TikTok", voice: "f" },
+            { name: "Jordan", slot: "checking the news", voice: "m" },
+            { name: "Sam", slot: "replying in five chats", voice: "f" },
+            { name: "Lea", slot: "YouTube Shorts", voice: "f" },
           ],
         },
       },
@@ -1073,6 +1249,28 @@
                 "exercise as a tool · short term · lessening tension… · neurotransmitters · 80% · slightly hungry… · uncompleted work · minimizes concentration · consolidating… reinforcing… · rejuvenates…",
               ],
             },
+          ],
+        },
+        drill: {
+          title: "Partner drill · ×5",
+          how: "Main idea: body tools + sleep are short-term performance levers — invent your ritual.",
+          bigIdea:
+            "Move, fuel, clear desk, sleep: short-term tools that change how the brain works today — not just “be healthy”.",
+          inventPrompt:
+            "Invent YOUR exam-week ritual for {{slot}} (what you actually do / clear / protect).",
+          promptA: "Before a hard exam week — what do you change?",
+          promptAudio: {
+            f: "audio/drill/before-exam-week-f.mp3?v=2",
+            m: "audio/drill/before-exam-week-m.mp3?v=2",
+          },
+          modelB:
+            "For {{slot}}, exercise can be used as a tool focused on the short term — lessening tension and boosting positive emotions. Food can have a high impact on the neurotransmitters in the brain if I eat only to 80 percent capacity and stay slightly hungry but not starving. A messy desk reminds you of uncompleted work, and too much caffeine minimizes concentration. Sleep is consolidating facts and reinforcing how to perform tasks — it rejuvenates us both physically and mentally. Invent the one ritual you’ll keep.",
+          partners: [
+            { name: "Alex", slot: "a 15-minute stairs reset", voice: "m" },
+            { name: "Mira", slot: "breakfast before revision", voice: "f" },
+            { name: "Jordan", slot: "clearing my desk", voice: "m" },
+            { name: "Sam", slot: "cutting afternoon coffee", voice: "f" },
+            { name: "Lea", slot: "protecting eight hours’ sleep", voice: "f" },
           ],
         },
       },
@@ -1252,6 +1450,8 @@
         read: b.read || null,
         context: b.context || null,
         speak: b.speak || null,
+        drill: b.drill || null,
+        vocab: b.vocab || null,
         optional: !!b.optional,
         time: b.time || "10–15 min",
       };
@@ -1288,8 +1488,12 @@
     var seen = {};
     ((theme && theme.beats) || []).forEach(function (b) {
       (b.phrases || []).forEach(function (p) {
-        var k = String(p).toLowerCase();
-        if (seen[k]) return;
+        var en =
+          p && typeof p === "object"
+            ? String(p.en || p.phrase || p.text || "")
+            : String(p || "");
+        var k = en.toLowerCase();
+        if (!k || seen[k]) return;
         seen[k] = 1;
         list.push(p);
       });

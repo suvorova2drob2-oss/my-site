@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 Vocabulary &mdash; Get phrases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <style>
+    .page { width: min(880px, 100%); margin: 0 auto; padding: clamp(16px, 3vw, 24px); }
+    .top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid rgba(120,160,210,.18); padding-bottom: 14px; margin-bottom: 14px; }
+    .tag { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #86efac; margin-bottom: 6px; }
+    .top h1 { margin: 0; font-size: clamp(1.05rem, 2.8vw, 1.25rem); line-height: 1.3; }
+    .voc-nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 16px; font-size: .9rem; }
+    .voc-nav a { color: #56ccf2; font-weight: 600; text-decoration: none; }
+    .voc-nav span { color: #9bb0d3; }
+    .task { border: 1px solid rgba(120,160,210,.2); border-radius: 14px; padding: 16px; background: rgba(18,30,52,.55); }
+    .task h2 { font-family: Fraunces, Georgia, serif; font-size: 1.08rem; color: #bae6fd; margin: 0 0 8px; }
+    .instr { color: #c5d4ef; font-size: .94rem; line-height: 1.55; margin: 0 0 12px; }
+    .instr em { color: #fef08a; }
+    .bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 12px; border-radius: 10px; border: 1px dashed rgba(120,160,210,.28); background: rgba(8,22,48,.4); }
+    .bank strong { width: 100%; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: #93c5fd; }
+    .chip {
+      appearance: none; border: 1px solid rgba(212,184,122,.4); background: rgba(30,40,62,.9);
+      color: #f3e7c8; font: inherit; font-weight: 700; font-size: .88rem; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+    }
+    .chip.is-used { opacity: .35; cursor: default; }
+    .chip.is-selected { border-color: #56ccf2; box-shadow: 0 0 0 2px rgba(86,204,242,.3); }
+    .sent { margin: 0 0 12px; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(120,160,210,.16); background: rgba(8,22,48,.35); font-size: .95rem; line-height: 1.7; color: #e8f0ff; }
+    .gap {
+      display: inline-flex; min-width: 4.5rem; margin: 0 3px; padding: 3px 8px; border-radius: 8px;
+      border: 1.5px dashed rgba(120,160,210,.45); background: rgba(255,255,255,.06); color: #e8f0ff;
+      font: inherit; font-weight: 700; cursor: pointer; vertical-align: baseline;
+    }
+    .gap.is-filled { border-style: solid; border-color: rgba(86,204,242,.45); }
+    .gap.is-ok { border-color: #22c55e !important; background: rgba(34,197,94,.18) !important; }
+    .gap.is-bad { border-color: #f87171 !important; background: rgba(248,113,113,.16) !important; }
+    .ex { font-weight: 700; color: #fde68a; border-bottom: 1px solid rgba(253,230,138,.45); }
+    .gloss { color: #9bb0d3; font-size: .9rem; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .feedback { min-height: 1.25em; margin-top: 8px; font-size: .9rem; font-weight: 600; color: #9bb0d3; }
+    .feedback.is-ok { color: #86efac; }
+    .feedback.is-bad { color: #fca5a5; }
+  </style>
+</head>
+<body data-mb2-unit="1" data-mb2-skill="vocabulary" data-mb2-ex="get-phrases">
+  <main class="page">
+    <header class="top">
+      <div>
+        <div class="tag">Vocabulary · Get</div>
+        <h1>Get phrases</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary</a>
+    </header>
+    <nav class="voc-nav" aria-label="Get exercises">
+      <a href="../index.html">Hub</a>
+      <span>|</span>
+      <a href="index.html">Meanings &amp; match</a>
+      <span>|</span>
+      <span><strong>Phrases</strong></span>
+      <span>|</span>
+      <a href="meeting-my-hero.html">Meeting my hero</a>
+    </nav>
+
+    <section class="task">
+      <h2>1 Complete with a particle</h2>
+      <p class="instr">
+        Complete the sentences with words from the box to form a verb with <em>get</em>.
+        The verb with <em>get</em> should have the same meaning as the verb or phrase in brackets.
+        There is an example at the beginning (0).
+      </p>
+      <div class="bank" id="bank" aria-label="Word box"></div>
+      <div id="gaps"></div>
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check</button>
+        <button type="button" class="btn-reset" id="btn-reset">Clear</button>
+      </div>
+      <p class="feedback" id="fb" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var BANK = ["away", "back", "by", "off", "out of", "over", "to"];
+  var GAPS = [
+    { n: 1, before: "Jack is slowly getting ", after: " the death of his father.", gloss: "recovering from", key: "over" },
+    { n: 2, before: "How did that prisoner manage to get ", after: " from all those police officers?", gloss: "escape", key: "away" },
+    { n: 3, before: "We didn't get ", after: " Paris until late, so we didn't want to call and wake you.", gloss: "arrive in", key: "to" },
+    { n: 4, before: "They got ", after: " at four in the morning, so they're still sleeping.", gloss: "returned", key: "back" },
+    { n: 5, before: "I wish I could get ", after: " the habit of buying coffee from coffee shops. It's expensive!", gloss: "stop", key: "out of" },
+    { n: 6, before: "Let me know when you're getting ", after: " the train and I'll come and pick you up.", gloss: "leaving", key: "off" }
+  ];
+
+  var fills = { 1: "", 2: "", 3: "", 4: "", 5: "", 6: "" };
+  var selected = null;
+  var bankEl = document.getElementById("bank");
+  var gapsEl = document.getElementById("gaps");
+  var fb = document.getElementById("fb");
+
+  function usedWords() {
+    return Object.keys(fills).map(function (k) { return fills[k]; }).filter(Boolean);
+  }
+
+  function syncBank() {
+    var used = usedWords();
+    bankEl.querySelectorAll(".chip").forEach(function (chip) {
+      var w = chip.getAttribute("data-w");
+      var u = used.indexOf(w) !== -1;
+      chip.classList.toggle("is-used", u);
+      chip.classList.toggle("is-selected", selected === w);
+      chip.disabled = u;
+    });
+  }
+
+  function renderGaps() {
+    gapsEl.innerHTML =
+      '<div class="sent"><strong>0</strong> I\'d like a new job because it\'s hard to get <span class="ex">by</span> <span class="gloss">(manage to live)</span> on my salary.</div>' +
+      GAPS.map(function (g) {
+        var v = fills[g.n];
+        return (
+          '<div class="sent"><strong>' + g.n + "</strong> " +
+          g.before +
+          '<button type="button" class="gap' + (v ? " is-filled" : "") + '" data-n="' + g.n + '">' +
+          (v || "……") +
+          "</button> " +
+          g.after +
+          ' <span class="gloss">(' + g.gloss + ")</span>" +
+          '<div class="mb2-key-hint" id="gh' + g.n + '"></div></div>'
+        );
+      }).join("");
+
+    gapsEl.querySelectorAll(".gap").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var n = Number(btn.getAttribute("data-n"));
+        clearMarks();
+        if (selected) {
+          var word = selected;
+          Object.keys(fills).forEach(function (k) {
+            if (fills[k] === word) fills[k] = "";
+          });
+          fills[n] = word;
+          selected = null;
+          renderGaps();
+          syncBank();
+          return;
+        }
+        if (fills[n]) {
+          fills[n] = "";
+          renderGaps();
+          syncBank();
+        }
+      });
+    });
+  }
+
+  function buildBank() {
+    bankEl.innerHTML = "<strong>Word box</strong>";
+    BANK.forEach(function (w) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.setAttribute("data-w", w);
+      chip.textContent = w;
+      chip.addEventListener("click", function () {
+        if (usedWords().indexOf(w) !== -1) return;
+        selected = selected === w ? null : w;
+        syncBank();
+        clearMarks();
+      });
+      bankEl.appendChild(chip);
+    });
+  }
+
+  function clearMarks() {
+    gapsEl.querySelectorAll(".gap").forEach(function (g) {
+      g.classList.remove("is-ok", "is-bad");
+    });
+    GAPS.forEach(function (g) {
+      var h = document.getElementById("gh" + g.n);
+      if (h) { h.textContent = ""; h.classList.remove("is-show"); }
+    });
+    fb.textContent = "";
+    fb.className = "feedback";
+  }
+
+  function check() {
+    var ok = 0;
+    GAPS.forEach(function (g) {
+      var good = (fills[g.n] || "").toLowerCase() === g.key.toLowerCase();
+      var btn = gapsEl.querySelector('.gap[data-n="' + g.n + '"]');
+      var hint = document.getElementById("gh" + g.n);
+      if (btn) {
+        btn.classList.toggle("is-ok", good);
+        btn.classList.toggle("is-bad", !good);
+      }
+      if (hint) {
+        hint.textContent = good ? "" : g.key;
+        hint.classList.toggle("is-show", !good);
+      }
+      if (good) ok++;
+    });
+    fb.textContent = ok + " / " + GAPS.length + " correct";
+    fb.className = "feedback " + (ok === GAPS.length ? "is-ok" : "is-bad");
+    if (window.MasteringB2Progress) {
+      MasteringB2Progress.record({
+        unit: 1, skill: "vocabulary", exerciseId: "get-phrases",
+        percent: Math.round((ok / GAPS.length) * 100)
+      });
+    }
+  }
+
+  function reset() {
+    fills = { 1: "", 2: "", 3: "", 4: "", 5: "", 6: "" };
+    selected = null;
+    renderGaps();
+    syncBank();
+    clearMarks();
+  }
+
+  buildBank();
+  renderGaps();
+  syncBank();
+  document.getElementById("btn-check").addEventListener("click", check);
+  document.getElementById("btn-reset").addEventListener("click", reset);
+})();
+  </script>
+</body>
+</html>

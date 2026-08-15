@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-intermediate · Themes</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/summer-intensive.css" />
+  <link rel="stylesheet" href="../fleabag/css/fleabag-workshop.css" />
+  <link rel="stylesheet" href="css/pre-intermediate.css" />
+</head>
+<body class="intensive-body intensive-body--preint">
+  <script src="../js/workshop-gate.js"></script>
+  <script>WorkshopGate.guardPage({ homeHref: "../../b2-intensive.html" });</script>
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">A2+ – B1 · Everyday speaking</span>
+        <h1 class="int-title">Pre-intermediate</h1>
+        <p class="int-sub">
+          Same beat flow as Speaking Intensive — open a unit, check goals,
+          then cool words · talk · drilling as lessons land.
+        </p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Home</a>
+    </header>
+
+    <section class="summer-showcase preint-showcase-skin">
+      <div class="summer-showcase-visual">
+        <img
+          class="summer-showcase-thumb"
+          src="img/pre-int-cover.png"
+          alt=""
+          width="152"
+          height="152"
+          loading="eager"
+        />
+        <span class="summer-showcase-ring" aria-hidden="true"></span>
+      </div>
+      <div class="summer-showcase-copy">
+        <p class="summer-showcase-kicker">Speaking · Pre-int</p>
+        <h2>Start with Jobs</h2>
+        <p>
+          Unit 01 opens the map — speaking goals first. More beats (cool words, talk, drill)
+          use the same skeleton as Intensive as you fill them.
+        </p>
+      </div>
+      <aside
+        id="sc-speak-chip-host"
+        class="sc-speak-rail-host fb-speak-rail-host"
+        data-speak-club-host
+        aria-label="Speak Club stats"
+      ></aside>
+    </section>
+
+    <section class="int-hero" aria-labelledby="hero-title">
+      <h2 id="hero-title">How a lesson works</h2>
+      <p>
+        Open a unit → follow the beats: <strong>Read</strong> (paper) →
+        <strong>Cool words</strong> → <strong>Talk</strong> → <strong>Improv</strong> → homework.
+      </p>
+      <div class="int-meta-row">
+        <span class="int-pill int-pill--gold">Jobs first</span>
+        <span class="int-pill">Text beats</span>
+        <span class="int-pill">Cool-words tape</span>
+        <span class="int-pill">Improv + HW</span>
+      </div>
+    </section>
+
+    <nav class="int-theme-grid" id="unit-grid" aria-label="Pre-intermediate units"></nav>
+  </div>
+
+  <script src="js/pre-int-units.js"></script>
+  <script src="../js/speak-club.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById("unit-grid");
+      if (!grid || !window.PRE_INT_UNITS) return;
+
+      grid.innerHTML = PRE_INT_UNITS.map(function (u) {
+        var filled = !!(u.beats && u.beats.some(function (b) {
+          return (
+            (b.phrases && b.phrases.length) ||
+            (b.vocab && b.vocab.packKey) ||
+            (b.read && b.read.html && b.read.title !== "Text coming soon")
+          );
+        }));
+        return (
+          '<a class="int-theme-card" href="unit.html?theme=' +
+          encodeURIComponent(u.id) +
+          '">' +
+          '<span class="int-theme-num">Lesson ' +
+          String(u.num).padStart(2, "0") +
+          (filled ? "" : " · shell") +
+          "</span>" +
+          '<span class="int-theme-icon" aria-hidden="true">' +
+          (u.icon || "📘") +
+          "</span>" +
+          '<span class="int-theme-name">' +
+          u.title +
+          "</span>" +
+          '<span class="int-theme-tag">' +
+          (u.blurb || u.tagline || "") +
+          "</span>" +
+          '<span class="int-theme-go">Open lesson →</span></a>'
+        );
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

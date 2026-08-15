@@ -1,0 +1,49 @@
+---
+description: FCE / Mastering B2 Use of English — reuse shared shells and engines; no one-off page skin
+alwaysApply: true
+---
+
+# FCE Use of English — reuse shells first
+
+When adding or fixing **Use of English** tasks under `use-of-english/` (FCE / Mastering B2):
+
+## Mandatory order
+
+1. **Search** `use-of-english/` + `css/part*.css` + `js/*-core.js` for the closest **Part** or workbook pattern.
+2. **Reuse** that page shell, gap classes, buttons, feedback — **new data/JSON only**.
+3. **Do not** build a new layout on `mastering-b2-page-skin.css` alone for UoE gap tasks unless no shell fits — say why briefly.
+
+## Shell map (FCE UoE)
+
+| Task type | Shell CSS | Engine / etalon |
+|-----------|-----------|-----------------|
+| Part 1 MC cloze | `css/part1-mc-cloze.css` + `body.part1-mc-fce-theme` | `js/part1-mc-cloze-core.js` — `use-of-english/part1-mc-cloze/index.html` |
+| Part 2 open cloze | `css/part2-open-cloze.css` + `body.part2-open-body` | `js/part2-open-cloze-core.js` — `use-of-english/part2-open-cloze/index.html` |
+| Part 3 word formation (exam text + ROOT) | `css/cpe-uoe-part3-wf-shell.css` | `use-of-english/part3-word-formation/unit2-art-of-sushi.html` |
+| Part 4 key word transformation | inline tokens = Part 2 panel (`#1d2b4a`) | `use-of-english/part4-key-word-transformation/unit1.html` |
+| Workbook gap-fill / sentence completion | **`part2-open-cloze.css`** (`.part2-open-page`, `.part2-open-task`, `.gap`, `.part2-btn-*`, `.part2-feedback`) | `use-of-english/unit2/affixes/` |
+| Workbook blog error hunt | `part2-open-cloze.css` + `css/fce-vocab-blog-gap.css` | `use-of-english/unit2/affixes-blog/` |
+| Hearts / drill trainers | existing hearts page in `use-of-english/unitN/` | e.g. `unit8/word-formation-adjectives-hearts/` |
+
+## Hard UX (all UoE gap tasks)
+
+- Gaps: class **`.gap`** inside **`.part2-open-task`** (or Part 3 `.gap-wrap` for exam WF).
+- Check feedback: **`.part2-feedback.show`** — not a custom `.wf-feedback`.
+- Buttons: **`.part2-btn-check`** / **`.part2-btn-reset`** — not ad-hoc `.btn-check`.
+- **No spoilers before Check** — hints/keys hidden until wrong answer on check (`.p2-inline-key`, `[hidden]`).
+- Back link on FCE unit pages: **`css/mastering-b2-back-link.css`** pill (`.back`).
+
+## Workbook add-ons
+
+Small layout unique to one workbook (e.g. prefix groups in affixes Ex. 1) may live in a **thin scoped CSS** file (e.g. `fce-word-formation-affixes.css`) that **imports nothing new** — only extends the Part 2 tokens (`--p2-*`). **Never** duplicate full page chrome.
+
+## CPE vs FCE
+
+- **Shared shells** (`part2-open-cloze.css`, `cpe-uoe-part3-wf-shell.css`) are OK for mechanics — route/content stays in `use-of-english/` per track.
+- Do **not** link FCE unit hubs to CPE-only UoE folders without track separation (`fce-cpe-content-folder-split.mdc`).
+
+## If unsure
+
+- Sentence gaps / open answers → copy **`part2-open-cloze`** markup.
+- Exam passage + CAPS root word → copy **`part3-word-formation`**.
+- MC cloze → **`part1-mc-cloze-core.js`**.

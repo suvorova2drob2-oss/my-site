@@ -21,14 +21,15 @@
     vocabulary: "Vocabulary",
     uoe: "Use of English",
     speaking: "Speaking",
+    writing: "Writing",
   };
 
   /** Skills required on each unit hub (from unitN.html cards). */
   var UNIT_SKILLS = {
-    1: ["speaking", "vocabulary", "uoe"],
-    2: ["speaking", "uoe"],
-    3: ["listening", "reading", "uoe", "grammar"],
-    4: ["uoe"],
+    1: ["reading", "listening", "speaking", "vocabulary", "uoe", "writing", "grammar"],
+    2: ["speaking", "reading", "vocabulary", "grammar", "uoe", "writing"],
+    3: ["listening", "reading", "vocabulary", "uoe", "grammar", "speaking", "writing"],
+    4: ["uoe", "grammar", "vocabulary", "reading", "listening", "writing"],
     5: ["reading", "listening", "grammar", "uoe"],
     6: ["reading", "listening", "grammar", "vocabulary", "uoe"],
     7: ["vocabulary", "reading", "listening", "grammar", "uoe"],
@@ -47,17 +48,85 @@
    */
   var UNIT_SKILL_EXERCISES = {
     1: {
+      reading: ["this-is-your-life", "making-a-positive-change"],
+      listening: ["sb-1-1", "sb-1-2", "wb-moving-country"],
       speaking: ["interview-part1", "long-turn-lifestyle", "get-used-to"],
-      vocabulary: ["my-lifestyle", "clothes-opposites", "get"],
+      vocabulary: [
+        "my-lifestyle",
+        "clothes-choose",
+        "clothes-opposites",
+        "get",
+        "get-phrases",
+        "get-meeting-hero",
+        "run-expressions",
+      ],
       uoe: [
         "unit1-p1-young-entrepreneurs",
+        "unit1-p1-cant-go-to-school",
         "unit1-p2-blue-zones",
         "unit1-p4-kwt",
       ],
+      writing: ["informal-letter-p2", "article-nostalgia"],
+      grammar: ["used-to-dialogues"],
     },
     2: {
       speaking: ["interview-part1"],
-      uoe: ["unit2-uoe"],
+      reading: ["joys-of-capoeira"],
+      vocabulary: ["sport-choose", "music-match", "music-word-box", "get-phrasal-verbs"],
+      grammar: ["gerunds-ex1-choose", "gerunds-ex2-pedal-power"],
+      uoe: ["unit2-uoe-another-world", "unit2-p2-sports-lovers", "unit2-p3-celebrated-pedestrian", "unit2-p4-kwt", "unit2-rfg-kwt", "unit2-rfg-prefer", "unit2-negative-prefixes-hearts", "affixes-coursebook", "affixes-prefixes", "affixes-blog"],
+      writing: ["article-sport", "informal-email-p2"],
+    },
+    3: {
+      grammar: [
+        "u3-rfg-comp-ex1",
+        "u3-rfg-comp-ex2",
+        "comparisons-digital-detox",
+        "u3-comp-errors-flip",
+        "as-as-expressions",
+        "u3-as-as-coursebook",
+      ],
+      uoe: [
+        "u3-wf-nouns1-table",
+        "u3-wf-nouns1-story",
+        "u3-wf-ex1-hearts",
+        "u3-wf-ex2-hearts",
+        "u3-wf-suffix-table",
+        "u3-p3-nouns-laptop",
+        "u3-p3-greta-thunberg",
+        "u3-p3-michael-hart",
+        "u3-review-kwt",
+      ],
+      speaking: ["collaborative-century-changes", "part4-change"],
+      writing: ["u3-writing-essay-education", "essay-part1"],
+      reading: [
+        "u3-reading-kwolek",
+        "digital-detox-hub",
+        "digital-detox-p5",
+        "digital-detox-p5-alt",
+      ],
+      vocabulary: [
+        "u3-vocab-technology",
+        "lexical-games-digital-detox",
+        "word-bank-digital-detox",
+        "digital-detox-games",
+      ],
+      listening: [
+        "u3-listening-wb-track-3",
+        "track-3-1-robocup",
+        "changes-at-school",
+      ],
+    },
+    4: {
+      grammar: ["u4-so-such", "u4-past-time-linkers"],
+      vocabulary: ["u4-vocab-films", "u4-vocab-take"],
+      reading: ["u4-reading-chollywood"],
+      uoe: ["u4-p3-bedtime-story", "u4-wf-participle-adj", "u4-p4-kwt"],
+      listening: ["u4-listening-wb-track-4"],
+      writing: ["u4-writing-report"],
+    },
+    10: {
+      speaking: ["long-turn-told-off", "punishment-speak"],
     },
   };
 

@@ -26,6 +26,9 @@
   if (!dataSrc && contextId === "unit2-p2-lessons-lens") {
     dataSrc = "published-unit2-p2-lessons-lens.json";
   }
+  if (!dataSrc && contextId === "unit2-p2-sports-lovers") {
+    dataSrc = "published-unit2-p2-sports-lovers.json";
+  }
   if (!dataSrc && contextId === "unit3-p2-gps") {
     dataSrc = "published-unit3-p2-gps.json";
   }
@@ -177,6 +180,9 @@
   var bundledUnit2LessonsLens =
     String(contextId) === "unit2-p2-lessons-lens" ||
     /published-unit2-p2-lessons-lens\.json\s*$/i.test(dataSrc);
+  var bundledUnit2SportsLovers =
+    String(contextId) === "unit2-p2-sports-lovers" ||
+    /published-unit2-p2-sports-lovers\.json\s*$/i.test(dataSrc);
   var bundledUnit3Gps =
     String(contextId) === "unit3-p2-gps" ||
     /published-unit3-p2-gps\.json\s*$/i.test(dataSrc);
@@ -296,6 +302,16 @@
         try {
           return JSON.parse(elU2.textContent.trim());
         } catch (eU2) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit2SportsLovers) {
+      var elU2sl = document.getElementById("part2-open-bundled-unit2-sports-lovers");
+      if (elU2sl) {
+        try {
+          return JSON.parse(elU2sl.textContent.trim());
+        } catch (eU2sl) {
           return null;
         }
       }

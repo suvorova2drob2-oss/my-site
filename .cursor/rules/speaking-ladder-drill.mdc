@@ -1,0 +1,60 @@
+---
+description: Stepped ladder drilling — ×4 partners, mic stub, memory, recording, repeat chain
+globs: workshops/**/*,b2-summer-intensive/**/*,**/pre-int-units.js,**/intensive-lesson.js,**/ielts-speak-themes.js,**/intensive-themes.js
+alwaysApply: true
+---
+
+# Speaking · ступенчатый (ladder) drilling
+
+Эталон — **диалог Sarah & Victor (Track 19)**. Движок: `intensive-lesson.js` (`stage.type === "dialogue"` / `partners`).
+
+## Порядок на бите
+
+Для **каждого смыслового куска**:
+
+1. **Echo** — все реплики куска (`stage.echo`).
+2. **Drill** you = Victor · **×4 партнёра**.
+3. **Swap** you = Sarah · **×4**.
+4. После 4-го: кнопка **Repeat chain again** (сброс цепочки роли).
+5. Echo следующего куска → снова drill + swap.
+6. **Сборка**.
+
+Первая реплика: **`Are you hungry?`** (без «So Victor»).
+
+## Партнёры 1–4 (жёстко)
+
+| # | Режим | Экран |
+|---|---|---|
+| **1–2** | open | **Say this** + полный текст + **mic stub** («Your turn · speak») |
+| **3** | memory | **Your turn to speak** · текст скрыт · **Hint / подсказка** · mic stub |
+| **4** | record | **Recording · speak** · **текста нет вообще** — ни Hear (спикер), ни Say · только **▶ голос** + заглушка записи |
+| после 4 | — | **Repeat chain again →** (+ Swap / Next step) |
+
+`dialoguePartnerMode(st, partners)`: `i>=3 → record`, `i>=2 → memory`, иначе `open`.
+
+Hear на 4-м: `Audio only · no script` (+ ▶).  
+Hint на 4-м **нет**.
+
+## UI speak stub
+
+`.si-dlg-mic` / `.si-dlg-mic--rec` — пульс «твоя очередь / идёт запись». Не настоящий микрофон — учебная заглушка.
+
+## Фазы диалога
+
+Respond (V): Hear S → Say V (по режиму партнёра) → Said → next.  
+Lead (S): Say S → Said → Hear V.
+
+## Запрещено
+
+- Резать целые реплики.
+- На партнёре 3/4 светить полный текст без Hint (на 4 — вообще без текста).
+- Останавливаться на ×3 — везде **×4**.
+- Финал без сборки.
+
+## Данные
+
+`workshops/pre-intermediate/js/pre-int-units.js` — `partners` по 4 (Maya / Leo / Sam / Alex).
+
+## Не-диалог (`partners` stages)
+
+Тот же режим 1–2 / 3 memory / 4 record + Repeat chain.

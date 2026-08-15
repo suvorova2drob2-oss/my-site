@@ -33,6 +33,43 @@
     } catch (e) {}
   }
 
+  /**
+   * Coming from Mastering B2 / FCE exam pages — never ask for workshop password.
+   * Detect: ?from=…, ?src=fce, ?course=fce, or referrer under FCE unit paths.
+   */
+  function isFceEntry() {
+    try {
+      var q = new URLSearchParams(window.location.search || "");
+      if (q.get("src") === "fce" || q.get("course") === "fce") return true;
+      var from = String(q.get("from") || "").trim();
+      if (from) {
+        /* Relative return path from an FCE/exam page (unitN-…, fce.html, …) */
+        if (/fce|unit\d|listening|reading|grammar|vocabulary|speaking|use-of-english/i.test(from)) {
+          return true;
+        }
+        if (/^(\.\.\/)+[A-Za-z0-9_./-]+\.html/.test(from)) return true;
+      }
+      var ref = String(document.referrer || "");
+      if (!ref) return false;
+      /* Same-origin referrer that looks like FCE / unit material */
+      if (/\/(fce\.html|unit\d|unit\d+-)/i.test(ref)) return true;
+      if (/listening\/unit|reading\/|Grammar\/|mastering-b2/i.test(ref)) return true;
+    } catch (e) {}
+    return false;
+  }
+
+  /** Unlock + clear gate UI when entry is from FCE. Returns true if skipped. */
+  function passIfFceEntry() {
+    if (!isFceEntry()) return false;
+    unlock();
+    try {
+      document.documentElement.classList.remove("wg-blocked");
+      var existing = document.getElementById("workshop-gate");
+      if (existing) existing.remove();
+    } catch (e) {}
+    return true;
+  }
+
   function lockAgain() {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -141,6 +178,7 @@
 
   /** Full-page gate for locked workshop pages */
   function guardPage(opts) {
+    if (passIfFceEntry()) return;
     injectStyles();
     if (isUnlocked()) {
       document.documentElement.classList.remove("wg-blocked");
@@ -151,6 +189,7 @@
 
   /** Hub: lock cards with data-workshop-lock */
   function wireHubLocks() {
+    if (passIfFceEntry()) return;
     injectStyles();
     document.querySelectorAll("a[data-workshop-lock]").forEach(function (a) {
       a.classList.add("is-workshop-locked");
@@ -164,7 +203,7 @@
       a.addEventListener(
         "click",
         function (e) {
-          if (isUnlocked()) return;
+          if (isUnlocked() || isFceEntry()) return;
           e.preventDefault();
           e.stopPropagation();
           showGateModal({
@@ -182,6 +221,9 @@
 
   global.WorkshopGate = {
     isUnlocked: isUnlocked,
+    unlock: unlock,
+    isFceEntry: isFceEntry,
+    passIfFceEntry: passIfFceEntry,
     ensureUnlocked: ensureUnlocked,
     guardPage: guardPage,
     wireHubLocks: wireHubLocks,

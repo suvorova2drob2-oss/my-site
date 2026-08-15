@@ -1,7 +1,8 @@
 /**
  * Unit 3 — My digital detox: FCE/CAE-style Reading Part 5 (6× multiple choice, A–D).
  * Distractor notes + evidence for teaching.
- * @see unit3-digital-detox/exam-mode-reading-p5.html
+ * @see unit3-my-digital-detox-reading-part5-multiple-choice/My digital detox - reading Part 5 Multiple choice/index.html
+ * @see unit3-digital-detox/exam-mode-reading-p5.html (legacy tabbed view)
  */
 (function (G) {
   "use strict";

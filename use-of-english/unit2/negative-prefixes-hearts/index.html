@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 2 &mdash; Negative prefixes (hearts)</title>
+  <link rel="stylesheet" href="../../../css/mastering-b2-back-link.css" />
+  <style>
+    :root {
+      --bg: #181e28;
+      --bg-card: #1e2530;
+      --bg-inner: #252d3a;
+      --line: #3a4556;
+      --text: #f7f9fc;
+      --text-dim: #9eb0c8;
+      --pink: #f25176;
+      --pink-glow: rgba(242, 81, 118, 0.12);
+      --cyan: #4fbbf2;
+      --heart-off: #4a5568;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Manrope, "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -20%, #243044 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .page-top {
+      width: min(560px, 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .page-top h1 {
+      font-size: 1.05rem;
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .page-top .tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #86efac;
+      margin-bottom: 4px;
+    }
+    .wrap { width: min(560px, 100%); }
+    .prefix-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(9, 18, 42, 0.45);
+    }
+    .prefix-box span {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.1);
+      color: #dbeafe;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .shell {
+      width: 100%;
+      background: linear-gradient(165deg, #252e3d 0%, var(--bg-card) 45%, #1a2029 100%);
+      border: 1px solid #3d4d63;
+      border-radius: 22px;
+      padding: 22px 22px 26px;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22), 0 24px 56px rgba(0, 0, 0, 0.45);
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px 18px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+    .home {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .home:hover { color: var(--cyan); border-color: #55667d; }
+    .home svg { width: 22px; height: 22px; }
+    .hearts {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+    }
+    .heart { width: 28px; height: 26px; transition: opacity 0.2s, transform 0.2s; }
+    .heart.on { filter: drop-shadow(0 2px 1px rgba(180, 40, 80, 0.85)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35)); }
+    .heart.off { opacity: 0.38; transform: scale(0.88); }
+    .heart.off path { fill: var(--heart-off); }
+    .heart.on path { fill: url(#heartGrad); }
+    .counter {
+      font-weight: 700;
+      font-size: 1.02rem;
+      color: var(--text-dim);
+      min-width: 4.5ch;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .stage { text-align: center; }
+    .instruction {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .root-wrap { display: flex; justify-content: center; margin-bottom: 10px; }
+    .root {
+      display: inline-block;
+      font-size: clamp(1.35rem, 4vw, 1.65rem);
+      font-weight: 800;
+      color: var(--pink);
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 2px solid var(--pink);
+      background: var(--pink-glow);
+    }
+    .row-hint {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 15px 16px;
+      font-size: 1.05rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-inner);
+      color: var(--text);
+      outline: none;
+      text-align: center;
+    }
+    .input-wrap input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(79, 187, 242, 0.22);
+    }
+    .input-wrap input.shake { animation: shake 0.45s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .feedback { min-height: 1.45em; font-size: 0.94rem; margin: 12px 0; text-align: center; }
+    .feedback.bad { color: #ff9aab; }
+    .feedback.ok { color: #5ee4a8; }
+    .check {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(180deg, #62c9f7 0%, var(--cyan) 45%, #3aa8db 100%);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #2a8ab8;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 99998;
+    }
+    .overlay.open { display: flex; }
+    .overlay.wrong-reveal {
+      flex-direction: column;
+      background: rgba(8, 11, 18, 0.96);
+      z-index: 99999;
+    }
+    .wrong-reveal-box { width: min(520px, 100%); text-align: center; }
+    .wrong-reveal-label {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .wrong-reveal-answer {
+      font-size: clamp(1.5rem, 7vw, 2.2rem);
+      font-weight: 800;
+      color: #4ade80;
+      margin-bottom: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 2px solid rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.14);
+    }
+    .wrong-reveal-tip {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .wrong-reveal-next, .modal button {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0a1628;
+      background: var(--cyan);
+      cursor: pointer;
+    }
+    .modal {
+      background: var(--bg-inner);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 380px;
+      text-align: center;
+    }
+    .modal h2 { margin-bottom: 10px; }
+    .modal p { color: var(--text-dim); margin-bottom: 18px; line-height: 1.45; }
+  </style>
+</head>
+<body data-mb2-unit="2" data-mb2-skill="uoe" data-mb2-ex="unit2-negative-prefixes-hearts">
+  <svg width="0" height="0" aria-hidden="true">
+    <defs>
+      <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#ff7eb3" />
+        <stop offset="100%" style="stop-color:#e8487a" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <header class="page-top">
+    <div>
+      <p class="tag">Use of English &middot; Unit 2 &middot; Affixes Ex. 3</p>
+      <h1>Negative prefixes &mdash; hearts trainer</h1>
+    </div>
+    <a class="back" href="../index.html">&larr; UoE Unit 2</a>
+  </header>
+
+  <div class="wrap">
+    <div class="prefix-box" aria-label="Prefix box">
+      <span>dis-</span><span>il-</span><span>im-</span><span>in-</span><span>ir-</span><span>un-</span>
+    </div>
+
+    <div class="shell">
+      <header class="bar">
+        <a class="home" href="../affixes-coursebook/index.html" aria-label="Back to Affixes coursebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5z" />
+          </svg>
+        </a>
+        <div class="hearts" id="hearts" aria-live="polite"></div>
+        <div class="counter" id="progress">1/21</div>
+      </header>
+
+      <div id="game">
+        <div class="stage">
+          <p class="instruction">Type the full negative adjective &middot; 3 lives</p>
+          <div class="root-wrap">
+            <span class="root" id="baseWord">ambitious</span>
+          </div>
+          <p class="row-hint" id="rowHint"></p>
+        </div>
+        <div class="input-wrap">
+          <input type="text" id="answer" autocomplete="off" spellcheck="false" placeholder="e.g. unambitious" />
+        </div>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <button type="button" class="check" id="checkBtn">Check</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay wrong-reveal" id="wrongRevealOverlay" role="dialog" aria-modal="true" aria-hidden="true" style="display:none;">
+    <div class="wrong-reveal-box">
+      <p class="wrong-reveal-label">Correct answer</p>
+      <p class="wrong-reveal-answer" id="wrongRevealAnswer">&mdash;</p>
+      <p class="wrong-reveal-tip" id="wrongRevealTip"></p>
+      <button type="button" class="wrong-reveal-next" id="wrongRevealNext">Continue</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <h2>Round complete</h2>
+      <p>All 21 negative forms done. Return to the coursebook for Ex. 4 flip cards.</p>
+      <button type="button" id="playAgain">Play again</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="loseOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <h2>No hearts left</h2>
+      <p>The round restarts from the first word.</p>
+      <button type="button" id="restartBtn">OK</button>
+    </div>
+  </div>
+
+  <script src="../../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../../js/unit2-wf-affixes-coursebook.js"></script>
+  <script src="../../../js/unit2-wf-negative-prefixes-hearts.js"></script>
+  <script>U2_WF_NEG_PREFIX_HEARTS.mount();</script>
+  <script src="../../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+---
+description: Before inventing UI/logic, search the repo for an existing engine and reuse it
+alwaysApply: true
+---
+
+# Reuse existing engines first
+
+When adding or fixing an interactive exercise (match, cloze, hunt, flip, gaps, Live, sticky rail, writing studio, etc.):
+
+## Mandatory order
+
+1. **Search the repo first** (`*-engine.js`, etalon pages, committed Listening Part 3 pages).
+2. **Reuse** that engine + CSS + markup. New **content/data** only.
+3. Invent a one-off UI **only** if nothing fits — say so briefly.
+
+## HARD RULE — Listening Part 3 / speakers ↔ A–H
+
+**Do NOT** convert Listening Part 3 to `FCE_SENTENCE_HALVES_MATCH` / drag chips / “Not used” seat rows.
+
+| ✅ Required (exam paper style) | ❌ Forbidden for Listening Part 3 |
+|--------------------------------|-----------------------------------|
+| Static **Options A–H** list (full sentences) on the left | SHM two-column seat/swap UI |
+| **Speakers 1–5** on the right with `<select>` letter choices | Parking spare letters on “Not used” rows |
+| Letter uniqueness (used letter disappears from other selects) | Replacing the classic select engine “for consistency” |
+
+**Etalons (restore from git if mangled):**
+
+1. `unit1-listening/sb-1-1/part3-multiple-matching.html`
+2. `listening/unit10/fce/telling-lies/part3-multiple-matching.html` (keeps Evidence hunt)
+3. `unit1-listening/wb-moving-country/` — same select pattern for Ex. 1 / 2 / 4
+
+**Compact UI:** shared `css/fce-listening-part3-select.css` (`.fce-p3-split` / `.fce-p3-panel` / `.fce-p3-opt` / `.fce-p3-row`). Dense rows, no stretch gaps. Use `--wide` when options are full A–H sentences.
+
+## Sentence-halves SHM (vocab / grammar / some writing)
+
+Use `FCE_SENTENCE_HALVES_MATCH` **only** for beginnings↔endings style tasks (give-collocations, reporting-verbs, article purposes, etc.) — see `fce-sentence-halves-match-opposite.mdc`.
+
+**Not** for Listening Part 3 speaker matching.
+
+## HARD RULE — FCE Reading Part 6 / gapped text (A–G sentences)
+
+**Do NOT** put `<select>` dropdowns inside the passage or use a single-column “bank above text” layout.
+
+| ✅ Required (Honesty / Capoeira split) | ❌ Forbidden for Part 6 gapped text |
+|----------------------------------------|-------------------------------------|
+| Split pane: passage **left**, options + **Your answers** **right** | Inline selects in the article |
+| Numbered gap **chips** only in text (`{{1}}` → square `1`) | SHM / drag chips / custom one-off JS per unit |
+| Right rail: A–G list + `— choose —` dropdowns per gap | Listening Part 3 `.fce-p3-opt` bank-above-text pattern |
+
+**Etalons:** `unit10-reading-honesty-is-the-best-policy/`, `unit2-reading/joys-of-capoeira/`, `unit7-reading-black-friday/`.
+
+**Engine:** `js/fce-reading-part6-gapped.js` + `css/fce-reading-part6-gapped.css` + `FCE_R6_PACK` data — see `fce-reading-part6-gapped-split.mdc`.
+
+## Other engines
+
+| Need | Use |
+|------|-----|
+| Reading Part 6 gapped text | `js/fce-reading-part6-gapped.js` |
+| Phrase box on **paper story** (conjugated forms) | `css/fce-vocab-story-gap.css` — etalon `unit1-vocabulary/get/meeting-my-hero.html` |
+| Reading Part 7 | `js/fce-reading-part7-matching-engine.js` |
+| UoE Part 1 MC cloze | `js/part1-mc-cloze-core.js` |
+| UoE Part 2 / workbook gaps | `css/part2-open-cloze.css` — see `fce-uoe-reuse-shells.mdc` |
+| UoE Part 3 word formation | `css/cpe-uoe-part3-wf-shell.css` |
+| Evidence / distractor hunt | `fce-interactive-evidence-distractor-hunt.mdc` |
+| Paragraph **order** (1 on top) | drag stack like `unit1-writing/article/` Order step |
+
+## If unsure
+
+For Listening Part 3 → copy `sb-1-1` / `telling-lies`.  
+For Reading Part 6 gapped text → copy `joys-of-capoeira` + `FCE_R6_PACK`.  
+For vocab sentence halves → grep `FCE_SENTENCE_HALVES_MATCH`.  
+For FCE Use of English shells → `fce-uoe-reuse-shells.mdc`.

@@ -1,0 +1,64 @@
+---
+description: Contextual drilling — same phrases, situations/names change, one say each
+globs: workshops/**/*,b2-summer-intensive/**/*,**/pre-int-units.js,**/intensive-lesson.js
+alwaysApply: true
+---
+
+# Speaking · контекстный дриллинг (contextual drilling)
+
+Отдельный движок от **ступенчатого диалога** (`dialogue` ×4 + swap).
+
+## Когда использовать
+
+Один и тот же **паттерн фраз** (suggest → refuse → suggest again), а меняются только **место / имена / причина**.  
+**Не** гонять одну ситуацию ×4 партнёра.
+
+Эталон: Beat 3 Suggestions · Ex. 12 — `type: "contextual"`.
+
+## Порядок
+
+1. **Echo** Cool Words (один раз).
+2. **Contextual drilling** — цепочка ситуаций: **одна проговорка на ситуацию** → Next situation.
+3. Опционально freer (свои места) одной карточкой.
+
+## Данные
+
+```js
+{
+  type: "contextual",
+  label: "2 · Contextual drilling · Ex. 12",
+  promptA: "Where do you want to go?",
+  stems: [ /* общие фразы — не меняются */ ],
+  contexts: [
+    {
+      kicker: "Ex. 12 · Situation 1",
+      title: "Gino’s Pizzas",       // меняется
+      parts: ["…", "…", "…"],      // меняется
+      inventPrompt: "…",
+      model: "…",                  // hint model под этот контекст
+    },
+    // …
+  ],
+}
+```
+
+## Режимы по номеру ситуации (как у партнёров 1–4)
+
+| # в цепочке | Режим |
+|---|---|
+| 1–2 | open · stems + mic |
+| 3 | memory · Your turn to speak + Hint |
+| 4+ | record · без текста |
+
+После всей цепочки: **Repeat chain again** / **Next step**.
+
+## Запрещено
+
+- ×3 / ×4 партнёра на одну и ту же ситуацию Ex. 12.
+- Менять stems от ситуации к ситуации без нужды — меняется **контекст и название**.
+- Путать с `dialogue` ladder (Sarah/Victor hear→say).
+
+## Движок
+
+`intensive-lesson.js` → `stage.type === "contextual"`.  
+Контент: `workshops/pre-intermediate/js/pre-int-units.js` Beat **Suggestions**.

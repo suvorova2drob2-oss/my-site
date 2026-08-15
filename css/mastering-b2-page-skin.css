@@ -1,9 +1,13 @@
 /* Soft skin for deep FCE exercise pages — keeps local layout, matches hub atmosphere */
+@import url("mastering-b2-back-link.css");
+
 html {
   overflow-x: hidden;
 }
 
 body {
+  min-height: 100vh;
+  padding: clamp(16px, 3vw, 28px) !important;
   font-family: Manrope, "Segoe UI", system-ui, sans-serif !important;
   background:
     radial-gradient(900px 480px at 12% -10%, rgba(56, 130, 190, 0.28), transparent 55%),
@@ -36,36 +40,107 @@ main,
 .shell,
 .app,
 main.page {
-  border-radius: 22px !important;
+  width: min(980px, 100%) !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  padding: clamp(18px, 2.5vw, 28px) !important;
+  border: 1px solid rgba(120, 160, 210, 0.18) !important;
+  border-radius: 24px !important;
   border-color: rgba(120, 160, 210, 0.18) !important;
   background:
     linear-gradient(145deg, rgba(36, 54, 88, 0.55) 0%, rgba(16, 28, 50, 0.92) 42%, rgba(14, 24, 44, 0.96) 100%) !important;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 24px 70px rgba(0, 0, 0, 0.4) !important;
+    0 28px 80px rgba(0, 0, 0, 0.45) !important;
   /* backdrop-filter breaks preserve-3d in Chromium */
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-.top h1,
-header.top h1,
-.page > header h1 {
-  font-family: Fraunces, Georgia, serif !important;
-  letter-spacing: -0.02em;
+/* Header shell — same as unit hubs (mastering-b2-unit-hub.css) */
+.top,
+header.top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  border-bottom: 1px solid rgba(120, 160, 210, 0.16) !important;
+  padding-bottom: 14px !important;
+  margin-bottom: 14px !important;
 }
 
-/* Only nav back-links — never match .flip-back */
-a.back,
-.top a.back,
-header.top a.back,
-a.back.back {
-  border-radius: 999px;
-  border: 1px solid rgba(94, 200, 240, 0.28);
-  background: rgba(10, 20, 38, 0.45);
-  padding: 6px 12px;
+.brand-kicker,
+.top .tag,
+header.top .tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 0.65rem !important;
   font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
 }
+
+.brand-kicker {
+  color: #e8c56a !important;
+}
+
+.brand-kicker::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: #e8c56a;
+  opacity: 0.7;
+}
+
+.top .tag,
+header.top .tag {
+  color: #5ec8f0 !important;
+}
+
+.top .tag::before,
+header.top .tag::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: #5ec8f0;
+  opacity: 0.7;
+}
+
+.top h1,
+header.top h1,
+.page > header h1,
+.top > h1 {
+  font-family: Fraunces, Georgia, serif !important;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+  overflow-wrap: anywhere;
+  background: linear-gradient(120deg, #fff8e8 10%, #e8c56a 45%, #9fd9f5 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+.top .lead,
+header.top .lead,
+.lead {
+  color: #8fa3c4 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+  margin: 6px 0 0 !important;
+}
+
+.lead strong {
+  color: #d5e2f8;
+  font-weight: 600;
+}
+
+/* a.back — see mastering-b2-back-link.css (imported above). Never restyle per page. */
 
 /* Kill default browser white controls on dark FCE pages */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]),

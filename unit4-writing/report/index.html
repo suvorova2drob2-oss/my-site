@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 4 Writing &mdash; Part 2 Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Literata:opsz,wght@7..72,400;7..72,600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../../css/fce-writing-essay-part1.css" />
+  <style>
+    .u4r-informal {
+      background: rgba(248, 113, 113, 0.22);
+      border-bottom: 2px solid rgba(185, 28, 28, 0.45);
+      padding: 0 2px;
+      font-weight: 600;
+      color: #7f1d1d;
+    }
+    .u4r-informal-num {
+      font-size: 0.72em;
+      font-weight: 800;
+      color: #b91c1c;
+      vertical-align: super;
+      margin-right: 2px;
+    }
+    .wep-section .wep-model p {
+      color: #2a241c;
+    }
+    .u4r-sub-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      color: #d5e2f8;
+    }
+    .u4r-sub-row label { font-weight: 700; color: #5ec8f0; min-width: 6.5rem; }
+    .u4r-sub-row select {
+      flex: 1;
+      min-width: 12rem;
+      border: 2px solid #4d6fa1;
+      border-radius: 8px;
+      background: #12264b;
+      color: #fff;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+    }
+    .u4r-sub-row select.is-ok { border-color: #36d399; }
+    .u4r-sub-row select.is-bad { border-color: #f87171; }
+    .u4r-sub-row .done-label { color: #86efac; font-weight: 600; }
+    .u4r-match-row {
+      display: grid;
+      grid-template-columns: 2.2rem minmax(0, 1fr) 4rem;
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(120, 160, 210, 0.22);
+      background: rgba(8, 22, 48, 0.35);
+      font-size: 0.9rem;
+      color: #d5e2f8;
+      line-height: 1.45;
+    }
+    .u4r-match-row strong { color: #fde68a; }
+    .u4r-match-row input {
+      width: 100%;
+      border: 2px solid #4d6fa1;
+      border-radius: 8px;
+      background: #12264b;
+      color: #fff;
+      padding: 6px 8px;
+      font-size: 0.92rem;
+      text-align: center;
+    }
+    .u4r-match-row input.ok { border-color: #36d399; }
+    .u4r-match-row input.bad { border-color: #f87171; }
+    .u4r-plan-box {
+      border: 2px solid rgba(120, 160, 210, 0.28);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(8, 22, 48, 0.45);
+    }
+    .u4r-plan-box h3 {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #bae6fd;
+      margin: 0 0 12px;
+    }
+    .u4r-plan-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .u4r-plan-row label {
+      font-weight: 700;
+      color: #5ec8f0;
+      min-width: 6.5rem;
+      font-size: 0.88rem;
+    }
+    .u4r-plan-row input {
+      flex: 1;
+      min-width: 10rem;
+      border: 2px solid #4d6fa1;
+      border-radius: 8px;
+      background: #12264b;
+      color: #fff;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+    }
+    .u4r-ideas {
+      width: 100%;
+      min-height: 100px;
+      border: 2px solid #4d6fa1;
+      border-radius: 10px;
+      background: #12264b;
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      resize: vertical;
+    }
+    .u4r-rail-sticky {
+      min-width: 0;
+      position: sticky;
+      top: 12px;
+    }
+    .u4r-tip-box {
+      border: 1px solid rgba(100, 116, 139, 0.35);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(100, 116, 139, 0.1);
+      margin-bottom: 14px;
+    }
+    .u4r-tip-box strong {
+      display: block;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .u4r-tip-box ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.88rem;
+      color: #d5e2f8;
+      line-height: 1.5;
+    }
+    .u4r-useful {
+      border: 1px solid rgba(120, 160, 210, 0.28);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(18, 30, 52, 0.72);
+      margin-bottom: 14px;
+    }
+    .u4r-useful h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 0.95rem;
+      color: #fde68a;
+      margin: 0 0 10px;
+      text-align: center;
+    }
+    .u4r-useful-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .u4r-useful-block {
+      min-width: 0;
+    }
+    .u4r-useful-block strong {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #5ec8f0;
+      margin-bottom: 6px;
+    }
+    .u4r-useful-block ul {
+      margin: 0;
+      padding-left: 1rem;
+      font-size: 0.8rem;
+      color: #c5d4ef;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .u4r-useful-block li { margin-bottom: 4px; }
+    .u4r-useful-block em { font-style: italic; }
+  </style>
+</head>
+<body data-mb2-unit="4" data-mb2-skill="writing" data-mb2-ex="u4-writing-report">
+  <main class="wep-page">
+    <header class="wep-top">
+      <div>
+        <p class="wep-kicker">Writing Part 2 &middot; Report &middot; A Good Story</p>
+        <h1>International students &amp; town centre report</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 4 Writing</a>
+    </header>
+
+    <div class="wep-layout">
+      <div>
+        <section class="wep-section" aria-labelledby="ex1-h">
+          <h2 id="ex1-h">1 Task &amp; model answer</h2>
+          <p>Read the following Writing Part 2 task and model answer. Do you think the ideas in the report are good or can you think of some better ones?</p>
+
+          <div class="wep-prompt">
+            <p>Your university wants to encourage international students to socialise together. Your lecturer has asked you to write a report giving recommendations about:</p>
+            <ul class="wep-notes" style="list-style:disc;padding-left:1.4rem;">
+              <li>types of events</li>
+              <li>place of events</li>
+              <li>where to advertise.</li>
+            </ul>
+          </div>
+
+          <div class="wep-model" aria-label="Model report">
+            <p>
+              <span class="u4r-informal"><span class="u4r-informal-num">(1)</span>I&rsquo;m going to write about</span>
+              my ideas about social events for international students and how they can be advertised around the university.
+            </p>
+            <p>
+              Not surprisingly, many international students experience culture shock because they are unfamiliar with British life.
+              <span class="u4r-informal"><span class="u4r-informal-num">(2)</span>Most students said they wanted</span>
+              a social event where they could learn about cultural differences.
+              <span class="u4r-informal"><span class="u4r-informal-num">(3)</span>Or</span>, an evening where they could try traditional food would be appreciated.
+            </p>
+            <p>
+              <span class="u4r-informal"><span class="u4r-informal-num">(4)</span>Something else to think about is</span>
+              that the location of these events should be easy to find. It can be difficult getting around a new city. I would strongly recommend having the event on campus wherever possible.
+              <span class="u4r-informal"><span class="u4r-informal-num">(5)</span>Of course, we need to give them easy and clear info about where the place is.</span>
+            </p>
+            <p>
+              While social media is an obvious means of advertising,
+              <span class="u4r-informal"><span class="u4r-informal-num">(6)</span>it looks like</span>
+              the student canteen is where they check this kind of information.
+              <span class="u4r-informal"><span class="u4r-informal-num">(7)</span>That&rsquo;s why</span>
+              a poster on the notice board would be a cheap and effective method.
+            </p>
+            <p>
+              <span class="u4r-informal"><span class="u4r-informal-num">(8)</span>To end, I think</span>
+              if these recommendations were put into practice, international students would be able to meet and socialise with new friends more easily.
+            </p>
+          </div>
+
+          <textarea class="u4r-ideas" id="u4-report-ideas" spellcheck="true" placeholder="Are the event types, location and advertising ideas good? What would you recommend instead?"></textarea>
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-ideas-done">Save notes</button>
+          </div>
+          <p class="wep-fb" id="fb-ideas" role="status"></p>
+        </section>
+
+        <section class="wep-section" aria-labelledby="ex2-h">
+          <h2 id="ex2-h">2 Subheadings</h2>
+          <p>The model answer is missing subheadings. Choose from the box the correct subheading for each paragraph.</p>
+
+          <div class="u4r-sub-row">
+            <label for="subhead-1">Paragraph 1</label>
+            <span class="done-label">Introduction</span>
+          </div>
+          <div class="u4r-sub-row">
+            <label for="subhead-2">Paragraph 2</label>
+            <select id="subhead-2" aria-label="Subheading paragraph 2">
+              <option value="">&mdash; choose &mdash;</option>
+              <option value="types">Types of events</option>
+              <option value="place">Place of events</option>
+              <option value="advertise">Where to advertise</option>
+              <option value="conclusion">Conclusion</option>
+            </select>
+          </div>
+          <div class="u4r-sub-row">
+            <label for="subhead-3">Paragraph 3</label>
+            <select id="subhead-3" aria-label="Subheading paragraph 3">
+              <option value="">&mdash; choose &mdash;</option>
+              <option value="types">Types of events</option>
+              <option value="place">Place of events</option>
+              <option value="advertise">Where to advertise</option>
+              <option value="conclusion">Conclusion</option>
+            </select>
+          </div>
+          <div class="u4r-sub-row">
+            <label for="subhead-4">Paragraph 4</label>
+            <select id="subhead-4" aria-label="Subheading paragraph 4">
+              <option value="">&mdash; choose &mdash;</option>
+              <option value="types">Types of events</option>
+              <option value="place">Place of events</option>
+              <option value="advertise">Where to advertise</option>
+              <option value="conclusion">Conclusion</option>
+            </select>
+          </div>
+          <div class="u4r-sub-row">
+            <label for="subhead-5">Paragraph 5</label>
+            <select id="subhead-5" aria-label="Subheading paragraph 5">
+              <option value="">&mdash; choose &mdash;</option>
+              <option value="types">Types of events</option>
+              <option value="place">Place of events</option>
+              <option value="advertise">Where to advertise</option>
+              <option value="conclusion">Conclusion</option>
+            </select>
+          </div>
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-check-subhead">Check Ex. 2</button>
+            <button type="button" class="wep-btn-reset" id="btn-reset-subhead">Clear Ex. 2</button>
+          </div>
+          <p class="wep-fb" id="fb-subhead" role="status"></p>
+        </section>
+
+        <section class="wep-section" aria-labelledby="ex3-h">
+          <h2 id="ex3-h">3 Formal equivalents</h2>
+          <p>Replace the informal phrases <strong>(1)&ndash;(8)</strong> in the model answer in Exercise 1 with a more formal equivalent <strong>(a)&ndash;(h)</strong>. Write the number of the informal phrase next to each letter.</p>
+
+          <div class="u4r-match-row"><strong>a</strong><span>Alternatively, &hellip;</span><input type="text" id="match-a" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for a" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>b</strong><span>Another point to consider is &hellip;</span><input type="text" id="match-b" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for b" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>c</strong><span>In conclusion, I believe &hellip;</span><input type="text" id="match-c" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for c" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>d</strong><span>The purpose of this report is to suggest &hellip;</span><input type="text" id="match-d" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for d" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>e</strong><span>The majority of students said they would welcome &hellip;</span><input type="text" id="match-e" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for e" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>f</strong><span>For this reason, &hellip;</span><input type="text" id="match-f" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for f" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>g</strong><span>&hellip; it appears that &hellip;</span><input type="text" id="match-g" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for g" placeholder="#" /></div>
+          <div class="u4r-match-row"><strong>h</strong><span>Obviously, directions to the venue should be simply and clearly communicated.</span><input type="text" id="match-h" maxlength="2" inputmode="numeric" autocomplete="off" aria-label="Informal phrase number for h" placeholder="#" /></div>
+
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-check-match">Check Ex. 3</button>
+            <button type="button" class="wep-btn-reset" id="btn-reset-match">Clear Ex. 3</button>
+          </div>
+          <p class="wep-fb" id="fb-match" role="status"></p>
+        </section>
+
+        <section class="wep-section" aria-labelledby="ex4-h">
+          <h2 id="ex4-h">4 Report plan</h2>
+          <p>Read the task below and fill in your report plan.</p>
+
+          <div class="wep-prompt">
+            <p>Your town has asked for ideas to attract young people to the town centre. Your teacher has asked you to write a report giving recommendations about:</p>
+            <ul class="wep-notes" style="list-style:disc;padding-left:1.4rem;">
+              <li>social activities</li>
+              <li>where to hold events</li>
+              <li>how to get young people interested.</li>
+            </ul>
+          </div>
+
+          <div class="u4r-plan-box">
+            <h3>Report plan</h3>
+            <div class="u4r-plan-row"><label for="plan-1">Paragraph 1</label><input id="plan-1" type="text" autocomplete="off" spellcheck="true" placeholder="Introduction &hellip;" /></div>
+            <div class="u4r-plan-row"><label for="plan-2">Paragraph 2</label><input id="plan-2" type="text" autocomplete="off" spellcheck="true" placeholder="Social activities &hellip;" /></div>
+            <div class="u4r-plan-row"><label for="plan-3">Paragraph 3</label><input id="plan-3" type="text" autocomplete="off" spellcheck="true" placeholder="Where to hold events &hellip;" /></div>
+            <div class="u4r-plan-row"><label for="plan-4">Paragraph 4</label><input id="plan-4" type="text" autocomplete="off" spellcheck="true" placeholder="How to get young people interested &hellip;" /></div>
+            <div class="u4r-plan-row"><label for="plan-5">Paragraph 5</label><input id="plan-5" type="text" autocomplete="off" spellcheck="true" placeholder="Conclusion &hellip;" /></div>
+          </div>
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-plan-done">Save plan</button>
+          </div>
+          <p class="wep-fb" id="fb-plan" role="status"></p>
+        </section>
+
+        <section class="wep-section" aria-labelledby="ex5-h">
+          <h2 id="ex5-h">5 Write your report</h2>
+          <p>Now write your answer to the task in Exercise 4 in <strong>140&ndash;190 words</strong> using your report plan. Use the language in Exercise 3 and in the Useful language box to help you.</p>
+
+          <textarea class="wep-write-area" id="u4-report-write" spellcheck="true" placeholder="Introduction: purpose of report&#10;Social activities&#10;Venues&#10;Publicity / interest&#10;Conclusion and recommendations&hellip;"></textarea>
+          <p class="wep-wordcount" id="u4-report-wc">Words: <strong>0</strong> (target 140&ndash;190)</p>
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-write-done">Check length</button>
+          </div>
+          <p class="wep-fb" id="fb-write" role="status"></p>
+        </section>
+      </div>
+
+      <aside class="u4r-rail-sticky">
+        <div class="u4r-tip-box">
+          <strong>Don&rsquo;t forget!</strong>
+          <ul>
+            <li>Use a variety of linking devices.</li>
+            <li>Write in a neutral or formal style.</li>
+          </ul>
+        </div>
+
+        <div class="u4r-useful" aria-labelledby="useful-h">
+          <h3 id="useful-h">Useful language</h3>
+          <div class="u4r-useful-grid">
+            <div class="u4r-useful-block">
+              <strong>Introducing the report</strong>
+              <ul>
+                <li><em>This report will assess/analyse/examine &hellip;</em></li>
+                <li><em>The main purpose of this report is to &hellip;</em></li>
+              </ul>
+            </div>
+            <div class="u4r-useful-block">
+              <strong>Facilities</strong>
+              <ul>
+                <li><em>The venue/college/hotel boasts a range of facilities which &hellip;</em></li>
+                <li><em>The amenities on offer are first-class/second-to-none and include &hellip;</em></li>
+              </ul>
+            </div>
+            <div class="u4r-useful-block">
+              <strong>Generalising</strong>
+              <ul>
+                <li><em>In general, &hellip;</em></li>
+                <li><em>Generally speaking, &hellip;</em></li>
+                <li><em>On the whole, &hellip;</em></li>
+              </ul>
+            </div>
+            <div class="u4r-useful-block">
+              <strong>Making recommendations</strong>
+              <ul>
+                <li><em>I believe, therefore, that it would be in our best interests to &hellip;</em></li>
+                <li><em>Taking the above factors into consideration, I feel/propose that &hellip;</em></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="wep-rail" aria-labelledby="informal-rail-h">
+          <p class="wep-rail-head" id="informal-rail-h">Informal phrases (Ex. 1)</p>
+          <ul>
+            <li><strong>1</strong> I&rsquo;m going to write about</li>
+            <li><strong>2</strong> Most students said they wanted</li>
+            <li><strong>3</strong> Or</li>
+            <li><strong>4</strong> Something else to think about is</li>
+            <li><strong>5</strong> Of course, we need to give them&hellip;</li>
+            <li><strong>6</strong> it looks like</li>
+            <li><strong>7</strong> That&rsquo;s why</li>
+            <li><strong>8</strong> To end, I think</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../js/unit4-writing-report.js"></script>
+  <script>U4_WRITING_REPORT.mount();</script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

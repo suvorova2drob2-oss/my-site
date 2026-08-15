@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B2 · Stories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --mint: #9fe0d4;
+      --cream: #f3faf7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: #061014;
+      color: var(--cream);
+      padding: 16px 12px 40px;
+    }
+
+    .hint {
+      max-width: 390px;
+      margin: 0 auto 14px;
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: rgba(159, 224, 212, 0.7);
+    }
+
+    .rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .story {
+      width: min(390px, 100%);
+      aspect-ratio: 9 / 16;
+      border-radius: 22px;
+      /* IG safe zone: top progress/name, bottom reply bar */
+      padding: 72px 24px 88px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      background: linear-gradient(165deg, #123033 0%, #0c1f24 48%, #08161a 100%);
+    }
+
+    .story::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(120% 50% at 50% -8%, rgba(159, 224, 212, 0.2), transparent 50%);
+      pointer-events: none;
+    }
+
+    .story > * { position: relative; z-index: 1; }
+
+    .kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mint);
+      flex: 0 0 auto;
+    }
+
+    .hook {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(1.45rem, 6.2vw, 1.85rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: #f5fcfa;
+      flex: 0 0 auto;
+    }
+
+    .pain {
+      font-size: 0.92rem;
+      line-height: 1.4;
+      color: rgba(243, 250, 247, 0.78);
+      flex: 0 0 auto;
+    }
+
+    .fill {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .topic {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(159, 224, 212, 0.22);
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: rgba(243, 250, 247, 0.92);
+    }
+
+    .topic b {
+      color: var(--mint);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .pair {
+      display: grid;
+      gap: 8px;
+    }
+
+    .was, .want {
+      border-radius: 12px;
+      padding: 10px 11px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .was {
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(243, 250, 247, 0.62);
+    }
+
+    .want {
+      background: rgba(159, 224, 212, 0.14);
+      border: 1px solid rgba(159, 224, 212, 0.4);
+      color: #f5fcfa;
+      font-weight: 700;
+    }
+
+    .lab {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      color: var(--mint);
+    }
+
+    .was .lab { color: rgba(159, 224, 212, 0.5); }
+
+    .cta {
+      margin-top: auto;
+      text-align: center;
+      padding: 14px 12px;
+      border-radius: 16px;
+      background: var(--mint);
+      color: #0c1f24;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .cta small {
+      display: block;
+      margin-top: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .hint { display: none; }
+      .story {
+        box-shadow: none;
+        page-break-after: always;
+        width: 1080px;
+        height: 1920px;
+        max-width: none;
+        aspect-ratio: auto;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <p class="hint">
+    Сторис 9:16 · скрин каждого блока<br>
+    <b>fce-course-stories.html</b>
+  </p>
+
+  <div class="rail">
+
+    <!-- 1 PAIN -->
+    <section class="story">
+      <div class="kicker">B2 · 9–10 месяцев</div>
+      <h1 class="hook">Мысль есть.<br>Сказать можете.<br>Звучит по-русски.</h1>
+      <p class="pain">Слова английские, ход мысли родной. Вы сами это слышите: native сказал бы иначе, другими фразами. На митинге берёте безопасный вариант. В разговоре мысль становится плоской. После остаётся: поняли вас, но будто не до конца.</p>
+      <div class="fill">
+        <div class="topic"><b>Плато B2</b>Говорите уверенно и всё равно чувствуете кальку. Понимание уже есть. Речь ещё перевод. Год «ещё чуть-чуть» это не двигает.</div>
+        <div class="topic"><b>Маршрут</b>12 тем взрослой жизни + все skills Cambridge B2 First. Живая группа. Платформа между занятиями. До экзамена.</div>
+      </div>
+    </section>
+
+    <!-- 2 TOPICS dense 1-6 -->
+    <section class="story">
+      <div class="kicker">Темы маршрута · 1–6</div>
+      <h1 class="hook">О чём заговорите</h1>
+      <div class="fill">
+        <div class="topic"><b>1 · Lifestyle</b>Ритм жизни, привычки, к чему пришлось привыкать после переезда или новой работы.</div>
+        <div class="topic"><b>2 · Sport &amp; music</b>Вкус, спорт, музыка. Почему выбираете именно это, а не «просто нравится».</div>
+        <div class="topic"><b>3 · Digital detox</b>Телефон, ночные ленты, тревога сравнения, свой эксперимент без экрана.</div>
+        <div class="topic"><b>4 · Rules &amp; careers</b>Правила, дресс-код, карьера, границы: что обязаны, что можете, как возразить спокойно.</div>
+        <div class="topic"><b>5 · People</b>Характер, ссоры, влияние людей. Портрет человека, которого реально видят.</div>
+        <div class="topic"><b>6 · Shopping &amp; town</b>Black Friday, город, привычка тратить. Мнение о мире вокруг, не только «про меня».</div>
+      </div>
+    </section>
+
+    <!-- 3 TOPICS 7-12 -->
+    <section class="story">
+      <div class="kicker">Темы маршрута · 7–12</div>
+      <h1 class="hook">Дальше глубже</h1>
+      <div class="fill">
+        <div class="topic"><b>7 · Travel</b>Типы отдыха, фото, планы поездки. Картинка больше не ставит в ступор.</div>
+        <div class="topic"><b>8 · Mystery</b>Истории, ghost walk, гипотезы «что могло случиться». Умение вести сюжет.</div>
+        <div class="topic"><b>9 · Truth &amp; crime</b>Честность, ложь, наказание, crime в новостях. Взрослый разговор без упрощения.</div>
+        <div class="topic"><b>10 · Green</b>Экология, ответственность, «что будет, если…». Споры со ставкой.</div>
+        <div class="topic"><b>11–12 · Health + сборка</b>Еда, здоровье, привычки. Потом речь на смеси всех тем года и mock экзамена.</div>
+        <div class="topic"><b>Skills внутри каждой темы</b>Reading · Listening · Speaking · Writing · Grammar · Use of English</div>
+      </div>
+    </section>
+
+    <!-- 4 BEFORE WANT stacked -->
+    <section class="story">
+      <div class="kicker">Раньше → хочется</div>
+      <h1 class="hook" style="font-size:1.35rem;">Узнаёте себя?</h1>
+      <div class="fill pair">
+        <div class="was"><span class="lab">Раньше · lifestyle</span><em>I wake up, I go to work, it’s fine.</em></div>
+        <div class="want"><span class="lab">Хочется</span>Минута-две про свою жизнь так, что собеседник видит ритм, не анкету.</div>
+        <div class="was"><span class="lab">Раньше · detox / ethics</span>Понимаете сложность. Вслух: <em>phones are bad</em> / <em>we must save the planet</em>.</div>
+        <div class="want"><span class="lab">Хочется</span>Спор с опытом и последствиями. Эссе, которое держит мысль.</div>
+        <div class="was"><span class="lab">Раньше · travel / people</span>Фото = молчание. Человек = <em>kind and nice</em>.</div>
+        <div class="want"><span class="lab">Хочется</span>Картинка запускает речь. Портрет человека с характером и отношениями.</div>
+      </div>
+    </section>
+
+    <!-- 5 CTA -->
+    <section class="story">
+      <div class="kicker">Группа B2</div>
+      <h1 class="hook">9–10 месяцев.<br>12 тем.<br>До экзамена.</h1>
+      <p class="pain">Если надоело понимать всё и говорить на половину мысли — это ваш маршрут.</p>
+      <div class="fill">
+        <div class="topic"><b>Формат</b>2 занятия в неделю + платформа Mastering B2 между ними.</div>
+        <div class="topic"><b>Внутри</b>Те же темы, что в PDF-маршруте: от lifestyle до crime, green и health.</div>
+        <div class="topic"><b>Финиш</b>Уверенный B2 в жизни. Mock. Cambridge B2 First.</div>
+      </div>
+      <div class="cta">
+        Напишите B2
+        <small>пришлём маршрут и разберём старт</small>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

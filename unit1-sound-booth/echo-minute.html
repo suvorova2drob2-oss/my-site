@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echo Minute · Unit 1 · Sound Booth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/fce-echo-minute.css" />
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <div>
+        <p class="tag">Mastering B2 · Unit 1 · Sound Booth</p>
+        <h1>Echo Minute</h1>
+        <p class="subtitle">60s · definition aloud · name the phrase</p>
+      </div>
+      <a id="navBack" href="index.html">&larr; Sound Booth</a>
+    </div>
+    <details class="howfold">
+      <summary>Правила</summary>
+      <p class="sub">Определение только на слух. Назовите фразу голосом или вводом. Skip / I don't know — дальше без очка. Stub-колода, пока нет реальных фраз.</p>
+    </details>
+
+    <div class="panel">
+      <p class="wb-head">Тема (stub)</p>
+      <div class="theme-grid" id="emThemeRail" role="radiogroup" aria-label="Тема"></div>
+      <p class="deck-meta" id="emDeckMeta"></p>
+
+      <div class="tts-voice-select-wrap" style="margin-bottom:10px;">
+        <label for="emVoicePick">Голос</label>
+        <select id="emVoicePick" class="tts-voice-select" aria-label="Голос синтеза речи"></select>
+      </div>
+
+      <div class="hud" aria-live="polite">
+        <div class="hud-block">
+          <p class="hud-label">Секунд</p>
+          <p class="hud-value hud-value--time" id="emTimer">60</p>
+        </div>
+        <div class="hud-block">
+          <p class="hud-label">Попадания</p>
+          <p class="hud-value hud-value--score" id="emScore">0</p>
+        </div>
+      </div>
+
+      <div class="stage" id="emStage" aria-live="polite"></div>
+      <p class="stage-sub" id="emStageSub"></p>
+      <p class="summary-line" id="emSummary" hidden></p>
+
+      <div class="actions">
+        <button type="button" class="b-go" id="emStart">Старт</button>
+        <button type="button" class="b-replay" id="emReplay">Повторить определение</button>
+        <button type="button" class="b-skip" id="emSkip">I don't know / Skip</button>
+      </div>
+
+      <p class="mic-label">Микрофон · транскрипт скрыт</p>
+      <p class="vb-transcript" id="emTranscript"></p>
+
+      <p class="vb-type-label">Или ввод с клавиатуры</p>
+      <div class="vb-type-row">
+        <input type="text" id="emType" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Phrase or skip…" />
+        <button type="button" class="b-check" id="emCheck">Проверить</button>
+      </div>
+
+      <p class="status-row" id="emStatus"></p>
+    </div>
+  </div>
+
+  <script>window.FCE_SOUND_BOOTH_UNIT = 1;</script>
+  <script src="../js/fce-unit-lexical-stub-packs.js"></script>
+  <script src="../js/fce-unit-sound-booth-wordbank.js"></script>
+  <script src="../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../js/prep-snowball-phrases-engine.js"></script>
+  <script src="../js/prep-echo-minute-engine.js"></script>
+  <script>
+(function () {
+  var defs = window.FCE_SB_THEME_DEFINITIONS || [];
+  var combined = window.FCE_SB_THEME_DEFINITIONS_COMBINED;
+  var rail = document.getElementById("emThemeRail");
+  var deckMeta = document.getElementById("emDeckMeta");
+  function countLex(id) {
+    return typeof window.FCE_SB_getLexRows === "function"
+      ? window.FCE_SB_getLexRows(id).length
+      : 0;
+  }
+  if (rail && window.PREP_SNOWBALL_PHRASES && PREP_SNOWBALL_PHRASES.fillThemeRail) {
+    PREP_SNOWBALL_PHRASES.fillThemeRail(rail, {
+      definitions: defs,
+      combined: combined || null,
+      radioName: "echoMinuteTheme",
+      inputClass: "theme-input",
+      deckMetaEl: deckMeta,
+      countPhrases: countLex,
+      formatDeckMeta: function (n) {
+        return n + " пар · минимум 5 (stub).";
+      }
+    });
+  }
+  var stage = document.getElementById("emStage");
+  if (stage && window.PREP_ECHO_MINUTE && PREP_ECHO_MINUTE.mount) {
+    PREP_ECHO_MINUTE.mount({
+      els: {
+        stageMain: stage,
+        stageSub: document.getElementById("emStageSub"),
+        timer: document.getElementById("emTimer"),
+        scoreLive: document.getElementById("emScore"),
+        summary: document.getElementById("emSummary"),
+        status: document.getElementById("emStatus"),
+        transcript: document.getElementById("emTranscript"),
+        typeInput: document.getElementById("emType"),
+        btnCheck: document.getElementById("emCheck"),
+        btnStart: document.getElementById("emStart"),
+        btnReplay: document.getElementById("emReplay"),
+        btnSkip: document.getElementById("emSkip"),
+        voicePickSelect: document.getElementById("emVoicePick")
+      },
+      themeDefinitions: defs,
+      radioName: "echoMinuteTheme",
+      roundSeconds: 60,
+      minDeck: 5,
+      getLexRows: function (themeId) {
+        return typeof window.FCE_SB_getLexRows === "function"
+          ? window.FCE_SB_getLexRows(themeId)
+          : [];
+      }
+    });
+  }
+})();
+  </script>
+</body>
+</html>

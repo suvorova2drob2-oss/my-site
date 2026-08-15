@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 1 Writing &mdash; Part 2 Article</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/fce-writing-letter-studio.css" />
+  <link rel="stylesheet" href="../../css/fce-sentence-halves-match.css" />
+  <style>
+    .shm-ending { font-size: 0.9rem; line-height: 1.4; text-align: left; }
+    .shm-begin .begin { font-size: 0.9rem; line-height: 1.45; }
+    .art-prompt {
+      background: linear-gradient(145deg, #1a2f3d 0%, #243d52 100%);
+      color: #f3f6fa;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(212,184,122,.28);
+    }
+    .art-prompt h3 {
+      margin: 0 0 8px;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.05rem;
+      letter-spacing: .02em;
+      color: #f8efd8;
+    }
+    .art-prompt p { margin: 0; font-size: .94rem; line-height: 1.55; color: #d5e2f8; }
+    .para-card {
+      border: 1px solid rgba(120,160,210,.22);
+      background: rgba(18,30,52,.65);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      color: #e8f0ff;
+      font-size: .94rem;
+      line-height: 1.55;
+    }
+    .para-card b { color: var(--wls-gold, #d4b87a); margin-right: 6px; }
+    .para-stack {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+    .para-sort {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr) auto;
+      gap: 10px 12px;
+      align-items: start;
+      border: 1px solid rgba(120,160,210,.28);
+      background: rgba(18,30,52,.72);
+      border-radius: 14px;
+      padding: 12px 12px 12px 10px;
+      color: #e8f0ff;
+      font-size: .94rem;
+      line-height: 1.55;
+      cursor: grab;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .para-sort:active { cursor: grabbing; }
+    .para-sort.is-dragging {
+      opacity: .55;
+      border-color: rgba(212,184,122,.55);
+    }
+    .para-sort.is-drag-over {
+      border-color: #56ccf2;
+      box-shadow: 0 0 0 2px rgba(86,204,242,.25);
+    }
+    .para-sort.is-ok { border-color: #22c55e; background: rgba(34,197,94,.1); }
+    .para-sort.is-bad { border-color: #f87171; background: rgba(248,113,113,.08); }
+    .para-pos {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: .95rem;
+      color: #081428;
+      background: linear-gradient(145deg, #f8efd8, #d4b87a);
+      flex-shrink: 0;
+    }
+    .para-letter {
+      font-weight: 800;
+      color: #93c5fd;
+      padding-top: 4px;
+      min-width: 1.2rem;
+    }
+    .para-body { min-width: 0; }
+    .para-move {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .para-move button {
+      appearance: none;
+      border: 1px solid rgba(120,160,210,.35);
+      background: rgba(8,22,48,.65);
+      color: #bae6fd;
+      border-radius: 8px;
+      width: 2rem;
+      height: 1.7rem;
+      font-size: .85rem;
+      font-weight: 800;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .para-move button:hover:not(:disabled) {
+      border-color: #56ccf2;
+      color: #fff;
+    }
+    .para-move button:disabled {
+      opacity: .35;
+      cursor: default;
+    }
+    .para-stack-hint {
+      font-size: .86rem;
+      color: #8fa3c4;
+      margin: 0 0 12px;
+    }
+    .purpose-row { display: grid; grid-template-columns: minmax(0,1fr) 7rem; gap: 10px; align-items: center; margin-bottom: 10px; }
+    @media (max-width: 640px) { .purpose-row { grid-template-columns: 1fr; } }
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; margin: 10px 0 12px; }
+    @media (max-width: 640px) { .check-grid { grid-template-columns: 1fr; } }
+    .check-grid label {
+      display: flex; gap: 8px; align-items: flex-start; font-size: .9rem; color: #d5e2f8;
+      padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(120,160,210,.16); background: rgba(8,22,48,.35);
+      cursor: pointer;
+    }
+    .check-grid input { margin-top: 3px; }
+    .check-grid label.is-ok { border-color: #22c55e; background: rgba(34,197,94,.12); }
+    .check-grid label.is-bad { border-color: #f87171; background: rgba(248,113,113,.1); }
+    .model-ordered .para-card { background: #f3ebe0; color: #2a241c; border-color: rgba(42,36,28,.14); }
+    .model-ordered .para-card b { color: #1a2f3d; }
+
+    /* Write rail: cream paper, dark ink — readable */
+    .art-write-side {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+    @media (min-width: 960px) {
+      .art-write-side {
+        position: sticky;
+        top: 56px;
+        max-height: calc(100vh - 72px);
+        overflow: auto;
+        padding-right: 2px;
+      }
+    }
+    .art-rail {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 184, 122, 0.35);
+      background: #f7f1e8;
+      color: #2a241c;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    }
+    .art-rail-head {
+      background: linear-gradient(135deg, #1a2f3d 0%, #243d52 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 9px 12px;
+    }
+    .art-rail-body {
+      padding: 10px 12px 12px;
+      font-size: 0.84rem;
+      line-height: 1.4;
+    }
+    .art-struct {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .art-struct label {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      margin: 0;
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(42, 36, 28, 0.12);
+      background: rgba(255, 255, 255, 0.55);
+      cursor: pointer;
+      color: #2a241c;
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+    .art-struct label:has(input:checked) {
+      border-color: rgba(47, 122, 78, 0.45);
+      background: rgba(47, 122, 78, 0.12);
+    }
+    .art-struct input { margin-top: 2px; }
+    .art-struct strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #1a2f3d;
+      margin-bottom: 2px;
+    }
+    .art-lang-block { margin: 0 0 10px; }
+    .art-lang-block:last-child { margin-bottom: 0; }
+    .art-lang-block h4 {
+      margin: 0 0 5px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #3d5a4c;
+    }
+    .art-lang-block ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 3px;
+    }
+    .art-lang-block li {
+      color: #2a241c;
+      padding: 3px 0 3px 0.9em;
+      position: relative;
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+    .art-lang-block li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      color: #2f7a4e;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main class="wls-page" data-mb2-unit="1" data-mb2-skill="writing" data-mb2-ex="article-nostalgia">
+    <header class="wls-top">
+      <div>
+        <div class="wls-kicker">Mastering B2 · Unit 1</div>
+        <h1>Writing Part 2 — Article</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Writing</a>
+    </header>
+    <p class="wls-lead">Nostalgia model → paragraph order &amp; techniques → write your own lifestyle article (140&ndash;190 words).</p>
+
+    <nav class="wls-steps" aria-label="Lesson steps">
+      <button type="button" class="wls-step is-active" data-step="0">1 · Task</button>
+      <button type="button" class="wls-step" data-step="1">2 · Order</button>
+      <button type="button" class="wls-step" data-step="2">3 · Purposes</button>
+      <button type="button" class="wls-step" data-step="3">4 · Techniques</button>
+      <button type="button" class="wls-step" data-step="4">5 · Write</button>
+    </nav>
+
+    <!-- 0 Task + tips -->
+    <section class="wls-panel is-active" id="panel-0">
+      <h2 class="wls-section-title">The task</h2>
+      <p class="wls-instr">You have seen this announcement in an international magazine. Read it, then put the model paragraphs in order on the next step.</p>
+      <div class="art-prompt">
+        <h3>WHY ARE PEOPLE SO NOSTALGIC FOR THE PAST?</h3>
+        <p>As we look to the future, so many people like to look back to where they&rsquo;ve come from. What are the reasons for this love of our past lives? And why does it sometimes seem so much better than the present? The three best articles will be published in next month&rsquo;s magazine.</p>
+      </div>
+      <aside class="wls-howto" style="position:static;max-width:36rem">
+        <div class="wls-howto-head">Don&rsquo;t forget!</div>
+        <div class="wls-howto-body">
+          <ol>
+            <li>Begin with an interesting opening paragraph.</li>
+            <li>Include direct questions and/or direct speech for a lively article.</li>
+            <li>Use contractions and phrasal verbs for an informal style.</li>
+            <li>Include a range of descriptive language and linking words.</li>
+            <li>Leave the reader something to think about at the end.</li>
+            <li>Give your article a catchy title.</li>
+          </ol>
+        </div>
+      </aside>
+      <div class="wls-nav-row">
+        <span></span>
+        <button type="button" class="btn-primary" data-next>Next · Order &rarr;</button>
+      </div>
+    </section>
+
+    <!-- 1 Order paragraphs -->
+    <section class="wls-panel" id="panel-1">
+      <h2 class="wls-section-title">1 Put the paragraphs in order</h2>
+      <p class="wls-instr">
+        Model title: <strong>Back to the past</strong>.
+        Drag the cards so <strong>1 is at the top</strong> (then 2, 3, 4). Or use ↑ ↓.
+      </p>
+      <p class="para-stack-hint">Top of the stack = opening paragraph of the article.</p>
+      <div class="para-stack" id="para-stack" aria-label="Reorder paragraphs"></div>
+      <div class="wls-actions">
+        <button type="button" class="btn-check" id="order-check">Check order</button>
+        <button type="button" class="btn-reset" id="order-reset">Shuffle again</button>
+      </div>
+      <p class="wls-feedback" id="order-fb" role="status"></p>
+      <div class="model-ordered" id="model-ordered" hidden></div>
+      <div class="wls-nav-row">
+        <button type="button" class="btn-secondary" data-prev>&larr; Back</button>
+        <button type="button" class="btn-primary" data-next>Next · Purposes &rarr;</button>
+      </div>
+    </section>
+
+    <!-- 2 Purposes — FCE_SENTENCE_HALVES_MATCH (same engine as Unit 9 / listening) -->
+    <section class="wls-panel" id="panel-2">
+      <h2 class="wls-section-title">2 Match paragraphs to purposes</h2>
+      <p class="wls-instr">
+        Match paragraphs <strong>1&ndash;4</strong> (correct article order) to purposes <strong>a&ndash;d</strong>:
+        click a paragraph, then a purpose &mdash; it <strong>moves opposite</strong> that line (or drag).
+      </p>
+      <p id="purpose-hint" class="shm-hint" aria-live="polite">
+        <span class="match-hint-inner">Click a paragraph, then a purpose — it seats opposite that line.</span>
+      </p>
+      <div class="shm-layout">
+        <div class="shm-pair-head">
+          <div class="shm-col-title">Paragraphs 1 &ndash; 4</div>
+          <div class="shm-col-title">Purposes a &ndash; d</div>
+        </div>
+        <div class="shm-pairs" id="purpose-rows">
+          <!-- filled by JS with ordered model text -->
+        </div>
+        <div id="purpose-bank" class="shm-endings-box" hidden>
+          <button type="button" class="shm-ending" data-letter="a"><span class="end-key">a</span> Summary of the main ideas</button>
+          <button type="button" class="shm-ending" data-letter="b"><span class="end-key">b</span> Communicating the first idea giving opinions and examples</button>
+          <button type="button" class="shm-ending" data-letter="c"><span class="end-key">c</span> Introducing with a direct question to the reader</button>
+          <button type="button" class="shm-ending" data-letter="d"><span class="end-key">d</span> Communicating the second idea giving opinions and examples</button>
+        </div>
+      </div>
+      <div class="wls-actions">
+        <button type="button" class="btn-check" id="purpose-check">Check</button>
+        <button type="button" class="btn-reset" id="purpose-reset">Reset</button>
+      </div>
+      <p class="wls-feedback" id="purpose-fb" role="status"></p>
+      <div class="wls-nav-row">
+        <button type="button" class="btn-secondary" data-prev>&larr; Back</button>
+        <button type="button" class="btn-primary" data-next>Next · Techniques &rarr;</button>
+      </div>
+    </section>
+
+    <!-- 3 Techniques -->
+    <section class="wls-panel" id="panel-3">
+      <h2 class="wls-section-title">3 Which techniques are in the model?</h2>
+      <p class="wls-instr">Tick the techniques you can find in <em>Back to the past</em>. Then Check.</p>
+      <div class="check-grid" id="tech-grid"></div>
+      <div class="wls-actions">
+        <button type="button" class="btn-check" id="tech-check">Check</button>
+        <button type="button" class="btn-reset" id="tech-reset">Clear</button>
+      </div>
+      <p class="wls-feedback" id="tech-fb" role="status"></p>
+      <p class="wls-instr" style="margin-top:12px">Ex. 4 &mdash; look back at the ordered model and underline examples of the techniques you ticked (on paper or mentally).</p>
+      <div class="wls-nav-row">
+        <button type="button" class="btn-secondary" data-prev>&larr; Back</button>
+        <button type="button" class="btn-primary" data-next>Next · Write &rarr;</button>
+      </div>
+    </section>
+
+    <!-- 4 Write -->
+    <section class="wls-panel" id="panel-4">
+      <h2 class="wls-section-title">5 Write your article</h2>
+      <p class="wls-instr wls-instr--tight">Write <strong>140&ndash;190 words</strong>. Structure + useful language stay beside you.</p>
+      <div class="wls-write-grid">
+        <div>
+          <div class="art-prompt">
+            <h3>UNHAPPY WITH YOUR LIFESTYLE? CHANGE IT!</h3>
+            <p>What would make your life better? Think of two changes that would have a positive effect on your life. The three best articles will be published in next month&rsquo;s magazine.</p>
+          </div>
+          <div class="wls-write-box">
+            <label for="art-ta">Your article</label>
+            <textarea id="art-ta" placeholder="Catchy title&#10;&#10;Have you ever …"></textarea>
+            <div class="wls-write-meta" id="art-wc"></div>
+          </div>
+        </div>
+        <aside class="art-write-side" aria-label="Structure and useful language">
+          <div class="art-rail">
+            <div class="art-rail-head">Structure (tick as you go)</div>
+            <div class="art-rail-body">
+              <ul class="art-struct">
+                <li>
+                  <label>
+                    <input type="checkbox" />
+                    <span><strong>1 · Title</strong> Catchy title for the article</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox" />
+                    <span><strong>2 · Opening</strong> Hook the reader &mdash; direct question / lively start</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox" />
+                    <span><strong>3 · Idea 1</strong> First change &mdash; opinions + examples</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox" />
+                    <span><strong>4 · Idea 2</strong> Second change &mdash; opinions + examples</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox" />
+                    <span><strong>5 · Ending</strong> Short summary / leave the reader something to think about</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="art-rail">
+            <div class="art-rail-head">Useful language</div>
+            <div class="art-rail-body">
+              <div class="art-lang-block">
+                <h4>Addressing the reader</h4>
+                <ul>
+                  <li>You wouldn&rsquo;t believe &hellip;</li>
+                  <li>Have you ever &hellip;?</li>
+                  <li>What would life be like if &hellip;</li>
+                  <li>You absolutely must &hellip;</li>
+                  <li>Just imagine &hellip;</li>
+                  <li>I&rsquo;m sure you&rsquo;d agree &hellip;</li>
+                </ul>
+              </div>
+              <div class="art-lang-block">
+                <h4>Attitude adverbs</h4>
+                <ul>
+                  <li>Importantly, &hellip;</li>
+                  <li>Surprisingly, &hellip;</li>
+                  <li>Essentially, &hellip;</li>
+                  <li>Suddenly, &hellip;</li>
+                  <li>Amazingly, &hellip;</li>
+                  <li>Incredibly, &hellip;</li>
+                </ul>
+              </div>
+              <div class="art-lang-block">
+                <h4>Developing points</h4>
+                <ul>
+                  <li>Let&rsquo;s start with &hellip;</li>
+                  <li>On top of all that, &hellip;</li>
+                  <li>What&rsquo;s more, &hellip;</li>
+                  <li>Above all, &hellip;</li>
+                  <li>Another advantage of &hellip;</li>
+                  <li>Yet another reason is &hellip;</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <div class="wls-nav-row">
+        <button type="button" class="btn-secondary" data-prev>&larr; Back</button>
+        <a class="btn-primary" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center">Done · Writing hub</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../js/fce-sentence-halves-match-engine.js"></script>
+  <script>
+(function () {
+  var PARAS = {
+    A: "The key is to be able to have this kind of positive selection in the present. But with bills to pay and a nine-to-five job, it\u2019s no surprise that the present often proves to be more of a challenge.",
+    B: "The thing is, we tend to focus on positive memories. If you\u2019re anything like me, you\u2019ll remember parties and holidays rather than a job you disliked. Stressful aspects of life are going to dominate the present but not the past. That distance almost allows us to forget the things we simply don\u2019t want to remember.",
+    C: "People love to look back at the good old days and to take a trip down memory lane. Why does the present very rarely live up to our nostalgia for the past?",
+    D: "An obvious answer is that we\u2019re getting older. We might reflect that at that point in the past, we had our lives ahead of us and all the excitement and mystery that goes with it. Another response might be that our lives were simpler then. This is almost certainly the case with childhood. We had someone else to look after us and fewer responsibilities."
+  };
+  var ORDER_KEY = ["C", "D", "B", "A"];
+  /* paragraphs 1–4 in correct order → purpose letters */
+  var PURPOSE_KEY = { 1: "c", 2: "b", 3: "d", 4: "a" };
+
+  var TECH = [
+    { id: "informal", label: "informal language", yes: true },
+    { id: "neutral", label: "taking a neutral standpoint", yes: false },
+    { id: "questions", label: "asking the reader questions", yes: true },
+    { id: "formal", label: "formal language", yes: false },
+    { id: "idioms", label: "idioms", yes: true },
+    { id: "semiformal", label: "semi-formal language", yes: false },
+    { id: "address", label: "addressing the reader", yes: true },
+    { id: "title", label: "a catchy title", yes: true },
+    { id: "headings", label: "headings", yes: false },
+    { id: "adj", label: "a range of adjectives and adverbs", yes: true }
+  ];
+
+  var step = 0;
+  var panels = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("panel-" + i); });
+  var stepBtns = document.querySelectorAll(".wls-step");
+
+  function showStep(n) {
+    step = Math.max(0, Math.min(4, n));
+    panels.forEach(function (p, i) { p.classList.toggle("is-active", i === step); });
+    stepBtns.forEach(function (b) {
+      b.classList.toggle("is-active", Number(b.getAttribute("data-step")) === step);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  stepBtns.forEach(function (b) {
+    b.addEventListener("click", function () { showStep(Number(b.getAttribute("data-step"))); });
+  });
+  document.querySelectorAll("[data-next]").forEach(function (b) {
+    b.addEventListener("click", function () { showStep(step + 1); });
+  });
+  document.querySelectorAll("[data-prev]").forEach(function (b) {
+    b.addEventListener("click", function () { showStep(step - 1); });
+  });
+
+  /* Sortable paragraph stack — top = position 1 */
+  var stackEl = document.getElementById("para-stack");
+  var orderState = ["A", "B", "C", "D"];
+  var dragFrom = null;
+
+  function shuffleOrder() {
+    var arr = ["A", "B", "C", "D"];
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i];
+      arr[i] = arr[j];
+      arr[j] = t;
+    }
+    /* avoid starting already correct */
+    if (arr.join("") === ORDER_KEY.join("")) {
+      arr.push(arr.shift());
+    }
+    orderState = arr;
+  }
+
+  function moveItem(from, to) {
+    if (from === to || from < 0 || to < 0 || from >= orderState.length || to >= orderState.length) return;
+    var item = orderState.splice(from, 1)[0];
+    orderState.splice(to, 0, item);
+    renderStack();
+  }
+
+  function renderStack() {
+    stackEl.innerHTML = "";
+    orderState.forEach(function (L, idx) {
+      var card = document.createElement("div");
+      card.className = "para-sort";
+      card.setAttribute("draggable", "true");
+      card.setAttribute("data-letter", L);
+      card.setAttribute("data-index", String(idx));
+      card.setAttribute("aria-grabbed", "false");
+
+      var pos = document.createElement("span");
+      pos.className = "para-pos";
+      pos.textContent = String(idx + 1);
+
+      var letEl = document.createElement("span");
+      letEl.className = "para-letter";
+      letEl.textContent = L;
+
+      var body = document.createElement("div");
+      body.className = "para-body";
+      body.textContent = PARAS[L];
+
+      var moves = document.createElement("div");
+      moves.className = "para-move";
+      var up = document.createElement("button");
+      up.type = "button";
+      up.setAttribute("aria-label", "Move paragraph " + L + " up");
+      up.textContent = "↑";
+      up.disabled = idx === 0;
+      up.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        moveItem(idx, idx - 1);
+      });
+      var down = document.createElement("button");
+      down.type = "button";
+      down.setAttribute("aria-label", "Move paragraph " + L + " down");
+      down.textContent = "↓";
+      down.disabled = idx === orderState.length - 1;
+      down.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        moveItem(idx, idx + 1);
+      });
+      moves.appendChild(up);
+      moves.appendChild(down);
+
+      card.appendChild(pos);
+      card.appendChild(letEl);
+      card.appendChild(body);
+      card.appendChild(moves);
+
+      card.addEventListener("dragstart", function (ev) {
+        dragFrom = idx;
+        card.classList.add("is-dragging");
+        card.setAttribute("aria-grabbed", "true");
+        try {
+          ev.dataTransfer.setData("text/plain", String(idx));
+          ev.dataTransfer.effectAllowed = "move";
+        } catch (e) { /* ignore */ }
+        clearMarks();
+      });
+      card.addEventListener("dragend", function () {
+        dragFrom = null;
+        card.classList.remove("is-dragging");
+        card.setAttribute("aria-grabbed", "false");
+        stackEl.querySelectorAll(".para-sort").forEach(function (el) {
+          el.classList.remove("is-drag-over");
+        });
+      });
+      card.addEventListener("dragover", function (ev) {
+        ev.preventDefault();
+        card.classList.add("is-drag-over");
+      });
+      card.addEventListener("dragleave", function (ev) {
+        if (!card.contains(ev.relatedTarget)) card.classList.remove("is-drag-over");
+      });
+      card.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        card.classList.remove("is-drag-over");
+        var to = idx;
+        var from = dragFrom;
+        if (from == null) {
+          try { from = parseInt(ev.dataTransfer.getData("text/plain"), 10); } catch (e) { from = null; }
+        }
+        if (from == null || isNaN(from)) return;
+        moveItem(from, to);
+      });
+
+      stackEl.appendChild(card);
+    });
+  }
+
+  function clearMarks() {
+    stackEl.querySelectorAll(".para-sort").forEach(function (el) {
+      el.classList.remove("is-ok", "is-bad");
+    });
+    var fb = document.getElementById("order-fb");
+    fb.textContent = "";
+    fb.className = "wls-feedback";
+    document.getElementById("model-ordered").hidden = true;
+  }
+
+  function renderOrdered() {
+    var box = document.getElementById("model-ordered");
+    box.hidden = false;
+    box.innerHTML = "<p class=\"wls-instr\"><strong>Back to the past</strong> (correct order)</p>" +
+      ORDER_KEY.map(function (L, idx) {
+        return '<div class="para-card"><b>' + (idx + 1) + " · " + L + "</b>" + PARAS[L] + "</div>";
+      }).join("");
+  }
+
+  document.getElementById("order-check").onclick = function () {
+    var ok = 0;
+    var cards = stackEl.querySelectorAll(".para-sort");
+    ORDER_KEY.forEach(function (key, idx) {
+      var good = orderState[idx] === key;
+      if (cards[idx]) {
+        cards[idx].classList.toggle("is-ok", good);
+        cards[idx].classList.toggle("is-bad", !good);
+      }
+      if (good) ok++;
+    });
+    var fb = document.getElementById("order-fb");
+    fb.textContent = ok + " / 4 correct";
+    fb.className = "wls-feedback " + (ok === 4 ? "is-ok" : "is-bad");
+    if (ok === 4) renderOrdered();
+    save(ok === 4 ? 40 : Math.round((ok / 4) * 35));
+  };
+  document.getElementById("order-reset").onclick = function () {
+    shuffleOrder();
+    renderStack();
+    clearMarks();
+  };
+
+  shuffleOrder();
+  renderStack();
+
+  /* purposes — shared opposite-seat matcher */
+  var purposeRows = document.getElementById("purpose-rows");
+  purposeRows.innerHTML = ORDER_KEY.map(function (L, idx) {
+    var n = idx + 1;
+    return (
+      '<div class="shm-pair" data-line="' +
+      n +
+      '">' +
+      '<div class="shm-begin"><span class="num">' +
+      n +
+      " · " +
+      L +
+      '.</span> <span class="begin">' +
+      PARAS[L] +
+      "</span></div>" +
+      '<div class="shm-slot" aria-label="Purpose opposite paragraph ' +
+      n +
+      '"></div></div>'
+    );
+  }).join("");
+
+  function clearPurposeBad() {
+    purposeRows.querySelectorAll(".shm-pair").forEach(function (row) {
+      row.classList.remove("is-bad-line");
+    });
+    var fb = document.getElementById("purpose-fb");
+    fb.textContent = "";
+    fb.className = "wls-feedback";
+  }
+
+  var purposeApi =
+    window.FCE_SENTENCE_HALVES_MATCH &&
+    FCE_SENTENCE_HALVES_MATCH.mount({
+      pairsRoot: "#purpose-rows",
+      bankRoot: "#purpose-bank",
+      hintEl: "#purpose-hint .match-hint-inner",
+      onInteract: clearPurposeBad
+    });
+
+  document.getElementById("purpose-check").onclick = function () {
+    if (purposeApi) purposeApi.clearPicks();
+    var linked = purposeApi ? purposeApi.getLinked() : {};
+    var ok = 0;
+    for (var n = 1; n <= 4; n++) {
+      var got = linked[String(n)] || "";
+      var good = got === PURPOSE_KEY[n];
+      var row = purposeRows.querySelector('.shm-pair[data-line="' + n + '"]');
+      if (row) row.classList.toggle("is-bad-line", !!got && !good);
+      if (good) ok++;
+    }
+    var fb = document.getElementById("purpose-fb");
+    fb.textContent = ok + " / 4 correct";
+    fb.className = "wls-feedback " + (ok === 4 ? "is-ok" : "is-bad");
+    save(ok === 4 ? 70 : 50);
+  };
+  document.getElementById("purpose-reset").onclick = function () {
+    if (purposeApi) purposeApi.reset();
+    clearPurposeBad();
+  };
+
+  /* techniques */
+  var grid = document.getElementById("tech-grid");
+  TECH.forEach(function (t, idx) {
+    var lab = document.createElement("label");
+    lab.innerHTML = '<input type="checkbox" id="tech' + idx + '" /> <span>' + (idx + 1) + ". " + t.label + "</span>";
+    grid.appendChild(lab);
+  });
+  document.getElementById("tech-check").onclick = function () {
+    var ok = 0;
+    TECH.forEach(function (t, idx) {
+      var inp = document.getElementById("tech" + idx);
+      var lab = inp.parentNode;
+      var good = !!inp.checked === t.yes;
+      lab.classList.toggle("is-ok", good);
+      lab.classList.toggle("is-bad", !good);
+      if (good) ok++;
+    });
+    var fb = document.getElementById("tech-fb");
+    fb.textContent = ok + " / " + TECH.length + " correct";
+    fb.className = "wls-feedback " + (ok === TECH.length ? "is-ok" : "is-bad");
+    save(ok === TECH.length ? 85 : 75);
+  };
+  document.getElementById("tech-reset").onclick = function () {
+    TECH.forEach(function (t, idx) {
+      var inp = document.getElementById("tech" + idx);
+      inp.checked = false;
+      inp.parentNode.classList.remove("is-ok", "is-bad");
+    });
+    document.getElementById("tech-fb").textContent = "";
+    document.getElementById("tech-fb").className = "wls-feedback";
+  };
+
+  var ta = document.getElementById("art-ta");
+  var wc = document.getElementById("art-wc");
+  function updateWc() {
+    var words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+    var inRange = words >= 140 && words <= 190;
+    wc.innerHTML = "<span" + (inRange ? ' class="in-range"' : "") + ">" + words + " words</span><span>Target 140–190</span>";
+    if (words >= 120) save(words >= 140 ? 100 : 90);
+  }
+  ta.addEventListener("input", updateWc);
+  updateWc();
+
+  function save(pct) {
+    if (window.MasteringB2Progress) {
+      MasteringB2Progress.record({
+        unit: 1,
+        skill: "writing",
+        exerciseId: "article-nostalgia",
+        percent: pct
+      });
+    }
+  }
+
+  showStep(0);
+})();
+  </script>
+</body>
+</html>

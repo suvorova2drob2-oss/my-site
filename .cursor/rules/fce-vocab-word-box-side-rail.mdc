@@ -1,0 +1,81 @@
+---
+description: FCE / Mastering B2 — word box gap-fill: bank sticky on the RIGHT, readable mid-size type.
+globs: unit*-vocabulary/**/*.html,css/fce-vocab-word-box.css,css/fce-vocab-music-groups.css
+alwaysApply: false
+---
+
+# FCE vocab · word box — side rail (hard UX)
+
+## When this applies
+
+Any **word bank + numbered gaps / slot buttons** on FCE pages (`unit*-vocabulary/`, `Grammar/` workbook gaps with chips):
+
+- click gap → click chip (each word once or as in book)
+- NOT blog/story paper surfaces (those use `fce-vocab-story-gap.css` — same **right rail** idea)
+
+## Hard layout (do NOT put bank above sentences)
+
+1. **Wrapper:** `.vocab-bank-workspace` — CSS grid.
+2. **Desktop (`min-width: 760px`):**
+   - **Left:** sentences / gap list (`.vocab-bank-main`)
+   - **Right:** word box (`.vocab-bank-rail`) — **`position: sticky; top: 12px`**
+   - Grid: `minmax(0, 1fr) minmax(168px, 220px)` — **bank is the second column (right)**.
+3. **Bank chips:** **vertical stack** in the rail (`flex-direction: column`, full-width buttons) — not a horizontal strip on top.
+4. **Hint** lives **above the sentence list** (left column), not above the bank.
+5. **Mobile:** bank rail **below** sentences is OK; chips may wrap in a row inside the rail.
+
+## Typography — “golden middle”
+
+Use tokens from `css/fce-vocab-word-box.css` — **do not** shrink below `0.86rem` for task text:
+
+| Token | Size | Use |
+|-------|------|-----|
+| `--wb-font-body` | **0.96rem** | Sentences, collocation rows |
+| `--wb-font-chip` | **0.9rem** | Bank chips |
+| `--wb-font-hint` | **0.9rem** | Click hint bar |
+| `--wb-line` | **1.62** | Line height |
+
+Forbidden: `0.78–0.84rem` body copy on gap tasks; oversized `1.05rem+` sentence lists.
+
+## Shared files
+
+| Role | Path |
+|------|------|
+| Layout + type | `css/fce-vocab-word-box.css` |
+| Coursebook groups | `css/fce-vocab-music-groups.css` (extends tokens) |
+| Story / paper + right phrase box | `css/fce-vocab-story-gap.css` |
+| Etalon — sentence slots | `unit2-vocabulary/music-word-box/index.html` |
+| Etalon — collocation groups | `unit2-vocabulary/music-coursebook/index.html` |
+| Etalon — story gaps | `unit2-vocabulary/get-phrasal-verbs/index.html` |
+
+## Markup skeleton
+
+```html
+<link rel="stylesheet" href="…/css/fce-vocab-word-box.css" />
+<body class="vocab-wordbox-page">
+  <div class="vocab-bank-workspace">
+    <div class="vocab-bank-main">
+      <p class="vocab-wordbox-hint">Click a gap, then a word on the right…</p>
+      <div id="sentences"></div>
+    </div>
+    <aside class="vocab-bank-rail" aria-label="Word box">
+      <div class="vocab-bank" id="word-bank"></div>
+    </aside>
+  </div>
+</body>
+```
+
+## Don’t
+
+- Word box as a **horizontal band above** the task (old anti-pattern).
+- Bank on the **left** for FCE gap-fill (CPE Unit 12 collocations may differ).
+- Tiny chips (`0.78rem`) or giant sentence text.
+- Nested scroll on the sentence column just to “fit” the bank — widen page to `min(980px)` via `.vocab-wordbox-page .page`.
+
+## New exercise checklist
+
+- [ ] `.vocab-bank-workspace` + right `.vocab-bank-rail`
+- [ ] Hint in left column
+- [ ] `--wb-font-*` tokens; no ad-hoc smaller fonts
+- [ ] Sticky bank on desktop
+- [ ] Check / Reset unchanged

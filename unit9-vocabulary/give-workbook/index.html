@@ -93,48 +93,16 @@
     .gap-in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.18); }
     .gap-in.ok { border-color: rgba(54, 211, 153, 0.9); background: rgba(6, 78, 59, 0.35); }
     .gap-in.bad { border-color: rgba(248, 113, 113, 0.9); background: rgba(127, 29, 29, 0.32); }
-    .match-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
-      gap: 16px;
-      align-items: start;
-    }
-    @media (max-width: 720px) {
-      .match-grid { grid-template-columns: 1fr; }
-    }
-    .match-row, .ending-btn {
-      width: 100%;
-      text-align: left;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(8, 22, 48, 0.35);
-      color: inherit;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      font: inherit;
-      font-size: 0.9rem;
-      line-height: 1.45;
-      cursor: pointer;
-    }
-    .match-row:hover, .ending-btn:hover { border-color: #5a7ab0; }
-    .match-row.pick, .ending-btn.pick { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
-    .match-row.bad { border-color: var(--bad); }
-    .match-row .badge {
-      float: right;
-      color: #86efac;
-      font-weight: 800;
-      margin-left: 10px;
-    }
-    .ending-btn.linked { border-color: rgba(54, 211, 153, 0.55); background: rgba(54, 211, 153, 0.08); }
-    .ending-letter { color: #86efac; font-weight: 800; display: inline-block; min-width: 1.25rem; }
-    .hint {
-      color: #b8cce8;
-      font-size: 0.86rem;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(86, 204, 242, 0.08);
-      border: 1px solid rgba(86, 204, 242, 0.25);
+    .shm-pair.is-bad-line { border-color: var(--bad); }
+    .example-pair {
       margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(187, 247, 208, 0.35);
+      background: rgba(6, 78, 59, 0.25);
+      font-size: 0.9rem;
+      color: #bbf7d0;
+      line-height: 1.45;
     }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     button.action {
@@ -163,6 +131,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/fce-sentence-halves-match.css" />
 </head>
 <body>
   <main class="page">
@@ -198,25 +167,46 @@
     <section class="task" aria-label="Give matching">
       <h2>2. Match the sentence beginnings to the endings</h2>
       <p class="instr">
-        Match the sentence beginnings <strong>(1&ndash;5)</strong> to the endings <strong>(a&ndash;e)</strong>. There is an example at the beginning (0).
+        Match <strong>(1&ndash;5)</strong> with <strong>(a&ndash;e)</strong>:
+        click a beginning, then an ending &mdash; it moves opposite that line.
+        Example at the beginning (0).
       </p>
-      <p class="hint" id="matchHint">Choose a beginning or an ending to make a pair. Example: <strong>0 → f</strong>.</p>
+      <p class="shm-hint" id="matchHint"><span class="match-hint-inner">Click a beginning, then an ending — it moves opposite that line. (Or drag to swap.)</span></p>
+      <p class="example-pair"><strong>Example 0 &rarr; f:</strong> &hellip; <strong>f</strong> the work on time.</p>
 
-      <div class="match-grid">
-        <div>
-          <button type="button" class="match-row" data-line="1">1 We&rsquo;ll be giving out details <span class="badge" id="badge-1">&mdash;</span></button>
-          <button type="button" class="match-row" data-line="2">2 He gave a sigh of <span class="badge" id="badge-2">&mdash;</span></button>
-          <button type="button" class="match-row" data-line="3">3 My sister never gives <span class="badge" id="badge-3">&mdash;</span></button>
-          <button type="button" class="match-row" data-line="4">4 The man gave himself up <span class="badge" id="badge-4">&mdash;</span></button>
-          <button type="button" class="match-row" data-line="5">5 We decided to give <span class="badge" id="badge-5">&mdash;</span></button>
+      <div class="shm-layout">
+        <div class="shm-pair-head">
+          <div class="shm-col-title">Beginnings 1 &ndash; 5</div>
+          <div class="shm-col-title">Endings a &ndash; e</div>
         </div>
-        <div>
-          <button type="button" class="ending-btn" data-letter="a"><span class="ending-letter">a</span> up looking for the treasure.</button>
-          <button type="button" class="ending-btn" data-letter="b"><span class="ending-letter">b</span> when the police arrived.</button>
-          <button type="button" class="ending-btn" data-letter="c"><span class="ending-letter">c</span> in when she knows I&rsquo;m right.</button>
-          <button type="button" class="ending-btn" data-letter="d"><span class="ending-letter">d</span> about the trip after class.</button>
-          <button type="button" class="ending-btn" data-letter="e"><span class="ending-letter">e</span> relief when he saw his marks.</button>
-          <button type="button" class="ending-btn linked" disabled><span class="ending-letter">f</span> the work on time. <strong>0 → f</strong></button>
+        <div class="shm-pairs" id="match-rows">
+          <div class="shm-pair" data-line="1">
+            <div class="shm-begin"><span class="num">1.</span><span class="begin">We&rsquo;ll be giving out details</span></div>
+            <div class="shm-slot" aria-label="Ending opposite line 1"></div>
+          </div>
+          <div class="shm-pair" data-line="2">
+            <div class="shm-begin"><span class="num">2.</span><span class="begin">He gave a sigh of</span></div>
+            <div class="shm-slot" aria-label="Ending opposite line 2"></div>
+          </div>
+          <div class="shm-pair" data-line="3">
+            <div class="shm-begin"><span class="num">3.</span><span class="begin">My sister never gives</span></div>
+            <div class="shm-slot" aria-label="Ending opposite line 3"></div>
+          </div>
+          <div class="shm-pair" data-line="4">
+            <div class="shm-begin"><span class="num">4.</span><span class="begin">The man gave himself up</span></div>
+            <div class="shm-slot" aria-label="Ending opposite line 4"></div>
+          </div>
+          <div class="shm-pair" data-line="5">
+            <div class="shm-begin"><span class="num">5.</span><span class="begin">We decided to give</span></div>
+            <div class="shm-slot" aria-label="Ending opposite line 5"></div>
+          </div>
+        </div>
+        <div id="endings-bank" class="shm-endings-box" hidden>
+          <button type="button" class="shm-ending" data-letter="a"><span class="end-key">a</span> up looking for the treasure.</button>
+          <button type="button" class="shm-ending" data-letter="b"><span class="end-key">b</span> when the police arrived.</button>
+          <button type="button" class="shm-ending" data-letter="c"><span class="end-key">c</span> in when she knows I&rsquo;m right.</button>
+          <button type="button" class="shm-ending" data-letter="d"><span class="end-key">d</span> about the trip after class.</button>
+          <button type="button" class="shm-ending" data-letter="e"><span class="end-key">e</span> relief when he saw his marks.</button>
         </div>
       </div>
 
@@ -231,6 +221,7 @@
   <script src="../../js/prep-course-profile.js"></script>
   <script src="../../js/prep-site-content.js"></script>
   <script src="../../js/u9-vocab-course-context.js"></script>
+  <script src="../../js/fce-sentence-halves-match-engine.js"></script>
   <script>
 (function () {
   var GAP_KEY = {
@@ -244,9 +235,6 @@
     8: ["surprise"]
   };
   var MATCH_KEY = { 1: "d", 2: "e", 3: "c", 4: "b", 5: "a" };
-  var linked = Object.create(null);
-  var pickLine = null;
-  var pickLetter = null;
 
   function norm(v) {
     return String(v || "").trim().toLowerCase().replace(/\s+/g, " ");
@@ -287,86 +275,36 @@
     document.getElementById("gapFeedback").innerHTML = "";
   });
 
-  function setHint(text) {
-    document.getElementById("matchHint").innerHTML = text;
+  function clearMatchFeedback() {
+    document.querySelectorAll(".shm-pair").forEach(function (row) {
+      row.classList.remove("is-bad-line");
+    });
+    document.getElementById("matchFeedback").classList.remove("show");
   }
 
-  function clearPicks() {
-    pickLine = null;
-    pickLetter = null;
-    document.querySelectorAll(".match-row.pick, .ending-btn.pick").forEach(function (el) {
-      el.classList.remove("pick");
-    });
-  }
-
-  function syncMatch() {
-    for (var i = 1; i <= 5; i++) {
-      var badge = document.getElementById("badge-" + i);
-      if (badge) badge.textContent = linked[i] ? "\u2192 " + linked[i] : "\u2014";
-    }
-    document.querySelectorAll(".ending-btn:not([disabled])").forEach(function (btn) {
-      var letter = btn.getAttribute("data-letter");
-      var used = false;
-      for (var k = 1; k <= 5; k++) {
-        if (linked[k] === letter) used = true;
-      }
-      btn.classList.toggle("linked", used);
-    });
-  }
-
-  function applyPair(line, letter) {
-    for (var i = 1; i <= 5; i++) {
-      if (i !== line && linked[i] === letter) delete linked[i];
-    }
-    linked[line] = letter;
-    clearPicks();
-    syncMatch();
-    setHint("Pair added. Continue or check your answers.");
-  }
-
-  document.querySelectorAll(".match-row").forEach(function (row) {
-    row.addEventListener("click", function () {
-      var line = parseInt(row.getAttribute("data-line"), 10);
-      if (pickLetter) {
-        applyPair(line, pickLetter);
-        return;
-      }
-      clearPicks();
-      pickLine = line;
-      row.classList.add("pick");
-      setHint("Beginning <strong>" + line + "</strong> selected. Now choose an ending.");
-    });
-  });
-
-  document.querySelectorAll(".ending-btn:not([disabled])").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var letter = btn.getAttribute("data-letter");
-      if (pickLine) {
-        applyPair(pickLine, letter);
-        return;
-      }
-      clearPicks();
-      pickLetter = letter;
-      btn.classList.add("pick");
-      setHint("Ending <strong>" + letter + "</strong> selected. Now choose a beginning.");
-    });
+  var matchApi = window.FCE_SENTENCE_HALVES_MATCH.mount({
+    pairsRoot: "#match-rows",
+    bankRoot: "#endings-bank",
+    hintEl: "#matchHint .match-hint-inner",
+    onInteract: clearMatchFeedback
   });
 
   document.getElementById("checkMatch").addEventListener("click", function () {
-    clearPicks();
+    if (matchApi) matchApi.clearPicks();
     var score = 0;
     var lines = [];
-    document.querySelectorAll(".match-row").forEach(function (row) {
-      row.classList.remove("bad");
+    var linked = matchApi ? matchApi.getLinked() : {};
+    document.querySelectorAll(".shm-pair").forEach(function (row) {
+      row.classList.remove("is-bad-line");
     });
     for (var i = 1; i <= 5; i++) {
-      var got = linked[i] || "";
+      var got = linked[String(i)] || "";
       var ok = got === MATCH_KEY[i];
       if (ok) {
         score++;
       } else if (got) {
-        var row = document.querySelector('.match-row[data-line="' + i + '"]');
-        if (row) row.classList.add("bad");
+        var row = document.querySelector('.shm-pair[data-line="' + i + '"]');
+        if (row) row.classList.add("is-bad-line");
       }
       lines.push("<strong>" + i + ".</strong> " + (got ? esc(got) : "&mdash;") + " / key: <strong>" + MATCH_KEY[i] + "</strong>");
     }
@@ -376,16 +314,10 @@
   });
 
   document.getElementById("resetMatch").addEventListener("click", function () {
-    linked = Object.create(null);
-    clearPicks();
-    syncMatch();
-    document.querySelectorAll(".match-row.bad").forEach(function (row) { row.classList.remove("bad"); });
-    document.getElementById("matchFeedback").classList.remove("show");
+    if (matchApi) matchApi.reset();
+    clearMatchFeedback();
     document.getElementById("matchFeedback").innerHTML = "";
-    setHint("Choose a beginning or an ending to make a pair. Example: <strong>0 \u2192 f</strong>.");
   });
-
-  syncMatch();
 })();
   </script>
 <script src="../../js/mastering-b2-skill-progress.js"></script>

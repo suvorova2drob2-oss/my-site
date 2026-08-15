@@ -9,5 +9,9 @@ Put episode folders here:
 
 Lesson pages load them as `media/s01e0N/….mp4` (same folder as `lesson.html`).
 
-Upload this `media/` folder to your rented server with the rest of the site.
+Upload clips with `UPLOAD-FLEABAG-MEDIA.bat` at the repo root.
+Default mode uploads **only new or changed** episode folders (local stamp:
+`media/.upload-state.json`). Force one episode with `UPLOAD-FLEABAG-MEDIA.bat 4`,
+or everything with `UPLOAD-FLEABAG-MEDIA.bat all`.
+
 Do not open `lesson.html` via `file://` — use `http://` (local server or VPS).

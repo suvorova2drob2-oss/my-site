@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 4 Part 3 &mdash; Bedtime story word formation</title>
+  <link rel="stylesheet" href="../../../css/cpe-uoe-part3-wf-shell.css" />
+  <link rel="stylesheet" href="../../../css/mastering-b2-back-link.css" />
+</head>
+<body class="cpe-p3-body" data-mb2-unit="4" data-mb2-skill="uoe" data-mb2-ex="u4-p3-bedtime-story">
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Reading and Use of English &mdash; Part 3 Word formation</h1>
+        <p class="tag">Unit 4 &middot; A Good Story &middot; Bedtime story</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Use of English &mdash; Unit 4</a>
+    </header>
+
+    <p class="instr">
+      For questions <strong>1&ndash;8</strong>, read the text below. Use the word given in capitals at the end of some of the lines to form a word that fits in the gap in the same line. There is an example at the beginning <strong>(0)</strong>.
+    </p>
+
+    <div class="example">
+      <div class="lab">(0) &mdash; Example</div>
+      <p>
+        Did they manage to keep you <span class="done">ENTERTAINED</span> with these stories?
+        <span class="root">ENTERTAIN</span>
+      </p>
+    </div>
+
+    <section class="block">
+      <div class="block-title">A winning formula for the bedtime story</div>
+      <p class="line">
+        Do you remember going to bed as a child? Did your parents use to read to you? Did they manage to keep you entertained with these stories?
+      </p>
+      <p class="line" style="margin-top:14px;">
+        I have very fond memories of this part of my
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="childhood" aria-label="Gap 1 CHILD" /> <span class="root">CHILD</span></span>.
+        My dad jumping around, using a
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="variety" aria-label="Gap 2 VARY" /> <span class="root">VARY</span></span>
+        of voices for each character. I didn&rsquo;t want it to end.
+      </p>
+      <p class="line" style="margin-top:14px;">
+        Now, the results of a recent survey of 2,000 parents are out. It found that the
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="length" aria-label="Gap 3 LONG" /> <span class="root">LONG</span></span>
+        of the story was key &ndash; 8.6 minutes to be precise. This means your child is
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="relaxed" aria-label="Gap 4 RELAX" /> <span class="root">RELAX</span></span>
+        and ready to close their eyes. Any more or less and they are
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="unlikely" aria-label="Gap 5 LIKE" /> <span class="root">LIKE</span></span>
+        to settle down as easily.
+      </p>
+      <p class="line" style="margin-top:14px;">
+        As far as characters are concerned, dragons, wizards and fairies are the most popular
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="choices" aria-label="Gap 6 CHOOSE" /> <span class="root">CHOOSE</span></span>,
+        and even better if it&rsquo;s centred around a castle. Most
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="importantly" aria-label="Gap 7 IMPORTANT" /> <span class="root">IMPORTANT</span></span>,
+        despite having some drama in the middle, it has to have a happy ending. And perhaps bad news for more reserved parents, a quarter wanted their parents to show off their
+        <span class="gap-wrap"><input type="text" class="gap" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" data-accept="acting" aria-label="Gap 8 ACT" /> <span class="root">ACT</span></span>
+        skills!
+      </p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="check" id="btnCheck">Check answers</button>
+      <p class="score" id="scoreLine" hidden><strong id="scoreNum">0</strong> / 8 correct</p>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  var inputs = [].slice.call(document.querySelectorAll("input.gap"));
+
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function accepts(el) {
+    return norm(el.getAttribute("data-accept")).split("|").filter(Boolean);
+  }
+
+  function check() {
+    var ok = 0;
+    inputs.forEach(function (el) {
+      el.classList.remove("ok", "bad");
+      var got = norm(el.value);
+      if (!got) {
+        el.classList.add("bad");
+        return;
+      }
+      if (accepts(el).indexOf(got) >= 0) {
+        el.classList.add("ok");
+        ok++;
+      } else {
+        el.classList.add("bad");
+      }
+    });
+    document.getElementById("scoreNum").textContent = String(ok);
+    document.getElementById("scoreLine").hidden = false;
+    if (window.MasteringB2Progress) {
+      MasteringB2Progress.recordCheckFromDom(ok, inputs.length);
+    }
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", check);
+  inputs.forEach(function (el) {
+    el.addEventListener("input", function () {
+      el.classList.remove("ok", "bad");
+    });
+  });
+})();
+  </script>
+  <script src="../../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>
