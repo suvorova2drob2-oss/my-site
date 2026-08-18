@@ -4101,7 +4101,635 @@
       tagline: "Family home · memorial · desire & guilt",
       synopsis:
         "Fleabag and Claire return to their family home for the annual memorial lunch.",
-      beats: defaultBeats(8),
+      beats: [
+        {
+          id: "mammologist",
+          label: "Mammologist",
+          teacher: "Clip 1 · getting hold of someone · hassle · derive pleasure · discussion.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "I just can't get hold of her",
+            "it's a bit of a hassle",
+            "I derive pleasure from",
+          ],
+          watch: {
+            videoUrl: "media/s01e05/01-mammologist.mp4",
+            note:
+              "I just can't get hold of her · it's a bit of a hassle · I derive pleasure from…",
+          },
+          context: {
+            tone: "Lexical · contact that fails + inconvenience + what you get pleasure from",
+            meanings: [
+              "I just can't get hold of her = I can't reach her / she's not answering (phone, message, in person).",
+              "it's a bit of a hassle = it's slightly annoying / inconvenient (soft complaint, not a disaster).",
+              "I derive pleasure from (something) = I get enjoyment / satisfaction from it (more formal / wry than I enjoy).",
+            ],
+            examples: [
+              "GET HOLD OF — get hold of someone · can't get hold of her / him · try to get hold of · finally got hold of them.",
+              "I just can't get hold of her.",
+              "I've been trying to get hold of you all morning.",
+              "HASSLE — a hassle · a bit of a hassle · too much hassle · without the hassle.",
+              "It's a bit of a hassle.",
+              "Parking there's always a hassle.",
+              "DERIVE PLEASURE FROM — derive pleasure from something · derive no pleasure from · I derive pleasure from…",
+              "I derive pleasure from small, petty wins.",
+              "She derives no pleasure from the fuss — she just wants it done.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "He stayed completely calm, and…",
+              "The only way I derive any pleasure from this job is…",
+              "Gender of the doctor matters to me when…",
+              "It was a bit of a hassle / awkward because…",
+            ],
+            questions: [
+              {
+                q: "Professionalism: The doctor remains completely calm and gently brings Fleabag back to reality, saying: “The only way I derive any pleasure from this job is if I save your life.” How do you evaluate his reaction? Did he show the highest level of professionalism?",
+                examples: [
+                  "Yes — calm, clear boundary, no humiliation.",
+                  "He shut the joke down without shaming her.",
+                  "A bit cold — but that’s the job, not a date.",
+                  "Highest professionalism: save the life, ignore the rest.",
+                ],
+              },
+              {
+                q: "The Gender Question: Does the doctor's gender matter during examinations like this? Is it more comfortable for women to see female gynecologists/mammologists, or is professionalism more important than gender?",
+                examples: [
+                  "Comfort first — I’d rather see a woman.",
+                  "Skill > gender, if they treat you like a person.",
+                  "It depends on the exam / past experience.",
+                  "Choice should exist — not everyone feels the same.",
+                ],
+              },
+              {
+                q: "Awkward Situations: Have you ever had a funny or awkward moment during a doctor's appointment? How did you handle it?",
+                examples: [
+                  "I laughed it off — then got back to the point.",
+                  "I froze and just wanted it over.",
+                  "The doctor saved it with a dry line.",
+                  "I still can’t get hold of a GP who doesn’t make it weird.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "some-space",
+          label: "Some space",
+          teacher: "Clip 2 · personal space · give me some space.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "can you please give me some space?",
+            "you are standing close to me",
+          ],
+          watch: {
+            videoUrl: "media/s01e05/02-some-space.mp4",
+            note:
+              "Can you please give me some space? · You are standing close to me.",
+          },
+          context: {
+            tone: "Lexical · polite boundary + too close",
+            meanings: [
+              "Can you please give me some space? = polite request: step back / don’t crowd me (physical or emotional).",
+              "You are standing close to me = naming the problem: you’re in my personal space.",
+            ],
+            examples: [
+              "GIVE ME SOME SPACE — give me some space · can you please give me some space? · I need some space · don’t crowd me.",
+              "Can you please give me some space?",
+              "I need a bit of space — this queue is too tight.",
+              "STANDING CLOSE — you’re standing close to me · standing too close · a bit too close for comfort.",
+              "You’re standing close to me.",
+              "You’re standing a bit too close — could you take a step back?",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "My invisible bubble is…",
+              "Can you please give me some space?",
+              "You’re standing close to me, and I…",
+              "In a lift / queue / subway I…",
+            ],
+            questions: [
+              {
+                q: "What is your personal “invisible bubble”? How close can a stranger stand to you before you feel uncomfortable?",
+                examples: [
+                  "Arm’s length — any closer and I tense up.",
+                  "Culture: in my city people stand closer / further.",
+                  "Friends can come in; strangers stay outside.",
+                  "It shrinks on a packed train — I still hate it.",
+                ],
+              },
+              {
+                q: "How do you react when someone accidentally or intentionally invades your personal space (e.g., in a crowded subway, a supermarket queue, or a lift)?",
+                examples: [
+                  "I freeze and look at the floor.",
+                  "I say it: can you please give me some space?",
+                  "I step back first — then say you’re standing close to me.",
+                  "If it feels intentional, I get sharp / leave.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "hand-it-to-her",
+          label: "Hand it to her",
+          teacher:
+            "Clip 3 · compliments as status · waiting-room silence · the tree.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "got to hand it to her",
+            "who's Dad sawing in half?",
+            "my pilates fell through",
+          ],
+          watch: {
+            videoUrl: "media/s01e05/03-hand-it-to-her.mp4",
+            note:
+              "Got to hand it to her · Who’s Dad sawing in half? · My pilates fell through.",
+          },
+          context: {
+            tone: "Lexical · reluctant credit + a cutting joke + a plan that collapses",
+            meanings: [
+              "(you’ve) got to hand it to her = give her credit, even if you don’t like her / it hurts to admit it.",
+              "Who’s Dad sawing in half? = comic / cruel image: a magician sawing someone in half — here, a jab at Dad and the Godmother (who’s the ‘assistant’ in that trick?).",
+              "my pilates fell through = the class / plan was cancelled or didn’t happen (something fell through = it failed to go ahead).",
+            ],
+            examples: [
+              "HAND IT TO — you’ve got to hand it to her / him · got to hand it to her · I’ll hand it to you.",
+              "Got to hand it to her.",
+              "You’ve got to hand it to her — she always wins the room.",
+              "SAWING IN HALF — who’s Dad sawing in half? · saw someone in half · the magician’s assistant.",
+              "Who’s Dad sawing in half?",
+              "FELL THROUGH — my pilates fell through · the plan fell through · it fell through at the last minute.",
+              "My pilates fell through.",
+              "Dinner fell through, so we just sat in silence.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Got to hand it to her…",
+              "She corrected the compliment because…",
+              "The silence in that room…",
+              "Chopping the tree down is like…",
+            ],
+            questions: [
+              {
+                q: "Weaponized compliments & status games — The cushion & the hairscarf: Claire compliments the Godmother’s cushion (“I love your cushion”), to which the Godmother flatly replies, “It’s an original.” Fleabag tries next, calling her headwear a hat, only to be corrected: “It’s a hairscarf.” Why does the Godmother reject or correct their compliments instead of just saying “thank you”? How can a compliment be used to establish dominance or a sense of superiority in social situations?",
+                examples: [
+                  "Thank you would make them equals — she won’t.",
+                  "Correction = I know more than you; you got it wrong.",
+                  "It’s an original = my taste is rarer than your praise.",
+                  "A compliment can be a status test: will you accept, or raise the bar?",
+                ],
+              },
+              {
+                q: "The waiting room dynamic: Before Dad enters, the three women sit in painful, heavy silence. Fleabag notes to the audience that this happens every time they are left alone with her. What does awkward silence usually communicate in a room? Is it better to force small talk to break a tense silence, or is it better to remain quiet and let the discomfort sit? How do you personally handle intense social silence?",
+                examples: [
+                  "Silence says: we don’t owe each other warmth.",
+                  "I force small talk — my pilates fell through, the weather, anything.",
+                  "I let it sit — talking would hand her the room.",
+                  "I joke to survive: who’s Dad sawing in half?",
+                ],
+              },
+              {
+                q: "The symbolism of the tree (control vs. freedom) — The golden cage: The Godmother has a massive tree chopped down simply because a cat tried to climb it to get outside. What does this tell us about the Godmother’s need for absolute control over her environment? How does the tree symbolize the way she traps Dad and limits his freedom?",
+                examples: [
+                  "If it might escape, she removes the exit.",
+                  "Control first, living things second.",
+                  "Dad as the cat: the tree was a way out — she cut it.",
+                  "Got to hand it to her — she always wins the house.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "one-upping",
+          label: "One-upping",
+          teacher: "Clip 4 · discussion only · hijacking the room · the killjoy.",
+          blocks: ["watch", "speak"],
+          phrases: [],
+          watch: {
+            videoUrl: "media/s01e05/04-one-upping.mp4",
+            note: "Godmother hijacks a touching conversation · one-upping · killjoy.",
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · no forced tape phrases this beat — talk from the scene.",
+            starters: [
+              "She made it about herself because…",
+              "That’s not relating — that’s one-upping.",
+              "I was mid-story, and then they…",
+              "Malice, or an insecure habit?",
+            ],
+            questions: [
+              {
+                q: "Conversational narcissism & “one-upping” — The interrupter: The Godmother completely shifts a touching conversation about a deceased person to her own past marriage. Why do some people feel the need to hijack every conversation and make it about themselves? Do you think she does this out of malice, or is it an insecure habit?",
+                examples: [
+                  "Malice: she can’t stand anyone else being the subject.",
+                  "Insecure habit: silence feels like disappearing, so she grabs the mic.",
+                  "Grief talk makes her panic — so she swaps in her story.",
+                  "Both: the habit is selfish even if she doesn’t plot it.",
+                ],
+              },
+              {
+                q: "“One-upping” or conversational matching: There is a difference between sharing a relatable story to connect and “one-upping” someone to steal the spotlight. How can you tell when someone is genuinely trying to relate to you versus when they are just waiting for their turn to talk about themselves?",
+                examples: [
+                  "Relate: they ask a follow-up; the story stays yours.",
+                  "One-up: bigger, sadder, more glamorous — then they don’t come back to you.",
+                  "Matching: “I know that feeling” + space for you.",
+                  "Waiting to talk: eyes glaze until their slot.",
+                ],
+              },
+              {
+                q: "The “killjoy”: Have you ever been in a situation where you were excitedly sharing a happy or emotional story, and someone completely deflated the energy in the room with a negative or self-centered comment? How did you respond?",
+                examples: [
+                  "I laughed it off and finished my story anyway.",
+                  "I went quiet — the air left the room.",
+                  "I named it: can we stay with this for a second?",
+                  "I never told them a story like that again.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "sneaking",
+          label: "Sneaking",
+          teacher:
+            "Clip 5 · sneaking in your own home · PMT · the loo as a power play.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "why are we sneaking?",
+            "it's infuriating",
+            "he's horrifically hot",
+            "are you on your period?",
+            "PMT",
+            "why would you ask that?",
+            "plaits",
+            "take your nose out of other people's marriages",
+            "let me show you to the loo",
+          ],
+          watch: {
+            videoUrl: "media/s01e05/05-sneaking.mp4",
+            note:
+              "Why are we sneaking? · it’s infuriating · he’s horrifically hot · are you on your period? · PMT · why would you ask that? · plaits · take your nose out of other people’s marriages · let me show you to the loo.",
+          },
+          context: {
+            tone: "Lexical · sneaking + fury + crude period talk + nosy + hosting as power",
+            meanings: [
+              "Why are we sneaking? = why are we moving quietly / hiding — as if we don’t belong here?",
+              "it’s infuriating = it makes me extremely angry / I can’t stand it.",
+              "he’s horrifically hot = he’s extremely attractive (horrifically = shockingly, too much).",
+              "Are you on your period? = are you menstruating? — often used to dismiss a woman’s anger.",
+              "PMT (BrE) = premenstrual tension (AmE: PMS) — mood / irritability before a period.",
+              "Why would you ask that? = that’s an outrageous / insulting question — don’t go there.",
+              "plaits (BrE) = braids (hair).",
+              "take your nose out of other people’s marriages = stop interfering / mind your own business about their relationship.",
+              "let me show you to the loo (BrE loo = toilet) = I’ll take you to the bathroom — hosting language, even when you already know the house.",
+            ],
+            examples: [
+              "SNEAKING — why are we sneaking? · sneak around · stop sneaking.",
+              "Why are we sneaking?",
+              "INFURIATING — it’s infuriating · utterly infuriating · what infuriates me is…",
+              "It’s infuriating.",
+              "HORRIFICALLY HOT — he’s horrifically hot · ridiculously hot · painfully attractive.",
+              "He’s horrifically hot.",
+              "PERIOD / PMT — are you on your period? · PMT · PMS · why would you ask that?",
+              "Are you on your period?",
+              "Why would you ask that?",
+              "PLAITS — plaits · in plaits · wear your hair in plaits.",
+              "NOSE OUT OF — take your nose out of other people’s marriages · keep your nose out · none of your business.",
+              "Take your nose out of other people’s marriages.",
+              "SHOW YOU TO THE LOO — let me show you to the loo · I’ll show you to the bathroom · this way to the loo.",
+              "Let me show you to the loo.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Why are we sneaking?",
+              "Why would you ask that?",
+              "Let me show you to the loo — meaning…",
+              "It used to feel like home, and now…",
+            ],
+            questions: [
+              {
+                q: "The PMT / period question: Fleabag asks Claire if she is on her period, which makes Claire snap (“Why would you ask that?”). Why is asking a woman if she is “on her period” when she is angry considered so insulting or dismissive? Is it a question only a sister or close friend can get away with asking, or is it always crossing a line?",
+                examples: [
+                  "It says: your anger isn’t real — it’s hormones.",
+                  "Sisters can risk it; anyone else is out of line.",
+                  "Even sisters: why would you ask that?",
+                  "Always a line: it erases the actual reason she’s angry.",
+                ],
+              },
+              {
+                q: "The guided tour: The Godmother says, “Let me show you to the loo.” Fleabag obviously knows where the bathroom is. Why do passive-aggressive hosts treat familiar people like formal guests? How does guiding someone to the bathroom or constantly “hosting” them serve as a psychological power play to say, “This is my kingdom, not yours”?",
+                examples: [
+                  "Guest = you don’t belong in the cupboards / the past.",
+                  "Hosting is a leash: I’ll walk you through my house.",
+                  "It’s infuriating because you grew up here.",
+                  "Take your nose out… / stay in the role I’ve given you.",
+                ],
+              },
+              {
+                q: "“Why are we sneaking?” The sisters find themselves whispering in the hallways like intruders. Have you ever felt like a guest or an outsider in a place that used to feel like home (e.g., a parent’s new house, an old childhood home)? Why do we instinctively change our behavior and start “sneaking” around toxic or dominant people?",
+                examples: [
+                  "New partner / step-parent: the house has new rules.",
+                  "You sneak so you don’t give them a reason.",
+                  "Dominance trains you: smaller voice, smaller steps.",
+                  "The sneaking is the proof you’re not at home anymore.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "purse-strings",
+          label: "Purse strings",
+          teacher:
+            "Clip 6 · money talk instead of comfort · struggling · walking on eggshells.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "we are a little bit tight on the purse strings",
+            "don't do it a disservice",
+            "you're struggling",
+            "to walk on eggshells",
+          ],
+          watch: {
+            videoUrl: "media/s01e05/06-purse-strings.mp4",
+            note:
+              "We are a little bit tight on the purse strings · don’t do it a disservice · you’re struggling · walk on eggshells.",
+          },
+          context: {
+            tone: "Lexical · money talk + don’t undersell it + minimising pain + careful around someone",
+            meanings: [
+              "we are a little bit tight on the purse strings = we’re being careful with money / not spending freely (the purse strings = control of the household money).",
+              "don’t do it a disservice = don’t treat it unfairly / don’t undersell it — give it the credit or care it deserves.",
+              "you’re struggling = you’re having a hard time (here: often said to name pain… then flatten it: as we all are).",
+              "to walk on eggshells = to be extremely careful around someone because they are easily upset or highly controlling.",
+            ],
+            examples: [
+              "PURSE STRINGS — tight on the purse strings · hold the purse strings · loosen the purse strings.",
+              "We are a little bit tight on the purse strings.",
+              "She holds the purse strings in that house.",
+              "DISSERVICE — don’t do it a disservice · do yourself a disservice · a disservice to the truth.",
+              "Don’t do it a disservice.",
+              "You’re doing yourself a disservice if you stay quiet.",
+              "STRUGGLING — you’re struggling · as we all are · I’ve been struggling.",
+              "You’re struggling.",
+              "You’re struggling… as we all are. (minimising)",
+              "EGGSHELLS — walk on eggshells · walking on eggshells around someone · I can’t keep walking on eggshells.",
+              "We walk on eggshells around her.",
+              "I’m tired of walking on eggshells in my own home.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "You’re struggling… as we all are — and that felt like…",
+              "He can talk about purse strings, but not…",
+              "I was walking on eggshells because…",
+              "Don’t do it a disservice — meaning…",
+            ],
+            questions: [
+              {
+                q: "The language of avoidance (Dad’s inability to comfort): “You’re struggling… as we all are.” Dad says this to dismiss Fleabag’s emotional state. How does it feel when a parent minimizes your deep emotional pain by saying “everyone is struggling” or “life is hard for all of us”? Why do some parents completely freeze or change the subject when their adult children show genuine vulnerability?",
+                examples: [
+                  "It lands as: your pain isn’t special — sit down.",
+                  "They freeze because they were never comforted either.",
+                  "Change of subject = I don’t have the language, so I leave.",
+                  "You’re struggling — full stop. Not as we all are.",
+                ],
+              },
+              {
+                q: "Materialism vs. emotion: Dad can easily talk about property, purse strings, and houses, but he cannot say “I miss your mother” or “I love you.” Why is it easier for older generations to discuss practical, material problems (money, work, real estate) rather than raw, internal emotions? How does this create a massive communication gap between parents and adult children?",
+                examples: [
+                  "Money has rules; grief doesn’t — so they pick money.",
+                  "Practical talk feels like care to them; to you it feels empty.",
+                  "You want I miss her; they offer the house / the purse strings.",
+                  "The gap: one generation solves; the other needs to be felt.",
+                ],
+              },
+              {
+                q: "Caught in the middle: Dad clearly feels uncomfortable around his daughters because they represent his past life and his late wife — things the Godmother wants to erase. Have you ever had a conversation with a parent or relative where you could actively feel their discomfort? How do you handle a relationship with a parent who treats you like an awkward obligation rather than their child?",
+                examples: [
+                  "You feel it: shorter answers, eyes on the door.",
+                  "I walk on eggshells so they don’t have to choose.",
+                  "I name it once — then I stop chasing.",
+                  "Obligation visits: polite, tight on the purse strings, no warmth.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "hold-up",
+          label: "Hold up",
+          teacher:
+            "Clip 7 · split up / hold up / I owe you · praise as a put-down · talking behind backs.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["split up", "hold up", "I owe you"],
+          watch: {
+            videoUrl: "media/s01e05/07-hold-up.mp4",
+            note: "Split up · hold up · I owe you.",
+          },
+          context: {
+            tone: "Lexical · end a relationship + wait / stop + a debt of thanks",
+            meanings: [
+              "split up = end a relationship / break up (or: go in different directions).",
+              "hold up = wait / stop a second (also: delay; or a robbery — here: wait).",
+              "I owe you = I’m in your debt — I need to thank you / repay you / I haven’t settled this yet.",
+            ],
+            examples: [
+              "SPLIT UP — split up · we split up · they split up last year · don’t split up over this.",
+              "We split up.",
+              "HOLD UP — hold up · hold up a second · hold up — what did you just say?",
+              "Hold up.",
+              "Hold up — are you flirting with him in front of me?",
+              "I OWE YOU — I owe you · I owe you one · I still owe you an apology / a drink.",
+              "I owe you.",
+              "I owe you one for getting me out of that room.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Hold up — that wasn’t a compliment, that was…",
+              "She praised how good-looking he is so that…",
+              "I owe you — but the room felt like…",
+              "I assumed they were talking about me because…",
+            ],
+            questions: [
+              {
+                q: "By obsessively praising his looks, the Stepmother is subtly insulting Fleabag. Her subtext is: “How did a messy, struggling girl like you manage to land such a handsome man?” It is also a way for the Stepmother to flirt with him right in front of Fleabag, asserting her sexual dominance over the room. Why does the Stepmother constantly emphasize how “good-looking” Fleabag’s partner is? How can someone use excessive praise of your partner to actually diminish you or make you feel insecure? Have you ever had a friend or relative flirt with your partner under the guise of “just being polite”?",
+                examples: [
+                  "The praise is for him; the insult is for you.",
+                  "She’s ranking: he’s a prize, you’re lucky.",
+                  "Polite flirting = I can take the room, and you.",
+                  "Hold up — that’s not manners, that’s a move.",
+                ],
+              },
+              {
+                q: "Why do people instinctively feel or assume that others are talking about them behind their backs? Is it just personal insecurity, or is it a psychological survival mechanism to read “fake” environments? How do you distinguish between healthy intuition and paranoia in a toxic group setting?",
+                examples: [
+                  "Insecurity: every laugh feels like your name.",
+                  "Survival: fake rooms train you to scan for the knife.",
+                  "Intuition: pattern + body yes; paranoia: no evidence, all fear.",
+                  "Toxic group: if you split up from the pack, the talk starts — that’s data, not madness.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "have-a-go",
+          label: "Have a go",
+          teacher:
+            "Clip 8 · negative self-talk · have a go at myself · “just grow up”.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["negative self-talk", "have a go at myself"],
+          watch: {
+            videoUrl: "media/s01e05/08-have-a-go.mp4",
+            note: "Negative self-talk · have a go at myself · Claire: just grow up.",
+          },
+          context: {
+            tone: "Lexical · attacking yourself after a mess",
+            meanings: [
+              "negative self-talk = the harsh things you say to yourself in your head (criticism, blame, ‘I’m awful’).",
+              "have a go at myself = attack / criticise myself (have a go at someone = tell them off; here the target is you).",
+            ],
+            examples: [
+              "NEGATIVE SELF-TALK — negative self-talk · catch the negative self-talk · the voice in my head.",
+              "That’s just negative self-talk.",
+              "HAVE A GO — have a go at myself · have a go at someone · stop having a go at yourself.",
+              "I have a go at myself.",
+              "The second I mess up, I have a go at myself.",
+              "Don’t have a go at her — she’s already doing it to herself.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "I have a go at myself when…",
+              "My internal voice is usually…",
+              "Just grow up — and what that actually does is…",
+              "A healthier way to hold myself accountable is…",
+            ],
+            questions: [
+              {
+                q: "The anatomy of negative self-talk — “having a go” at yourself: When Fleabag messes up, she instantly turns on herself. How often do you find yourself “having a go” at yourself after a social mistake or a fight with family? Is your internal voice usually a supportive friend or a harsh critic?",
+                examples: [
+                  "Instantly — before anyone else has even spoken.",
+                  "Harsh critic: I replay the line and punish it.",
+                  "Supportive friend is rare — I have to borrow that voice.",
+                  "After family fights I have a go at myself for days.",
+                ],
+              },
+              {
+                q: "The root cause: Why do you think we are so much meaner to ourselves than we would ever be to a friend? Where does that harsh internal voice come from — is it born from our own insecurities, or is it a copy of a critical parent/authority figure from our past?",
+                examples: [
+                  "I’d never say that to a friend — only to me.",
+                  "It’s a copied parent: same words, same tone.",
+                  "Insecurity wrote the script; I just repeat it.",
+                  "Both: their voice + my fear of being ‘too much’.",
+                ],
+              },
+              {
+                q: "The self-punishment illusion: Many people believe that beating themselves up is a form of discipline that helps them grow. Do you think negative self-talk actually helps you become a better person, or does it just keep you trapped in a cycle of guilt and low self-esteem?",
+                examples: [
+                  "It feels like discipline — it isn’t; it’s just pain.",
+                  "Guilt loop: I have a go, then I shrink, then I mess up again.",
+                  "Growth needs a clear look, not a beating.",
+                  "Low self-esteem loves the critic — it sounds like ‘honesty’.",
+                ],
+              },
+              {
+                q: "The alternative: If beating yourself up doesn't work, what is a healthier way to hold yourself accountable when you know you've acted immaturely or provoked someone?",
+                examples: [
+                  "Name it: I did that. Then repair, not replay.",
+                  "Apologise once, specifically — then stop the trial.",
+                  "Ask: what would I tell a friend who did this?",
+                  "Change the next move, not the past sentence.",
+                ],
+              },
+              {
+                q: "The trigger: In this scene, Claire’s words (“just grow up”) act as the ultimate trigger for Fleabag’s self-hatred. Why is being told to “grow up” or “stop being dramatic” so infuriating and painful, especially when it comes from a sibling or partner? How does that phrase dismiss a person’s real emotional struggles?",
+                examples: [
+                  "Grow up = your feelings are childish, not real.",
+                  "From a sibling it cuts because they know the history.",
+                  "Stop being dramatic = I don’t have to meet you.",
+                  "It hands the critic the mic — then you have a go at yourself.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "dicky-tummy",
+          label: "Dicky tummy",
+          teacher:
+            "Clip 9 · dicky tummy · open fight vs smiles · stepmother trying to banish her.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["I've got a dicky tummy"],
+          watch: {
+            videoUrl: "media/s01e05/09-dicky-tummy.mp4",
+            note: "I’ve got a dicky tummy.",
+          },
+          context: {
+            tone: "Lexical · a weak / upset stomach (excuse or real)",
+            meanings: [
+              "I’ve got a dicky tummy (BrE, informal) = my stomach is upset / not right (dicky = unreliable, not working properly). Often an excuse to leave the table / the room.",
+            ],
+            examples: [
+              "DICKY TUMMY — I’ve got a dicky tummy · a dicky tummy · a dicky heart / knee (something unreliable).",
+              "I’ve got a dicky tummy.",
+              "I’m going to sit this one out — dicky tummy.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "I’ve got a dicky tummy — meaning I need to leave / I can’t do this room.",
+              "The open fight felt like a relief because…",
+              "Passive-aggressive smiles are worse when…",
+              "When a step-parent turns a parent against you…",
+            ],
+            questions: [
+              {
+                q: "The value of an open fight: The Stepmother and Fleabag have a nasty, open confrontation. Is a direct, loud, angry argument healthier than hours of passive-aggressive smiles and hidden insults? Why does it sometimes feel like a relief when a toxic person finally loses their temper and shows their true, ugly colors?",
+                examples: [
+                  "The fight is ugly — but at least it’s honest.",
+                  "Smiles for hours cost more than one explosion.",
+                  "Relief: now everyone saw what I already knew.",
+                  "Dicky tummy / leaving is the polite version; the row is the real one.",
+                ],
+              },
+              {
+                q: "The power of the Stepmother: The Stepmother tries to completely banish Fleabag from the family. How do you handle a family dynamic where one in-law or step-parent successfully turns a biological parent against their own children? Is it possible to win that war?",
+                examples: [
+                  "You don’t win the parent — you stop competing for them.",
+                  "Keep a door open; don’t perform for the step-parent.",
+                  "Some wars aren’t winnable while they hold the house.",
+                  "Win the sibling bond; let the parent choose, painfully.",
+                ],
+              },
+            ],
+          },
+        },
+      ],
       finale: {
         prompt: "Confession energy without oversharing — 60 s · tape on.",
       },

@@ -13,8 +13,8 @@ echo  (remembers last upload in media\.upload-state.json)
 echo.
 echo  Optional:
 echo    UPLOAD-FLEABAG-MEDIA.bat          ^<- auto / new only
-echo    UPLOAD-FLEABAG-MEDIA.bat 4        ^<- force Episode 4
-echo    UPLOAD-FLEABAG-MEDIA.bat all      ^<- force all 1-4
+echo    UPLOAD-FLEABAG-MEDIA.bat 5        ^<- force Episode 5
+echo    UPLOAD-FLEABAG-MEDIA.bat all      ^<- force all episodes
 echo.
 
 set "ARG=%~1"
