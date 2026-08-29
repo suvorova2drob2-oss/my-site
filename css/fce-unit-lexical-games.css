@@ -123,8 +123,17 @@ a.lex-sound-booth .link-hint {
     body.lex-game-focus .lex-sound-booth,
     body.lex-game-focus #lexGamesSubtitle,
     body.lex-game-focus #lexMiniThemeBar,
-    body.lex-game-focus .page > div:has(> .live-link) {
+    body.lex-game-focus .page > div:has(> .live-link),
+    body.lex-game-focus .lex-games-stats-hud,
+    /* Games menu: only the list of vocabulary games */
+    body.lex-games-menu .lex-sound-booth,
+    body.lex-games-menu #lexGamesSubtitle,
+    body.lex-games-menu #lexMiniThemeBar,
+    body.lex-games-menu .page > div:has(> .live-link) {
       display: none !important;
+    }
+    body.lex-games-menu .top h1 {
+      font-size: 1.25rem;
     }
     /* Focus mode: quiet chrome, task is the hero */
     body.lex-game-focus {
@@ -258,8 +267,8 @@ a.lex-sound-booth .link-hint {
       opacity: 0.9;
     }
     body.lex-game-focus .lex-task .hint-box {
-      font-size: 1.05rem;
-      line-height: 1.45;
+      font-size: 1.12rem;
+      line-height: 1.5;
       padding: 14px 16px;
       margin-bottom: 12px;
       border-radius: 12px;
@@ -269,20 +278,25 @@ a.lex-sound-booth .link-hint {
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
     }
     body.lex-game-focus .lex-task .line-box {
-      font-size: 1.08rem;
-      line-height: 1.65;
-      padding: 16px 16px;
+      font-size: 1.18rem;
+      line-height: 1.68;
+      padding: 18px 16px;
       margin-bottom: 12px;
       border-radius: 12px;
       border-color: rgba(86, 204, 242, 0.45);
       background: #122848;
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.22);
     }
+    body.lex-game-focus .lex-task .line-box #linePre,
+    body.lex-game-focus .lex-task .line-box #linePost {
+      font-size: 1.18rem;
+      font-weight: 600;
+    }
     body.lex-game-focus .lex-task .line-box input {
       min-width: 8rem;
       flex: 1 1 12rem;
-      font-size: 1.05rem;
-      padding: 9px 11px;
+      font-size: 1.12rem;
+      padding: 10px 12px;
       border-color: var(--accent);
     }
     body.lex-game-focus .cards-stage,
@@ -291,6 +305,10 @@ a.lex-sound-booth .link-hint {
     body.lex-game-focus .drop-footer,
     body.lex-game-focus .game-scene {
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2);
+    }
+    body.lex-game-focus .drop-play .game-scene {
+      height: min(48vh, 420px);
+      min-height: 280px;
     }
     body.lex-game-focus .cards-title,
     body.lex-game-focus .mini-title {
@@ -401,18 +419,21 @@ a.lex-sound-booth .link-hint {
       padding: 10px;
       background: rgba(56, 189, 248, 0.08);
       margin-bottom: 10px;
+      font-size: 1.05rem;
+      line-height: 1.45;
     }
     .line-box {
       border: 1px solid #3a5279;
       border-radius: 10px;
-      padding: 12px;
+      padding: 14px;
       background: #152744;
-      line-height: 1.6;
+      line-height: 1.65;
       margin-bottom: 10px;
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
       gap: 0.15em 0.2em;
+      font-size: 1.1rem;
     }
     .line-box #linePre,
     .line-box #linePost {
@@ -420,6 +441,8 @@ a.lex-sound-booth .link-hint {
       max-width: 100%;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
     .line-box input {
       width: auto;
@@ -430,8 +453,8 @@ a.lex-sound-booth .link-hint {
       border-radius: 8px;
       background: #0f203d;
       color: #fff;
-      padding: 8px 10px;
-      font-size: 1rem;
+      padding: 9px 11px;
+      font-size: 1.08rem;
       margin: 0;
     }
     .check-btn {
@@ -515,7 +538,26 @@ a.lex-sound-booth .link-hint {
     }
     .pool-list { color: #d8e7ff; font-size: 0.88rem; line-height: 1.45; padding-left: 18px; }
     .pool-list li { margin-bottom: 4px; }
-    .drop-intro p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px; }
+    .lex-games-anchor {
+      height: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .lex-games-stats-hud {
+      margin: 0 0 12px;
+      padding: 8px 12px;
+      border: 1px solid rgba(86, 204, 242, 0.28);
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.08);
+      color: #9bb0d3;
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+    body.lex-game-focus .lex-games-stats-hud {
+      display: none;
+    }
+    .drop-intro-msg { margin-top: 8px; min-height: 0; }
     .drop-panel { border: 1px solid #3f5f8f; border-radius: 10px; padding: 10px; background: rgba(12, 24, 46, 0.45); margin-bottom: 10px; }
     .drop-play { display: none; }
     .drop-play.on { display: block; }
@@ -523,8 +565,8 @@ a.lex-sound-booth .link-hint {
     .game-scene {
       position: relative;
       overflow: hidden;
-      height: min(62vh, 560px);
-      min-height: 360px;
+      height: min(52vh, 480px);
+      min-height: 300px;
       border: 1px solid #334155;
       border-radius: 14px;
       background: rgba(15, 23, 42, 0.85);
@@ -555,15 +597,53 @@ a.lex-sound-booth .link-hint {
     }
     .drop-card b { color: #fff; letter-spacing: 0.02em; }
     .drop-footer {
-      position: relative;
-      padding: 10px 12px 10px;
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      padding: 10px 12px;
       border: 1px solid #334155;
       border-radius: 12px;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.98);
       backdrop-filter: blur(1px);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.28);
     }
-    .drop-input-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-    .drop-input { width: 100%; border: 1px solid #4c6ea2; border-radius: 9px; background: #0f203d; color: #fff; padding: 10px 12px; font-size: 1rem; }
+    .drop-footer-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .drop-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .drop-input {
+      width: 100%;
+      border: 1px solid #4c6ea2;
+      border-radius: 9px;
+      background: #0f203d;
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 1rem;
+    }
+    .drop-btn-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .drop-btn-row #dropCheckBtn {
+      flex: 1 1 0;
+      width: auto;
+      margin: 0;
+      min-width: 0;
+    }
+    .drop-btn-row .drop-dk-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      white-space: nowrap;
+    }
     .drop-dk-btn {
       border: 1px solid #4c6ea2;
       border-radius: 10px;
@@ -605,6 +685,22 @@ a.lex-sound-booth .link-hint {
       letter-spacing: 0.08em;
       margin-bottom: 10px;
     }
+    .drop-overlay-label--answer {
+      margin-top: 14px;
+    }
+    .drop-overlay-context {
+      color: #e8fef0;
+      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+      line-height: 1.45;
+      font-weight: 600;
+      text-align: left;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+    .drop-overlay-context .drop-overlay-hit {
+      color: #4ade80;
+      font-weight: 900;
+    }
     .drop-overlay-answer {
       color: #4ade80;
       font-size: clamp(2rem, 7vw, 4rem);
@@ -617,6 +713,130 @@ a.lex-sound-booth .link-hint {
       color: #d1fae5;
       font-size: 1rem;
       margin-bottom: 14px;
+    }
+    body.lex-drop-nailed-open {
+      overflow: hidden;
+    }
+    .drop-round-nailed {
+      position: fixed;
+      inset: 0;
+      z-index: 100015;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(6, 18, 14, 0.94);
+    }
+    .drop-round-nailed[hidden] { display: none !important; }
+    .drop-round-nailed-card {
+      width: min(92vw, 420px);
+      text-align: center;
+      border: 1px solid rgba(74, 222, 128, 0.55);
+      border-radius: 16px;
+      background: linear-gradient(165deg, #0b2418 0%, #0f1f18 55%, #0a1224 100%);
+      padding: 28px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .drop-round-nailed-kicker {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #86efac;
+    }
+    .drop-round-nailed-title {
+      margin: 0;
+      font-size: clamp(1.9rem, 7vw, 2.5rem);
+      font-weight: 900;
+      color: #4ade80;
+      text-shadow: 0 0 22px rgba(74, 222, 128, 0.35);
+    }
+    .drop-round-nailed-line {
+      margin: 0 0 6px;
+      color: #d1fae5;
+      font-size: 1.02rem;
+      line-height: 1.4;
+    }
+    .drop-round-nailed-card .check-btn {
+      width: 100%;
+    }
+    .drop-game-over {
+      position: fixed;
+      inset: 0;
+      z-index: 100020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(5, 10, 22, 0.92);
+    }
+    .drop-game-over[hidden] { display: none !important; }
+    .drop-game-over-card {
+      width: min(92vw, 420px);
+      text-align: center;
+      border: 1px solid rgba(248, 113, 113, 0.55);
+      border-radius: 16px;
+      background: linear-gradient(165deg, #1a1020 0%, #0f172a 55%, #0a1224 100%);
+      padding: 28px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .drop-game-over-kicker {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fca5a5;
+    }
+    .drop-game-over-title {
+      margin: 0;
+      font-size: clamp(2rem, 8vw, 2.6rem);
+      font-weight: 900;
+      color: #fecaca;
+      text-shadow: 0 0 22px rgba(248, 113, 113, 0.35);
+    }
+    .drop-game-over-line {
+      margin: 0;
+      color: #e2e8f0;
+      font-size: 1.02rem;
+      line-height: 1.4;
+    }
+    .drop-game-over-answer {
+      margin: 0;
+      color: #86efac;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+    .drop-game-over-card .check-btn,
+    .drop-game-over-card .assist-btn {
+      width: 100%;
+      margin-top: 4px;
+    }
+    .trainer-reveal-overlay {
+      z-index: 100005;
+      background: rgba(6, 15, 34, 0.96);
+    }
+    .trainer-reveal-overlay .drop-overlay-box {
+      border-color: rgba(86, 204, 242, 0.65);
+      background: rgba(9, 18, 42, 0.94);
+    }
+    .trainer-reveal-overlay .drop-overlay-label {
+      color: #7dd3fc;
+    }
+    .trainer-reveal-overlay .drop-overlay-answer {
+      color: #56ccf2;
+      font-size: clamp(1.75rem, 6vw, 3.2rem);
+    }
+    .trainer-reveal-overlay .drop-overlay-sub {
+      color: #c7dff8;
+      margin-bottom: 0;
     }
     .cards-box {
       border: 1px solid #334a72;
@@ -681,6 +901,12 @@ a.lex-sound-booth .link-hint {
       font-weight: 700;
       color: #f8fafc;
       word-break: break-word;
+    }
+    .cards-inner--done .cards-def,
+    .cards-inner--done .cards-answer {
+      font-size: clamp(1.65rem, 6vw, 2.15rem);
+      color: #7dd3fc;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
     }
     .cards-speaker {
       font-size: 0.9rem;
@@ -946,7 +1172,7 @@ a.lex-sound-booth .link-hint {
     @media (max-width: 900px) {
       body { padding: 14px; }
       .page { padding: 16px; border-radius: 14px; }
-      .game-scene { height: min(58vh, 480px); min-height: 320px; }
+      .game-scene { height: min(48vh, 420px); min-height: 280px; }
       .drop-card { font-size: 13px; }
       .drop-hud { font-size: 0.86rem; }
       .drop-input { font-size: 0.95rem; }
@@ -955,14 +1181,14 @@ a.lex-sound-booth .link-hint {
     @media (max-width: 640px) {
       body { padding: 10px; }
       .page { padding: 12px; border-radius: 12px; }
-      .game-scene { height: min(56vh, 420px); min-height: 300px; border-radius: 10px; }
+      .game-scene { height: min(44vh, 360px); min-height: 240px; border-radius: 10px; }
       .drop-canvas { padding: 8px; }
       .drop-footer { padding: 8px; }
       .drop-card { line-height: 1.35; border-radius: 12px; font-size: 12.5px; padding: 10px 12px; }
       .drop-input-row { gap: 6px; }
+      .drop-btn-row { gap: 6px; }
       #dropCheckBtn { padding: 9px 10px; }
-      .drop-input { flex: 1 1 100%; }
-      .drop-dk-btn, #dropCheckBtn { flex: 1 1 calc(50% - 6px); }
+      .drop-dk-btn { padding: 9px 10px; font-size: 0.88rem; }
       .cards-face { padding: 14px 12px; }
       .cards-scene { min-height: 300px; border-radius: 18px; }
       .cards-inner { min-height: 300px; }

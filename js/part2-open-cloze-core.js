@@ -192,6 +192,9 @@
   var bundledUnit10AgathaChristie =
     String(contextId) === "unit10-p2-agatha-christie" ||
     /published-unit10-p2-agatha-christie\.json\s*$/i.test(dataSrc);
+  var bundledUnit5ApplicationLetter =
+    String(contextId) === "unit5-p2-application-letter" ||
+    /published-unit5-p2-application-letter\.json\s*$/i.test(dataSrc);
 
   function publishedFetchUrl() {
     if (dataSrc) {
@@ -342,6 +345,16 @@
         try {
           return JSON.parse(elU10.textContent.trim());
         } catch (eU10) {
+          return null;
+        }
+      }
+    }
+    if (bundledUnit5ApplicationLetter) {
+      var elU5 = document.getElementById("part2-open-bundled-unit5-application-letter");
+      if (elU5) {
+        try {
+          return JSON.parse(elU5.textContent.trim());
+        } catch (eU5) {
           return null;
         }
       }

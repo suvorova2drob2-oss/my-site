@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 6 &mdash; SB 6.1 · Part 3 Multiple matching (relationships)</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    .instr {
+      color: #d5e2f8;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      background: var(--panel-soft);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .exam-strip {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    button {
+      border: none;
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.92rem;
+      touch-action: manipulation;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #3d4f6f; color: var(--text); }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      line-height: 1.45;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      min-height: 1.4em;
+    }
+    .feedback.ok {
+      background: rgba(54, 211, 153, 0.12);
+      border-color: var(--ok);
+      color: #a7f3d0;
+    }
+    .feedback.partial {
+      background: rgba(250, 204, 21, 0.08);
+      border-color: rgba(250, 204, 21, 0.45);
+      color: #fde68a;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/fce-listening-part3-select.css" />
+</head>
+<body data-mb2-unit="6" data-mb2-skill="listening" data-mb2-ex="sb-6-1">
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Listening Part 3 &middot; Multiple matching</span>
+        <h1>Student&rsquo;s Book 6.1 &mdash; Relationship problems</h1>
+        <p class="lead">Five speakers &middot; options A&ndash;H</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 6 Listening</a>
+    </header>
+
+    <p class="instr">
+      You will hear <strong>five short extracts</strong> in which people are talking about <strong>problems in their relationships with other people</strong>.
+      For questions <strong>1&ndash;5</strong>, choose from the list (<strong>A&ndash;H</strong>) what each speaker says was the cause of the problem.
+      Use the <strong>letters only once</strong>. There are <strong>three extra</strong> letters which you do not need to use.
+    </p>
+    <p class="exam-strip">
+      Track: <code>fce/RfB2First_SB_Track 6.1.mp3</code>.
+      Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
+    </p>
+
+    <div class="audio-wrap">
+      <label for="track-audio">Audio (Yandex Object Storage)</label>
+      <audio id="track-audio" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/fce/RfB2First_SB_Track%206.1.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <div class="fce-p3-split fce-p3-split--wide">
+      <section class="fce-p3-panel" aria-labelledby="optHeading">
+        <h2 id="optHeading">Options A&ndash;H</h2>
+        <div id="optionsList"></div>
+      </section>
+      <section class="fce-p3-panel" aria-labelledby="matchHeading">
+        <h2 id="matchHeading">Speakers 1&ndash;5</h2>
+        <div id="matchRows"></div>
+      </section>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-check" id="btnCheck">Check answers</button>
+      <button type="button" class="btn-reset" id="btnReset">Clear choices</button>
+    </div>
+    <div class="feedback" id="feedback" role="status"></div>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ANSWER_KEY = ["C", "B", "F", "H", "E"];
+
+  var OPTIONS = [
+    { letter: "A", text: "the stress of working long hours" },
+    { letter: "B", text: "the other person's general lack of tolerance" },
+    { letter: "C", text: "having different ideas about how to keep someone occupied" },
+    { letter: "D", text: "the other person's lack of self-confidence" },
+    { letter: "E", text: "not having enough time together" },
+    { letter: "F", text: "the other person's inability to adapt to a new role" },
+    { letter: "G", text: "never having enough money" },
+    { letter: "H", text: "the other person's sense of injustice" }
+  ];
+
+  var optionsList = document.getElementById("optionsList");
+  var matchRows = document.getElementById("matchRows");
+  var feedback = document.getElementById("feedback");
+  var selects = [];
+  var keySpans = [];
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  optionsList.innerHTML = OPTIONS.map(function (o) {
+    return (
+      '<div class="fce-p3-opt"><span class="letter">' +
+      escapeHtml(o.letter) +
+      "</span><span>" +
+      escapeHtml(o.text) +
+      "</span></div>"
+    );
+  }).join("");
+
+  function getValues() {
+    return selects.map(function (s) {
+      return s.value;
+    });
+  }
+
+  function rebuildSelects() {
+    var vals = getValues();
+    selects.forEach(function (sel, idx) {
+      var current = vals[idx];
+      var usedElsewhere = {};
+      vals.forEach(function (v, j) {
+        if (j !== idx && v) usedElsewhere[v] = true;
+      });
+      sel.innerHTML = "";
+      var opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "A\u2013H";
+      sel.appendChild(opt0);
+      OPTIONS.forEach(function (o) {
+        var L = o.letter;
+        if (!usedElsewhere[L] || L === current) {
+          var opt = document.createElement("option");
+          opt.value = L;
+          opt.textContent = L;
+          if (L === current) opt.selected = true;
+          sel.appendChild(opt);
+        }
+      });
+    });
+  }
+
+  function clearMarks() {
+    selects.forEach(function (s) {
+      s.classList.remove("correct", "wrong");
+    });
+    keySpans.forEach(function (k) {
+      k.classList.remove("show");
+      k.textContent = "";
+    });
+    feedback.className = "feedback";
+    feedback.textContent = "";
+  }
+
+  for (var i = 0; i < 5; i += 1) {
+    var row = document.createElement("div");
+    row.className = "fce-p3-row";
+    var lab = document.createElement("label");
+    lab.setAttribute("for", "spk" + i);
+    lab.textContent = "Speaker " + (i + 1);
+    var sel = document.createElement("select");
+    sel.id = "spk" + i;
+    sel.setAttribute("aria-label", "Answer for speaker " + (i + 1));
+    sel.addEventListener("change", function (ev) {
+      var target = ev.target;
+      var newVal = target.value;
+      if (newVal) {
+        selects.forEach(function (other) {
+          if (other !== target && other.value === newVal) other.value = "";
+        });
+      }
+      clearMarks();
+      rebuildSelects();
+    });
+    var key = document.createElement("span");
+    key.className = "gap-key";
+    key.setAttribute("aria-live", "polite");
+    row.appendChild(lab);
+    row.appendChild(sel);
+    row.appendChild(key);
+    matchRows.appendChild(row);
+    selects.push(sel);
+    keySpans.push(key);
+  }
+  rebuildSelects();
+
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var vals = getValues();
+    var okc = 0;
+    for (var j = 0; j < 5; j++) {
+      var sel = selects[j];
+      var keyEl = keySpans[j];
+      var keyLetter = ANSWER_KEY[j];
+      sel.classList.remove("correct", "wrong");
+      keyEl.classList.remove("show");
+      keyEl.textContent = "";
+      if (vals[j] && vals[j] === keyLetter) {
+        sel.classList.add("correct");
+        okc++;
+      } else {
+        sel.classList.add("wrong");
+        keyEl.textContent = "\u2192 " + keyLetter;
+        keyEl.classList.add("show");
+      }
+    }
+    if (okc === 5) {
+      feedback.className = "feedback ok";
+      feedback.innerHTML = "<strong>All 5 correct.</strong>";
+    } else {
+      feedback.className = "feedback partial";
+      feedback.innerHTML =
+        "Score: <strong>" +
+        okc +
+        "</strong> / 5 correct. Green = right; red = wrong (key shown next to the speaker).";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, 5);
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    selects.forEach(function (s) {
+      s.value = "";
+    });
+    clearMarks();
+    rebuildSelects();
+  });
+})();
+  </script>
+<script src="../../js/mastering-b2-daily-activity.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

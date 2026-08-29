@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 6 Grammar Workbook &mdash; Relative clauses + causative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../../css/part2-open-cloze.css" />
+  <style>
+    h2 { color:#bae6fd; font-size:1.05rem; margin:18px 0 8px; }
+    .item { margin:10px 0; color:#e8f0ff; line-height:1.7; }
+    .gap { min-width:6rem; }
+    .mb2-key-hint { display:none; color:#fbbf24; margin-left:6px; }
+    .mb2-key-hint.is-show { display:inline; }
+    textarea.sent { width:100%; min-height:48px; border-radius:10px; border:1px solid #324a71; background:#172948; color:#e8f0ff; padding:8px; font:inherit; }
+  </style>
+</head>
+<body class="part2-open-body" data-mb2-unit="6" data-mb2-skill="grammar" data-mb2-ex="u6-grammar-wb">
+  <main class="page part2-open-page">
+    <header class="top">
+      <div>
+        <span class="tag">Workbook &middot; Language focus</span>
+        <h1>Defining / non-defining relatives + causative</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Grammar</a>
+    </header>
+
+    <section class="part2-open-task">
+      <h2>Defining relative clauses</h2>
+      <p style="color:#9bb0d3;">Use: that / when / where / which / who / whose / why (each more than once if needed).</p>
+      <div class="item">0 I can't find the person <strong>whose</strong> bag I found.</div>
+      <div class="item">1 This is the place <input class="gap" data-ans="where" /> I grew up in the 1990s.</div>
+      <div class="item">2 Let me know a day <input class="gap" data-ans="when|that" /> we can meet for a coffee.</div>
+      <div class="item">3 This is the man <input class="gap" data-ans="whose" /> dog I looked after.</div>
+      <div class="item">4 My teacher is the reason <input class="gap" data-ans="why|that" /> I loved French.</div>
+      <div class="item">5 The woman <input class="gap" data-ans="who|that" /> you usually talk to is away today.</div>
+      <div class="item">6 The clock <input class="gap" data-ans="which|that" /> is in the kitchen is the only one that works.</div>
+      <div class="item">7 Summer is the season <input class="gap" data-ans="when" /> the city is most crowded.</div>
+      <div class="item">8 He's the colleague <input class="gap" data-ans="who|that" /> I met on my first day.</div>
+
+      <h2>Non-defining / word order</h2>
+      <p style="color:#9bb0d3;">Write the sentence with commas if needed.</p>
+      <div class="item">1 a pharmacist / woman / I / week / The / met / last / is / who<br /><textarea class="sent" data-ans="The woman, who I met last week, is a pharmacist."></textarea></div>
+      <div class="item">2 heights / parachute / aunt / doesn't / who / like / a / did / My / jump<br /><textarea class="sent" data-ans="My aunt, who doesn't like heights, did a parachute jump."></textarea></div>
+      <div class="item">3 The / worked / very / where / office / I / is / modern<br /><textarea class="sent" data-ans="The office, where I worked, is very modern.|The office where I worked is very modern."></textarea></div>
+      <div class="item">8 a / which / toy / I / had / child / as / popular / is / still / That / very<br /><textarea class="sent" data-ans="That toy, which I had as a child, is still very popular."></textarea></div>
+
+      <h2>Causative passive (holiday text)</h2>
+      <p style="color:#9bb0d3;">Verbs: be, cut, deliver, enlarge, fix, get, have, paint, renew — use each once. (0) fixed</p>
+      <div class="item">1 I <input class="gap" data-ans="had" /> got a great picture &hellip; (2) <input class="gap" data-ans="enlarged" /> &hellip; flowers (3) <input class="gap" data-ans="delivered" /> &hellip; Weddings always involve (4) <input class="gap" data-ans="getting" /> your photo taken &hellip; nails (5) <input class="gap" data-ans="painted" /> &hellip; hair (6) <input class="gap" data-ans="cut" /> &hellip; As I (7) <input class="gap" data-ans="was" /> getting some money exchanged &hellip; passport (8) <input class="gap" data-ans="renewed" />.</div>
+    </section>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button type="button" class="part2-btn-check" id="btnCheck">Check</button>
+      <button type="button" class="part2-btn-reset" id="btnReset">Reset</button>
+    </div>
+    <div class="part2-feedback" id="fb"></div>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  function norm(s) {
+    return String(s || "").trim().toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, " ");
+  }
+  function okAns(val, ans) {
+    var parts = String(ans || "").split("|");
+    var v = norm(val);
+    return parts.some(function (p) { return norm(p) === v; });
+  }
+  var gaps = [].slice.call(document.querySelectorAll(".gap"));
+  var sents = [].slice.call(document.querySelectorAll("textarea.sent"));
+  function wire(el) {
+    var h = document.createElement("span");
+    h.className = "mb2-key-hint";
+    el.parentNode.insertBefore(h, el.nextSibling);
+    el.addEventListener("input", function () {
+      el.classList.remove("is-ok", "is-bad");
+      h.classList.remove("is-show");
+    });
+  }
+  gaps.forEach(wire);
+  sents.forEach(wire);
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    var ok = 0, total = gaps.length + sents.length;
+    function check(el) {
+      var h = el.nextSibling;
+      var good = okAns(el.value, el.getAttribute("data-ans"));
+      el.classList.toggle("is-ok", good);
+      el.classList.toggle("is-bad", !good);
+      if (h && h.classList) {
+        h.textContent = good ? "" : "→ " + String(el.getAttribute("data-ans")).split("|")[0];
+        h.classList.toggle("is-show", !good);
+      }
+      if (good) ok++;
+    }
+    gaps.forEach(check);
+    sents.forEach(check);
+    var fb = document.getElementById("fb");
+    fb.classList.add("show");
+    fb.textContent = "Score: " + ok + " / " + total;
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(ok, total);
+  });
+  document.getElementById("btnReset").addEventListener("click", function () {
+    gaps.concat(sents).forEach(function (el) {
+      el.value = "";
+      el.classList.remove("is-ok", "is-bad");
+      var h = el.nextSibling;
+      if (h && h.classList) h.classList.remove("is-show");
+    });
+    document.getElementById("fb").classList.remove("show");
+  });
+})();
+  </script>
+</body>
+</html>

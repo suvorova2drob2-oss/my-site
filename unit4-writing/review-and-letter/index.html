@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 4 Writing &mdash; Review and informal letter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../../css/fce-writing-essay-part1.css" />
+  <style>
+    .pick { display:grid; gap:12px; margin-bottom:14px; }
+    @media (min-width:820px) { .pick { grid-template-columns:1fr 1fr; } }
+    .pick label {
+      display:block; padding:14px 16px; border-radius:14px; cursor:pointer;
+      border:1px solid rgba(120,160,210,.28); background:rgba(8,22,48,.45);
+    }
+    .pick label.is-on { border-color:#56ccf2; background:rgba(86,204,242,.1); }
+    .letter {
+      margin: 0;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f4efe4;
+      color: #1f2937 !important;
+      -webkit-text-fill-color: #1f2937 !important;
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+    .notice {
+      padding:14px 16px; border-radius:12px;
+      border:2px solid rgba(251,191,36,.4); background:rgba(251,191,36,.08);
+      color:#fde68a;
+    }
+    .notice h3 { margin:0 0 8px; font-family:Fraunces,Georgia,serif; color:#fef3c7; }
+  </style>
+</head>
+<body data-mb2-unit="4" data-mb2-skill="writing" data-mb2-ex="u4-writing-review-letter">
+  <main class="wep-page">
+    <header class="wep-top">
+      <div>
+        <p class="wep-kicker">Writing Part 2 &middot; Review &amp; informal letter &middot; Student&rsquo;s Book</p>
+        <h1>Choose one task</h1>
+        <p class="wep-lead">Write an answer to one of the following in 140&ndash;190 words.</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 4 Writing</a>
+    </header>
+
+    <div class="pick">
+      <label class="is-on"><input type="radio" name="task" value="review" checked /> Task 1 &mdash; Game apps review</label>
+      <label><input type="radio" name="task" value="letter" /> Task 2 &mdash; Letter to Tanya</label>
+    </div>
+
+    <section class="wep-section" id="box-review">
+      <h2>1 Reviews wanted! Game apps</h2>
+      <div class="notice">
+        <h3>You recently saw this notice on an English-language website called Game Plan.</h3>
+        <p><strong>Reviews wanted!</strong><br />Game apps<br />Is there a game you play regularly on your phone?<br />Write a review explaining the aim of the game, why you like playing it and who you would recommend it to.</p>
+        <p style="margin-top:8px;">Write your review.</p>
+      </div>
+    </section>
+
+    <section class="wep-section" id="box-letter" hidden>
+      <h2>2 Informal letter</h2>
+      <p>This is part of a letter you have received from your English friend, Tanya.</p>
+      <blockquote class="letter">
+        I&rsquo;m not sure what to read next. What&rsquo;s the best book you&rsquo;ve read recently?<br />
+        Tell me a little bit about the plot (not too much!) and say what you liked about it.<br />
+        If it sounds good, I&rsquo;ll see if I can get a copy in English.<br /><br />
+        Thanks<br />Tanya
+      </blockquote>
+      <p style="margin-top:10px;">Write your letter.</p>
+    </section>
+
+    <section class="wep-section">
+      <h2>Your answer</h2>
+      <textarea class="wep-write-area" id="u4-choice-write" spellcheck="true" placeholder="140–190 words"></textarea>
+      <p class="wep-wordcount" id="u4-choice-wc">Words: <strong>0</strong> (target 140&ndash;190)</p>
+      <div class="wep-btn-row">
+        <button type="button" class="wep-btn-check" id="btn-write">Check length</button>
+      </div>
+      <p class="wep-fb" id="fb-write"></p>
+    </section>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  function words(t) { return String(t || "").trim().split(/\s+/).filter(Boolean).length; }
+  var radios = document.querySelectorAll("input[name=task]");
+  function sync() {
+    var v = document.querySelector("input[name=task]:checked").value;
+    document.getElementById("box-review").hidden = v !== "review";
+    document.getElementById("box-letter").hidden = v !== "letter";
+    radios.forEach(function (r) {
+      r.parentElement.classList.toggle("is-on", r.checked);
+    });
+  }
+  radios.forEach(function (r) { r.addEventListener("change", sync); });
+  var ta = document.getElementById("u4-choice-write");
+  var wc = document.getElementById("u4-choice-wc");
+  function paintWc() {
+    var n = words(ta.value);
+    wc.innerHTML = "Words: <strong>" + n + "</strong> (target 140&ndash;190)";
+    wc.classList.toggle("is-ok", n >= 140 && n <= 190);
+    wc.classList.toggle("is-warn", n > 0 && (n < 140 || n > 190));
+  }
+  ta.addEventListener("input", paintWc);
+  document.getElementById("btn-write").onclick = function () {
+    var n = words(ta.value);
+    paintWc();
+    var ok = n >= 140 && n <= 190;
+    document.getElementById("fb-write").textContent = ok ? "Length is in the 140–190 band." : "Aim for 140–190 words.";
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(ok ? 1 : 0, 1);
+  };
+})();
+  </script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

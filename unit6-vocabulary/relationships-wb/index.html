@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 6 WB Vocabulary &mdash; Relationships</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <style>
+    .item { margin:10px 0; padding:12px; border-radius:12px; border:1px solid #324a71; background:rgba(8,18,40,.45); color:#e8f0ff; line-height:1.6; }
+    select, .gap { padding:4px 8px; border-radius:8px; border:1px solid #324a71; background:#172948; color:#e8f0ff; }
+    button { font:inherit; font-weight:700; border:none; border-radius:10px; padding:8px 14px; cursor:pointer; background:#36d399; color:#05271a; margin-top:10px; }
+    .fb { color:#9bb0d3; margin-top:8px; }
+    .mb2-key-hint { display:none; color:#fbbf24; margin-left:6px; }
+    .mb2-key-hint.is-show { display:inline; }
+    h2 { color:#bae6fd; font-size:1.05rem; margin:20px 0 8px; }
+  </style>
+</head>
+<body data-mb2-unit="6" data-mb2-skill="vocabulary" data-mb2-ex="u6-wb-relationships">
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Workbook &middot; Vocabulary</span>
+        <h1>Relationships &amp; describing people</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Vocabulary</a>
+    </header>
+
+    <h2>1 Choose the correct particle / word</h2>
+    <div id="rel"></div>
+    <button type="button" id="chk1">Check relationships</button>
+    <p class="fb" id="fb1"></p>
+
+    <h2>2 Describing people &mdash; complete the sentences</h2>
+    <p style="color:#9bb0d3;">Bank: bald, expressive, freckled, generous, intolerant, modest, pale, plump, reserved (one extra unused from full box)</p>
+    <div id="desc"></div>
+    <button type="button" id="chk2">Check describing people</button>
+    <p class="fb" id="fb2"></p>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var REL = [
+    { t: "0 It looks like they've managed to sort ___ their differences.", opts: ["out","on","of"], key: "out" },
+    { t: "1 My cousin was brought ___ mainly by my parents.", opts: ["up","on","in"], key: "up" },
+    { t: "2 I have no idea how they put up ___ each other.", opts: ["by","with","for"], key: "with" },
+    { t: "3 I'm really starting to run out ___ patience with her attitude to work.", opts: ["for","of","off"], key: "of" },
+    { t: "4 Mary and Jack are so different, but they get ___ so well.", opts: ["over","in","on"], key: "on" },
+    { t: "5 They fell ___ years ago and haven't spoken since.", opts: ["down","over","out"], key: "out" },
+    { t: "6 Who did you ___ up to when you were a child?", opts: ["look","watch","see"], key: "look" },
+    { t: "7 You should never let a good friend ___.", opts: ["up","down","in"], key: "down" },
+    { t: "8 That girl always gets ___ off in lessons for talking.", opts: ["spoken","said","told"], key: "told" }
+  ];
+  var rel = document.getElementById("rel");
+  rel.innerHTML = REL.map(function (r, i) {
+    return '<div class="item">' + r.t.replace("___", '<select id="r' + i + '"><option value="">—</option>' +
+      r.opts.map(function (o) { return '<option value="' + o + '">' + o + "</option>"; }).join("") +
+      '</select> <span class="mb2-key-hint" id="rh' + i + '"></span>') + "</div>";
+  }).join("");
+  document.getElementById("chk1").addEventListener("click", function () {
+    var ok = 0;
+    REL.forEach(function (r, i) {
+      var s = document.getElementById("r" + i);
+      var h = document.getElementById("rh" + i);
+      var good = s.value === r.key;
+      s.classList.toggle("is-ok", good);
+      s.classList.toggle("is-bad", !good);
+      h.textContent = good ? "" : "→ " + r.key;
+      h.classList.toggle("is-show", !good);
+      if (good) ok++;
+    });
+    document.getElementById("fb1").textContent = "Score: " + ok + " / " + REL.length;
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(ok, REL.length);
+  });
+
+  var DESC = [
+    { t: "1 She has red hair and ___ cheeks just like her sister.", key: "freckled" },
+    { t: "2 He is very ___ about how good he is at playing the piano.", key: "modest" },
+    { t: "3 My dad went ___ at an early age.", key: "bald" },
+    { t: "4 The dog is looking a little ___. We should take her for longer walks.", key: "plump" },
+    { t: "5 My grandma has become so ___. She used to be very open-minded.", key: "intolerant" },
+    { t: "6 Mr Bean has a very ___ face.", key: "expressive" },
+    { t: "7 I'm really ___. I need to go somewhere hot on holiday to get a tan.", key: "pale" },
+    { t: "8 My brother is ___. He doesn't show his true feelings very often.", key: "reserved" },
+    { t: "9 Our teacher is ___. She gave us all ice creams at the end of term.", key: "generous" }
+  ];
+  var desc = document.getElementById("desc");
+  desc.innerHTML = DESC.map(function (d, i) {
+    return '<div class="item">' + d.t.replace("___", '<input class="gap" id="d' + i + '" /> <span class="mb2-key-hint" id="dh' + i + '"></span>') + "</div>";
+  }).join("");
+  document.getElementById("chk2").addEventListener("click", function () {
+    var ok = 0;
+    DESC.forEach(function (d, i) {
+      var g = document.getElementById("d" + i);
+      var h = document.getElementById("dh" + i);
+      var val = String(g.value || "").trim().toLowerCase();
+      var good = val === d.key || (d.key === "freckled" && (val === "freckled" || val === "plump"));
+      // key_136: 1 freckled/plump
+      if (i === 0) good = val === "freckled" || val === "plump";
+      g.classList.toggle("is-ok", good);
+      g.classList.toggle("is-bad", !good);
+      h.textContent = good ? "" : "→ " + (i === 0 ? "freckled/plump" : d.key);
+      h.classList.toggle("is-show", !good);
+      if (good) ok++;
+    });
+    document.getElementById("fb2").textContent = "Score: " + ok + " / " + DESC.length;
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(ok, DESC.length);
+  });
+})();
+  </script>
+</body>
+</html>

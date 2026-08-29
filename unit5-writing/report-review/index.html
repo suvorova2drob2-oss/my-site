@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 Writing &mdash; Report (Review)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../../css/fce-writing-essay-part1.css" />
+</head>
+<body data-mb2-unit="5" data-mb2-skill="writing" data-mb2-ex="u5-writing-report">
+  <main class="wep-page">
+    <header class="wep-top">
+      <div>
+        <p class="wep-kicker">Writing Part 2 &middot; Report &middot; Unit review</p>
+        <h1>Language learning facilities</h1>
+        <p class="wep-lead">Student&rsquo;s Book Review 5 &middot; report for the Principal (140&ndash;190 words).</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Writing</a>
+    </header>
+
+    <div class="wep-layout">
+      <div>
+        <section class="wep-section">
+          <h2>Task</h2>
+          <div class="wep-prompt">
+            <p>The school where you learn English has decided to improve its language learning facilities. You have been asked to write a report for the Principal, describing the current facilities and making suggestions for improvements. Report on the classrooms and the library and anything else you think is important.</p>
+            <p><strong>Write your report in 140&ndash;190 words.</strong></p>
+          </div>
+          <p style="color:#9bb0d3;font-size:0.9rem;margin:10px 0;">
+            For more information on writing reports, see page 196 in the Student&rsquo;s Book.
+            Unit 4 has a fuller report trainer if you want extra practice:
+            <a href="../../unit4-writing/report/index.html" style="color:#56ccf2;font-weight:700;">Unit 4 report</a>.
+          </p>
+        </section>
+
+        <section class="wep-section">
+          <h2>Write</h2>
+          <textarea class="wep-write-area" id="u5-rep-write" spellcheck="true" placeholder="Introduction: purpose of this report&#10;Classrooms&#10;Library&#10;Other facilities&#10;Conclusion / recommendations"></textarea>
+          <p class="wep-wordcount" id="u5-rep-wc">Words: <strong>0</strong> (target 140&ndash;190)</p>
+          <div class="wep-btn-row">
+            <button type="button" class="wep-btn-check" id="btn-write">Check length</button>
+          </div>
+          <p class="wep-fb" id="fb-write" role="status"></p>
+        </section>
+      </div>
+
+      <aside class="wep-rail" aria-label="Report language">
+        <p class="wep-rail-head">Report language</p>
+        <ul style="margin:0;padding-left:1.1rem;color:#d5e2f8;font-size:0.82rem;line-height:1.4;">
+          <li>The purpose of this report is to &hellip;</li>
+          <li>The majority of students &hellip;</li>
+          <li>It appears that &hellip;</li>
+          <li>I would recommend &hellip;</li>
+          <li>In conclusion, &hellip;</li>
+        </ul>
+      </aside>
+    </div>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ta = document.getElementById("u5-rep-write");
+  var wc = document.getElementById("u5-rep-wc");
+  function countWords(t) {
+    var m = String(t || "").trim().match(/\S+/g);
+    return m ? m.length : 0;
+  }
+  function updateWc() {
+    var n = countWords(ta.value);
+    wc.innerHTML = "Words: <strong>" + n + "</strong> (target 140&ndash;190)";
+  }
+  ta.addEventListener("input", updateWc);
+  document.getElementById("btn-write").addEventListener("click", function () {
+    var n = countWords(ta.value);
+    var ok = n >= 140 && n <= 190;
+    document.getElementById("fb-write").textContent = ok
+      ? "Length OK (" + n + " words)."
+      : "Aim for 140–190 words (now " + n + ").";
+    if (ok && window.MasteringB2Progress) {
+      MasteringB2Progress.recordAndReward(
+        { unit: 5, skill: "writing", exerciseId: "u5-writing-report", percent: 100 },
+        10
+      );
+    }
+  });
+})();
+  </script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

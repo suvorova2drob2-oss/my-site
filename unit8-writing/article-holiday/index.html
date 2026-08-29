@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 8 Writing &mdash; Part 2 Article</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <style>
+    .notice {
+      border: 1px solid #324a71; border-radius: 14px; background: #223657;
+      padding: 16px 18px; margin-bottom: 18px;
+    }
+    .notice h2 { color: #bae6fd; font-size: 1.1rem; margin: 0 0 8px; }
+    .notice p { color: #e8f0ff; line-height: 1.55; margin: 0 0 8px; }
+    .tips {
+      border: 1px solid #324a71; border-radius: 14px; background: rgba(8, 18, 40, 0.5);
+      padding: 14px 16px; margin: 14px 0; color: #d5e2f8; line-height: 1.55; font-size: 0.94rem;
+    }
+    .tips h3 { color: #56ccf2; margin: 0 0 8px; font-size: 0.95rem; }
+    .tips ul { margin: 0; padding-left: 1.2em; }
+    .write-box {
+      width: 100%; min-height: 200px; border-radius: 12px; border: 1px solid #324a71;
+      background: #172948; color: #e8f0ff; padding: 12px; font: inherit; line-height: 1.55;
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button {
+      font: inherit; font-weight: 700; border: none; border-radius: 10px;
+      padding: 8px 14px; cursor: pointer;
+    }
+    .btn-check { background: #36d399; color: #05271a; }
+    .fb { margin-top: 8px; color: #9bb0d3; min-height: 1.2em; }
+    .link-out { color: #56ccf2; font-weight: 700; }
+  </style>
+</head>
+<body data-mb2-unit="8" data-mb2-skill="writing" data-mb2-ex="u8-writing-article">
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Writing Part 2 &middot; Article</span>
+        <h1>Holiday competition</h1>
+        <p class="lead">Write an article about a holiday destination you know well (140&ndash;190 words).</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Writing</a>
+    </header>
+
+    <div class="notice">
+      <h2>HOLIDAY COMPETITION</h2>
+      <p>You see this announcement in an international magazine for young people.</p>
+      <p><strong>Write an article about a holiday destination you know well, giving details of what tourists can see and do there.</strong> The top ten articles will be included in the next edition of our magazine.</p>
+      <p>Write your article in 140&ndash;190 words.</p>
+    </div>
+
+    <div class="tips">
+      <h3>Use Seville (Part 1 cloze, p.124) as a model</h3>
+      <ul>
+        <li>How many paragraphs are there?</li>
+        <li>What type of information does each one contain?</li>
+        <li>Are there any expressions which you could use in your own article?</li>
+      </ul>
+      <p style="margin-top:10px;">
+        Open model text:
+        <a class="link-out" href="../../use-of-english/part1-mc-cloze/index.html?context=unit8-uoe-seville&amp;back=../../unit8-writing/article-holiday/index.html&amp;backLabel=Article">Part 1 &mdash; Seville</a>
+      </p>
+    </div>
+
+    <section>
+      <h2 style="color:#bae6fd;font-size:1.05rem;margin:18px 0 10px;">Write your article</h2>
+      <textarea class="write-box" id="own" placeholder="Title&#10;&#10;Introduce the place&#10;What tourists can see&#10;What they can do&#10;Closing recommendation"></textarea>
+      <p class="fb" id="wc">Words: <strong>0</strong> (target 140&ndash;190)</p>
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnSave">Check length &amp; save</button>
+      </div>
+      <p class="fb" id="fb" role="status"></p>
+      <p class="fb" style="margin-top:12px;">TB: sample with examiner comments is on the Teacher&rsquo;s Resource Centre (not printed in the TB extract).</p>
+    </section>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ta = document.getElementById("own");
+  var wc = document.getElementById("wc");
+  function countWords(t) {
+    var m = String(t || "").trim().match(/\S+/g);
+    return m ? m.length : 0;
+  }
+  function update() {
+    wc.innerHTML = "Words: <strong>" + countWords(ta.value) + "</strong> (target 140&ndash;190)";
+  }
+  try {
+    ta.value = localStorage.getItem("mb2-u8-article-draft") || "";
+  } catch (e) {}
+  ta.addEventListener("input", function () {
+    update();
+    try { localStorage.setItem("mb2-u8-article-draft", ta.value || ""); } catch (e) {}
+  });
+  update();
+  document.getElementById("btnSave").addEventListener("click", function () {
+    var n = countWords(ta.value);
+    var ok = n >= 140 && n <= 190;
+    document.getElementById("fb").textContent = ok
+      ? "Length OK (" + n + " words)."
+      : "Aim for 140–190 words (now " + n + ").";
+    if (ok && window.MasteringB2Progress) {
+      MasteringB2Progress.recordAndReward(
+        { unit: 8, skill: "writing", exerciseId: "u8-writing-article", percent: 100 },
+        10
+      );
+    }
+  });
+})();
+  </script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

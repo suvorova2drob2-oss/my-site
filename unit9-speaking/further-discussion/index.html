@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 9 Speaking &mdash; Part 4 Discussion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../../css/fce-speaking-part4-discussion.css" />
+</head>
+<body data-mb2-unit="9" data-mb2-skill="speaking" data-mb2-ex="u9-speaking-part4">
+  <main class="page">
+    <header class="top">
+      <div>
+        <span class="tag">Speaking Part 4 &middot; Discussion</span>
+        <h1>Unit 9 &mdash; Money &amp; community</h1>
+      </div>
+      <a class="back" href="../index.html">&larr; Speaking</a>
+    </header>
+    <p class="sp4-instr">
+      <strong>SPEAK</strong> Following on from your discussion in the Part 3 task, discuss these questions with your partner. Give reasons for your answers.
+    </p>
+    <div class="sp4-layout">
+      <section class="sp4-stage" aria-live="polite">
+        <p class="sp4-progress" id="qProgress">Question 1 / 6</p>
+        <div class="sp4-num" id="qNum" aria-hidden="true">1</div>
+        <p class="sp4-q" id="qText"></p>
+        <p class="sp4-cue">Discuss out loud with your partner &mdash; give full answers with reasons.</p>
+        <p class="sp4-hint">The examiner may ask you, your partner, or both of you the same question.</p>
+        <div class="sp4-nav">
+          <button type="button" id="btnPrev">&larr; Previous</button>
+          <button type="button" id="btnNext">Next &rarr;</button>
+          <div class="sp4-dots" id="qDots" aria-hidden="true"></div>
+        </div>
+      </section>
+      <aside class="sp4-exam-rail" aria-labelledby="exam-expect-h">
+        <h2 id="exam-expect-h">What to expect in the exam</h2>
+        <ul>
+          <li>A particular question may be directed specifically at you or your partner. Alternatively, you may both be asked the same question and encouraged to discuss your ideas together.</li>
+          <li>In either case, you are expected to give full answers to the questions asked, with reasons for your opinions.</li>
+        </ul>
+      </aside>
+    </div>
+  </main>
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var QUESTIONS = [
+    "What other types of places, institutions or organisations should be considered for a donation? Why?",
+    "Some people say that money can't buy happiness. What do you think?",
+    "Is it a good idea for parents to give pocket money to young children?",
+    "How important is it to save money?",
+    "Which types of workers in your country do you think deserve to earn more money? Why?",
+    "Do you think sports stars earn too much money? Why/Why not?"
+  ];
+  var idx = 0;
+  var progress = document.getElementById("qProgress");
+  var num = document.getElementById("qNum");
+  var text = document.getElementById("qText");
+  var dots = document.getElementById("qDots");
+  var btnPrev = document.getElementById("btnPrev");
+  var btnNext = document.getElementById("btnNext");
+  dots.innerHTML = QUESTIONS.map(function (_, i) {
+    return '<span class="sp4-dot" data-i="' + i + '"></span>';
+  }).join("");
+  function saveProgressDone() {
+    if (!window.MasteringB2Progress) return;
+    MasteringB2Progress.recordAndReward(
+      { unit: 9, skill: "speaking", exerciseId: "u9-speaking-part4", percent: 100 },
+      10
+    );
+  }
+  function render() {
+    var last = idx >= QUESTIONS.length - 1;
+    progress.textContent = "Question " + (idx + 1) + " / " + QUESTIONS.length;
+    num.textContent = String(idx + 1);
+    text.textContent = QUESTIONS[idx];
+    btnPrev.disabled = idx <= 0;
+    btnNext.textContent = last ? "Done" : "Next \u2192";
+    btnNext.classList.toggle("is-done", last);
+    dots.querySelectorAll(".sp4-dot").forEach(function (d, i) {
+      d.classList.toggle("is-on", i === idx);
+    });
+  }
+  btnPrev.addEventListener("click", function () {
+    if (idx > 0) { idx--; render(); }
+  });
+  btnNext.addEventListener("click", function () {
+    if (idx >= QUESTIONS.length - 1) { saveProgressDone(); return; }
+    idx++;
+    render();
+  });
+  dots.addEventListener("click", function (e) {
+    var t = e.target.closest(".sp4-dot");
+    if (!t) return;
+    idx = Number(t.getAttribute("data-i")) || 0;
+    render();
+  });
+  render();
+})();
+  </script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

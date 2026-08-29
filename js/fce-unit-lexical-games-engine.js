@@ -27,6 +27,9 @@
   var T1 = themeAt(1);
   var T2 = themeAt(2);
   var STOR_PREFIX = "mb2u" + unit + "Lex";
+  var UNIT_BACK_HREF = CFG.backHref || ("unit" + unit + ".html");
+  var UNIT_BACK_LABEL = CFG.backLabel || ("Back to Unit " + unit);
+  var GAMES_BACK_LABEL = "Back to vocabulary games";
 
   (function paintChrome() {
     function paintMiniThemeBar() {
@@ -49,8 +52,8 @@
     var vocab = document.getElementById("lexGamesVocabLink");
     if (h1) h1.textContent = CFG.title || ("Lexical games — Unit " + unit);
     if (back) {
-      back.href = CFG.backHref || ("unit" + unit + ".html");
-      back.textContent = CFG.backLabel || ("Back to Unit " + unit);
+      back.href = UNIT_BACK_HREF;
+      back.textContent = UNIT_BACK_LABEL;
     }
     if (sub) {
       sub.innerHTML =
@@ -128,6 +131,7 @@
     T2.dropLines || ["PLACEHOLDER · pack coming soon."];
 
     const scoreKey = "masteringB2Score";
+    let activeGameKey = "";
     function getScore() {
       const raw = localStorage.getItem(scoreKey);
       const n = Number(raw);
@@ -137,6 +141,137 @@
       localStorage.setItem(scoreKey, String(getScore() + pts));
       if (window.MasteringB2Daily) MasteringB2Daily.addPoints(pts);
     }
+    const GAME_STATS_KEY = STOR_PREFIX + "GameStats";
+    function loadGameStats() {
+      try {
+        const raw = localStorage.getItem(GAME_STATS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+    function saveGameStats(stats) {
+      try {
+        localStorage.setItem(GAME_STATS_KEY, JSON.stringify(stats || {}));
+      } catch (e) {}
+    }
+    function recordGameOutcome(gameKey, ok, pts) {
+      const key = gameKey || activeGameKey || "other";
+      const stats = loadGameStats();
+      if (!stats[key]) {
+        stats[key] = { plays: 0, correct: 0, wrong: 0, points: 0 };
+      }
+      const row = stats[key];
+      row.plays += 1;
+      if (ok) row.correct += 1;
+      else row.wrong += 1;
+      if (pts) row.points += Number(pts) || 0;
+      saveGameStats(stats);
+      refreshGameStatsHud();
+    }
+    function refreshGameStatsHud() {
+      const el = document.getElementById("lexGamesStatsHud");
+      if (!el) return;
+      const stats = loadGameStats();
+      const keys = Object.keys(stats);
+      if (!keys.length) {
+        el.textContent = "Stats: play any game — results are saved here.";
+        return;
+      }
+      let correct = 0;
+      let wrong = 0;
+      let points = 0;
+      keys.forEach(function (k) {
+        correct += Number(stats[k].correct) || 0;
+        wrong += Number(stats[k].wrong) || 0;
+        points += Number(stats[k].points) || 0;
+      });
+      el.textContent =
+        "Stats · Home " +
+        getScore() +
+        " · Correct " +
+        correct +
+        " · Wrong " +
+        wrong +
+        " · Game points " +
+        points;
+    }
+    function setBackToVocabularyGames() {
+      const back = document.getElementById("lexGamesBack");
+      if (!back) return;
+      back.textContent = "← Back to vocabulary games";
+      back.setAttribute("href", "#vocabulary-games");
+      back.setAttribute("data-lex-back-mode", "games");
+    }
+    function restoreUnitBackLink() {
+      const back = document.getElementById("lexGamesBack");
+      if (!back) return;
+      back.textContent = UNIT_BACK_LABEL;
+      back.setAttribute("href", UNIT_BACK_HREF);
+      back.removeAttribute("data-lex-back-mode");
+    }
+    function showGamesMenu() {
+      document.body.classList.remove("lex-game-focus");
+      document.body.classList.add("lex-games-menu");
+      const hostEl = document.getElementById("gameHost");
+      if (hostEl) {
+        hostEl.querySelectorAll(".folder").forEach(function (x) {
+          x.classList.remove("open");
+        });
+        hostEl.classList.remove("single-open");
+      }
+      activeGameKey = "";
+      restoreUnitBackLink();
+    }
+    function exitGameFocus() {
+      try {
+        if (typeof dropStopLoop === "function") dropStopLoop();
+        if (typeof dropHideOverlay === "function") dropHideOverlay();
+        if (typeof dropHideGameOver === "function") dropHideGameOver();
+        if (typeof dropHideRoundNailed === "function") dropHideRoundNailed();
+        if (typeof hideTrainerWin === "function") hideTrainerWin();
+        if (typeof trainerHideReveal === "function") trainerHideReveal();
+      } catch (e) {}
+      showGamesMenu();
+      const gamesList = document.getElementById("gameHost");
+      if (gamesList && typeof gamesList.scrollIntoView === "function") {
+        setTimeout(function () {
+          gamesList.scrollIntoView({ block: "start", behavior: "smooth" });
+        }, 40);
+      }
+    }
+
+    (function wireLexBackAndStats() {
+      document.body.classList.add("lex-games-menu");
+      const host = document.getElementById("gameHost");
+      if (host && !document.getElementById("vocabulary-games")) {
+        host.setAttribute("data-vocabulary-games", "1");
+      }
+      /* Capture phase: always intercept while a game is open — never leave to Unit by accident */
+      document.addEventListener(
+        "click",
+        function (e) {
+          const back = e.target && e.target.closest && e.target.closest("#lexGamesBack");
+          if (!back) return;
+          const inGame =
+            back.getAttribute("data-lex-back-mode") === "games" ||
+            document.body.classList.contains("lex-game-focus");
+          if (!inGame) return;
+          e.preventDefault();
+          e.stopPropagation();
+          exitGameFocus();
+        },
+        true
+      );
+      let hud = document.getElementById("lexGamesStatsHud");
+      if (!hud && host && host.parentNode) {
+        hud = document.createElement("p");
+        hud.id = "lexGamesStatsHud";
+        hud.className = "lex-games-stats-hud";
+        host.parentNode.insertBefore(hud, host);
+      }
+      refreshGameStatsHud();
+    })();
 
     function normalizeToken(t) {
       return String(t).replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, "");
@@ -308,7 +443,12 @@
       trainerLevel = trainerLockedTo3 ? 3 : Math.min(3, Math.max(1, Number(p.level) || 1));
     }
 
-    function levelLabel(lv) {
+    function levelLabel(lv, mode) {
+      if (mode === "drop") {
+        if (lv >= 3) return "Level 3 · 3 words";
+        if (lv === 2) return "Level 2 · 2 words";
+        return "Level 1 · 1 word";
+      }
       if (lv >= 3) return "Level 3 · full phrase";
       if (lv === 2) return "Level 2 · 2 words";
       return "Level 1 · 1 word";
@@ -316,8 +456,8 @@
 
     applyTrainerProgress();
 
-    /** Gap size by trainer level: 1 word / 2 words / full cool chunk. */
-    function pickGapByLevel(chunk, level) {
+    /** Gap size by trainer level: 1 word / 2 words / full chunk (or capped at maxWordsAtLevel3). */
+    function pickGapByLevel(chunk, level, maxWordsAtLevel3) {
       const stop = new Set([
         "a","an","the","and","or","of","to","in","on","for","with","at","by","from",
         "is","are","was","were","be","been","being","that","this","these","those",
@@ -327,7 +467,10 @@
       const words = String(chunk || "").trim().split(/\s+/).filter(Boolean);
       if (!words.length) return "";
       const lv = Number(level) || 1;
-      if (lv >= 3 || words.length <= 1) return words.join(" ");
+      if (lv >= 3) {
+        if (maxWordsAtLevel3 == null) return words.join(" ");
+        return words.slice(0, Math.min(words.length, maxWordsAtLevel3)).join(" ");
+      }
       if (lv <= 1) return pickStickyKeyword(words.join(" "));
       if (words.length === 2) return words.join(" ");
       let best = words.slice(0, 2).join(" ");
@@ -382,9 +525,39 @@
     function fullAnswerOf(it) {
       return fullPhraseFromItem(it) || String(it.answer || "").trim();
     }
+    function isStubTrainerItem(it) {
+      if (!it) return true;
+      const hint = String(it.hint || "");
+      const phrase = String(it.phrase || it.answer || "");
+      return (
+        /^PLACEHOLDER/i.test(phrase) ||
+        /^PLACEHOLDER/i.test(hint) ||
+        /Заглушка/i.test(hint) ||
+        /Stub — replace/i.test(hint)
+      );
+    }
+    function cardsMapItem(speakerBlock, it, idx, themeShort, prefix) {
+      if (isStubTrainerItem(it)) return null;
+      const idSuffix = it.answer != null && prefix !== "G::" ? it.answer : idx;
+      return {
+        id: prefix + speakerBlock.name + "::" + idSuffix,
+        def: it.hint,
+        answer: fullAnswerOf(it),
+        speaker: themeShort + " · " + speakerBlock.name
+      };
+    }
     /** Typed gap: level-sized chunk from the reading sentence. */
     function typedGapAnswer(it) {
       return resolveTrainerSticky(it).answer;
+    }
+    function dropGapAnswer(it) {
+      const wordLv = typeof dropWordLevel === "function" ? dropWordLevel() : 1;
+      const ctx = String((it && (it.contextSentence || it.phrase)) || "").trim();
+      const fullChunk = chunkForItem(it);
+      const gap = pickGapByLevel(fullChunk, wordLv, 3);
+      const carved = carveStickyFromContext(ctx, gap);
+      if (carved.answer) return carved.answer;
+      return gap;
     }
     function trainerUsesSticky(it) {
       return !!(it && (it.stickyBefore != null || it.contextSentence || it.stickyAnswer || it.phrase));
@@ -402,9 +575,9 @@
     };
 
     const GAMES = [
-      { key: "trainer", title: "Lexical trainer", desc: "Typed gaps + hints with lives and points.", hint: "Folder → readings inside" },
+      { key: "trainer", title: "Lexical trainer", desc: "3 levels (1 word → 2 words → full phrase) · 3 lives · win screen.", hint: "Folder → readings inside" },
       { key: "cards", title: "Definition cards", desc: "Flashcards with mark status.", hint: "Tick Reading theme above" },
-      { key: "drop", title: "Lexical drop", desc: "Falling sentence with missing chunk.", hint: "All reading themes" },
+      { key: "drop", title: "Lexical drop", desc: "3 word-levels · Round 4 dual lines · Enter to check.", hint: "All reading themes" },
       { key: "pick", title: "Paraphrase pick", desc: "Pick exact phrase by paraphrase.", hint: "Tick themes above" },
       { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Tick themes above" },
       { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Tick themes above" },
@@ -481,6 +654,13 @@
             </div>
             <div class="msg" id="msg"></div>
           </div>
+          <div id="trainerRevealOverlay" class="drop-overlay trainer-reveal-overlay" aria-live="polite">
+            <div class="drop-overlay-box">
+              <div class="drop-overlay-label">Correct answer</div>
+              <div id="trainerRevealAnswer" class="drop-overlay-answer"></div>
+              <div class="drop-overlay-sub" id="trainerRevealSub">Life lost: -1</div>
+            </div>
+          </div>
           <div id="trainerWin" class="lex-trainer-win" hidden>
             <canvas id="trainerWinFireworks" class="lex-trainer-win-fw" aria-hidden="true"></canvas>
             <div class="lex-trainer-win-card">
@@ -503,11 +683,12 @@
     const dropHtml = `
       <div class="drop-intro" id="dropIntro">
         <div class="drop-panel">
-          <p><b style="color:var(--text)">How it works.</b> You see a sentence with one gap <b>___</b>. Type the missing chunk. If wrong, the correct answer appears and you must type it to continue.</p>
+          <p><b style="color:var(--text)">How it works.</b> Round 1 = <b>1 word</b> (slow). Round 2 = <b>2 words</b>. Round 3 = <b>3 words</b>. Round 4 = <b>two lines</b> on screen — type either answer to clear that card. Wrong answer → context + correct wording. Hit the bottom or 0 lives → <b>Game Over</b>.</p>
           <label class="pack-check pack-card"><input type="checkbox" id="dropPhrasal" checked><span><b data-lex-theme-label="0">A</b></span></label>
           <label class="pack-check pack-card"><input type="checkbox" id="dropCrime" checked><span><b data-lex-theme-label="1">B</b></span></label>
           <label class="pack-check pack-card"><input type="checkbox" id="dropStories" checked><span><b data-lex-theme-label="2">C</b></span></label>
           <button class="continue-btn" id="dropStartBtn" type="button">Start round</button>
+          <p class="drop-intro-msg msg" id="dropIntroMsg"></p>
         </div>
       </div>
       <div class="drop-play" id="dropPlay">
@@ -516,12 +697,17 @@
           <div class="drop-canvas" id="dropCanvas"></div>
         </div>
         <div class="drop-footer" id="dropFooter">
+          <div class="drop-footer-head">
+            <span class="lex-level-pill" id="dropLevelPill" title="Difficulty">Level 1</span>
+          </div>
           <div class="hint-label">Hint (paraphrase)</div>
           <div class="hint-box" id="dropHint"></div>
           <div class="drop-input-row">
-            <input id="dropInput" class="drop-input" autocomplete="off" placeholder="Type missing words from the text and press Enter...">
-            <button class="check-btn" id="dropCheckBtn" type="button">Catch</button>
-            <button class="drop-dk-btn" id="dropDontKnowBtn" type="button">I don't know</button>
+            <input id="dropInput" class="drop-input" autocomplete="off" placeholder="Type the missing word(s) · Enter to check">
+            <div class="drop-btn-row">
+              <button class="check-btn" id="dropCheckBtn" type="button">Check</button>
+              <button class="drop-dk-btn" id="dropDontKnowBtn" type="button">I don't know</button>
+            </div>
           </div>
           <div class="drop-note" id="dropNote"></div>
           <div id="dropBig" class="drop-big">
@@ -529,11 +715,31 @@
             <div id="dropBigAnswer" class="drop-big-answer"></div>
           </div>
         </div>
+        <div id="dropRoundNailed" class="drop-round-nailed" hidden>
+          <div class="drop-round-nailed-card">
+            <p class="drop-round-nailed-kicker" id="dropRoundNailedKicker">Round complete</p>
+            <h3 class="drop-round-nailed-title">You nailed it.</h3>
+            <p class="drop-round-nailed-line" id="dropRoundNailedLine">Press Enter to continue.</p>
+            <button class="check-btn" id="dropRoundNailedContinue" type="button">Continue →</button>
+          </div>
+        </div>
+        <div id="dropGameOverScreen" class="drop-game-over" hidden>
+          <div class="drop-game-over-card">
+            <p class="drop-game-over-kicker">Lexical drop</p>
+            <h3 class="drop-game-over-title">Game Over</h3>
+            <p class="drop-game-over-line" id="dropGameOverLine">The line reached the bottom.</p>
+            <p class="drop-game-over-answer" id="dropGameOverAnswer" hidden></p>
+            <button class="check-btn" id="dropGameOverRetry" type="button">Try again</button>
+            <button class="assist-btn" id="dropGameOverPacks" type="button">← Packs</button>
+          </div>
+        </div>
         <div id="dropOverlay" class="drop-overlay" aria-live="polite">
           <div class="drop-overlay-box">
-            <div class="drop-overlay-label">Correct wording from the text</div>
+            <div class="drop-overlay-label">From the text</div>
+            <div id="dropOverlayContext" class="drop-overlay-context"></div>
+            <div class="drop-overlay-label drop-overlay-label--answer">Correct wording from the text</div>
             <div id="dropOverlayAnswer" class="drop-overlay-answer"></div>
-            <div class="drop-overlay-sub">Life lost: -1</div>
+            <div class="drop-overlay-sub" id="dropOverlaySub">Press Enter to continue</div>
             <button class="check-btn" id="dropOverlayContinueBtn" type="button">Continue</button>
           </div>
         </div>
@@ -697,7 +903,10 @@
         if (!isOpen) {
           folder.classList.add("open");
           host.classList.add("single-open");
+          document.body.classList.remove("lex-games-menu");
           document.body.classList.add("lex-game-focus");
+          activeGameKey = key;
+          setBackToVocabularyGames();
           if (key === "cards") {
             cardsIdx = 0;
             cardsFlipped = false;
@@ -714,6 +923,8 @@
             MATCH.active = false;
           }
           if (key === "wordbank") wordBankRender();
+        } else {
+          showGamesMenu();
         }
       });
     });
@@ -742,32 +953,30 @@
 
     // Definition cards logic
     const CARDS_MARKS_KEY = STOR_PREFIX + "CardsMarks";
+    const CARDS_DONE_CARD = {
+      id: "__done__",
+      def: "Well done!",
+      answer: "You've been through every phrase in this deck. Come back tomorrow or try another game.",
+      speaker: "",
+      isDone: true
+    };
     const cardsDeck = [
       ...TRAINER.phrasal.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it) => ({
-          id: "N::" + speakerBlock.name + "::" + it.answer,
-          def: it.hint,
-          answer: fullAnswerOf(it),
-          speaker: (T0.short || "A") + " · " + speakerBlock.name
-        }))
+        speakerBlock.items.map((it, idx) =>
+          cardsMapItem(speakerBlock, it, idx, T0.short || "A", "N::")
+        )
       ),
       ...TRAINER.crime.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it) => ({
-          id: "R::" + speakerBlock.name + "::" + it.answer,
-          def: it.hint,
-          answer: fullAnswerOf(it),
-          speaker: (T1.short || "B") + " · " + speakerBlock.name
-        }))
+        speakerBlock.items.map((it, idx) =>
+          cardsMapItem(speakerBlock, it, idx, T1.short || "B", "R::")
+        )
       ),
       ...TRAINER.stories.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it, idx) => ({
-          id: "G::" + speakerBlock.name + "::" + idx,
-          def: it.hint,
-          answer: fullAnswerOf(it),
-          speaker: (T2.short || "C") + " · " + speakerBlock.name
-        }))
+        speakerBlock.items.map((it, idx) =>
+          cardsMapItem(speakerBlock, it, idx, T2.short || "C", "G::")
+        )
       )
-    ];
+    ].filter(Boolean);
     let cardsIdx = 0;
     let cardsFlipped = false;
     let cardsMarks = {};
@@ -790,12 +999,14 @@
     }
     function cardsActiveDeck() {
       const t = miniThemeFlags();
-      return cardsDeck.filter((c) => {
+      const content = cardsDeck.filter((c) => {
         if (c.id.startsWith("N::")) return t.phrasal;
         if (c.id.startsWith("R::")) return t.crime;
         if (c.id.startsWith("G::")) return t.stories;
         return false;
       });
+      if (!content.length) return [];
+      return content.concat([CARDS_DONE_CARD]);
     }
     function cardsRender() {
       const hud = document.getElementById("cardsHud");
@@ -806,8 +1017,11 @@
       const frontP = document.getElementById("cardsFrontPill");
       const backP = document.getElementById("cardsBackPill");
       const next = document.getElementById("cardsNext");
+      const knowBtn = document.getElementById("cardsKnow");
+      const learnBtn = document.getElementById("cardsLearn");
       if (!hud || !def || !ans || !sp || !inner || !frontP || !backP || !next) return;
       const deck = cardsActiveDeck();
+      const contentDeck = deck.filter((c) => !c.isDone);
       if (!deck.length) {
         hud.innerHTML = "Tick at least one <b>theme</b> above. No cards match the current selection.";
         def.textContent = "";
@@ -817,27 +1031,70 @@
         backP.textContent = "";
         frontP.className = "cards-pill none";
         backP.className = "cards-pill none";
+        frontP.hidden = false;
+        backP.hidden = false;
         inner.classList.remove("flipped");
         next.disabled = true;
+        if (knowBtn) knowBtn.disabled = true;
+        if (learnBtn) learnBtn.disabled = true;
         return;
       }
       if (cardsIdx >= deck.length) cardsIdx = 0;
       const c = deck[cardsIdx];
-      const knowCount = deck.filter(x => cardsMarks[x.id] === "know").length;
-      const learnCount = deck.filter(x => cardsMarks[x.id] === "learn").length;
-      const notMarked = deck.length - knowCount - learnCount;
-      hud.innerHTML = "Card <b>" + (cardsIdx + 1) + " / " + deck.length + "</b> · I know: <b style='color:#38bdf8'>" + knowCount + "</b> · Still learning: <b style='color:#38bdf8'>" + learnCount + "</b> · Not marked: <b style='color:#38bdf8'>" + notMarked + "</b>";
+      const knowCount = contentDeck.filter((x) => cardsMarks[x.id] === "know").length;
+      const learnCount = contentDeck.filter((x) => cardsMarks[x.id] === "learn").length;
+      const notMarked = contentDeck.length - knowCount - learnCount;
+      if (c.isDone) {
+        hud.innerHTML =
+          "Deck complete · I know: <b style='color:#38bdf8'>" +
+          knowCount +
+          "</b> · Still learning: <b style='color:#38bdf8'>" +
+          learnCount +
+          "</b> · Not marked: <b style='color:#38bdf8'>" +
+          notMarked +
+          "</b>";
+      } else {
+        hud.innerHTML =
+          "Card <b>" +
+          (cardsIdx + 1) +
+          " / " +
+          contentDeck.length +
+          "</b> · I know: <b style='color:#38bdf8'>" +
+          knowCount +
+          "</b> · Still learning: <b style='color:#38bdf8'>" +
+          learnCount +
+          "</b> · Not marked: <b style='color:#38bdf8'>" +
+          notMarked +
+          "</b>";
+      }
       def.textContent = c.def;
       ans.textContent = c.answer;
       sp.textContent = c.speaker;
-      const markText = cardsGetMarkText(c.id);
-      const markClass = cardsGetMarkClass(c.id);
-      frontP.textContent = markText;
-      backP.textContent = markText;
-      frontP.className = "cards-pill " + markClass;
-      backP.className = "cards-pill " + markClass;
+      const frontK = inner.querySelector(".cards-front .cards-kicker");
+      const backK = inner.querySelector(".cards-back .cards-kicker");
+      if (frontK) frontK.textContent = c.isDone ? "Complete" : "Definition";
+      if (backK) backK.textContent = c.isDone ? "Nice work" : "From the text";
+      if (c.isDone) {
+        frontP.textContent = "";
+        backP.textContent = "";
+        frontP.hidden = true;
+        backP.hidden = true;
+        inner.classList.add("cards-inner--done");
+      } else {
+        const markText = cardsGetMarkText(c.id);
+        const markClass = cardsGetMarkClass(c.id);
+        frontP.textContent = markText;
+        backP.textContent = markText;
+        frontP.className = "cards-pill " + markClass;
+        backP.className = "cards-pill " + markClass;
+        frontP.hidden = false;
+        backP.hidden = false;
+        inner.classList.remove("cards-inner--done");
+      }
       inner.classList.toggle("flipped", cardsFlipped);
       next.disabled = cardsIdx >= deck.length - 1;
+      if (knowBtn) knowBtn.disabled = !!c.isDone;
+      if (learnBtn) learnBtn.disabled = !!c.isDone;
     }
     function cardsFlip() {
       cardsFlipped = !cardsFlipped;
@@ -853,11 +1110,20 @@
     function cardsMark(mark) {
       const deck = cardsActiveDeck();
       if (!deck.length) return;
-      const id = deck[cardsIdx].id;
+      const cur = deck[cardsIdx];
+      if (!cur || cur.isDone) return;
+      const id = cur.id;
       cardsMarks[id] = mark;
       cardsSaveMarks();
-      if (mark === "know") srsMarkKnow(id);
-      if (mark === "learn") srsMarkLearning(id);
+      if (mark === "know") {
+        srsMarkKnow(id);
+        addScore(1);
+        recordGameOutcome("cards", true, 1);
+      }
+      if (mark === "learn") {
+        srsMarkLearning(id);
+        recordGameOutcome("cards", false, 0);
+      }
       cardsRender();
     }
     let WB_THEME = "phrasal";
@@ -929,13 +1195,36 @@
         WORD_INDEX[wbIndexKey(x.phrase, x.hint)] = x.id;
       }
     }
-    function registerGameResult(phrase, hint, ok) {
-      const id = WORD_INDEX[wbIndexKey(phrase, hint)];
-      if (!id) return;
-      cardsMarks[id] = ok ? "know" : "learn";
-      cardsSaveMarks();
-      if (ok) srsMarkKnow(id);
-      else srsMarkLearning(id);
+    function registerGameResult(phrase, hint, ok, pts) {
+      const wantPhrase = normalizeForCheck(phrase);
+      const wantHint = normalizeForCheck(hint || "");
+      let id = WORD_INDEX[wbIndexKey(phrase, hint)];
+      if (!id && wantPhrase) {
+        const keys = Object.keys(WORD_INDEX);
+        for (let i = 0; i < keys.length; i += 1) {
+          const parts = keys[i].split("||");
+          if (parts[0] === wantPhrase) {
+            id = WORD_INDEX[keys[i]];
+            break;
+          }
+        }
+        if (!id && wantHint) {
+          for (let i = 0; i < keys.length; i += 1) {
+            const parts = keys[i].split("||");
+            if (parts[1] === wantHint) {
+              id = WORD_INDEX[keys[i]];
+              break;
+            }
+          }
+        }
+      }
+      if (id) {
+        cardsMarks[id] = ok ? "know" : "learn";
+        cardsSaveMarks();
+        if (ok) srsMarkKnow(id);
+        else srsMarkLearning(id);
+      }
+      recordGameOutcome(activeGameKey, !!ok, ok ? pts || 1 : 0);
     }
     function wordBankRender() {
       const list = document.getElementById("wbList");
@@ -1235,6 +1524,7 @@
         }, 220);
       } else {
         a.state = "bad"; b.state = "bad";
+        registerGameResult(a.side === "ans" ? a.text : b.text, a.side === "syn" ? a.text : b.text, false, 0);
         MATCH.selected = [];
         setTimeout(() => {
           if (a.state === "bad") a.state = "";
@@ -1255,6 +1545,8 @@
     let trainerMistakes = 0;
     let trainerShownAnswers = 0;
     let trainerSkipPoint = false;
+    let trainerRevealBusy = false;
+    let trainerRevealTimer = 0;
     let trainerFwRaf = 0;
     let trainerFwStopAt = 0;
 
@@ -1334,6 +1626,7 @@
       const playInner = document.querySelector("#trainerPlay .lex-chrome");
       const task = document.querySelector("#trainerPlay .lex-task");
       document.body.classList.remove("lex-trainer-win-open");
+      trainerHideReveal();
       if (win) win.hidden = true;
       if (playInner) playInner.hidden = false;
       if (task) task.hidden = false;
@@ -1502,9 +1795,102 @@
     function buildActiveSpeakers() {
       const { phrasal: uN, crime: uL, stories: uV } = trainerPackFlags;
       activeSpeakers = [];
-      if (uN) activeSpeakers.push(...TRAINER.phrasal.map((s) => ({ name: "N " + s.name, items: s.items.slice() })));
-      if (uL) activeSpeakers.push(...TRAINER.crime.map((s) => ({ name: s.name, items: s.items.slice() })));
-      if (uV) activeSpeakers.push(...TRAINER.stories.map((s) => ({ name: (T2.short || "C") + " · " + s.name, items: s.items.slice() })));
+      function mapBlock(s, name) {
+        const items = s.items.filter((it) => !isStubTrainerItem(it));
+        if (!items.length) return null;
+        return { name: name, items: items };
+      }
+      if (uN) {
+        TRAINER.phrasal.forEach((s) => {
+          const b = mapBlock(s, (T0.short || "A") + " · " + s.name);
+          if (b) activeSpeakers.push(b);
+        });
+      }
+      if (uL) {
+        TRAINER.crime.forEach((s) => {
+          const b = mapBlock(s, (T1.short || "B") + " · " + s.name);
+          if (b) activeSpeakers.push(b);
+        });
+      }
+      if (uV) {
+        TRAINER.stories.forEach((s) => {
+          const b = mapBlock(s, (T2.short || "C") + " · " + s.name);
+          if (b) activeSpeakers.push(b);
+        });
+      }
+    }
+
+    function trainerClearRevealTimer() {
+      if (trainerRevealTimer) {
+        clearTimeout(trainerRevealTimer);
+        trainerRevealTimer = 0;
+      }
+    }
+
+    function trainerHideReveal() {
+      trainerClearRevealTimer();
+      trainerRevealBusy = false;
+      const overlay = document.getElementById("trainerRevealOverlay");
+      if (overlay) overlay.classList.remove("on");
+      const inp = document.getElementById("answerInput");
+      const checkBtn = document.getElementById("checkBtn");
+      if (inp) inp.disabled = false;
+      if (checkBtn) checkBtn.disabled = false;
+    }
+
+    function trainerMountRevealOverlay() {
+      const overlay = document.getElementById("trainerRevealOverlay");
+      if (overlay && overlay.parentNode !== document.body) {
+        document.body.appendChild(overlay);
+      }
+    }
+
+    function trainerShowReveal(answer, subText, delayMs, onDone) {
+      trainerMountRevealOverlay();
+      trainerRevealBusy = true;
+      const overlay = document.getElementById("trainerRevealOverlay");
+      const ansEl = document.getElementById("trainerRevealAnswer");
+      const subEl = document.getElementById("trainerRevealSub");
+      const inp = document.getElementById("answerInput");
+      const checkBtn = document.getElementById("checkBtn");
+      if (ansEl) ansEl.textContent = answer;
+      if (subEl) subEl.textContent = subText || "Life lost: -1";
+      if (overlay) overlay.classList.add("on");
+      if (inp) inp.disabled = true;
+      if (checkBtn) checkBtn.disabled = true;
+      trainerClearRevealTimer();
+      trainerRevealTimer = setTimeout(function () {
+        trainerRevealTimer = 0;
+        trainerHideReveal();
+        if (typeof onDone === "function") onDone();
+      }, delayMs || 1800);
+    }
+
+    function trainerUpdateLives() {
+      const el = document.getElementById("lives");
+      if (el) el.textContent = "❤".repeat(lives) + "♡".repeat(Math.max(0, 3 - lives));
+    }
+
+    function trainerRestartLevel() {
+      speaker = 0;
+      item = 0;
+      lives = 3;
+      trainerSkipPoint = false;
+      trainerHideReveal();
+      renderTrainer();
+    }
+
+    function advanceTrainerItem() {
+      if (item < currentItems().length - 1) {
+        item += 1;
+        return false;
+      }
+      if (speaker < activeSpeakers.length - 1) {
+        speaker += 1;
+        item = 0;
+        return false;
+      }
+      return true;
     }
 
     function updatePackSummary() {
@@ -1523,7 +1909,9 @@
       tabs.querySelectorAll(".tab").forEach(btn => {
         btn.addEventListener("click", () => {
           speaker = Number(btn.getAttribute("data-sp"));
-          item = 0; lives = 3; trainerSkipPoint = false;
+          item = 0;
+          trainerSkipPoint = false;
+          trainerHideReveal();
           hideTrainerWin();
           renderTrainer();
         });
@@ -1538,6 +1926,7 @@
       trainerMistakes = 0;
       trainerShownAnswers = 0;
       trainerSkipPoint = false;
+      trainerHideReveal();
     }
 
     function renderTrainer() {
@@ -1558,7 +1947,7 @@
       updatePackSummary();
       updateLevelPill();
       const c = current();
-      document.getElementById("lives").textContent = "❤".repeat(lives) + "♡".repeat(Math.max(0,3-lives));
+      trainerUpdateLives();
       document.getElementById("counter").textContent = (item + 1) + " / " + currentItems().length;
       document.getElementById("hintBox").textContent = c.hint;
       document.getElementById("linePre").textContent = trainerPre(c);
@@ -1571,20 +1960,11 @@
 
     /** @returns {boolean} true if pack finished */
     function advanceAfterCorrect() {
-      if (item < currentItems().length - 1) {
-        item += 1;
-        return false;
-      }
-      if (speaker < activeSpeakers.length - 1) {
-        speaker += 1;
-        item = 0;
-        lives = 3;
-        return false;
-      }
-      return true;
+      return advanceTrainerItem();
     }
 
     function handleCheck() {
+      if (trainerRevealBusy) return;
       const inp = document.getElementById("answerInput");
       const msg = document.getElementById("msg");
       const cur = current();
@@ -1592,7 +1972,7 @@
       const expected = normalizeForCheck(expectedRaw);
       const got = normalizeForCheck(inp.value);
       if (!got) {
-        msg.textContent = "Incorrect: empty answer. Type the missing word or chunk.";
+        msg.textContent = "Type the missing word or chunk first.";
         msg.className = "msg bad";
         return;
       }
@@ -1602,11 +1982,13 @@
           trainerSkipPoint = false;
           msg.textContent = "Moved on (no point for shown answer).";
           msg.className = "msg ok";
+          registerGameResult(fullAnswerOf(cur), cur.hint, true, 0);
         } else {
           addScore(1);
           sessionPoints += 1;
           msg.textContent = "Correct! +1 point";
           msg.className = "msg ok";
+          registerGameResult(fullAnswerOf(cur), cur.hint, true, 1);
         }
         const done = advanceAfterCorrect();
         if (done) {
@@ -1614,22 +1996,37 @@
         } else {
           setTimeout(renderTrainer, 450);
         }
-      } else {
-        lives -= 1;
-        trainerMistakes += 1;
-        if (lives <= 0) {
-          msg.textContent = "Incorrect. Expected: '" + expectedRaw + "'. No lives left — restarting this speaker.";
-          msg.className = "msg bad";
-          lives = 3;
-          item = 0;
-          trainerSkipPoint = false;
-          setTimeout(renderTrainer, 700);
-        } else {
-          msg.textContent = "Incorrect. Expected: '" + expectedRaw + "'.";
-          msg.className = "msg bad";
-          inp.value = expectedRaw;
-        }
+        return;
       }
+
+      lives -= 1;
+      trainerMistakes += 1;
+      trainerUpdateLives();
+      msg.textContent = "";
+      msg.className = "msg";
+      registerGameResult(fullAnswerOf(cur), cur.hint, false, 0);
+
+      if (lives <= 0) {
+        trainerShowReveal(
+          expectedRaw,
+          "No lives left — restarting this level.",
+          2200,
+          function () {
+            trainerRestartLevel();
+          }
+        );
+        return;
+      }
+
+      trainerShowReveal(expectedRaw, "Life lost: -1 · moving on…", 1800, function () {
+        trainerShownAnswers += 1;
+        const done = advanceTrainerItem();
+        if (done) {
+          setTimeout(showTrainerWin, 400);
+        } else {
+          renderTrainer();
+        }
+      });
     }
 
     document.addEventListener("click", (e) => {
@@ -1647,6 +2044,13 @@
         }
         trainerPackFlags = { phrasal: usePhrasal, crime: useCrime, stories: useStories };
         buildActiveSpeakers();
+        if (!activeSpeakers.length) {
+          if (msg) {
+            msg.textContent = "No real phrases in the selected packs yet (stubs only).";
+            msg.className = "msg bad";
+          }
+          return;
+        }
         applyTrainerProgress();
         trainerActive = true;
         resetTrainerRoundCounters();
@@ -1697,6 +2101,7 @@
     // Lexical drop logic (falling words)
     const DROP = {
       pool: [],
+      basePool: [],
       q: [],
       corpus: [],
       activeDrops: [],
@@ -1707,12 +2112,40 @@
       on: false,
       paused: false,
       overlayTimer: 0,
-      speed: 16,
+      speed: 8,
       rafId: 0,
       lastTs: 0,
       nextId: 1,
-      nextSpawnY: 0
+      nextSpawnY: 0,
+      waitingRoundAdvance: false
     };
+    function dropWordLevel() {
+      const r = Number(DROP.round) || 1;
+      if (r <= 1) return 1;
+      if (r === 2) return 2;
+      return 3;
+    }
+    function dropSpeedForRound(r) {
+      const n = Number(r) || 1;
+      if (n <= 1) return 7;
+      if (n === 2) return 10;
+      if (n === 3) return 13;
+      return 15;
+    }
+    function dropRoundLabel() {
+      const r = Number(DROP.round) || 1;
+      if (r >= 4) return "Round 4 · 2 lines";
+      if (r === 3) return "Round 3 · 3 words";
+      if (r === 2) return "Round 2 · 2 words";
+      return "Round 1 · 1 word";
+    }
+    function dropBuildQueueFromBase() {
+      const base = Array.isArray(DROP.basePool) ? DROP.basePool : [];
+      DROP.pool = base.map(function (it) {
+        return Object.assign({}, it, { answer: dropGapAnswer(it) });
+      });
+      DROP.q = shuffle(DROP.pool);
+    }
     function escapeRegex(s) {
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
@@ -1759,10 +2192,24 @@
     }
     function allPackItems(usePhrasal, useCrime, useStories) {
       let out = [];
-      if (usePhrasal) out = out.concat(TRAINER.phrasal.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
-      if (useCrime) out = out.concat(TRAINER.crime.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
-      if (useStories) out = out.concat(TRAINER.stories.flatMap((s) => s.items).map((it) => ({ ...it, answer: typedGapAnswer(it) })));
-      return out;
+      if (usePhrasal) {
+        out = out.concat(
+          TRAINER.phrasal.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
+        );
+      }
+      if (useCrime) {
+        out = out.concat(
+          TRAINER.crime.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
+        );
+      }
+      if (useStories) {
+        out = out.concat(
+          TRAINER.stories.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
+        );
+      }
+      return out.map(function (it) {
+        return Object.assign({}, it);
+      });
     }
     function dropSentenceForItem(item) {
       const ctx = item && String(item.contextSentence || "").trim();
@@ -1777,10 +2224,32 @@
       }
       return x;
     }
+    function dropUpdateLevelPill() {
+      const el = document.getElementById("dropLevelPill");
+      if (el) el.textContent = dropRoundLabel();
+    }
     function dropRenderHud() {
       const el = document.getElementById("dropHud");
       if (!el) return;
-      el.textContent = "Round " + DROP.round + " · Caught " + DROP.caught + " · " + "❤".repeat(DROP.lives) + " · " + Math.round(DROP.speed) + " px/s";
+      el.textContent =
+        dropRoundLabel() +
+        " · Caught " +
+        DROP.caught +
+        " · " +
+        "❤".repeat(Math.max(0, DROP.lives)) +
+        "♡".repeat(Math.max(0, 3 - DROP.lives)) +
+        " · " +
+        Math.round(DROP.speed) +
+        " px/s";
+    }
+    function dropMaxActive() {
+      return DROP.round >= 4 ? 2 : 1;
+    }
+    function dropFrontDrop() {
+      if (!DROP.activeDrops.length) return null;
+      return DROP.activeDrops.slice().sort(function (a, b) {
+        return b.y - a.y;
+      })[0];
     }
     function dropSetHint() {
       const hint = document.getElementById("dropHint");
@@ -1789,7 +2258,18 @@
         hint.textContent = "Type the missing chunk before the line reaches the bottom.";
         return;
       }
-      hint.textContent = DROP.activeDrops[0].item.hint;
+      if (DROP.activeDrops.length === 1) {
+        hint.textContent = DROP.activeDrops[0].item.hint;
+        return;
+      }
+      const ordered = DROP.activeDrops.slice().sort(function (a, b) {
+        return b.y - a.y;
+      });
+      hint.textContent = ordered
+        .map(function (d, i) {
+          return (i + 1) + ") " + d.item.hint;
+        })
+        .join("   ·   ");
     }
     function dropSetNote(text, isBad) {
       const note = document.getElementById("dropNote");
@@ -1813,55 +2293,182 @@
       DROP.rafId = 0;
       DROP.lastTs = 0;
     }
-    function dropShowOverlay(answer) {
+    function buildDropContextHtml(sentence, answer) {
+      const safeSentence = String(sentence || "").trim();
+      const safeAnswer = String(answer || "").trim();
+      if (!safeSentence) return escapeHtml(safeAnswer);
+      if (!safeAnswer) return escapeHtml(safeSentence);
+      const re = new RegExp(escapeRegex(safeAnswer).replace(/\s+/g, "\\s+"), "i");
+      const m = safeSentence.match(re);
+      if (!m || m.index == null) {
+        return escapeHtml(safeSentence) + " <b class=\"drop-overlay-hit\">" + escapeHtml(safeAnswer) + "</b>";
+      }
+      const before = safeSentence.slice(0, m.index);
+      const hit = safeSentence.slice(m.index, m.index + m[0].length);
+      const after = safeSentence.slice(m.index + m[0].length);
+      return (
+        escapeHtml(before) +
+        '<b class="drop-overlay-hit">' +
+        escapeHtml(hit) +
+        "</b>" +
+        escapeHtml(after)
+      );
+    }
+    function dropShowOverlay(answer, contextSentence, subText) {
       const overlay = document.getElementById("dropOverlay");
       const ans = document.getElementById("dropOverlayAnswer");
+      const ctx = document.getElementById("dropOverlayContext");
+      const sub = document.getElementById("dropOverlaySub");
       if (!overlay || !ans) return;
-      ans.textContent = answer;
+      ans.textContent = answer || "";
+      if (sub) sub.textContent = subText || "Press Enter to continue";
+      if (ctx) {
+        const sentence = String(contextSentence || "").trim();
+        ctx.innerHTML = sentence
+          ? buildDropContextHtml(sentence, answer)
+          : "";
+        ctx.hidden = !sentence;
+      }
       overlay.classList.add("on");
     }
     function dropHideOverlay() {
       const overlay = document.getElementById("dropOverlay");
       const ans = document.getElementById("dropOverlayAnswer");
+      const ctx = document.getElementById("dropOverlayContext");
       if (!overlay || !ans) return;
       overlay.classList.remove("on");
       ans.textContent = "";
+      if (ctx) {
+        ctx.innerHTML = "";
+        ctx.hidden = true;
+      }
+      if (DROP.overlayTimer) {
+        clearTimeout(DROP.overlayTimer);
+        DROP.overlayTimer = 0;
+      }
     }
-    function dropApplyLifeLoss(answerText) {
+    function dropOverlayIsOpen() {
+      const overlay = document.getElementById("dropOverlay");
+      return !!(overlay && overlay.classList.contains("on"));
+    }
+    function dropApplyLifeLoss(answerText, contextSentence) {
       DROP.lives -= 1;
       dropRenderHud();
-      dropShowOverlay(answerText);
-      dropSetNote("Life lost: I don't know.", true);
+      dropShowOverlay(
+        answerText,
+        contextSentence,
+        DROP.lives <= 0
+          ? "Life lost: -1 · Press Enter"
+          : "Life lost: -1 · Press Enter to continue"
+      );
+      dropSetNote("Life lost. Press Enter to continue.", true);
       DROP.paused = true;
-      if (DROP.overlayTimer) clearTimeout(DROP.overlayTimer);
-      DROP.overlayTimer = setTimeout(() => {
+      if (DROP.overlayTimer) {
+        clearTimeout(DROP.overlayTimer);
         DROP.overlayTimer = 0;
-        dropContinueAfterOverlay();
-      }, 1800);
+      }
+    }
+    function dropRoundNailedIsOpen() {
+      const el = document.getElementById("dropRoundNailed");
+      return !!(el && !el.hidden);
+    }
+    function dropHideRoundNailed() {
+      const el = document.getElementById("dropRoundNailed");
+      if (el) el.hidden = true;
+      DROP.waitingRoundAdvance = false;
+      document.body.classList.remove("lex-drop-nailed-open");
+    }
+    function dropShowRoundNailed(clearedRound) {
+      dropStopLoop();
+      dropHideOverlay();
+      DROP.waitingRoundAdvance = true;
+      const el = document.getElementById("dropRoundNailed");
+      const kicker = document.getElementById("dropRoundNailedKicker");
+      const line = document.getElementById("dropRoundNailedLine");
+      if (kicker) kicker.textContent = "Round " + clearedRound + " complete";
+      if (line) {
+        const next = clearedRound + 1;
+        line.textContent =
+          next <= 4
+            ? "You nailed it. Press Enter for Round " + next + "."
+            : "You nailed it. Press Enter.";
+      }
+      if (el) {
+        if (el.parentNode !== document.body) document.body.appendChild(el);
+        el.hidden = false;
+      }
+      document.body.classList.add("lex-drop-nailed-open");
+    }
+    function dropAdvanceAfterNailed() {
+      if (!DROP.waitingRoundAdvance) return;
+      dropHideRoundNailed();
+      if (DROP.round >= 4) {
+        dropHideGameOver();
+        dropSetNote("All 4 rounds complete. Well done!", false);
+        document.getElementById("dropPlay").classList.remove("on");
+        document.getElementById("dropIntro").classList.remove("hidden");
+        return;
+      }
+      DROP.round += 1;
+      DROP.speed = dropSpeedForRound(DROP.round);
+      dropBuildQueueFromBase();
+      dropSetNote(dropRoundLabel() + " — go!", false);
+      dropRenderHud();
+      dropUpdateLevelPill();
+      DROP.on = true;
+      DROP.paused = false;
+      dropEnsureActiveCount();
+      dropStartLoop();
+      const dropInp = document.getElementById("dropInput");
+      if (dropInp) dropInp.focus();
     }
     function dropClearNodes() {
       DROP.nodes.forEach((node) => node.remove());
       DROP.nodes.clear();
       DROP.activeDrops = [];
     }
+    function dropHideGameOver() {
+      const screen = document.getElementById("dropGameOverScreen");
+      if (screen) screen.hidden = true;
+      document.body.classList.remove("lex-drop-gameover-open");
+    }
+    function dropShowGameOver(message, answerText) {
+      dropStopLoop();
+      dropHideOverlay();
+      const play = document.getElementById("dropPlay");
+      const intro = document.getElementById("dropIntro");
+      if (play) play.classList.add("on");
+      if (intro) intro.classList.add("hidden");
+      const screen = document.getElementById("dropGameOverScreen");
+      const line = document.getElementById("dropGameOverLine");
+      const ans = document.getElementById("dropGameOverAnswer");
+      if (line) line.textContent = message || "Game Over";
+      if (ans) {
+        if (answerText) {
+          ans.hidden = false;
+          ans.textContent = "Answer: " + answerText;
+        } else {
+          ans.hidden = true;
+          ans.textContent = "";
+        }
+      }
+      if (screen) {
+        if (screen.parentNode !== document.body) document.body.appendChild(screen);
+        screen.hidden = false;
+      }
+      document.body.classList.add("lex-drop-gameover-open");
+      dropSetNote("Game Over", true);
+    }
+    function dropGameOver(message, missedItem) {
+      if (missedItem) {
+        registerGameResult(fullAnswerOf(missedItem), missedItem.hint, false);
+      }
+      const answerText = missedItem && missedItem.answer ? missedItem.answer : "";
+      dropClearNodes();
+      dropShowGameOver(message || "Game Over", answerText);
+    }
     function dropLoseLife(missedItem) {
-      DROP.lives -= 1;
-      registerGameResult(fullAnswerOf(missedItem), missedItem.hint, false);
-      const big = document.getElementById("dropBig");
-      const ans = document.getElementById("dropBigAnswer");
-      if (big && ans) {
-        ans.textContent = missedItem.answer;
-        big.classList.add("on");
-      }
-      dropSetNote("Too slow. You lost 1 life.", true);
-      if (DROP.lives <= 0) {
-        dropSetNote("No lives left. Round over.", true);
-        dropStopLoop();
-        document.getElementById("dropPlay").classList.remove("on");
-        document.getElementById("dropIntro").classList.remove("hidden");
-      }
-      dropRenderHud();
-      if (DROP.on) dropSpawnOne(true);
+      dropGameOver("Game Over — the line reached the bottom.", missedItem);
     }
     function dropMakeNode(drop) {
       const node = document.createElement("div");
@@ -1882,38 +2489,54 @@
       DROP.nodes.delete(id);
       return removed;
     }
-    function dropPickX(y) {
+    function dropPickX(slot) {
       const scene = document.getElementById("dropScene");
-      const cardW = 340;
-      const sidePad = 14;
+      const cardW = 320;
+      const sidePad = 10;
       if (!scene) return sidePad;
       const maxX = Math.max(sidePad, scene.clientWidth - cardW - sidePad);
-      return Math.round(sidePad + Math.random() * (maxX - sidePad));
+      if (dropMaxActive() < 2) {
+        return Math.round(sidePad + Math.random() * (maxX - sidePad));
+      }
+      /* Round 4: same lane, one after another */
+      const center = Math.round((scene.clientWidth - Math.min(cardW, scene.clientWidth - sidePad * 2)) / 2);
+      const jitter = Math.round((Math.random() - 0.5) * 24);
+      return Math.max(sidePad, Math.min(maxX, center + jitter + (slot === 0 ? -8 : 8)));
     }
     function dropSpawnOne(force) {
       if (!DROP.q.length) return;
-      if (!force && DROP.activeDrops.length >= 1) return;
-      if (force && DROP.activeDrops.length >= 1) return;
+      const max = dropMaxActive();
+      if (DROP.activeDrops.length >= max) return;
       const item = DROP.q.shift();
-      const y = -40;
+      const slot = DROP.activeDrops.length;
+      const y = slot === 0 ? -40 : -210;
       const drop = {
         id: DROP.nextId++,
         item,
         sentence: dropSentenceForItem(item),
-        x: dropPickX(y),
-        y
+        x: dropPickX(slot),
+        y: y
       };
       DROP.activeDrops.push(drop);
       dropMakeNode(drop);
       dropSetHint();
     }
-    function dropFinishIfDone() {
-      if (DROP.q.length === 0 && DROP.activeDrops.length === 0) {
-        dropStopLoop();
-        dropSetNote("Round complete. Start a new round.", false);
-        document.getElementById("dropPlay").classList.remove("on");
-        document.getElementById("dropIntro").classList.remove("hidden");
+    function dropEnsureActiveCount() {
+      const max = dropMaxActive();
+      while (DROP.on && !DROP.paused && DROP.q.length && DROP.activeDrops.length < max) {
+        dropSpawnOne(false);
       }
+    }
+    function dropFinishIfDone() {
+      if (DROP.q.length !== 0 || DROP.activeDrops.length !== 0) return;
+      if (DROP.waitingRoundAdvance) return;
+      dropStopLoop();
+      const cleared = DROP.round;
+      if (cleared < 4) {
+        dropShowRoundNailed(cleared);
+        return;
+      }
+      dropShowRoundNailed(4);
     }
     function dropTick(ts) {
       if (!DROP.on) return;
@@ -1925,21 +2548,23 @@
       }
       const dtSec = Math.min(0.05, (ts - DROP.lastTs) / 1000);
       DROP.lastTs = ts;
-      dropSpawnOne(false);
+      dropEnsureActiveCount();
       const scene = document.getElementById("dropScene");
-      const loseY = scene ? Math.min(820, scene.clientHeight - 18) : 820;
+      const loseY = scene ? scene.clientHeight - 12 : 320;
       const toRemove = [];
       for (let i = 0; i < DROP.activeDrops.length; i += 1) {
         const d = DROP.activeDrops[i];
         d.y += DROP.speed * dtSec;
         const node = DROP.nodes.get(d.id);
         if (node) node.style.transform = "translateY(" + d.y.toFixed(2) + "px)";
-        if (d.y > loseY) toRemove.push(d.id);
+        const cardH = node ? node.offsetHeight : 72;
+        if (d.y + cardH >= loseY) toRemove.push(d.id);
       }
       for (let i = 0; i < toRemove.length; i += 1) {
         const removed = dropRemoveById(toRemove[i]);
         if (removed) dropLoseLife(removed.item);
       }
+      if (DROP.on && !DROP.paused) dropEnsureActiveCount();
       dropFinishIfDone();
       if (!DROP.on) return;
       DROP.rafId = requestAnimationFrame(dropTick);
@@ -1958,7 +2583,9 @@
         dropSetNote("Type answer first.", true);
         return;
       }
-      const hit = DROP.activeDrops.find(d => normalizeForCheck(d.item.answer) === got);
+      const hit = DROP.activeDrops.find(function (d) {
+        return normalizeForCheck(d.item.answer) === got;
+      });
       if (hit) {
         dropRemoveById(hit.id);
         DROP.caught += 1;
@@ -1968,18 +2595,28 @@
         dropSetNote("Caught! +1", false);
         if (inp) inp.value = "";
         dropRenderHud();
+        dropEnsureActiveCount();
         dropSetHint();
         dropFinishIfDone();
-      } else {
-        dropSetNote("No active block with this answer.", true);
+        return;
       }
+      const target = dropFrontDrop();
+      if (!target) {
+        dropSetNote("No active line to catch.", true);
+        return;
+      }
+      if (inp) inp.value = "";
+      dropRemoveById(target.id);
+      registerGameResult(fullAnswerOf(target.item), target.item.hint, false);
+      dropApplyLifeLoss(target.item.answer, target.sentence || dropSentenceForItem(target.item));
     }
     function dropDontKnow() {
       if (!DROP.on || DROP.paused || !DROP.activeDrops.length) return;
-      const current = DROP.activeDrops[0];
+      const current = dropFrontDrop();
+      if (!current) return;
       dropRemoveById(current.id);
       registerGameResult(fullAnswerOf(current.item), current.item.hint, false);
-      dropApplyLifeLoss(current.item.answer);
+      dropApplyLifeLoss(current.item.answer, current.sentence || dropSentenceForItem(current.item));
     }
     function dropContinueAfterOverlay() {
       if (DROP.overlayTimer) clearTimeout(DROP.overlayTimer);
@@ -1990,17 +2627,16 @@
       }
       dropHideOverlay();
       if (DROP.lives <= 0) {
-        dropSetNote("No lives left. Round over.", true);
-        dropStopLoop();
-        document.getElementById("dropPlay").classList.remove("on");
-        document.getElementById("dropIntro").classList.remove("hidden");
+        dropGameOver("Game Over — no lives left.", null);
         return;
       }
       DROP.paused = false;
       dropClearBig();
       dropSetNote("", false);
-      dropSpawnOne(true);
+      dropEnsureActiveCount();
       dropSetHint();
+      const dropInp = document.getElementById("dropInput");
+      if (dropInp) dropInp.focus();
     }
     document.addEventListener("click", (e) => {
       if (e.target.id === "dropStartBtn") {
@@ -2008,25 +2644,69 @@
         const useCrime = document.getElementById("dropCrime").checked;
         const useStories = document.getElementById("dropStories").checked;
         if (!usePhrasal && !useCrime && !useStories) return;
-        DROP.pool = allPackItems(usePhrasal, useCrime, useStories);
+        applyTrainerProgress();
+        DROP.basePool = allPackItems(usePhrasal, useCrime, useStories);
+        if (!DROP.basePool.length) {
+          const introMsg = document.getElementById("dropIntroMsg");
+          if (introMsg) {
+            introMsg.textContent = "No real phrases in the selected packs yet (stubs only).";
+            introMsg.className = "drop-intro-msg msg bad";
+          }
+          return;
+        }
+        const introMsg = document.getElementById("dropIntroMsg");
+        if (introMsg) {
+          introMsg.textContent = "";
+          introMsg.className = "drop-intro-msg msg";
+        }
         DROP.corpus = buildDropCorpus(usePhrasal, useCrime, useStories);
-        DROP.q = shuffle(DROP.pool);
         dropClearNodes();
         DROP.caught = 0;
         DROP.lives = 3;
         DROP.round = 1;
-        DROP.speed = 16;
+        DROP.speed = dropSpeedForRound(1);
         DROP.paused = false;
         DROP.nextSpawnY = 0;
         DROP.nextId = 1;
+        dropBuildQueueFromBase();
+        dropHideGameOver();
+        dropHideRoundNailed();
         document.getElementById("dropIntro").classList.add("hidden");
         document.getElementById("dropPlay").classList.add("on");
-        document.getElementById("dropInput").value = "";
+        const dropInp = document.getElementById("dropInput");
+        if (dropInp) dropInp.value = "";
         dropClearBig();
-        dropSetNote("", false);
+        dropSetNote(dropRoundLabel() + " — take your time.", false);
+        dropUpdateLevelPill();
         dropRenderHud();
-        dropSpawnOne(true);
+        dropEnsureActiveCount();
         dropStartLoop();
+        if (dropInp) {
+          setTimeout(function () {
+            const footer = document.getElementById("dropFooter");
+            if (footer && typeof footer.scrollIntoView === "function") {
+              footer.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }
+            dropInp.focus();
+          }, 80);
+        }
+      }
+      if (e.target.id === "dropRoundNailedContinue") {
+        dropAdvanceAfterNailed();
+      }
+      if (e.target.id === "dropGameOverRetry") {
+        dropHideGameOver();
+        const startBtn = document.getElementById("dropStartBtn");
+        if (startBtn) startBtn.click();
+      }
+      if (e.target.id === "dropGameOverPacks") {
+        dropHideGameOver();
+        dropStopLoop();
+        dropClearNodes();
+        const play = document.getElementById("dropPlay");
+        const intro = document.getElementById("dropIntro");
+        if (play) play.classList.remove("on");
+        if (intro) intro.classList.remove("hidden");
       }
       if (e.target.id === "dropCheckBtn") {
         dropCheck();
@@ -2183,10 +2863,18 @@
             srsReset(id);
           } else {
             cardsSaveMarks();
-            if (mark === "know") srsMarkKnow(id);
-            if (mark === "learn") srsMarkLearning(id);
+            if (mark === "know") {
+              srsMarkKnow(id);
+              addScore(1);
+              recordGameOutcome(activeGameKey || "wordbank", true, 1);
+            }
+            if (mark === "learn") {
+              srsMarkLearning(id);
+              recordGameOutcome(activeGameKey || "wordbank", false, 0);
+            }
           }
           wordBankRender();
+          refreshGameStatsHud();
         }
       }
     });
@@ -2205,9 +2893,39 @@
         cardsFlip();
         return;
       }
+      if (e.key === "Enter" && dropRoundNailedIsOpen()) {
+        e.preventDefault();
+        dropAdvanceAfterNailed();
+        return;
+      }
+      if (e.key === "Enter" && dropOverlayIsOpen()) {
+        e.preventDefault();
+        dropContinueAfterOverlay();
+        return;
+      }
+      const goScreen = document.getElementById("dropGameOverScreen");
+      if (e.key === "Enter" && goScreen && !goScreen.hidden) {
+        e.preventDefault();
+        const retry = document.getElementById("dropGameOverRetry");
+        if (retry) retry.click();
+        return;
+      }
       if (e.key === "Enter" && document.activeElement && document.activeElement.id === "dropInput") {
         e.preventDefault();
         dropCheck();
+        return;
+      }
+      if (
+        e.key === "Enter" &&
+        document.getElementById("dropPlay") &&
+        document.getElementById("dropPlay").classList.contains("on")
+      ) {
+        const dropInp = document.getElementById("dropInput");
+        if (dropInp && document.activeElement !== dropInp) {
+          e.preventDefault();
+          dropInp.focus();
+          dropCheck();
+        }
         return;
       }
       if (e.key === "Enter" && document.activeElement && document.activeElement.id === "echoInput") {

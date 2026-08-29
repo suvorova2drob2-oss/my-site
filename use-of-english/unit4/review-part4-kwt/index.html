@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 4 Review &mdash; Part 4 Key word transformation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../css/mastering-b2-back-link.css" />
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Manrope, "Segoe UI", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: clamp(12px, 3vw, 24px);
+      line-height: 1.55;
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+    }
+    .page {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(18px, 3vw, 26px);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #86efac;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+      line-height: 1.3;
+      margin: 0;
+    }
+    .lead {
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .exam-tip {
+      font-size: 0.88rem;
+      color: #d5e2f8;
+      line-height: 1.5;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-left: 3px solid #64748b;
+      background: rgba(100, 116, 139, 0.12);
+      border-radius: 0 8px 8px 0;
+    }
+    .example-box {
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      background: rgba(86, 204, 242, 0.08);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+    .example-box strong { color: #fde68a; }
+    .example-box .kw { color: #fcd34d; font-weight: 800; letter-spacing: 0.04em; }
+    .example-box .ans { color: #86efac; font-weight: 700; font-style: italic; }
+    .progress {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .subtitle, .instr {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(8, 18, 40, 0.55);
+    }
+    .kw-num { font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+    .kw-first { margin-bottom: 12px; font-size: 0.95rem; }
+    .kw-given {
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .kw-given strong { color: #fde68a; letter-spacing: 0.04em; }
+    .kw-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .kw-input {
+      flex: 1 1 180px;
+      min-width: 140px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(15, 28, 52, 0.9);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.95rem;
+    }
+    .kw-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(86, 204, 242, 0.25);
+    }
+    .kw-input.ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.18);
+    }
+    .kw-input.bad {
+      border-color: #f87171;
+      background: rgba(248, 113, 113, 0.16);
+    }
+    .kw-input:disabled { opacity: 0.85; cursor: not-allowed; }
+    .instant-key {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(74, 222, 128, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+      font-size: 0.92rem;
+    }
+    .instant-key.show { display: block; }
+    .instant-key .lab {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #86efac;
+      margin-bottom: 6px;
+    }
+    .instant-key .full { margin-top: 10px; color: #bae6fd; font-size: 0.88rem; }
+    .ok-msg {
+      display: none;
+      margin-top: 12px;
+      color: #86efac;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .ok-msg.show { display: block; }
+    .btn-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-check:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-next {
+      background: var(--accent);
+      color: #052030;
+      display: none;
+    }
+    .btn-next.show { display: inline-block; }
+    .done-all {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(86, 204, 242, 0.35);
+      background: rgba(86, 204, 242, 0.08);
+      text-align: center;
+      font-weight: 700;
+      color: #bae6fd;
+    }
+    .done-all.show { display: block; }
+  </style>
+</head>
+<body data-mb2-unit="4" data-mb2-skill="uoe" data-mb2-ex="u4-review-p4-kwt">
+  <main class="page">
+    <header class="top">
+      <div style="flex:1;min-width:0;">
+        <p class="tag">Review &middot; Student&rsquo;s Book</p>
+        <h1>Part 4 &mdash; Key word transformation</h1>
+        <p class="lead">2&ndash;5 words including HAD / GOT / UNTIL / TAKE / INTEREST / SUCH</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Use of English &mdash; Unit 4</a>
+    </header>
+
+    <p class="progress">Question <strong id="elStep">1</strong> of <strong id="elTotal">6</strong></p>
+    <p class="subtitle">
+      For questions 1&ndash;6, complete the second sentence so that it has a similar meaning to the first sentence, using the word given.
+      Do not change the word given. You must use between two and five words, including the word given.
+    </p>
+    <p class="instr">
+      Type only the words for the gap (do not repeat text printed before or after the box).
+      Press <strong>Check</strong>, then <strong>Next question</strong>.
+    </p>
+
+    <section class="card" id="taskCard" aria-live="polite">
+      <p class="kw-num" id="elNum">1.</p>
+      <p class="kw-first" id="elFirst"></p>
+      <p class="kw-given">Key word: <strong id="elKey"></strong></p>
+      <p class="kw-line">
+        <span id="elBefore"></span>
+        <input type="text" id="elInput" class="kw-input" autocomplete="off" spellcheck="false" placeholder="2&ndash;5 words" aria-label="Gap answer" />
+        <span id="elAfter"></span>
+      </p>
+      <p class="ok-msg" id="elOk">Correct.</p>
+      <div class="instant-key" id="elKeyBox">
+        <div class="lab">Key</div>
+        <span id="elKeyText"></span>
+        <p class="full" id="elFull"></p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btnCheck">Check</button>
+        <button type="button" class="btn-next" id="btnNext">Next question</button>
+      </div>
+    </section>
+
+    <p class="done-all" id="elDone">All 6 questions completed. You can close the page or reload to practise again.</p>
+  </main>
+
+  <script src="../../../js/mastering-b2-skill-progress.js"></script>
+  <script src="../../../js/unit4-uoe-part4-kwt.js"></script>
+  <script src="../../../js/unit4-review-part4-kwt.js"></script>
+  <script>U4_UOE_PART4_KWT.mount({ tasks: window.U4_REVIEW_P4_KWT_TASKS });</script>
+  <script src="../../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

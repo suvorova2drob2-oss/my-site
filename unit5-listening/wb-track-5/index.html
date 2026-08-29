@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 &mdash; Listening Part 2 &middot; Workbook Track 5</title>
+  <style>
+    :root {
+      --panel: #1d2b4a;
+      --panel-soft: #223657;
+      --line: #324a71;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --accent: #56ccf2;
+      --ok: #36d399;
+      --bad: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(180deg, #09122a 0%, #101d3c 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.58;
+    }
+    .page {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    h1 { font-size: 1.25rem; line-height: 1.25; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 0.94rem; }
+    .back { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .back:hover { text-decoration: underline; }
+    .audio-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #172948;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .audio-wrap label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    audio { width: 100%; }
+    .instr {
+      font-size: 0.95rem;
+      color: #d5e2f8;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .exam-strip {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
+    .exam-tip {
+      font-size: 0.88rem;
+      color: #d5e2f8;
+      line-height: 1.5;
+      margin: 0 0 14px;
+      padding: 10px 12px;
+      border-left: 3px solid #64748b;
+      background: rgba(100, 116, 139, 0.12);
+      border-radius: 0 8px 8px 0;
+    }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .task h2 {
+      font-size: 1.02rem;
+      color: #bae6fd;
+      margin-bottom: 8px;
+    }
+    .gap-block { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #34507d; }
+    .gap-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .gap-num { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .sent {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #e8f0ff;
+    }
+    .sent input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 10rem;
+      max-width: min(100%, 22rem);
+      margin: 2px 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: #132544;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .sent input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .sent input.is-ok {
+      border-color: #22c55e !important;
+      background: rgba(34, 197, 94, 0.22) !important;
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.55);
+      color: #ecfdf5;
+    }
+    .sent input.is-bad {
+      border-color: #f87171 !important;
+      background: rgba(239, 68, 68, 0.2) !important;
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
+      color: #fff1f2;
+    }
+    .gap-key {
+      display: none;
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(74, 222, 128, 0.45);
+      white-space: nowrap;
+    }
+    .gap-key.show { display: inline; }
+    .bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+    .bank span {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(120, 160, 210, 0.35);
+      background: rgba(16, 28, 50, 0.7);
+      color: #bae6fd;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-check { background: var(--ok); color: #05271a; }
+    .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #1a2c49;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      min-height: 1.2em;
+    }
+    .feedback.score-ok {
+      border-color: rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+    }
+    .feedback.score-partial {
+      border-color: rgba(250, 204, 21, 0.45);
+      background: rgba(250, 204, 21, 0.08);
+      color: #fde68a;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+</head>
+<body>
+  <main class="page" data-mb2-unit="5" data-mb2-skill="listening" data-mb2-ex="u5-wb-track-5">
+    <header class="top">
+      <div>
+        <span class="tag">Listening Part 2 &middot; Sentence completion</span>
+        <h1>Workbook Track 5 &mdash; Author Sara James</h1>
+        <p class="lead">RfB2 First Workbook. Complete each gap with a word or short phrase.</p>
+      </div>
+      <a class="back" href="../index.html">&larr; Unit 5 Listening</a>
+    </header>
+
+    <div class="audio-wrap">
+      <label for="track">Audio (Yandex Object Storage)</label>
+      <audio id="track" controls preload="metadata">
+        <source src="https://storage.yandexcloud.net/cpeaudio/fce/RfB2First_WB_Track%205.mp3" type="audio/mpeg" />
+        Your browser cannot play this audio.
+      </audio>
+    </div>
+
+    <section class="task" aria-labelledby="ex1-h">
+      <h2 id="ex1-h">1 &mdash; Sentence completion</h2>
+      <p class="instr">
+        You will hear author <strong>Sara James</strong> giving a talk about her work. For questions <strong>1&ndash;10</strong>,
+        complete the sentences with a <strong>word or short phrase</strong>.
+      </p>
+      <p class="exam-tip">
+        <strong>Don&rsquo;t forget!</strong> You do not need to write more than three words for each answer.
+      </p>
+      <p class="exam-strip">
+        Track: <code>fce/RfB2First_WB_Track 5.mp3</code>.
+        Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
+      </p>
+      <div id="gaps-root"></div>
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check">Check answers</button>
+        <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+      </div>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+    </section>
+
+    <section class="task" aria-labelledby="ex2-h">
+      <h2 id="ex2-h">2 &mdash; Verb forms from the listening</h2>
+      <p class="instr">Complete the extracts from the listening with the correct form of the verbs from the box.</p>
+      <div class="bank" aria-label="Verb box">
+        <span>fool</span><span>go</span><span>put</span><span>run</span><span>set</span><span>write</span>
+      </div>
+      <div id="ex2-root"></div>
+      <div class="btn-row">
+        <button type="button" class="btn-check" id="btn-check2">Check Ex. 2</button>
+        <button type="button" class="btn-reset" id="btn-reset2">Reset Ex. 2</button>
+      </div>
+      <p class="feedback" id="feedback2" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="../../js/mastering-b2-skill-progress.js"></script>
+  <script>
+(function () {
+  var ACCEPT = [
+    ["passion"],
+    ["Rainbows", "rainbows"],
+    ["only three", "three", "3", "only 3"],
+    ["routine"],
+    ["morning", "mornings"],
+    ["café", "cafe", "a café", "a cafe"],
+    ["fountain pen", "a fountain pen"],
+    ["writer's block", "writers block", "writer’s block", "writers' block"],
+    ["different"],
+    ["five", "5"]
+  ];
+  var SHOW = [
+    "passion",
+    "Rainbows",
+    "(only) three / 3",
+    "routine",
+    "morning(s)",
+    "café / cafe",
+    "fountain pen",
+    "writer's block",
+    "different",
+    "five / 5"
+  ];
+  var TASK = [
+    { before: "According to Sara, an essential requirement for a successful writer is", after: "." },
+    { before: "Her first published book was called", after: "." },
+    { before: "Before her first book was accepted she received", after: "rejections." },
+    { before: "Sara says she needs to have the same", after: "every day." },
+    { before: "Sara only writes in the", after: "." },
+    { before: "She sometimes gets inspiration when she is in a", after: "." },
+    { before: "Sara uses a", after: "when she is writing the first draft of a story." },
+    { before: "She has experience of getting", after: "before a deadline." },
+    { before: "She recommends writers do a", after: "activity when they are stuck for ideas." },
+    { before: "The initial plan was for", after: "writers to participate in a documentary." }
+  ];
+
+  var EX2 = [
+    {
+      before: "Unless you have a lot of confidence in your book, it might",
+      after: "some writers off.",
+      accept: ["put"],
+      show: "put"
+    },
+    {
+      before: "Don’t be",
+      after: "into believing that it’s a glamorous or romantic life.",
+      accept: ["fooled"],
+      show: "fooled"
+    },
+    {
+      before: "I",
+      after: "aside four hours every morning for writing.",
+      accept: ["set", "put"],
+      show: "set / put"
+    },
+    {
+      before: "I find that I work better if I",
+      after: "out my first drafts the old-fashioned way.",
+      accept: ["write"],
+      show: "write"
+    },
+    {
+      before: "I’m afraid I’ve",
+      after: "out of time today.",
+      accept: ["run"],
+      show: "run"
+    },
+    {
+      before: "A new documentary about different writers and their working lives will",
+      after: "out on Channel 3 next month.",
+      accept: ["go"],
+      show: "go"
+    }
+  ];
+
+  function norm(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/\u2019/g, "'")
+      .replace(/\u2018/g, "'")
+      .replace(/\./g, "")
+      .replace(/\s+/g, " ")
+      .replace(/^['"]|['"]$/g, "")
+      .trim();
+  }
+
+  function matches(val, list) {
+    var n = norm(val);
+    if (!n) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (n === norm(list[i])) return true;
+    }
+    return false;
+  }
+
+  function renderGaps(rootId, items, idPrefix) {
+    var root = document.getElementById(rootId);
+    root.innerHTML = "";
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      var block = document.createElement("div");
+      block.className = "gap-block";
+      var p = document.createElement("p");
+      p.className = "sent";
+      var num = document.createElement("span");
+      num.className = "gap-num";
+      num.textContent = String(i + 1) + ".";
+      p.appendChild(num);
+      p.appendChild(document.createTextNode(" " + item.before + " "));
+      var inp = document.createElement("input");
+      inp.type = "text";
+      inp.id = idPrefix + String(i + 1);
+      inp.setAttribute("autocomplete", "off");
+      inp.setAttribute("spellcheck", "true");
+      inp.setAttribute("aria-label", "Gap " + String(i + 1));
+      p.appendChild(inp);
+      var key = document.createElement("span");
+      key.className = "gap-key";
+      key.id = idPrefix + "key" + String(i + 1);
+      p.appendChild(key);
+      p.appendChild(document.createTextNode(" " + item.after));
+      block.appendChild(p);
+      root.appendChild(block);
+    }
+  }
+
+  function wireClear(rootId, idPrefix, fbId, n) {
+    var root = document.getElementById(rootId);
+    root.querySelectorAll("input").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        this.classList.remove("is-ok", "is-bad");
+        var key = document.getElementById(this.id.replace(idPrefix, idPrefix + "key"));
+        if (key) {
+          key.classList.remove("show");
+          key.textContent = "";
+        }
+        var fb = document.getElementById(fbId);
+        fb.classList.remove("score-ok", "score-partial");
+        fb.textContent = "";
+      });
+    });
+  }
+
+  function checkSet(items, acceptArr, showArr, idPrefix, fbId, record) {
+    var okc = 0;
+    var n = items.length;
+    for (var j = 0; j < n; j++) {
+      var inp = document.getElementById(idPrefix + String(j + 1));
+      var key = document.getElementById(idPrefix + "key" + String(j + 1));
+      inp.classList.remove("is-ok", "is-bad");
+      key.classList.remove("show");
+      key.textContent = "";
+      var list = Array.isArray(acceptArr[j]) ? acceptArr[j] : acceptArr[j].accept;
+      var show = Array.isArray(showArr) ? showArr[j] : acceptArr[j].show;
+      if (matches(inp.value, list)) {
+        inp.classList.add("is-ok");
+        okc++;
+      } else {
+        inp.classList.add("is-bad");
+        key.textContent = "→ " + show;
+        key.classList.add("show");
+      }
+    }
+    var fb = document.getElementById(fbId);
+    fb.classList.remove("score-ok", "score-partial");
+    if (okc === n) {
+      fb.classList.add("score-ok");
+      fb.innerHTML = "<strong>All " + n + " correct.</strong>";
+    } else {
+      fb.classList.add("score-partial");
+      fb.innerHTML =
+        "Score: <strong>" +
+        okc +
+        "</strong> / " +
+        n +
+        " correct. <span style=\"color:#86efac\">Green</span> = right; <span style=\"color:#fca5a5\">red</span> = wrong (key shown).";
+    }
+    if (record && window.MasteringB2Progress) {
+      MasteringB2Progress.recordCheckFromDom(okc, n);
+    }
+  }
+
+  function resetSet(n, idPrefix, fbId) {
+    for (var k = 0; k < n; k++) {
+      var inp = document.getElementById(idPrefix + String(k + 1));
+      var key = document.getElementById(idPrefix + "key" + String(k + 1));
+      if (inp) {
+        inp.value = "";
+        inp.classList.remove("is-ok", "is-bad");
+      }
+      if (key) {
+        key.classList.remove("show");
+        key.textContent = "";
+      }
+    }
+    var fb = document.getElementById(fbId);
+    fb.classList.remove("score-ok", "score-partial");
+    fb.textContent = "";
+  }
+
+  renderGaps("gaps-root", TASK, "g");
+  renderGaps("ex2-root", EX2, "v");
+  wireClear("gaps-root", "g", "feedback", TASK.length);
+  wireClear("ex2-root", "v", "feedback2", EX2.length);
+
+  document.getElementById("btn-check").addEventListener("click", function () {
+    checkSet(TASK, ACCEPT, SHOW, "g", "feedback", true);
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    resetSet(TASK.length, "g", "feedback");
+  });
+  document.getElementById("btn-check2").addEventListener("click", function () {
+    var acc = EX2.map(function (x) { return x.accept; });
+    var show = EX2.map(function (x) { return x.show; });
+    checkSet(EX2, acc, show, "v", "feedback2", false);
+  });
+  document.getElementById("btn-reset2").addEventListener("click", function () {
+    resetSet(EX2.length, "v", "feedback2");
+  });
+})();
+  </script>
+  <script src="../../js/mastering-b2-daily-activity.js"></script>
+  <script src="../../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>
