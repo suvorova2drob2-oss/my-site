@@ -4746,7 +4746,942 @@
       tagline: "Facing up · rare sincerity · season close",
       synopsis:
         "Fleabag faces up to her actions and reveals what happened to her beloved friend Boo.",
-      beats: defaultBeats(8),
+      beats: [
+        {
+          id: "well-clung-to",
+          label: "Well-clung to",
+          teacher:
+            "Opening beat · gathering / host energy. Cool phrases: well-clung to · You’re a natural · bottles for topping up / top-up. Discussion: clinging vs holding on · pretty privilege · host / drink etiquette · natural talent.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "well-clung to",
+            "You’re a natural",
+            "bottles for topping up",
+            "top up",
+            "a top-up",
+          ],
+          watch: {
+            videoUrl: "media/s01e06/01-well-clung-to.mp4",
+            note:
+              "well-clung to · You’re a natural · bottles for topping up · Does it get very boring, everyone telling you how gorgeous you are all the time?",
+          },
+          context: {
+            tone: "Lexical · cling / hold on · natural talent · host drinks (top up)",
+            meanings: [
+              "cling to someone / something = hold on tightly (body, clothes, or a relationship) — can sound desperate.",
+              "well-clung to = held / worn tightly; a person (or a look) that is firmly attached to — love, or desperation dressed as closeness?",
+              "You’re a natural = you do it easily, as if born to it — talent without visible effort.",
+              "gorgeous = strikingly attractive (stronger than pretty / good-looking).",
+              "top up (a drink / a glass) = add more liquid so it is full again; a top-up = that extra pour.",
+              "bottles for topping up = the self-service drinks (help yourself / refill from the bottles).",
+            ],
+            examples: [
+              "CLING — cling to someone · cling on · cling to the past / a job / a hope · stop clinging.",
+              "She’s clinging to him out of fear, not love.",
+              "WELL-CLUNG TO — well-clung to · tightly clung to · a look that’s well-clung to.",
+              "That dress is well-clung to — nothing left to the imagination.",
+              "Are they well-clung to… or just unable to let go?",
+              "A NATURAL — You’re a natural. · a natural at cooking / speaking / languages · a natural host.",
+              "You’re a natural — you didn’t even look nervous.",
+              "GORGEOUS — how gorgeous you are · look gorgeous · Does it get very boring, everyone telling you how gorgeous you are all the time?",
+              "TOP UP — top up your glass · top up the wine · Can I top you up? · help yourself to a top-up.",
+              "BOTTLES FOR TOPPING UP — the bottles are over there for topping up · self-service / help yourself.",
+              "The Godmother points guests to the bottles for topping up — host, but not waiter.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "They’re well-clung to — but it looks like…",
+              "Holding on vs clinging… the line is…",
+              "You’re a natural — people said that when I…",
+              "Does it get very boring, everyone telling you how gorgeous you are…",
+              "The bottles are there for topping up — I’d rather…",
+              "In my country, topping up your own glass is…",
+            ],
+            questions: [
+              {
+                q: "In relationships, where is the line between ‘holding on to someone you love’ and ‘clinging to someone out of desperation’? Have you ever seen couples like that?",
+                examples: [
+                  "Holding on: still choosing each other after a hard year.",
+                  "Clinging: panic if they leave the room / check the phone / can’t be alone.",
+                  "Well-clung to looks romantic from outside — exhausting from inside.",
+                  "Have you been the one clinging — or the one being clung to?",
+                ],
+              },
+              {
+                q: "Does it get very boring, everyone telling you how gorgeous you are all the time? Does being exceptionally attractive (‘gorgeous’) make life easier, or does it bring problems like shallow attention? Is ‘pretty privilege’ real?",
+                examples: [
+                  "Pretty privilege: better service, more patience, more chances.",
+                  "Shallow attention: compliments that never become real interest.",
+                  "Boring: the same line, every room, every night.",
+                  "Other side: ‘gorgeous’ can also mean people don’t take you seriously.",
+                ],
+              },
+              {
+                q: "The Godmother tells guests where to top up their drinks. What makes someone a great host at a party? Do you prefer when the host serves you, or when it’s a self-service party (like in this scene)?",
+                examples: [
+                  "Great host: you never hunt for a glass — or they trust you to help yourself.",
+                  "Served drinks feel cared for; self-service feels free.",
+                  "Bottles for topping up = ‘this is my house, but I’m not your waiter.’",
+                  "Worst host: empty glasses and no map to the wine.",
+                ],
+              },
+              {
+                q: "In some cultures, it’s rude to top up your own glass, and someone else must do it for you. What are the unspoken drinking rules or etiquette in your country?",
+                examples: [
+                  "Never pour for yourself — always pour for the other person first.",
+                  "Leave a little in the glass so they can offer a top-up.",
+                  "Toasting, eye contact, who drinks first.",
+                  "Refusing a top-up without offending the host.",
+                ],
+              },
+              {
+                q: "When someone says ‘You’re a natural’, they mean you have talent without trying. Do you believe in natural talent, or is everything just a result of 10,000 hours of hard work?",
+                examples: [
+                  "Natural: it clicked the first time — language, sport, cooking.",
+                  "10,000 hours: they only look like a natural because you missed the practice.",
+                  "A mix: a spark + the hours.",
+                  "‘You’re a natural’ can also be a trap — no one teaches you after that.",
+                ],
+              },
+              {
+                q: "Are there any skills or activities where people told you: ‘Wow, you’re a natural!’? (Maybe cooking, public speaking, driving, or learning languages?)",
+                examples: [
+                  "A class / kitchen / stage where it came easily.",
+                  "Something that looked easy to them and felt like panic to you.",
+                  "A skill you were ‘a natural’ at — and one you had to grind for.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · practise the patterns out loud. Short turns. Then open Discussion.",
+            drills: [
+              {
+                label: "CLING / WELL-CLUNG TO",
+                bank: "cling to someone · cling to the past · stop clinging · well-clung to · holding on vs clinging",
+                task: "Make two lines: “They’re holding on because…” and “They’re clinging because…” Then: “well-clung to can look like ___.”",
+              },
+              {
+                label: "YOU’RE A NATURAL",
+                bank: "You’re a natural. · a natural at cooking / speaking / driving / languages / hosting",
+                task: "Fire three: “You’re a natural at ___.” One true for you, one you wish were true, one that annoyed you when people said it.",
+              },
+              {
+                label: "TOP UP",
+                bank: "top up your glass · Can I top you up? · a top-up · bottles for topping up · help yourself",
+                task: "Host voice: offer a top-up. Guest voice: refuse politely. Then: where are the bottles for topping up in your version of the party?",
+              },
+              {
+                label: "GORGEOUS",
+                bank: "how gorgeous you are · look gorgeous · pretty privilege · shallow attention",
+                task: "Say the show line once. Then one honest take: does ‘gorgeous’ make life easier — or just noisier?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "WELL-CLUNG TO",
+                bank: "well-clung to · cling to someone · holding on",
+                models: [
+                  "They’re well-clung to — from the outside it looks like love.",
+                  "There’s a line between holding on to someone you love and clinging out of desperation.",
+                ],
+                say: "Your turn (30–40 s): a couple (or a friendship) that was well-clung to. Holding on — or clinging?",
+              },
+              {
+                label: "YOU’RE A NATURAL",
+                bank: "You’re a natural · a natural at…",
+                models: [
+                  "You’re a natural.",
+                  "People said I was a natural — I just didn’t show the hours.",
+                ],
+                say: "Your turn: a time someone said you were a natural. Did it feel true?",
+              },
+              {
+                label: "TOP-UP",
+                bank: "top up · a top-up · bottles for topping up",
+                models: [
+                  "The bottles are over there if you need topping up.",
+                  "Can I top you up — or do you want to help yourself?",
+                ],
+                say: "Your turn: a party where the host served everyone vs bottles for topping up. Which felt better — and why?",
+              },
+            ],
+          },
+        },
+        {
+          id: "sexy-plank",
+          label: "Sexy plank",
+          teacher:
+            "Arsehole Guy · sexy plank · never wear padding · led you on · I knew you wouldn’t give a shit. He dumps his ego on her while she’s crying — objectification as a gift, Cool Girl as a trap. Discussion: superficial talk when feelings are too heavy.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "sexy plank",
+            "never wear padding",
+            "I’m sorry if I have led you on",
+            "I knew you wouldn’t give a shit",
+          ],
+          watch: {
+            videoUrl: "media/s01e06/02-sexy-plank.mp4",
+            note:
+              "sexy plank · never wear padding · I’m sorry if I have led you on · He looks at her crying, unloads his personal garbage — I knew you wouldn’t give a shit.",
+          },
+          context: {
+            tone: "Lexical · fake apology + objectification + Cool Girl assumption",
+            meanings: [
+              "sexy plank = a rigid, emotionless object used just for sex — he names himself as a body, not a person.",
+              "never wear padding = don’t fake the body (padded bra / shapewear) — a ‘compliment’ that still polices how she looks.",
+              "lead someone on = give mixed signals; let them think you want more (romance, a future) when you don’t.",
+              "I’m sorry if I have led you on = a soft, often fake apology — ‘if’ can dodge real responsibility.",
+              "I knew you wouldn’t give a shit (18+) = I assumed you wouldn’t care / wouldn’t be hurt (in class: I knew you wouldn’t care).",
+              "objectification = treating a person as a body / a thing (looks, sex) not a full self.",
+              "superficial = staying on the surface (looks, sex, jokes) to avoid weight.",
+              "narcissistic / ego-driven = the story is about *his* image, *his* relief — not her pain.",
+              "oblivious = blind to what’s in front of him (she’s breaking; he hears only his speech).",
+            ],
+            examples: [
+              "SEXY PLANK — I’m just a sexy plank · treat me like a sexy plank · a body with no feelings attached.",
+              "He calls himself a sexy plank — objectifying himself to ‘spare’ her… and inflate his ego.",
+              "NEVER WEAR PADDING — never wear padding · don’t wear padding · a padded bra / shapewear.",
+              "Never wear padding — he stays on the body even while she’s breaking.",
+              "LEAD SOMEONE ON — lead someone on · I’m sorry if I led you on · don’t lead me on.",
+              "I’m sorry if I have led you on.",
+              "Sorry if I led you on — I thought we were just having fun.",
+              "GIVE A SHIT — I knew you wouldn’t give a shit · you don’t give a shit · as if I wouldn’t give a shit.",
+              "I knew you wouldn’t give a shit.",
+              "He sighs with relief when she doesn’t fight back — as if cynicism = no feelings.",
+              "OBJECTIFY / SUPERFICIAL — objectify someone · stay superficial · too narcissistic to notice · completely oblivious · ego-driven apology.",
+              "He reduces the whole thing to physical attraction — oblivious that she’s on the verge.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit. Keep two-sided; no trauma dump.",
+            starters: [
+              "He called himself a sexy plank — which really means…",
+              "Never wear padding — even the ‘compliment’ is about…",
+              "I’m sorry if I have led you on — the ‘if’ is doing a lot of work…",
+              "I knew you wouldn’t give a shit — because she was funny / cynical / ‘cool’…",
+              "He stayed superficial because…",
+              "The Cool Girl persona backfires when…",
+            ],
+            questions: [
+              {
+                q: "What does the phrase ‘sexy plank’ tell us about how the Arsehole Guy views himself and his relationship with Fleabag?",
+                examples: [
+                  "He casts himself as a rigid, emotionless object — just for sex.",
+                  "He assumes she only valued the body / the looks.",
+                  "Irony: he thinks he’s objectifying himself to spare her feelings — he’s inflating his ego.",
+                  "He misreads her emotional chaos as ‘she doesn’t care’.",
+                ],
+              },
+              {
+                q: "Why do people often focus on superficial or physical topics (like looks or sex) when they are unable or unwilling to handle deep emotional weight?",
+                examples: [
+                  "Sex talk is a shield — lighter than ‘are you okay?’",
+                  "Ego-driven: keep it about my body, not your pain.",
+                  "Oblivious: they literally cannot see the crying as a bid for care.",
+                  "Narcissistic move: unload personal garbage, then feel relieved.",
+                ],
+              },
+              {
+                q: "He looks at her crying, unloads his personal garbage, and when she doesn’t fight back, he sighs with relief: ‘I knew you wouldn’t give a shit.’ Why do people assume that because someone is sexually liberated, funny, or cynical, they don’t have feelings or don’t get hurt?",
+                examples: [
+                  "Funny + cynical = ‘you can take it’ — so they dump more.",
+                  "Sexual freedom gets read as ‘no attachment, no wound’.",
+                  "If you don’t fight back, they hear permission — not shock.",
+                  "The line is a compliment to himself, not care for her.",
+                ],
+              },
+              {
+                q: "How does the ‘Cool Girl’ persona backfire on women when they actually need empathy or support?",
+                examples: [
+                  "You trained people that you don’t give a shit — then they believe it.",
+                  "Asking for care feels like breaking character.",
+                  "Partners stay superficial because that’s the deal you seemed to offer.",
+                  "Other side: Cool Girl can be armour that once saved you — and now isolates you.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · say the chunks + the key labels. Then Discussion.",
+            drills: [
+              {
+                label: "SEXY PLANK",
+                bank: "sexy plank · objectify yourself · just a body · no feelings attached",
+                task: "In one sentence: what is a ‘sexy plank’? Then: is that humility — or ego?",
+              },
+              {
+                label: "NEVER WEAR PADDING",
+                bank: "never wear padding · don’t fake the body · a compliment that polices you",
+                task: "Say the line. Then: is it kindness, control, or staying superficial?",
+              },
+              {
+                label: "LEAD SOMEONE ON",
+                bank: "lead someone on · I’m sorry if I have led you on · mixed signals",
+                task: "Say the apology. Then swap ‘if’ for something honest. Which one actually owns it?",
+              },
+              {
+                label: "WOULDN’T GIVE A SHIT",
+                bank: "I knew you wouldn’t give a shit · you don’t give a shit · as if I wouldn’t care",
+                task: "Why does he ‘know’ that? Finish: “I knew you wouldn’t give a shit because you’re ___.”",
+              },
+              {
+                label: "KEY LABELS",
+                bank: "objectification · superficial · narcissistic · oblivious · ego-driven",
+                task: "Pick two labels. Apply them to him — then one to a real-life type (not a trauma story).",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story with the cool phrases.",
+            items: [
+              {
+                label: "SEXY PLANK",
+                bank: "sexy plank · objectification",
+                models: [
+                  "He calls himself a sexy plank — a rigid object for sex.",
+                  "It sounds like he’s putting himself down. It’s still about his looks.",
+                ],
+                say: "Your turn (30–40 s): someone who reduced a whole connection to the physical. Use sexy plank or objectify once.",
+              },
+              {
+                label: "NEVER WEAR PADDING",
+                bank: "never wear padding",
+                models: [
+                  "Never wear padding.",
+                  "Even the compliment stays on the body — not on her face.",
+                ],
+                say: "Your turn: a ‘never wear padding’ type remark — sounds like praise, lands as a body note.",
+              },
+              {
+                label: "LED YOU ON",
+                bank: "I’m sorry if I have led you on",
+                models: [
+                  "I’m sorry if I have led you on.",
+                  "The ‘if’ makes it her problem, not his.",
+                ],
+                say: "Your turn: a fake-soft apology you’ve heard (or said). Rebuild it without ‘if’.",
+              },
+              {
+                label: "WOULDN’T GIVE A SHIT",
+                bank: "I knew you wouldn’t give a shit",
+                models: [
+                  "I knew you wouldn’t give a shit.",
+                  "He sighs with relief — Cool Girl means no feelings, in his head.",
+                ],
+                say: "Your turn: a moment someone assumed you were ‘fine’ because you were funny / cynical / ‘cool’.",
+              },
+            ],
+          },
+        },
+        {
+          id: "roll-around-lingerie",
+          label: "Roll around in my lingerie",
+          teacher:
+            "Harry / collect-it energy. One tape phrase: roll around in my lingerie. Hyper-sexual joke the moment she feels threatened. Discussion: using looks as a weapon · ex competition · unbothered-and-sexy on social media.",
+          blocks: ["watch", "context"],
+          phrases: ["roll around in my lingerie"],
+          watch: {
+            videoUrl: "media/s01e06/03-roll-around-in-my-lingerie.mp4",
+            note:
+              "I’ve been rolling around in my lingerie, all over it, waiting for you to come and collect it.",
+          },
+          context: {
+            tone: "Lexical · one chunk · hyper-sexual armour when you feel smaller",
+            meanings: [
+              "roll around in my lingerie = a comic, hyper-sexual image: I’ve been all over (the thing you’re collecting) in underwear — waiting for you. Sounds fun; often it’s a shield.",
+              "lingerie = underwear worn to look sexy (not just everyday bras / pants).",
+              "waiting for you to come and collect it = the practical reason he’s there; she turns a pickup into a performance.",
+            ],
+            examples: [
+              "ROLL AROUND IN MY LINGERIE — I’ve been rolling around in my lingerie, all over it, waiting for you to come and collect it.",
+              "She’s been rolling around in her lingerie — joke first, feelings nowhere.",
+              "Don’t roll around in the story — just say you’re hurt.",
+              "LINGERIE — in my lingerie · rolling around in lingerie · a lingerie shot for the ex.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal the tape phrase when it fits. Keep two-sided; no trauma dump.",
+            starters: [
+              "I’ve been rolling around in my lingerie… — which really means…",
+              "The moment she feels smaller, she goes hyper-sexual because…",
+              "Looks / humour / money as a weapon on an ex…",
+              "Unbothered and sexy for the ex — on the feed it looks like…",
+            ],
+            questions: [
+              {
+                q: "Why does Fleabag resort to hyper-sexual comments (‘rolling around in my lingerie’) the moment she feels emotionally threatened or inferior?",
+                examples: [
+                  "Sex talk is armour: if I joke first, you can’t see I’m smaller.",
+                  "She turns a pickup (‘come and collect it’) into a performance.",
+                  "Inferiority → over-perform the one thing she’s ‘good at’.",
+                  "Other side: sometimes the joke is just the joke — does it still land as a weapon?",
+                ],
+              },
+              {
+                q: "How do people use their ‘strengths’ (whether it’s looks, humor, or money) as weapons to make their exes feel uncomfortable or jealous?",
+                examples: [
+                  "Looks: lingerie energy / a photo that isn’t for them — except it is.",
+                  "Humor: a line they can’t answer without looking cold.",
+                  "Money / success: the holiday, the job, the new table.",
+                  "The strength is real; the timing is the weapon.",
+                ],
+              },
+              {
+                q: "Why is there often an unspoken competition between exes about ‘who is doing better’ after a breakup?",
+                examples: [
+                  "If they’re thriving, my mess feels like a verdict.",
+                  "Doing better = proof the breakup was their win.",
+                  "You don’t say it — you perform it.",
+                  "Other side: some people really are just living, not competing.",
+                ],
+              },
+              {
+                q: "How does social media amplify this need to look ‘unbothered and sexy’ to our exes, just like Fleabag does in real life here?",
+                examples: [
+                  "Stories / lingerie-adjacent shots / ‘accidentally’ public.",
+                  "Unbothered is a costume — the algorithm rewards the costume.",
+                  "You post for everyone; you hope one person sees it.",
+                  "Rolling around in my lingerie, but for the grid.",
+                ],
+              },
+              {
+                q: "When we see an ex moving on successfully while our own life is in a mess, why does it feel like a personal failure? Is it natural to compare yourself to your ex’s new partner?",
+                examples: [
+                  "Their success reads as: I was the problem.",
+                  "The new partner becomes a scoreboard, not a person.",
+                  "Natural to compare — useful only if you name it and stop competing.",
+                  "Other side: their life is not a comment on yours.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · one chunk, said out loud. Then Discussion.",
+            drills: [
+              {
+                label: "ROLL AROUND IN MY LINGERIE",
+                bank: "I’ve been rolling around in my lingerie, all over it, waiting for you to come and collect it.",
+                task: "Say the line once as a joke. Then in plain English: what is she actually doing — flirting, competing, or hiding?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story. Use the tape phrase once.",
+            items: [
+              {
+                label: "ROLL AROUND IN MY LINGERIE",
+                bank: "roll around in my lingerie",
+                models: [
+                  "I’ve been rolling around in my lingerie, all over it, waiting for you to come and collect it.",
+                  "Hyper-sexual on the surface — threatened underneath.",
+                ],
+                say: "Your turn (30–40 s): a moment someone (or you) went ‘unbothered and sexy’ when they actually felt smaller. Use roll around in my lingerie once if it fits — or name the weapon (looks / humour / money).",
+              },
+            ],
+          },
+        },
+        {
+          id: "spectacle-of-yourself",
+          label: "Stop making a spectacle of yourself",
+          teacher:
+            "Father / Godmother · butter-fingered staff · stop making a spectacle of yourself · clean that up. Polite society tidies the mess instead of the person. Discussion: etiquette over crisis · ‘doing it for attention’ · fear of what people think · a parent’s right to be happy vs a child’s collapse.",
+          blocks: ["watch", "context"],
+          phrases: [
+            "butter-fingered staff",
+            "stop making a spectacle of yourself",
+            "clean that up",
+          ],
+          watch: {
+            videoUrl: "media/s01e06/04-stop-making-a-spectacle.mp4",
+            note:
+              "butter-fingered staff · stop making a spectacle of yourself · clean that up · (scene energy: I need to move on, to be happy)",
+          },
+          context: {
+            tone: "Lexical · blame the mess · etiquette as a mute button",
+            meanings: [
+              "butter-fingered = clumsy with the hands — you drop things (from butter on the fingers). butter-fingered staff = the waiters / helpers are clumsy (blame the help, not the room).",
+              "make a spectacle of yourself = behave so loudly / messily that people stare — implied: you’re embarrassing us, not hurting.",
+              "stop making a spectacle of yourself = be quiet, look normal; the problem is the scene, not the pain.",
+              "clean that up = fix the mess (glass, wine, the look of the room) — not the person who broke.",
+            ],
+            examples: [
+              "BUTTER-FINGERED — butter-fingered · butter-fingered staff · Don’t be so butter-fingered.",
+              "Butter-fingered staff — as if the crisis is clumsy waiters, not a family in pieces.",
+              "MAKE A SPECTACLE OF YOURSELF — make a spectacle of yourself · stop making a spectacle of yourself · don’t make a scene.",
+              "Stop making a spectacle of yourself — translation: stop being visible while you hurt.",
+              "CLEAN THAT UP — clean that up · clean this mess up · someone clean that up.",
+              "Clean that up — tidy the glass; leave the daughter.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit. Keep two-sided; no trauma dump.",
+            starters: [
+              "Butter-fingered staff — they blame the help because…",
+              "Stop making a spectacle of yourself — which really means…",
+              "Clean that up — tidiness first, the person later / never…",
+              "I need to move on, to be happy — his priority is…",
+            ],
+            questions: [
+              {
+                q: "When someone is screaming or breaking things, why is the reaction of polite society often to say ‘clean that up’ or ‘shh, be quiet’ rather than offering help? How does society prioritize ‘tidiness’ and etiquette over human crisis?",
+                examples: [
+                  "The mess is easier to manage than the feeling.",
+                  "Etiquette: a quiet room looks like a good family.",
+                  "Clean that up = restore the picture; don’t ask why it smashed.",
+                  "Other side: sometimes you tidy first because you don’t know how to help.",
+                ],
+              },
+              {
+                q: "The phrase ‘stop making a spectacle of yourself’ implies that Fleabag is just acting or trying to get attention. Why do emotionally unavailable parents often accuse their hurting children of ‘doing it for attention’ or ‘drama’?",
+                examples: [
+                  "If it’s ‘drama’, they don’t have to feel it.",
+                  "Attention is treated as fake — even when the bid is real.",
+                  "Unavailable: they only have room for the embarrassment, not the wound.",
+                  "Other side: some scenes *are* performance — how do you tell the difference without dismissing the pain?",
+                ],
+              },
+              {
+                q: "How does the fear of ‘what will people think?’ (making a spectacle) destroy the possibility of honest communication within a family? Have you ever felt forced to hide your true emotions just to keep up appearances?",
+                examples: [
+                  "If the guests can hear you, you’re not allowed to be true.",
+                  "Honest talk dies so the party can look fine.",
+                  "You learn: feelings are a spectacle; silence is love.",
+                  "Keep it light — a time you swallowed it to keep the picture.",
+                ],
+              },
+              {
+                q: "When the Father says ‘I need to move on, to be happy’ while his daughter is clearly broken, what does this tell us about his priorities? Is it okay for a parent to prioritize their own happiness over their child’s mental crisis?",
+                examples: [
+                  "His happiness is the project; her collapse is noise.",
+                  "Move on can mean: don’t make me look at this.",
+                  "A parent is allowed a life — is a child’s crisis allowed to interrupt it?",
+                  "Two sides: self-abandonment vs abandoning the child. Where’s the line?",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · say the chunks. Then Discussion.",
+            drills: [
+              {
+                label: "BUTTER-FINGERED STAFF",
+                bank: "butter-fingered · butter-fingered staff · clumsy with your hands",
+                task: "What does butter-fingered mean? Then: why blame the staff when the real mess is the family?",
+              },
+              {
+                label: "MAKE A SPECTACLE OF YOURSELF",
+                bank: "make a spectacle of yourself · stop making a spectacle of yourself · don’t make a scene",
+                task: "Say the line as a parent. Then in plain English: what are they actually asking for — quiet, or care?",
+              },
+              {
+                label: "CLEAN THAT UP",
+                bank: "clean that up · clean this mess up · tidy first, feel later",
+                task: "Host voice: ‘Clean that up.’ Then: what should they have said instead?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story. Steal one tape phrase.",
+            items: [
+              {
+                label: "SPECTACLE / CLEAN THAT UP",
+                bank: "stop making a spectacle of yourself · clean that up",
+                models: [
+                  "Stop making a spectacle of yourself.",
+                  "Clean that up — the glass, not the person.",
+                ],
+                say: "Your turn (30–40 s): a room that wanted tidiness more than help. Use spectacle or clean that up once.",
+              },
+              {
+                label: "BUTTER-FINGERED STAFF",
+                bank: "butter-fingered staff",
+                models: [
+                  "Butter-fingered staff.",
+                  "Blame the waiters — don’t name the family.",
+                ],
+                say: "Your turn: a time the ‘official’ problem was clumsy / messy / loud — and the real one sat at the table.",
+              },
+            ],
+          },
+        },
+        {
+          id: "the-other-way-around",
+          label: "It was the other way around",
+          teacher:
+            "Claire vs Fleabag · it was the other way around. The official story vs who actually slept with whom / who actually hurt whom. Discussion: blame the outsider · marriage over truth · a bad reputation that never washes off · Boo as a silencer · martyr vs Finland.",
+          blocks: ["watch", "context"],
+          phrases: ["it was the other way around"],
+          watch: {
+            videoUrl: "media/s01e06/05-the-other-way-around.mp4",
+            note:
+              "it was the other way around",
+          },
+          context: {
+            tone: "Lexical · reverse the story · who gets believed",
+            meanings: [
+              "the other way around = the opposite of what you think / of the official version.",
+              "it was the other way around = you have the story backwards — I didn’t do that to them; they did it to me (or: Martin, not me).",
+            ],
+            examples: [
+              "THE OTHER WAY AROUND — it was the other way around · you’ve got it the other way around · try it the other way around.",
+              "It was the other way around — she tells the truth; the family already chose a villain.",
+              "People heard one version. The other way around never gets a hearing.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal the tape phrase when it fits. Keep two-sided; no trauma dump.",
+            starters: [
+              "It was the other way around — but nobody wanted that version because…",
+              "Blaming a sibling / an outsider is easier than…",
+              "Marriage over the truth — a survival move when…",
+              "Boo as a weapon: if I mention her, you go quiet because…",
+              "Finland vs the martyr story…",
+            ],
+            questions: [
+              {
+                q: "Why is it sometimes easier for people to blame an innocent outsider (or a sibling) rather than accept that their partner is toxic?",
+                examples: [
+                  "If the sibling is the problem, the marriage can stay.",
+                  "A toxic partner is a life rewrite; a villain in the family is a familiar story.",
+                  "It was the other way around — but the outsider is cheaper to hate.",
+                  "Other side: sometimes the outsider *did* cross a line — how do you hold both?",
+                ],
+              },
+              {
+                q: "Claire chose her marriage over the truth. Is this a common survival mechanism for people in unhappy relationships?",
+                examples: [
+                  "Truth would mean leaving — leaving feels like falling.",
+                  "Keep the story that lets you stay.",
+                  "Survival: a bad marriage with a script vs no marriage and no script.",
+                  "Other side: loyalty can be love, not only fear. When is it which?",
+                ],
+              },
+              {
+                q: "Once a person commits a terrible mistake in the past, do they lose the right to be believed forever? How hard is it to wash off a ‘bad reputation’ in a family?",
+                examples: [
+                  "One crime becomes the only lens.",
+                  "It was the other way around this time — still sounds like the old lie.",
+                  "Families keep a villain because the role is useful.",
+                  "Can you earn belief back — or only leave?",
+                ],
+              },
+              {
+                q: "How does the memory of Boo act as a weapon that Claire uses to silence Fleabag?",
+                examples: [
+                  "Mention Boo and the argument is over — guilt wins.",
+                  "The dead friend is a mute button, not a mourner’s right.",
+                  "You don’t get to tell the truth if you’re the one who…",
+                  "Weapon vs wound: when is naming Boo fair, and when is it a shut-up?",
+                ],
+              },
+              {
+                q: "Why do some people prefer to play the martyr and blame others for their unfulfilled dreams, rather than taking a risk (like moving to Finland)? How does Claire use Fleabag as an excuse to avoid changing her own unhappy life?",
+                examples: [
+                  "If Fleabag is the reason, Claire never has to book the flight.",
+                  "Martyr: I would have, but they ruined it.",
+                  "Finland is change; blaming a sister is staying.",
+                  "Other side: some cages are real — money, kids, a partner who won’t go. Where’s the excuse, and where’s the trap?",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · one chunk, said out loud. Then Discussion.",
+            drills: [
+              {
+                label: "THE OTHER WAY AROUND",
+                bank: "it was the other way around · you’ve got it the other way around · the opposite of the official story",
+                task: "Say the line. Then: a time the family / the room had the story backwards — and kept it that way.",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story. Use the tape phrase once.",
+            items: [
+              {
+                label: "IT WAS THE OTHER WAY AROUND",
+                bank: "it was the other way around",
+                models: [
+                  "It was the other way around.",
+                  "They needed a villain. The truth was the other way around.",
+                ],
+                say: "Your turn (30–40 s): a story that stayed official because it was useful — even when it was the other way around.",
+              },
+            ],
+          },
+        },
+        {
+          id: "where-you-came-from",
+          label: "I don’t know where you came from",
+          teacher:
+            "Dad · I don’t know where you came from · thank you for fixating on them. Victim energy vs exhausted parent of chaotic adult children. Discussion: belonging · blame game (kids ↔ parents).",
+          blocks: ["watch", "context"],
+          phrases: [
+            "I don’t know where you came from",
+            "thank you for fixating on them",
+          ],
+          watch: {
+            videoUrl: "media/s01e06/06-where-you-came-from.mp4",
+            note:
+              "I don’t know where you came from · thank you for fixating on them",
+          },
+          context: {
+            tone: "Lexical · belonging cut · soft thanks that still pushes the mess away",
+            meanings: [
+              "I don’t know where you came from = you’re not like us / I can’t recognise you as mine — a belonging cut dressed as bafflement.",
+              "fixate on something / someone = keep staring at it, obsess over it, refuse to look elsewhere.",
+              "thank you for fixating on them = ironic or soft thanks: you’ve locked onto those people / that problem — so I don’t have to hold it.",
+            ],
+            examples: [
+              "WHERE YOU CAME FROM — I don’t know where you came from · I don’t know where she came from · where did you come from?",
+              "I don’t know where you came from — said to a child, it can mean: you don’t belong in this family story.",
+              "FIXATE ON — fixate on them · fixating on the past · stop fixating on it · thank you for fixating on them.",
+              "Thank you for fixating on them — gratitude that also hands the blame / the focus to someone else.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit. Keep two-sided; no trauma dump.",
+            starters: [
+              "I don’t know where you came from — as a child, that lands as…",
+              "Dad playing the victim — selfish, or exhausted…",
+              "Thank you for fixating on them — what he’s really saying is…",
+              "Kids blame parents / parents say it’s the other way around…",
+            ],
+            questions: [
+              {
+                q: "When a parent says ‘I don’t know where you came from’ to their child, how does it affect the child’s sense of belonging?",
+                examples: [
+                  "You feel like a guest in your own family.",
+                  "Belonging becomes something you have to earn — or never get.",
+                  "It’s bafflement on the surface; exile underneath.",
+                  "Other side: sometimes they mean ‘you’re wilder than I am’ as odd praise — does that still wound?",
+                ],
+              },
+              {
+                q: "Is the dad being a selfish coward by playing the victim here, or is there a genuine truth to how exhausting it is to parent chaotic adult children?",
+                examples: [
+                  "Selfish: he centres his tiredness while she’s broken.",
+                  "Genuine: adult chaos still lands on the parent’s chest.",
+                  "Victim voice can be both: true fatigue + a dodge.",
+                  "Where’s the line between ‘I can’t carry this’ and ‘don’t make me look’?",
+                ],
+              },
+              {
+                q: "The blame game: why is it so common in society for children to blame their parents for their psychological issues? Is the dad right that it often works the other way around?",
+                examples: [
+                  "Kids: the first home wrote the script.",
+                  "Dad: thank you for fixating on them — you’re stuck on us; we didn’t invent all of this.",
+                  "Both can be true: parents shape you; adults still choose.",
+                  "Other side: ‘the other way around’ can be a parent’s escape hatch from accountability.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · say the chunks. Then Discussion.",
+            drills: [
+              {
+                label: "I DON’T KNOW WHERE YOU CAME FROM",
+                bank: "I don’t know where you came from · belonging · not like us",
+                task: "Say the line as a parent. Then as the child: what does it do to belonging?",
+              },
+              {
+                label: "FIXATING ON THEM",
+                bank: "fixate on · thank you for fixating on them · stop fixating on the past",
+                task: "Say the thanks. Then in plain English: is it gratitude, a push-away, or both?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a real micro-story. Steal one tape phrase.",
+            items: [
+              {
+                label: "WHERE YOU CAME FROM",
+                bank: "I don’t know where you came from",
+                models: [
+                  "I don’t know where you came from.",
+                  "Said to a child, it can erase belonging in one line.",
+                ],
+                say: "Your turn (30–40 s): a line that made someone feel they didn’t belong — at home, work, or with friends. Use the tape phrase once if it fits.",
+              },
+              {
+                label: "FIXATING ON THEM",
+                bank: "thank you for fixating on them",
+                models: [
+                  "Thank you for fixating on them.",
+                  "Soft thanks — and the focus stays off me.",
+                ],
+                say: "Your turn: a time someone thanked you for ‘fixating’ on a problem that actually protected them from looking at themselves.",
+              },
+            ],
+          },
+        },
+        {
+          id: "bank-manager-saves",
+          label: "The stranger who shows up",
+          teacher:
+            "Family / exes gone · Bank Manager shows up. No tape phrases this beat — talk the rescue. Discussion: stranger vs family blindness · brief encounters that save you · exhaustion = honesty · cafe as anchor to Boo · comedy → quiet drama as grief healing.",
+          blocks: ["watch", "context"],
+          phrases: [],
+          watch: {
+            videoUrl: "media/s01e06/07-bank-manager-saves.mp4",
+            note:
+              "Emotionally abandoned by family and exes — the Bank Manager (barely known, once an ‘enemy’) is the one who shows up / saves the cafe.",
+          },
+          context: {
+            tone: "Scene · who actually shows up when you’re empty",
+            meanings: [
+              "Emotionally abandoned = the people closest to you stop seeing / holding your pain.",
+              "A stranger / casual acquaintance extends a hand = help from outside the family circle — unexpected, sometimes the only help that arrives.",
+              "Total emotional exhaustion = too empty to flirt, joke, or perform — honesty by collapse, not by courage.",
+              "Physical anchor = a place / purpose (the cafe · Boo) that keeps you tethered when the mind wants to float away.",
+            ],
+            examples: [
+              "Family can sit in the same room and stay blind.",
+              "A man she barely knew — once the enemy — is the one who shows up.",
+              "No flirt, no joke, no lie: exhaustion strips the performance.",
+              "The cafe is the last physical link to Boo — purpose as a life raft.",
+              "Season arc: sex-comedy shock → quiet drama of forgiveness — tone tracks the grief.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s. Keep two-sided; no trauma dump. Soft energy — this is the season close.",
+            starters: [
+              "The stranger showed up because…",
+              "Family can be blind when…",
+              "Exhaustion made her honest — no flirt, no joke…",
+              "The cafe as an anchor…",
+              "From sex-comedy to quiet forgiveness — healing looks like…",
+            ],
+            questions: [
+              {
+                q: "Fleabag has just been completely emotionally abandoned by her family (her dad, her sister, her godmother) and her exes. Yet the person who shows up to save her is a man she barely knows — someone she initially viewed as an enemy. Why is it that in our darkest moments, it is often a stranger or a casual acquaintance who extends a hand, while our closest family members remain blind to our pain?",
+                examples: [
+                  "Family is too close — your pain threatens their picture of you.",
+                  "A stranger has no history to protect; they can just act.",
+                  "Enemy → helper: the old script doesn’t apply anymore.",
+                  "Other side: sometimes family is trying — and still fails. Blindness isn’t always cruelty.",
+                ],
+              },
+              {
+                q: "Have you ever had a moment where a brief encounter or conversation with someone you barely knew completely shifted your mental state or kept you from making a terrible mistake?",
+                examples: [
+                  "A barista, a colleague, a stranger on a bus — one sentence.",
+                  "They didn’t ‘fix’ you; they simply saw you.",
+                  "Keep it light: the shift, not the darkest detail.",
+                  "Other side: sometimes the brief encounter is luck — and you still needed more help later.",
+                ],
+              },
+              {
+                q: "When she talks to the Bank Manager here, she doesn’t try to flirt, joke, or lie. How does total emotional exhaustion ironically make us more honest and genuine with others?",
+                examples: [
+                  "No energy left for the mask.",
+                  "Honesty by collapse — not a moral upgrade.",
+                  "People finally meet the real face because the performance died.",
+                  "Other side: exhaustion can also make you numb / blank — not always ‘genuine’.",
+                ],
+              },
+              {
+                q: "The cafe is Fleabag’s last physical connection to Boo. If the Bank Manager hadn’t saved the cafe, do you think Fleabag would have survived that night? Why is having a physical ‘anchor’ or purpose so critical during a mental health crisis?",
+                examples: [
+                  "A place to open tomorrow = a reason to get through tonight.",
+                  "Boo lives in the cafe — lose the place, lose the thread.",
+                  "Anchor ≠ cure; anchor = not drowning for one more day.",
+                  "Other side: some people survive without a place — what else can anchor?",
+                ],
+              },
+              {
+                q: "The first episode of Fleabag starts as a shocking sex-comedy, but the final episode ends as a quiet drama about forgiveness. How does the show use this drastic change in tone to mirror the actual process of healing from grief?",
+                examples: [
+                  "Early: noise, sex, jokes as armour.",
+                  "Late: quiet, forgiveness, fewer punchlines — the armour cracks.",
+                  "Healing isn’t linear; the tone shift is the grief becoming speakable.",
+                  "Comedy didn’t lie — it was the only language she had at the start.",
+                ],
+              },
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · scene labels, not tape chunks. Then Discussion.",
+            drills: [
+              {
+                label: "STRANGER / FAMILY",
+                bank: "emotionally abandoned · extend a hand · blind to our pain · casual acquaintance",
+                task: "Two lines: “Family stayed blind because…” and “A stranger could help because…”",
+              },
+              {
+                label: "ANCHOR / EXHAUSTION",
+                bank: "physical anchor · purpose · total emotional exhaustion · no flirt / joke / lie",
+                task: "Name one ‘anchor’ that kept someone going. Then: how can exhaustion make honesty easier?",
+              },
+            ],
+          },
+          exampleRound: {
+            title: "Example talk",
+            mission:
+              "Models first · then a soft micro-story. Season-close energy.",
+            items: [
+              {
+                label: "THE STRANGER WHO SHOWS UP",
+                bank: "extend a hand · barely knew · once an enemy",
+                models: [
+                  "Family left the room. A stranger walked in.",
+                  "The person she barely knew was the one who showed up.",
+                ],
+                say: "Your turn (30–40 s): a time help came from outside the ‘closest’ circle — keep it light.",
+              },
+              {
+                label: "ANCHOR",
+                bank: "physical anchor · purpose · the cafe · Boo",
+                models: [
+                  "The cafe was the last thread to Boo.",
+                  "An anchor doesn’t heal you — it keeps you here until morning.",
+                ],
+                say: "Your turn: a place, job, or small purpose that acted as an anchor in a hard season.",
+              },
+            ],
+          },
+        },
+      ],
       finale: {
         prompt: "Drop the irony for 45 s — then put it back. Contrast · tape phrases.",
       },

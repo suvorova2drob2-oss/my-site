@@ -7,6 +7,7 @@ Put episode folders here:
 - `s01e03/` — Season 1 Episode 3 (10 clips)
 - `s01e04/` — Season 1 Episode 4 (9 clips)
 - `s01e05/` — Season 1 Episode 5 (9 clips)
+- `s01e06/` — Season 1 Episode 6 (7 clips)
 
 Lesson pages load them as `media/s01e0N/….mp4` (same folder as `lesson.html`).
 
