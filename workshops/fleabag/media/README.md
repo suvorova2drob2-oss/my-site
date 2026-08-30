@@ -8,8 +8,9 @@ Put episode folders here:
 - `s01e04/` — Season 1 Episode 4 (9 clips)
 - `s01e05/` — Season 1 Episode 5 (9 clips)
 - `s01e06/` — Season 1 Episode 6 (7 clips)
+- `s02e01/` — Season 2 Episode 1 (8 clips)
 
-Lesson pages load them as `media/s01e0N/….mp4` (same folder as `lesson.html`).
+Lesson pages load them as `media/s01e0N/….mp4` or `media/s02e0N/….mp4` (same folder as `lesson.html`).
 
 Upload clips with `UPLOAD-FLEABAG-MEDIA.bat` at the repo root.
 Default mode uploads **only new or changed** episode folders (local stamp:

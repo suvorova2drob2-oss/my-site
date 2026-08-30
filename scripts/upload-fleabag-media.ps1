@@ -66,7 +66,8 @@ function File-Sig([System.IO.FileInfo]$fi) {
 
 function Get-LocalMp4s {
   if (-not (Test-Path $Media)) { throw "Missing folder: $Media" }
-  Get-ChildItem -LiteralPath $Media -Directory -Filter "s01e*" |
+  Get-ChildItem -LiteralPath $Media -Directory |
+    Where-Object { $_.Name -match "^s0[12]e0[1-9]$" } |
     ForEach-Object {
       Get-ChildItem -LiteralPath $_.FullName -File -Filter "*.mp4" -ErrorAction SilentlyContinue
     }
@@ -77,7 +78,7 @@ function Episode-Of([string]$relKey) {
 }
 
 $m = $Mode.Trim().ToLowerInvariant()
-if ($m -match "^s01e0([1-9])$") {
+if ($m -match "^s0[12]e0([1-9])$") {
   $Episode = $m
   $m = "episode"
 } elseif ($m -match "^[1-9]$") {
@@ -99,7 +100,7 @@ Write-Host ""
 $stamp = Get-Stamp
 $allFiles = @(Get-LocalMp4s)
 if (-not $allFiles.Count) {
-  Write-Host "  No mp4 files found under s01e* folders."
+  Write-Host "  No mp4 files found under s01e* / s02e* folders."
   exit 1
 }
 

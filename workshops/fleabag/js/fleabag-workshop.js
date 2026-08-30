@@ -5698,7 +5698,844 @@
       tagline: "Priest · old tensions · family storm",
       synopsis:
         "Fleabag celebrates Godmother and Dad’s engagement and is intrigued by their new priest, but the evening comes to a stormy end when old tensions resurface.",
-      beats: defaultBeats(8),
+      beats: [
+        {
+          id: "off-the-sauce",
+          label: "Off the sauce",
+          teacher:
+            "Clip · Claire goes off the sauce · six months and counting. Cool phrases → talk: quitting, counting time, swapping one addiction for another.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "go off the sauce",
+            "six months and counting",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/01-off-the-sauce.mp4",
+            note:
+              "I’ve been off the sauce for six months and counting. · go off the sauce · six months and counting.",
+          },
+          context: {
+            tone: "Lexical · quitting alcohol + marking time on a streak",
+            meanings: [
+              "go off the sauce / be off the sauce = stop drinking alcohol (informal, often wry / understated).",
+              "six months and counting = I’ve hit six months — and the clock is still running (pride + ongoing effort).",
+            ],
+            examples: [
+              "OFF THE SAUCE — go off the sauce · be / stay off the sauce · I’ve been off the sauce for… · back on the sauce.",
+              "I’ve been off the sauce for six months and counting.",
+              "She went off the sauce after the wedding chaos.",
+              "AND COUNTING — six months and counting · a year and counting · three weeks and counting.",
+              "Six months and counting — I’m not done yet.",
+              "He’s been clean for a year and counting.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "People go off the sauce because…",
+              "I’ve been off the sauce for six months and counting — I hear…",
+              "Counting days / months helps when…",
+              "When you quit one habit, you often…",
+            ],
+            questions: [
+              {
+                q: "What are the main reasons people decide to go off the sauce? Is it usually about physical health, mental health, or pressure from family and society?",
+                examples: [
+                  "Physical health — sleep, liver, energy.",
+                  "Mental health — anxiety, clarity, mood.",
+                  "Family / society — pregnancy, partner, image at work.",
+                  "Often a mix: one scare + quiet pressure from people around you.",
+                ],
+              },
+              {
+                q: "Imagine someone says: “I’ve been off the sauce for six months and counting.” What feelings do you hear behind this? Pride, exhaustion, or constant struggle?",
+                examples: [
+                  "Pride — they want the streak seen.",
+                  "Exhaustion — six months of saying no.",
+                  "Constant struggle — ‘and counting’ means it isn’t over.",
+                  "All three: pride on the surface, effort underneath.",
+                ],
+              },
+              {
+                q: "Why do people count days, months, or years when changing a habit? Does counting help you stay motivated, or does it keep you trapped in the memory of your old habit?",
+                examples: [
+                  "Motivated — proof you’re winning.",
+                  "Trapped — every number reminds you what you left.",
+                  "Useful early; later you stop counting and just live.",
+                  "Some people need the tally; others find it obsessive.",
+                ],
+              },
+              {
+                q: "In Fleabag, Claire goes “off the sauce” but replaces it with toxic perfectionism. When people quit a bad habit, do they often just switch to another addiction (like overworking, extreme fitness, or overeating)? Why does this happen?",
+                examples: [
+                  "Yes — the urge needs a new home.",
+                  "Control moves from the bottle to the calendar / body / inbox.",
+                  "Quitting the substance isn’t the same as healing the hole.",
+                  "Safer addictions still cost you — just look ‘productive’.",
+                ],
+              },
+              {
+                q: "What is the hardest habit you have ever tried to quit? If you can share, how many months (and counting!) did you last?",
+                examples: [
+                  "Sugar / smoking / scrolling — lasted ___ months and counting.",
+                  "I quit for a while, then slipped — still counting from the restart.",
+                  "I’d rather not name the habit, but the streak mattered to me.",
+                  "I never counted days — I just noticed when it stopped controlling me.",
+                ],
+              },
+              {
+                q: "“Bottling things up”: Claire says she hides her negative emotions deep inside. What is worse for a person: being addicted to a substance (like alcohol) or being addicted to pretending that “everything is perfect”?",
+                examples: [
+                  "Substance — it damages the body fast.",
+                  "Pretending — quieter, longer, and harder to spot.",
+                  "Both numb something; perfect mask can be lonelier.",
+                  "Alcohol is visible; ‘I’m fine’ can fool everyone, including you.",
+                ],
+              },
+              {
+                q: "How do you support a friend who has been off the sauce for six months and counting? Should you praise them for it, or is it better not to bring up the topic to avoid awkwardness?",
+                examples: [
+                  "Praise once, lightly — then treat them as normal.",
+                  "Ask what they prefer: celebrate, or don’t mention it.",
+                  "Don’t centre drinks / pressure them at parties.",
+                  "Awkward silence can feel like shame — a short ‘proud of you’ is kinder.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "15-minute-turnaround",
+          label: "15-minute turnaround",
+          teacher:
+            "Clip · Claire packs fast · 15-minute turnaround · ghastly without help. Lexis first (narrow … to a …-minute turnaround) → talk: packing, hyper-productivity, control, doing everything alone.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "narrow it down to a 15-minute turnaround",
+            "Ghastly without help, I imagine",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/02-commuting.mp4",
+            note:
+              "Narrow it down to a 15-minute turnaround. · Ghastly without help, I imagine.",
+          },
+          context: {
+            tone: "Lexical · squeeze a task into a tight window + dry understatement",
+            meanings: [
+              "narrow it / something down to a 15-minute turnaround = cut the process so it only takes ~15 minutes start to finish (efficient, slightly corporate).",
+              "turnaround = how long it takes to complete the cycle (pack → leave; order → ready).",
+              "Ghastly without help, I imagine = dry understatement: that would be awful / unbearable alone (ghastly = horrible; I imagine = soft, ironic guess).",
+            ],
+            examples: [
+              "NARROW … TO A …-MINUTE TURNAROUND — narrow it down to a 15-minute turnaround · I’ve narrowed down my ___ to a ___-minute turnaround.",
+              "I’ve narrowed down my morning routine to a 15-minute turnaround.",
+              "I’ve narrowed down my cooking to a 20-minute turnaround.",
+              "Claire can pack in ten minutes — she’s narrowed packing down to a tiny turnaround.",
+              "GHASTLY — absolutely ghastly · ghastly without help · ghastly weather · a ghastly morning.",
+              "The weather today is absolutely ghastly.",
+              "Waking up at 5 a.m. without coffee is ghastly, I imagine.",
+              "Ghastly without help, I imagine.",
+            ],
+          },
+          lexRound: {
+            title: "Lexis round",
+            mission:
+              "Warm-up · complete the frame out loud. Short turns. Then open Discussion for the deep talk.",
+            drills: [
+              {
+                label: "NARROW … TO A …-MINUTE TURNAROUND",
+                bank: "I’ve narrowed down my ___ to a ___-minute turnaround · morning routine · cooking · packing · emails · getting ready",
+                task: "Think of something you can do incredibly fast. Complete: “I’ve narrowed down my [activity] to a [X]-minute turnaround.”",
+              },
+              {
+                label: "GHASTLY … I IMAGINE",
+                bank: "ghastly without help · absolutely ghastly · … is ghastly, I imagine",
+                task: "Say one ‘ghastly’ line about weather, mornings, or doing life alone — end with I imagine if it fits.",
+              },
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "I’ve narrowed down my ___ to a ___-minute turnaround.",
+              "I’m a last-minute packer / I plan everything because…",
+              "Hyper-productivity can be dangerous when…",
+              "Ghastly without help, I imagine — because…",
+            ],
+            questions: [
+              {
+                q: "Packing habits: Claire can pack her bags in 10 minutes. Are you an organized packer who plans everything in advance, or do you throw things into a suitcase at the very last minute?",
+                examples: [
+                  "Organised — list, piles, packed the night before.",
+                  "Last minute — I throw things in and hope.",
+                  "I’ve narrowed packing down to a 15-minute turnaround.",
+                  "I plan… and still panic at the door.",
+                ],
+              },
+              {
+                q: "The cult of productivity: In modern society, being ultra-efficient (like packing in 10 minutes or never wasting a second) is praised. But can hyper-productivity be dangerous for our mental health? Is it a way to escape from real problems?",
+                examples: [
+                  "Yes — speed can hide anxiety.",
+                  "Praise for efficiency = pressure never to rest.",
+                  "If you’re always ‘optimising’, you never feel enough.",
+                  "Escape: control the clock so you don’t feel the mess.",
+                ],
+              },
+              {
+                q: "Control freaks: Why do people who feel like their life is falling apart (like Claire) become obsessed with controlling small things, like the time it takes to pack or the order of bottles on a shelf?",
+                examples: [
+                  "Small wins feel possible when big life doesn’t.",
+                  "Order on a shelf = proof you’re still in charge.",
+                  "A 15-minute turnaround is safer than facing feelings.",
+                  "If the big picture is chaos, micro-control is oxygen.",
+                ],
+              },
+              {
+                q: "Claire lives a super busy life. Do you agree that managing a career, a house, and a family is ghastly without help (like a cleaner, a nanny, or an assistant)? Or can a person successfully do everything alone?",
+                examples: [
+                  "Ghastly without help, I imagine — something always breaks.",
+                  "Possible alone, but the cost is sleep / joy / health.",
+                  "Help isn’t luxury — it’s how the machine keeps running.",
+                  "Some people manage alone; many just look like they do.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "underbelly",
+          label: "Prudish · underbelly",
+          teacher:
+            "Clip · prudish people · not to generalise · hidden in the underbelly · fair enough. Cool phrases → talk: corporate/social-media underbelly, appearance vs reality, taboos, Finland mood, geography of the soul.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "prudish people",
+            "not to generalise",
+            "hidden in the underbelly",
+            "fair enough",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/03-prudish-people.mp4",
+            note:
+              "Prudish people · not to generalise · it’s just hidden in the underbelly · fair enough.",
+          },
+          context: {
+            tone: "Lexical · soft disclaimer + the dark underside + accepting a point",
+            meanings: [
+              "prudish people = people who are easily shocked by sex / bodies / ‘improper’ talk — very strict or easily offended about morals.",
+              "not to generalise = softener before a stereotype: I’m not saying everyone is like this, but…",
+              "hidden in the underbelly = kept in the dark underside of a culture / system — the part people don’t advertise.",
+              "fair enough = I accept your point / that’s reasonable (often dry agreement).",
+            ],
+            examples: [
+              "PRUDISH — prudish people · a bit prudish · don’t be so prudish · prudish about sex / swearing.",
+              "Prudish people pretend nothing messy exists.",
+              "NOT TO GENERALISE — not to generalise · not to generalise, but… · without generalising…",
+              "Not to generalise, but some offices look perfect on the surface.",
+              "UNDERBELLY — the underbelly of… · hidden in the underbelly · the dark underbelly of social media / corporate culture.",
+              "It’s just hidden in the underbelly.",
+              "What’s in the underbelly of influencer culture?",
+              "FAIR ENOUGH — fair enough · yeah, fair enough · fair enough, I hadn’t thought of that.",
+              "Fair enough — maybe they need the quiet.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Not to generalise, but…",
+              "It’s hidden in the underbelly of…",
+              "They seem prudish, but…",
+              "Fair enough — I’d choose…",
+            ],
+            questions: [
+              {
+                q: "The Godmother says that some things in culture are “hidden in the underbelly.” What is the “underbelly” of modern corporate culture or social media? What dark or hidden sides do they have that people don’t talk about?",
+                examples: [
+                  "Corporate: burnout, quiet quitting, politics behind the smile.",
+                  "Social media: envy, fake ‘perfect life’, comparison culture.",
+                  "It’s just hidden in the underbelly — everyone knows, few say it.",
+                  "Fair enough: the brand is shiny; the underbelly is unpaid overtime / hate comments.",
+                ],
+              },
+              {
+                q: "Appearance vs. Reality: Japanese culture is often seen as very polite and strict on the outside, but different on the inside. Can the same be said about people? Do you know anyone who seems very strict or “prudish” but turns out to have unexpected, wild hobbies?",
+                examples: [
+                  "Yes — calm face, wild weekends.",
+                  "Prudish at work; chaotic in private.",
+                  "Not to generalise, but ‘perfect’ people often hide a mess.",
+                  "I know someone who looks strict — then you see their hobby and think: fair enough.",
+                ],
+              },
+              {
+                q: "Taboo Topics: Sex, money, and mental health are often hidden in the “underbelly” of conversations. Which topics are still considered taboo in your society during family dinners, just like in Fleabag?",
+                examples: [
+                  "Money / salary — never at the table.",
+                  "Sex — change the subject fast.",
+                  "Mental health — ‘just don’t think about it’.",
+                  "Politics / divorce / therapy — still underbelly talk.",
+                ],
+              },
+              {
+                q: "Weather and Mood: Claire describes Finland as “cold, beautiful, and dark.” Fleabag notices that Claire actually loves it there. Why do you think a person going through a personal crisis might prefer a cold, dark, and quiet place over a sunny, warm beach?",
+                examples: [
+                  "Quiet matches the inside — no pressure to ‘enjoy’.",
+                  "Sun and parties feel fake when you’re breaking.",
+                  "Dark / cold = permission to slow down and feel.",
+                  "A beach demands happiness; Finland lets you be heavy.",
+                ],
+              },
+              {
+                q: "Geography of the Soul: If your current life or internal state right now was a country or a specific type of weather, what would it be? Are you more like “sunny and chaotic Italy” or “cold, beautiful, and organized Finland”?",
+                examples: [
+                  "Sunny chaotic Italy — loud, warm, a bit messy.",
+                  "Cold beautiful Finland — quiet, ordered, a little dark.",
+                  "In-between: grey London drizzle with sudden clearings.",
+                  "Fair enough — today I’m Finland; next week Italy.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "fellow-smoker-calling",
+          label: "Fellow smoker · calling · stir",
+          teacher:
+            "Clip · fellow smoker · spare one · notion of the calling · crawling with nuns · leap · hit it off · cause quite a stir. Cool phrases → talk: bonding over flaws, escape excuses, fellows, calling vs duty, family leap, chemistry, charity/PR.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "fellow smoker",
+            "Do you have a spare one?",
+            "have the notion of the calling",
+            "his family was crawling with nuns",
+            "it wasn’t too much of a leap",
+            "we just hit it off",
+            "cause quite a stir",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/04-hot-priest.mp4",
+            note:
+              "Fellow smoker · Do you have a spare one? · have the notion of the calling · crawling with nuns · wasn’t too much of a leap · we just hit it off · cause quite a stir.",
+          },
+          context: {
+            tone: "Lexical · shared identity + vocation + easy chemistry + public fuss",
+            meanings: [
+              "fellow smoker = someone in the same boat — also smokes (fellow + noun = shared role/situation).",
+              "Do you have a spare one? = classic ice-breaker: ask for a cigarette (or lighter) to start a chat with a stranger.",
+              "have the notion of the calling = find the idea of a vocation / true purpose fascinating or meaningful (calling = life’s ‘meant to’ path).",
+              "his family was crawling with nuns = humorous hyperbole: the family was full of nuns (crawling with = overflowing with).",
+              "it wasn’t too much of a leap = the step wasn’t huge / surprising — a natural jump from A to B.",
+              "we just hit it off = instant chemistry — we got on immediately.",
+              "cause quite a stir = create a lot of talk / fuss / media attention.",
+            ],
+            examples: [
+              "FELLOW — fellow smoker · fellow student · fellow worker · my fellows in…",
+              "We bonded as fellow smokers outside the door.",
+              "SPARE ONE — Do you have a spare one? · a spare cigarette / lighter · got a spare…?",
+              "Do you have a spare one?",
+              "CALLING — the notion of the calling · find your calling · follow a calling · a calling that demands sacrifice.",
+              "He finds the notion of the calling fascinating.",
+              "CRAWLING WITH — crawling with nuns · crawling with meetings · the flat is crawling with plants.",
+              "His family was literally crawling with nuns.",
+              "LEAP — it wasn’t too much of a leap · a huge leap · a leap into something new.",
+              "It wasn’t too much of a leap — given the family.",
+              "HIT IT OFF — we just hit it off · didn’t hit it off · hit it off within five minutes.",
+              "We just hit it off.",
+              "CAUSE A STIR — cause quite a stir · caused a stir · going to cause quite a stir.",
+              "The donation is going to cause quite a stir.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Do you have a spare one? — it’s easier because…",
+              "My excuse to leave is…",
+              "My fellows right now are…",
+              "It wasn’t too much of a leap because…",
+              "We just hit it off…",
+              "That would cause quite a stir…",
+            ],
+            questions: [
+              {
+                q: "Ice-breaker habits: Asking for a cigarette (“Do you have a spare one?”) or a lighter is a classic way to start a conversation with a stranger. Why do you think people often find it easier to bond over shared bad habits or flaws rather than healthy activities?",
+                examples: [
+                  "Flaws feel honest — no performance.",
+                  "Fellow smoker = instant club membership.",
+                  "Healthy hobbies can feel competitive or smug.",
+                  "A spare cigarette is a tiny shared confession.",
+                ],
+              },
+              {
+                q: "The Escape Route: Both Fleabag and the Priest use smoking as an excuse to escape a stressful family dinner. What is your “excuse” when you desperately need to leave an awkward social situation or a boring meeting?",
+                examples: [
+                  "Phone call / WhatsApp ‘emergency’.",
+                  "Need some air / a cigarette / the bathroom.",
+                  "Dog / parking meter / early start tomorrow.",
+                  "I just disappear to the kitchen and stay there.",
+                ],
+              },
+              {
+                q: "The “Fellow” Concept: We use the word “fellow” to describe someone who shares our situation (fellow student, fellow worker). Who do you consider your “fellows” in life right now? People who share your hobbies, your career struggles, or your lifestyle?",
+                examples: [
+                  "Fellow students / colleagues in the same mess.",
+                  "Fellow parents / freelancers / night owls.",
+                  "People who share the struggle more than the hobby.",
+                  "My fellow smokers — or ex-smokers — still count.",
+                ],
+              },
+              {
+                q: "Finding the Calling: The Priest finds the notion of the calling fascinating. Do you believe that every person has a specific “calling” (a perfect job or purpose) in life, or do we just choose a career based on practicality and money?",
+                examples: [
+                  "There’s a calling — you feel it when it fits.",
+                  "Mostly practicality and money, then meaning later.",
+                  "Calling is romantic; bills are real.",
+                  "Some people have one; others build purpose over time.",
+                ],
+              },
+              {
+                q: "Passion vs. Duty: Claire is ultra-efficient at her corporate job, but she is stressed. The Priest has a “calling” but struggles with his human desires. What is better: having a quiet, well-paid job that you are just good at, or following a “calling” that demands personal sacrifices?",
+                examples: [
+                  "Quiet well-paid — sacrifice costs too much.",
+                  "Calling — otherwise you live half-asleep.",
+                  "Depends on the season of life.",
+                  "Best: good enough pay + enough meaning — rare.",
+                ],
+              },
+              {
+                q: "Fascinating concepts: What other notions or ideas about human life do you find fascinating? (e.g., the notion of true love, the notion of destiny, or the notion of success).",
+                examples: [
+                  "The notion of true love / destiny.",
+                  "The notion of success — who defines it?",
+                  "Free will vs luck.",
+                  "The notion of a calling — same fascination as the Priest.",
+                ],
+              },
+              {
+                q: "The “Family Leap”: The Priest says becoming a priest wasn’t too much of a leap because his family was crawling with nuns. How much did your family influence your career choice? Did you follow in your parents’ footsteps, or was your career a huge “leap” into something completely new for your family?",
+                examples: [
+                  "Followed footsteps — it wasn’t too much of a leap.",
+                  "Huge leap — nobody in my family does this.",
+                  "Soft influence: values, not the exact job.",
+                  "I rebelled first, then circled back somehow.",
+                ],
+              },
+              {
+                q: "Hyperbole in Speech: He uses the funny expression “literally crawling with nuns.” What is something your life or your house is literally crawling with right now? (e.g., “My schedule is crawling with meetings”, “My flat is crawling with plants”).",
+                examples: [
+                  "My schedule is crawling with meetings.",
+                  "My flat is crawling with plants / laundry / cables.",
+                  "My phone is crawling with unread chats.",
+                  "My week is crawling with deadlines.",
+                ],
+              },
+              {
+                q: "Family Background: If a child grows up in a family of doctors, artists, or military officers, is it easier or harder for them to find their own true calling?",
+                examples: [
+                  "Easier — the path is modelled; not too much of a leap.",
+                  "Harder — expectation crowds out your own calling.",
+                  "Easier to start, harder to choose freely.",
+                  "Depends if the family allows a leap sideways.",
+                ],
+              },
+              {
+                q: "Do you believe in “instant chemistry” between friends or partners? Have you ever met a stranger and hit it off with them within the first five minutes?",
+                examples: [
+                  "Yes — we just hit it off.",
+                  "Rare, but unforgettable when it happens.",
+                  "I need more than five minutes — slow burn.",
+                  "Instant chemistry with friends more than partners.",
+                ],
+              },
+              {
+                q: "The Art of Introduction: Do you like introducing your friends from different social circles to each other? Has it ever happened that they didn’t hit it off and it became awkward for you?",
+                examples: [
+                  "I love mixing circles — when they hit it off, magic.",
+                  "Awkward when they don’t — I become the translator.",
+                  "I stopped forcing it after one disaster.",
+                  "I introduce carefully — only if I sense a fellow vibe.",
+                ],
+              },
+              {
+                q: "Charity vs. PR: The Godmother’s donation is going to cause quite a stir. Do you think modern celebrities and influencers do charity work out of pure kindness, or is it always a calculated move to cause a stir and get media attention?",
+                examples: [
+                  "Often PR — cause quite a stir on purpose.",
+                  "Mix: real help + camera ready.",
+                  "Pure kindness exists — quieter, less viral.",
+                  "If the money helps, motive is secondary — fair enough?",
+                ],
+              },
+              {
+                q: "Causing a Stir: What was the last event, news story, or celebrity scandal in your country that caused quite a stir? Why do people love discussing things that cause a stir?",
+                examples: [
+                  "Last scandal / election / viral story…",
+                  "People love the drama — shared gossip = bonding.",
+                  "Stir gives a break from ordinary life.",
+                  "We feel ‘in the know’ when we discuss it.",
+                ],
+              },
+              {
+                q: "Anonymity: If you donated a huge amount of money to a good cause, would you prefer to do it completely anonymously or publicly so that everyone knows about your good deed? Why?",
+                examples: [
+                  "Anonymously — kindness without the stir.",
+                  "Publicly — to inspire others / normalise giving.",
+                  "Quietly tell close people, not the media.",
+                  "Depends on the cause — some need the stir for awareness.",
+                ],
+              },
+              {
+                q: "Taboos in Conversation: If someone dropped a bomb like that during a formal family dinner in your culture, how would people react? Would they laugh, freeze, or change the subject immediately?",
+                examples: [
+                  "Freeze — then change the subject.",
+                  "Nervous laugh, then silence.",
+                  "Someone would scold them at the table.",
+                  "Depends on the family — some live for the stir.",
+                ],
+              },
+              {
+                q: "Stereotypes & Coincidences: The Priest is aware of the stereotypes surrounding his profession. Have you ever experienced a situation where a coincidence in your life perfectly matched a well-known stereotype or joke?",
+                examples: [
+                  "Yes — and everyone laughed: fair enough.",
+                  "I walked right into the stereotype once.",
+                  "I fight the stereotype on purpose.",
+                  "Coincidence made the joke write itself.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "slug-it-over",
+          label: "Slug it over",
+          teacher:
+            "Clip · people slug it over (wedding planning). Cool phrase → talk: modern weddings as stress, gift etiquette, events that feel like work.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "slug it over",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/05-wedding-gifts.mp4",
+            note:
+              "People slug it over… · wedding planning as hard graft · gifts or presence?",
+          },
+          context: {
+            tone: "Lexical · put heavy effort into planning / details",
+            meanings: [
+              "slug it over (something) = put a lot of hard, grinding effort into the details (informal; close to slog away at / sweat over).",
+              "people slug it over = they work themselves into the ground organising it (here: a wedding).",
+            ],
+            examples: [
+              "SLUG IT OVER — slug it over the details · people slug it over · slug over the planning / the guest list.",
+              "People slug it over weddings until nobody’s having fun.",
+              "We really had to slug it over the move — boxes, deposit, timing.",
+              "She’s slugging it over every place card and playlist.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "People slug it over weddings because…",
+              "Presence is enough when…",
+              "The event I really slug it over is…",
+            ],
+            questions: [
+              {
+                q: "The Stepmother feels that planning a wedding is such a hard job (“people slug it over”), that the couple shouldn’t even be expected to give or receive gifts. Do you agree that modern weddings have become too stressful and complicated? Is it a celebration or just hard work?",
+                examples: [
+                  "Too stressful — more project than party.",
+                  "Still a celebration if you keep it small.",
+                  "People slug it over Instagram moments, not the marriage.",
+                  "Hard work for the planners; guests just show up and smile.",
+                ],
+              },
+              {
+                q: "Gift Etiquette: What is the most ridiculous or awkward rule about wedding gifts you have ever heard of? Should guests always bring expensive presents, or is their presence enough?",
+                examples: [
+                  "Registry only / no cash / must match the table cost…",
+                  "Presence is enough — gifts are optional kindness.",
+                  "In my culture, an envelope is expected — awkward if you skip it.",
+                  "Expensive presents feel like a ticket price — no thanks.",
+                ],
+              },
+              {
+                q: "The Concept of “Slugging it over” something: Think about big events (like moving to a new flat, organizing a big birthday party, or planning a trip). What is the one event where you really have to slug it over the details, and it feels more like work than fun?",
+                examples: [
+                  "Moving flat — I slug it over every box and deadline.",
+                  "Big birthday / wedding — guest list hell.",
+                  "A trip with a group — flights, tastes, moods.",
+                  "Work events — I slug it over slides more than the day itself.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "jump-on-that-request",
+          label: "Jump on that request",
+          teacher:
+            "Clip · ‘I know a waitress who would jump on that request.’ Cool phrase → talk: eager / needy service, what great hospitality feels like, Fleabag’s waitress energy.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "a needy waitress",
+            "jump on that request",
+            "I know a waitress who would jump on that request",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/06-needy-waitress.mp4",
+            note:
+              "A needy waitress · Oh, no, but I know a waitress who would jump on that request.",
+          },
+          context: {
+            tone: "Lexical · seize an opportunity / over-eager service energy",
+            meanings: [
+              "a needy waitress = a server who seems desperate for approval / tips / connection — keen in a way that feels emotionally hungry, not just professional.",
+              "jump on that request = grab the chance immediately — say yes fast, maybe too eagerly (can sound keen… or needy).",
+              "I know a waitress who would jump on that request = dry / cutting: there’s someone (the café waitress) who’d leap at any ask — keen to please, almost desperate.",
+            ],
+            examples: [
+              "NEEDY — a needy waitress · needy for attention / approval · don’t be needy · comes across as needy.",
+              "She isn’t rude — she’s a needy waitress who jumps on every ask.",
+              "JUMP ON — jump on that request · jump on the opportunity · jump on every ask · don’t jump on it too hard.",
+              "She’d jump on that request before you finish the sentence.",
+              "Good service jumps on what you need — without hovering.",
+              "I know a waitress who would jump on that request.",
+              "He jumps on every customer comment like it’s a job interview.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "A needy waitress is someone who…",
+              "She’d jump on that request because…",
+              "The best service feels like…",
+              "Needy service is when…",
+              "In Fleabag, the waitress…",
+            ],
+            questions: [
+              {
+                q: "In Fleabag, someone says: “Oh, no, but I know a waitress who would jump on that request.” What energy do you hear — helpful, ambitious, or a bit needy? How does that land next to Fleabag’s café / waitress world?",
+                examples: [
+                  "Helpful — she’ll do anything for the guest.",
+                  "Needy — she needs to be chosen / useful.",
+                  "Ambitious — every request is a chance to impress.",
+                  "In the show it cuts: the waitress is eager in a way that feels raw, not polished hospitality.",
+                ],
+              },
+              {
+                q: "Service culture: What’s the difference between a waiter/waitress who jumps on every request in a good way — and one who tries too hard? When does “keen” become uncomfortable?",
+                examples: [
+                  "Good: anticipates, then gives you space.",
+                  "Too hard: refills every 30 seconds, forced chat, never leaves.",
+                  "Keen becomes needy when they need your approval more than you need the water.",
+                  "Best: jump on the request once — then disappear until you need them.",
+                ],
+              },
+              {
+                q: "What is the best service you’ve ever had — restaurant, café, hotel, or shop? What did they do (or not do) that made it feel perfect?",
+                examples: [
+                  "They remembered my order / name without performing.",
+                  "Fast when I was in a rush; slow and warm when I wanted to stay.",
+                  "They jumped on the request — then trusted me to signal next.",
+                  "No script, no fake smile — just competence and kindness.",
+                ],
+              },
+              {
+                q: "Have you ever worked in service (café, shop, hotel) or dealt with very “try-hard” staff? Is jumping on every request a survival skill in bad tips / unstable jobs — or a personality thing?",
+                examples: [
+                  "Survival — tips and managers reward the jump.",
+                  "Personality — some people need to be needed.",
+                  "Both: the job trains you to jump; burnout makes it look needy.",
+                  "Fleabag’s waitress energy = money + loneliness + wanting to matter.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "chunk-of-change",
+          label: "Chunk of change · pay problems away",
+          teacher:
+            "Clip · a chunk of change · I’d kill for one of those · you can’t pay your problems away. Cool phrases → talk: gift debt, money vs therapy, desire, what money can’t fix.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "a chunk of change",
+            "I’d kill for one of those",
+            "You can’t pay your problems away",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/07-bedroom-present.mp4",
+            note:
+              "A chunk of change · I’d kill for one of those · You can’t pay your problems away.",
+          },
+          context: {
+            tone: "Lexical · serious money + intense want + money doesn’t heal everything",
+            meanings: [
+              "a chunk of change = a large amount of money (informal).",
+              "I’d kill for one of those = I’d do almost anything to have it (hyperbole for strong desire — not literal).",
+              "You can’t pay your problems away = money won’t erase the real issue (guilt, grief, relationships, mental health).",
+            ],
+            examples: [
+              "CHUNK OF CHANGE — a chunk of change · that costs a chunk of change · save up a chunk of change.",
+              "That wedding gift was a real chunk of change.",
+              "I’D KILL FOR — I’d kill for one of those · I’d kill for a quiet weekend · I’d kill for that job.",
+              "I’d kill for one of those.",
+              "PAY … AWAY — you can’t pay your problems away · you can’t buy your way out of… · money doesn’t fix…",
+              "You can’t pay your problems away.",
+              "Therapy isn’t a chunk of change that deletes the past — it’s work.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "In my culture a gift means…",
+              "I’d kill for one of those if…",
+              "You can’t pay your problems away because…",
+              "Psychotherapy and money…",
+            ],
+            questions: [
+              {
+                q: "Wedding gifts and family presents often come with hidden expectations. What is the unspoken etiquette of giving gifts in your culture? Is a present ever truly “free,” or does it always create a social debt?",
+                examples: [
+                  "Never truly free — you owe a thank-you, a return gift, loyalty.",
+                  "Some gifts are free in spirit; family ones often aren’t.",
+                  "A chunk of change creates a bigger debt than a small token.",
+                  "Presence over presents — but envelopes still whisper expectation.",
+                ],
+              },
+              {
+                q: "I’d kill for one of those: When was the last time you wanted something so badly you could say that (a gift, a trip, a job, a break)? Was it worth the price — money, time, or pride?",
+                examples: [
+                  "I’d kill for one of those — then I got it and felt empty.",
+                  "Still chasing it — a chunk of change away.",
+                  "I wanted rest more than the object.",
+                  "Hyperbole: I wouldn’t kill — but I’d stretch for it.",
+                ],
+              },
+              {
+                q: "You can’t pay your problems away: Do you agree? What problems look like they have a price tag (debt, housing, healthcare) — and which ones money barely touches (loneliness, shame, family tension)?",
+                examples: [
+                  "Agree — cash helps logistics, not the feeling.",
+                  "Some problems are expensive to ignore; money buys time / help.",
+                  "You can buy comfort; you can’t buy a clean conscience.",
+                  "A chunk of change reduces stress — it doesn’t rewrite the story.",
+                ],
+              },
+              {
+                q: "Psychotherapy: Is paying for therapy a smart way to invest a “chunk of change,” or do some people treat sessions like a product — hoping to pay their problems away without doing the hard work between appointments?",
+                examples: [
+                  "Smart investment — guided work, not magic.",
+                  "Some hope the invoice alone will heal them.",
+                  "I’d kill for affordable therapy where I live.",
+                  "You can’t pay your problems away — but you can pay for tools and honesty.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "youve-been-ages",
+          label: "You’ve been ages · jump ship",
+          teacher:
+            "Clip · you’ve been ages · sanitary / sturdy hand towels · jump ship · inexplicable reason · probably · ectopic · she got her spotlight. Cool phrases → short talk where they fit; handle medical / private topics gently.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "you’ve been ages",
+            "sanitary towels",
+            "sturdy hand towels",
+            "jump ship",
+            "for some inexplicable reason",
+            "probably",
+            "ectopic",
+            "she got her spotlight",
+          ],
+          watch: {
+            videoUrl: "media/s02e01/08-she-got-her-spotlight.mp4",
+            note:
+              "You’ve been ages · sanitary towels · sturdy hand towels · jump ship · for some inexplicable reason · probably · ectopic · she got her spotlight.",
+          },
+          context: {
+            tone: "Lexical · waiting forever + bathroom Brit English + leave a situation + dry mystery + medical bluntness + attention",
+            meanings: [
+              "you’ve been ages = you’ve taken a very long time (BrE complaint / tease — where were you?).",
+              "sanitary towels = menstrual pads (BrE; AmE often sanitary pads / pads).",
+              "sturdy hand towels = strong, thick towels for drying hands — comic contrast with the more intimate ‘sanitary towels’.",
+              "jump ship = leave a job / relationship / situation suddenly (like leaving a boat).",
+              "for some inexplicable reason = I don’t know why — it makes no sense (dry / ironic).",
+              "probably = hedging guess — softens a claim (dry Fleabag energy when it lands like a shrug).",
+              "ectopic = medical: an ectopic pregnancy (outside the womb) — blunt clinical word in an awkward social moment.",
+              "she got her spotlight = she finally got the attention / moment centre-stage (can be sincere or cutting).",
+            ],
+            examples: [
+              "AGES — you’ve been ages · it took ages · ages ago · I waited ages.",
+              "You’ve been ages — what happened in there?",
+              "TOWELS — sanitary towels · sturdy hand towels · hand towel · tea towel.",
+              "She said sanitary towels; someone heard sturdy hand towels.",
+              "JUMP SHIP — jump ship · jumping ship · ready to jump ship.",
+              "If it gets worse, I’ll jump ship.",
+              "INEXPLICABLE — for some inexplicable reason · for reasons I can’t explain.",
+              "For some inexplicable reason, I stayed.",
+              "PROBABLY — probably · yeah, probably · probably not.",
+              "She’s late — traffic, probably.",
+              "ECTOPIC — ectopic pregnancy · (keep clinical; don’t joke lightly).",
+              "SPOTLIGHT — she got her spotlight · in the spotlight · steal the spotlight.",
+              "She got her spotlight — finally, or unfortunately?",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit. Soft landing on medical / body topics.",
+            starters: [
+              "You’ve been ages — I was…",
+              "I almost jumped ship when…",
+              "For some inexplicable reason…",
+              "She got her spotlight when…",
+            ],
+            questions: [
+              {
+                q: "You’ve been ages: When someone takes forever in the bathroom / on a call / getting ready, how do you react — joke, get annoyed, or wait quietly?",
+                examples: [
+                  "I knock: you’ve been ages!",
+                  "I wait quietly and stew.",
+                  "I joke — sturdy hand towels? what are you doing in there?",
+                  "Depends who it is — partner vs stranger.",
+                ],
+              },
+              {
+                q: "Jump ship: Have you ever jumped ship from a job, a project, a party, or a relationship? What was the tipping point?",
+                examples: [
+                  "Yes — one meeting too many.",
+                  "I stayed too long; should have jumped ship earlier.",
+                  "For some inexplicable reason I stayed.",
+                  "Probably fear kept me — then I left overnight.",
+                ],
+              },
+              {
+                q: "For some inexplicable reason: What’s something you keep doing even though it makes no sense on paper?",
+                examples: [
+                  "I check my phone for some inexplicable reason every two minutes.",
+                  "I stay in chats / jobs that drain me.",
+                  "Probably habit, not logic.",
+                  "Love / guilt / hope — inexplicable, but real.",
+                ],
+              },
+              {
+                q: "She got her spotlight: Do you like being in the spotlight, or do you prefer the edge of the room? When did someone you know finally get their spotlight — and how did it feel to watch?",
+                examples: [
+                  "I hate the spotlight — give it to someone else.",
+                  "I want it sometimes; then I freeze.",
+                  "She got her spotlight and it was overdue.",
+                  "Spotlight can be a gift or a trap — depends who’s watching.",
+                ],
+              },
+            ],
+          },
+        },
+      ],
       finale: {
         prompt:
           "A family celebration that went sideways — intrigue, tension, one unexpected person in the room. Use at least 4 tape phrases.",
