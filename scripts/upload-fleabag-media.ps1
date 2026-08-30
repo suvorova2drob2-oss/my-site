@@ -19,9 +19,12 @@ $StampPath = Join-Path $Media ".upload-state.json"
 $RemoteHost = "ege"
 $RemoteDir = "/root/my-site/workshops/fleabag/media"
 $RemoteWorkshop = "/root/my-site/workshops/fleabag"
+# Prefer password for this host (no local key yet). Keep prompts visible.
 $SshOpts = @(
-  "-o", "PreferredAuthentications=password",
-  "-o", "PubkeyAuthentication=no"
+  "-o", "PreferredAuthentications=password,keyboard-interactive",
+  "-o", "PubkeyAuthentication=no",
+  "-o", "NumberOfPasswordPrompts=3",
+  "-o", "ServerAliveInterval=30"
 )
 
 function Get-Stamp {
@@ -91,6 +94,7 @@ function Sync-WorkshopSite {
   $jsFiles = @(
     (Join-Path $WorkshopRoot "js\fleabag-workshop.js"),
     (Join-Path $WorkshopRoot "js\fleabag-lesson.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-phrase-memes.js"),
     (Join-Path $WorkshopRoot "js\fleabag-speak-desk.js"),
     (Join-Path $WorkshopRoot "js\fleabag-phrase-srs.js"),
     (Join-Path $WorkshopRoot "js\fleabag-sticker-fyp.js"),
@@ -125,6 +129,16 @@ function Sync-WorkshopSite {
     & scp @scpCss
     if ($LASTEXITCODE -ne 0) {
       Write-Host "  CSS upload failed."
+      exit 1
+    }
+  }
+
+  $memesLocal = Join-Path $WorkshopRoot "memes"
+  if (Test-Path -LiteralPath $memesLocal) {
+    $scpMemes = @() + $SshOpts + @("-r", $memesLocal, "${RemoteHost}:${RemoteWorkshop}/")
+    & scp @scpMemes
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "  Memes upload failed."
       exit 1
     }
   }
@@ -231,8 +245,14 @@ if ($m -eq "js") {
 }
 
 Write-Host ""
-Write-Host "  1) Click this window  2) type password (invisible)  3) Enter"
-Write-Host "  (You may be asked once per scp batch.)"
+Write-Host "  1) Click this window (so it has focus)"
+Write-Host "  2) Switch keyboard to ENGLISH (Win+Space)"
+Write-Host "  3) Type the VPS root password - nothing appears on screen (normal!)"
+Write-Host "  4) Press Enter"
+Write-Host "  You may be asked 2-3 times (ssh + scp). Same password each time."
+Write-Host ""
+Write-Host "  Tip: first test login alone:  ssh ege"
+Write-Host "  If that fails, the bat cannot work either."
 Write-Host ""
 
 if (-not $mediaOnlySkip) {

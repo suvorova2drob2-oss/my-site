@@ -460,6 +460,16 @@
     return map;
   }
 
+  function resolvePhraseMeme(phrase) {
+    if (
+      window.FLEABAG_PHRASE_MEMES &&
+      typeof window.FLEABAG_PHRASE_MEMES.resolve === "function"
+    ) {
+      return window.FLEABAG_PHRASE_MEMES.resolve(phrase);
+    }
+    return null;
+  }
+
   function renderTape(phrases, mode, screen) {
     var title =
       mode === "finale"
@@ -472,17 +482,61 @@
           .map(function (p) {
             var key = normPhraseKey(p);
             var clips = clipMap[key];
+            var meme = resolvePhraseMeme(p);
+            var clipPayload = "";
             if (clips && clips.length) {
-              var payload = "";
               try {
-                payload = escapeHtml(JSON.stringify(clips));
+                clipPayload = escapeHtml(JSON.stringify(clips));
               } catch (e) {
-                payload = "[]";
+                clipPayload = "[]";
+              }
+            }
+            if (meme || (clips && clips.length)) {
+              if (meme && clips && clips.length) {
+                return (
+                  '<li class="fb-tape-item fb-tape-item--interactive fb-tape-item--meme fb-tape-item--clip">' +
+                  '<div class="fb-tape-phrase-row">' +
+                  '<button type="button" class="fb-tape-phrase-main" data-fb-phrase-meme="' +
+                  escapeHtml(meme.img) +
+                  '" data-fb-phrase-gloss="' +
+                  escapeHtml(meme.gloss || "") +
+                  '" data-fb-phrase-label="' +
+                  escapeHtml(p) +
+                  '" title="Open meme card">' +
+                  '<span class="fb-tape-meme-ico" aria-hidden="true">🃏</span>' +
+                  "<span>" +
+                  escapeHtml(p) +
+                  "</span></button>" +
+                  '<div class="fb-tape-phrase-actions">' +
+                  '<button type="button" class="fb-tape-clip-btn fb-tape-clip-btn--mini" data-fb-phrase-clips="' +
+                  clipPayload +
+                  '" data-fb-phrase-label="' +
+                  escapeHtml(p) +
+                  '" title="Play short clip">' +
+                  '<span class="fb-tape-clip-ico" aria-hidden="true">▶</span></button>' +
+                  "</div></div></li>"
+                );
+              }
+              if (meme) {
+                return (
+                  '<li class="fb-tape-item fb-tape-item--meme">' +
+                  '<button type="button" class="fb-tape-meme-btn" data-fb-phrase-meme="' +
+                  escapeHtml(meme.img) +
+                  '" data-fb-phrase-gloss="' +
+                  escapeHtml(meme.gloss || "") +
+                  '" data-fb-phrase-label="' +
+                  escapeHtml(p) +
+                  '" title="Open meme card">' +
+                  '<span class="fb-tape-meme-ico" aria-hidden="true">🃏</span>' +
+                  "<span>" +
+                  escapeHtml(p) +
+                  "</span></button></li>"
+                );
               }
               return (
                 '<li class="fb-tape-item fb-tape-item--clip">' +
                 '<button type="button" class="fb-tape-clip-btn" data-fb-phrase-clips="' +
-                payload +
+                clipPayload +
                 '" data-fb-phrase-label="' +
                 escapeHtml(p) +
                 '" title="Play short clip">' +
@@ -611,6 +665,78 @@
       if (e.target === layer) close();
     });
     show(0);
+  }
+
+  function openPhraseMeme(imgUrl, phraseLabel, gloss) {
+    if (!imgUrl) return;
+    var old = document.getElementById("fb-phrase-meme");
+    if (old) old.remove();
+
+    var layer = document.createElement("div");
+    layer.id = "fb-phrase-meme";
+    layer.className = "fb-phrase-meme";
+    layer.setAttribute("role", "dialog");
+    layer.setAttribute("aria-modal", "true");
+    document.body.appendChild(layer);
+    document.body.classList.add("fb-phrase-meme-open");
+
+    function close() {
+      document.body.classList.remove("fb-phrase-meme-open");
+      layer.remove();
+    }
+    layer._fbClose = close;
+
+    var src = mediaSrcAttr(imgUrl);
+    var fileName = String(imgUrl).split("/").pop() || "meme.png";
+    layer.innerHTML =
+      '<div class="fb-phrase-meme-panel">' +
+      '<header class="fb-phrase-meme-head">' +
+      "<div>" +
+      '<p class="fb-phrase-meme-kicker">Social meme card</p>' +
+      "<h2>" +
+      escapeHtml(phraseLabel || "Cool word") +
+      "</h2>" +
+      (gloss
+        ? '<p class="fb-phrase-meme-gloss">' + escapeHtml(gloss) + "</p>"
+        : "") +
+      "</div>" +
+      '<button type="button" class="fb-phrase-meme-x" data-fb-meme-close aria-label="Close">×</button>' +
+      "</header>" +
+      '<div class="fb-phrase-meme-img">' +
+      '<img src="' +
+      src +
+      '" alt="' +
+      escapeHtml(phraseLabel || "Meme card") +
+      '" loading="eager" />' +
+      "</div>" +
+      '<div class="fb-phrase-meme-foot">' +
+      '<a class="fb-phrase-meme-dl" href="' +
+      src +
+      '" download="' +
+      escapeHtml(fileName) +
+      '">Download PNG</a>' +
+      '<p class="fb-phrase-meme-tip">Tap phrase 🃏 on the tape · Esc to close</p>' +
+      "</div></div>";
+
+    layer.querySelector("[data-fb-meme-close]").addEventListener("click", close);
+    layer.addEventListener("click", function (e) {
+      if (e.target === layer) close();
+    });
+  }
+
+  function bindPhraseMemes(root) {
+    if (!root) return;
+    root.querySelectorAll("[data-fb-phrase-meme]").forEach(function (btn) {
+      if (btn._fbMemeBound) return;
+      btn._fbMemeBound = true;
+      btn.addEventListener("click", function () {
+        openPhraseMeme(
+          btn.getAttribute("data-fb-phrase-meme"),
+          btn.getAttribute("data-fb-phrase-label") || "",
+          btn.getAttribute("data-fb-phrase-gloss") || ""
+        );
+      });
+    });
   }
 
   function bindPhraseClips(root) {
@@ -1049,6 +1175,11 @@
     window.__fbDiscussEscBound = true;
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Escape") return;
+      var phraseMeme = document.getElementById("fb-phrase-meme");
+      if (phraseMeme && typeof phraseMeme._fbClose === "function") {
+        phraseMeme._fbClose();
+        return;
+      }
       var phraseClip = document.getElementById("fb-phrase-clip");
       if (phraseClip && typeof phraseClip._fbClose === "function") {
         phraseClip._fbClose();
@@ -1418,6 +1549,7 @@
     bindSwipeLaunch(elStage);
     bindVaultLaunch(elStage);
     bindPhraseClips(elStage);
+    bindPhraseMemes(elStage);
     if (screen.kind === "homework") {
       bindHwAudio(elStage, getHwClips(screen));
     }
