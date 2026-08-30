@@ -1,9 +1,13 @@
 /**
  * Movie Club sessions → same shape as Fleabag workshop sessions
  * so fleabag-lesson.js / buildFlow can run unchanged.
+ *
+ * Real packs (e.g. Sterling Point) register on window.MOVIE_CLUB_PACKS[id]
+ * and replace the stub session for that catalog id.
  */
 (function (global) {
   var catalog = global.MOVIE_CLUB_CATALOG || [];
+  var packs = global.MOVIE_CLUB_PACKS || {};
 
   function splitThemes(themes) {
     return String(themes || "")
@@ -68,6 +72,7 @@
 
   function catalogToSession(item) {
     if (!item || item.href) return null;
+    if (packs[item.id]) return packs[item.id];
     var isFilm = item.kind === "film";
     var nBeats = isFilm ? 8 : 6;
     return {
@@ -104,7 +109,7 @@
   });
 
   function getSession(id) {
-    return BY_ID[id] || null;
+    return BY_ID[id] || packs[id] || null;
   }
 
   /** Same API fleabag-lesson.js expects */

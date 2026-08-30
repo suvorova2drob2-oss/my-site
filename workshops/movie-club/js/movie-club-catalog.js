@@ -6,6 +6,17 @@
   var CATALOG = [
     /* —— Pilot priority (Cult Episode Club) —— */
     {
+      id: "sterling-point",
+      kind: "series",
+      group: "pilot",
+      kicker: "Pilot · Cult Episode Club",
+      title: "Sterling Point",
+      episode: "Beat 1 · Summer camp",
+      themes: "Summer anxiety · FOMO · chill vs spiral · processing news",
+      meta: "Beat 1 live · cool phrases · speak",
+      cover: "img/covers/sterling-point.png",
+    },
+    {
       id: "white-lotus",
       kind: "series",
       group: "pilot",

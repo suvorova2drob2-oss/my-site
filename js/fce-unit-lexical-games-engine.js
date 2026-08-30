@@ -92,6 +92,26 @@
         '<span class="link-hint">Open folder →</span>';
       gamesHost.parentNode.insertBefore(card, gamesHost);
     })();
+    /* Memes — flip cards (meme front · example back); Unit 1 pilot */
+    (function insertMemesCard() {
+      if (document.getElementById("lexMemesCard")) return;
+      if (!CFG.memesHref && unit !== 1) return;
+      var gamesHost = document.getElementById("gamesHost");
+      if (!gamesHost || !gamesHost.parentNode) return;
+      var href = CFG.memesHref || "unit1-vocab-memes/index.html";
+      var card = document.createElement("a");
+      card.id = "lexMemesCard";
+      card.className = "lex-memes card-link";
+      card.href = href;
+      card.innerHTML =
+        "<h2>Memes</h2>" +
+        '<div class="placeholder listening-open lines-2">' +
+        '<span class="l1">Flip cards · meme on the front, example on the back.</span>' +
+        '<span class="l2">Folders <b>get</b> · <b>run</b> · <b>clothes</b> · <b>lifestyle</b></span>' +
+        "</div>" +
+        '<span class="link-hint">Open folder →</span>';
+      gamesHost.parentNode.insertBefore(card, gamesHost);
+    })();
     function setText(sel, text) {
       document.querySelectorAll(sel).forEach(function (el) {
         el.textContent = text;
@@ -584,6 +604,14 @@
       { key: "match", title: "Pair Blitz", desc: "Quizlet-style match for paraphrase and text phrase.", hint: "Up to 10 pairs · multi-grids · timer" },
       { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Topic folders + progress + searchable bank.", hint: (T0.short || "A") + " · " + (T1.short || "B") + " · " + (T2.short || "C") + " (stubs)" }
     ];
+    if (unit === 1) {
+      GAMES.push({
+        key: "memes",
+        title: "Memes",
+        desc: "Flip cards — meme on the front, example + labels on the back.",
+        hint: "get · run · clothes · lifestyle"
+      });
+    }
     function miniThemeFlags() {
       const n = document.getElementById("miniPhrasal");
       const l = document.getElementById("miniCrime");
@@ -854,6 +882,34 @@
         <ul class="wb-list" id="wbList"></ul>
       </div>
     `;
+    const memesHtml = `
+      <div class="meme-games-box mini-game-box" id="memesBox">
+        <h3 class="mini-title">Meme folders</h3>
+        <p class="mini-hud">Tap a topic — flip the card to see the example sentence.</p>
+        <div class="meme-hub-grid">
+          <a class="meme-folder-card" href="unit1-vocabulary/get/memes/index.html">
+            <h2>get</h2>
+            <p>Get phrases · Ex. 2 · <em>7 flip cards</em></p>
+            <span class="link-hint">Open folder →</span>
+          </a>
+          <a class="meme-folder-card" href="unit1-vocabulary/run-expressions/memes/index.html">
+            <h2>run</h2>
+            <p>Expressions with <em>run</em> · Ex. 2–3 · <em>8 flip cards</em></p>
+            <span class="link-hint">Open folder →</span>
+          </a>
+          <a class="meme-folder-card" href="unit1-vocabulary/clothes/memes/index.html">
+            <h2>clothes</h2>
+            <p>SB 1.1 · <em>Parts 1–5 · flip cards</em></p>
+            <span class="link-hint">Open folder →</span>
+          </a>
+          <a class="meme-folder-card" href="unit1-vocabulary/lifestyle/memes/index.html">
+            <h2>lifestyle</h2>
+            <p>This is your life · <em>Parts 1–4 · A–D</em></p>
+            <span class="link-hint">Open folder →</span>
+          </a>
+        </div>
+      </div>
+    `;
 
     host.querySelectorAll(".folder").forEach((folder) => {
       const pool = folder.querySelector(".pool");
@@ -887,11 +943,12 @@
       else if (key === "echo") pool.innerHTML = echoHtml;
       else if (key === "match") pool.innerHTML = matchHtml;
       else if (key === "wordbank") pool.innerHTML = wordBankHtml;
+      else if (key === "memes") pool.innerHTML = memesHtml;
       paintThemeLabelsIn(pool);
       folder.addEventListener("click", (e) => {
         if (
           e.target.closest(
-            "button,input,label,select,textarea,.trainer-box,.cards-box,.mini-game-box,.match-box,.drop-intro,.drop-play,.wb-shell"
+            "button,input,label,select,textarea,.trainer-box,.cards-box,.mini-game-box,.match-box,.drop-intro,.drop-play,.wb-shell,.meme-games-box,a.meme-folder-card"
           )
         ) {
           return;
