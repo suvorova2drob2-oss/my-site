@@ -13,8 +13,10 @@ Put episode folders here:
 Lesson pages load them as `media/s01e0N/….mp4` or `media/s02e0N/….mp4` (same folder as `lesson.html`).
 
 Upload clips with `UPLOAD-FLEABAG-MEDIA.bat` at the repo root.
+That script uploads **mp4 folders** and also syncs **`fleabag-workshop.js`**
+(+ lesson/index HTML) to the VPS — otherwise new beats stay local-only.
 Default mode uploads **only new or changed** episode folders (local stamp:
-`media/.upload-state.json`). Force one episode with `UPLOAD-FLEABAG-MEDIA.bat 4`,
-or everything with `UPLOAD-FLEABAG-MEDIA.bat all`.
+`media/.upload-state.json`). Force one episode with `UPLOAD-FLEABAG-MEDIA.bat s02e01`
+or `UPLOAD-FLEABAG-MEDIA.bat s01e06`, or everything with `UPLOAD-FLEABAG-MEDIA.bat all`.
 
 Do not open `lesson.html` via `file://` — use `http://` (local server or VPS).

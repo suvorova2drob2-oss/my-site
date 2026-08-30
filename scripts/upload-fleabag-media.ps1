@@ -14,9 +14,11 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Media = Join-Path $Root "workshops\fleabag\media"
+$WorkshopRoot = Join-Path $Root "workshops\fleabag"
 $StampPath = Join-Path $Media ".upload-state.json"
 $RemoteHost = "ege"
 $RemoteDir = "/root/my-site/workshops/fleabag/media"
+$RemoteWorkshop = "/root/my-site/workshops/fleabag"
 $SshOpts = @(
   "-o", "PreferredAuthentications=password",
   "-o", "PubkeyAuthentication=no"
@@ -77,6 +79,57 @@ function Episode-Of([string]$relKey) {
   return ($relKey -split "/")[0]
 }
 
+function Sync-WorkshopSite {
+  Write-Host ""
+  Write-Host "  Syncing workshop pages + JS (beats / phrases)..."
+  & ssh @SshOpts $RemoteHost "mkdir -p $RemoteWorkshop/js $RemoteWorkshop/css"
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "  SSH mkdir for workshop root failed."
+    exit 1
+  }
+
+  $jsFiles = @(
+    (Join-Path $WorkshopRoot "js\fleabag-workshop.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-lesson.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-speak-desk.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-phrase-srs.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-sticker-fyp.js"),
+    (Join-Path $WorkshopRoot "js\fleabag-sticker-swipe.js")
+  ) | Where-Object { Test-Path -LiteralPath $_ }
+
+  if ($jsFiles.Count) {
+    $scpJs = @() + $SshOpts + $jsFiles + @("${RemoteHost}:${RemoteWorkshop}/js/")
+    & scp @scpJs
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "  JS upload failed."
+      exit 1
+    }
+  }
+
+  $htmlFiles = @(
+    (Join-Path $WorkshopRoot "index.html"),
+    (Join-Path $WorkshopRoot "lesson.html")
+  ) | Where-Object { Test-Path -LiteralPath $_ }
+  if ($htmlFiles.Count) {
+    $scpHtml = @() + $SshOpts + $htmlFiles + @("${RemoteHost}:${RemoteWorkshop}/")
+    & scp @scpHtml
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "  HTML upload failed."
+      exit 1
+    }
+  }
+
+  $cssLocal = Join-Path $WorkshopRoot "css\fleabag-workshop.css"
+  if (Test-Path -LiteralPath $cssLocal) {
+    $scpCss = @() + $SshOpts + @($cssLocal, "${RemoteHost}:${RemoteWorkshop}/css/")
+    & scp @scpCss
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "  CSS upload failed."
+      exit 1
+    }
+  }
+}
+
 $m = $Mode.Trim().ToLowerInvariant()
 if ($m -match "^s0[12]e0([1-9])$") {
   $Episode = $m
@@ -86,6 +139,8 @@ if ($m -match "^s0[12]e0([1-9])$") {
   $m = "episode"
 } elseif ($m -eq "a") {
   $m = "all"
+} elseif ($m -eq "js" -or $m -eq "site") {
+  $m = "js"
 }
 
 Write-Host ""
@@ -130,7 +185,11 @@ foreach ($fi in $allFiles) {
 }
 
 $targets = @()
-if ($m -eq "all") {
+$mediaOnlySkip = $false
+if ($m -eq "js") {
+  Write-Host "  Mode: JS/HTML only (no video upload)"
+  $mediaOnlySkip = $true
+} elseif ($m -eq "all") {
   $targets = @($byEp.Keys | Sort-Object)
   Write-Host "  Mode: ALL episodes ($($targets -join ', '))"
 } elseif ($m -eq "episode") {
@@ -147,68 +206,75 @@ if ($m -eq "all") {
       $stamp[$key] = File-Sig $fi
     }
     Save-Stamp $stamp
-    Write-Host "  First run: saved baseline stamp (no upload)."
+    Write-Host "  First run: saved baseline stamp (no video upload)."
     Write-Host "  Stamp: $StampPath"
-    Write-Host "  Next time only NEW or CHANGED episodes will upload."
-    Write-Host "  If the server is missing clips, run: UPLOAD-FLEABAG-MEDIA.bat all"
-    Write-Host "  Or force one episode: UPLOAD-FLEABAG-MEDIA.bat 4"
+    Write-Host "  Still syncing JS/HTML so new beats reach the VPS..."
+    Sync-WorkshopSite
+    Write-Host ""
+    Write-Host "  Done. Force clips with: UPLOAD-FLEABAG-MEDIA.bat s02e01"
+    Write-Host "  Or: UPLOAD-FLEABAG-MEDIA.bat s01e06  /  all"
     Write-Host ""
     exit 0
   }
   if (-not $targets.Count) {
-    Write-Host "  Mode: AUTO - nothing new since last upload."
+    Write-Host "  Mode: AUTO - no new videos since last upload."
     Write-Host "  (Stamp: $StampPath)"
-    Write-Host "  Use -Mode all  or  -Mode 4  to force re-upload."
-    Write-Host ""
-    exit 0
-  }
-  Write-Host "  Mode: AUTO - only new/changed episodes:"
-  foreach ($row in $changedFiles) {
-    $tag = if ($row.New) { "NEW" } else { "changed" }
-    Write-Host ("    [{0}] {1}" -f $tag, $row.Key)
+    Write-Host "  Still syncing JS/HTML (beats / phrases)..."
+    $mediaOnlySkip = $true
+  } else {
+    Write-Host "  Mode: AUTO - only new/changed episodes:"
+    foreach ($row in $changedFiles) {
+      $tag = if ($row.New) { "NEW" } else { "changed" }
+      Write-Host ("    [{0}] {1}" -f $tag, $row.Key)
+    }
   }
 }
 
 Write-Host ""
-Write-Host "  Will upload: $($targets -join ', ')"
 Write-Host "  1) Click this window  2) type password (invisible)  3) Enter"
 Write-Host "  (You may be asked once per scp batch.)"
 Write-Host ""
 
-& ssh @SshOpts $RemoteHost "mkdir -p $RemoteDir"
-if ($LASTEXITCODE -ne 0) {
-  Write-Host '  SSH failed. Check host alias "ege" in your SSH config.'
-  exit 1
-}
-
-$scpArgs = @() + $SshOpts + @("-r")
-foreach ($ep in $targets) {
-  $localEp = Join-Path $Media $ep
-  if (-not (Test-Path $localEp)) { throw "Missing $localEp" }
-  $scpArgs += $localEp
-}
-$readme = Join-Path $Media "README.md"
-if (Test-Path $readme) { $scpArgs += $readme }
-$scpArgs += "${RemoteHost}:${RemoteDir}/"
-
-& scp @scpArgs
-if ($LASTEXITCODE -ne 0) {
-  Write-Host ""
-  Write-Host "  Upload failed - stamp NOT updated."
-  exit 1
-}
-
-foreach ($ep in $targets) {
-  foreach ($fi in $byEp[$ep]) {
-    $key = Rel-Key $fi.FullName
-    $stamp[$key] = File-Sig $fi
+if (-not $mediaOnlySkip) {
+  Write-Host "  Will upload videos: $($targets -join ', ')"
+  & ssh @SshOpts $RemoteHost "mkdir -p $RemoteDir"
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host '  SSH failed. Check host alias "ege" in your SSH config.'
+    exit 1
   }
+
+  $scpArgs = @() + $SshOpts + @("-r")
+  foreach ($ep in $targets) {
+    $localEp = Join-Path $Media $ep
+    if (-not (Test-Path $localEp)) { throw "Missing $localEp" }
+    $scpArgs += $localEp
+  }
+  $readme = Join-Path $Media "README.md"
+  if (Test-Path $readme) { $scpArgs += $readme }
+  $scpArgs += "${RemoteHost}:${RemoteDir}/"
+
+  & scp @scpArgs
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "  Upload failed - stamp NOT updated."
+    exit 1
+  }
+
+  foreach ($ep in $targets) {
+    foreach ($fi in $byEp[$ep]) {
+      $key = Rel-Key $fi.FullName
+      $stamp[$key] = File-Sig $fi
+    }
+  }
+  Save-Stamp $stamp
 }
-Save-Stamp $stamp
+
+Sync-WorkshopSite
 
 Write-Host ""
 Write-Host "  ========================================"
-Write-Host "  Done. Stamp updated."
-Write-Host "  Open Fleabag lesson and Ctrl+F5."
+Write-Host "  Done. JS/HTML synced."
+if (-not $mediaOnlySkip) { Write-Host "  Videos stamp updated." }
+Write-Host "  Open Fleabag and hard-refresh (Ctrl+F5)."
 Write-Host "  ========================================"
 Write-Host ""
