@@ -10,6 +10,7 @@
 const path = require("path");
 const fs = require("fs");
 const express = require("express");
+const compression = require("compression");
 
 const PORT = Number(process.env.PORT || 8787);
 const ROOT = path.join(__dirname, "..");
@@ -500,7 +501,18 @@ function handleOp(op, body) {
 }
 
 const app = express();
+app.use(compression());
 app.use(express.json({ limit: "128kb" }));
+
+function staticCacheHeaders(res, filePath) {
+  if (/\.(?:js|css|mjs|map|woff2?|ttf|otf|png|jpe?g|gif|webp|svg|ico|mp3|wav|ogg)$/i.test(filePath)) {
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return;
+  }
+  if (/\.html?$/i.test(filePath)) {
+    res.setHeader("Cache-Control", "public, max-age=120");
+  }
+}
 
 app.use(function (req, res, next) {
   const origin = req.headers.origin || "";
@@ -535,12 +547,32 @@ app.post("/live", function (req, res) {
 
 // Serve the site so student links work without Vite / file://
 if (fs.existsSync(ROBLOX_ROOT)) {
-  app.use("/games", express.static(ROBLOX_ROOT, { index: false, fallthrough: true }));
+  app.use(
+    "/games",
+    express.static(ROBLOX_ROOT, {
+      index: false,
+      fallthrough: true,
+      setHeaders: staticCacheHeaders
+    })
+  );
 }
 if (fs.existsSync(CLUMSY_ROOT)) {
-  app.use("/clumsy", express.static(CLUMSY_ROOT, { index: "index.html", fallthrough: true }));
+  app.use(
+    "/clumsy",
+    express.static(CLUMSY_ROOT, {
+      index: "index.html",
+      fallthrough: true,
+      setHeaders: staticCacheHeaders
+    })
+  );
 }
-app.use(express.static(ROOT, { index: false, fallthrough: true }));
+app.use(
+  express.static(ROOT, {
+    index: false,
+    fallthrough: true,
+    setHeaders: staticCacheHeaders
+  })
+);
 
 // Classroom rooms are temporary. Remove inactive UNO rooms after 12 hours.
 setInterval(function () {

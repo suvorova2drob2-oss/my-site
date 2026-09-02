@@ -67,6 +67,11 @@ fi
 
 log "Updated my-site $before -> $after; games ${games_before:-missing} -> ${games_after:-missing}; clumsy ${clumsy_before:-missing} -> ${clumsy_after:-missing}"
 
+if [[ "$before" != "$after" ]]; then
+  log "npm install --omit=dev"
+  npm install --omit=dev >>"$LOG" 2>&1 || log "WARN: npm install failed"
+fi
+
 if [[ -f "$ROOT/server/ege-live-rooms.service" ]]; then
   cp "$ROOT/server/ege-live-rooms.service" /etc/systemd/system/ege-live-rooms.service
   systemctl daemon-reload >>"$LOG" 2>&1 || true

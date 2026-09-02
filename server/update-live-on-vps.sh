@@ -15,6 +15,8 @@ echo "==> Updating $ROOT"
 cd "$ROOT"
 git fetch origin main
 git reset --hard origin/main
+echo "==> npm install (production deps, e.g. compression)"
+npm install --omit=dev
 
 GAMES_ROOT="${ROBLOX_ROOT:-$HOME/roblox}"
 GAMES_REPO="${ROBLOX_REPO_URL:-git@github.com:suvorova2drob2-oss/roblox.git}"
