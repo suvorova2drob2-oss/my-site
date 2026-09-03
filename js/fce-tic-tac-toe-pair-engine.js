@@ -625,9 +625,16 @@
       var gs = snap && snap.gameState;
       if (!gs || snap.phase !== "playing") {
         box.hidden = true;
+        inner.innerHTML = "";
+        if (W.FceClassLiveTtt && W.FceClassLiveTtt.paintStudentBoard) {
+          W.FceClassLiveTtt.paintStudentBoard(null);
+        }
         return;
       }
       box.hidden = false;
+      if (W.FceClassLiveTtt && W.FceClassLiveTtt.paintStudentBoard) {
+        W.FceClassLiveTtt.paintStudentBoard(gs, { canPick: false });
+      }
       var me = null;
       (snap.players || []).forEach(function (p) {
         if (p.id === playerId) me = p;

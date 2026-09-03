@@ -408,7 +408,10 @@
     for (i = 0; i < list.length; i++) {
       var a = list[i];
       if (!a || !a.at || a.at <= state.lastActionAt) continue;
-      if (eng.applyStudentAction(a)) {
+      var handled =
+        (eng.applyStudentPick && eng.applyStudentPick(a)) ||
+        (eng.applyStudentAction && eng.applyStudentAction(a));
+      if (handled) {
         state.lastActionAt = a.at;
         publishState(true);
       }
@@ -689,6 +692,42 @@
     }, 2600);
   }
 
+  function paintStudentBoard(gs, options) {
+    var boardEl = document.getElementById("fclStudentBoard");
+    if (!boardEl) return;
+    options = options || {};
+    boardEl.innerHTML = "";
+    if (!gs || !gs.board) return;
+    var canPick = !!options.canPick;
+    var onPick = typeof options.onPick === "function" ? options.onPick : null;
+    var i;
+    for (i = 0; i < 9; i++) {
+      var btn = W.document.createElement("button");
+      btn.type = "button";
+      btn.className = "fcl-stu-cell";
+      btn.setAttribute("data-i", String(i));
+      if (gs.board[i]) {
+        btn.className += " fcl-stu-cell--" + String(gs.board[i]).toLowerCase();
+        btn.className += " fcl-stu-cell--taken";
+        btn.textContent = gs.board[i];
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = '<span class="fcl-stu-cell-num">' + String(i + 1) + "</span>";
+        if (gs.activeCell === i) btn.className += " fcl-stu-cell--active";
+        if (canPick && onPick) {
+          (function (cell) {
+            btn.addEventListener("click", function () {
+              onPick(cell);
+            });
+          })(i);
+        } else {
+          btn.disabled = true;
+        }
+      }
+      boardEl.appendChild(btn);
+    }
+  }
+
   function paintStudentPlaying(snap) {
     var lobby = document.getElementById("fclStudentLobby");
     var game = document.getElementById("fclStudentGame");
@@ -717,6 +756,11 @@
         status.textContent = "Round over — watch the screen.";
       } else if (isMyTurn && gs.activeCell != null && !gs.qLocked) {
         status.textContent = "Your turn! Answer below.";
+      } else if (isMyTurn && gs.activeCell == null) {
+        status.textContent =
+          gs.answerMode && String(gs.answerMode).indexOf("student") === 0
+            ? "Your turn — tap a square on the board below."
+            : "Your turn — wait for a square on the projector.";
       } else if (isMyTurn) {
         status.textContent = "Your turn — wait for a square on the board.";
       } else {
@@ -1046,6 +1090,7 @@
       '<div class="fcl-student-game" id="fclStudentGame" hidden>' +
       '<p class="fcl-student-game-k">Live game</p>' +
       '<p class="fcl-student-game-status" id="fclStudentGameStatus">Watch the board</p>' +
+      '<div class="fcl-student-board" id="fclStudentBoard" role="grid" aria-label="Tic-tac-toe board"></div>' +
       '<div class="fcl-student-play-inner" id="fclStudentPlayInner"></div>' +
       "</div>";
     document.body.appendChild(studentShell);
@@ -1395,9 +1440,19 @@
           cell: cell,
           value: String(text || "")
         });
+      },
+      submitStudentPick: function (cell) {
+        if (state.role !== "student" || !state.playerId) return Promise.resolve();
+        return ensureApi().tttSubmit({
+          roomCode: state.roomCode,
+          playerId: state.playerId,
+          kind: "pick",
+          cell: cell,
+          value: ""
+        });
       }
     };
   }
 
-  W.FceClassLiveTtt = { mount: mount };
+  W.FceClassLiveTtt = { mount: mount, paintStudentBoard: paintStudentBoard };
 })(typeof window !== "undefined" ? window : globalThis);

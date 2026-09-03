@@ -653,6 +653,19 @@
       );
     }
 
+    function applyStudentPick(action) {
+      if (!action || S.liveRole !== "host") return false;
+      if (action.kind !== "pick") return false;
+      if (S.over || S.activeCell !== null || S.qLocked) return false;
+      if (S.answerMode.indexOf("student") !== 0) return false;
+      if (!speakerMatchesAction(action)) return false;
+      var i = action.cell;
+      if (i < 0 || i > 8 || S.board[i]) return false;
+      showQuestionForCell(i);
+      buildBoard();
+      return true;
+    }
+
     function applyStudentAction(action) {
       if (!action || S.liveRole !== "host") return false;
       if (S.activeCell === null || S.qLocked || S.over) return false;
@@ -680,6 +693,9 @@
       var gs = snap && snap.gameState;
       if (!gs || snap.phase !== "playing") {
         inner.innerHTML = "";
+        if (W.FceClassLiveTtt && W.FceClassLiveTtt.paintStudentBoard) {
+          W.FceClassLiveTtt.paintStudentBoard(null);
+        }
         return;
       }
       var me = null;
@@ -694,13 +710,35 @@
         me &&
         String(me.displayName || "").trim().toLowerCase() ===
           String(speaker || "").trim().toLowerCase();
+      var studentMode = gs.answerMode && String(gs.answerMode).indexOf("student") === 0;
+      var canPick =
+        studentMode &&
+        isMyTurn &&
+        gs.activeCell == null &&
+        !gs.qLocked &&
+        !gs.over;
+      if (W.FceClassLiveTtt && W.FceClassLiveTtt.paintStudentBoard) {
+        W.FceClassLiveTtt.paintStudentBoard(gs, {
+          canPick: canPick,
+          onPick: function (cell) {
+            if (live && live.submitStudentPick) live.submitStudentPick(cell);
+          }
+        });
+      }
       if (gs.activeCell == null || gs.qLocked || gs.over) {
-        inner.innerHTML =
-          '<p class="fcl-wait">Watch the board · ' +
-          esc(speaker) +
-          " (" +
-          sym +
-          ")</p>";
+        if (gs.over) {
+          inner.innerHTML = '<p class="fcl-wait">Round over — watch the screen.</p>';
+        } else if (canPick) {
+          inner.innerHTML =
+            '<p class="fcl-wait fcl-wait--turn">Tap an empty square above, then answer.</p>';
+        } else {
+          inner.innerHTML =
+            '<p class="fcl-wait">Watch the board · ' +
+            esc(speaker) +
+            " (" +
+            sym +
+            ")</p>";
+        }
         return;
       }
       if (!isMyTurn) {
@@ -855,6 +893,7 @@
       newRound: newRound,
       exportState: exportState,
       importState: importState,
+      applyStudentPick: applyStudentPick,
       applyStudentAction: applyStudentAction,
       renderStudentPanel: renderStudentPanel,
       startLiveRound: startLiveRound,
