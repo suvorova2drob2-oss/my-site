@@ -1,0 +1,76 @@
+---
+description: FCE Unit N — Lexical games · Memes UI (deck tiles, part tabs, CSS) — все юниты
+alwaysApply: true
+---
+
+# FCE · Lexical games — Memes UI (Unit 1–12)
+
+Единый вид **Memes** на **`unitN-lexical-games.html`**, в **`unitN-vocab-memes/`** и в **`unitN-vocabulary/…/memes/`**. На **каждом** юните — те же классы и CSS, меняется только **контент** в `js/unitN-*-meme-cards.js` / `fce-unit-memes-bridge.js`.
+
+## Обязательный CSS (все юниты)
+
+| Файл | Где подключать |
+|------|----------------|
+| `css/fce-vocab-meme-flip.css` | **Всегда** на `unitN-lexical-games.html` + meme flip pages |
+| `css/fce-vocab-meme-parts-compact.css` | Только full-page `…/memes/index.html` (no-scroll shell) |
+| `css/fce-unit-lexical-games.css` | `unitN-lexical-games.html` |
+
+**Part tabs** (Part 1 · Lucas …) стилизуются в **`fce-vocab-meme-flip.css`** (`.meme-part-tab`) — не дублировать «голые» `<button>` без этих классов.
+
+## Слой 1 — Deck picker (Get · Run · Clothes · Lifestyle)
+
+Внутри папки **Memes** на Lexical games:
+
+- **Не** `folder-deck-nav` / текст `Get · Run · …` без карточек.
+- **Да:** `paintMemeDeckGrid` в `js/fce-lexical-games-extras-mount.js` → **`.lex-meme-deck-grid`** + **`.meme-deck-tile`** (тёмный градиент, золотой акцент, иконка, счётчик карт).
+- При открытой колоде: **`.lex-meme-deck-grid--active`** — компактная pill-полоска, не белые прямоугольники.
+
+Эталон разметки: `js/fce-lexical-games-extras-mount.js` · `memeDeckMeta` / `paintMemeDeckGrid`.
+
+## Слой 2 — Part tabs (колоды с частями)
+
+Движок: **`js/fce-vocab-meme-parts-engine.js`** → **`FCE_VOCAB_MEME_PARTS.mount`**.
+
+- Табы: **`<button class="meme-part-tab">`** внутри **`.meme-part-tabs`** (`role="tablist"`).
+- Активный: **`.meme-part-tab.is-active`**.
+- Стили: **`fce-vocab-meme-flip.css`** — тёмные pill-кнопки, золото на active; **никогда** дефолтный белый `button` браузера.
+
+### Unit 1 — подписи part tabs (не менять без книги)
+
+| Deck | Parts |
+|------|--------|
+| **lifestyle** | Part 1 · Lucas · Part 2 · Maja · Part 3 · Reo · Part 4 · Ben |
+| **clothes** | Part 1–5 · SB 1.1 speakers (`js/unit1-clothes-meme-cards.js`) |
+| **get** / **run** | Без part tabs — только flip (`mode: "flip"`) |
+
+### Unit 2+ 
+
+Пока stub / пустые parts — таб **disabled** + класс **`.is-soon`**, не ломать разметку.
+
+## Standalone hub
+
+- **`unit1-vocab-memes/index.html`** — ссылки **`.meme-hub-grid`** + **`a.meme-folder-card`** (не `<button>`).
+- **`unit1-vocabulary/lifestyle/memes/`**, **`…/clothes/memes/`** — full page + **`meme-parts-compact`** body class.
+
+## Sound Booth / Sticky (тот же Lexical games)
+
+- Sound Booth modes: **`.lex-sb-mode-card`** (не текстовые ссылки).
+- Sticky packs: **`.sbp-pack-btn`** в embed — стили в `fce-unit-lexical-games.css`.
+
+## Запрещено
+
+1. Белые / системные `<button>` без scoped dark-theme CSS на Memes embed.
+2. Переносить part-tab стили **только** в `meme-parts-compact.css` без дублирования в `fce-vocab-meme-flip.css` (Lexical games embed не грузит compact).
+3. Новый one-off deck nav на странице юнита — расширять **`fce-lexical-games-extras-mount.js`** + shared CSS.
+
+## Чеклист агента
+
+- [ ] `unitN-lexical-games.html` подключает **`fce-vocab-meme-flip.css`**?
+- [ ] Memes folder → deck tiles, не plain text?
+- [ ] Lifestyle/Clothes → part tabs с **`.meme-part-tab`**, видны на тёмном фоне?
+- [ ] Новый юнит: данные в **`js/unitN-*-meme-cards.js`** + регистрация в **`fce-unit-memes-bridge.js`**, UI не форкать.
+
+## Связанные
+
+- Unit 1 фразы: **`u1-cool-words-phrase-source.mdc`**
+- Flip engine: **`js/fce-vocab-meme-flip-engine.js`**

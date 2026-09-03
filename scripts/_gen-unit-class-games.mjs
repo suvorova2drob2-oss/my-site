@@ -25,11 +25,24 @@ const UNIT_TITLES = {
 
 const GAME_SECTIONS = [
   {
+    h: "Retell check",
+    items: [
+      {
+        title: "Retell check",
+        live: true,
+        blurb:
+          "Step 1: текст с пунктирными фразами → Step 2: пересказ с таймером. Галочками выберите текст.",
+      },
+    ],
+  },
+  {
     h: "Экзамен (как на листе)",
     items: [
       {
         title: "4 фрагмента текста, пропуски 1–8",
-        blurb: "Текст слева, банк фраз справа (drag + клик). Заглушка — пришлите текст и ключ.",
+        live: true,
+        exam: true,
+        blurb: "Текст слева, банк фраз справа (drag + клик). Галочками выберите текст.",
       },
     ],
   },
@@ -117,6 +130,16 @@ function shellHtml(unit) {
       .map((it) => {
         if (it.locked) {
           return `<li class="is-locked"><span class="cg-stub-title">🔒 ${it.title}</span><span class="cg-soon">Coming soon</span><p>${it.blurb}</p></li>`;
+        }
+        if (it.live) {
+          const u1extra =
+            unit === 1
+              ? " Галочками: <strong>lifestyle</strong> и <strong>clothes</strong>."
+              : "";
+          const href = it.exam
+            ? `exam-numbered-gaps.html?unit=${unit}`
+            : `retell-check.html?unit=${unit}`;
+          return `<li><a href="${href}">${it.title}</a><p>${it.blurb}${u1extra}</p></li>`;
         }
         return `<li><span class="cg-stub-title">${it.title}</span><p>${it.blurb}</p></li>`;
       })

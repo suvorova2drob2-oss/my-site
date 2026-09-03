@@ -288,3 +288,321 @@ a.meme-folder-card .link-hint {
   font-weight: 700;
   font-size: 0.88rem;
 }
+
+/* Premium meme deck switcher — Lexical games embed */
+.lex-meme-launch {
+  width: 100%;
+  max-width: min(760px, 100%);
+  margin-inline: auto;
+}
+.lex-meme-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.meme-deck-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 16px 18px 14px;
+  border: 1px solid rgba(72, 102, 148, 0.55);
+  border-radius: 16px;
+  background: linear-gradient(
+    155deg,
+    rgba(32, 50, 82, 0.98) 0%,
+    rgba(20, 34, 58, 0.97) 52%,
+    rgba(14, 24, 44, 0.99) 100%
+  );
+  box-shadow:
+    0 10px 28px rgba(2, 8, 24, 0.38),
+    inset 0 1px 0 rgba(180, 210, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  color: #e8f0ff;
+  cursor: pointer;
+  font-family: Manrope, system-ui, sans-serif;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: hidden;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+.meme-deck-tile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, rgba(253, 230, 138, 0.2), rgba(245, 180, 60, 0.65));
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+.meme-deck-tile:hover {
+  border-color: rgba(120, 180, 240, 0.55);
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 32px rgba(2, 8, 24, 0.48),
+    inset 0 1px 0 rgba(200, 225, 255, 0.12);
+}
+.meme-deck-tile.is-open {
+  border-color: rgba(253, 210, 100, 0.62);
+  background: linear-gradient(
+    155deg,
+    rgba(44, 62, 96, 0.99) 0%,
+    rgba(30, 48, 78, 0.98) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(253, 210, 100, 0.18),
+    0 12px 36px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(253, 230, 138, 0.14);
+}
+.meme-deck-tile.is-open::before {
+  opacity: 1;
+  background: linear-gradient(180deg, #fde68a, #f59e0b);
+}
+.meme-deck-tile:focus-visible {
+  outline: 2px solid rgba(86, 204, 242, 0.7);
+  outline-offset: 2px;
+}
+.meme-deck-tile__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  line-height: 1;
+  background: rgba(9, 18, 36, 0.55);
+  border: 1px solid rgba(100, 140, 200, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.meme-deck-tile.is-open .meme-deck-tile__icon {
+  border-color: rgba(253, 210, 100, 0.45);
+  background: rgba(253, 210, 100, 0.1);
+}
+.meme-deck-tile__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.meme-deck-tile__title {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fde68a;
+  line-height: 1.2;
+}
+.meme-deck-tile.is-open .meme-deck-tile__title {
+  color: #fff3c4;
+}
+.meme-deck-tile__desc {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(180, 200, 235, 0.88);
+}
+.meme-deck-tile__count {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(140, 175, 220, 0.95);
+}
+.meme-deck-tile__cta {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #56ccf2;
+  margin-top: auto;
+}
+.meme-deck-tile.is-open .meme-deck-tile__cta {
+  color: #fcd34d;
+}
+
+/* Compact luxe pill bar while a deck is open */
+.lex-meme-deck-grid--active {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  margin-bottom: 10px;
+  scrollbar-width: thin;
+}
+.lex-meme-deck-grid--active .meme-deck-tile {
+  flex: 1 1 0;
+  min-width: 118px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px 9px 12px;
+  border-radius: 999px;
+  min-height: 0;
+}
+.lex-meme-deck-grid--active .meme-deck-tile::before {
+  display: none;
+}
+.lex-meme-deck-grid--active .meme-deck-tile__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.95rem;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+.lex-meme-deck-grid--active .meme-deck-tile__body {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+}
+.lex-meme-deck-grid--active .meme-deck-tile__title {
+  font-size: 0.92rem;
+}
+.lex-meme-deck-grid--active .meme-deck-tile__desc,
+.lex-meme-deck-grid--active .meme-deck-tile__count {
+  display: none;
+}
+.lex-meme-deck-grid--active .meme-deck-tile__cta {
+  margin-top: 0;
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+.lex-meme-deck-grid--active .meme-deck-tile.is-open {
+  background: linear-gradient(
+    135deg,
+    rgba(58, 78, 118, 0.98) 0%,
+    rgba(38, 58, 92, 0.98) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(253, 210, 100, 0.35),
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(253, 230, 138, 0.12);
+}
+
+body.lex-game-focus .lex-meme-deck-grid {
+  margin-bottom: 8px;
+}
+body.lex-game-focus .lex-meme-deck-grid:not(.lex-meme-deck-grid--active) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+body.lex-game-focus .lex-meme-deck-grid:not(.lex-meme-deck-grid--active) .meme-deck-tile {
+  padding: 12px 14px;
+}
+body.lex-game-focus .lex-meme-deck-grid:not(.lex-meme-deck-grid--active) .meme-deck-tile__desc {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .lex-meme-deck-grid:not(.lex-meme-deck-grid--active) {
+    grid-template-columns: 1fr;
+  }
+  .lex-meme-deck-grid--active .meme-deck-tile__cta {
+    display: none;
+  }
+}
+
+/* Part tabs (Lifestyle · Lucas/Maja…, Clothes · speakers) — shared embed + standalone */
+.meme-part-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin: 0 0 12px;
+}
+.meme-part-tab {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  border: 1px solid rgba(72, 102, 148, 0.55);
+  border-radius: 999px;
+  background: linear-gradient(
+    155deg,
+    rgba(28, 44, 72, 0.98) 0%,
+    rgba(18, 30, 52, 0.97) 100%
+  );
+  box-shadow:
+    0 4px 14px rgba(2, 8, 24, 0.28),
+    inset 0 1px 0 rgba(180, 210, 255, 0.07);
+  color: #c5d4ef;
+  font-family: Manrope, system-ui, sans-serif;
+  font-size: clamp(0.78rem, 2.3vw, 0.88rem);
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease,
+    color 0.18s ease;
+}
+.meme-part-tab:hover:not(:disabled) {
+  border-color: rgba(120, 180, 240, 0.55);
+  color: #e8f2ff;
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px rgba(2, 8, 24, 0.35),
+    inset 0 1px 0 rgba(200, 225, 255, 0.1);
+}
+.meme-part-tab.is-active {
+  border-color: rgba(253, 210, 100, 0.62);
+  background: linear-gradient(
+    135deg,
+    rgba(44, 62, 96, 0.99) 0%,
+    rgba(32, 48, 78, 0.98) 100%
+  );
+  color: #fff3c4;
+  box-shadow:
+    0 0 0 1px rgba(253, 210, 100, 0.2),
+    0 6px 18px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(253, 230, 138, 0.12);
+}
+.meme-part-tab:focus-visible {
+  outline: 2px solid rgba(86, 204, 242, 0.7);
+  outline-offset: 2px;
+}
+.meme-part-tab:disabled,
+.meme-part-tab.is-soon {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+}
+.meme-parts-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.meme-parts-empty {
+  text-align: center;
+  color: var(--muted, #9bb0d3);
+  font-size: 0.9rem;
+  padding: 20px 10px;
+}
+.folder .pool .meme-part-tabs {
+  margin-bottom: 10px;
+}
+body.lex-game-focus .folder .pool .meme-part-tab {
+  padding: 7px 13px;
+  font-size: 0.8rem;
+}

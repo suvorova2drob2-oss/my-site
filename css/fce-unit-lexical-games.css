@@ -195,6 +195,33 @@ a.lex-memes .link-hint {
     body.lex-game-focus .page {
       padding: 12px 14px 18px;
       border-radius: 14px;
+      min-height: 0 !important;
+      height: fit-content !important;
+    }
+    body.lex-game-focus #gamesHost {
+      min-height: 0;
+    }
+    body.lex-game-focus .top h1 {
+      font-size: 1rem !important;
+      line-height: 1.25 !important;
+    }
+    body.lex-game-focus .folder.open[data-key="memes"] > strong,
+    body.lex-game-focus .folder.open[data-key="soundbooth"] > strong,
+    body.lex-game-focus .folder.open[data-key="sticky"] > strong {
+      display: none;
+    }
+    body.lex-game-focus .folder.open .pool {
+      min-height: 0;
+    }
+    body.lex-game-focus .lex-extra-embed {
+      padding: 0;
+      border: none;
+      background: transparent;
+      margin: 0;
+    }
+    body.lex-game-focus .folder.open .folder-deck-nav {
+      margin: 0 0 8px;
+      font-size: 0.86rem;
     }
     body.lex-game-focus .top {
       padding-bottom: 8px;
@@ -1387,5 +1414,837 @@ body.lex-trainer-win-open {
 @media (max-width: 640px) {
   .lex-trainer-win-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Folder deck links (Memes · Sound Booth · Sticky inside .folder .pool) */
+.folder-deck-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.lex-extra-embed {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.folder .pool {
+  --meme-chrome: 7.5rem;
+  --meme-card-max: min(360px, 92vw);
+}
+.folder .pool .meme-flip-scene--compact {
+  width: min(100%, var(--meme-card-max), calc(100dvh - var(--meme-chrome)));
+  max-height: min(360px, 52vh);
+}
+body.lex-game-focus .folder .pool .meme-flip-scene--compact {
+  width: min(100%, 320px, 48vh);
+  max-height: min(320px, 48vh);
+}
+body.lex-game-focus .lex-sb-mode-grid {
+  gap: 8px;
+  margin: 0;
+}
+.match-intro-lead {
+  margin: 0 0 8px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+body.lex-game-focus .match-intro-lead {
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+.folder-deck-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.folder-deck-link:hover {
+  text-decoration: underline;
+}
+.folder-deck-link.here {
+  color: var(--text);
+  text-decoration: underline;
+}
+.folder-deck-sep {
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* Sound Booth — mode launch cards inside folder */
+.lex-sb-launch {
+  width: 100%;
+  max-width: min(680px, 100%);
+  margin-inline: auto;
+}
+.lex-sb-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lex-sb-mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  min-height: 148px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(50, 74, 113, 0.9);
+  background: linear-gradient(165deg, rgba(34, 54, 87, 0.95) 0%, rgba(23, 41, 72, 0.92) 100%);
+  box-shadow: inset 0 1px 0 rgba(148, 196, 255, 0.06);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  color: var(--text);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+.lex-sb-mode-card:hover,
+.lex-sb-mode-card:focus-visible {
+  border-color: rgba(86, 204, 242, 0.55);
+  background: linear-gradient(165deg, rgba(38, 61, 98, 0.98) 0%, rgba(28, 48, 82, 0.96) 100%);
+  transform: translateY(-1px);
+  outline: none;
+}
+.lex-sb-mode-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.lex-sb-mode-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #f0f6ff;
+  letter-spacing: -0.01em;
+}
+.lex-sb-mode-desc {
+  flex: 1 1 auto;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.lex-sb-mode-go {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #56ccf2;
+}
+body.lex-game-focus .lex-sb-launch .mini-hud {
+  display: none;
+}
+body.lex-game-focus .lex-sb-mode-card {
+  min-height: 0;
+  padding: 12px 14px;
+  gap: 4px;
+  border-color: rgba(50, 74, 113, 0.95);
+  background: linear-gradient(165deg, rgba(34, 54, 87, 0.98) 0%, rgba(23, 41, 72, 0.96) 100%);
+}
+
+/* Embedded extras engines inside open folders */
+.lex-extra-engine-root[hidden] {
+  display: none !important;
+}
+.folder .pool .sbp-page--embedded,
+#stickyEmbedBox .sbp-page--embedded {
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  margin-top: 6px;
+}
+.folder .pool .sbp-page--embedded .sbp-hud {
+  margin-bottom: 6px;
+}
+.lex-extra-sticky .sbp-page,
+.lex-extra-memes .meme-flip-box,
+.lex-extra-sound .lex-sb-panel,
+.folder .pool .meme-flip-box,
+.folder .pool .sbp-page {
+  margin-top: 4px;
+}
+
+/* Legacy extras sections (unused — kept for old pages) */
+.lex-extra-sec {
+  margin-top: 22px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.lex-extra-h {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f5d78e;
+  margin: 0 0 6px;
+}
+.lex-extra-lead {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.lex-extra-empty {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.lex-extra-deck-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.lex-extra-deck-btn {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(30, 58, 95, 0.55);
+  color: #38bdf8;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+.lex-extra-deck-btn.here {
+  border-color: rgba(125, 211, 252, 0.55);
+  background: rgba(56, 189, 248, 0.12);
+  color: #e0f2fe;
+}
+.lex-extra-engine-root[hidden] {
+  display: none !important;
+}
+.lex-extra-sticky .sbp-page,
+.lex-extra-memes .meme-flip-box,
+.lex-extra-sound .lex-sb-panel {
+  padding: 14px 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel-soft);
+}
+.lex-sb-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.lex-sb-tab {
+  border: 1px solid var(--line);
+  background: rgba(30, 58, 95, 0.45);
+  color: var(--muted);
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+.lex-sb-tab.here {
+  border-color: rgba(125, 211, 252, 0.55);
+  color: #e0f2fe;
+  background: rgba(56, 189, 248, 0.12);
+}
+.lex-sb-wb-head {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+.lex-sb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.lex-sb-btn-main,
+.lex-sb-btn-sec {
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+.lex-sb-btn-main {
+  border: none;
+  background: var(--accent, #56ccf2);
+  color: #062a3b;
+}
+.lex-sb-btn-sec {
+  border: 1px solid var(--line);
+  background: #24365a;
+  color: var(--text);
+}
+.lex-extra-sound .theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.lex-extra-sound .deck-meta {
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.lex-extra-sticky .sbp-jump .sbp-pack-btn {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(30, 58, 95, 0.55);
+  color: #38bdf8;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+.lex-extra-sticky .sbp-jump .sbp-pack-btn.here {
+  border-color: rgba(125, 211, 252, 0.55);
+  background: rgba(56, 189, 248, 0.12);
+  color: #e0f2fe;
+}
+
+/* Sound Booth — fullscreen overlay (Vocabulary Games embed) */
+body.lex-sb-fs-open {
+  overflow: hidden;
+}
+.lex-sb-fs-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(900px 520px at 80% -15%, rgba(56, 189, 248, 0.14), transparent 55%),
+    radial-gradient(700px 420px at 10% 0%, rgba(167, 139, 250, 0.1), transparent 50%),
+    #0b1020;
+  color: #e8ecff;
+  font-family: Manrope, system-ui, sans-serif;
+}
+.lex-sb-fs-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line, rgba(42, 53, 85, 0.85));
+  background: rgba(10, 16, 32, 0.92);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.lex-sb-fs-kicker {
+  margin: 0 0 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted, #8b95b8);
+}
+.lex-sb-fs-title {
+  margin: 0;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f5d78e;
+}
+.lex-sb-fs-close {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(30, 58, 95, 0.55);
+  color: #38bdf8;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+.lex-sb-fs-close:hover {
+  background: rgba(56, 189, 248, 0.12);
+}
+.lex-sb-fs-body {
+  flex: 1;
+  overflow: auto;
+  padding: 14px clamp(12px, 3vw, 20px) 24px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+.lex-sb-panel--fs {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel-soft, rgba(18, 30, 52, 0.72));
+  padding: 14px 16px 18px;
+}
+.lex-sb-vbingo {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+.vb-fs-setup {
+  margin-bottom: 16px;
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  background: linear-gradient(
+    165deg,
+    rgba(18, 28, 52, 0.92) 0%,
+    rgba(12, 20, 40, 0.88) 100%
+  );
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+.vb-fs-setup-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.vb-fs-setup-top .lex-sb-wb-head {
+  margin: 0;
+}
+.vb-mode-seg {
+  display: inline-flex;
+  align-items: stretch;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(8, 16, 36, 0.72);
+  gap: 2px;
+}
+.vb-mode-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.vb-mode-opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #94a3b8;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.vb-mode-input:checked + .vb-mode-opt {
+  color: #f0f9ff;
+  background: linear-gradient(
+    165deg,
+    rgba(56, 189, 248, 0.38),
+    rgba(167, 139, 250, 0.22)
+  );
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+}
+.vb-mode-opt:hover {
+  color: #e2e8f0;
+}
+.vb-fs-actions {
+  justify-content: center;
+  margin-top: 4px;
+}
+.lex-sb-fs-overlay .vb-fs-theme-grid.theme-grid {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.lex-sb-fs-overlay .vb-fs-theme-grid .theme-pill {
+  min-height: 76px;
+  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(8, 16, 36, 0.82);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+}
+.lex-sb-fs-overlay .vb-fs-theme-grid .theme-pill:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.38);
+}
+.lex-sb-fs-overlay .vb-fs-theme-grid .theme-input:checked + .theme-pill {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: linear-gradient(
+    155deg,
+    rgba(56, 189, 248, 0.16),
+    rgba(167, 139, 250, 0.1)
+  );
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.28),
+    0 8px 24px rgba(56, 189, 248, 0.12);
+}
+.lex-sb-fs-overlay .lex-sb-btn-main {
+  background: linear-gradient(165deg, rgba(56, 189, 248, 0.42), rgba(56, 189, 248, 0.18));
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  color: #f0f9ff;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: 12px;
+}
+.lex-sb-fs-overlay .lex-sb-btn-sec {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.65);
+  color: #e2e8f0;
+  font-weight: 700;
+  padding: 11px 16px;
+  border-radius: 12px;
+}
+.lex-sb-fs-overlay .theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.lex-sb-fs-overlay .theme-pill {
+  min-height: 68px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(42, 53, 85, 0.85);
+  background: rgba(13, 19, 36, 0.85);
+  cursor: pointer;
+}
+.lex-sb-fs-overlay .theme-input:checked + .theme-pill,
+.lex-sb-fs-overlay .theme-pill:has(+ .theme-input:checked) {
+  border-color: rgba(167, 139, 250, 0.55);
+}
+.lex-sb-fs-overlay .vb-grid.lex-sb-vb-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+.lex-sb-fs-overlay .vb-cell {
+  min-height: 88px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+}
+.lex-sb-fs-overlay .vb-cell--back {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 48%, #172554 100%);
+}
+.lex-sb-fs-overlay .vb-cell-phrase {
+  font-size: clamp(0.72rem, 2.4vw, 0.88rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: #86efac;
+}
+.lex-sb-fs-overlay .vb-cell-phrase--line {
+  font-size: clamp(0.62rem, 1.9vw, 0.76rem);
+  line-height: 1.28;
+  text-align: center;
+  hyphens: auto;
+}
+.lex-sb-fs-overlay .vb-fs-grid .vb-cell--revealed {
+  padding: 6px;
+}
+.lex-sb-fs-overlay .clue-label,
+.lex-sb-fs-overlay .lex-sb-clue-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8b95b8;
+  margin: 10px 0 6px;
+}
+.lex-sb-fs-overlay #lexSbBingoClue {
+  font-size: 1rem;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.lex-sb-fs-overlay .vb-type-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.lex-sb-fs-overlay .vb-type-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: rgba(8, 22, 48, 0.55);
+  color: inherit;
+  font-family: inherit;
+}
+
+/* Voice bingo split — play left, memes right */
+.vb-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 0;
+}
+.vb-fs-split {
+  align-items: stretch;
+}
+.vb-fs-play {
+  padding: 16px 18px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(50, 74, 113, 0.75);
+  background: linear-gradient(
+    180deg,
+    rgba(22, 34, 58, 0.96) 0%,
+    rgba(14, 24, 44, 0.94) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.vb-split.vb-mode-paraphrase {
+  grid-template-columns: minmax(0, 1fr);
+}
+.vb-split.vb-mode-paraphrase .vb-split-memes {
+  display: none !important;
+}
+.vb-mode-meme .vb-meme-strip {
+  display: none !important;
+}
+.vb-mode-meme .vb-fs-clue,
+.vb-mode-meme .lex-sb-clue-label {
+  display: none !important;
+}
+.vb-mode-meme .vb-meme-kicker::after {
+  content: " · произнесите строку с картинки";
+  font-weight: 600;
+  color: #94a3b8;
+}
+.vb-split-play {
+  min-width: 0;
+}
+.vb-fs-clue,
+.lex-sb-fs-overlay #lexSbBingoClue {
+  font-size: clamp(0.92rem, 2.2vw, 1.05rem);
+  line-height: 1.5;
+  font-weight: 600;
+  color: #f1f5ff;
+  min-height: 3.2em;
+  max-height: 5.4em;
+  overflow-y: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(8, 14, 28, 0.72);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  margin-bottom: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.lex-sb-fs-overlay .vb-grid.lex-sb-vb-grid.vb-fs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(100%, 380px);
+  max-width: 380px;
+  margin: 0 auto 14px;
+}
+.lex-sb-fs-overlay .vb-fs-grid .vb-cell {
+  min-height: 96px;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 1px solid rgba(50, 74, 113, 0.9);
+}
+.lex-sb-fs-overlay .vb-fs-grid .vb-cell--back {
+  background: linear-gradient(145deg, #243554 0%, #121f38 52%, #1a2f5c 100%);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+.lex-sb-fs-overlay .vb-fs-grid .vb-cell-back {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: rgba(148, 163, 184, 0.45);
+}
+.lex-sb-fs-overlay .vb-file-hint {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #f5c76a;
+  text-align: center;
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(245, 199, 106, 0.08);
+  border: 1px solid rgba(245, 199, 106, 0.35);
+}
+.lex-sb-fs-overlay .vb-fs-transcript {
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: rgba(8, 14, 28, 0.55);
+  border: 1px solid rgba(42, 53, 85, 0.85);
+  margin-bottom: 10px;
+}
+.lex-sb-fs-overlay .vb-fs-type-row {
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.lex-sb-fs-overlay .vb-fs-type-row input {
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 0.9rem;
+}
+.vb-split-memes {
+  position: sticky;
+  top: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  background: linear-gradient(
+    165deg,
+    rgba(36, 30, 62, 0.96) 0%,
+    rgba(15, 23, 42, 0.94) 55%,
+    rgba(12, 18, 36, 0.98) 100%
+  );
+  padding: 14px 14px 16px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(196, 181, 253, 0.08);
+}
+.vb-fs-memes {
+  top: 0;
+}
+.vb-meme-kicker {
+  margin: 0 0 10px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ddd6fe;
+}
+.vb-meme-hero {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 280px;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(167, 139, 250, 0.12), transparent 55%),
+    rgba(8, 12, 26, 0.88);
+  margin-bottom: 12px;
+}
+.vb-meme-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.vb-meme-hero-img[hidden] {
+  display: none !important;
+}
+.vb-meme-hero-empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  text-align: center;
+}
+.vb-meme-hero-empty.vb-meme-hero-empty--show,
+.vb-meme-hero-empty:not([hidden]) {
+  display: flex;
+}
+.vb-meme-hero-empty-icon {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.55;
+}
+.vb-meme-hero-empty-text {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #94a3b8;
+  max-width: 16rem;
+}
+.vb-meme-placeholder {
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #94a3b8;
+}
+.vb-meme-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  flex-shrink: 0;
+}
+.vb-meme-thumb {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.85);
+  transition: border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+}
+.vb-meme-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.vb-meme-thumb--preview {
+  opacity: 0.92;
+}
+.vb-meme-thumb--empty span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 800;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+.vb-meme-thumb.is-active {
+  border-color: #c4b5fd;
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.45),
+    0 6px 16px rgba(167, 139, 250, 0.18);
+  transform: scale(1.04);
+}
+.vb-meme-thumb.is-open {
+  opacity: 0.5;
+}
+@media (max-width: 900px) {
+  .vb-split {
+    grid-template-columns: 1fr;
+  }
+  .vb-split-memes,
+  .vb-fs-memes {
+    position: static;
+    order: -1;
+    min-height: 0;
+  }
+  .vb-meme-hero {
+    aspect-ratio: 16 / 10;
+    min-height: 200px;
+    max-height: 280px;
   }
 }

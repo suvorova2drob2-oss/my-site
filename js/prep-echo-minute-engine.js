@@ -161,7 +161,9 @@
    *     btnStart: HTMLElement,
    *     btnReplay?: HTMLElement | null,
    *     btnSkip?: HTMLElement | null,
-   *     voicePickSelect?: HTMLSelectElement | null
+   *     voicePickSelect?: HTMLSelectElement | null,
+   *     micPickSelect?: HTMLSelectElement | null,
+   *     btnMicAllow?: HTMLElement | null
    *   },
    *   getLexRows: (themeId: string) => { ans: string, hint: string }[],
    *   themeDefinitions?: { id: string }[],
@@ -210,6 +212,17 @@
     var btnReplay = els.btnReplay || null;
     var btnSkip = els.btnSkip || null;
     var voicePickSelect = els.voicePickSelect || null;
+    var micPickSelect = els.micPickSelect || null;
+    var btnMicAllow = els.btnMicAllow || null;
+    var micPicker =
+      W.PREP_MIC_DEVICE_PICKER && (micPickSelect || btnMicAllow)
+        ? W.PREP_MIC_DEVICE_PICKER.create({
+            select: micPickSelect,
+            btnAllow: btnMicAllow,
+            statusEl: statusEl,
+            storageKey: opts.micPickStorageKey || "prepEchoMicDevice"
+          })
+        : null;
     var voicePickStorageKey =
       opts.voicePickStorageKey || "prepEchoMinuteVoiceUri";
     var voiceGenderRadioName = opts.voiceGenderRadioName || "echoMinuteVoiceGender";
@@ -533,7 +546,14 @@
         skipCard();
         return;
       }
-      if (speech.phraseMatchesVoiceBingo(deck[cardIndex].ans, hay)) {
+      if (speech.phraseMatchesVoiceBingoPool) {
+        if (speech.phraseMatchesVoiceBingoPool(deck[cardIndex].ans, hay)) {
+          speechCooldownUntil = Date.now() + 400;
+          micBuffer = "";
+          micInterimLive = "";
+          advanceCorrect();
+        }
+      } else if (speech.phraseMatchesVoiceBingo(deck[cardIndex].ans, hay)) {
         speechCooldownUntil = Date.now() + 400;
         micBuffer = "";
         micInterimLive = "";
@@ -668,7 +688,7 @@
       };
     }
 
-    function startMic() {
+    function startMicInner() {
       if (!roundActive || !listeningAllowed) return;
       var SR = W.SpeechRecognition || W.webkitSpeechRecognition;
       if (!SR) {
@@ -703,6 +723,17 @@
       updateTranscript();
     }
 
+    function startMic() {
+      if (!roundActive || !listeningAllowed) return;
+      if (micPicker) {
+        micPicker.prime().then(function (ok) {
+          if (ok) startMicInner();
+        });
+        return;
+      }
+      startMicInner();
+    }
+
     function idleUi() {
       stageMain.innerHTML =
         '<span class="em-idle">' + escPhrase(copy.idleMain) + "</span>";
@@ -713,7 +744,12 @@
         summaryEl.textContent = "";
         summaryEl.hidden = true;
       }
-      if (statusEl) statusEl.textContent = "";
+      if (statusEl) {
+        statusEl.textContent = "";
+        if (micPicker && micPicker.protocolHint()) {
+          statusEl.textContent = micPicker.protocolHint();
+        }
+      }
       btnStart.disabled = false;
       updateTranscript();
     }
@@ -801,7 +837,25 @@
 
     btnStart.addEventListener("click", function () {
       if (roundActive) return;
-      beginRound();
+      function go() {
+        beginRound();
+      }
+      if (!micPicker) {
+        go();
+        return;
+      }
+      var chain = Promise.resolve();
+      if (micPickSelect && micPickSelect.disabled) {
+        chain = micPicker.refresh();
+      }
+      chain
+        .then(function (ok) {
+          if (ok === false) return false;
+          return micPicker.prime();
+        })
+        .then(function (ok) {
+          if (ok !== false) go();
+        });
     });
 
     if (btnReplay) {
@@ -845,6 +899,16 @@
     idleUi();
     refreshVoicePickUi();
     W.setTimeout(refreshVoicePickUi, 300);
+
+    return {
+      stop: function () {
+        roundActive = false;
+        stopMic();
+        stopClock();
+        cancelTts();
+        if (micPicker) micPicker.release();
+      }
+    };
   }
 
   W.PREP_ECHO_MINUTE = {

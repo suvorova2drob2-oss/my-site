@@ -1,0 +1,81 @@
+---
+description: FCE Story Quest — themed gap adventures (pick + type, timeline, illustrations)
+globs: unit*-class-games/*quest*,js/fce-story-quest*.js,js/unit*-story-quest*.js,css/fce-story-quest.css
+alwaysApply: false
+---
+
+# Story Quest (FCE class games)
+
+Themed narrative wrapper around **existing Cool Words** — Cinderella / Stranger Things skin.
+
+## Engine stack (mandatory — do not fork one-off pages)
+
+| Piece | Path |
+|-------|------|
+| Lexis kit | `js/fce-story-quest-lexis-kit.js` → `FCE_STORY_QUEST_LEXIS_KIT` |
+| Engine | `js/fce-story-quest-engine.js` → `FCE_STORY_QUEST.mount` |
+| CSS | `css/fce-story-quest.css` |
+| Story data | `js/unitN-story-quest-*.js` — **story sentences** + `buildScenes()` |
+| Phrase source | e.g. `js/unit1-lifestyle-lexis.js` — **single source of truth for answers** |
+
+Load order on page: **lexis → lexis-kit → data → engine**.
+
+## Story data shape (required)
+
+```js
+{
+  id, act, kicker, flavor, bridge?,
+  storyBefore,   // Cinderella sentence up to the gap
+  storyAfter,    // continues after the missing word
+  lex: { person: "lucas", line: 0 }
+}
+```
+
+- **`storyBefore` / `storyAfter`** = the **fairytale** — full readable sentence with one word missing.
+- Kit sets **`answers`** + **`phraseFull`** from `stickyAnswer` (last word = gap).
+- **`kicker` / `flavor`**: under timeline only — mood, not meta about “Cool Words”.
+- Play screen: **sentence only** — no `Lifestyle · A (Lucas)`, no “Phrase in the book”, no instructional bridge boxes.
+
+## Gap mode — `word`
+
+Example:  
+`My stepmother says… but I realise it's ___ to stay kind anyway.` → answer **`important`**.
+
+Pick: 4 **different words**. Type: one word. Wrong modal: full Cool Word phrase.
+
+## Scene image
+
+- **One** `<img class="sq-scene-bg">` per level — **no** hero overlay / double stack.
+- `sq-scene-01.png` … `sq-scene-36.png`; scene **37** → `sq-win.png`.
+- Each PNG must **symbolize the gap word / Cool Word** (visual clue), not generic Cinderella art.
+- Briefs + regen prompts: `js/unit1-cinderella-scene-images.js` → `U1_CINDERELLA_SCENE_IMAGES.briefs`.
+- **Do not** copy random scene PNGs to fill missing ids — regenerate with the matching brief.
+
+## Two modes
+
+1. **Pick** — 4 word chips.
+2. **Type** — open input; normalize; accept `answers[]`.
+
+Persist `fce-sq-mode`. Music: `fce-story-quest-ambience.js`.
+
+## Layout
+
+- `--sq-shell-play-w` → `min(1200px, …)`; image column ~52%.
+- One viewport in play; compact timeline (~7 dots).
+
+## Unit 1 stories
+
+| Story | Answers from | Recycling |
+|-------|----------------|-----------|
+| `cinderella-lifestyle/` | `unit1-lifestyle-lexis.js` (A–D) | — |
+| `kolobok-get-run/` | `unit1-get-lexis.js` + `unit1-run-lexis.js` | Lifestyle lines in `flavor` only, not gaps |
+
+Hub: `unit1-class-games/story-quest/index.html`
+
+## Don't
+
+- Bare phrase fragment with no Cinderella sentence (`realise it's ___` alone).
+- Hero PNG overlay on scene backgrounds.
+- Replacing story with only the book quote.
+- Bare `Lucas · A` as the character name.
+- One-off HTML per scene.

@@ -1,16 +1,36 @@
-/* Unit 1 FCE — Writing Part 2 informal letter studio */
-@import url("https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&display=swap");
+/* Unit 1 FCE — Writing Part 2 studio (informal letter + article)
+   Calm palette: warm paper + muted slate chrome — no harsh gold/cyan clash. */
 
 .wls-page {
-  --wls-gold: #d4b87a;
-  --wls-steel: #7eb6d4;
-  --wls-paper: #f3ebe0;
-  --wls-ink: #2a241c;
-  --wls-ink-soft: #5a5248;
-  --wls-ok: #22c55e;
+  --wls-gold: #b8a480;
+  --wls-gold-soft: rgba(184, 164, 128, 0.2);
+  --wls-steel: #9eb4c8;
+  --wls-paper: #f5f0e8;
+  --wls-ink: #2c2824;
+  --wls-ink-soft: #5c564e;
+  --wls-text: #d8e2ef;
+  --wls-muted: #8fa0b8;
+  --wls-panel-bg: rgba(26, 36, 54, 0.62);
+  --wls-panel-border: rgba(120, 145, 175, 0.22);
+  --wls-chrome-head: linear-gradient(135deg, #2a3548 0%, #323d50 100%);
+  --wls-ok: #6dbf8a;
+  --wls-ok-soft: rgba(109, 191, 138, 0.22);
+  --wls-bad: #c97a7a;
+  --wls-border: rgba(120, 145, 175, 0.26);
+  --wls-border-soft: rgba(120, 145, 175, 0.18);
+  --wls-gold-border: rgba(184, 164, 128, 0.38);
+  --wls-gold-bg: rgba(184, 164, 128, 0.1);
+  --wls-chrome-bg: rgba(22, 32, 50, 0.82);
+  --wls-chrome-deep: rgba(14, 22, 38, 0.88);
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: clamp(10px, 2vw, 18px) clamp(12px, 2vw, 18px) 28px;
+}
+
+body:has(.wls-page) {
+  background:
+    radial-gradient(900px 480px at 12% -10%, rgba(56, 100, 140, 0.12), transparent 55%),
+    linear-gradient(165deg, #0a1220 0%, #0f1828 45%, #0c1424 100%) !important;
 }
 
 /* After step 1: less chrome so letter + bank fit one viewport */
@@ -55,12 +75,12 @@
   letter-spacing: -0.02em;
   line-height: 1.25;
   margin: 0;
-  color: #eef4ff;
+  color: var(--wls-text);
 }
 
 .wls-lead {
   margin: 0 0 16px;
-  color: #9bb0d3;
+  color: var(--wls-muted);
   font-size: 0.95rem;
   line-height: 1.5;
   max-width: 52rem;
@@ -76,15 +96,15 @@
   gap: 6px;
   padding: 10px 0 12px;
   margin: 0 0 18px;
-  background: linear-gradient(180deg, rgba(5, 13, 31, 0.96) 60%, rgba(5, 13, 31, 0));
+  background: linear-gradient(180deg, rgba(10, 18, 32, 0.94) 65%, rgba(10, 18, 32, 0));
   backdrop-filter: blur(6px);
 }
 
 .wls-step {
   appearance: none;
-  border: 1px solid rgba(126, 182, 212, 0.28);
-  background: rgba(16, 28, 50, 0.85);
-  color: #b8c9e6;
+  border: 1px solid var(--wls-border);
+  background: var(--wls-chrome-bg);
+  color: var(--wls-muted);
   font: inherit;
   font-size: 0.78rem;
   font-weight: 700;
@@ -96,20 +116,20 @@
 }
 
 .wls-step:hover {
-  border-color: rgba(212, 184, 122, 0.55);
-  color: #eef4ff;
+  border-color: var(--wls-gold-border);
+  color: var(--wls-text);
 }
 
 .wls-step.is-active {
-  border-color: rgba(212, 184, 122, 0.75);
-  background: linear-gradient(145deg, rgba(60, 48, 28, 0.55), rgba(22, 32, 52, 0.95));
-  color: #f8efd8;
-  box-shadow: 0 0 0 1px rgba(212, 184, 122, 0.2);
+  border-color: var(--wls-gold-border);
+  background: var(--wls-chrome-deep);
+  color: var(--wls-text);
+  box-shadow: 0 0 0 1px var(--wls-gold-soft);
 }
 
 .wls-step.is-done:not(.is-active) {
-  border-color: rgba(34, 197, 94, 0.35);
-  color: #bbf7d0;
+  border-color: var(--wls-ok-soft);
+  color: #b8dcc8;
 }
 
 .wls-panel {
@@ -135,12 +155,12 @@
 .wls-section-title {
   font-family: Fraunces, Georgia, serif;
   font-size: 1.15rem;
-  color: #e8f0ff;
+  color: var(--wls-text);
   margin: 0 0 6px;
 }
 
 .wls-instr {
-  color: #9bb0d3;
+  color: var(--wls-muted);
   font-size: 0.94rem;
   line-height: 1.55;
   margin: 0 0 16px;
@@ -158,7 +178,7 @@
 }
 
 .wls-instr strong {
-  color: #e8f0ff;
+  color: var(--wls-text);
 }
 
 /* Stationery letter */
@@ -173,7 +193,7 @@
     0 18px 40px rgba(0, 0, 0, 0.32),
     4px 0 0 rgba(42, 36, 28, 0.05);
   padding: clamp(1.1rem, 2.5vw, 1.55rem) clamp(1.1rem, 2.4vw, 1.7rem);
-  font-family: Literata, Georgia, "Palatino Linotype", serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: 1.02rem;
   line-height: 1.65;
   margin-bottom: 16px;
@@ -219,8 +239,8 @@
 .wls-task-meta span {
   padding: 4px 9px;
   border-radius: 999px;
-  border: 1px solid rgba(212, 184, 122, 0.35);
-  background: rgba(212, 184, 122, 0.08);
+  border: 1px solid var(--wls-gold-border);
+  background: var(--wls-gold-bg);
 }
 
 /* Speak: letters + questions side by side */
@@ -247,7 +267,7 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: var(--wls-steel);
   margin: 0 0 8px;
 }
 
@@ -255,7 +275,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: none;
-  color: #8fa3c4;
+  color: var(--wls-muted);
 }
 
 .wls-letter--compact {
@@ -288,11 +308,11 @@
 }
 
 .wls-prompt {
-  border: 1px solid rgba(126, 182, 212, 0.22);
-  background: rgba(18, 30, 52, 0.72);
+  border: 1px solid var(--wls-border-soft);
+  background: var(--wls-panel-bg);
   border-radius: 14px;
   padding: 14px 16px;
-  color: #e8f0ff;
+  color: var(--wls-text);
   font-size: 0.98rem;
   line-height: 1.5;
 }
@@ -331,9 +351,9 @@
 }
 
 .wls-linkers-rail {
-  border: 1px solid rgba(120, 160, 210, 0.2);
+  border: 1px solid var(--wls-border-soft);
   border-radius: 14px;
-  background: rgba(12, 22, 42, 0.55);
+  background: rgba(14, 22, 38, 0.48);
   padding: 12px;
 }
 
@@ -388,9 +408,9 @@
 
 .wls-chip {
   appearance: none;
-  border: 1px solid rgba(212, 184, 122, 0.4);
-  background: rgba(30, 40, 62, 0.9);
-  color: #f3e7c8;
+  border: 1px solid var(--wls-gold-border);
+  background: var(--wls-chrome-deep);
+  color: var(--wls-text);
   font: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -414,8 +434,8 @@
 
 .wls-chip.is-selected {
   border-color: var(--wls-steel);
-  box-shadow: 0 0 0 2px rgba(126, 182, 212, 0.35);
-  color: #e8f6ff;
+  box-shadow: 0 0 0 2px rgba(158, 180, 200, 0.28);
+  color: var(--wls-text);
 }
 
 /* Gaps inside letter */
@@ -512,16 +532,16 @@
   min-height: 1.3em;
   font-size: 0.92rem;
   font-weight: 600;
-  color: #9bb0d3;
+  color: var(--wls-muted);
   margin: 4px 0 0;
 }
 
 .wls-feedback.is-ok {
-  color: #86efac;
+  color: #9fd4b4;
 }
 
 .wls-feedback.is-bad {
-  color: #fca5a5;
+  color: #d4a0a0;
 }
 
 /* Paragraph purpose fields */
@@ -554,9 +574,9 @@
 }
 
 .wls-options-box {
-  border: 1px solid rgba(212, 184, 122, 0.28);
+  border: 1px solid var(--wls-border-soft);
   border-radius: 12px;
-  background: rgba(12, 22, 42, 0.55);
+  background: rgba(14, 22, 38, 0.48);
   padding: 10px 12px;
   margin: 0 0 12px;
 }
@@ -564,7 +584,7 @@
 .wls-opt-row {
   font-size: 0.86rem;
   line-height: 1.4;
-  color: #d5e2f8;
+  color: var(--wls-text);
   margin: 0 0 8px;
 }
 
@@ -580,7 +600,7 @@
   height: 1.35rem;
   margin-right: 4px;
   border-radius: 6px;
-  background: rgba(212, 184, 122, 0.18);
+  background: var(--wls-gold-bg);
   color: var(--wls-gold);
   font-weight: 800;
   font-size: 0.78rem;
@@ -594,8 +614,8 @@
 }
 
 .wls-purpose-item {
-  border: 1px solid rgba(126, 182, 212, 0.2);
-  background: rgba(18, 30, 52, 0.65);
+  border: 1px solid var(--wls-border-soft);
+  background: var(--wls-panel-bg);
   border-radius: 12px;
   padding: 10px 12px;
   display: grid;
@@ -620,7 +640,7 @@
 
 .wls-purpose-item .wls-example {
   font-style: italic;
-  color: #93c5fd;
+  color: var(--wls-steel);
   font-size: 0.9rem;
   line-height: 1.4;
   margin: 6px 0 0;
@@ -635,19 +655,19 @@
   font-weight: 700;
   padding: 7px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(126, 182, 212, 0.35);
-  background: rgba(8, 18, 36, 0.85);
-  color: #e8f0ff;
+  border: 1px solid var(--wls-border);
+  background: var(--wls-chrome-deep);
+  color: var(--wls-text);
 }
 
 .wls-purpose-select.is-ok {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);
+  border-color: var(--wls-ok);
+  box-shadow: 0 0 0 1px var(--wls-ok-soft);
 }
 
 .wls-purpose-select.is-bad {
-  border-color: #f87171;
-  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.35);
+  border-color: var(--wls-bad);
+  box-shadow: 0 0 0 1px rgba(201, 122, 122, 0.32);
 }
 
 .wls-purpose-item .mb2-key-hint {
@@ -698,15 +718,15 @@
 .wls-howto {
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(212, 184, 122, 0.28);
+  border: 1px solid rgba(42, 36, 28, 0.12);
   background: #f7f1e8;
   color: var(--wls-ink);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
 }
 
 .wls-howto-head {
-  background: linear-gradient(135deg, #1a2f3d 0%, #243d52 100%);
-  color: #fff;
+  background: var(--wls-chrome-head);
+  color: var(--wls-text);
   font-weight: 800;
   font-size: 0.95rem;
   padding: 10px 14px;
@@ -765,11 +785,11 @@
   width: 100%;
   min-height: 220px;
   resize: vertical;
-  font-family: Literata, Georgia, serif !important;
+  font-family: Georgia, "Palatino Linotype", serif !important;
   font-size: 1rem !important;
   line-height: 1.6;
-  background: #f3ebe0 !important;
-  color: #2a241c !important;
+  background: var(--wls-paper) !important;
+  color: var(--wls-ink) !important;
   border: 1px solid rgba(42, 36, 28, 0.2) !important;
   border-radius: 12px !important;
   padding: 14px 16px;
@@ -783,11 +803,11 @@
   gap: 8px;
   margin-top: 8px;
   font-size: 0.85rem;
-  color: #9bb0d3;
+  color: var(--wls-muted);
 }
 
 .wls-write-meta .in-range {
-  color: #86efac;
+  color: var(--wls-ok);
   font-weight: 700;
 }
 
@@ -891,7 +911,7 @@
 
 .wls-dont-forget-head {
   background: rgba(30, 45, 70, 0.95);
-  color: #eef4ff;
+  color: var(--wls-text);
   font-weight: 800;
   font-size: 0.88rem;
   padding: 8px 12px;

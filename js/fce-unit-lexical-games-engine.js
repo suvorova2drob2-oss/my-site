@@ -30,6 +30,15 @@
   var UNIT_BACK_HREF = CFG.backHref || ("unit" + unit + ".html");
   var UNIT_BACK_LABEL = CFG.backLabel || ("Back to Unit " + unit);
   var GAMES_BACK_LABEL = "Back to vocabulary games";
+  var LEX_GAMES_BASE_TITLE = CFG.title || ("Lexical games — Unit " + unit);
+
+  function setFocusGameTitle(gameTitle) {
+    var h1 = document.getElementById("lexGamesTitle");
+    if (!h1) return;
+    h1.textContent = gameTitle
+      ? LEX_GAMES_BASE_TITLE + " · " + gameTitle
+      : LEX_GAMES_BASE_TITLE;
+  }
 
   (function paintChrome() {
     function paintMiniThemeBar() {
@@ -50,7 +59,7 @@
     var back = document.getElementById("lexGamesBack");
     var sub = document.getElementById("lexGamesSubtitle");
     var vocab = document.getElementById("lexGamesVocabLink");
-    if (h1) h1.textContent = CFG.title || ("Lexical games — Unit " + unit);
+    if (h1) h1.textContent = LEX_GAMES_BASE_TITLE;
     if (back) {
       back.href = UNIT_BACK_HREF;
       back.textContent = UNIT_BACK_LABEL;
@@ -72,46 +81,6 @@
         vocab.hidden = true;
       }
     }
-    /* Sound Booth folder — Voice bingo + Echo Minute (engines live, stub decks) */
-    (function insertSoundBoothCard() {
-      if (document.getElementById("lexSoundBoothCard")) return;
-      var gamesHost = document.getElementById("gamesHost");
-      if (!gamesHost || !gamesHost.parentNode) return;
-      var href =
-        (CFG.soundBoothHref || ("unit" + unit + "-sound-booth/index.html"));
-      var card = document.createElement("a");
-      card.id = "lexSoundBoothCard";
-      card.className = "lex-sound-booth card-link";
-      card.href = href;
-      card.innerHTML =
-        "<h2>Sound Booth</h2>" +
-        '<div class="placeholder listening-open lines-2">' +
-        '<span class="l1">Mic warm-ups · Voice bingo + Echo Minute.</span>' +
-        '<span class="l2">Engines live — stub phrase decks until lists arrive</span>' +
-        "</div>" +
-        '<span class="link-hint">Open folder →</span>';
-      gamesHost.parentNode.insertBefore(card, gamesHost);
-    })();
-    /* Memes — flip cards (meme front · example back); Unit 1 pilot */
-    (function insertMemesCard() {
-      if (document.getElementById("lexMemesCard")) return;
-      if (!CFG.memesHref && unit !== 1) return;
-      var gamesHost = document.getElementById("gamesHost");
-      if (!gamesHost || !gamesHost.parentNode) return;
-      var href = CFG.memesHref || "unit1-vocab-memes/index.html";
-      var card = document.createElement("a");
-      card.id = "lexMemesCard";
-      card.className = "lex-memes card-link";
-      card.href = href;
-      card.innerHTML =
-        "<h2>Memes</h2>" +
-        '<div class="placeholder listening-open lines-2">' +
-        '<span class="l1">Flip cards · meme on the front, example on the back.</span>' +
-        '<span class="l2">Folders <b>get</b> · <b>run</b> · <b>clothes</b> · <b>lifestyle</b></span>' +
-        "</div>" +
-        '<span class="link-hint">Open folder →</span>';
-      gamesHost.parentNode.insertBefore(card, gamesHost);
-    })();
     function setText(sel, text) {
       document.querySelectorAll(sel).forEach(function (el) {
         el.textContent = text;
@@ -216,11 +185,14 @@
         " · Game points " +
         points;
     }
+    function gamesHostEl() {
+      return document.getElementById("gamesHost");
+    }
     function setBackToVocabularyGames() {
       const back = document.getElementById("lexGamesBack");
       if (!back) return;
       back.textContent = "← Back to vocabulary games";
-      back.setAttribute("href", "#vocabulary-games");
+      back.setAttribute("href", "#gamesHost");
       back.setAttribute("data-lex-back-mode", "games");
     }
     function restoreUnitBackLink() {
@@ -233,7 +205,7 @@
     function showGamesMenu() {
       document.body.classList.remove("lex-game-focus");
       document.body.classList.add("lex-games-menu");
-      const hostEl = document.getElementById("gameHost");
+      const hostEl = gamesHostEl();
       if (hostEl) {
         hostEl.querySelectorAll(".folder").forEach(function (x) {
           x.classList.remove("open");
@@ -242,6 +214,7 @@
       }
       activeGameKey = "";
       restoreUnitBackLink();
+      setFocusGameTitle("");
     }
     function exitGameFocus() {
       try {
@@ -253,7 +226,7 @@
         if (typeof trainerHideReveal === "function") trainerHideReveal();
       } catch (e) {}
       showGamesMenu();
-      const gamesList = document.getElementById("gameHost");
+      const gamesList = gamesHostEl();
       if (gamesList && typeof gamesList.scrollIntoView === "function") {
         setTimeout(function () {
           gamesList.scrollIntoView({ block: "start", behavior: "smooth" });
@@ -263,8 +236,8 @@
 
     (function wireLexBackAndStats() {
       document.body.classList.add("lex-games-menu");
-      const host = document.getElementById("gameHost");
-      if (host && !document.getElementById("vocabulary-games")) {
+      const host = gamesHostEl();
+      if (host) {
         host.setAttribute("data-vocabulary-games", "1");
       }
       /* Capture phase: always intercept while a game is open — never leave to Unit by accident */
@@ -513,6 +486,7 @@
     }
     function chunkForItem(it) {
       return (
+        String((it && it.coolWord) || "").trim() ||
         String((it && it.stickyAnswer) || "").trim() ||
         String((it && it.answer) || "").trim() ||
         String((it && it.phrase) || "").trim() ||
@@ -541,8 +515,11 @@
       const right = String(it.post || "").trim();
       return [left, mid, right].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
     }
-    /** Full key phrase as in the text (Word Bank, cards back, echo, pick options). */
+    /** Headword for cards, echo, pick, match — Phrases drawer uses coolWord. */
     function fullAnswerOf(it) {
+      if (it && it.coolWord && String(it.coolWord).trim()) {
+        return String(it.coolWord).trim();
+      }
       return fullPhraseFromItem(it) || String(it.answer || "").trim();
     }
     function isStubTrainerItem(it) {
@@ -588,11 +565,145 @@
     function trainerPost(it) {
       return trainerUsesSticky(it) ? resolveTrainerSticky(it).after : String(it.post || "");
     }
+    function buildTrainerSlots() {
+      var hasThemeBlocks = themes.some(function (t) {
+        return t.blocks && t.blocks.length;
+      });
+      if (hasThemeBlocks) {
+        return themes.map(function (t) {
+          return t.blocks || [];
+        });
+      }
+      return [
+        typeof UNIT10_PHRASAL_BLOCKS !== "undefined" ? UNIT10_PHRASAL_BLOCKS : [],
+        typeof UNIT10_CRIME_BLOCKS !== "undefined" ? UNIT10_CRIME_BLOCKS : [],
+        typeof UNIT10_STORIES_BLOCKS !== "undefined" ? UNIT10_STORIES_BLOCKS : []
+      ];
+    }
+
+    var TRAINER_SLOTS = buildTrainerSlots();
     const TRAINER = {
-      phrasal: typeof UNIT10_PHRASAL_BLOCKS !== "undefined" ? UNIT10_PHRASAL_BLOCKS : [],
-      crime: typeof UNIT10_CRIME_BLOCKS !== "undefined" ? UNIT10_CRIME_BLOCKS : [],
-      stories: typeof UNIT10_STORIES_BLOCKS !== "undefined" ? UNIT10_STORIES_BLOCKS : []
+      phrasal: TRAINER_SLOTS[0] || [],
+      crime: TRAINER_SLOTS[1] || [],
+      stories: TRAINER_SLOTS[2] || []
     };
+
+    function themeCheckbox(i) {
+      var themed = document.getElementById("miniTheme" + i);
+      if (themed) return themed;
+      var legacy = ["miniPhrasal", "miniCrime", "miniStories"];
+      return document.getElementById(legacy[i]);
+    }
+
+    function packCheckbox(i) {
+      var legacy = ["packPhrasal", "packCrime", "packStories"];
+      var el = document.getElementById(legacy[i] || "packTheme" + i);
+      return el;
+    }
+
+    function rebuildMiniThemeBar() {
+      var bar = document.getElementById("lexMiniThemeBar");
+      if (!bar || !themes.length) return;
+      var html =
+        '<span style="font-size:0.88rem;color:var(--muted);"><b style="color:var(--text);">Topic</b> (cards, pick, express, echo):</span>';
+      themes.forEach(function (t, i) {
+        html +=
+          '<label class="pack-check" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;">' +
+          '<input type="checkbox" id="miniTheme' +
+          i +
+          '" checked />' +
+          "<span>" +
+          escapeHtml(t.short || t.label || String(i + 1)) +
+          "</span></label>";
+      });
+      bar.innerHTML = html;
+    }
+
+    function trainerPackChoiceHtml() {
+      return themes
+        .map(function (_, i) {
+          var id =
+            i === 0 ? "packPhrasal" : i === 1 ? "packCrime" : i === 2 ? "packStories" : "packTheme" + i;
+          var checked = i === 0 ? " checked" : "";
+          return (
+            '<label class="pack-card pack-check">' +
+            '<input type="checkbox" id="' +
+            id +
+            '"' +
+            checked +
+            " />" +
+            '<span data-lex-theme-title="' +
+            i +
+            '"><b></b></span></label>'
+          );
+        })
+        .join("\n");
+    }
+
+    function themePackCheckboxId(kind, i) {
+      var legacy = {
+        pack: ["packPhrasal", "packCrime", "packStories"],
+        match: ["matchPhrasal", "matchCrime", "matchStories"],
+        drop: ["dropPhrasal", "dropCrime", "dropStories"]
+      };
+      return (legacy[kind] && legacy[kind][i]) || kind + "Theme" + i;
+    }
+
+    function readThemeFlags(kind) {
+      return themes.map(function (_, i) {
+        var el = document.getElementById(themePackCheckboxId(kind, i));
+        return !!(el && el.checked);
+      });
+    }
+
+    function itemsFromThemeFlags(flags) {
+      var out = [];
+      flags.forEach(function (on, i) {
+        if (!on || !TRAINER_SLOTS[i]) return;
+        out = out.concat(
+          TRAINER_SLOTS[i]
+            .flatMap(function (s) {
+              return s.items;
+            })
+            .filter(function (it) {
+              return !isStubTrainerItem(it);
+            })
+        );
+      });
+      return out.map(function (it) {
+        return Object.assign({}, it);
+      });
+    }
+
+    function dropThemeChoiceHtml() {
+      return themes
+        .map(function (_, i) {
+          var id = themePackCheckboxId("drop", i);
+          return (
+            '<label class="pack-check pack-card"><input type="checkbox" id="' +
+            id +
+            '" checked><span><b data-lex-theme-label="' +
+            i +
+            '">A</b></span></label>'
+          );
+        })
+        .join("\n");
+    }
+
+    function matchThemeChoiceHtml() {
+      return themes
+        .map(function (_, i) {
+          var id = themePackCheckboxId("match", i);
+          return (
+            '<label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="' +
+            id +
+            '" checked><span><b data-lex-theme-label="' +
+            i +
+            '">A</b> Stub.</span></label>'
+          );
+        })
+        .join("\n");
+    }
 
     const GAMES = [
       { key: "trainer", title: "Lexical trainer", desc: "3 levels (1 word → 2 words → full phrase) · 3 lives · win screen.", hint: "Folder → readings inside" },
@@ -602,34 +713,74 @@
       { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Tick themes above" },
       { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Tick themes above" },
       { key: "match", title: "Pair Blitz", desc: "Quizlet-style match for paraphrase and text phrase.", hint: "Up to 10 pairs · multi-grids · timer" },
-      { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Topic folders + progress + searchable bank.", hint: (T0.short || "A") + " · " + (T1.short || "B") + " · " + (T2.short || "C") + " (stubs)" }
+      { key: "wordbank", title: "Word Bank", desc: "Topic folders + progress + searchable bank.", hint: themes.map(function (t) { return t.short || t.label; }).join(" · ") || ((T0.short || "A") + " · " + (T1.short || "B") + " · " + (T2.short || "C")) }
     ];
-    if (unit === 1) {
-      GAMES.push({
-        key: "memes",
-        title: "Memes",
-        desc: "Flip cards — meme on the front, example + labels on the back.",
-        hint: "get · run · clothes · lifestyle"
-      });
-    }
+    (function appendExtraGameFolders() {
+      var memesApi = window.FCE_UNIT_MEMES && window.FCE_UNIT_MEMES.forUnit(unit);
+      if (memesApi && memesApi.decks && memesApi.decks.length) {
+        GAMES.push({
+          key: "memes",
+          title: "Memes",
+          desc: "Flip cards — meme on the front, phrase + example on the back.",
+          hint: memesApi.decks.map(function (d) { return d.label; }).join(" · ")
+        });
+      }
+      if (window.PREP_VOICE_BINGO && window.PREP_ECHO_MINUTE) {
+        GAMES.push({
+          key: "soundbooth",
+          title: "Sound Booth",
+          desc: "Mic warm-ups — Voice bingo (3×3) and Echo Minute (60s sprint).",
+          hint: "Voice bingo · Echo Minute"
+        });
+      }
+      var stickyApi = window.FCE_UNIT_STICKY && window.FCE_UNIT_STICKY.forUnit(unit);
+      if (stickyApi && stickyApi.packs && stickyApi.packs.length) {
+        GAMES.push({
+          key: "sticky",
+          title: "Sticky board",
+          desc: "One word per gap — collocation hooks on sticky notes.",
+          hint: stickyApi.packs.map(function (p) { return p.jumpLabel || p.title || p.id; }).join(" · ")
+        });
+      }
+    })();
     function miniThemeFlags() {
-      const n = document.getElementById("miniPhrasal");
-      const l = document.getElementById("miniCrime");
-      const v = document.getElementById("miniStories");
-      let phrasal = !n || n.checked;
-      let crime = !l || l.checked;
-      let stories = !v || v.checked;
-      if (n && l && v && !n.checked && !l.checked && !v.checked) phrasal = crime = stories = true;
-      return { phrasal, crime, stories };
+      var flags = [];
+      var i;
+      for (i = 0; i < TRAINER_SLOTS.length; i += 1) {
+        var inp = themeCheckbox(i);
+        flags.push(!inp || inp.checked);
+      }
+      if (flags.length && flags.every(function (f) {
+        return !f;
+      })) {
+        return flags.map(function () {
+          return true;
+        });
+      }
+      return flags;
     }
     function itemsForMiniGames() {
-      const t = miniThemeFlags();
-      const out = [];
-      if (t.phrasal) out.push(...TRAINER.phrasal.flatMap((s) => s.items));
-      if (t.crime) out.push(...TRAINER.crime.flatMap((s) => s.items));
-      if (t.stories) out.push(...TRAINER.stories.flatMap((s) => s.items));
-      return out.length ? out : TRAINER.phrasal.flatMap((s) => s.items);
+      var flags = miniThemeFlags();
+      var out = [];
+      var i;
+      for (i = 0; i < TRAINER_SLOTS.length; i += 1) {
+        if (flags[i]) {
+          out.push.apply(
+            out,
+            TRAINER_SLOTS[i].flatMap(function (s) {
+              return s.items;
+            })
+          );
+        }
+      }
+      if (out.length) return out;
+      return TRAINER_SLOTS[0]
+        ? TRAINER_SLOTS[0].flatMap(function (s) {
+            return s.items;
+          })
+        : [];
     }
+    rebuildMiniThemeBar();
     const host = document.getElementById("gamesHost");
     host.innerHTML = GAMES.map((g) => `
       <div class="folder" data-key="${g.key}">
@@ -643,18 +794,7 @@
     const trainerHtml = `
       <div class="trainer-box">
         <div id="packChoice" class="pack-choice">
-          <label class="pack-card pack-check">
-            <input type="checkbox" id="packPhrasal" checked />
-            <span data-lex-theme-title="0"><b></b></span>
-          </label>
-          <label class="pack-card pack-check">
-            <input type="checkbox" id="packCrime" />
-            <span data-lex-theme-title="1"><b></b></span>
-          </label>
-          <label class="pack-card pack-check">
-            <input type="checkbox" id="packStories" />
-            <span data-lex-theme-title="2"><b></b></span>
-          </label>
+          ${trainerPackChoiceHtml()}
           <button class="continue-btn" id="btnContinuePacks" type="button">Continue</button>
         </div>
         <div id="trainerPlay" class="hidden">
@@ -712,9 +852,7 @@
       <div class="drop-intro" id="dropIntro">
         <div class="drop-panel">
           <p><b style="color:var(--text)">How it works.</b> Round 1 = <b>1 word</b> (slow). Round 2 = <b>2 words</b>. Round 3 = <b>3 words</b>. Round 4 = <b>two lines</b> on screen — type either answer to clear that card. Wrong answer → context + correct wording. Hit the bottom or 0 lives → <b>Game Over</b>.</p>
-          <label class="pack-check pack-card"><input type="checkbox" id="dropPhrasal" checked><span><b data-lex-theme-label="0">A</b></span></label>
-          <label class="pack-check pack-card"><input type="checkbox" id="dropCrime" checked><span><b data-lex-theme-label="1">B</b></span></label>
-          <label class="pack-check pack-card"><input type="checkbox" id="dropStories" checked><span><b data-lex-theme-label="2">C</b></span></label>
+          ${dropThemeChoiceHtml()}
           <button class="continue-btn" id="dropStartBtn" type="button">Start round</button>
           <p class="drop-intro-msg msg" id="dropIntroMsg"></p>
         </div>
@@ -846,11 +984,9 @@
       <div class="match-box" id="matchBox">
         <h3 class="mini-title">Pair Blitz</h3>
         <div class="match-intro" id="matchIntro">
-          <p class="mini-hud">Choose theme, then match paraphrase with phrase from the text.</p>
+          <p class="match-intro-lead">Pick a theme, then start matching.</p>
           <button class="echo-btn" id="matchSelectAllBtn" type="button">Select all</button>
-          <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchPhrasal" checked><span><b data-lex-theme-label="0">A</b> Stub.</span></label>
-          <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchCrime" checked><span><b data-lex-theme-label="1">B</b> Stub.</span></label>
-          <label class="pack-check pack-card" style="margin-top:8px;"><input type="checkbox" id="matchStories" checked><span><b data-lex-theme-label="2">C</b> Stub.</span></label>
+          ${matchThemeChoiceHtml()}
           <button class="continue-btn" id="matchStartBtn" type="button" style="margin-top:10px;">Start round (10 phrases)</button>
         </div>
         <div class="match-play" id="matchPlay">
@@ -861,13 +997,25 @@
         </div>
       </div>
     `;
+    const wbTabsHtml = themes
+      .map(function (t, i) {
+        var label = t.short || t.label || String(i + 1);
+        return (
+          '<button class="wb-theme-btn' +
+          (i === 0 ? " active" : "") +
+          '" data-wb-theme="' +
+          i +
+          '" type="button">' +
+          escapeHtml(label) +
+          "</button>"
+        );
+      })
+      .join("");
     const wordBankHtml = `
       <div class="mini-game-box wb-shell" id="wordBankBox">
         <h3 class="mini-title">Word Bank</h3>
         <div class="wb-themes">
-          <button class="wb-theme-btn" data-wb-theme="phrasal" type="button" data-lex-theme-label="0">A</button>
-          <button class="wb-theme-btn" data-wb-theme="crime" type="button" data-lex-theme-label="1">B</button>
-          <button class="wb-theme-btn" data-wb-theme="stories" type="button" data-lex-theme-label="2">C</button>
+          ${wbTabsHtml}
         </div>
         <div class="wb-repeat-bar">
           <button class="wb-repeat-btn active" data-wb-filter="all" type="button">All words</button>
@@ -880,34 +1028,6 @@
         <input id="wbSearch" class="echo-input" autocomplete="off" placeholder="Search phrase or hint...">
         <div class="wb-stats" id="wbStats"></div>
         <ul class="wb-list" id="wbList"></ul>
-      </div>
-    `;
-    const memesHtml = `
-      <div class="meme-games-box mini-game-box" id="memesBox">
-        <h3 class="mini-title">Meme folders</h3>
-        <p class="mini-hud">Tap a topic — flip the card to see the example sentence.</p>
-        <div class="meme-hub-grid">
-          <a class="meme-folder-card" href="unit1-vocabulary/get/memes/index.html">
-            <h2>get</h2>
-            <p>Get phrases · Ex. 2 · <em>7 flip cards</em></p>
-            <span class="link-hint">Open folder →</span>
-          </a>
-          <a class="meme-folder-card" href="unit1-vocabulary/run-expressions/memes/index.html">
-            <h2>run</h2>
-            <p>Expressions with <em>run</em> · Ex. 2–3 · <em>8 flip cards</em></p>
-            <span class="link-hint">Open folder →</span>
-          </a>
-          <a class="meme-folder-card" href="unit1-vocabulary/clothes/memes/index.html">
-            <h2>clothes</h2>
-            <p>SB 1.1 · <em>Parts 1–5 · flip cards</em></p>
-            <span class="link-hint">Open folder →</span>
-          </a>
-          <a class="meme-folder-card" href="unit1-vocabulary/lifestyle/memes/index.html">
-            <h2>lifestyle</h2>
-            <p>This is your life · <em>Parts 1–4 · A–D</em></p>
-            <span class="link-hint">Open folder →</span>
-          </a>
-        </div>
       </div>
     `;
 
@@ -934,6 +1054,14 @@
         root.querySelectorAll("[data-lex-theme-label='2']").forEach(function (el) {
           el.textContent = T2.short || T2.label || "C";
         });
+        themes.forEach(function (t, i) {
+          root.querySelectorAll("[data-lex-theme-label='" + i + "']").forEach(function (el) {
+            el.textContent = t.short || t.label || String(i + 1);
+          });
+          root.querySelectorAll("[data-lex-theme-title='" + i + "']").forEach(function (el) {
+            el.innerHTML = "<b>" + (t.label || t.short || "Theme " + (i + 1)) + "</b>" + (t.blurb || " Stub.");
+          });
+        });
       }
       if (key === "trainer") pool.innerHTML = trainerHtml;
       else if (key === "cards") pool.innerHTML = cardsHtml;
@@ -943,12 +1071,14 @@
       else if (key === "echo") pool.innerHTML = echoHtml;
       else if (key === "match") pool.innerHTML = matchHtml;
       else if (key === "wordbank") pool.innerHTML = wordBankHtml;
-      else if (key === "memes") pool.innerHTML = memesHtml;
+      else if (key === "memes" || key === "soundbooth" || key === "sticky") {
+        /* filled by FCE_LEX_GAMES_EXTRAS.wireFolders */
+      }
       paintThemeLabelsIn(pool);
       folder.addEventListener("click", (e) => {
         if (
           e.target.closest(
-            "button,input,label,select,textarea,.trainer-box,.cards-box,.mini-game-box,.match-box,.drop-intro,.drop-play,.wb-shell,.meme-games-box,a.meme-folder-card"
+            "button,input,label,select,textarea,.trainer-box,.cards-box,.mini-game-box,.match-box,.drop-intro,.drop-play,.wb-shell,.folder-deck-link,.lex-extra-engine-root,.lex-sb-fs-overlay"
           )
         ) {
           return;
@@ -964,6 +1094,8 @@
           document.body.classList.add("lex-game-focus");
           activeGameKey = key;
           setBackToVocabularyGames();
+          var folderTitleEl = folder.querySelector("strong");
+          setFocusGameTitle(folderTitleEl ? folderTitleEl.textContent.trim() : key);
           if (key === "cards") {
             cardsIdx = 0;
             cardsFlipped = false;
@@ -1017,23 +1149,16 @@
       speaker: "",
       isDone: true
     };
-    const cardsDeck = [
-      ...TRAINER.phrasal.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it, idx) =>
-          cardsMapItem(speakerBlock, it, idx, T0.short || "A", "N::")
-        )
-      ),
-      ...TRAINER.crime.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it, idx) =>
-          cardsMapItem(speakerBlock, it, idx, T1.short || "B", "R::")
-        )
-      ),
-      ...TRAINER.stories.flatMap((speakerBlock) =>
-        speakerBlock.items.map((it, idx) =>
-          cardsMapItem(speakerBlock, it, idx, T2.short || "C", "G::")
-        )
-      )
-    ].filter(Boolean);
+    const CARD_PREFIXES = ["N::", "R::", "G::", "B::", "P::", "Q::"];
+    const cardsDeck = TRAINER_SLOTS.flatMap(function (blocks, ti) {
+      var themeShort = (themes[ti] && (themes[ti].short || themes[ti].label)) || String(ti);
+      var prefix = CARD_PREFIXES[ti] || "T" + ti + "::";
+      return blocks.flatMap(function (speakerBlock) {
+        return speakerBlock.items.map(function (it, idx) {
+          return cardsMapItem(speakerBlock, it, idx, themeShort, prefix);
+        });
+      });
+    }).filter(Boolean);
     let cardsIdx = 0;
     let cardsFlipped = false;
     let cardsMarks = {};
@@ -1183,7 +1308,14 @@
       }
       cardsRender();
     }
-    let WB_THEME = "phrasal";
+    /** Word Bank row — prefer cool-word label when authored. */
+    function wbPhraseOf(it) {
+      if (it && it.coolWord && String(it.coolWord).trim()) {
+        return String(it.coolWord).trim();
+      }
+      return fullAnswerOf(it);
+    }
+    let WB_THEME = "0";
     let WB_FILTER = "all";
     let WB_SORT = "dueFirst";
     const SRS_KEY = STOR_PREFIX + "Srs";
@@ -1221,35 +1353,33 @@
       delete srsState[id];
       srsSave();
     }
-    function wordBankData(theme) {
-      if (theme === "stories") {
-        return TRAINER.stories.flatMap((block) =>
-          block.items.map((it, idx) => ({
-            id: "G::" + block.name + "::" + idx,
-            phrase: fullAnswerOf(it),
+    function wordBankData(themeKey) {
+      var idx = Number(themeKey);
+      if (!Number.isFinite(idx) || idx < 0) idx = 0;
+      var t = themes[idx];
+      if (!t || !t.blocks) return [];
+      var prefix = "WB" + idx + "::";
+      return t.blocks.flatMap(function (block) {
+        return (block.items || []).map(function (it, itemIdx) {
+          return {
+            id: prefix + block.name + "::" + (it.phrase || itemIdx),
+            phrase: wbPhraseOf(it),
             hint: it.hint
-          }))
-        );
-      }
-      const src = theme === "phrasal" ? TRAINER.phrasal : TRAINER.crime;
-      const prefix = theme === "phrasal" ? "N::" : "R::";
-      return src.flatMap((block) =>
-        block.items.map((it) => ({
-          id: prefix + block.name + "::" + it.answer,
-          phrase: fullAnswerOf(it),
-          hint: it.hint
-        }))
-      );
+          };
+        });
+      });
     }
     const WORD_INDEX = {};
     function wbIndexKey(phrase, hint) {
       return normalizeForCheck(phrase) + "||" + normalizeForCheck(hint || "");
     }
     function buildWordIndex() {
-      const all = [...wordBankData("phrasal"), ...wordBankData("crime"), ...wordBankData("stories")];
-      for (let i = 0; i < all.length; i += 1) {
-        const x = all[i];
-        WORD_INDEX[wbIndexKey(x.phrase, x.hint)] = x.id;
+      for (var ti = 0; ti < themes.length; ti += 1) {
+        const all = wordBankData(String(ti));
+        for (let i = 0; i < all.length; i += 1) {
+          const x = all[i];
+          WORD_INDEX[wbIndexKey(x.phrase, x.hint)] = x.id;
+        }
       }
     }
     function registerGameResult(phrase, hint, ok, pts) {
@@ -1309,7 +1439,10 @@
       document.querySelectorAll(".wb-repeat-btn").forEach((b) => {
         b.classList.toggle("active", b.getAttribute("data-wb-filter") === WB_FILTER);
       });
-      const themeLabel = WB_THEME === "phrasal" ? (T0.short || T0.label || "A") : WB_THEME === "stories" ? (T2.short || T2.label || "C") : (T1.short || T1.label || "B");
+      var wbIdx = Number(WB_THEME);
+      if (!Number.isFinite(wbIdx) || wbIdx < 0) wbIdx = 0;
+      var wbTheme = themes[wbIdx] || themes[0] || {};
+      const themeLabel = wbTheme.short || wbTheme.label || "Theme";
       stats.textContent = "Theme: " + themeLabel + " · Total: " + filtered.length + " · Due now: " + due + " · I know: " + know + " · Learning: " + learn + " · Unmarked: " + rest + " · Unlimited practice enabled.";
       list.innerHTML = filtered.map((x) => {
         const mark = cardsMarks[x.id] || "";
@@ -1505,11 +1638,8 @@
       }
       return shuffle(cards);
     }
-    function matchBuildDeck(usePhrasal, useCrime, useStories) {
-      let all = [];
-      if (usePhrasal) all = all.concat(TRAINER.phrasal.flatMap(s => s.items));
-      if (useCrime) all = all.concat(TRAINER.crime.flatMap(s => s.items));
-      if (useStories) all = all.concat(TRAINER.stories.flatMap(s => s.items));
+    function matchBuildDeck(flags) {
+      const all = itemsFromThemeFlags(flags);
       MATCH.pairs = shuffle(all).slice(0, 10).map((it) => ({ syn: it.hint, ans: fullAnswerOf(it) }));
       MATCH.pairTotal = MATCH.pairs.length;
       MATCH.donePairs = 0;
@@ -1593,7 +1723,9 @@
 
     // Trainer logic
     let trainerActive = false;
-    let trainerPackFlags = { phrasal: true, crime: false, stories: false };
+    let trainerThemePicks = themes.map(function (_, i) {
+      return i === 0;
+    });
     let activeSpeakers = [];
     let speaker = 0;
     let item = 0;
@@ -1850,31 +1982,21 @@
     }
 
     function buildActiveSpeakers() {
-      const { phrasal: uN, crime: uL, stories: uV } = trainerPackFlags;
       activeSpeakers = [];
       function mapBlock(s, name) {
         const items = s.items.filter((it) => !isStubTrainerItem(it));
         if (!items.length) return null;
         return { name: name, items: items };
       }
-      if (uN) {
-        TRAINER.phrasal.forEach((s) => {
-          const b = mapBlock(s, (T0.short || "A") + " · " + s.name);
+      TRAINER_SLOTS.forEach(function (blocks, ti) {
+        if (!trainerThemePicks[ti]) return;
+        var t = themes[ti] || {};
+        var prefix = t.short || t.label || String(ti + 1);
+        blocks.forEach(function (s) {
+          const b = mapBlock(s, prefix + " · " + s.name);
           if (b) activeSpeakers.push(b);
         });
-      }
-      if (uL) {
-        TRAINER.crime.forEach((s) => {
-          const b = mapBlock(s, (T1.short || "B") + " · " + s.name);
-          if (b) activeSpeakers.push(b);
-        });
-      }
-      if (uV) {
-        TRAINER.stories.forEach((s) => {
-          const b = mapBlock(s, (T2.short || "C") + " · " + s.name);
-          if (b) activeSpeakers.push(b);
-        });
-      }
+      });
     }
 
     function trainerClearRevealTimer() {
@@ -1954,9 +2076,9 @@
       const el = document.getElementById("packSummary");
       if (!el) return;
       const bits = [];
-      if (trainerPackFlags.phrasal) bits.push(T0.short || "A");
-      if (trainerPackFlags.crime) bits.push(T1.short || "B");
-      if (trainerPackFlags.stories) bits.push(T2.short || "C");
+      trainerThemePicks.forEach(function (on, i) {
+        if (on && themes[i]) bits.push(themes[i].short || themes[i].label || String(i + 1));
+      });
       el.textContent = "Pack: " + (bits.join(" + ") || "—");
     }
 
@@ -2088,18 +2210,15 @@
 
     document.addEventListener("click", (e) => {
       if (e.target.id === "btnContinuePacks") {
-        const usePhrasal = document.getElementById("packPhrasal").checked;
-        const useCrime = document.getElementById("packCrime").checked;
-        const useStories = document.getElementById("packStories").checked;
+        trainerThemePicks = readThemeFlags("pack");
         const msg = document.getElementById("msg");
-        if (!usePhrasal && !useCrime && !useStories) {
+        if (!trainerThemePicks.some(Boolean)) {
           if (msg) {
             msg.textContent = "Tick at least one pack before Continue.";
             msg.className = "msg bad";
           }
           return;
         }
-        trainerPackFlags = { phrasal: usePhrasal, crime: useCrime, stories: useStories };
         buildActiveSpeakers();
         if (!activeSpeakers.length) {
           if (msg) {
@@ -2232,12 +2351,20 @@
         ? UNIT10_DROP_STORIES
         : ["PLACEHOLDER · " + (T2.short || "C") + " · pack coming soon."];
 
-    function buildDropCorpus(usePhrasal, useCrime, useStories) {
+    function buildDropCorpus(flags) {
       let out = [];
-      if (usePhrasal) out = out.concat(DROP_TEXT_PHRASAL);
-      if (useCrime) out = out.concat(DROP_TEXT_CRIME);
-      if (useStories) out = out.concat(DROP_TEXT_STORIES);
-      return out;
+      flags.forEach(function (on, i) {
+        if (!on) return;
+        var t = themes[i];
+        if (t && t.dropLines && t.dropLines.length) {
+          out = out.concat(t.dropLines);
+          return;
+        }
+        if (i === 0) out = out.concat(DROP_TEXT_PHRASAL);
+        else if (i === 1) out = out.concat(DROP_TEXT_CRIME);
+        else if (i === 2) out = out.concat(DROP_TEXT_STORIES);
+      });
+      return out.length ? out : ["PLACEHOLDER · pack coming soon."];
     }
     function findSentenceForAnswer(answer) {
       const wanted = normalizeForCheck(answer);
@@ -2247,26 +2374,8 @@
       }
       return "Phrase from text: " + answer;
     }
-    function allPackItems(usePhrasal, useCrime, useStories) {
-      let out = [];
-      if (usePhrasal) {
-        out = out.concat(
-          TRAINER.phrasal.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
-        );
-      }
-      if (useCrime) {
-        out = out.concat(
-          TRAINER.crime.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
-        );
-      }
-      if (useStories) {
-        out = out.concat(
-          TRAINER.stories.flatMap((s) => s.items).filter((it) => !isStubTrainerItem(it))
-        );
-      }
-      return out.map(function (it) {
-        return Object.assign({}, it);
-      });
+    function allPackItems(flags) {
+      return itemsFromThemeFlags(flags);
     }
     function dropSentenceForItem(item) {
       const ctx = item && String(item.contextSentence || "").trim();
@@ -2697,12 +2806,10 @@
     }
     document.addEventListener("click", (e) => {
       if (e.target.id === "dropStartBtn") {
-        const usePhrasal = document.getElementById("dropPhrasal").checked;
-        const useCrime = document.getElementById("dropCrime").checked;
-        const useStories = document.getElementById("dropStories").checked;
-        if (!usePhrasal && !useCrime && !useStories) return;
+        const dropFlags = readThemeFlags("drop");
+        if (!dropFlags.some(Boolean)) return;
         applyTrainerProgress();
-        DROP.basePool = allPackItems(usePhrasal, useCrime, useStories);
+        DROP.basePool = allPackItems(dropFlags);
         if (!DROP.basePool.length) {
           const introMsg = document.getElementById("dropIntroMsg");
           if (introMsg) {
@@ -2716,7 +2823,7 @@
           introMsg.textContent = "";
           introMsg.className = "drop-intro-msg msg";
         }
-        DROP.corpus = buildDropCorpus(usePhrasal, useCrime, useStories);
+        DROP.corpus = buildDropCorpus(dropFlags);
         dropClearNodes();
         DROP.caught = 0;
         DROP.lives = 3;
@@ -2863,22 +2970,15 @@
         }
       }
       if (e.target.id === "matchSelectAllBtn") {
-        const n = document.getElementById("matchPhrasal");
-        const l = document.getElementById("matchCrime");
-        const v = document.getElementById("matchStories");
-        if (n) n.checked = true;
-        if (l) l.checked = true;
-        if (v) v.checked = true;
+        themes.forEach(function (_, i) {
+          var el = document.getElementById(themePackCheckboxId("match", i));
+          if (el) el.checked = true;
+        });
       }
       if (e.target.id === "matchStartBtn") {
-        const n = document.getElementById("matchPhrasal");
-        const l = document.getElementById("matchCrime");
-        const v = document.getElementById("matchStories");
-        const usePhrasal = !!(n && n.checked);
-        const useCrime = !!(l && l.checked);
-        const useStories = !!(v && v.checked);
+        const matchFlags = readThemeFlags("match");
         const msg = document.getElementById("matchMsg");
-        if (!usePhrasal && !useCrime && !useStories) {
+        if (!matchFlags.some(Boolean)) {
           if (msg) { msg.textContent = "Choose at least one theme."; msg.className = "msg bad"; }
           return;
         }
@@ -2886,13 +2986,10 @@
         const play = document.getElementById("matchPlay");
         if (intro) intro.style.display = "none";
         if (play) play.classList.add("on");
-        matchBuildDeck(usePhrasal, useCrime, useStories);
+        matchBuildDeck(matchFlags);
       }
       if (e.target.id === "matchRestartBtn") {
-        const n = document.getElementById("matchPhrasal");
-        const l = document.getElementById("matchCrime");
-        const v = document.getElementById("matchStories");
-        matchBuildDeck(!!(n && n.checked), !!(l && l.checked), !!(v && v.checked));
+        matchBuildDeck(readThemeFlags("match"));
       }
       if (e.target.closest("#matchGrid .match-card")) {
         const btn = e.target.closest("#matchGrid .match-card");
@@ -2900,7 +2997,7 @@
       }
       const wbThemeBtn = e.target.closest(".wb-theme-btn");
       if (wbThemeBtn) {
-        WB_THEME = wbThemeBtn.getAttribute("data-wb-theme") || "phrasal";
+        WB_THEME = wbThemeBtn.getAttribute("data-wb-theme") || "0";
         wordBankRender();
       }
       const wbFilterBtn = e.target.closest(".wb-repeat-btn");
@@ -2998,4 +3095,8 @@
     echoBuild();
     echoRender();
     matchRender();
+
+    if (window.FCE_LEX_GAMES_EXTRAS && window.FCE_LEX_GAMES_EXTRAS.wireFolders) {
+      window.FCE_LEX_GAMES_EXTRAS.wireFolders({ unit: unit, host: host });
+    }
 })();

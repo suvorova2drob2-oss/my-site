@@ -352,11 +352,27 @@
     return roughSttShapeMatch(p, t);
   }
 
+  /**
+   * Voice bingo pool match — short cool-word phrases; full sentences optional fallback.
+   * Prefer lenient match for ≤8 lexical tokens (classroom mic).
+   */
+  function phraseMatchesVoiceBingoPool(phrase, hay) {
+    var normPhrase = normalizeSpeech(phrase);
+    if (!normPhrase || !hay) return false;
+    var tokens = phraseTokensForSpeech(phrase);
+    if (!tokens.length) tokens = normPhrase.split(" ").filter(Boolean);
+    if (tokens.length <= 8) {
+      if (phraseHeardInHaystackLenient(phrase, hay)) return true;
+    }
+    return phraseMatchesVoiceBingo(phrase, hay);
+  }
+
   W.PREP_RETELL_CHAIN_SPEECH = {
     normalizeSpeech: normalizeSpeech,
     phraseHeardInHaystack: phraseHeardInHaystack,
     phraseHeardInHaystackLenient: phraseHeardInHaystackLenient,
     phraseMatchesVoiceBingo: phraseMatchesVoiceBingo,
+    phraseMatchesVoiceBingoPool: phraseMatchesVoiceBingoPool,
     typedMatchesPhrase: typedMatchesPhrase,
     buildHaystack: buildHaystack,
     voiceBlitzSkipHeard: voiceBlitzSkipHeard

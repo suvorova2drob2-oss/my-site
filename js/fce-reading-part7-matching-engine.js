@@ -68,6 +68,41 @@
     } catch (e) {}
   }
 
+  function clearBootShell() {
+    if (W.document.documentElement) {
+      W.document.documentElement.classList.remove("p7-booting");
+    }
+  }
+
+  function paintBootShell() {
+    var pr = W.document.getElementById("passages-root");
+    var qr = W.document.getElementById("questions-root");
+    if (!pr || !qr) return;
+    if (pr.querySelector(".passage")) return;
+    if (W.document.documentElement) {
+      W.document.documentElement.classList.add("p7-booting");
+    }
+    if (!pr.querySelector(".p7-boot-skel")) {
+      pr.innerHTML =
+        '<div class="p7-boot-skel p7-boot-skel-passage" aria-busy="true" aria-label="Loading text"></div>';
+    }
+    if (!qr.querySelector(".p7-boot-skel") && !qr.querySelector(".q-item")) {
+      var qh = "";
+      var n = 10;
+      var i;
+      for (i = 0; i < n; i++) {
+        qh += '<div class="p7-boot-skel p7-boot-skel-q" aria-hidden="true"></div>';
+      }
+      qr.innerHTML = qh;
+    }
+  }
+
+  if (W.document.readyState === "loading") {
+    W.document.addEventListener("DOMContentLoaded", paintBootShell);
+  } else {
+    paintBootShell();
+  }
+
   function mountPage(opts) {
     var pack = (opts && opts.pack) || null;
     if (!pack || !Array.isArray(pack.passages) || !Array.isArray(pack.statements)) return;
@@ -280,6 +315,7 @@
     renderPassages();
     renderQuestions();
     updateSubmitState();
+    clearBootShell();
   }
 
   W.FCE_READING_PART7 = { mountPage: mountPage };

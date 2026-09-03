@@ -439,6 +439,16 @@ function echoHtml(unit) {
         <select id="emVoicePick" class="tts-voice-select" aria-label="Голос синтеза речи"></select>
       </div>
 
+      <div class="mic-pick-row">
+        <label class="tts-voice-label" for="emMicPick">Микрофон</label>
+        <div class="mic-pick-controls">
+          <select id="emMicPick" class="tts-voice-select mic-pick-select" disabled aria-label="Микрофон">
+            <option value="">— сначала «Разрешить микрофон» —</option>
+          </select>
+          <button type="button" class="b-mic-allow" id="emMicAllow">Разрешить микрофон</button>
+        </div>
+      </div>
+
       <div class="hud" aria-live="polite">
         <div class="hud-block">
           <p class="hud-label">Секунд</p>
@@ -477,6 +487,7 @@ function echoHtml(unit) {
   <script src="../js/fce-unit-lexical-stub-packs.js"></script>
   <script src="../js/fce-unit-sound-booth-wordbank.js"></script>
   <script src="../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../js/prep-mic-device-picker.js"></script>
   <script src="../js/prep-snowball-phrases-engine.js"></script>
   <script src="../js/prep-echo-minute-engine.js"></script>
   <script>
@@ -519,8 +530,11 @@ function echoHtml(unit) {
         btnStart: document.getElementById("emStart"),
         btnReplay: document.getElementById("emReplay"),
         btnSkip: document.getElementById("emSkip"),
-        voicePickSelect: document.getElementById("emVoicePick")
+        voicePickSelect: document.getElementById("emVoicePick"),
+        micPickSelect: document.getElementById("emMicPick"),
+        btnMicAllow: document.getElementById("emMicAllow")
       },
+      micPickStorageKey: "prepEchoMicU${unit}",
       themeDefinitions: defs,
       radioName: "echoMinuteTheme",
       roundSeconds: 60,

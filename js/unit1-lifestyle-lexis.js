@@ -439,4 +439,46 @@
     id: "lifestyle",
     label: "Lifestyle"
   };
+
+  function passageHighlight(passage, line) {
+    var cool = String(line.coolWord || "").trim();
+    var phrase = String(line.phrase || cool).trim();
+    if (passage.indexOf(cool) >= 0) return cool;
+    var lc = passage.toLowerCase();
+    var ix = lc.indexOf(cool.toLowerCase());
+    if (ix >= 0) return passage.slice(ix, ix + cool.length);
+    if (passage.indexOf(phrase) >= 0) return phrase;
+    var tokens = phrase
+      .replace(/[.!?,;:'"]/g, " ")
+      .split(/\s+/)
+      .filter(Boolean);
+    var len;
+    var s;
+    var sub;
+    var j;
+    for (len = tokens.length; len >= 2; len--) {
+      for (s = 0; s <= tokens.length - len; s++) {
+        sub = tokens.slice(s, s + len).join(" ");
+        j = passage.indexOf(sub);
+        if (j >= 0) return sub;
+      }
+    }
+    return cool;
+  }
+
+  function syncRetellPhrasePool() {
+    var blocks = W.U1_LIFESTYLE_RETELL_BLOCKS;
+    if (!blocks || !blocks.length) return;
+    PEOPLE.forEach(function (person, i) {
+      if (!blocks[i] || !blocks[i].passage) return;
+      blocks[i].phrases = person.lines.map(function (line) {
+        return {
+          label: line.coolWord || line.phrase,
+          highlight: passageHighlight(blocks[i].passage, line)
+        };
+      });
+    });
+  }
+
+  syncRetellPhrasePool();
 })(typeof window !== "undefined" ? window : globalThis);

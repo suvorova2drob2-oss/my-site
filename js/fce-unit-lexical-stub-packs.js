@@ -120,6 +120,8 @@
             ctx.toLowerCase().indexOf(authorGap.toLowerCase()) >= 0;
           return Object.assign({}, base, {
             phrase: phrase,
+            coolWord: line.coolWord || phrase,
+            hint: hint,
             stickyBefore: useAuthorCarve
               ? line.stickyBefore
               : carved.stickyBefore || line.stickyBefore || "Type the missing bit: ",
@@ -166,11 +168,11 @@
     };
   }
 
-  /** Optional unit-specific theme names (still stubs). */
+  /** Unit 1: Get stub only — Lifestyle + Clothes are real packs. */
   var UNIT_THEME_NAMES = {
     1: [
-      ["Clothes / opposites", "Clothes", ["clothes", "opposites"]],
-      ["Get phrases", "Get", ["get phrases", "meeting my hero"]]
+      ["Get phrases", "Get", ["get phrases", "meeting my hero"]],
+      ["Run expressions", "Run", ["run expressions"]]
     ],
     2: [
       ["Sport vocabulary", "Sport", ["sport"]],
@@ -254,17 +256,47 @@
       return stubTheme(row[0], row[1], row[2]);
     });
 
-    /* Unit 1: Lifestyle Cool Words (This is your life A–D) first — real pack. */
-    if (
-      unit === 1 &&
-      W.FCE_U1_LIFESTYLE_LEXIS &&
-      typeof W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme === "function"
-    ) {
-      themes = [W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme()].concat(themes);
+    /* Unit 1: Lifestyle + Clothes + Get + Run — real packs when wired. */
+    if (unit === 1) {
+      var u1Themes = [];
+      if (
+        W.FCE_U1_LIFESTYLE_LEXIS &&
+        typeof W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme === "function"
+      ) {
+        u1Themes.push(W.FCE_U1_LIFESTYLE_LEXIS.lifestyleTheme());
+      }
+      if (
+        W.FCE_U1_CLOTHES_LEXIS &&
+        typeof W.FCE_U1_CLOTHES_LEXIS.clothesTheme === "function"
+      ) {
+        u1Themes.push(W.FCE_U1_CLOTHES_LEXIS.clothesTheme());
+      }
+      if (
+        W.FCE_U1_GET_LEXIS &&
+        typeof W.FCE_U1_GET_LEXIS.getTheme === "function"
+      ) {
+        u1Themes.push(W.FCE_U1_GET_LEXIS.getTheme());
+      } else if (names[0]) {
+        u1Themes.push(stubTheme(names[0][0], names[0][1], names[0][2]));
+      }
+      if (
+        W.FCE_U1_RUN_LEXIS &&
+        typeof W.FCE_U1_RUN_LEXIS.runTheme === "function"
+      ) {
+        u1Themes.push(W.FCE_U1_RUN_LEXIS.runTheme());
+      } else if (names[1]) {
+        u1Themes.push(stubTheme(names[1][0], names[1][1], names[1][2]));
+      }
+      if (u1Themes.length) themes = u1Themes;
     }
 
     var hub = vocabHubFor(unit);
-    var hasLifestyle = unit === 1 && themes[0] && themes[0].id === "lifestyle";
+    var hasLifestyle = unit === 1 && themes.some(function (t) {
+      return t && t.id === "lifestyle";
+    });
+    var hasClothes = unit === 1 && themes.some(function (t) {
+      return t && t.id === "clothes";
+    });
     return {
       unit: unit,
       title: "Lexical games — Unit " + unit,
@@ -272,8 +304,8 @@
       backLabel: "Back to Unit " + unit,
       vocabHubHref: hub,
       vocabHubLabel: hub ? "Unit " + unit + " Vocabulary hub →" : "",
-      subtitleHtml: hasLifestyle
-        ? "<b>Lexical games, Unit 1.</b> <b>Lifestyle</b> pack = Cool Words from This is your life (A–D) with full reading context. Clothes / Get still stubs until lists arrive."
+      subtitleHtml: hasLifestyle || hasClothes
+        ? "<b>Lexical games, Unit 1.</b> <b>Lifestyle</b> (A–D) + <b>Clothes</b> (Speakers 1–5) + <b>Get</b> + <b>Run</b> — Cool Words with full script context."
         : "<b>Lexical games, Unit " +
           unit +
           ".</b> Same trainers as Unit 12 (trainer, cards, drop, pick, express, echo, match, word bank). Stub packs — send phrase lists to fill.",

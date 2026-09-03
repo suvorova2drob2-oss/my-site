@@ -1,0 +1,64 @@
+# Unit 1 — Cool Words phrase source (Lifestyle & Clothes)
+
+## Single source of truth
+
+For **Lifestyle** and **Clothes**, the learner-facing phrase list is **`coolWord`** in:
+
+| Topic | File |
+|-------|------|
+| Lifestyle · This is your life | `js/unit1-lifestyle-lexis.js` |
+| Clothes · SB 1.1 | `js/unit1-clothes-lexis.js` |
+
+**Phrases drawer** (`Phrases · Lifestyle` / `Phrases · Clothes` FAB) shows **`coolWord`** via `drawerSpeakers()` → `en: line.coolWord`.
+
+## Must use the same pool everywhere
+
+When wiring or fixing Unit 1 surfaces, **derive from these lexis files** — do not maintain a second manual list:
+
+- **Vocabulary Games** — themes from `FCE_UNIT_LEX_STUBS.forUnit(1)` → `lifestyleTheme()` / `clothesTheme()`; games show **`coolWord`** as the headword (`fullAnswerOf`, Word Bank `wbPhraseOf`).
+- **Class games** — Retell check: `syncRetellPhrasePool()` in each `*-lexis.js` overwrites retell bubble **`label`** with **`coolWord`**; **`highlight`** = substring in passage.
+- **Exam gaps** — gap answers may be passage-sized chunks, but the **phrase bank / drawer** must stay aligned with the same Cool Words pool.
+- **Memes / Sound Booth / Sticky** — pull rows from the same theme blocks or bridge; do not invent parallel phrase sets.
+
+## Get & Run (short phrases)
+
+**Get** (`js/unit1-get-lexis.js`) and **Run** (`js/unit1-run-lexis.js`) use **short headword phrases** — `coolWord` and `phrase` are the same. Do not apply Lifestyle-style long stems there.
+
+## Field roles (Lifestyle & Clothes)
+
+| Field | Use |
+|-------|-----|
+| **`coolWord`** | Headword everywhere: drawer, Word Bank, cards back, echo, pick, match, memes, bingo |
+| **`hint`** | Paraphrase / sense (Russian or English gloss) |
+| **`contextSentence`** | Full line from the book for sticky / drop / transcript |
+| **`phrase`** | Longer script chunk if needed for trainer context — **not** the display headword when `coolWord` is set |
+| **`stickyAnswer`** | Gap chunk inside `contextSentence` for lexical trainer |
+| **`highlight`** | Optional explicit substring in the **paper / passage** (when `coolWord` ≠ verbatim line). Auto-derived by `passageHighlight()` in `*-lexis.js` for retell + Speaking Intensive. |
+
+## Speaking Intensive · paper highlight (hard rule)
+
+On **`b2-summer-intensive`** read beats (Clothes, Lifestyle, …):
+
+1. **Every Cool Words tape line must appear highlighted** in the paper text (`<mark class="si-keyphrase">`).
+2. **Tape label** = `coolWord` / `en`; **highlight needle** = verbatim substring from `read.html` — use `passageHighlight()` from the lexis file, not the headword alone when they differ.
+3. **Clothes** theme: phrases come from **`js/unit1-clothes-lexis.js`** at boot (`en` + `highlight`); do not maintain a divergent manual list in `themes/clothes.js`.
+4. Engine: `intensive-lesson.js` → `highlightPhrasesInHtml` matches `highlight` first; supports `&rsquo;` / `&ndash;` in HTML. Missing highlights → `console.warn`.
+
+## When the user sends a new phrase list
+
+**Hard rule — no improvisation.** If the maintainer pastes a Cool Words / Word Bank list (by speaker or theme):
+
+1. **`coolWord` strings must match that list exactly** — same items, same order per speaker; do not add extra headwords («charity shops», «ethical clothing», «washing once a week», …) unless the user lists them.
+2. Update **only** `js/unit1-clothes-lexis.js` (or `unit1-lifestyle-lexis.js` for Lifestyle).
+3. **`phrase` / `contextSentence`** stay verbatim from the book script for gaps and highlights; they are **not** the display headword when they differ from `coolWord`.
+4. Do **not** maintain a second phrase array in `themes/clothes.js`, retell blocks, sticky, or games — all derive from `*-lexis.js` (`clothesTheme()`, `syncRetellPhrasePool()`, Speaking Intensive `enrichBeatFromLexis`).
+5. Retell blocks: passage verbatim from book; **`phrases`** filled only by **`syncRetellPhrasePool()`** — never hand-edit bubble labels.
+6. Reload propagates via `FCE_UNIT_LEX_STUBS`, Word Bank, games engine, memes bridge, Sound Booth.
+
+## Forbidden
+
+- Duplicate phrase arrays in HTML or a second JS file that drift from `*-lexis.js`.
+- **Adding or swapping Cool Words** not on the maintainer's pasted list (no agent «improvements» from transcript/audio unless the user sends an updated list).
+- Using `phrase` (long script chunk) as the flashcard / game answer when `coolWord` exists.
+- Hardcoding Unit 10 `UNIT10_*_BLOCKS` for Unit 1 games — engine must use **`CFG.themes` blocks**.
+- **Speaking Intensive:** `phrases: ["coolWord only"]` without `highlight` when the headword is **not** a verbatim substring of `read.html` (e.g. `my feelings of insecurity disappear` vs `any feelings of insecurity I have will just disappear`).

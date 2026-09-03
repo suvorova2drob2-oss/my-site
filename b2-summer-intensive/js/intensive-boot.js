@@ -115,21 +115,35 @@
     themeSrc = base + "js/themes/mystery-ghost-walk.js?v=1";
   } else if (themeId === "mystery") {
     themeSrc = base + "js/themes/mystery.js?v=1";
+  } else if (themeId === "clothes") {
+    themeSrc = base + "js/themes/clothes.js?v=2";
   } else {
     themeSrc = base + "js/intensive-themes.js?v=slim-1";
   }
 
-  loadScript(base + "js/intensive-core.js?v=1")
-    .then(function () {
+  var themeChain;
+  if (themeId === "clothes") {
+    themeChain = loadScript(base + "js/intensive-core.js?v=1")
+      .then(function () {
+        return loadScript(base + "../js/unit1-clothes-lexis.js?v=1");
+      })
+      .then(function () {
+        return loadScript(base + "js/themes/clothes.js?v=2");
+      });
+  } else {
+    themeChain = loadScript(base + "js/intensive-core.js?v=1").then(function () {
       return loadScript(themeSrc);
-    })
+    });
+  }
+
+  themeChain
     .then(function () {
       if (typeof window.B2_INTENSIVE_buildFlow !== "function") {
         return loadScript(base + "js/intensive-themes.js?v=slim-1");
       }
     })
     .then(function () {
-      return loadScript(base + "js/intensive-lesson.js?v=fce-lock-1");
+      return loadScript(base + "js/intensive-lesson.js?v=clothes-hl-1");
     })
     .then(function () {
       /* Hub / full intensive: Fleabag + font + Speak Club later. FCE path: skip. */

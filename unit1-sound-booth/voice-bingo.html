@@ -29,7 +29,15 @@
     </details>
 
     <div class="card">
-      <p class="wb-head">Тема (stub)</p>
+      <div class="vb-setup-top">
+        <p class="wb-head">Тема</p>
+        <div class="vb-mode-seg" role="radiogroup" aria-label="Режим бинго">
+          <input type="radio" class="vb-mode-input" name="bingoMode" id="bingoModePara" value="paraphrase" checked />
+          <label class="vb-mode-opt" for="bingoModePara">Paraphrase · без мема</label>
+          <input type="radio" class="vb-mode-input" name="bingoMode" id="bingoModeMeme" value="meme" />
+          <label class="vb-mode-opt" for="bingoModeMeme">Meme · без парафраза</label>
+        </div>
+      </div>
       <div class="theme-grid" id="bingoThemeRail" role="radiogroup" aria-label="Тема"></div>
       <p class="deck-meta" id="bingoDeckMeta"></p>
 
@@ -38,7 +46,7 @@
         <button type="button" class="b-sec b-dontknow" id="bingoDontKnow">I don't know / Не знаю</button>
       </div>
 
-      <p class="clue-label">Определение (цель — произнести фразу)</p>
+      <p class="clue-label" id="bingoClueLabel">Определение (цель — произнести фразу)</p>
       <p id="bingoClue" aria-live="polite"></p>
 
       <div class="vb-grid" id="bingoGrid" aria-label="Сетка бинго"></div>
@@ -62,8 +70,17 @@
   <script>window.FCE_SOUND_BOOTH_UNIT = 1;</script>
   <script src="../js/fce-unit-lexical-stub-packs.js"></script>
   <script src="../js/unit1-lifestyle-lexis.js"></script>
+  <script src="../js/unit1-clothes-lexis.js"></script>
+  <script src="../js/unit1-get-lexis.js"></script>
+  <script src="../js/unit1-run-lexis.js"></script>
+  <script src="../js/unit1-get-meme-cards.js"></script>
+  <script src="../js/unit1-run-meme-cards.js"></script>
+  <script src="../js/unit1-clothes-meme-cards.js"></script>
+  <script src="../js/unit1-lifestyle-meme-cards.js"></script>
+  <script src="../js/fce-unit-memes-bridge.js"></script>
   <script src="../js/fce-unit-sound-booth-wordbank.js"></script>
   <script src="../js/prep-retell-chain-speech-match.js"></script>
+  <script src="../js/prep-mic-device-picker.js"></script>
   <script src="../js/prep-snowball-phrases-engine.js"></script>
   <script src="../js/prep-voice-bingo-engine.js"></script>
   <script>
@@ -72,9 +89,26 @@
   var combined = window.FCE_SB_THEME_DEFINITIONS_COMBINED;
   var rail = document.getElementById("bingoThemeRail");
   var deckMeta = document.getElementById("bingoDeckMeta");
+  function selectedMode() {
+    var sel = document.querySelector('input[name="bingoMode"]:checked');
+    return sel && sel.value === "meme" ? "meme" : "paraphrase";
+  }
+  function refreshDeckMeta() {
+    var sel = document.querySelector('input[name="bingoTheme"]:checked');
+    var themeId = sel && sel.value ? sel.value : (defs[0] && defs[0].id);
+    var mode = selectedMode();
+    var n = typeof window.FCE_SB_getLexRows === "function"
+      ? window.FCE_SB_getLexRows(themeId, mode).length
+      : 0;
+    if (deckMeta) {
+      deckMeta.textContent = mode === "meme"
+        ? n + " meme lines · нужно минимум 9."
+        : n + " пар hint→phrase · нужно минимум 9.";
+    }
+  }
   function countLex(id) {
     return typeof window.FCE_SB_getLexRows === "function"
-      ? window.FCE_SB_getLexRows(id).length
+      ? window.FCE_SB_getLexRows(id, selectedMode()).length
       : 0;
   }
   if (rail && window.PREP_SNOWBALL_PHRASES && PREP_SNOWBALL_PHRASES.fillThemeRail) {
@@ -86,15 +120,22 @@
       deckMetaEl: deckMeta,
       countPhrases: countLex,
       formatDeckMeta: function (n) {
-        return n + " пар hint→phrase · нужно минимум 9 (stub).";
-      }
+        return selectedMode() === "meme"
+          ? n + " meme lines · нужно минимум 9."
+          : n + " пар hint→phrase · нужно минимум 9.";
+      },
+      onThemeChange: refreshDeckMeta
     });
   }
+  document.querySelectorAll('input[name="bingoMode"]').forEach(function (inp) {
+    inp.addEventListener("change", refreshDeckMeta);
+  });
   if (window.PREP_VOICE_BINGO && PREP_VOICE_BINGO.mount) {
     PREP_VOICE_BINGO.mount({
       els: {
         grid: document.getElementById("bingoGrid"),
         clue: document.getElementById("bingoClue"),
+        clueLabel: document.getElementById("bingoClueLabel"),
         progress: document.getElementById("bingoProgress"),
         status: document.getElementById("bingoStatus"),
         transcript: document.getElementById("bingoTranscript"),
@@ -106,11 +147,13 @@
       },
       themeDefinitions: defs,
       radioName: "bingoTheme",
-      getLexRows: function (themeId) {
+      bingoModeRadio: "bingoMode",
+      getLexRows: function (themeId, mode) {
         return typeof window.FCE_SB_getLexRows === "function"
-          ? window.FCE_SB_getLexRows(themeId)
+          ? window.FCE_SB_getLexRows(themeId, mode)
           : [];
-      }
+      },
+      onThemeOrModeChange: refreshDeckMeta
     });
   }
 })();

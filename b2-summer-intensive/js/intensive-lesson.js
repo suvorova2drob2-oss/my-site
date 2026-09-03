@@ -232,6 +232,9 @@
       } else if (/valuable-discovery/i.test(safeFrom)) {
         elBackFce.innerHTML = "&larr; FCE &middot; Valuable discovery";
         elBackFce.title = "Back to Unit 9 Reading · A valuable discovery";
+      } else if (/sb-1-1|part3-multiple-matching|transcript\.html/i.test(safeFrom)) {
+        elBackFce.innerHTML = "&larr; FCE &middot; Clothes";
+        elBackFce.title = "Back to Unit 1 Listening · SB 1.1";
       } else {
         elBackFce.innerHTML = "&larr; FCE";
         elBackFce.title = "Back to the exam page";
@@ -241,6 +244,11 @@
       elBackFce.href = fceReturnHref;
       elBackFce.innerHTML = "&larr; FCE &middot; This is your life";
       elBackFce.title = "Back to Unit 1 Reading Part 7";
+    } else if (theme.id === "clothes") {
+      fceReturnHref = "../unit1-listening/sb-1-1/part3-multiple-matching.html";
+      elBackFce.href = fceReturnHref;
+      elBackFce.innerHTML = "&larr; FCE &middot; Clothes";
+      elBackFce.title = "Back to Unit 1 Listening · SB 1.1";
     } else if (theme.id === "mystery") {
       fceReturnHref = "../unit9-listening-part3-ghost-walk/index.html";
       elBackFce.href = fceReturnHref;
@@ -417,9 +425,39 @@
 
   function phraseEn(p) {
     if (p && typeof p === "object") {
-      return String(p.en || p.phrase || p.text || "");
+      return String(p.en || p.coolWord || p.phrase || p.text || "");
     }
     return String(p || "");
+  }
+
+  function phraseHighlightNeedle(p) {
+    if (p && typeof p === "object" && p.highlight) {
+      return String(p.highlight).trim();
+    }
+    return "";
+  }
+
+  function htmlToPlainText(html) {
+    if (!html) return "";
+    var d = document.createElement("div");
+    d.innerHTML = String(html);
+    return (d.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function flexPatternForHtml(needle) {
+    var out = "";
+    var i;
+    for (i = 0; i < needle.length; i++) {
+      var ch = needle[i];
+      if (ch === "'" || ch === "\u2019") {
+        out += "(?:['\\u2019]|&rsquo;|&#8217;|&apos;)";
+      } else if (ch === "\u2013" || ch === "-") {
+        out += "(?:[\u2013-]|&ndash;|&#8211;)";
+      } else {
+        out += escapeRegExp(ch);
+      }
+    }
+    return out;
   }
 
   function phraseRu(p) {
@@ -443,12 +481,18 @@
   function needlesFromPhrases(phrases) {
     var raw = [];
     (phrases || []).forEach(function (p) {
+      var hl = phraseHighlightNeedle(p);
+      if (hl.length >= 3) raw.push(hl);
       String(phraseEn(p))
         .split(/…|\.\.\./)
         .forEach(function (chunk) {
           chunk = String(chunk).replace(/^[\s,]+|[\s,]+$/g, "").trim();
           if (chunk.length < 3) return;
           raw.push(chunk);
+          if (p && typeof p === "object" && p.phrase) {
+            var long = String(p.phrase).trim();
+            if (long.length >= 8 && long !== chunk) raw.push(long);
+          }
           // compound tape lines: "breakfast, set off for work"
           if (chunk.indexOf(", ") !== -1) {
             chunk.split(", ").forEach(function (bit) {
@@ -493,11 +537,9 @@
     var needles = needlesFromPhrases(phrases);
     if (!needles.length) return html;
     var result = String(html);
+    var plain = htmlToPlainText(html);
     needles.forEach(function (needle) {
-      var re = new RegExp(
-        "(" + escapeRegExp(needle).replace(/'/g, "['’]") + ")",
-        "gi"
-      );
+      var re = new RegExp("(" + flexPatternForHtml(needle) + ")", "gi");
       var parts = result.split(/(<[^>]+>)/);
       result = parts
         .map(function (part) {
@@ -514,6 +556,33 @@
         })
         .join("");
     });
+    if (typeof console !== "undefined" && console.warn) {
+      (phrases || []).forEach(function (p) {
+        var label = phraseEn(p);
+        if (!label) return;
+        var hl = phraseHighlightNeedle(p) || label;
+        if (plain.indexOf(hl) < 0 && plain.toLowerCase().indexOf(hl.toLowerCase()) < 0) {
+          var flex = new RegExp(flexPatternForHtml(hl), "i");
+          if (!flex.test(html) && result.indexOf('data-si-key="' + escapeHtml(hl) + '"') < 0) {
+            console.warn(
+              "[B2 Intensive] Cool Words highlight missing in paper:",
+              label,
+              "→ expected substring:",
+              hl
+            );
+          }
+        }
+        if (
+          result.indexOf('data-si-key="' + escapeHtml(hl) + '"') < 0 &&
+          result.indexOf('data-si-key="' + escapeHtml(label) + '"') < 0
+        ) {
+          console.warn(
+            "[B2 Intensive] Cool Words not highlighted in paper:",
+            label
+          );
+        }
+      });
+    }
     return result;
   }
 
