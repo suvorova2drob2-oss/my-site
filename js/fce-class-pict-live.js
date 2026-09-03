@@ -73,12 +73,15 @@
   }
 
   function ensureApi() {
-    if (state.api) return state.api;
     if (!W.LiveGameApi || !W.LiveGameHttp) {
       throw new Error("LiveGameApi not loaded");
     }
     var url = String(W.__FCE_LIVE_API_URL__ || "http://127.0.0.1:8787/live");
-    W.LiveGameApi.registerDriver("http", W.LiveGameHttp.buildDriver(url));
+    var driver = W.LiveGameHttp.buildDriver(url);
+    if (typeof driver.pictSubmit !== "function") {
+      throw new Error("Live API driver outdated — refresh the page (Ctrl+F5)");
+    }
+    W.LiveGameApi.registerDriver("http", driver);
     state.api = W.LiveGameApi.createClient({ driver: "http" });
     return state.api;
   }
@@ -457,7 +460,7 @@
     if (!state.pickedPhrase || !state.canvas) return;
     var msg = document.getElementById("fpDrawerMsg");
     setMsg(msg, "Sending…", null);
-    var img = state.canvas.toDataURL("image/jpeg", 0.72);
+    var img = state.canvas.toDataURL("image/jpeg", 0.58);
     ensureApi()
       .pictSubmit({
         roomCode: state.roomCode,

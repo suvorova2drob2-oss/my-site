@@ -673,7 +673,7 @@ function handleOp(op, body) {
 
 const app = express();
 app.use(compression());
-app.use(express.json({ limit: "128kb" }));
+app.use(express.json({ limit: "512kb" }));
 
 function staticCacheHeaders(res, filePath) {
   if (/\.(?:js|css|mjs|map|woff2?|ttf|otf|png|jpe?g|gif|webp|svg|ico|mp3|wav|ogg)$/i.test(filePath)) {
