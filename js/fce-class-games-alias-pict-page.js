@@ -153,6 +153,77 @@
     });
   }
 
+  function formatTimer(sec) {
+    var s = Math.max(0, Math.floor(Number(sec) || 0));
+    var m = Math.floor(s / 60);
+    var r = s % 60;
+    return m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  function hideAliasTitleCover() {
+    var cover = el("aCover");
+    if (cover) cover.hidden = true;
+    W.document.body.classList.remove("ap-alias-cover-open");
+  }
+
+  function showAliasTitleCover() {
+    var game = el("aGame");
+    var cover = el("aCover");
+    if (!cover || (game && game.classList.contains("on"))) return;
+    if (selectedMode !== "alias") return;
+    cover.hidden = false;
+    W.document.body.classList.add("ap-alias-cover-open");
+  }
+
+  function hideAliasTurnCover() {
+    var tc = el("aTurnCover");
+    if (tc) tc.hidden = true;
+    W.document.body.classList.remove("ap-alias-turn-cover-open");
+  }
+
+  function showAliasTurnCover(info, proceed) {
+    var tc = el("aTurnCover");
+    if (!tc) {
+      proceed();
+      return;
+    }
+    hideAliasTitleCover();
+    el("aCoverName").textContent = info.name || "—";
+    el("aCoverRn").textContent = String(info.round || 1);
+    el("aCoverTimer").textContent = formatTimer(info.timerSec || 60);
+    tc.hidden = false;
+    W.document.body.classList.add("ap-alias-turn-cover-open");
+    var go = el("aCoverStartTurn");
+    function done() {
+      hideAliasTurnCover();
+      proceed();
+    }
+    if (go) {
+      go.onclick = done;
+      go.focus();
+    }
+    tc.onkeydown = function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        done();
+      }
+    };
+  }
+
+  function wireAliasCovers(unit, meta) {
+    var tag = el("aCoverUnitTag");
+    if (tag && meta && meta.tag) tag.textContent = meta.tag;
+    var coverGo = el("aCoverGo");
+    if (coverGo) {
+      coverGo.addEventListener("click", hideAliasTitleCover);
+    }
+    var reset = el("aBtnReset");
+    if (reset) {
+      reset.addEventListener("click", hideAliasTurnCover);
+    }
+    showAliasTitleCover();
+  }
+
   function mountAlias(selectedPack) {
     if (!W.PREP_ALIAS || typeof W.PREP_ALIAS.mount !== "function") return;
     W.PREP_ALIAS.mount({
@@ -171,6 +242,8 @@
         deckMeta: "Deck · ",
         pickPacksHint: "Use pack tabs above.",
       },
+      onGameStart: hideAliasTitleCover,
+      onTurnCover: showAliasTurnCover,
       els: {
         topicChecks: el("aTopicChecks"),
         packBox: el("aPackBox"),
@@ -299,6 +372,11 @@
     var pictPane = el("apPictPane");
     if (aliasPane) aliasPane.hidden = mode !== "alias";
     if (pictPane) pictPane.hidden = mode !== "pict";
+    if (mode === "alias") showAliasTitleCover();
+    else {
+      hideAliasTitleCover();
+      hideAliasTurnCover();
+    }
     W.document.querySelectorAll(".ap-mode-tab").forEach(function (btn) {
       btn.classList.toggle("is-active", btn.getAttribute("data-mode") === mode);
     });
@@ -333,6 +411,7 @@
 
       mountAlias(selectedPack);
       mountPict(selectedPack);
+      wireAliasCovers(unit, meta);
       applyMode(selectedMode);
       applyPack(selectedPack);
 

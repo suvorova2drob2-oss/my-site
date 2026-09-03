@@ -372,8 +372,7 @@
         sessionQueue = shuffle(DECK).slice();
         blockN = 0;
       }
-      showTurn();
-      if (dealNextBlock()) startTimer();
+      beginTurnPlay();
     }
 
     function onCard(e) {
@@ -388,6 +387,24 @@
       if (blockCleared()) afterBlockCleared();
     }
 
+    function beginTurnPlay() {
+      showTurn();
+      if (!dealNextBlock()) return;
+      if (typeof opts.onTurnCover === "function") {
+        opts.onTurnCover(
+          {
+            name: currentName(),
+            round: roundN,
+            roundMax: MAX_ROUNDS,
+            timerSec: SEC,
+          },
+          startTimer
+        );
+      } else {
+        startTimer();
+      }
+    }
+
     function startGameRound() {
       var rn = el("rn");
       if (rn) rn.textContent = String(roundN);
@@ -396,8 +413,7 @@
       blockCards = [];
       var ovR = el("ovR");
       if (ovR) ovR.classList.remove("open");
-      showTurn();
-      if (dealNextBlock()) startTimer();
+      beginTurnPlay();
     }
 
     function parseNames() {
@@ -453,6 +469,7 @@
         var game = el("game");
         if (setup) setup.style.display = "none";
         if (game) game.classList.add("on");
+        if (typeof opts.onGameStart === "function") opts.onGameStart();
         renderLB();
         startGameRound();
       });
