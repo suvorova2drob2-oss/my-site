@@ -1,0 +1,46 @@
+# FCE vocabulary memes — Comic mode rollout
+
+When adding **Comic** retell strips for a meme pack (lifestyle, clothes, future units):
+
+## Data (mandatory)
+
+1. **`js/unitN-<topic>-meme-comics.js`** — array `UNITN_<TOPIC>_MEME_COMICS`:
+   - One object per **part** (`part: 1…`, `hero`, `title`, `panels[]`).
+   - **Every flip-card** in `unitN-<topic>-meme-cards.js` for that part must appear **once**, same order as cards.
+   - `panels[].cardId` matches `cards[].id`; `caption` = book line (verbatim from cards / retell blocks / transcript).
+2. Do **not** skip cards that share the same sentence — each image is its own panel.
+
+## Wiring
+
+| Surface | What to add |
+|--------|-------------|
+| `unitN-vocabulary/<topic>/memes/index.html` | `fce-vocab-meme-comic.css`, `fce-vocab-meme-comic-engine.js`, comics data script, `fce-vocab-meme-parts-engine.js` v2+, pass `comics:` to `FCE_VOCAB_MEME_PARTS.mount` |
+| `js/fce-unit-memes-bridge.js` | `comics: (W.UNITN_…_MEME_COMICS \|\| []).slice()` on the parts deck |
+| `unitN-lexical-games.html` | Same CSS + comics script if embed uses parts + comic |
+
+## UX (shared engine + CSS)
+
+- Reuse **`FCE_VOCAB_MEME_COMIC.mount`** + **`FCE_VOCAB_MEME_PARTS`** Flip | Comic tabs — no one-off comic UI.
+- Images: **WebP** paths in card data when available; `object-fit: contain` — never crop.
+- Full-width comic shell: `body.meme-parts-compact.meme-view-comic main.page.meme-parts-shell` with `!important` over `mastering-b2-page-skin.css`.
+- **Hide text · retell from memory** toggle stays in comic toolbar.
+
+## Grid layout (`css/fce-vocab-meme-comic.css`)
+
+Desktop default: **3 columns**.
+
+| Panel count | Layout |
+|-------------|--------|
+| **4–6** | **2 columns** (larger images — Ben, short speakers) |
+| **5** | 2×2 + last panel centred on row 3 |
+| **7** | 3+3+1 centred |
+| **10** | 3+3+3+1 centred |
+| **11** | 6-col subgrid, last row pair centred |
+| Mobile ≤640px | 2 columns |
+
+Bump `?v=` on comic CSS when changing layout.
+
+## Etalon files
+
+- Data: `js/unit1-lifestyle-meme-comics.js`, `js/unit1-clothes-meme-comics.js`
+- Page: `unit1-vocabulary/lifestyle/memes/index.html`

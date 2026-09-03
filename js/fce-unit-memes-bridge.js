@@ -45,7 +45,8 @@
             label: p.label,
             cards: prefixImg(p.cards || [], "unit1-vocabulary/clothes/memes/")
           };
-        })
+        }),
+        comics: (W.UNIT1_CLOTHES_MEME_COMICS || []).slice()
       });
     }
     if (W.UNIT1_LIFESTYLE_MEME_PARTS && W.UNIT1_LIFESTYLE_MEME_PARTS.length) {
