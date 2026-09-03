@@ -776,10 +776,89 @@ body.mil-body--show {
   }
 
   .mil-ladder li { font-size: 0.74rem; padding: 3px 7px; }
-  .mil-ladder-sum { font-size: 0.82rem; padding: 9px 12px; }
+  .mil-ladder-sum { font-size: 0.88rem; padding: 10px 14px; }
 
   .mil-hint-panel { max-height: 88vh; }
   .mil-hint-body { font-size: 0.94rem; padding: 14px; }
+}
+
+/* Mobile prize strip — always visible while playing */
+.mil-prize-mobile {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mil-prize-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    order: -2;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 196, 72, 0.55);
+    background: linear-gradient(180deg, rgba(20, 40, 100, 0.96), rgba(8, 16, 48, 0.98));
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+
+  .mil-prize-mobile-k {
+    flex: 0 0 100%;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted);
+  }
+
+  .mil-prize-mobile-amt {
+    font-family: var(--mil-font-logo);
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--mil-gold);
+    text-shadow: 0 0 24px rgba(255, 196, 72, 0.4);
+  }
+
+  .mil-prize-mobile-safe {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #a8f0c0;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(168, 240, 192, 0.35);
+    background: rgba(61, 255, 138, 0.08);
+  }
+
+  @keyframes milPrizeBump {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.14); color: #fff6c8; }
+    100% { transform: scale(1); }
+  }
+
+  .mil-prize-mobile-amt.mil-prize-bump {
+    animation: milPrizeBump 0.5s ease;
+  }
+
+  .mil-ladder-wrap {
+    order: -1;
+  }
+
+  .mil-ladder-wrap:not([open]) .mil-ladder-sum {
+    background: linear-gradient(180deg, rgba(255, 200, 80, 0.18), rgba(8, 16, 48, 0.92));
+    border-color: rgba(255, 196, 72, 0.5);
+  }
+
+  .mil-ladder li.current {
+    font-size: 0.82rem;
+    padding: 6px 9px;
+  }
 }
 
 .mil-audio-fab {

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alias · Class games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../css/prep-alias-engine.css" />
+  <link rel="stylesheet" href="../css/fce-class-alias-pict.css?v=5" />
+</head>
+<body class="ap-body ap-body--alias">
+  <div class="ap-app">
+    <header class="ap-chrome">
+      <div class="ap-chrome-left" id="apNav"></div>
+      <div class="ap-chrome-mid">
+        <div class="ap-hero-icons" aria-hidden="true">
+          <span class="ap-hero-icon ap-hero-icon--alias" title="Alias">💬</span>
+        </div>
+        <span class="ap-tag" id="apTag">Class games</span>
+        <h1 class="ap-title">Alias</h1>
+      </div>
+      <div class="ap-chrome-right">
+        <a class="ap-sibling-link" id="apSiblingPict" href="pictionary.html?unit=1">Pictionary &rarr;</a>
+      </div>
+    </header>
+
+    <p class="ap-lead" id="apLead">Loading…</p>
+    <p class="ap-placeholder-banner" id="apPlaceholderBanner" hidden></p>
+
+    <nav class="ap-pack-tabs" id="apPackTabs" aria-label="Vocabulary deck" hidden></nav>
+
+    <div class="ap-board">
+      <div class="ap-pane fce-ap prep-alias" id="apAliasPane">
+        <div class="ap-alias-cover" id="aCover">
+          <div class="ap-alias-cover-inner">
+            <div class="ap-alias-cover-deck" aria-hidden="true">
+              <span class="ap-alias-cover-card ap-alias-cover-card--3">explain…</span>
+              <span class="ap-alias-cover-card ap-alias-cover-card--2">no saying it!</span>
+              <span class="ap-alias-cover-card ap-alias-cover-card--1">Alias</span>
+            </div>
+            <p class="ap-alias-cover-k" id="aCoverUnitTag">Class games</p>
+            <h2 class="ap-alias-cover-title">Alias</h2>
+            <p class="ap-alias-cover-lead">One player explains the phrase — the host taps the card when the team guesses it.</p>
+            <button type="button" class="btn btn-go ap-alias-cover-go" id="aCoverGo">Continue</button>
+          </div>
+        </div>
+        <div class="ap-alias-cover ap-alias-cover--mode" id="aCoverMode" hidden>
+          <div class="ap-alias-cover-inner ap-alias-cover-inner--wide">
+            <p class="ap-alias-cover-k">Step 2 · on screen</p>
+            <h2 class="ap-alias-cover-title">Who is playing?</h2>
+            <p class="ap-alias-cover-lead">The game runs on this screen. Choose how to build the turn list.</p>
+            <div class="ap-alias-mode-grid">
+              <button type="button" class="ap-alias-mode-tile" id="aPickManual">
+                <span class="ap-alias-mode-icon" aria-hidden="true">✏️</span>
+                <strong>Type names</strong>
+                <span>Enter players on this screen</span>
+              </button>
+              <button type="button" class="ap-alias-mode-tile ap-alias-mode-tile--live" id="aPickLive">
+                <span class="ap-alias-mode-icon" aria-hidden="true">📱</span>
+                <strong>Live</strong>
+                <span>Students join by link</span>
+              </button>
+            </div>
+            <button type="button" class="btn btn-sec ap-alias-cover-back" id="aCoverModeBack">&larr; Back</button>
+          </div>
+        </div>
+        <div class="ap-alias-cover ap-alias-cover--live" id="aCoverLive" hidden>
+          <div class="ap-alias-cover-inner ap-alias-cover-inner--live">
+            <div class="ap-alias-live-scene" aria-hidden="true">
+              <span class="ap-alias-live-phone">📱</span>
+              <span class="ap-alias-live-beam"></span>
+              <span class="ap-alias-live-screen">🖥</span>
+            </div>
+            <p class="ap-alias-cover-k">Live</p>
+            <h2 class="ap-alias-cover-title">Phones + projector</h2>
+            <p class="ap-alias-cover-lead">Students open the link and enter their names. You keep the cards and timer on this screen.</p>
+            <ol class="ap-alias-live-steps">
+              <li>Tap <strong>Live</strong> (bottom right)</li>
+              <li>Create room · copy link to class</li>
+              <li>When names appear — <strong>Start Alias</strong></li>
+            </ol>
+            <button type="button" class="btn btn-go ap-alias-cover-go" id="aCoverLiveGo">Open setup</button>
+            <button type="button" class="btn btn-sec ap-alias-cover-back" id="aCoverLiveBack">&larr; Back</button>
+          </div>
+        </div>
+        <div class="ap-alias-turn-cover" id="aTurnCover" hidden>
+          <div class="ap-alias-turn-cover-inner">
+            <div class="ap-alias-turn-bubble" aria-hidden="true">💬</div>
+            <p class="ap-alias-cover-k">Round <span id="aCoverRn">1</span> · <span id="aCoverTimer">1:00</span></p>
+            <h2 class="ap-alias-turn-name" id="aCoverName">—</h2>
+            <p class="ap-alias-turn-role">Your turn to explain</p>
+            <p class="ap-alias-turn-hint">Don&rsquo;t say the phrase on the card</p>
+            <button type="button" class="btn btn-go ap-alias-turn-go" id="aCoverStartTurn">Go!</button>
+          </div>
+        </div>
+        <p class="sub-note"><strong>Alias</strong> — one player explains; the host taps a card when the team guesses it. Timer per turn · blocks of cards · leaderboard.</p>
+        <div id="aSetup" class="setup">
+          <p class="ap-alias-live-setup-tip" id="aLiveSetupTip" hidden>
+            <strong>Live roster</strong> — tap <strong>Live</strong> (bottom right) → create room → share the link. Names fill in when students join; then press <strong>Start Alias</strong>.
+          </p>
+          <p class="hint">Player names, <strong>one per line</strong> (at least 2). Order = turn order.</p>
+          <div class="pack-box" id="aPackBox">
+            <div id="aTopicChecks"></div>
+            <p id="aTopicHint"></p>
+          </div>
+          <div class="alias-setup-opts">
+            <label>Cards per block
+              <select id="aOptBlock">
+                <option value="8">8</option>
+                <option value="10" selected>10</option>
+                <option value="12">12</option>
+              </select>
+            </label>
+            <label>Rounds
+              <select id="aOptRounds">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+              </select>
+            </label>
+            <label>Timer
+              <select id="aOptTimer">
+                <option value="45">0:45</option>
+                <option value="60" selected>1:00</option>
+                <option value="90">1:30</option>
+              </select>
+            </label>
+          </div>
+          <textarea id="aNamesIn" placeholder="Anna&#10;Ben&#10;Chris" autocomplete="off"></textarea>
+          <p class="err" id="aErr"></p>
+          <p class="deck-meta" id="aDeckMeta">Deck · …</p>
+          <button type="button" class="btn btn-go" id="aBtnGo">Start Alias</button>
+        </div>
+        <div id="aGame" class="game">
+          <div class="hud">
+            <div class="turn-pill">
+              <span class="label">Explaining</span>
+              <span class="name" id="aCurName">—</span>
+              <span class="round-tag">Round <span id="aRn">1</span> / <span id="aRnMax">2</span></span>
+            </div>
+            <div class="alias-timer" id="aTimer">1:00</div>
+          </div>
+          <div class="block-meta">
+            <span>Block <strong id="aBlockNum">1</strong> · <span id="aBlockLeft">0</span> left</span>
+            <span class="block-pill" id="aQueueMeta">— in queue</span>
+          </div>
+          <p class="sub-note">Host: tap a card when that phrase is guessed.</p>
+          <div class="alias-grid" id="aGrid"></div>
+          <div class="row-actions">
+            <button type="button" class="btn btn-blue" id="aBtnNextBlock" style="display:none">Next block</button>
+            <button type="button" class="btn btn-sec" id="aBtnEndTurn">End turn</button>
+          </div>
+          <div class="lb">
+            <h3>Score</h3>
+            <ol id="aLbList"></ol>
+          </div>
+          <p style="margin-top:12px">
+            <button type="button" class="btn btn-sec" id="aBtnFinal">Leaderboard</button>
+            <button type="button" class="btn btn-sec" id="aBtnReset">New game</button>
+          </p>
+        </div>
+        <div class="ov" id="aOvR">
+          <div class="ov-in">
+            <h2>Round complete</h2>
+            <p id="aOvRMsg">Next round?</p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="aOvRok">Next round</button></p>
+          </div>
+        </div>
+        <div class="ov" id="aOvF">
+          <div class="ov-in">
+            <h2>Leaderboard</h2>
+            <p style="text-align:left" id="aOvFList"></p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="aOvFok">Close</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <details class="ap-rules-fold">
+      <summary>Rules</summary>
+      <p><strong>Alias:</strong> Explainer describes the phrase without saying it. Host taps guessed cards. Blocks of 8–12 cards; 1:00 timer; score per explainer.</p>
+    </details>
+  </div>
+
+  <script src="../js/fce-class-games-boards-fallback.js"></script>
+  <script src="../js/fce-class-games-boards-registry.js"></script>
+  <script src="../js/fce-class-games-board-common.js?v=1"></script>
+  <script src="../js/prep-alias-engine.js"></script>
+  <script src="../js/fce-class-games-alias-page.js?v=1"></script>
+  <script>
+    (function () {
+      var u = new URL(location.href);
+      var unit = u.searchParams.get("unit") || "1";
+      var pack = u.searchParams.get("pack");
+      var a = document.getElementById("apSiblingPict");
+      if (a) {
+        a.href = "pictionary.html?unit=" + encodeURIComponent(unit) + (pack ? "&pack=" + encodeURIComponent(pack) : "");
+      }
+    })();
+  </script>
+</body>
+</html>

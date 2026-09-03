@@ -12,7 +12,8 @@
       unitHome: "../unit1.html",
       hundredLead: "Five slots on the board (100→20). Pick a card — hit keeps your turn; miss passes. <strong>Hint</strong> opens the source text.",
       glassLead: "Two modes: <strong>Pick glass</strong> (safe chunk vs trap) or <strong>Type answer</strong> (tap glass → type). Deck tabs below. Wrong step → restart.",
-      aliasLead: "<strong>Alias</strong> — explain the phrase, host taps the card when guessed. <strong>Pictionary Live</strong> — students draw on phones (link), class guesses who drew what on screen.",
+      aliasLead: "<strong>Alias</strong> — explain the phrase, host taps the card when guessed.",
+      pictLead: "<strong>Pictionary Live</strong> — students draw on phones (link), class guesses who drew what on screen.",
       winText: "You crossed the bridge — all steps matched the Unit 1 deck."
     },
     3: {
@@ -35,7 +36,8 @@
       unitHome: "../unit" + n + ".html",
       hundredLead: "Five “top” answers (100→20 pts) per round. Card pool: hits vs decoys. Placeholder content until unit data is added.",
       glassLead: "Two glass panels per step — one safe phrase, one trap. Nine steps. Placeholder until unit data is added.",
-      aliasLead: "Explain phrases (Alias) or draw them (Pictionary). Placeholder deck until unit data is added.",
+      aliasLead: "Explain phrases on screen — host taps guessed cards.",
+      pictLead: "Students draw on phones; class guesses on the projector.",
       winText: "You made it across all nine steps."
     };
   }

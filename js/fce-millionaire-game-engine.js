@@ -48,6 +48,10 @@
       answers: W.document.getElementById("milAnswers"),
       ladder: W.document.getElementById("milLadderList"),
       ladderSum: W.document.getElementById("milLadderSum"),
+      ladderWrap: W.document.querySelector(".mil-ladder-wrap"),
+      prizeAmt: W.document.getElementById("milPrizeAmt"),
+      prizeSafe: W.document.getElementById("milPrizeSafe"),
+      prizeMobile: W.document.getElementById("milPrizeMobile"),
       ll50: W.document.getElementById("milLl50"),
       llPhone: W.document.getElementById("milLlPhone"),
       llAudience: W.document.getElementById("milLlAudience"),
@@ -103,6 +107,30 @@
       return "£" + n.toLocaleString("en-GB");
     }
 
+    function ensureMobilePrizeBar() {
+      if (els.prizeMobile) return;
+      var layout = W.document.querySelector(".mil-layout");
+      if (!layout) return;
+      var bar = W.document.createElement("div");
+      bar.className = "mil-prize-mobile";
+      bar.id = "milPrizeMobile";
+      bar.innerHTML =
+        '<span class="mil-prize-mobile-k" id="milPrizeK">Playing for</span>' +
+        '<strong class="mil-prize-mobile-amt" id="milPrizeAmt">£100</strong>' +
+        '<span class="mil-prize-mobile-safe" id="milPrizeSafe"></span>';
+      layout.insertBefore(bar, layout.firstChild);
+      els.prizeMobile = bar;
+      els.prizeAmt = W.document.getElementById("milPrizeAmt");
+      els.prizeSafe = W.document.getElementById("milPrizeSafe");
+    }
+
+    function bumpPrizeAmt() {
+      if (!els.prizeAmt) return;
+      els.prizeAmt.classList.remove("mil-prize-bump");
+      void els.prizeAmt.offsetWidth;
+      els.prizeAmt.classList.add("mil-prize-bump");
+    }
+
     function renderLadder() {
       if (els.ladder) {
         els.ladder.innerHTML = "";
@@ -114,16 +142,35 @@
           if (j === state.i) li.className = (li.className ? li.className + " " : "") + "current";
           els.ladder.appendChild(li);
         }
+        var curLi = els.ladder.querySelector("li.current");
+        if (curLi && typeof curLi.scrollIntoView === "function") {
+          try {
+            curLi.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          } catch (e) {
+            curLi.scrollIntoView(false);
+          }
+        }
       }
+      var playing = QUESTIONS.length ? formatMoney(moneyAt(state.i)) : "—";
+      var safeAmt = QUESTIONS.length ? lastSafe(state.i + 1) : 0;
       if (els.ladderSum && QUESTIONS.length) {
-        var playing = formatMoney(moneyAt(state.i));
-        var safeAmt = lastSafe(state.i + 1);
         els.ladderSum.textContent =
           "Question " +
           (state.i + 1) +
           " · Playing for " +
           playing +
           (safeAmt ? " · Safe: " + formatMoney(safeAmt) : "");
+      }
+      ensureMobilePrizeBar();
+      if (els.prizeAmt && QUESTIONS.length) {
+        els.prizeAmt.textContent = playing;
+        bumpPrizeAmt();
+      }
+      if (els.prizeSafe) {
+        els.prizeSafe.textContent = safeAmt ? "Safe · " + formatMoney(safeAmt) : "";
+      }
+      if (els.ladderWrap && W.matchMedia && W.matchMedia("(max-width: 900px)").matches) {
+        els.ladderWrap.open = true;
       }
     }
 
@@ -161,6 +208,15 @@
       if (els.endTitle) els.endTitle.textContent = won ? "You win!" : "Game over";
       if (els.endMsg) els.endMsg.innerHTML = msg;
       if (els.endModal) els.endModal.classList.add("open");
+      ensureMobilePrizeBar();
+      var finalAmt = won ? formatMoney(ACTIVE_LADDER[ACTIVE_LADDER.length - 1] || 1000000) : formatMoney(lastSafe(state.i));
+      var k = W.document.getElementById("milPrizeK");
+      if (k) k.textContent = won ? "You won" : "You leave with";
+      if (els.prizeAmt) {
+        els.prizeAmt.textContent = finalAmt;
+        bumpPrizeAmt();
+      }
+      if (els.prizeSafe) els.prizeSafe.textContent = "";
     }
 
     function formatQuestion(qu) {

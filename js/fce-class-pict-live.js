@@ -16,7 +16,7 @@
   var SS_ROLE = "fcePictRole";
   var SS_NAME = "fcePictDisplayName";
 
-  var DECK_PATH = "/class-games/alias-pictionary.html";
+  var DECK_PATH = "/class-games/pictionary.html";
 
   var state = {
     api: null,
@@ -135,10 +135,13 @@
     try {
       pack = String(state.getPack && state.getPack()) || "";
     } catch (e) {}
+    var unitN = qs().get("unit") || "1";
     var link =
       origin +
       DECK_PATH +
-      "?unit=1&mode=pict&room=" +
+      "?unit=" +
+      encodeURIComponent(unitN) +
+      "&room=" +
       encodeURIComponent(String(code || "").toUpperCase()) +
       "&as=student";
     if (pack && pack !== "all") link += "&pack=" + encodeURIComponent(pack);

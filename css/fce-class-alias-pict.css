@@ -695,6 +695,147 @@
   margin: 0 auto;
 }
 
+.ap-alias-cover-inner--wide {
+  width: min(480px, 100%);
+}
+
+.ap-alias-cover-inner--live {
+  width: min(440px, 100%);
+}
+
+.ap-alias-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0 0 16px;
+  text-align: left;
+}
+
+.ap-alias-mode-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.65);
+  color: #e2e8f0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.ap-alias-mode-tile:hover {
+  border-color: rgba(232, 121, 168, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ap-alias-mode-tile--live {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: linear-gradient(165deg, rgba(14, 116, 144, 0.25) 0%, rgba(15, 23, 42, 0.75) 100%);
+}
+
+.ap-alias-mode-tile--live:hover {
+  border-color: rgba(56, 189, 248, 0.75);
+}
+
+.ap-alias-mode-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.ap-alias-mode-tile strong {
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.ap-alias-mode-tile span:last-child {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
+.ap-alias-cover-back {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.ap-alias-live-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 88px;
+  margin: 0 auto 16px;
+}
+
+.ap-alias-live-phone,
+.ap-alias-live-screen {
+  font-size: 2.4rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.35));
+}
+
+.ap-alias-live-beam {
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.15), rgba(232, 121, 168, 0.85), rgba(56, 189, 248, 0.15));
+  border-radius: 999px;
+  animation: ap-alias-live-beam 2.2s ease-in-out infinite;
+}
+
+@keyframes ap-alias-live-beam {
+  0%, 100% { opacity: 0.55; transform: scaleX(0.85); }
+  50% { opacity: 1; transform: scaleX(1.1); }
+}
+
+.ap-alias-cover--live .ap-alias-cover-inner {
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 48px rgba(56, 189, 248, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.ap-alias-live-steps {
+  margin: 0 0 18px;
+  padding: 0 0 0 1.15rem;
+  text-align: left;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+}
+
+.ap-alias-live-steps li {
+  margin-bottom: 6px;
+}
+
+.ap-alias-live-steps strong {
+  color: #7dd3fc;
+}
+
+.ap-alias-live-setup-tip {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(14, 116, 144, 0.15);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #bae6fd;
+}
+
+.ap-alias-live-setup-tip strong {
+  color: #e0f2fe;
+}
+
+@media (max-width: 420px) {
+  .ap-alias-mode-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .ap-alias-turn-bubble {
   font-size: 2.2rem;
   line-height: 1;
@@ -736,6 +877,144 @@ body.ap-alias-cover-open .ap-placeholder-banner,
 body.ap-alias-cover-open #apAliasPane > .sub-note,
 body.ap-alias-cover-open #aSetup {
   visibility: hidden;
+}
+
+body.ap-alias-cover-open .fp-fab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Pictionary — title / mode / live covers */
+.ap-pict-cover-title {
+  text-shadow: 0 0 32px rgba(56, 189, 248, 0.35);
+}
+
+.ap-pict-cover-inner {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.ap-pict-cover-scene {
+  position: relative;
+  width: min(200px, 58vw);
+  height: 130px;
+  margin: 0 auto 18px;
+}
+
+.ap-pict-cover-canvas {
+  position: absolute;
+  left: 50%;
+  width: 88px;
+  height: 118px;
+  margin-left: -44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: linear-gradient(165deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 3px solid #38bdf8;
+  box-shadow: 0 6px 0 #0369a1, 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ap-pict-cover-canvas--back {
+  transform: rotate(-12deg) translate(-26px, 10px);
+  opacity: 0.7;
+  z-index: 1;
+  font-size: 1.5rem;
+}
+
+.ap-pict-cover-canvas--mid {
+  transform: rotate(10deg) translate(22px, 6px);
+  border-color: #e879a8;
+  box-shadow: 0 6px 0 #9d174d, 0 12px 24px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+
+.ap-pict-cover-canvas--front {
+  transform: rotate(-2deg) translate(0, 0);
+  z-index: 3;
+  animation: ap-pict-cover-float 2.8s ease-in-out infinite;
+}
+
+@keyframes ap-pict-cover-float {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(-2deg) translateY(-6px); }
+}
+
+.ap-pict-cover--live .ap-pict-cover-inner--live {
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+.ap-pict-live-beam {
+  background: linear-gradient(90deg, rgba(232, 121, 168, 0.15), rgba(56, 189, 248, 0.9), rgba(232, 121, 168, 0.15));
+}
+
+.ap-pict-live-setup-tip {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(14, 116, 144, 0.15);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #bae6fd;
+}
+
+.ap-pict-live-setup-tip strong {
+  color: #e0f2fe;
+}
+
+.ap-pict-cover-go.btn-go {
+  background: linear-gradient(165deg, #0ea5e9, #0369a1);
+}
+
+body.ap-pict-cover-open .ap-lead,
+body.ap-pict-cover-open .ap-pack-tabs,
+body.ap-pict-cover-open .ap-placeholder-banner,
+body.ap-pict-cover-open .ap-pict-live-intro,
+body.ap-pict-cover-open .ap-pict-live-setup-tip {
+  visibility: hidden;
+}
+
+body.ap-pict-cover-open .fp-fab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ap-sibling-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-decoration: none;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.5);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ap-sibling-link:hover {
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.55);
+}
+
+.ap-body--alias .ap-sibling-link:hover {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.ap-body--pict .ap-sibling-link:hover {
+  color: #f9a8d4;
+  border-color: rgba(232, 121, 168, 0.45);
+}
+
+@media (max-width: 640px) {
+  .ap-chrome-right .ap-sibling-link {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
 }
 
 body.ap-alias-turn-cover-open #aGame {

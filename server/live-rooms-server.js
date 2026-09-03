@@ -43,7 +43,7 @@ const DECK_PATHS = {
   "ege-lexis-exam": "/ege/ege-lexis-exam.html",
   "fce-u1-ttt-gaps": "/unit1-class-games/tic-tac-toe-gaps.html",
   "fce-u1-ttt-pair": "/unit1-class-games/pair-questions.html",
-  "fce-u1-pict": "/class-games/alias-pictionary.html"
+  "fce-u1-pict": "/class-games/pictionary.html"
 };
 
 function deckPrefixOf(deckId) {

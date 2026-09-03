@@ -125,9 +125,14 @@
       );
     }
 
+    function setPlayLayout(on) {
+      W.document.body.classList.toggle("sq-body--play", !!on);
+      W.document.documentElement.classList.toggle("sq-html--play", !!on);
+    }
+
     function exitToIntro() {
       state.screen = "intro";
-      W.document.body.classList.remove("sq-body--play");
+      setPlayLayout(false);
       var amb = W.FCE_STORY_QUEST_AMBIENCE;
       var audioEl = W.document.getElementById("sqAmbience");
       if (amb && amb.pauseAll) amb.pauseAll(audioEl);
@@ -253,7 +258,7 @@
       state.index = 0;
       state.done = Object.create(null);
       state.wrongCount = 0;
-      W.document.body.classList.add("sq-body--play");
+      setPlayLayout(true);
       render();
       try {
         W.localStorage.setItem("sq-audio-on", "1");
@@ -316,7 +321,7 @@
       var sc = scenes[state.index];
       if (!sc) {
         state.screen = "win";
-        W.document.body.classList.remove("sq-body--play");
+        setPlayLayout(false);
         render();
         return;
       }
@@ -399,7 +404,7 @@
       var sc = scenes[state.index];
       if (!sc) {
         state.screen = "win";
-        W.document.body.classList.remove("sq-body--play");
+        setPlayLayout(false);
         render();
         return;
       }
@@ -598,7 +603,7 @@
       state.done[sc.id] = true;
       if (state.index >= total - 1) {
         state.screen = "win";
-        W.document.body.classList.remove("sq-body--play");
+        setPlayLayout(false);
         render();
         return;
       }

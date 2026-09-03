@@ -160,19 +160,76 @@
     return m + ":" + (r < 10 ? "0" : "") + r;
   }
 
+  var aliasRosterMode = "manual";
+  var ALIAS_NAMES_PLACEHOLDER = "Anna\nBen\nChris";
+
+  function hideAllAliasSetupCovers() {
+    ["aCover", "aCoverMode", "aCoverLive"].forEach(function (id) {
+      var node = el(id);
+      if (node) node.hidden = true;
+    });
+    W.document.body.classList.remove("ap-alias-cover-open", "ap-setup--live");
+    var fab = el("fpFab");
+    if (fab) fab.classList.remove("fp-fab--pulse");
+  }
+
   function hideAliasTitleCover() {
-    var cover = el("aCover");
-    if (cover) cover.hidden = true;
-    W.document.body.classList.remove("ap-alias-cover-open");
+    hideAllAliasSetupCovers();
   }
 
   function showAliasTitleCover() {
     var game = el("aGame");
-    var cover = el("aCover");
-    if (!cover || (game && game.classList.contains("on"))) return;
+    if (game && game.classList.contains("on")) return;
     if (selectedMode !== "alias") return;
+    hideAllAliasSetupCovers();
+    var cover = el("aCover");
+    if (!cover) return;
     cover.hidden = false;
     W.document.body.classList.add("ap-alias-cover-open");
+  }
+
+  function showAliasModeCover() {
+    var game = el("aGame");
+    if (game && game.classList.contains("on")) return;
+    if (selectedMode !== "alias") return;
+    hideAllAliasSetupCovers();
+    var mode = el("aCoverMode");
+    if (!mode) return;
+    mode.hidden = false;
+    W.document.body.classList.add("ap-alias-cover-open");
+  }
+
+  function showAliasLiveCover() {
+    hideAllAliasSetupCovers();
+    var live = el("aCoverLive");
+    if (!live) return;
+    live.hidden = false;
+    W.document.body.classList.add("ap-alias-cover-open");
+  }
+
+  function showAliasSetup(mode) {
+    aliasRosterMode = mode || "manual";
+    hideAllAliasSetupCovers();
+    var tip = el("aLiveSetupTip");
+    var names = el("aNamesIn");
+    if (tip) tip.hidden = aliasRosterMode !== "live";
+    if (names) {
+      names.placeholder =
+        aliasRosterMode === "live"
+          ? "Optional — or wait for Live roster…"
+          : ALIAS_NAMES_PLACEHOLDER;
+    }
+    if (aliasRosterMode === "live") {
+      W.setTimeout(function () {
+        var fab = el("fpFab");
+        if (fab) {
+          fab.classList.add("fp-fab--pulse");
+          try {
+            fab.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          } catch (e) {}
+        }
+      }, 400);
+    }
   }
 
   function hideAliasTurnCover() {
@@ -215,7 +272,31 @@
     if (tag && meta && meta.tag) tag.textContent = meta.tag;
     var coverGo = el("aCoverGo");
     if (coverGo) {
-      coverGo.addEventListener("click", hideAliasTitleCover);
+      coverGo.addEventListener("click", showAliasModeCover);
+    }
+    var pickManual = el("aPickManual");
+    if (pickManual) {
+      pickManual.addEventListener("click", function () {
+        showAliasSetup("manual");
+      });
+    }
+    var pickLive = el("aPickLive");
+    if (pickLive) {
+      pickLive.addEventListener("click", showAliasLiveCover);
+    }
+    var modeBack = el("aCoverModeBack");
+    if (modeBack) {
+      modeBack.addEventListener("click", showAliasTitleCover);
+    }
+    var liveGo = el("aCoverLiveGo");
+    if (liveGo) {
+      liveGo.addEventListener("click", function () {
+        showAliasSetup("live");
+      });
+    }
+    var liveBack = el("aCoverLiveBack");
+    if (liveBack) {
+      liveBack.addEventListener("click", showAliasModeCover);
     }
     var reset = el("aBtnReset");
     if (reset) {
