@@ -67,7 +67,16 @@
   }
 
   function unitDataScripts(unit) {
-    if (unit === 1) return ["../js/unit1-class-games-boards.js?v=2"];
+    if (unit === 1) {
+      return [
+        "../js/unit1-lifestyle-lexis.js",
+        "../js/unit1-clothes-lexis.js",
+        "../js/unit1-get-lexis.js",
+        "../js/unit1-run-lexis.js",
+        "../js/unit1-alias-phrases.js?v=1",
+        "../js/unit1-class-games-boards.js?v=3"
+      ];
+    }
     if (unit === 3) return ["../unit3-digital-detox/data/u3-games-content.js"];
     return ["../js/unit" + unit + "-class-games-boards.js"];
   }

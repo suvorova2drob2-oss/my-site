@@ -160,6 +160,7 @@
     }
   ];
 
+  /** Glass bridge steps only — Alias deck lives in unit1-alias-phrases.js (Cool Words lexis). */
   W.U1_GLASS_STEPS = [
     {
       pack: "lifestyle",
@@ -283,39 +284,4 @@
       hintPassage: "be running on empty — have no energy left"
     }
   ];
-
-  /** Full collocations for Alias / Pictionary — not bare gap answers from Glass bridge. */
-  function aliasPhraseFromGlassStep(s) {
-    var hint = String(s.hintPassage || "").trim();
-    var dash = hint.indexOf(" — ");
-    if (dash > 0 && dash <= 52) {
-      return hint.slice(0, dash).trim();
-    }
-    var good = String(s.good || "").trim();
-    var map = {
-      unwinding: "spend time unwinding",
-      especially: "love the variety",
-      charity: "charity shops",
-      ethical: "ethical clothing",
-      exploited: "being exploited",
-      by: "get by",
-      ready: "get ready",
-      stuck: "get stuck",
-      "a tight ship": "run a tight ship",
-      "in the family": "run in the family",
-      "on empty": "be running on empty"
-    };
-    if (map[good]) return map[good];
-    if (/\s/.test(good)) return good;
-    return good;
-  }
-
-  W.U1_ALIAS_PHRASES = W.U1_GLASS_STEPS.map(function (s) {
-    return {
-      phrase: aliasPhraseFromGlassStep(s),
-      pack: s.pack || "lifestyle",
-      topicId: s.pack || "lifestyle",
-      hint: s.hintTitle || ""
-    };
-  });
 })(typeof window !== "undefined" ? window : globalThis);
