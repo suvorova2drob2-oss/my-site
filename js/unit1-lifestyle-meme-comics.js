@@ -1,6 +1,6 @@
 /**
  * Unit 1 · Lifestyle memes — comic strips (story order, book text).
- * Panel cardId → image in unit1-lifestyle-meme-cards.js
+ * Every flip-card image appears once — panel cardId → unit1-lifestyle-meme-cards.js
  */
 (function (global) {
   "use strict";
@@ -19,7 +19,6 @@
         },
         {
           cardId: "realise-important",
-          time: "Morning",
           caption: "I'm not a fitness fan, but I realise it's important."
         },
         {
@@ -33,15 +32,14 @@
           caption: "It's a bit of a mess, I'm ashamed to say."
         },
         {
-          cardId: "passionate-about",
-          time: "Away from home",
-          caption:
-            "I'm passionate about history, and if I'm working away from home, I'll often spend the afternoon in a museum or historic building."
-        },
-        {
           cardId: "lose-track",
           caption:
             "I sometimes lose track of time, and I once turned up late for a play I was in."
+        },
+        {
+          cardId: "passionate-about",
+          caption:
+            "I'm passionate about history, and if I'm working away from home, I'll often spend the afternoon in a museum or historic building."
         },
         {
           cardId: "turned-up-late",
@@ -52,6 +50,12 @@
         {
           cardId: "unwinding",
           time: "After the show",
+          caption:
+            "After a performance I eat and spend a few hours unwinding, so bedtime is often one or two in the morning."
+        },
+        {
+          cardId: "bedtime",
+          time: "Late night",
           caption:
             "After a performance I eat and spend a few hours unwinding, so bedtime is often one or two in the morning."
         },
@@ -75,8 +79,28 @@
             "Wherever I am, I love the fact that I usually live just a short walk from the slopes, so I can get up reasonably late and still have time for a decent breakfast, before setting off for work."
         },
         {
+          cardId: "short-walk",
+          caption:
+            "Wherever I am, I love the fact that I usually live just a short walk from the slopes, so I can get up reasonably late and still have time for a decent breakfast, before setting off for work."
+        },
+        {
+          cardId: "reasonably-late",
+          caption:
+            "Wherever I am, I love the fact that I usually live just a short walk from the slopes, so I can get up reasonably late and still have time for a decent breakfast, before setting off for work."
+        },
+        {
+          cardId: "decent-breakfast",
+          caption:
+            "Wherever I am, I love the fact that I usually live just a short walk from the slopes, so I can get up reasonably late and still have time for a decent breakfast, before setting off for work."
+        },
+        {
           cardId: "fully-qualified",
           time: "At work",
+          caption:
+            "Now I'm fully qualified, I tend to get the advanced classes, which I find more interesting."
+        },
+        {
+          cardId: "tend-to",
           caption:
             "Now I'm fully qualified, I tend to get the advanced classes, which I find more interesting."
         },
@@ -93,6 +117,11 @@
         },
         {
           cardId: "settle-down",
+          caption:
+            "It might be time to settle down and get a more normal job, something steady and secure."
+        },
+        {
+          cardId: "steady-secure",
           caption:
             "It might be time to settle down and get a more normal job, something steady and secure."
         },
@@ -167,6 +196,11 @@
         },
         {
           cardId: "unconventional",
+          caption:
+            "It's a fairly unconventional way of life, and not one I'd actively encourage others to adopt — there's a lot of danger involved — but it works for me."
+        },
+        {
+          cardId: "works-for-me",
           caption:
             "It's a fairly unconventional way of life, and not one I'd actively encourage others to adopt — there's a lot of danger involved — but it works for me."
         },
