@@ -48,6 +48,12 @@ if [[ -f "$ROOT/server/auto-update-live.sh" ]]; then
   chmod +x "$ROOT/server/auto-update-live.sh" || true
 fi
 
+# Refresh the cron schedule so a changed interval takes effect without a separate step.
+if [[ -f "$ROOT/server/install-auto-update-cron.sh" ]]; then
+  echo "==> Refreshing auto-update cron"
+  LIVE_ROOT="$ROOT" bash "$ROOT/server/install-auto-update-cron.sh" || echo "WARN: cron refresh failed"
+fi
+
 echo "==> Status"
 systemctl --no-pager --full status ege-live-rooms | head -n 12
 

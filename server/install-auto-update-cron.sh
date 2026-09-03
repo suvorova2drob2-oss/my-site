@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time install: cron auto-pull every 5 minutes.
+# One-time install: cron auto-pull every minute.
 set -euo pipefail
 
 ROOT="${LIVE_ROOT:-/root/my-site}"
@@ -17,7 +17,13 @@ chmod +x "$SCRIPT" "$ROOT/server/update-live-on-vps.sh" 2>/dev/null || true
 touch /var/log/ege-live-auto-update.log
 chmod 644 /var/log/ege-live-auto-update.log
 
-CRON_LINE="*/5 * * * * LIVE_ROOT=$ROOT /bin/bash $SCRIPT"
+# flock keeps a slow run (npm install) from overlapping the next minute's run.
+FLOCK_BIN="$(command -v flock || true)"
+if [[ -n "$FLOCK_BIN" ]]; then
+  CRON_LINE="* * * * * LIVE_ROOT=$ROOT $FLOCK_BIN -n /tmp/ege-live-auto-update.lock /bin/bash $SCRIPT"
+else
+  CRON_LINE="* * * * * LIVE_ROOT=$ROOT /bin/bash $SCRIPT"
+fi
 
 # Remove old lines for this script, then add fresh
 tmp="$(mktemp)"
@@ -26,7 +32,7 @@ echo "$CRON_LINE" >>"$tmp"
 crontab "$tmp"
 rm -f "$tmp"
 
-echo "OK: auto-update installed (every 5 minutes)."
+echo "OK: auto-update installed (every minute)."
 echo "Cron line:"
 echo "  $CRON_LINE"
 echo

@@ -681,7 +681,8 @@ function staticCacheHeaders(res, filePath) {
     return;
   }
   if (/\.html?$/i.test(filePath)) {
-    res.setHeader("Cache-Control", "public, max-age=120");
+    // Revalidate every request (ETag → 304) so a push shows up without waiting out a cache window.
+    res.setHeader("Cache-Control", "no-cache");
   }
 }
 

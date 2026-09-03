@@ -61,7 +61,7 @@ if [[ -z "$before" || -z "$after" ]]; then
 fi
 
 if [[ "$before" == "$after" && "$games_before" == "$games_after" && "$clumsy_before" == "$clumsy_after" ]]; then
-  # Quiet on no-op (avoid filling the log every 5 minutes)
+  # Quiet on no-op (the job runs every minute)
   exit 0
 fi
 
