@@ -259,7 +259,9 @@
     var subs = gs.submissions || {};
     var sub = subs[pid];
     var box = document.getElementById("fpGallerySpotlight");
+    var shell = document.getElementById("fpHostGallery");
     if (!box || !sub) return;
+    if (shell) shell.classList.add("fp-host-gallery--spot");
     box.hidden = false;
     var order = gs.galleryOrder || Object.keys(subs);
     document.getElementById("fpSpotImg").src = sub.imageData;
@@ -295,6 +297,15 @@
       var ni = (idx + 1) % order.length;
       showSpotlight(gs, order[ni], ni);
     };
+    var backBtn = document.getElementById("fpSpotBack");
+    if (backBtn) {
+      backBtn.hidden = order.length <= 1;
+      backBtn.onclick = function () {
+        var shellEl = document.getElementById("fpHostGallery");
+        if (shellEl) shellEl.classList.remove("fp-host-gallery--spot");
+        box.hidden = true;
+      };
+    }
   }
 
   function showDrawerGate(show) {
@@ -679,9 +690,10 @@
     gallery.hidden = true;
     gallery.innerHTML =
       '<h2 class="fp-gallery-title">Who drew what?</h2>' +
-      '<p class="fp-muted">Class guesses — then tap <strong>Reveal</strong>.</p>' +
+      '<p class="fp-muted fp-gallery-lead">Class guesses — then tap <strong>Reveal</strong>.</p>' +
       '<div class="fp-gallery-grid" id="fpGalleryGrid"></div>' +
       '<div class="fp-gallery-spotlight" id="fpGallerySpotlight" hidden>' +
+      '<button type="button" class="fp-btn fp-btn--sec fp-gallery-back" id="fpSpotBack">&larr; All drawings</button>' +
       '<p class="fp-spot-num" id="fpSpotNum"></p>' +
       '<img id="fpSpotImg" alt="" />' +
       '<p class="fp-spot-answer" id="fpSpotAnswer" hidden></p>' +
