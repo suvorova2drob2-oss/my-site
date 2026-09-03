@@ -8,12 +8,11 @@
   function protocolHint() {
     if (W.location && W.location.protocol === "file:") {
       return (
-        "Микрофон не работает при открытии файла двойным щелчком. " +
-        "Запустите npm run dev и откройте http://127.0.0.1:5173/…"
+        "Microphone works on localhost only — run npm run dev, then open http://127.0.0.1:5173/ (not double-click)."
       );
     }
     if (W.isSecureContext === false) {
-      return "Микрофон доступен только на https или localhost.";
+      return "Microphone needs https or localhost.";
     }
     return "";
   }

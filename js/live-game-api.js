@@ -255,6 +255,30 @@
           return driver.closeRoom(p);
         }
         return Promise.reject(new Error("closeRoom not supported"));
+      },
+      setGameState: function (p) {
+        if (typeof driver.setGameState === "function") {
+          return driver.setGameState(p);
+        }
+        return Promise.reject(new Error("setGameState not supported"));
+      },
+      tttSubmit: function (p) {
+        if (typeof driver.tttSubmit === "function") {
+          return driver.tttSubmit(p);
+        }
+        return Promise.reject(new Error("tttSubmit not supported"));
+      },
+      pictSubmit: function (p) {
+        if (typeof driver.pictSubmit === "function") {
+          return driver.pictSubmit(p);
+        }
+        return Promise.reject(new Error("pictSubmit not supported"));
+      },
+      setPlayerTeam: function (p) {
+        if (typeof driver.setPlayerTeam === "function") {
+          return driver.setPlayerTeam(p);
+        }
+        return Promise.reject(new Error("setPlayerTeam not supported"));
       }
     };
   }

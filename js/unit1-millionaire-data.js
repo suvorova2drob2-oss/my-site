@@ -75,6 +75,28 @@
         });
       });
     }
+    function pushLinePack(pack, packLabel, lines) {
+      if (!lines || !lines.length) return;
+      lines.forEach(function (line, idx) {
+        out.push({
+          pack: pack,
+          packLabel: packLabel,
+          speakerId: pack,
+          speakerName: packLabel,
+          speakerFull: packLabel,
+          topic: packLabel + " · " + (idx + 1),
+          coolWord: String(line.coolWord || line.phrase || "").trim(),
+          phrase: String(line.phrase || line.coolWord || "").trim(),
+          hint: String(line.hint || "").trim(),
+          contextSentence: String(line.contextSentence || line.phrase || "").trim(),
+          stickyAnswer: String(line.stickyAnswer || line.coolWord || "").trim()
+        });
+      });
+    }
+    var getLex = W.FCE_U1_GET_LEXIS;
+    var runLex = W.FCE_U1_RUN_LEXIS;
+    if (getLex && getLex.lines) pushLinePack("get", "Get", getLex.lines);
+    if (runLex && runLex.lines) pushLinePack("run", "Run", runLex.lines);
     return out;
   }
 
@@ -171,7 +193,8 @@
         lead: row.packLabel + " · " + row.speakerName,
         gap: sent,
         opts: built.opts,
-        correct: built.correct
+        correct: built.correct,
+        contextSentence: row.contextSentence
       });
     });
     return out;
@@ -214,7 +237,8 @@
         focus: focus,
         prompt: "The highlighted phrase is closest in meaning to:",
         opts: built.opts,
-        correct: built.correct
+        correct: built.correct,
+        contextSentence: row.contextSentence
       });
     });
     return out;
@@ -299,6 +323,7 @@
     });
 
     rows.forEach(function (row) {
+      if (row.pack !== "lifestyle" && row.pack !== "clothes") return;
       var names = row.pack === "lifestyle" ? lifeNames : clothNames;
       var snippet = row.coolWord;
       if (snippet.length > 58) snippet = snippet.slice(0, 55) + "…";
@@ -313,17 +338,54 @@
       });
     });
 
+    function buildPhraseMeaningFacts(packRows, pack, label) {
+      var pool = packRows.map(function (r) {
+        return r.coolWord;
+      });
+      packRows.forEach(function (row) {
+        if (!row.hint) return;
+        var built = pickDistractors(pool, row.coolWord, 3, norm);
+        out.push({
+          topic: row.topic,
+          pack: pack,
+          speakerId: row.speakerId,
+          q: "Which " + label + " phrase means: «" + row.hint + "»?",
+          opts: built.opts,
+          correct: built.correct
+        });
+      });
+    }
+
+    buildPhraseMeaningFacts(
+      rows.filter(function (r) {
+        return r.pack === "get";
+      }),
+      "get",
+      "Get"
+    );
+    buildPhraseMeaningFacts(
+      rows.filter(function (r) {
+        return r.pack === "run";
+      }),
+      "run",
+      "Run"
+    );
+
     return out;
   }
 
   function pickFifteen(arr) {
     var copy = arr.slice();
     shuffleInPlace(copy);
-    return copy.slice(0, 15);
+    var n = Math.min(15, copy.length);
+    return copy.slice(0, n);
   }
 
   function hintPassageForRow(row) {
     if (!row) return "";
+    if (row.contextSentence && (row.pack === "get" || row.pack === "run")) {
+      return row.contextSentence;
+    }
     if (row.pack === "lifestyle" && W.U1_LIFESTYLE_RETELL_BLOCKS) {
       var map = { lucas: 0, maja: 1, reo: 2, ben: 3 };
       var ix = map[row.speakerId];
@@ -347,6 +409,22 @@
 
   W.U1_pickMillionaireRound = function (bank) {
     return pickFifteen(bank || []);
+  };
+
+  W.U1_filterMillionaireBank = function (bank, pack) {
+    if (!bank || !bank.length) return [];
+    if (!pack || pack === "all") return bank.slice();
+    return bank.filter(function (qu) {
+      return qu.pack === pack;
+    });
+  };
+
+  W.U1_MILLIONAIRE_PACK_LABELS = {
+    all: "All decks",
+    lifestyle: "Lifestyle",
+    clothes: "Clothes",
+    get: "Get",
+    run: "Run"
   };
 
   var ROWS = collectRows();

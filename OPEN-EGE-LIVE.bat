@@ -1,14 +1,19 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+title EGE Live - do not close this window
+color 0B
 
 echo.
-echo  EGE Live - local check
-echo  ======================
-echo  Site:  http://127.0.0.1:8787/ege/ege.html
-echo  Matching: http://127.0.0.1:8787/ege/ege-listening-matching.html
+echo  ========================================
+echo   Live local - EGE
+echo  ========================================
 echo.
-echo  Use this (not file://) so Live rooms work.
+echo  1) This window starts the Live server
+echo  2) Browser opens automatically
+echo  3) Click Live - Create room
+echo.
+echo  Do NOT close this window while testing.
 echo  Press Ctrl+C here to stop the server.
 echo.
 
@@ -19,5 +24,4 @@ if errorlevel 1 (
   exit /b 1
 )
 
-start "" "http://127.0.0.1:8787/ege/ege.html"
-call npm run live:rooms
+call node scripts/run-local-live.mjs --open=http://127.0.0.1:8787/ege/ege.html

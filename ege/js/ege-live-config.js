@@ -1,34 +1,44 @@
 /**
  * EGE Live rooms — API + public site origin for student links.
  *
- * Local first: if the page is opened on localhost / 127.0.0.1, use that host.
- * On the VPS IP or a real domain, use the page host.
- * file:// falls back to local live:rooms.
- *
- * Override anytime before this file loads:
- *   window.__EGE_LIVE_API_URL__ / window.__EGE_LIVE_PUBLIC_ORIGIN__
+ * Local check: npm run live:local  OR  OPEN-EGE-LIVE.bat
+ * Then open http://127.0.0.1:8787/ege/… (not file://)
  */
 (function (W) {
   "use strict";
 
-  var LOCAL = "http://127.0.0.1:8787";
-  var origin = LOCAL;
+  var LIVE_HOST = "http://127.0.0.1:8787";
+  var pageOrigin = LIVE_HOST;
+  var apiOrigin = LIVE_HOST;
+  var publicOrigin = LIVE_HOST;
 
   try {
     if (W.location && /^https?:$/i.test(String(W.location.protocol || ""))) {
       var host = String(W.location.host || "");
       if (host) {
-        origin = String(W.location.protocol) + "//" + host;
+        pageOrigin = String(W.location.protocol) + "//" + host;
       }
     }
   } catch (e) {}
 
-  origin = String(origin || LOCAL).replace(/\/$/, "");
+  pageOrigin = String(pageOrigin || LIVE_HOST).replace(/\/$/, "");
+  apiOrigin = pageOrigin;
+  publicOrigin = pageOrigin;
+
+  try {
+    var hostname = String(W.location.hostname || "");
+    var port = String(W.location.port || "");
+    var isLocal = /^(localhost|127\.0\.0\.1)$/i.test(hostname);
+    if (isLocal && port && port !== "8787") {
+      apiOrigin = LIVE_HOST;
+      publicOrigin = LIVE_HOST;
+    }
+  } catch (e2) {}
 
   if (!W.__EGE_LIVE_API_URL__) {
-    W.__EGE_LIVE_API_URL__ = origin + "/live";
+    W.__EGE_LIVE_API_URL__ = apiOrigin + "/live";
   }
   if (!W.__EGE_LIVE_PUBLIC_ORIGIN__) {
-    W.__EGE_LIVE_PUBLIC_ORIGIN__ = origin;
+    W.__EGE_LIVE_PUBLIC_ORIGIN__ = publicOrigin;
   }
 })(typeof window !== "undefined" ? window : this);

@@ -12,7 +12,18 @@
   function mount(opts) {
     opts = opts || {};
     var mode = opts.mode || "facts";
-    var bank = opts.questionBank || [];
+    var fullBank = opts.questionBank || [];
+    var filterBank =
+      typeof opts.filterBank === "function"
+        ? opts.filterBank
+        : W.U1_filterMillionaireBank ||
+          function (b) {
+            return b;
+          };
+    var packFilter =
+      opts.initialPack ||
+      (W.sessionStorage && W.sessionStorage.getItem("mil-u1-pack")) ||
+      "all";
     var pickRound =
       typeof opts.pickRound === "function"
         ? opts.pickRound
@@ -53,21 +64,37 @@
       endModal: W.document.getElementById("milEndModal"),
       endTitle: W.document.getElementById("milEndTitle"),
       endMsg: W.document.getElementById("milEndMsg"),
-      endOk: W.document.getElementById("milEndOk")
+      endOk: W.document.getElementById("milEndOk"),
+      sub: W.document.getElementById("milSub"),
+      lexTabs: W.document.getElementById("milLexTabs")
     };
 
     var ambience = W.FCE_MILLIONAIRE_AMBIENCE;
     var QUESTIONS = [];
+    var ACTIVE_LADDER = LADDER.slice();
+    var ACTIVE_SAFE = {};
     var state = { i: 0, used50: false, usedPhone: false, usedAudience: false, locked: false };
 
+    function currentBank() {
+      return filterBank(fullBank, packFilter);
+    }
+
+    function rebuildActiveLadder() {
+      var n = QUESTIONS.length || 15;
+      ACTIVE_LADDER = LADDER.slice(0, Math.min(n, LADDER.length));
+      ACTIVE_SAFE = {};
+      if (ACTIVE_LADDER.length >= 5) ACTIVE_SAFE[4] = true;
+      if (ACTIVE_LADDER.length >= 10) ACTIVE_SAFE[9] = true;
+    }
+
     function moneyAt(i) {
-      return LADDER[i] || 0;
+      return ACTIVE_LADDER[i] || 0;
     }
 
     function lastSafe(beforeIndex) {
       var s;
       for (s = beforeIndex - 1; s >= 0; s--) {
-        if (SAFE_IDX[s]) return moneyAt(s);
+        if (ACTIVE_SAFE[s]) return moneyAt(s);
       }
       return 0;
     }
@@ -80,10 +107,10 @@
       if (els.ladder) {
         els.ladder.innerHTML = "";
         var j;
-        for (j = LADDER.length - 1; j >= 0; j--) {
+        for (j = ACTIVE_LADDER.length - 1; j >= 0; j--) {
           var li = W.document.createElement("li");
-          li.textContent = j + 1 + " · " + formatMoney(LADDER[j]);
-          if (SAFE_IDX[j]) li.className = "safe";
+          li.textContent = j + 1 + " · " + formatMoney(ACTIVE_LADDER[j]);
+          if (ACTIVE_SAFE[j]) li.className = "safe";
           if (j === state.i) li.className = (li.className ? li.className + " " : "") + "current";
           els.ladder.appendChild(li);
         }
@@ -173,7 +200,7 @@
       }
       state.locked = false;
       var qu = QUESTIONS[state.i];
-      if (els.qNum) els.qNum.textContent = "Question " + (state.i + 1) + " of 15";
+      if (els.qNum) els.qNum.textContent = "Question " + (state.i + 1) + " of " + QUESTIONS.length;
       if (els.qTopic) els.qTopic.textContent = qu.topic || "";
       if (els.qText) els.qText.innerHTML = formatQuestion(qu);
       if (els.answers) {
@@ -378,7 +405,53 @@
       }, 1600);
     }
 
+    function packLabel(pack) {
+      var map = W.U1_MILLIONAIRE_PACK_LABELS || {};
+      return map[pack] || pack;
+    }
+
+    function updateSubline() {
+      if (!els.sub) return;
+      var modeLabel =
+        mode === "gaps" ? "insert the phrase A–D" : mode === "paraphrase" ? "closest meaning A–D" : "facts A–D";
+      els.sub.textContent =
+        "Unit 1 · " + packLabel(packFilter) + " · " + modeLabel + " · " + currentBank().length + " in deck";
+    }
+
+    function syncLexTabs() {
+      if (!els.lexTabs) return;
+      var buttons = els.lexTabs.querySelectorAll("[data-pack]");
+      buttons.forEach(function (btn) {
+        var on = btn.getAttribute("data-pack") === packFilter;
+        btn.classList.toggle("is-active", on);
+        btn.setAttribute("aria-selected", on ? "true" : "false");
+      });
+    }
+
+    function wireLexTabs() {
+      if (!els.lexTabs) return;
+      var buttons = els.lexTabs.querySelectorAll("[data-pack]");
+      buttons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var next = btn.getAttribute("data-pack") || "all";
+          if (next === packFilter) return;
+          packFilter = next;
+          if (W.sessionStorage) {
+            try {
+              W.sessionStorage.setItem("mil-u1-pack", packFilter);
+            } catch (e) {}
+          }
+          syncLexTabs();
+          updateSubline();
+          newGame();
+        });
+      });
+      syncLexTabs();
+      updateSubline();
+    }
+
     function newGame() {
+      var bank = currentBank();
       QUESTIONS = pickRound(bank).map(function (qu) {
         var copy = {};
         var k;
@@ -388,6 +461,7 @@
         copy.hintPassage = hintFor(qu);
         return copy;
       });
+      rebuildActiveLadder();
       state = { i: 0, used50: false, usedPhone: false, usedAudience: false, locked: false };
       if (els.endModal) els.endModal.classList.remove("open");
       closeHintModal();
@@ -438,6 +512,7 @@
       ambience.wireFab(W.document.getElementById("milAudioFab"));
     }
 
+    wireLexTabs();
     newGame();
   }
 

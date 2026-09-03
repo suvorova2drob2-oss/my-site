@@ -202,9 +202,22 @@
       back.setAttribute("href", UNIT_BACK_HREF);
       back.removeAttribute("data-lex-back-mode");
     }
+    var LEX_THEME_GAME_KEYS = {
+      cards: true,
+      drop: true,
+      pick: true,
+      express: true,
+      echo: true
+    };
+
+    function setLexThemeBarVisible(on) {
+      document.body.classList.toggle("lex-theme-visible", !!on);
+    }
+
     function showGamesMenu() {
       document.body.classList.remove("lex-game-focus");
       document.body.classList.add("lex-games-menu");
+      setLexThemeBarVisible(false);
       const hostEl = gamesHostEl();
       if (hostEl) {
         hostEl.querySelectorAll(".folder").forEach(function (x) {
@@ -224,6 +237,7 @@
         if (typeof dropHideRoundNailed === "function") dropHideRoundNailed();
         if (typeof hideTrainerWin === "function") hideTrainerWin();
         if (typeof trainerHideReveal === "function") trainerHideReveal();
+        if (typeof expressStopTimer === "function") expressStopTimer();
       } catch (e) {}
       showGamesMenu();
       const gamesList = gamesHostEl();
@@ -548,13 +562,7 @@
       return resolveTrainerSticky(it).answer;
     }
     function dropGapAnswer(it) {
-      const wordLv = typeof dropWordLevel === "function" ? dropWordLevel() : 1;
-      const ctx = String((it && (it.contextSentence || it.phrase)) || "").trim();
-      const fullChunk = chunkForItem(it);
-      const gap = pickGapByLevel(fullChunk, wordLv, 3);
-      const carved = carveStickyFromContext(ctx, gap);
-      if (carved.answer) return carved.answer;
-      return gap;
+      return dropGapMeta(it).answer;
     }
     function trainerUsesSticky(it) {
       return !!(it && (it.stickyBefore != null || it.contextSentence || it.stickyAnswer || it.phrase));
@@ -705,13 +713,22 @@
         .join("\n");
     }
 
+    function themesHintText() {
+      return themes
+        .map(function (t) {
+          return t.short || t.label;
+        })
+        .filter(Boolean)
+        .join(" · ");
+    }
+
     const GAMES = [
       { key: "trainer", title: "Lexical trainer", desc: "3 levels (1 word → 2 words → full phrase) · 3 lives · win screen.", hint: "Folder → readings inside" },
-      { key: "cards", title: "Definition cards", desc: "Flashcards with mark status.", hint: "Tick Reading theme above" },
-      { key: "drop", title: "Lexical drop", desc: "3 word-levels · Round 4 dual lines · Enter to check.", hint: "All reading themes" },
-      { key: "pick", title: "Paraphrase pick", desc: "Pick exact phrase by paraphrase.", hint: "Tick themes above" },
-      { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Tick themes above" },
-      { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Tick themes above" },
+      { key: "cards", title: "Definition cards", desc: "Flashcards with mark status.", hint: themesHintText() || "Tick a topic above" },
+      { key: "drop", title: "Lexical drop", desc: "3 word-levels · Round 4 dual lines · Enter to check.", hint: themesHintText() || "All reading themes" },
+      { key: "pick", title: "Paraphrase pick", desc: "Pick exact phrase by paraphrase.", hint: themesHintText() || "Tick topics above" },
+      { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: themesHintText() || "Tick topics above" },
+      { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: themesHintText() || "Tick topics above" },
       { key: "match", title: "Pair Blitz", desc: "Quizlet-style match for paraphrase and text phrase.", hint: "Up to 10 pairs · multi-grids · timer" },
       { key: "wordbank", title: "Word Bank", desc: "Topic folders + progress + searchable bank.", hint: themes.map(function (t) { return t.short || t.label; }).join(" · ") || ((T0.short || "A") + " · " + (T1.short || "B") + " · " + (T2.short || "C")) }
     ];
@@ -952,15 +969,20 @@
       </div>
     `;
     const expressHtml = `
-      <div class="mini-game-box" id="expressBox">
+      <div class="mini-game-box express-shell" id="expressBox">
         <h3 class="mini-title">60-second express</h3>
-        <div class="mini-hud" id="expressHud"></div>
-        <p class="mini-hud" id="expressMode"></p>
+        <div class="express-head">
+          <div class="express-timer-badge" id="expressTimer" aria-live="polite">60</div>
+          <div class="express-head-meta">
+            <p class="express-mode-pill" id="expressMode">Ready</p>
+            <p class="express-score-line">Score <strong id="expressScore">0</strong></p>
+          </div>
+        </div>
         <div class="express-card" id="expressCard"></div>
-        <div class="echo-row">
-          <button class="echo-btn" id="expressKnowBtn" type="button">I knew it (+1)</button>
-          <button class="echo-btn" id="expressKeepBtn" type="button">Keep learning</button>
-          <button class="echo-btn" id="expressShowBtn" type="button">Show answer</button>
+        <div class="express-actions">
+          <button class="express-btn express-btn--good" id="expressKnowBtn" type="button">I knew it <span class="express-btn-sub">+1</span></button>
+          <button class="express-btn express-btn--muted" id="expressKeepBtn" type="button">Keep learning</button>
+          <button class="express-btn express-btn--outline" id="expressShowBtn" type="button">Show answer</button>
         </div>
         <div class="msg" id="expressMsg"></div>
       </div>
@@ -1092,6 +1114,7 @@
           host.classList.add("single-open");
           document.body.classList.remove("lex-games-menu");
           document.body.classList.add("lex-game-focus");
+          setLexThemeBarVisible(!!LEX_THEME_GAME_KEYS[key]);
           activeGameKey = key;
           setBackToVocabularyGames();
           var folderTitleEl = folder.querySelector("strong");
@@ -1128,7 +1151,7 @@
           pickBuildRound();
           pickRender();
         }
-        if (document.getElementById("expressHud")) {
+        if (document.getElementById("expressBox")) {
           expressBuild();
           expressStartTimer();
           expressRender();
@@ -1179,13 +1202,18 @@
     function cardsGetMarkClass(id) {
       return cardsMarks[id] === "know" ? "know" : cardsMarks[id] === "learn" ? "learn" : "none";
     }
+    function cardThemeIndexFromId(id) {
+      for (var i = 0; i < CARD_PREFIXES.length; i += 1) {
+        if (id.startsWith(CARD_PREFIXES[i])) return i;
+      }
+      return -1;
+    }
     function cardsActiveDeck() {
-      const t = miniThemeFlags();
-      const content = cardsDeck.filter((c) => {
-        if (c.id.startsWith("N::")) return t.phrasal;
-        if (c.id.startsWith("R::")) return t.crime;
-        if (c.id.startsWith("G::")) return t.stories;
-        return false;
+      const flags = miniThemeFlags();
+      const content = cardsDeck.filter(function (c) {
+        var ti = cardThemeIndexFromId(c.id);
+        if (ti < 0) return false;
+        return !!flags[ti];
       });
       if (!content.length) return [];
       return content.concat([CARDS_DONE_CARD]);
@@ -1525,46 +1553,125 @@
     }
 
     // 60-second express logic
-    const EXPRESS = { deck: [], i: 0, score: 0, endAt: 0, timer: 0, revealAnswer: false };
+    const EXPRESS = { deck: [], i: 0, score: 0, endAt: 0, timer: 0, revealAnswer: false, done: false };
+    function expressContextClue(it) {
+      const before = String(it.stickyBefore || "").trim();
+      const after = String(it.stickyAfter || "").trim();
+      if (before || after) return { before: before, after: after };
+      const ctx = String(it.contextSentence || "").trim();
+      const gap = String(it.stickyAnswer || it.phrase || fullAnswerOf(it)).trim();
+      if (ctx && gap) {
+        const carved = carveStickyFromContext(ctx, gap);
+        if (carved.before || carved.after) {
+          return { before: carved.before, after: carved.after };
+        }
+      }
+      return null;
+    }
+    function expressPromptHtml(cur) {
+      const hint = String(cur.item.hint || "").trim() || "Recall the phrase from the text.";
+      if (cur.type === "paraphrase") {
+        return (
+          '<div class="express-prompt">' +
+          '<span class="express-prompt-kicker">Paraphrase</span>' +
+          '<p class="express-prompt-text">' + escapeHtml(hint) + "</p>" +
+          "</div>"
+        );
+      }
+      const clue = expressContextClue(cur.item);
+      if (clue) {
+        return (
+          '<div class="express-prompt">' +
+          '<span class="express-prompt-kicker">From the text</span>' +
+          '<p class="express-prompt-text express-prompt-text--context">' +
+          escapeHtml(clue.before) +
+          '<span class="express-gap" aria-hidden="true">_______</span>' +
+          escapeHtml(clue.after) +
+          "</p>" +
+          "</div>"
+        );
+      }
+      return (
+        '<div class="express-prompt">' +
+        '<span class="express-prompt-kicker">Hint</span>' +
+        '<p class="express-prompt-text">' + escapeHtml(hint) + "</p>" +
+        "</div>"
+      );
+    }
     function expressBuild() {
-      EXPRESS.deck = shuffle(itemsForMiniGames()).slice(0, 24).map((it, idx) => ({
-        type: idx % 2 === 0 ? "paraphrase" : "gap",
-        item: { ...it, full: fullAnswerOf(it) }
-      }));
-      EXPRESS.i = 0; EXPRESS.score = 0; EXPRESS.endAt = Date.now() + 60000; EXPRESS.revealAnswer = false;
+      EXPRESS.deck = shuffle(itemsForMiniGames()).slice(0, 24).map(function (it, idx) {
+        return {
+          type: idx % 2 === 0 ? "paraphrase" : "gap",
+          item: Object.assign({}, it, { full: fullAnswerOf(it) })
+        };
+      });
+      EXPRESS.i = 0;
+      EXPRESS.score = 0;
+      EXPRESS.endAt = Date.now() + 60000;
+      EXPRESS.revealAnswer = false;
+      EXPRESS.done = false;
+    }
+    function expressStopTimer() {
+      if (EXPRESS.timer) {
+        clearInterval(EXPRESS.timer);
+        EXPRESS.timer = 0;
+      }
+    }
+    function expressSetActionsEnabled(on) {
+      ["expressKnowBtn", "expressKeepBtn", "expressShowBtn"].forEach(function (id) {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = !on;
+      });
     }
     function expressRender() {
-      const hud = document.getElementById("expressHud");
+      const timerEl = document.getElementById("expressTimer");
+      const scoreEl = document.getElementById("expressScore");
       const card = document.getElementById("expressCard");
       const msg = document.getElementById("expressMsg");
       const mode = document.getElementById("expressMode");
-      if (!hud || !card || !msg || !mode) return;
+      const showBtn = document.getElementById("expressShowBtn");
+      if (!timerEl || !scoreEl || !card || !msg || !mode) return;
       if (!EXPRESS.deck.length) expressBuild();
       const left = Math.max(0, Math.ceil((EXPRESS.endAt - Date.now()) / 1000));
-      hud.textContent = "Time: " + left + "s · Score: " + EXPRESS.score;
+      timerEl.textContent = String(left);
+      timerEl.classList.toggle("express-timer-badge--urgent", left > 0 && left <= 10);
+      scoreEl.textContent = String(EXPRESS.score);
       if (left <= 0 || EXPRESS.i >= EXPRESS.deck.length) {
-        card.textContent = "Time is up. Final score: " + EXPRESS.score;
-        mode.textContent = "Round complete.";
+        if (!EXPRESS.done) {
+          EXPRESS.done = true;
+          expressStopTimer();
+        }
+        expressSetActionsEnabled(false);
+        card.innerHTML =
+          '<div class="express-done">' +
+          '<span class="express-done-kicker">Time&rsquo;s up</span>' +
+          '<p class="express-done-score">Final score: <strong>' + EXPRESS.score + "</strong></p>" +
+          "</div>";
+        mode.textContent = "Round complete";
+        if (showBtn) showBtn.textContent = "Show answer";
         return;
       }
+      expressSetActionsEnabled(true);
       const cur = EXPRESS.deck[EXPRESS.i];
-      let body = "";
-      if (cur.type === "paraphrase") {
-        mode.textContent = "Mode: Paraphrase";
-        body = "<b>Paraphrase:</b> " + escapeHtml(cur.item.hint);
-      } else {
-        mode.textContent = "Mode: Phrase recall";
-        body = "<b>From text block:</b> " + escapeHtml(cur.item.full);
-      }
+      mode.textContent = cur.type === "paraphrase" ? "Paraphrase → phrase" : "Text gap → phrase";
+      let body = expressPromptHtml(cur);
       if (EXPRESS.revealAnswer) {
-        body += `<div class="express-answer-lock"><span class="lab">From the text</span><span class="ans">${escapeHtml(cur.item.full)}</span></div>`;
+        body +=
+          '<div class="express-answer-lock">' +
+          '<span class="lab">Target phrase</span>' +
+          '<span class="ans">' + escapeHtml(cur.item.full) + "</span>" +
+          "</div>";
       }
       card.innerHTML = body;
+      if (showBtn) {
+        showBtn.textContent = EXPRESS.revealAnswer ? "Answer shown" : "Show answer";
+        showBtn.disabled = EXPRESS.revealAnswer;
+      }
       msg.textContent = "";
       msg.className = "msg";
     }
     function expressStartTimer() {
-      if (EXPRESS.timer) clearInterval(EXPRESS.timer);
+      expressStopTimer();
       EXPRESS.timer = setInterval(expressRender, 400);
     }
     function expressNext() {
@@ -2303,10 +2410,83 @@
     }
     function dropSpeedForRound(r) {
       const n = Number(r) || 1;
-      if (n <= 1) return 7;
-      if (n === 2) return 10;
-      if (n === 3) return 13;
-      return 15;
+      if (n <= 1) return 32;
+      if (n === 2) return 42;
+      if (n === 3) return 52;
+      return 58;
+    }
+    function findChunkInContext(ctx, chunk) {
+      const c = String(ctx || "").trim();
+      const ch = String(chunk || "").trim();
+      if (!c || !ch) return "";
+      const ix = c.toLowerCase().indexOf(ch.toLowerCase());
+      if (ix >= 0) return c.slice(ix, ix + ch.length);
+      return "";
+    }
+    function alignGapCaseFromContext(ctx, gap) {
+      const g = String(gap || "").trim();
+      if (!g || !ctx) return g;
+      const ix = ctx.toLowerCase().indexOf(g.toLowerCase());
+      if (ix >= 0) return ctx.slice(ix, ix + g.length);
+      const words = g.split(/\s+/).filter(Boolean);
+      for (let i = 0; i < words.length; i += 1) {
+        const w = normalizeToken(words[i]);
+        if (!w) continue;
+        const wix = ctx.toLowerCase().indexOf(w.toLowerCase());
+        if (wix >= 0) return ctx.slice(wix, wix + w.length);
+      }
+      return g;
+    }
+    function dropChunkForItem(it) {
+      const sticky = String((it && it.stickyAnswer) || "").trim();
+      const ctx = String((it && (it.contextSentence || it.phrase)) || "").trim();
+      if (sticky && ctx) {
+        const inCtx = findChunkInContext(ctx, sticky);
+        if (inCtx) return inCtx;
+        return sticky;
+      }
+      return chunkForItem(it);
+    }
+    function dropGapMeta(it) {
+      const wordLv = dropWordLevel();
+      const ctx = String((it && (it.contextSentence || it.phrase)) || "").trim();
+      const sticky = String((it && it.stickyAnswer) || "").trim();
+      const chunk = dropChunkForItem(it);
+      let gap = pickGapByLevel(chunk, wordLv, 3);
+      gap = alignGapCaseFromContext(ctx, gap);
+      let carved = carveStickyFromContext(ctx, gap);
+      if (
+        carved.answer &&
+        ctx.toLowerCase().indexOf(String(carved.answer).toLowerCase()) >= 0
+      ) {
+        return { answer: carved.answer, before: carved.before, after: carved.after };
+      }
+      if (sticky) {
+        gap = pickGapByLevel(sticky, wordLv, 3);
+        gap = alignGapCaseFromContext(ctx, gap);
+        carved = carveStickyFromContext(ctx, gap);
+        if (
+          carved.answer &&
+          ctx.toLowerCase().indexOf(String(carved.answer).toLowerCase()) >= 0
+        ) {
+          return { answer: carved.answer, before: carved.before, after: carved.after };
+        }
+      }
+      if (it && it.stickyBefore != null && sticky) {
+        const fallbackGap = alignGapCaseFromContext(
+          ctx,
+          pickGapByLevel(sticky, wordLv, 3)
+        );
+        carved = carveStickyFromContext(ctx, fallbackGap);
+        if (carved.answer) {
+          return { answer: carved.answer, before: carved.before, after: carved.after };
+        }
+      }
+      return {
+        answer: gap || sticky || chunk,
+        before: ctx ? ctx + " " : "",
+        after: ""
+      };
     }
     function dropRoundLabel() {
       const r = Number(DROP.round) || 1;
@@ -2318,14 +2498,29 @@
     function dropBuildQueueFromBase() {
       const base = Array.isArray(DROP.basePool) ? DROP.basePool : [];
       DROP.pool = base.map(function (it) {
-        return Object.assign({}, it, { answer: dropGapAnswer(it) });
+        const meta = dropGapMeta(it);
+        return Object.assign({}, it, {
+          answer: meta.answer,
+          _dropBefore: meta.before,
+          _dropAfter: meta.after
+        });
       });
       DROP.q = shuffle(DROP.pool);
     }
     function escapeRegex(s) {
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
-    function buildDropLineHtml(sentence, answer) {
+    function buildDropLineHtml(sentence, answer, item) {
+      if (
+        item &&
+        item._dropBefore != null &&
+        item._dropAfter != null &&
+        String(item.answer || "").trim()
+      ) {
+        return (
+          escapeHtml(item._dropBefore) + "<b>___</b>" + escapeHtml(item._dropAfter)
+        );
+      }
       const safeSentence = String(sentence || "").trim();
       const safeAnswer = String(answer || "").trim();
       if (!safeSentence || !safeAnswer) return "Phrase: <b>___</b>";
@@ -2639,9 +2834,10 @@
     function dropMakeNode(drop) {
       const node = document.createElement("div");
       node.className = "drop-card";
+      node.style.top = "0";
       node.style.left = drop.x + "px";
-      node.style.transform = "translateY(" + drop.y + "px)";
-      node.innerHTML = buildDropLineHtml(drop.sentence, drop.item.answer);
+      node.style.transform = "translate3d(0," + drop.y.toFixed(2) + "px,0)";
+      node.innerHTML = buildDropLineHtml(drop.sentence, drop.item.answer, drop.item);
       DROP.nodes.set(drop.id, node);
       const canvas = document.getElementById("dropCanvas");
       if (canvas) canvas.appendChild(node);
@@ -2722,7 +2918,7 @@
         const d = DROP.activeDrops[i];
         d.y += DROP.speed * dtSec;
         const node = DROP.nodes.get(d.id);
-        if (node) node.style.transform = "translateY(" + d.y.toFixed(2) + "px)";
+        if (node) node.style.transform = "translate3d(0," + d.y.toFixed(2) + "px,0)";
         const cardH = node ? node.offsetHeight : 72;
         if (d.y + cardH >= loseY) toRemove.push(d.id);
       }
@@ -2895,7 +3091,7 @@
         pickRender();
       }
       if (e.target.id === "expressKnowBtn") {
-        if (Date.now() < EXPRESS.endAt && EXPRESS.i < EXPRESS.deck.length) {
+        if (!EXPRESS.done && Date.now() < EXPRESS.endAt && EXPRESS.i < EXPRESS.deck.length) {
           EXPRESS.score += 1;
           addScore(1);
           const cur = EXPRESS.deck[EXPRESS.i];
@@ -2904,14 +3100,14 @@
         expressNext();
       }
       if (e.target.id === "expressKeepBtn") {
-        if (EXPRESS.i < EXPRESS.deck.length) {
+        if (!EXPRESS.done && EXPRESS.i < EXPRESS.deck.length) {
           const cur = EXPRESS.deck[EXPRESS.i];
           if (cur) registerGameResult(cur.item.full, cur.item.hint, false);
         }
         expressNext();
       }
       if (e.target.id === "expressShowBtn") {
-        if (EXPRESS.i < EXPRESS.deck.length) {
+        if (!EXPRESS.done && EXPRESS.i < EXPRESS.deck.length && !EXPRESS.revealAnswer) {
           EXPRESS.revealAnswer = true;
           expressRender();
         }

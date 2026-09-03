@@ -99,34 +99,40 @@
       var inner = allPacks
         .map(function (p) {
           if (embedded) {
-            var cls = "sbp-pack-btn" + (p.id === activeId ? " here" : "");
+            var cls = "sbp-tab sbp-pack-btn" + (p.id === activeId ? " here" : "");
             return (
               '<button type="button" class="' +
               cls +
-              '" data-pack-id="' +
+              '" role="tab"' +
+              (p.id === activeId ? ' aria-selected="true"' : ' aria-selected="false"') +
+              ' data-pack-id="' +
               p.id +
-              '"' +
-              (p.id === activeId ? ' aria-current="true"' : "") +
-              ">" +
+              '">' +
               embedLabel(p) +
               "</button>"
             );
           }
           if (p.id === activeId) {
-            return '<span class="here" title="You are here">' + p.jumpLabel + "</span>";
+            return (
+              '<span class="sbp-tab here" role="tab" aria-selected="true" title="You are here">' +
+              embedLabel(p) +
+              "</span>"
+            );
           }
           return (
-            '<a href="index.html?pack=' +
+            '<a class="sbp-tab" role="tab" aria-selected="false" href="index.html?pack=' +
             encodeURIComponent(p.id) +
             '">' +
-            p.jumpLabel +
+            embedLabel(p) +
             "</a>"
           );
         })
         .join("");
       if (!embedded) {
         inner +=
-          '<a href="' + vocabHref + '">Vocabulary Games</a>';
+          '<a class="sbp-tab sbp-tab--hub" href="' +
+          vocabHref +
+          '">Vocabulary Games</a>';
       }
       return inner;
     }
@@ -142,14 +148,11 @@
           '<h1 id="sbpTitle"></h1>' +
           '<p class="sbp-sub" id="sbpSub"></p>' +
           "</div>" +
-          '<a class="sbp-back" id="sbpBack" href="#">← Back</a>' +
+          '<a class="back sbp-back" id="sbpBack" href="#">← Back</a>' +
           "</header>") +
       (hideDeckNav
         ? ""
-        : '<nav class="sbp-jump" id="sbpJumpNav" aria-label="Sticky board decks">' +
-          '<span class="label">' +
-          (embedded ? "Deck" : "Jump") +
-          "</span>" +
+        : '<nav class="sbp-jump sbp-deck-tabs" id="sbpJumpNav" aria-label="Sticky board decks" role="tablist">' +
           jumpInner(pack.id) +
           "</nav>") +
       '<div class="sbp-hud">' +
@@ -201,8 +204,7 @@
       if (hideDeckNav) return;
       var nav = document.getElementById("sbpJumpNav");
       if (!nav) return;
-      nav.innerHTML =
-        '<span class="label">' + (embedded ? "Deck" : "Jump") + "</span>" + jumpInner(activePack.id);
+      nav.innerHTML = jumpInner(activePack.id);
       wirePackButtons();
     }
 

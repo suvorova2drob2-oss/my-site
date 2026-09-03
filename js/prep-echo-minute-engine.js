@@ -154,7 +154,8 @@
    *     timer: HTMLElement,
    *     scoreLive: HTMLElement,
    *     summary?: HTMLElement | null,
-   *     status?: HTMLElement | null,
+     *     status?: HTMLElement | null,
+     *     setupStatus?: HTMLElement | null,
    *     transcript?: HTMLElement | null,
    *     typeInput?: HTMLInputElement | null,
    *     btnCheck?: HTMLElement | null,
@@ -205,6 +206,9 @@
     var scoreLiveEl = els.scoreLive;
     var summaryEl = els.summary || null;
     var statusEl = els.status || null;
+    var setupStatusEl = els.setupStatus || null;
+    var listeningEl = els.listening || null;
+    var fileHintEl = els.fileHint || null;
     var transcriptEl = els.transcript || null;
     var typeInput = els.typeInput || null;
     var btnCheck = els.btnCheck || null;
@@ -214,15 +218,26 @@
     var voicePickSelect = els.voicePickSelect || null;
     var micPickSelect = els.micPickSelect || null;
     var btnMicAllow = els.btnMicAllow || null;
+    var fsRoot =
+      els.fsRoot ||
+      (stageMain && stageMain.closest(".lex-sb-fs-overlay")) ||
+      null;
     var micPicker =
       W.PREP_MIC_DEVICE_PICKER && (micPickSelect || btnMicAllow)
         ? W.PREP_MIC_DEVICE_PICKER.create({
             select: micPickSelect,
             btnAllow: btnMicAllow,
-            statusEl: statusEl,
+            statusEl: setupStatusEl || statusEl,
             storageKey: opts.micPickStorageKey || "prepEchoMicDevice"
           })
         : null;
+
+    function setUserStatus(msg) {
+      var line = msg == null ? "" : String(msg);
+      if (roundActive && statusEl) statusEl.textContent = line;
+      else if (setupStatusEl) setupStatusEl.textContent = line;
+      else if (statusEl) statusEl.textContent = line;
+    }
     var voicePickStorageKey =
       opts.voicePickStorageKey || "prepEchoMinuteVoiceUri";
     var voiceGenderRadioName = opts.voiceGenderRadioName || "echoMinuteVoiceGender";
@@ -449,6 +464,50 @@
       updateTranscript();
     }
 
+    function setPlaying(active) {
+      if (fsRoot) fsRoot.classList.toggle("lex-sb-fs--echo-playing", !!active);
+    }
+
+    function syncFileHint() {
+      if (!fileHintEl) return;
+      var hint =
+        micPicker && typeof micPicker.protocolHint === "function"
+          ? micPicker.protocolHint()
+          : W.location && W.location.protocol === "file:"
+            ? "Mic works on localhost — run npm run dev, then open http://127.0.0.1:5173/"
+            : "";
+      if (!hint) {
+        fileHintEl.hidden = true;
+        return;
+      }
+      try {
+        if (W.sessionStorage.getItem("prepEchoFileHintDismissed") === "1") {
+          fileHintEl.hidden = true;
+          return;
+        }
+      } catch (eDismiss) {}
+      var textNode =
+        fileHintEl.querySelector(".vb-protocol-chip__text") || fileHintEl;
+      textNode.textContent = hint;
+      fileHintEl.hidden = false;
+    }
+
+    function syncListeningPill() {
+      var line = copy.listening || "";
+      var active = !!(roundActive && listeningAllowed && micShouldRun && micRec);
+      if (listeningEl) {
+        if (!active) {
+          listeningEl.hidden = true;
+          listeningEl.textContent = "";
+        } else {
+          listeningEl.hidden = false;
+          listeningEl.textContent = line;
+        }
+        return;
+      }
+      if (statusEl && active) statusEl.textContent = line;
+    }
+
     function cancelTts() {
       try {
         if (W.speechSynthesis) W.speechSynthesis.cancel();
@@ -457,19 +516,9 @@
 
     function updateTranscript() {
       if (!transcriptEl) return;
-      if (!roundActive) {
-        transcriptEl.textContent = copy.transcriptIdle || "\u2014";
-        return;
-      }
-      var SR = !!(W.SpeechRecognition || W.webkitSpeechRecognition);
-      if (!SR) {
-        transcriptEl.textContent = copy.noSrUi || copy.noSr;
-        return;
-      }
-      transcriptEl.textContent =
-        micShouldRun && micRec && listeningAllowed
-          ? copy.transcriptPrivacy || ""
-          : copy.transcriptIdle || "";
+      transcriptEl.textContent = "";
+      transcriptEl.hidden = true;
+      syncListeningPill();
     }
 
     function escPhrase(s) {
@@ -693,11 +742,13 @@
       var SR = W.SpeechRecognition || W.webkitSpeechRecognition;
       if (!SR) {
         if (statusEl) statusEl.textContent = copy.noSr;
+        syncListeningPill();
         updateTranscript();
         return;
       }
       micShouldRun = true;
-      if (statusEl) statusEl.textContent = copy.listening;
+      if (statusEl) statusEl.textContent = "";
+      syncListeningPill();
 
       if (!micRec) {
         micRec = new SR();
@@ -744,13 +795,10 @@
         summaryEl.textContent = "";
         summaryEl.hidden = true;
       }
-      if (statusEl) {
-        statusEl.textContent = "";
-        if (micPicker && micPicker.protocolHint()) {
-          statusEl.textContent = micPicker.protocolHint();
-        }
-      }
+      if (statusEl) statusEl.textContent = "";
+      syncFileHint();
       btnStart.disabled = false;
+      setPlaying(false);
       updateTranscript();
     }
 
@@ -774,6 +822,7 @@
       if (statusEl && fromTimer) statusEl.textContent = "";
 
       btnStart.disabled = false;
+      setPlaying(false);
       updateTranscript();
     }
 
@@ -799,6 +848,8 @@
 
       roundActive = true;
       btnStart.disabled = true;
+      setPlaying(true);
+      if (setupStatusEl) setupStatusEl.textContent = "";
       if (summaryEl) summaryEl.hidden = true;
 
       if (stageSub) stageSub.textContent = copy.roundLiveSub;
@@ -837,24 +888,22 @@
 
     btnStart.addEventListener("click", function () {
       if (roundActive) return;
-      function go() {
-        beginRound();
-      }
-      if (!micPicker) {
-        go();
-        return;
-      }
-      var chain = Promise.resolve();
-      if (micPickSelect && micPickSelect.disabled) {
-        chain = micPicker.refresh();
-      }
-      chain
-        .then(function (ok) {
-          if (ok === false) return false;
-          return micPicker.prime();
+      beginRound();
+      if (!micPicker) return;
+      micPicker
+        .refresh()
+        .catch(function () {
+          return false;
+        })
+        .then(function () {
+          return micPicker.prime().catch(function () {
+            return false;
+          });
         })
         .then(function (ok) {
-          if (ok !== false) go();
+          if (ok === false && roundActive) {
+            setUserStatus(copy.noSrUi || copy.noSr);
+          }
         });
     });
 
@@ -897,6 +946,7 @@
     }
 
     idleUi();
+    syncFileHint();
     refreshVoicePickUi();
     W.setTimeout(refreshVoicePickUi, 300);
 
@@ -906,6 +956,7 @@
         stopMic();
         stopClock();
         cancelTts();
+        setPlaying(false);
         if (micPicker) micPicker.release();
       }
     };

@@ -20,6 +20,14 @@
     return arr;
   }
 
+  function phraseSizeClass(text) {
+    var len = String(text || "").replace(/\s+/g, " ").trim().length;
+    if (len > 58) return " vb-cell-phrase--xs";
+    if (len > 38) return " vb-cell-phrase--sm";
+    if (len > 22) return " vb-cell-phrase--md";
+    return "";
+  }
+
   function mergeCopy(base, extra) {
     var o = {};
     var k;
@@ -71,6 +79,8 @@
     var clueEl = els.clue;
     var progressEl = els.progress || null;
     var statusEl = els.status || null;
+    var listeningEl = els.listening || null;
+    var fileHintEl = els.fileHint || null;
     var transcriptEl = els.transcript || null;
     var typeInput = els.typeInput || null;
     var btnCheck = els.btnCheck || null;
@@ -89,6 +99,10 @@
       (memeAsideEl && memeAsideEl.closest(".vb-split")) ||
       (grid && grid.closest(".vb-split")) ||
       null;
+    var fsRoot =
+      els.fsRoot ||
+      (grid && grid.closest(".lex-sb-fs-overlay")) ||
+      null;
     var clueLabelEl = els.clueLabel || null;
     var speechLang = opts.speechLang || "en-GB";
     var radioName = opts.radioName || "bingoTheme";
@@ -101,7 +115,7 @@
     var copy = mergeCopy(
       {
         needNine:
-          "\u0412 \u044d\u0442\u043e\u0439 \u0442\u0435\u043c\u0435 \u043c\u0435\u043d\u044c\u0448\u0435 9 \u0443\u043d\u0438\u043a\u0430\u043b\u044c\u043d\u044b\u0445 \u0444\u0440\u0430\u0437 \u2014 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0440\u0443\u0433\u0443\u044e \u0442\u0435\u043c\u0443 \u0438\u043b\u0438 \u00abAll word banks\u00bb.",
+          "\u0412 \u044d\u0442\u043e\u0439 \u0442\u0435\u043c\u0435 \u043d\u0435\u0442 \u0444\u0440\u0430\u0437 \u2014 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0440\u0443\u0433\u0443\u044e \u0442\u0435\u043c\u0443 \u0438\u043b\u0438 \u00abAll word banks\u00bb.",
         pickThemeStart:
           "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0435\u043c\u0443 Word Bank \u0438 \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430\u00bb. \u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0435\u043d\u0438\u0435 \u0441\u0432\u0435\u0440\u0445\u0443 \u2014 \u043f\u0440\u043e\u0438\u0437\u043d\u0435\u0441\u0438\u0442\u0435 \u0444\u0440\u0430\u0437\u0443 (\u043d\u0435\u0441\u0442\u0440\u043e\u0433\u043e) \u0438\u043b\u0438 \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u0435\u0451 \u0441\u043d\u0438\u0437\u0443.",
         pickThemeStartMeme:
@@ -125,12 +139,9 @@
           "\u0412\u0441\u0435 9 \u0444\u0440\u0430\u0437 \u043e\u0442\u043a\u0440\u044b\u0442\u044b. \u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430 \u2014 \u00ab\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430\u00bb.",
         winLine:
           "\u0413\u043e\u0442\u043e\u0432\u043e! \u0412\u0441\u0435 \u0440\u0443\u0431\u0430\u0448\u043a\u0438 \u0441\u043d\u044f\u0442\u044b.",
-        transcriptPrivacy:
-          "\u0422\u0440\u0430\u043d\u0441\u043a\u0440\u0438\u043f\u0442 \u0441\u043a\u0440\u044b\u0442 \u2014 \u0434\u043e\u0441\u0442\u0430\u0442\u043e\u0447\u043d\u043e \u043a\u043e\u0440\u043e\u0442\u043a\u043e\u0439 \u0444\u0440\u0430\u0437\u044b \u0438\u0437 \u043f\u0443\u043b\u0430 (\u043d\u0435 \u0432\u0435\u0441\u044c \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435).",
-        transcriptPrivacyIdle:
-          "\u041f\u043e\u0441\u043b\u0435 \u00ab\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430\u00bb \u043c\u0438\u043a\u0440\u043e\u0444\u043e\u043d \u0441\u043b\u0443\u0448\u0430\u0435\u0442 \u0431\u0435\u0437 \u043e\u0442\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f \u0442\u0435\u043a\u0441\u0442\u0430.",
-        transcriptPrivacyWin:
-          "\u2014",
+        transcriptPrivacy: "",
+        transcriptPrivacyIdle: "",
+        transcriptPrivacyWin: "",
         typeWrong:
           "\u041d\u0435 \u0441\u043e\u0432\u043f\u0430\u043b\u043e \u2014 \u043f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437 \u0438\u043b\u0438 \u043f\u0440\u043e\u0438\u0437\u043d\u0435\u0441\u0438\u0442\u0435."
       },
@@ -156,8 +167,31 @@
     var askOrder = null;
     var askStep = 0;
 
-    function escAttr(s) {
-      return escPhrase(s).replace(/"/g, "&quot;");
+    function setPlaying(active) {
+      if (fsRoot) fsRoot.classList.toggle("lex-sb-fs--playing", !!active);
+    }
+
+    function syncFileHint() {
+      if (!fileHintEl) return;
+      var hint = protocolHint();
+      if (!hint) {
+        fileHintEl.hidden = true;
+        return;
+      }
+      try {
+        if (W.sessionStorage.getItem("prepVbFileHintDismissed") === "1") {
+          fileHintEl.hidden = true;
+          return;
+        }
+      } catch (eDismiss) {}
+      var textNode =
+        fileHintEl.querySelector(".vb-protocol-chip__text") || fileHintEl;
+      textNode.textContent = hint;
+      fileHintEl.hidden = false;
+    }
+
+    function hideFileHint() {
+      if (fileHintEl) fileHintEl.hidden = true;
     }
 
     function themePreviewRows() {
@@ -211,17 +245,15 @@
         seenAns[ans2] = true;
         pick.push(row2);
       }
-      var fill = base.slice();
-      shuffleInPlace(fill);
-      while (pick.length < GRID && fill.length) {
-        for (pi = 0; pi < fill.length && pick.length < GRID; pi++) {
-          var row3 = fill[pi];
-          var ans3 = String(row3.ans || "").trim();
-          if (!ans3 || seenAns[ans3]) continue;
-          seenAns[ans3] = true;
-          pick.push(row3);
+      /* Fewer than 9 unique phrases — duplicate random picks to fill 3×3 */
+      if (pick.length && pick.length < GRID) {
+        var dupSource = pick.slice();
+        shuffleInPlace(dupSource);
+        var dupIdx = 0;
+        while (pick.length < GRID) {
+          pick.push(dupSource[dupIdx % dupSource.length]);
+          dupIdx++;
         }
-        if (fill.length <= 1) break;
       }
       shuffleInPlace(pick);
       return pick;
@@ -324,6 +356,7 @@
       score = 0;
       if (winBanner) winBanner.hidden = true;
       if (statusEl) statusEl.textContent = "";
+      syncListeningPill();
       if (typeInput) typeInput.value = "";
       syncModeLayout();
       clueEl.textContent = isMemeMode()
@@ -385,30 +418,45 @@
         } catch (e0) {}
         micRec = null;
       }
+      syncListeningPill();
       updateTranscript();
+    }
+
+    function syncListeningPill() {
+      var line = isMemeMode() ? copy.listeningMeme : copy.listening;
+      var active =
+        !!(board && askStep < GRID && micShouldRun && micRec);
+      if (listeningEl) {
+        if (!active) {
+          listeningEl.hidden = true;
+          listeningEl.textContent = "";
+        } else {
+          listeningEl.hidden = false;
+          listeningEl.textContent = line;
+        }
+        return;
+      }
+      if (statusEl && active) statusEl.textContent = line;
     }
 
     function updateTranscript() {
       if (!transcriptEl) return;
+      transcriptEl.classList.remove("vb-transcript--live");
       if (!board || askStep >= GRID) {
-        transcriptEl.textContent =
-          board && askStep >= GRID
-            ? copy.transcriptPrivacyWin || "\u2014"
-            : copy.transcriptPrivacyIdle || "\u2014";
+        transcriptEl.textContent = "";
+        transcriptEl.hidden = true;
         return;
       }
       var SR = !!(W.SpeechRecognition || W.webkitSpeechRecognition);
       if (!SR) {
         transcriptEl.textContent = copy.noSrUi || copy.noSr;
+        transcriptEl.hidden = false;
         return;
       }
-      transcriptEl.textContent =
-        micShouldRun && micRec
-          ? (isMemeMode() ? copy.listeningMeme : copy.listening) +
-            (micInterimLive
-              ? " \u00b7 \u2026" + String(micInterimLive).trim().slice(0, 48)
-              : "")
-          : copy.transcriptPrivacyIdle || "";
+      /* Never mirror live SR text — match stays in micBuffer only (privacy). */
+      transcriptEl.textContent = micShouldRun && micRec ? copy.transcriptPrivacy || "" : "";
+      transcriptEl.hidden = true;
+      syncListeningPill();
     }
 
     function activeCellMatchesHay(hay, forVoice) {
@@ -443,10 +491,11 @@
         ? speech.normalizeSpeech(micBuffer)
         : String(micBuffer || "").toLowerCase();
       if (!hay || hay.length < 3) return;
-      if (statusEl) statusEl.textContent = copy.heardChecking || copy.listening;
+      if (statusEl) statusEl.textContent = copy.heardChecking || "";
       if (!activeCellMatchesHay(hay, true)) {
-        if (statusEl) statusEl.textContent = copy.listening;
+        if (statusEl) statusEl.textContent = "";
         micBuffer = "";
+        syncListeningPill();
         return;
       }
       var ai = activeCellIndex();
@@ -476,7 +525,6 @@
           }
         }
         micInterimLive = interimSnap;
-        updateTranscript();
         if (newFinals) {
           micBuffer += newFinals;
           if (micBuffer.length > 12000) micBuffer = micBuffer.slice(-7000);
@@ -519,9 +567,8 @@
       playGoodJob(function () {
         revealCellAt(bi, true, true);
         micPausedForFeedback = false;
-        if (statusEl && board && askStep < GRID) {
-          statusEl.textContent = isMemeMode() ? copy.listeningMeme : copy.listening;
-        }
+        if (statusEl && board && askStep < GRID) statusEl.textContent = "";
+        syncListeningPill();
         updateTranscript();
       });
     }
@@ -640,6 +687,7 @@
         if (item.revealed) {
           var phraseCls =
             "vb-cell-phrase" +
+            phraseSizeClass(item.ans) +
             (item.bingoMode === "meme" ? " vb-cell-phrase--line" : "");
           el.innerHTML =
             '<span class="' + phraseCls + '">' + escPhrase(item.ans) + "</span>";
@@ -674,13 +722,7 @@
         if (!isMemeMode()) clueEl.textContent = copy.clueDone;
         if (progressEl) {
           progressEl.textContent =
-            GRID +
-            " / " +
-            GRID +
-            " \u00b7 \u041e\u0447\u043a\u0438: " +
-            score +
-            " / " +
-            GRID;
+            GRID + " / " + GRID + " · Score " + score + " / " + GRID;
         }
         updateTranscript();
         updateMemeRail();
@@ -692,13 +734,7 @@
       }
       if (progressEl) {
         progressEl.textContent =
-          revealedCount() +
-          " / " +
-          GRID +
-          " \u00b7 \u041e\u0447\u043a\u0438: " +
-          score +
-          " / " +
-          GRID;
+          revealedCount() + " / " + GRID + " · Score " + score + " / " + GRID;
       }
       if (winBanner) winBanner.hidden = true;
       updateTranscript();
@@ -736,7 +772,8 @@
         micRec = new SR();
         bindMicHandlers(micRec);
       }
-      if (statusEl) statusEl.textContent = isMemeMode() ? copy.listeningMeme : copy.listening;
+      if (statusEl) statusEl.textContent = "";
+      syncListeningPill();
       try {
         micRec.start();
       } catch (eS) {
@@ -758,15 +795,13 @@
 
     function startMic() {
       if (!board || askStep >= GRID) return;
-      var hint = protocolHint();
-      if (hint && statusEl && !micShouldRun) {
-        statusEl.textContent = hint;
-      }
       startMicInner();
     }
 
     function newGame() {
       stopMic();
+      hideFileHint();
+      setPlaying(true);
       speechCooldownUntil = 0;
       micPausedForFeedback = false;
       clearSpeechSettleTimer();
@@ -779,12 +814,12 @@
       var base = rows.filter(function (r) {
         return r.ans && !/^PLACEHOLDER/i.test(String(r.ans));
       });
-      if (base.length < GRID) {
+      if (!base.length) {
         W.alert(copy.needNine);
         return;
       }
       var pick = pickNineRows(base);
-      if (pick.length < GRID) {
+      if (!pick.length || pick.length < GRID) {
         W.alert(copy.needNine);
         return;
       }
@@ -814,8 +849,8 @@
     renderGrid();
     updateTranscript();
     updateMemeRail();
-    var idleHint = protocolHint();
-    if (idleHint && statusEl) statusEl.textContent = idleHint;
+    syncFileHint();
+    setPlaying(false);
 
     btnNew.addEventListener("click", newGame);
 

@@ -40,7 +40,10 @@ const DECK_PATHS = {
   "ege-reading-mc": "/ege/ege-reading-multiple-choice.html",
   "ege-grammar-exam": "/ege/ege-grammar-exam.html",
   "ege-word-formation-exam": "/ege/ege-word-formation-exam.html",
-  "ege-lexis-exam": "/ege/ege-lexis-exam.html"
+  "ege-lexis-exam": "/ege/ege-lexis-exam.html",
+  "fce-u1-ttt-gaps": "/unit1-class-games/tic-tac-toe-gaps.html",
+  "fce-u1-ttt-pair": "/unit1-class-games/pair-questions.html",
+  "fce-u1-pict": "/class-games/alias-pictionary.html"
 };
 
 function deckPrefixOf(deckId) {
@@ -49,12 +52,77 @@ function deckPrefixOf(deckId) {
   return cut >= 0 ? raw.slice(0, cut) : raw;
 }
 
-function studentInviteUrl(roomCode, deckId, unitId) {
+function normalizePublicOrigin(raw) {
+  const s = String(raw || "")
+    .trim()
+    .replace(/\/$/, "");
+  if (!/^https?:\/\//i.test(s)) return "";
+  return s;
+}
+
+function packFromDeckId(deckId) {
+  const raw = String(deckId || "");
+  const cut = raw.indexOf(":");
+  if (cut < 0) return "";
+  const pack = raw.slice(cut + 1).trim();
+  return pack && pack !== "all" ? pack : "";
+}
+
+/** Balance X/O automatically — students must not pick a team. */
+function countTeams(room) {
+  let x = 0;
+  let o = 0;
+  if (!room || !room.players) return { x: 0, o: 0 };
+  room.players.forEach(function (p) {
+    if (!p || p.isHost) return;
+    if (p.team === "X") x += 1;
+    else if (p.team === "O") o += 1;
+  });
+  return { x: x, o: o };
+}
+
+function autoTeamForRoom(room) {
+  const c = countTeams(room);
+  return c.x <= c.o ? "X" : "O";
+}
+
+function ensurePlayerTeam(room, player) {
+  if (!player || player.isHost) return "";
+  if (player.team === "X" || player.team === "O") return player.team;
+  player.team = autoTeamForRoom(room);
+  return player.team;
+}
+
+/** Fix missing or skewed X/O in lobby (stable join order). */
+function ensureAllPlayerTeams(room) {
+  if (!room || !room.players) return;
+  if (room.phase && room.phase !== "lobby") return;
+  const students = [];
+  room.players.forEach(function (p, id) {
+    if (p && !p.isHost) students.push({ id: id, p: p });
+  });
+  if (!students.length) return;
+  students.forEach(function (row) {
+    ensurePlayerTeam(room, row.p);
+  });
+  const c = countTeams(room);
+  const n = students.length;
+  if (n >= 2 && ((c.x >= 2 && c.o === 0) || (c.o >= 2 && c.x === 0))) {
+    students.forEach(function (row, i) {
+      row.p.team = i % 2 === 0 ? "X" : "O";
+    });
+  }
+}
+
+function studentInviteUrl(roomCode, deckId, unitId, originOverride) {
+  const origin = normalizePublicOrigin(originOverride) || PUBLIC_ORIGIN;
   const prefix = deckPrefixOf(deckId);
   const page = DECK_PATHS[prefix] || "/ege/ege-listening-matching.html";
-  let url = PUBLIC_ORIGIN + page + "?room=" + encodeURIComponent(roomCode);
+  let url = origin + page + "?room=" + encodeURIComponent(roomCode) + "&as=student";
   const unit = String(unitId || "").trim();
   if (unit) url += "&unit=" + encodeURIComponent(unit);
+  const pack = packFromDeckId(deckId);
+  if (pack) url += "&pack=" + encodeURIComponent(pack);
   return url;
 }
 
@@ -153,6 +221,7 @@ function snapshot(roomCode) {
   const code = normalizeRoom(roomCode);
   const r = rooms.get(code);
   if (!r) return null;
+  ensureAllPlayerTeams(r);
   const leaderboard = [];
   const players = [];
   r.players.forEach(function (p, id) {
@@ -167,7 +236,7 @@ function snapshot(roomCode) {
       totalCount: Number(p.totalCount || 0),
       items: Array.isArray(p.items) ? p.items : []
     });
-    players.push({ id: id, displayName: p.displayName });
+    players.push({ id: id, displayName: p.displayName, team: p.team || "" });
   });
   leaderboard.sort(function (a, b) {
     return b.score - a.score || a.displayName.localeCompare(b.displayName);
@@ -185,7 +254,12 @@ function snapshot(roomCode) {
     cardIndex: r.cardIndex,
     leaderboard: leaderboard,
     players: players,
-    allSubmitted: allSubmitted
+    allSubmitted: allSubmitted,
+    gameState: r.gameState || null,
+    gameStateVersion: Number(r.gameStateVersion || 0),
+    pendingTttActions: Array.isArray(r.pendingTttActions)
+      ? r.pendingTttActions.slice(-20)
+      : []
   };
 }
 
@@ -209,14 +283,18 @@ function handleOp(op, body) {
         phase: "lobby",
         cardIndex: 0,
         players: new Map(),
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        gameState: null,
+        gameStateVersion: 0,
+        pendingTttActions: []
       });
       // Teacher is host only — not a player on the leaderboard.
       const unitId = String((body && body.unitId) || "").trim();
+      const reqOrigin = normalizePublicOrigin(body && body.requestOrigin);
       return {
         roomCode: roomCode,
         hostToken: hostToken,
-        studentUrl: studentInviteUrl(roomCode, deckId, unitId)
+        studentUrl: studentInviteUrl(roomCode, deckId, unitId, reqOrigin)
       };
     }
     case "joinRoom": {
@@ -263,15 +341,18 @@ function handleOp(op, body) {
 
       if (existingId) {
         const ex = r.players.get(existingId);
+        ensureAllPlayerTeams(r);
+        const team = ex.team === "O" ? "O" : "X";
         return {
           playerId: existingId,
           displayName: ex.displayName,
           attempts: Number(ex.attempts || 0),
+          team: team,
           rejoined: true
         };
       }
       const playerId = "p_" + randToken(8);
-      r.players.set(playerId, {
+      const row = {
         displayName: displayName,
         score: 0,
         isHost: false,
@@ -279,9 +360,18 @@ function handleOp(op, body) {
         attempts: 0,
         items: [],
         correctCount: 0,
-        totalCount: 0
-      });
-      return { playerId: playerId, displayName: displayName, attempts: 0 };
+        totalCount: 0,
+        team: ""
+      };
+      r.players.set(playerId, row);
+      ensureAllPlayerTeams(r);
+      const assignedTeam = r.players.get(playerId).team || "X";
+      return {
+        playerId: playerId,
+        displayName: displayName,
+        attempts: 0,
+        team: assignedTeam
+      };
     }
     case "renamePlayer": {
       const code = normalizeRoom(body && body.roomCode);
@@ -410,6 +500,87 @@ function handleOp(op, body) {
       if (!body || body.hostToken !== r.hostToken) throw new Error("Host only");
       rooms.delete(code);
       return { closed: true, roomCode: code };
+    }
+    case "setGameState": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      if (!body || body.hostToken !== r.hostToken) throw new Error("Host only");
+      const gs = body && body.gameState;
+      if (gs != null && typeof gs !== "object") throw new Error("gameState must be object");
+      if (gs && JSON.stringify(gs).length > 120000) throw new Error("gameState too large");
+      const base = body && body.baseVersion;
+      if (base != null && Number(base) < Number(r.gameStateVersion || 0)) {
+        throw new Error("conflict: stale gameState");
+      }
+      r.gameState = gs || null;
+      r.gameStateVersion = Number(r.gameStateVersion || 0) + 1;
+      if (body && body.clearPending) r.pendingTttActions = [];
+      return { gameStateVersion: r.gameStateVersion };
+    }
+    case "tttSubmit": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      const playerId = String((body && body.playerId) || "");
+      const p = r.players.get(playerId);
+      if (!p || p.isHost) throw new Error("Player not found");
+      if (!Array.isArray(r.pendingTttActions)) r.pendingTttActions = [];
+      r.pendingTttActions.push({
+        playerId: playerId,
+        displayName: p.displayName,
+        team: p.team || "",
+        kind: String((body && body.kind) || "mcq").slice(0, 12),
+        cell: Math.max(-1, Math.min(8, Math.floor(Number(body.cell)))),
+        value: String((body && body.value) != null ? body.value : "").slice(0, 240),
+        at: Date.now()
+      });
+      if (r.pendingTttActions.length > 40) {
+        r.pendingTttActions = r.pendingTttActions.slice(-40);
+      }
+      return null;
+    }
+    case "pictSubmit": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      const playerId = String((body && body.playerId) || "");
+      const p = r.players.get(playerId);
+      if (!p || p.isHost) throw new Error("Player not found");
+      const phrase = String((body && body.phrase) || "")
+        .trim()
+        .slice(0, 120);
+      const imageData = String((body && body.imageData) || "");
+      if (!phrase || !imageData) throw new Error("phrase and imageData required");
+      if (imageData.length > 120000) throw new Error("Image too large");
+      if (!r.gameState || r.gameState.phase !== "draw") {
+        throw new Error("Not in drawing phase");
+      }
+      if (!r.gameState.submissions || typeof r.gameState.submissions !== "object") {
+        r.gameState.submissions = {};
+      }
+      r.gameState.submissions[playerId] = {
+        displayName: p.displayName,
+        phrase: phrase,
+        imageData: imageData,
+        ready: true,
+        at: Date.now()
+      };
+      r.gameStateVersion = Number(r.gameStateVersion || 0) + 1;
+      return { gameStateVersion: r.gameStateVersion };
+    }
+    case "setPlayerTeam": {
+      const code = normalizeRoom(body && body.roomCode);
+      const r = rooms.get(code);
+      if (!r) throw new Error("Room not found");
+      const playerId = String((body && body.playerId) || "");
+      const p = r.players.get(playerId);
+      if (!p || p.isHost) throw new Error("Player not found");
+      const team = String((body && body.team) || "")
+        .toUpperCase()
+        .slice(0, 1);
+      p.team = team === "X" || team === "O" ? team : "";
+      return { playerId: playerId, team: p.team };
     }
     case "unoResetRoom": {
       const id = normalizeAssignId(body && body.assignId);

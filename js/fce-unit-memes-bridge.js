@@ -59,7 +59,8 @@
             label: p.label,
             cards: prefixImg(p.cards || [], "unit1-vocabulary/lifestyle/memes/")
           };
-        })
+        }),
+        comics: (W.UNIT1_LIFESTYLE_MEME_COMICS || []).slice()
       });
     }
     return decks;

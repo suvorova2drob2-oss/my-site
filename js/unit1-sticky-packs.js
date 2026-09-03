@@ -176,7 +176,7 @@
   var PACKS = [
     {
       id: "lifestyle",
-      jumpLabel: "Lifestyle sticky",
+      jumpLabel: "Lifestyle",
       title: "Sticky board — Lifestyle (reading)",
       subtitleHtml:
         "<strong>Lucas, Maja, Reo, Ben</strong> · one word per gap · <strong>Context</strong> = full sentence.",
@@ -187,7 +187,7 @@
     },
     {
       id: "clothes",
-      jumpLabel: "Clothes sticky",
+      jumpLabel: "Clothes",
       title: "Sticky board — Clothes (SB 1.1)",
       subtitleHtml:
         "<strong>Speakers 1–5</strong> · one word per gap · <strong>Context</strong> = script line.",
@@ -198,7 +198,7 @@
     },
     {
       id: "get",
-      jumpLabel: "Get sticky",
+      jumpLabel: "Get",
       title: "Sticky board — Get phrases",
       subtitleHtml:
         "<strong>Get</strong> phrases · one word per gap · <strong>Context</strong> = example sentence.",
@@ -209,7 +209,7 @@
     },
     {
       id: "run",
-      jumpLabel: "Run sticky",
+      jumpLabel: "Run",
       title: "Sticky board — Run expressions",
       subtitleHtml:
         "<strong>Run</strong> collocations · one word per gap · <strong>Context</strong> = coursebook example.",

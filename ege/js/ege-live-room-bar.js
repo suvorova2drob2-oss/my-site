@@ -1682,6 +1682,7 @@
       .createRoom({
         deckId: deckId(),
         hostDisplayName: "Teacher",
+        requestOrigin: W.location.origin,
         unitId: (function () {
           try {
             return String(state.getUnitId() || "");

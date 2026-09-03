@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic-tac-toe + gaps · Unit 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../css/fce-tic-tac-toe-gaps.css?v=2" />
+  <link rel="stylesheet" href="../css/fce-class-live-ttt.css?v=9" />
+</head>
+<body class="ttt-body">
+  <div class="ttt-app">
+    <header class="ttt-head">
+      <h1>Tic-tac-toe + gaps</h1>
+      <p class="en">Teams <strong>X</strong> / <strong>O</strong> · pick a square · answer A–D · correct = your mark.</p>
+      <details class="ttt-rules-fold">
+        <summary>Full rules</summary>
+        <p class="en">Each go = one named player. Wrong answer passes the go to the other team. Hint opens the source text (like Millionaire).</p>
+      </details>
+    </header>
+    <p class="ttt-nav">
+      <a class="back" href="../unit1-class-games.html">&larr; Class games</a>
+      ·
+      <a href="pair-questions.html">Pair questions · Tic-tac-toe</a>
+    </p>
+
+    <div class="ttt-setup-block" id="tttSetupBlock">
+      <nav class="ttt-pack-tabs" id="tttPackTabs" aria-label="Vocabulary deck">
+        <button type="button" class="ttt-pack-tab is-active" data-pack="all">All</button>
+        <button type="button" class="ttt-pack-tab" data-pack="lifestyle">Lifestyle</button>
+        <button type="button" class="ttt-pack-tab" data-pack="clothes">Clothes</button>
+        <button type="button" class="ttt-pack-tab" data-pack="get">Get</button>
+        <button type="button" class="ttt-pack-tab" data-pack="run">Run</button>
+      </nav>
+      <p class="ttt-deck-meta" id="tttDeckMeta">Loading deck…</p>
+
+      <section id="tttSetup" class="ttt-setup">
+        <p class="sub">Local: type rosters below. <strong>Live</strong>: students join with name only — teams assigned automatically.</p>
+        <div class="ttt-form2 ttt-form2--split">
+          <div>
+            <div class="lbl">Crosses (X)</div>
+            <textarea id="tttRosterX" maxlength="2000" placeholder="Anna&#10;Ben" rows="3" autocomplete="off"></textarea>
+          </div>
+          <div>
+            <div class="lbl">Noughts (O)</div>
+            <textarea id="tttRosterO" maxlength="2000" placeholder="Chris&#10;Dana" rows="3" autocomplete="off"></textarea>
+          </div>
+        </div>
+        <p class="ttt-err" id="tttErr"></p>
+        <button type="button" class="ttt-btn" id="tttBtnStart">Start game</button>
+      </section>
+    </div>
+
+    <section class="ttt-game" id="tttScreenGame" aria-hidden="true">
+      <div class="ttt-play-bar">
+        <div class="ttt-play-bar-main">
+          <span class="ttt-mark" id="tttTurnMark" aria-hidden="true">X</span>
+          <div class="ttt-play-bar-text">
+            <p class="ttt-turn-k" id="tttTurnKicker">Now playing</p>
+            <p class="ttt-turn-big is-x" id="tttTurnBigName" aria-live="assertive">—</p>
+          </div>
+        </div>
+        <p class="ttt-turn-hint" id="tttTurnSym">Pick a square, then A–D.</p>
+        <div class="ttt-roster-pool" id="tttTurnRoster"></div>
+      </div>
+
+      <p class="ttt-msg" id="tttMsg"></p>
+
+      <div class="ttt-stage">
+        <div class="ttt-board-shell">
+          <div class="ttt-board" id="tttBoard" role="grid" aria-label="3 by 3 board"></div>
+        </div>
+
+        <div class="ttt-q-panel">
+          <p class="ttt-q-meta" id="tttQMeta"></p>
+          <h3 class="ttt-q-head" id="tttQHead">Gap question</h3>
+          <p class="ttt-q-text" id="tttQText" hidden></p>
+          <p class="ttt-q-placeholder" id="tttQPl">Tap an empty square on the board.</p>
+          <div class="ttt-answers" id="tttAnswers" hidden></div>
+          <div class="ttt-judge-panel" id="tttJudgePanel" hidden>
+            <button type="button" class="ttt-judge-btn ttt-judge-btn--ok" id="tttBtnJudgeOk">Got it — mark!</button>
+            <button type="button" class="ttt-judge-btn ttt-judge-btn--pass" id="tttBtnJudgePass">Not quite — pass</button>
+          </div>
+          <div class="ttt-hint-row">
+            <button type="button" class="ttt-btn-hint" id="tttBtnCancelCell" hidden>Change square</button>
+            <button type="button" class="ttt-btn-hint" id="tttBtnHint" disabled>Hint · source text</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ttt-foot-actions">
+        <button type="button" class="ttt-btn ttt-btn-sec" id="tttBtnReset">New round</button>
+        <button type="button" class="ttt-btn ttt-btn-sec" id="tttBtnBack">Teams &amp; deck</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="ttt-modal" id="tttHintModal" role="dialog" aria-modal="true" aria-labelledby="tttHintTitle">
+    <div class="ttt-hint-panel">
+      <div class="ttt-hint-hd">
+        <h3 id="tttHintTitle">Source text</h3>
+        <button type="button" class="ttt-hint-close" id="tttHintClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="ttt-hint-body" id="tttHintBody"></div>
+    </div>
+  </div>
+
+  <script src="../js/unit1-get-lexis.js"></script>
+  <script src="../js/unit1-run-lexis.js"></script>
+  <script src="../js/unit1-lifestyle-lexis.js"></script>
+  <script src="../js/unit1-clothes-lexis.js"></script>
+  <script src="../js/unit1-lifestyle-retell-blocks.js"></script>
+  <script src="../js/unit1-clothes-retell-blocks.js"></script>
+  <script src="../js/unit1-millionaire-data.js?v=2"></script>
+  <script src="../js/unit1-class-games-data.js?v=2"></script>
+  <script src="../js/live-game-api.js?v=2"></script>
+  <script src="../js/live-game-api-http.js"></script>
+  <script src="../js/fce-class-live-config.js?v=2"></script>
+  <script src="../js/fce-tic-tac-toe-gaps-engine.js?v=4"></script>
+  <script src="../js/fce-class-live-ttt.js?v=13"></script>
+  <script>
+    (function () {
+      var qs = new URLSearchParams(window.location.search);
+      var pack = qs.get("pack") || "all";
+      var engineApi = null;
+      var liveApi = null;
+
+      function mountEngine() {
+        engineApi = FCE_TTT_GAPS.mount({
+          getPool: function () {
+            return U1_CLASS_GAMES.tttPool(pack);
+          },
+          hintPassageFor: function (qu) {
+            return U1_hintPassageForQuestion(qu);
+          },
+          live: liveApi
+        });
+        if (engineApi && engineApi.setPack) engineApi.setPack(pack);
+      }
+
+      liveApi = FceClassLiveTtt.mount({
+        deckPrefix: "fce-u1-ttt-gaps",
+        getEngine: function () {
+          return engineApi;
+        },
+        getPack: function () {
+          return pack;
+        }
+      });
+
+      mountEngine();
+
+      if (qs.get("pack")) {
+        [].forEach.call(
+          document.querySelectorAll("#tttPackTabs .ttt-pack-tab"),
+          function (b) {
+            b.classList.toggle("is-active", b.getAttribute("data-pack") === pack);
+          }
+        );
+      }
+
+      document.getElementById("tttPackTabs").addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-pack]");
+        if (!btn) return;
+        pack = btn.getAttribute("data-pack") || "all";
+        [].forEach.call(
+          document.querySelectorAll("#tttPackTabs .ttt-pack-tab"),
+          function (b) {
+            b.classList.toggle("is-active", b === btn);
+          }
+        );
+        if (engineApi && engineApi.setPack) engineApi.setPack(pack);
+        if (engineApi && engineApi.refreshPool) engineApi.refreshPool();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -185,7 +185,9 @@
         W.FCE_VOCAB_MEME_PARTS.mount({
           rootId: flipMountId,
           flipMountId: flipMountId + "-inner",
-          parts: d.parts || []
+          comicMountId: flipMountId + "-comic",
+          parts: d.parts || [],
+          comics: d.comics || []
         });
         return;
       }
@@ -238,7 +240,7 @@
       if (typeof formatMeta === "function") {
         return formatMeta(n, mode);
       }
-      return n + " pairs · need 9 min.";
+      return n + " pairs · 3×3 grid" + (n < 9 ? " · duplicates fill gaps" : "");
     }
 
     if (rail && W.PREP_SNOWBALL_PHRASES && W.PREP_SNOWBALL_PHRASES.fillThemeRail) {
@@ -346,14 +348,18 @@
           : 0;
       meta.textContent =
         mode === "meme"
-          ? n + " meme lines · need 9 min."
-          : n + " hint→phrase pairs · need 9 min.";
+          ? n + " meme lines · 3×3" + (n < 9 ? " · duplicates fill gaps" : "")
+          : n + " hint→phrase pairs · 3×3" + (n < 9 ? " · duplicates fill gaps" : "");
     }
 
     function bingoPanelHtml() {
       return (
         '<div class="lex-sb-panel lex-sb-panel--fs lex-sb-vbingo">' +
         '<section class="vb-fs-setup" aria-label="Theme and controls">' +
+        '<div class="vb-protocol-chip" id="lexSbBingoFileHint" hidden>' +
+        '<span class="vb-protocol-chip__text"></span>' +
+        '<button type="button" class="vb-protocol-chip__x" id="lexSbBingoFileHintX" aria-label="Dismiss">×</button>' +
+        "</div>" +
         '<div class="vb-fs-setup-top">' +
         '<p class="lex-sb-wb-head">Theme</p>' +
         '<div class="vb-mode-seg" role="radiogroup" aria-label="Bingo mode">' +
@@ -379,24 +385,30 @@
         '<p class="deck-meta" id="lexSbBingoMeta"></p>' +
         '<div class="lex-sb-actions vb-fs-actions">' +
         '<button type="button" class="lex-sb-btn-main" id="lexSbBingoNew">New game</button>' +
-        '<button type="button" class="lex-sb-btn-sec" id="lexSbBingoDontKnow">I don\'t know</button>' +
         "</div>" +
         "</section>" +
         '<div class="vb-split vb-fs-split">' +
         '<section class="vb-split-play vb-fs-play" aria-label="Voice bingo grid">' +
+        '<div class="vb-fs-play-head">' +
+        '<p class="progress-row vb-score-badge" id="lexSbBingoProgress"></p>' +
+        '<div class="vb-fs-clue-wrap">' +
         '<p class="lex-sb-clue-label" id="lexSbBingoClueLabel">Definition</p>' +
         '<div class="vb-fs-clue" id="lexSbBingoClue" aria-live="polite"></div>' +
+        '<p class="vb-listening-pill" id="lexSbBingoListening" hidden aria-live="polite"></p>' +
+        "</div></div>" +
         '<div class="vb-grid lex-sb-vb-grid vb-fs-grid" id="lexSbBingoGrid"></div>' +
-        '<p class="progress-row" id="lexSbBingoProgress"></p>' +
-        '<p class="mic-label">Mic · say a short phrase from the pool</p>' +
-        '<p class="vb-file-hint" id="lexSbBingoFileHint" hidden></p>' +
-        '<p class="vb-transcript vb-fs-transcript" id="lexSbBingoTranscript"></p>' +
+        '<div class="vb-fs-play-foot">' +
+        '<div class="vb-fs-play-actions">' +
+        '<button type="button" class="lex-sb-btn-sec vb-fs-dontknow" id="lexSbBingoDontKnowPlay">I don\'t know</button>' +
+        "</div>" +
+        '<p class="vb-transcript vb-fs-transcript" id="lexSbBingoTranscript" hidden aria-hidden="true"></p>' +
         '<div class="vb-type-row vb-fs-type-row">' +
         '<input type="text" id="lexSbBingoType" autocomplete="off" placeholder="Type the phrase…" />' +
         '<button type="button" class="lex-sb-btn-main" id="lexSbBingoCheck">Check</button>' +
         "</div>" +
-        '<p class="status-row" id="lexSbBingoStatus"></p>' +
+        '<p class="status-row vb-game-status" id="lexSbBingoStatus"></p>' +
         '<p class="win-banner" id="lexSbBingoWin" hidden></p>' +
+        "</div>" +
         "</section>" +
         '<aside class="vb-split-memes vb-fs-memes" aria-label="Meme visuals">' +
         '<p class="vb-meme-kicker">Meme</p>' +
@@ -416,39 +428,52 @@
 
     function echoPanelHtml() {
       return (
-        '<div class="lex-sb-panel lex-sb-panel--fs" id="lexSbPanelEcho" data-sb-panel="echo">' +
+        '<div class="lex-sb-panel lex-sb-panel--fs lex-sb-echo" id="lexSbPanelEcho" data-sb-panel="echo">' +
+        '<section class="echo-fs-setup" aria-label="Theme and microphone">' +
+        '<div class="vb-protocol-chip" id="lexSbEchoFileHint" hidden>' +
+        '<span class="vb-protocol-chip__text"></span>' +
+        '<button type="button" class="vb-protocol-chip__x" id="lexSbEchoFileHintX" aria-label="Dismiss">×</button>' +
+        "</div>" +
         '<p class="lex-sb-wb-head">Theme</p>' +
-        '<div class="theme-grid" id="lexSbEchoRail" role="radiogroup"></div>' +
+        '<div class="theme-grid echo-fs-theme-grid" id="lexSbEchoRail" role="radiogroup"></div>' +
         '<p class="deck-meta" id="lexSbEchoMeta"></p>' +
+        '<div class="echo-fs-prefs">' +
         '<div class="lex-sb-echo-voice-row">' +
         '<label class="tts-voice-label" for="lexSbEchoVoicePick">Voice</label>' +
         '<select id="lexSbEchoVoicePick" class="tts-voice-select" aria-label="TTS voice"></select>' +
-        '</div>' +
+        "</div>" +
         '<div class="mic-pick-row">' +
         '<label class="tts-voice-label" for="lexSbEchoMicPick">Microphone</label>' +
         '<div class="mic-pick-controls">' +
         '<select id="lexSbEchoMicPick" class="tts-voice-select mic-pick-select" disabled aria-label="Microphone">' +
         '<option value="">— allow mic first —</option>' +
-        '</select>' +
+        "</select>" +
         '<button type="button" class="lex-sb-btn-sec b-mic-allow" id="lexSbEchoMicAllow">Allow mic</button>' +
-        '</div>' +
-        '</div>' +
-        '<div class="lex-sb-hud">' +
-        '<span>Seconds: <strong id="lexSbEchoTimer">60</strong></span>' +
-        '<span>Score: <strong id="lexSbEchoScore">0</strong></span>' +
+        "</div></div></div>" +
+        '<p class="deck-meta echo-fs-setup-status" id="lexSbEchoSetupStatus" aria-live="polite"></p>' +
+        '<div class="lex-sb-actions echo-fs-start-row">' +
+        '<button type="button" class="lex-sb-btn-main" id="lexSbEchoStart">Start 60s round</button>' +
         "</div>" +
-        '<div id="lexSbEchoStage"></div>' +
-        '<p id="lexSbEchoStageSub"></p>' +
-        '<div class="lex-sb-actions">' +
-        '<button type="button" class="lex-sb-btn-main" id="lexSbEchoStart">Start</button>' +
+        "</section>" +
+        '<section class="echo-fs-play" aria-label="Echo Minute round">' +
+        '<div class="echo-fs-play-head">' +
+        '<div class="echo-timer-badge"><span class="echo-stat-kicker">Time</span><strong id="lexSbEchoTimer">60</strong></div>' +
+        '<div class="echo-score-badge"><span class="echo-stat-kicker">Score</span><strong id="lexSbEchoScore">0</strong></div>' +
+        "</div>" +
+        '<div class="echo-fs-stage" id="lexSbEchoStage"></div>' +
+        '<p class="echo-fs-stage-sub" id="lexSbEchoStageSub"></p>' +
+        '<p class="vb-listening-pill" id="lexSbEchoListening" hidden aria-live="polite"></p>' +
+        '<div class="lex-sb-actions echo-fs-actions">' +
         '<button type="button" class="lex-sb-btn-sec" id="lexSbEchoReplay">Replay definition</button>' +
         '<button type="button" class="lex-sb-btn-sec" id="lexSbEchoSkip">Skip</button>' +
         "</div>" +
-        '<p class="mic-label">Mic · live transcript</p>' +
-        '<p class="vb-transcript" id="lexSbEchoTranscript"></p>' +
-        '<input type="text" id="lexSbEchoType" autocomplete="off" placeholder="Phrase or skip…" />' +
+        '<div class="echo-fs-type-row">' +
+        '<input type="text" id="lexSbEchoType" autocomplete="off" placeholder="Type the phrase…" />' +
         '<button type="button" class="lex-sb-btn-main" id="lexSbEchoCheck">Check</button>' +
-        '<p class="status-row" id="lexSbEchoStatus"></p>' +
+        "</div>" +
+        '<p class="status-row vb-game-status" id="lexSbEchoStatus"></p>' +
+        '<p class="vb-transcript" id="lexSbEchoTranscript" hidden aria-hidden="true"></p>' +
+        "</section>" +
         "</div>"
       );
     }
@@ -526,8 +551,8 @@
           bingoRadio,
           function (n, mode) {
             return mode === "meme"
-              ? n + " meme lines · need 9 min."
-              : n + " hint→phrase pairs · need 9 min.";
+              ? n + " meme lines · 3×3" + (n < 9 ? " · duplicates fill gaps" : "")
+              : n + " hint→phrase pairs · 3×3" + (n < 9 ? " · duplicates fill gaps" : "");
           },
           { bingoModeRadio: bingoModeRadio }
         );
@@ -539,10 +564,13 @@
             clueLabel: el("lexSbBingoClueLabel"),
             progress: el("lexSbBingoProgress"),
             status: el("lexSbBingoStatus"),
+            listening: el("lexSbBingoListening"),
+            fileHint: el("lexSbBingoFileHint"),
+            fsRoot: fsOverlay,
             transcript: el("lexSbBingoTranscript"),
             typeInput: el("lexSbBingoType"),
             btnCheck: el("lexSbBingoCheck"),
-            btnDontKnow: el("lexSbBingoDontKnow"),
+            btnDontKnow: el("lexSbBingoDontKnowPlay"),
             btnNew: el("lexSbBingoNew"),
             winBanner: el("lexSbBingoWin"),
             memeImg: el("lexSbBingoMemeImg"),
@@ -557,21 +585,43 @@
               ? W.FCE_SB_getLexRows(themeId, mode)
               : [];
           },
-          onThemeOrModeChange: refreshBingoDeckMeta
-        });
-        var fileHintEl = el("lexSbBingoFileHint");
-        if (fileHintEl && W.PREP_MIC_DEVICE_PICKER && W.PREP_MIC_DEVICE_PICKER.protocolHint) {
-          var ph = W.PREP_MIC_DEVICE_PICKER.protocolHint();
-          if (ph) {
-            fileHintEl.textContent = ph;
-            fileHintEl.hidden = false;
+          onThemeOrModeChange: refreshBingoDeckMeta,
+          copy: {
+            pickThemeStart:
+              "Pick a theme, then tap New game. Read the definition — say the phrase (lenient) or type it below.",
+            pickThemeStartMeme:
+              "Meme mode: look at the picture → say the meme line word for word.",
+            listening: "Listening\u2026 say the phrase for this definition.",
+            listeningMeme: "Listening\u2026 say the meme line.",
+            heardOk: "Good job!",
+            heardChecking: "Checking phrase\u2026",
+            noSr: "No speech recognition — type the phrase or tap I don't know.",
+            noSrUi: "Mic unavailable — use the field below.",
+            clueDone: "All 9 phrases revealed. Tap New game to play again.",
+            winLine: "Done! All tiles cleared.",
+            typeWrong: "Not quite — try again or say it aloud.",
+            needNine: "This theme has no phrases yet — pick another theme or All themes.",
+            clueLabelParaphrase: "Definition",
+            clueLabelMeme: "Meme",
+            memeOnlyHint: "Look at the picture → say the meme line word for word."
           }
+        });
+        var hintDismiss = el("lexSbBingoFileHintX");
+        if (hintDismiss) {
+          hintDismiss.addEventListener("click", function () {
+            try {
+              W.sessionStorage.setItem("prepVbFileHintDismissed", "1");
+            } catch (eHint) {}
+            var chip = el("lexSbBingoFileHint");
+            if (chip) chip.hidden = true;
+          });
         }
         fsTeardown = bingoApi && bingoApi.stop ? bingoApi.stop : null;
       }
 
       if (mode === "echo" && body) {
         if (W.FCE_SB_refresh) W.FCE_SB_refresh();
+        fsOverlay.classList.add("lex-sb-fs--echo");
         body.innerHTML = echoPanelHtml();
         fillSbThemeRail(
           el("lexSbEchoRail"),
@@ -589,6 +639,10 @@
             scoreLive: el("lexSbEchoScore"),
             summary: null,
             status: el("lexSbEchoStatus"),
+            setupStatus: el("lexSbEchoSetupStatus"),
+            listening: el("lexSbEchoListening"),
+            fileHint: el("lexSbEchoFileHint"),
+            fsRoot: fsOverlay,
             transcript: el("lexSbEchoTranscript"),
             typeInput: el("lexSbEchoType"),
             btnCheck: el("lexSbEchoCheck"),
@@ -608,8 +662,33 @@
             return typeof W.FCE_SB_getLexRows === "function"
               ? W.FCE_SB_getLexRows(themeId)
               : [];
+          },
+          copy: {
+            idleMain: "Tap Start — the definition plays aloud (text hidden).",
+            idleSub: "Say the phrase (lenient) or type it below. Skip shows the answer.",
+            listenCue: "Listen…",
+            listenSub: "Definition is audio only — don\u2019t read the screen.",
+            roundLiveSub: "Say as many phrases as you can in 60 seconds.",
+            correctLine: "Correct!",
+            skipLine: "Revealed",
+            timeUpMain: "Time\u2019s up!",
+            summaryTpl: "Round score: {score}.",
+            listening: "Listening\u2026 say the phrase.",
+            noSr: "No speech recognition — type the phrase or tap Skip.",
+            noSrUi: "Mic unavailable — use the field below.",
+            needCards: "Pick a theme with at least 5 phrases."
           }
         });
+        var echoHintDismiss = el("lexSbEchoFileHintX");
+        if (echoHintDismiss) {
+          echoHintDismiss.addEventListener("click", function () {
+            try {
+              W.sessionStorage.setItem("prepEchoFileHintDismissed", "1");
+            } catch (eHint) {}
+            var chip = el("lexSbEchoFileHint");
+            if (chip) chip.hidden = true;
+          });
+        }
         fsTeardown = echoApi && echoApi.stop ? echoApi.stop : null;
       }
     }
@@ -623,6 +702,108 @@
     paintModeCards();
   }
 
+  var STICKY_DECK_ICONS = {
+    lifestyle: "☀",
+    clothes: "👔",
+    get: "✉",
+    run: "🏃",
+    naomi: "💪",
+    l121: "🍽",
+    vegan: "🌱"
+  };
+
+  var STICKY_DECK_SHORT = {
+    lifestyle: "Lifestyle",
+    clothes: "Clothes",
+    get: "Get",
+    run: "Run"
+  };
+
+  function stickyNoteCount(pack) {
+    var n = 0;
+    (pack.blocks || []).forEach(function (b) {
+      n += (b.items || []).length;
+    });
+    return n;
+  }
+
+  function stickyDeckMeta(pack) {
+    var n = stickyNoteCount(pack);
+    var blurbs = {
+      lifestyle: "Lucas · Maja · Reo · Ben · reading",
+      clothes: "SB 1.1 · Speakers 1–5",
+      get: "Get phrases · one word per gap",
+      run: "Run collocations · coursebook",
+      naomi: "Health Matters · Naomi Price",
+      l121: "Listening 12.1 · five speakers",
+      vegan: "Going vegan · Part 7 reading"
+    };
+    return {
+      icon: STICKY_DECK_ICONS[pack.id] || "📌",
+      desc: blurbs[pack.id] || "One word per gap · Context = full line",
+      count:
+        n +
+        " sticky note" +
+        (n === 1 ? "" : "s")
+    };
+  }
+
+  function stickyDeckLabel(pack) {
+    return (
+      STICKY_DECK_SHORT[pack.id] ||
+      pack.jumpLabel ||
+      pack.title ||
+      pack.id
+    );
+  }
+
+  function paintStickyDeckGrid(nav, packs, activeId, onPick) {
+    if (!nav) return;
+    nav.className =
+      "lex-meme-deck-grid" + (activeId ? " lex-meme-deck-grid--active" : "");
+    nav.setAttribute("role", "list");
+    nav.setAttribute("aria-label", "Sticky board decks");
+    nav.innerHTML = packs
+      .map(function (pack) {
+        var open = pack.id === activeId;
+        var meta = stickyDeckMeta(pack);
+        var cls = "meme-deck-tile" + (open ? " is-open" : "");
+        return (
+          '<button type="button" class="' +
+          cls +
+          '" role="listitem" data-sticky-pack="' +
+          pack.id +
+          '">' +
+          '<span class="meme-deck-tile__icon" aria-hidden="true">' +
+          meta.icon +
+          "</span>" +
+          '<span class="meme-deck-tile__body">' +
+          '<span class="meme-deck-tile__title">' +
+          stickyDeckLabel(pack) +
+          "</span>" +
+          '<span class="meme-deck-tile__desc">' +
+          meta.desc +
+          "</span>" +
+          '<span class="meme-deck-tile__count">' +
+          meta.count +
+          "</span>" +
+          "</span>" +
+          '<span class="meme-deck-tile__cta">' +
+          (open ? "Close ↑" : "Open board →") +
+          "</span>" +
+          "</button>"
+        );
+      })
+      .join("");
+    nav.querySelectorAll("[data-sticky-pack]").forEach(function (btn) {
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var id = btn.getAttribute("data-sticky-pack");
+        if (id) onPick(id);
+      });
+    });
+  }
+
   function mountStickyInPool(pool, unit) {
     if (!pool || !W.STICKY_BOARD_PAGE) return;
     var stickyApi =
@@ -632,14 +813,12 @@
     if (!stickyApi || !stickyApi.packs || !stickyApi.packs.length) return;
 
     pool.innerHTML =
-      '<div class="mini-game-box lex-extra-embed" id="stickyEmbedBox">' +
-      '<nav class="folder-deck-nav" id="lexStickyDeckNav" aria-label="Sticky board decks"></nav>' +
+      '<div class="mini-game-box lex-extra-embed lex-sticky-launch" id="stickyEmbedBox">' +
+      '<div id="lexStickyDeckNav" class="lex-meme-deck-grid" role="list" aria-label="Sticky board decks"></div>' +
       '<div id="lexStickyEmbedRoot" class="lex-extra-engine-root" hidden></div>' +
       "</div>";
 
-    var packs = stickyApi.packs.map(function (p) {
-      return { id: p.id, label: p.jumpLabel || p.title || p.id };
-    });
+    var packs = stickyApi.packs;
     var nav = el("lexStickyDeckNav");
     var root = el("lexStickyEmbedRoot");
     if (!nav || !root) return;
@@ -650,8 +829,7 @@
       activeId = null;
       root.hidden = true;
       root.innerHTML = "";
-      paintDeckNav(nav, packs, activeId, "pack");
-      wireDeckNav(nav, packs, "pack", pickPack);
+      paintStickyDeckGrid(nav, packs, activeId, pickPack);
     }
 
     function openPack(id) {
@@ -675,13 +853,11 @@
       }
       activeId = id;
       root.hidden = false;
-      paintDeckNav(nav, packs, activeId, "pack");
-      wireDeckNav(nav, packs, "pack", pickPack);
+      paintStickyDeckGrid(nav, packs, activeId, pickPack);
       openPack(activeId);
     }
 
-    paintDeckNav(nav, packs, activeId, "pack");
-    wireDeckNav(nav, packs, "pack", pickPack);
+    paintStickyDeckGrid(nav, packs, activeId, pickPack);
   }
 
   function wireFolders(opts) {

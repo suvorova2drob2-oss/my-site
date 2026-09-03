@@ -22,8 +22,9 @@ body:has(.rc-shell) {
 }
 
 .rc-shell { max-width: 720px; margin: 0 auto; }
+.rc-shell:has(#rcStepRetell.active) { max-width: 920px; }
 .rc-nav-top {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -124,6 +125,161 @@ body:has(.rc-shell) {
   color: var(--rc-text);
   font-size: 0.86rem;
   line-height: 1.35;
+}
+
+/* Step 2 · Retell — compact two-column (phrases | timer + buttons) */
+#rcStepRetell .rc-retell-head {
+  margin-bottom: 10px;
+}
+#rcStepRetell .rc-pill {
+  margin-bottom: 6px;
+  padding: 5px 12px;
+}
+#rcStepRetell .rc-deck-tag {
+  margin-bottom: 2px;
+}
+#rcStepRetell .rc-title-retell {
+  font-size: clamp(1.15rem, 2.6vw, 1.42rem);
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+#rcStepRetell .rc-block-heading {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+#rcStepRetell .rc-instr--retell {
+  font-size: 0.86rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+  max-width: none;
+}
+#rcStepRetell .rc-retell-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+  gap: 14px 18px;
+  align-items: start;
+}
+#rcStepRetell .rc-bubbles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 7px 8px;
+  margin-bottom: 0;
+}
+#rcStepRetell .rc-bubble {
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  line-height: 1.32;
+}
+#rcStepRetell .rc-retell-side {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--rc-panel-border);
+  background: rgba(14, 22, 38, 0.42);
+}
+#rcStepRetell .rc-timer-pick {
+  margin-bottom: 0;
+  justify-content: flex-start;
+  font-size: 0.84rem;
+}
+#rcStepRetell .rc-timer-pick select {
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+#rcStepRetell .rc-timer-block {
+  margin: 0;
+  align-items: center;
+}
+#rcStepRetell .rc-timer-ring-wrap {
+  width: 118px;
+  height: 118px;
+}
+#rcStepRetell .rc-timer-num {
+  font-size: 1.85rem;
+}
+#rcStepRetell .rc-sub-hint {
+  font-size: 0.8rem;
+  margin-top: 6px;
+  max-width: none;
+}
+#rcStepRetell .rc-btn-row--retell {
+  max-width: none;
+  margin: 0;
+  gap: 7px;
+}
+#rcStepRetell .rc-btn-row--retell .rc-btn {
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  border-radius: 10px;
+}
+#rcStepRetell .rc-btn-next {
+  font-size: 0.95rem;
+}
+#rcStepRetell .rc-points-banner {
+  margin-top: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+#rcStepRetell .rc-link-back-step {
+  margin-top: 10px;
+}
+
+@media (max-width: 720px) {
+  #rcStepRetell .rc-retell-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  #rcStepRetell .rc-retell-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 14px;
+    padding: 10px;
+  }
+  #rcStepRetell .rc-timer-pick {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+  #rcStepRetell .rc-timer-block {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+  #rcStepRetell .rc-btn-row--retell {
+    flex: 1 1 100%;
+  }
+  #rcStepRetell .rc-bubbles {
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  }
+}
+
+@media (max-height: 780px) {
+  #rcStepRetell .rc-title-retell {
+    font-size: 1.12rem;
+  }
+  #rcStepRetell .rc-block-heading {
+    font-size: 0.98rem;
+    margin-bottom: 4px;
+  }
+  #rcStepRetell .rc-instr--retell {
+    font-size: 0.82rem;
+  }
+  #rcStepRetell .rc-timer-ring-wrap {
+    width: 104px;
+    height: 104px;
+  }
+  #rcStepRetell .rc-timer-num {
+    font-size: 1.65rem;
+  }
+  #rcStepRetell .rc-bubble {
+    padding: 6px 9px;
+    font-size: 0.82rem;
+  }
 }
 .rc-timer-block { display: flex; flex-direction: column; align-items: center; margin: 6px 0 20px; }
 .rc-timer-ring-wrap { position: relative; width: 150px; height: 150px; }

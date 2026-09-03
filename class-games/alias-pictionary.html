@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alias · Pictionary · Class games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../css/prep-alias-engine.css" />
+  <link rel="stylesheet" href="../css/prep-pictionary-engine.css" />
+  <link rel="stylesheet" href="../css/fce-class-pict-live.css?v=2" />
+  <link rel="stylesheet" href="../css/fce-class-alias-pict.css?v=2" />
+</head>
+<body class="ap-body">
+  <div class="ap-app">
+    <header class="ap-chrome">
+      <div class="ap-chrome-left" id="apNav"></div>
+      <div class="ap-chrome-mid">
+        <div class="ap-hero-icons" aria-hidden="true">
+          <span class="ap-hero-icon ap-hero-icon--alias" title="Alias">💬</span>
+          <span class="ap-hero-icon ap-hero-icon--pict" title="Pictionary">🎨</span>
+        </div>
+        <span class="ap-tag" id="apTag">Class games</span>
+        <h1 class="ap-title">Alias · Pictionary</h1>
+      </div>
+      <div class="ap-chrome-right">
+        <nav class="ap-mode-tabs" id="apModeTabs" aria-label="Game mode">
+          <button type="button" class="ap-mode-tab is-active" data-mode="alias">Alias</button>
+          <button type="button" class="ap-mode-tab" data-mode="pict">Pictionary</button>
+        </nav>
+      </div>
+    </header>
+
+    <p class="ap-lead" id="apLead">Loading…</p>
+    <p class="ap-placeholder-banner" id="apPlaceholderBanner" hidden></p>
+
+    <nav class="ap-pack-tabs" id="apPackTabs" aria-label="Vocabulary deck" hidden></nav>
+
+    <div class="ap-board">
+      <!-- ALIAS -->
+      <div class="ap-pane fce-ap prep-alias" id="apAliasPane">
+        <p class="sub-note"><strong>Alias</strong> — one player explains; the host taps a card when the team guesses it. Timer per turn · blocks of cards · leaderboard.</p>
+        <div id="aSetup" class="setup">
+          <p class="hint">Player names, <strong>one per line</strong> (at least 2). Order = turn order.</p>
+          <div class="pack-box" id="aPackBox">
+            <div id="aTopicChecks"></div>
+            <p id="aTopicHint"></p>
+          </div>
+          <div class="alias-setup-opts">
+            <label>Cards per block
+              <select id="aOptBlock">
+                <option value="8">8</option>
+                <option value="10" selected>10</option>
+                <option value="12">12</option>
+              </select>
+            </label>
+            <label>Rounds
+              <select id="aOptRounds">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+              </select>
+            </label>
+            <label>Timer
+              <select id="aOptTimer">
+                <option value="45">0:45</option>
+                <option value="60" selected>1:00</option>
+                <option value="90">1:30</option>
+              </select>
+            </label>
+          </div>
+          <textarea id="aNamesIn" placeholder="Anna&#10;Ben&#10;Chris" autocomplete="off"></textarea>
+          <p class="err" id="aErr"></p>
+          <p class="deck-meta" id="aDeckMeta">Deck · …</p>
+          <button type="button" class="btn btn-go" id="aBtnGo">Start Alias</button>
+        </div>
+        <div id="aGame" class="game">
+          <div class="hud">
+            <div class="turn-pill">
+              <span class="label">Explaining</span>
+              <span class="name" id="aCurName">—</span>
+              <span class="round-tag">Round <span id="aRn">1</span> / <span id="aRnMax">2</span></span>
+            </div>
+            <div class="alias-timer" id="aTimer">1:00</div>
+          </div>
+          <div class="block-meta">
+            <span>Block <strong id="aBlockNum">1</strong> · <span id="aBlockLeft">0</span> left</span>
+            <span class="block-pill" id="aQueueMeta">— in queue</span>
+          </div>
+          <p class="sub-note">Host: tap a card when that phrase is guessed.</p>
+          <div class="alias-grid" id="aGrid"></div>
+          <div class="row-actions">
+            <button type="button" class="btn btn-blue" id="aBtnNextBlock" style="display:none">Next block</button>
+            <button type="button" class="btn btn-sec" id="aBtnEndTurn">End turn</button>
+          </div>
+          <div class="lb">
+            <h3>Score</h3>
+            <ol id="aLbList"></ol>
+          </div>
+          <p style="margin-top:12px">
+            <button type="button" class="btn btn-sec" id="aBtnFinal">Leaderboard</button>
+            <button type="button" class="btn btn-sec" id="aBtnReset">New game</button>
+          </p>
+        </div>
+        <div class="ov" id="aOvR">
+          <div class="ov-in">
+            <h2>Round complete</h2>
+            <p id="aOvRMsg">Next round?</p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="aOvRok">Next round</button></p>
+          </div>
+        </div>
+        <div class="ov" id="aOvF">
+          <div class="ov-in">
+            <h2>Leaderboard</h2>
+            <p style="text-align:left" id="aOvFList"></p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="aOvFok">Close</button></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PICTIONARY LIVE -->
+      <div class="ap-pane fce-ap ap-pane--pict ap-pane--pict-live-legacy" id="apPictPane" hidden>
+        <p class="ap-pict-live-intro">
+          <strong>Pictionary Live</strong> — ученики по ссылке выбирают фразу, рисуют на телефоне и жмут
+          <strong>I&rsquo;m ready</strong>. На экране: <strong>Live → Start guessing</strong> → угадайте, кто что нарисовал.
+        </p>
+        <p class="sub-note" hidden aria-hidden="true">Legacy pictionary UI hidden.</p>
+        <div id="pSetup" class="setup">
+          <p class="hint">Player names, <strong>one per line</strong> (at least 2 — one draws, others guess).</p>
+          <div class="pack-box" id="pPackBox">
+            <div id="pTopicChecks"></div>
+            <p id="pTopicHint"></p>
+          </div>
+          <div class="pic-setup-opts">
+            <label>Turn timer
+              <select id="pOptTimer">
+                <option value="60">1:00</option>
+                <option value="90" selected>1:30</option>
+                <option value="120">2:00</option>
+              </select>
+            </label>
+          </div>
+          <textarea id="pNamesIn" placeholder="Anna&#10;Ben&#10;Chris" autocomplete="off"></textarea>
+          <p class="err" id="pErr"></p>
+          <p class="deck-meta" id="pDeckMeta">Deck · …</p>
+          <button type="button" class="btn btn-go" id="pBtnGo">Start Pictionary</button>
+        </div>
+        <div id="pGame" class="game">
+          <div class="hud">
+            <div class="turn-pill">
+              <span class="label">Drawing</span>
+              <span class="name" id="pCurName">—</span>
+              <span class="round-tag">Round <span id="pRn">1</span> · <span id="pLeftN">0</span> left</span>
+            </div>
+            <div class="pic-timer" id="pTimer">1:30</div>
+          </div>
+          <div class="host-pick" id="pHostPick">
+            <h2>Host: mark the guess</h2>
+            <p class="host-hint">Team shouts a phrase — click the matching card. One is real; others are decoys.</p>
+            <div class="choice-grid" id="pChoiceGrid"></div>
+            <p class="choice-wrong" id="pHostMsg"></p>
+          </div>
+          <div class="drawer-box">
+            <h2>Drawer · your phrase</h2>
+            <p class="p-text" id="pPromptText">—</p>
+            <div class="hide-row">
+              <input type="checkbox" id="pHidePrompt" />
+              <label for="pHidePrompt">Hide phrase on projector (canvas only)</label>
+            </div>
+          </div>
+          <div class="draw-tools">
+            <label>Pen</label>
+            <input type="color" id="pPenColor" value="#1a1a1a" />
+            <label>Size <span id="pSizeLab">4</span></label>
+            <input type="range" id="pPenSize" min="2" max="16" value="4" />
+            <button type="button" class="btn btn-sec" id="pBtnClearCanvas">Clear canvas</button>
+          </div>
+          <div class="canvas-wrap" id="pCanvasWrap">
+            <canvas id="pDraw" width="800" height="420" aria-label="Drawing area"></canvas>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="btn btn-blue" id="pBtnPass">Pass</button>
+            <button type="button" class="btn btn-sec" id="pBtnEndTurn">End turn</button>
+            <button type="button" class="btn btn-sec" id="pBtnNextRound" style="display:none">Next round</button>
+          </div>
+          <div class="lb">
+            <h3>Score</h3>
+            <ol id="pLbList"></ol>
+          </div>
+          <p style="margin-top:12px">
+            <button type="button" class="btn btn-sec" id="pBtnFinal">Leaderboard</button>
+            <button type="button" class="btn btn-sec" id="pBtnReset">New game</button>
+          </p>
+        </div>
+        <div class="ov" id="pOvR">
+          <div class="ov-in">
+            <h2>Round complete</h2>
+            <p>All phrases guessed — next round shuffles the deck.</p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="pOvRok">Next round</button></p>
+          </div>
+        </div>
+        <div class="ov" id="pOvF">
+          <div class="ov-in">
+            <h2>Leaderboard</h2>
+            <p style="text-align:left" id="pOvFList"></p>
+            <p style="margin-top:12px"><button type="button" class="btn btn-go" id="pOvFok">Close</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <details class="ap-rules-fold">
+      <summary>Rules</summary>
+      <p><strong>Alias:</strong> Explainer describes the phrase without saying it. Host taps guessed cards. Blocks of 8–12 cards; 1:00 timer; score per explainer.</p>
+      <p style="margin-top:8px"><strong>Pictionary:</strong> Students join via link → pick a phrase → draw → Ready. On the projector: guess who drew what, then Reveal.</p>
+    </details>
+  </div>
+
+  <script src="../js/fce-class-games-boards-fallback.js"></script>
+  <script src="../js/fce-class-games-boards-registry.js"></script>
+  <script src="../js/live-game-api.js?v=3"></script>
+  <script src="../js/live-game-api-http.js"></script>
+  <script src="../js/fce-class-live-config.js?v=2"></script>
+  <script src="../js/prep-alias-engine.js"></script>
+  <script src="../js/fce-class-pict-live.js?v=2"></script>
+  <script src="../js/fce-class-games-alias-pict-page.js?v=4"></script>
+</body>
+</html>

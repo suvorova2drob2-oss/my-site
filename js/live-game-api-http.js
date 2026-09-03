@@ -61,6 +61,18 @@
       closeRoom: function (p) {
         return post("closeRoom", p);
       },
+      setGameState: function (p) {
+        return post("setGameState", p);
+      },
+      tttSubmit: function (p) {
+        return post("tttSubmit", p);
+      },
+      pictSubmit: function (p) {
+        return post("pictSubmit", p);
+      },
+      setPlayerTeam: function (p) {
+        return post("setPlayerTeam", p);
+      },
       subscribeRoom: function (roomCode, listener) {
         var code = String(roomCode).toUpperCase().trim();
         var last = "";

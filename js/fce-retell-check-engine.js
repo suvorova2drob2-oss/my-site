@@ -146,37 +146,45 @@
       '      <div class="rc-btn-row"><button type="button" class="rc-btn rc-btn-primary" id="rcBtnContinue">Continue to retell</button></div>' +
       "    </section>" +
       '    <section id="rcStepRetell" class="rc-screen">' +
-      '      <span class="rc-pill">Step 2 · Retell</span>' +
-      '      <p class="rc-deck-tag" id="rcDeckTagRetell"></p>' +
-      '      <h1 class="rc-title-retell" id="rcMainTitleRetell">Retell check</h1>' +
-      '      <h2 class="rc-block-heading rc-retell-h" id="rcHeadingRetell"></h2>' +
-      '      <p class="rc-instr">Use these highlighted phrases as prompts. Choose your timer, press Start, retell, then Stop to save points.</p>' +
-      '      <div class="rc-bubbles" id="rcPhraseBubbles"></div>' +
-      '      <div class="rc-timer-pick">' +
-      '        <label for="rcTimerPick">Your timer</label>' +
-      '        <select id="rcTimerPick" aria-label="Retell timer length">' +
-      '          <option value="40">40 seconds</option>' +
-      '          <option value="60">1 minute</option>' +
-      '          <option value="90">1½ minutes</option>' +
-      '          <option value="120">2 minutes</option>' +
-      '          <option value="180">3 minutes</option>' +
-      "        </select>" +
+      '      <div class="rc-retell-head">' +
+      '        <span class="rc-pill">Step 2 · Retell</span>' +
+      '        <p class="rc-deck-tag" id="rcDeckTagRetell"></p>' +
+      '        <h1 class="rc-title-retell" id="rcMainTitleRetell">Retell check</h1>' +
+      '        <h2 class="rc-block-heading rc-retell-h" id="rcHeadingRetell"></h2>' +
+      '        <p class="rc-instr rc-instr--retell">Use the phrase prompts. Pick a timer, Start, retell aloud, then Stop to save points.</p>' +
       "      </div>" +
-      '      <div class="rc-timer-block">' +
-      '        <div class="rc-timer-ring-wrap" aria-hidden="true">' +
-      "          <svg viewBox=\"0 0 100 100\" width=\"150\" height=\"150\">" +
-      '            <defs><linearGradient id="rcRingGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#a78bfa"/><stop offset="100%" style="stop-color:#38bdf8"/></linearGradient></defs>' +
-      '            <circle class="rc-ring-bg" cx="50" cy="50" r="44" />' +
-      '            <circle id="rcRingProgress" class="rc-ring-progress" cx="50" cy="50" r="44" />' +
-      "          </svg>" +
-      '          <span class="rc-timer-num" id="rcTimerNum">120</span>' +
+      '      <div class="rc-retell-grid">' +
+      '        <div class="rc-retell-main">' +
+      '          <div class="rc-bubbles" id="rcPhraseBubbles"></div>' +
       "        </div>" +
-      '        <p class="rc-sub-hint" id="rcTimerStatus">Press Start when you are ready.</p>' +
-      "      </div>" +
-      '      <div class="rc-btn-row">' +
-      '        <button type="button" class="rc-btn rc-btn-cyan" id="rcBtnStartRetell">Start retelling</button>' +
-      '        <button type="button" class="rc-btn rc-btn-stop" id="rcBtnStop" disabled>Stop &amp; get points</button>' +
-      '        <button type="button" class="rc-btn rc-btn-next" id="rcBtnNext" disabled>Next</button>' +
+      '        <div class="rc-retell-side">' +
+      '          <div class="rc-timer-pick">' +
+      '            <label for="rcTimerPick">Your timer</label>' +
+      '            <select id="rcTimerPick" aria-label="Retell timer length">' +
+      '              <option value="40">40 seconds</option>' +
+      '              <option value="60">1 minute</option>' +
+      '              <option value="90">1½ minutes</option>' +
+      '              <option value="120">2 minutes</option>' +
+      '              <option value="180">3 minutes</option>' +
+      "            </select>" +
+      "          </div>" +
+      '          <div class="rc-timer-block">' +
+      '            <div class="rc-timer-ring-wrap" aria-hidden="true">' +
+      '              <svg viewBox="0 0 100 100" width="120" height="120">' +
+      '                <defs><linearGradient id="rcRingGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#a78bfa"/><stop offset="100%" style="stop-color:#38bdf8"/></linearGradient></defs>' +
+      '                <circle class="rc-ring-bg" cx="50" cy="50" r="44" />' +
+      '                <circle id="rcRingProgress" class="rc-ring-progress" cx="50" cy="50" r="44" />' +
+      "              </svg>" +
+      '              <span class="rc-timer-num" id="rcTimerNum">120</span>' +
+      "            </div>" +
+      '            <p class="rc-sub-hint" id="rcTimerStatus">Press Start when you are ready.</p>' +
+      "          </div>" +
+      '          <div class="rc-btn-row rc-btn-row--retell">' +
+      '            <button type="button" class="rc-btn rc-btn-cyan" id="rcBtnStartRetell">Start retelling</button>' +
+      '            <button type="button" class="rc-btn rc-btn-stop" id="rcBtnStop" disabled>Stop &amp; get points</button>' +
+      '            <button type="button" class="rc-btn rc-btn-next" id="rcBtnNext" disabled>Next</button>' +
+      "          </div>" +
+      "        </div>" +
       "      </div>" +
       '      <div class="rc-points-banner" id="rcPointsBanner"></div>' +
       '      <button type="button" class="rc-link-back-step" id="rcBtnBackRead">← Back to this block (read again)</button>' +

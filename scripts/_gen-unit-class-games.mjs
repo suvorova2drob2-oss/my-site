@@ -79,8 +79,18 @@ const GAME_SECTIONS = [
   {
     h: "Борды и Squid",
     items: [
-      { title: "100 to 1", blurb: "Раунды по частям текста. Заглушка." },
-      { title: "Glass bridge", blurb: "Шаги good/bad. Заглушка." },
+      {
+        title: "100 to 1",
+        live: true,
+        boardHundred: true,
+        blurb: "Раунды по частям текста. Доска 100→20, hits vs decoys. Unit 1 и 3 — полный контент; остальные — playable stub до data-файла.",
+      },
+      {
+        title: "Glass bridge",
+        live: true,
+        boardGlass: true,
+        blurb: "9 шагов good/bad. Одна панель верная, вторая ловушка. Ошибка — с начала.",
+      },
     ],
   },
   {
@@ -136,9 +146,11 @@ function shellHtml(unit) {
             unit === 1
               ? " Галочками: <strong>lifestyle</strong> и <strong>clothes</strong>."
               : "";
-          const href = it.exam
-            ? `exam-numbered-gaps.html?unit=${unit}`
-            : `retell-check.html?unit=${unit}`;
+          let href;
+          if (it.exam) href = `exam-numbered-gaps.html?unit=${unit}`;
+          else if (it.boardHundred) href = `class-games/hundred-to-one.html?unit=${unit}`;
+          else if (it.boardGlass) href = `class-games/glass-bridge.html?unit=${unit}`;
+          else href = `retell-check.html?unit=${unit}`;
           return `<li><a href="${href}">${it.title}</a><p>${it.blurb}${u1extra}</p></li>`;
         }
         return `<li><span class="cg-stub-title">${it.title}</span><p>${it.blurb}</p></li>`;
@@ -240,6 +252,18 @@ body {
   border: 1px solid var(--line);
   background: #223657;
 }
+.cg-hub li a {
+  color: #7dd3fc;
+  font-weight: 700;
+  text-decoration: none;
+}
+.cg-hub li a:hover {
+  color: #bae6fd;
+  text-decoration: underline;
+}
+.cg-hub li a:visited {
+  color: #7dd3fc;
+}
 .cg-hub .cg-stub-title {
   color: #9bb0d3;
   font-weight: 700;
@@ -337,8 +361,13 @@ function patchHub(unit) {
 
 writeCss();
 for (let u = 1; u <= 12; u += 1) {
-  fs.writeFileSync(path.join(root, `unit${u}-class-games.html`), shellHtml(u));
-  console.log("wrote unit" + u + "-class-games.html");
+  // Unit 1 hub is hand-maintained (millionaire, TTT, story quest, …) — do not overwrite.
+  if (u === 1) {
+    console.log("skip unit1-class-games.html (hand-maintained)");
+  } else {
+    fs.writeFileSync(path.join(root, `unit${u}-class-games.html`), shellHtml(u));
+    console.log("wrote unit" + u + "-class-games.html");
+  }
   patchHub(u);
 }
 console.log("done");
