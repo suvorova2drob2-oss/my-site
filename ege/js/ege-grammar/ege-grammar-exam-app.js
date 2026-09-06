@@ -688,16 +688,28 @@
 
     if (U.examSection) {
       html +=
-        '<p class="ege-gx-kicker">Grammar · ' + esc(U.examSection) + "</p>";
+        '<p class="ege-gx-kicker">' +
+        esc(U.sectionKicker || "Grammar") +
+        " · " +
+        esc(U.examSection) +
+        "</p>";
     }
     html += '<h2 class="ege-gx-page-title">' + esc(U.title) + "</h2>";
-    html +=
-      '<p class="ege-gx-vibe"><strong>Как в бланке:</strong> у каждого номера — своя строка: пропуск слева, <strong>CAPS справа в жёлтой колонке</strong> (только для этого пропуска). Текст ниже строки — продолжение абзаца, без нового слова. <strong>Enter</strong> — следующий пропуск.</p>';
+    if (!U.tableGapMode) {
+      html +=
+        '<p class="ege-gx-vibe"><strong>Как в бланке:</strong> у каждого номера — своя строка: пропуск слева, <strong>CAPS справа в жёлтой колонке</strong> (только для этого пропуска). Текст ниже строки — продолжение абзаца, без нового слова. <strong>Enter</strong> — следующий пропуск.</p>';
+    }
     html += '<p class="ege-gx-ins">' + U.instructionHtml + "</p>";
+    if (U.audioSrc) {
+      html +=
+        '<div class="ege-gx-audio-wrap"><audio class="ege-gx-audio" controls preload="none" src="' +
+        esc(U.audioSrc) +
+        '"></audio></div>';
+    }
     html +=
       '<div class="ege-reading-stats-bar" id="ege-gx-stats-bar" role="region" aria-label="Статистика по этой теме"></div>';
 
-    html += '<div class="ege-gx-exam-sheet">';
+    html += '<div class="ege-gx-exam-sheet' + (U.tableGapMode ? " ege-gx-exam-sheet--table" : "") + '">';
     if (U.headerTitle) {
       html +=
         '<h3 class="ege-gx-sheet-title">' + esc(U.headerTitle) + "</h3>";
@@ -708,7 +720,9 @@
     html += '<div class="ege-gx-sheet-legend" aria-hidden="true">';
     html += '<span class="ege-gx-legend-num">№</span>';
     html += '<span class="ege-gx-legend-text">Текст и пропуск</span>';
-    html += '<span class="ege-gx-legend-cue">Базовое слово</span>';
+    if (!U.tableGapMode) {
+      html += '<span class="ege-gx-legend-cue">Базовое слово</span>';
+    }
     html += "</div>";
 
     var currentPara = null;
@@ -739,26 +753,27 @@
       html +=
         '<span class="ege-gx-gap-wrap"><input type="text" class="ege-gx-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Пропуск ' +
         esc(String(it.examNum)) +
-        ", базовое слово " +
-        esc(it.cue) +
+        (U.tableGapMode ? "" : ", базовое слово " + esc(it.cue)) +
         '" data-exam-num="' +
         esc(String(it.examNum)) +
         '" data-cue="' +
-        esc(it.cue) +
+        esc(it.cue || "") +
         '" data-idx="' +
         ii +
         '" /></span>';
       html += esc(parts.inline);
       html += "</div>";
-      html += '<div class="ege-gx-cue-slot">';
-      html += '<span class="ege-gx-cue-bridge" aria-hidden="true"></span>';
-      html +=
-        '<span class="ege-gx-cue" title="Базовое слово для пропуска ' +
-        esc(String(it.examNum)) +
-        '">' +
-        esc(it.cue) +
-        "</span>";
-      html += "</div>";
+      if (!U.tableGapMode) {
+        html += '<div class="ege-gx-cue-slot">';
+        html += '<span class="ege-gx-cue-bridge" aria-hidden="true"></span>';
+        html +=
+          '<span class="ege-gx-cue" title="Базовое слово для пропуска ' +
+          esc(String(it.examNum)) +
+          '">' +
+          esc(it.cue) +
+          "</span>";
+        html += "</div>";
+      }
       html += "</div>";
       if (parts.tail) {
         html +=
@@ -920,7 +935,10 @@
 
       var total = items.length;
       var percent = total ? Math.round((ok / total) * 100) : 0;
-      var br = window.__egeGrammarExamStats;
+      var br =
+        U.tableGapMode && window.__ogeListeningInterviewStats
+          ? window.__ogeListeningInterviewStats
+          : window.__egeGrammarExamStats;
       if (br && typeof br.recordAttempt === "function") {
         br.recordAttempt(U.id, percent);
       }
@@ -983,7 +1001,10 @@
 
   if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
     window.EgeLiveRoom.mount({
-      deckPrefix: "ege-grammar-exam",
+      deckPrefix:
+        window.__examTrackBridge && window.__examTrackBridge.liveDeckPrefix
+          ? window.__examTrackBridge.liveDeckPrefix("ege-grammar-exam")
+          : "ege-grammar-exam",
       getUnitId: function () {
         return U && U.id;
       },

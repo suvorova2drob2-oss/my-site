@@ -13,24 +13,29 @@ const SKIP_DIRS = new Set([
   "publish-cpe",
   "publish-ege",
   "publish-fce",
+  "publish-oge",
   ".git",
   "course-cms",
   ".cursor",
   "supabase",
 ]);
 
-type PrepBuildTrack = "dev" | "cpe" | "ege" | "fce";
+type PrepBuildTrack = "dev" | "cpe" | "ege" | "fce" | "oge";
 
 function resolvePrepBuildTrack(command: string, mode: string): PrepBuildTrack {
   if (command !== "build") return "dev";
   if (mode === "ege") return "ege";
   if (mode === "fce") return "fce";
+  if (mode === "oge") return "oge";
   return "cpe";
 }
 
-function isRootEgeHubHtml(relPosix: string): boolean {
-  if (!relPosix || relPosix.includes("/")) return false;
-  return relPosix === "ege.html" || relPosix.startsWith("ege-");
+function isTrackHubHtml(relPosix: string, prefix: string): boolean {
+  if (!relPosix) return false;
+  if (!relPosix.includes("/")) {
+    return relPosix === `${prefix}.html` || relPosix.startsWith(`${prefix}-`);
+  }
+  return relPosix.startsWith(`${prefix}/`) && relPosix.endsWith(".html");
 }
 
 function includeHtmlForTrack(relPosix: string, track: PrepBuildTrack): boolean {
@@ -38,17 +43,23 @@ function includeHtmlForTrack(relPosix: string, track: PrepBuildTrack): boolean {
 
   const inAllCond = relPosix.startsWith("all-conditionals-tests/");
   const uoePart1 = relPosix === "use-of-english/part1-mc-cloze/index.html";
-  const egeRoot = isRootEgeHubHtml(relPosix);
+  const egeHub = isTrackHubHtml(relPosix, "ege");
+  const ogeHub = isTrackHubHtml(relPosix, "oge");
 
   if (track === "ege") {
-    if (egeRoot) return true;
+    if (egeHub) return true;
     if (uoePart1) return true;
     if (inAllCond && relPosix.endsWith(".html")) return true;
     return false;
   }
 
+  if (track === "oge") {
+    if (ogeHub) return true;
+    return false;
+  }
+
   if (inAllCond) return false;
-  if (egeRoot) return false;
+  if (egeHub || ogeHub) return false;
   if (relPosix === "fce.html") return track === "fce";
   if (relPosix === "index.html") return track === "cpe";
   return true;
@@ -117,7 +128,7 @@ function viteIgnoreClassicScripts(): Plugin {
  * Classic scripts and co-located JSON are referenced by URL (?src=published-….json, ../../js/…)
  * but not imported into the Rollup graph. With publicDir: false copy them into dist/.
  */
-function copyLegacyStaticAssets(): Plugin {
+function copyLegacyStaticAssets(trackFolders: string[]): Plugin {
   let outDir = path.join(root, "dist");
   return {
     name: "prep-copy-legacy-static",
@@ -196,6 +207,20 @@ function copyLegacyStaticAssets(): Plugin {
         }
       }
       copyViteIgnoredScriptsFromBuiltHtml(outDir);
+
+      for (const folder of trackFolders) {
+        const srcDir = path.join(root, folder);
+        if (!fs.existsSync(srcDir)) continue;
+        const destDir = path.join(outDir, folder);
+        fs.cpSync(srcDir, destDir, {
+          recursive: true,
+          filter: (src) => {
+            const base = path.basename(src);
+            if (base === "node_modules" || base === ".git") return false;
+            return true;
+          },
+        });
+      }
     },
   };
 }
@@ -209,10 +234,19 @@ export default defineConfig(({ command, mode }) => {
     input[rollupInputKey(rel)] = path.resolve(root, rel);
   }
 
+  const trackStaticFolders: PrepBuildTrack[] =
+    prepTrack === "ege"
+      ? ["ege"]
+      : prepTrack === "oge"
+        ? ["oge", "ege"]
+        : prepTrack === "dev"
+          ? ["ege", "oge"]
+          : [];
+
   return {
     root,
     publicDir: false,
-    plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets()],
+    plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets(trackStaticFolders)],
     appType: "mpa",
     build: {
       outDir: "dist",

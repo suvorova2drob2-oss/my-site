@@ -3,7 +3,11 @@
  * Вызов recordActivity — из тренажёров после успешной проверки.
  */
 (function (w) {
-  var KEY = "ege_activity_v1";
+  function storageKey() {
+    return w.__examTrackBridge && w.__examTrackBridge.activityStorageKey
+      ? w.__examTrackBridge.activityStorageKey()
+      : "ege_activity_v1";
+  }
   var MAX_LOG = 14;
 
   function pad2(n) {
@@ -27,6 +31,7 @@
   }
 
   function read() {
+    var KEY = storageKey();
     try {
       var raw = localStorage.getItem(KEY);
       if (!raw) return { streak: 0, lastPracticeDate: null, log: [] };
@@ -43,6 +48,7 @@
   }
 
   function write(o) {
+    var KEY = storageKey();
     try {
       localStorage.setItem(KEY, JSON.stringify(o));
     } catch (e2) {}
@@ -114,6 +120,7 @@
   }
 
   function clearAll() {
+    var KEY = storageKey();
     try {
       localStorage.removeItem(KEY);
     } catch (e3) {}
@@ -130,7 +137,7 @@
   }
 
   w.__egeActivityTracker = {
-    KEY: KEY,
+    storageKey: storageKey,
     localYmd: localYmd,
     recordActivity: recordActivity,
     effectiveStreak: effectiveStreak,

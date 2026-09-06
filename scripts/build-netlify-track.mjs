@@ -1,10 +1,10 @@
 /**
  * Vite output (dist/) → publish-cpe | publish-ege | publish-fce for separate deploy roots.
  * Run `npm run vite:build` / `vite:build:ege` / `vite:build:fce` first (dist/ must exist).
- * Usage: node scripts/build-netlify-track.mjs cpe|ege|fce
+ * Usage: node scripts/build-netlify-track.mjs cpe|ege|fce|oge
  *
- * - CPE publish: full index.html; removes ege.html & fce.html.
- * - EGE / FCE publish: removes the other track’s hub HTML; replaces root index.html with a tiny redirect stub to ege.html | fce.html (no full CPE app on that origin).
+ * - CPE publish: full index.html; removes ege.html, fce.html & oge.html.
+ * - EGE / FCE / OGE publish: removes the other track hub HTML; replaces root index.html with a tiny redirect stub.
  * - FCE publish: also removes `unit10-vocabulary/similes/` (CPE-only).
  *
  * Also writes STATIC-HOST-ROUTING.txt (hints without Netlify _redirects).
@@ -20,8 +20,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const TRACK = String(process.argv[2] || "cpe").toLowerCase();
-if (!["cpe", "ege", "fce"].includes(TRACK)) {
-  console.error("Usage: node scripts/build-netlify-track.mjs cpe|ege|fce");
+if (!["cpe", "ege", "fce", "oge"].includes(TRACK)) {
+  console.error("Usage: node scripts/build-netlify-track.mjs cpe|ege|fce|oge");
   process.exit(1);
 }
 
@@ -30,9 +30,10 @@ const DIST = path.join(ROOT, "dist");
 
 /** Top-level hub HTML removed per track so each Netlify site only ships its own home (+ shared content). */
 const DROP_TOP_HTML = {
-  cpe: ["ege.html", "fce.html"],
-  ege: ["fce.html"],
-  fce: ["ege.html"],
+  cpe: ["ege.html", "fce.html", "oge.html"],
+  ege: ["fce.html", "oge.html"],
+  fce: ["ege.html", "oge.html"],
+  oge: ["ege.html", "fce.html"],
 };
 
 function copyTree() {
@@ -63,6 +64,12 @@ const REDIRECT_LINES = {
     "/fce-course /fce.html 200",
     "/legacy /fce.html 200",
   ],
+  oge: [
+    "/ /oge.html 200",
+    "/b2 /oge.html 200",
+    "/fce-course /oge.html 200",
+    "/legacy /oge.html 200",
+  ],
 };
 
 function writeRedirects() {
@@ -74,6 +81,7 @@ const ROUTING_HINT_HOME = {
   cpe: "index.html",
   ege: "ege.html",
   fce: "fce.html",
+  oge: "oge.html",
 };
 
 /** Explains Netlify _redirects and same behavior on static hosts (no magic on plain S3-like buckets). */
@@ -146,10 +154,10 @@ function patchPrepMeta() {
   }
 }
 
-/** EGE/FCE sites: no full CPE hub — tiny index forwards to the real home (keeps /index.html URLs from 404ing). */
+/** EGE/FCE/OGE sites: no full CPE hub — tiny index forwards to the real home (keeps /index.html URLs from 404ing). */
 function writeLightIndexStub() {
-  if (TRACK !== "ege" && TRACK !== "fce") return;
-  const target = TRACK === "ege" ? "ege.html" : "fce.html";
+  if (TRACK !== "ege" && TRACK !== "fce" && TRACK !== "oge") return;
+  const target = TRACK === "ege" ? "ege.html" : TRACK === "fce" ? "fce.html" : "oge.html";
   const stub = `<!DOCTYPE html>
 <html lang="en">
 <head>

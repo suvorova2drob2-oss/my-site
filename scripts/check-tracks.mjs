@@ -15,6 +15,7 @@ const SKIP_DIRS = new Set([
   "publish-cpe",
   "publish-fce",
   "publish-ege",
+  "publish-oge",
   ".git",
   ".cursor",
 ]);

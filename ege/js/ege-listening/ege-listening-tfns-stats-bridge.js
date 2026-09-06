@@ -2,8 +2,11 @@
  * Listening TFNS → Statistics Hub (localStorage).
  */
 (function (w) {
-  var KEY = "ege_listening_tfns_scores";
-  var SKILL = "Listening: True / False / Not Stated";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("listening_tfns_scores")
+      : "ege_listening_tfns_scores";
+  var SKILL = w.__egeListeningTfnsStatsSkill || "Listening: True / False / Not Stated";
 
   function readRaw() {
     try {
@@ -37,7 +40,12 @@
     if (w.__egeActivityTracker && typeof w.__egeActivityTracker.recordActivity === "function") {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-listening-tfns.html",
+        href:
+          w.__egeListeningTfnsStatsHref && w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref(w.__egeListeningTfnsStatsHref)
+            : w.__examTrackBridge && w.__examTrackBridge.examHref
+              ? w.__examTrackBridge.examHref("listening-tfns.html")
+              : "ege-listening-tfns.html",
         score: p
       });
     }

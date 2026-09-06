@@ -8,7 +8,7 @@
         try {
             if (global.prepTrackScope && typeof global.prepTrackScope.get === "function") {
                 var scoped = global.prepTrackScope.get();
-                if (scoped === "cpe" || scoped === "ege" || scoped === "fce") return scoped;
+                if (scoped === "cpe" || scoped === "ege" || scoped === "fce" || scoped === "oge") return scoped;
             }
         } catch (eSc) {}
         var pt = normTrack(global.__PREP_ACTIVE_TRACK__ || global.__PREP_PAGE_TRACK__);
@@ -18,7 +18,7 @@
 
     function normTrack(t) {
         var s = String(t || "").toLowerCase();
-        if (s === "cpe" || s === "ege" || s === "fce") return s;
+        if (s === "cpe" || s === "ege" || s === "fce" || s === "oge") return s;
         return "";
     }
 
@@ -42,7 +42,8 @@
             var legacyTrack = "cpe";
             if (j && j.courseTrack === "ege") legacyTrack = "ege";
             else if (j && j.courseTrack === "fce") legacyTrack = "fce";
-            var targets = { cpe: false, ege: false, fce: false };
+            else if (j && j.courseTrack === "oge") legacyTrack = "oge";
+            var targets = { cpe: false, ege: false, fce: false, oge: false };
             targets[legacyTrack] = true;
             targets.cpe = true;
             for (var tr in targets) {
@@ -60,7 +61,7 @@
 
     function pinProfileToPageTrack(d) {
         var pageTrack = getStorageTrack();
-        if (pageTrack === "ege" || pageTrack === "fce") {
+        if (pageTrack === "ege" || pageTrack === "fce" || pageTrack === "oge") {
             d.courseTrack = pageTrack;
             d.courseId = pageTrack;
             return d;
@@ -93,7 +94,7 @@
 
     function normalizeCourseTrack(t) {
         var s = String(t || "cpe").toLowerCase();
-        if (s === "creator" || s === "cpe" || s === "ege" || s === "fce") return s;
+        if (s === "creator" || s === "cpe" || s === "ege" || s === "fce" || s === "oge") return s;
         return "cpe";
     }
 
@@ -104,12 +105,12 @@
     }
 
     /**
-     * Storage namespace for PrepSiteContent (cpe | ege | fce | cr_*).
+     * Storage namespace for PrepSiteContent (cpe | ege | fce | oge | cr_*).
      */
     function normalizeCourseId(id) {
         var s = String(id || "cpe");
         if (s === "custom") return "empty";
-        if (s === "cpe" || s === "ege" || s === "fce") return s;
+        if (s === "cpe" || s === "ege" || s === "fce" || s === "oge") return s;
         if (s === "empty") return "empty";
         if (isCreatorStorageId(s)) return s;
         return "cpe";
@@ -142,7 +143,7 @@
                 d.wizardCompleted = !!j.wizardCompleted;
                 return;
             }
-            if (cid === "ege" || cid === "fce") {
+            if (cid === "ege" || cid === "fce" || cid === "oge") {
                 d.courseTrack = cid;
                 d.courseId = cid;
             } else {
@@ -287,7 +288,7 @@
             if (patch.courseId != null) {
                 cur.courseId = normalizeCourseId(patch.courseId);
             }
-            if (cur.courseTrack === "cpe" || cur.courseTrack === "ege" || cur.courseTrack === "fce") {
+            if (cur.courseTrack === "cpe" || cur.courseTrack === "ege" || cur.courseTrack === "fce" || cur.courseTrack === "oge") {
                 cur.courseId = cur.courseTrack;
             }
             if (cur.courseTrack === "creator") {
@@ -371,7 +372,7 @@
 
     function hubHeaderStorageSuffix() {
         var pageTrack = getStorageTrack();
-        if (pageTrack === "ege" || pageTrack === "fce") return pageTrack;
+        if (pageTrack === "ege" || pageTrack === "fce" || pageTrack === "oge") return pageTrack;
         var p = load();
         if (p.courseTrack === "creator" && isCreatorStorageId(normalizeCourseId(p.courseId))) {
             return p.courseId;

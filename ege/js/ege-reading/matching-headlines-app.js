@@ -1645,7 +1645,10 @@
 
   if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
     window.EgeLiveRoom.mount({
-      deckPrefix: "ege-reading-matching-headlines",
+      deckPrefix:
+        window.__examTrackBridge && window.__examTrackBridge.liveDeckPrefix
+          ? window.__examTrackBridge.liveDeckPrefix("ege-reading-matching-headlines")
+          : "ege-reading-matching-headlines",
       getUnitId: function () {
         return U && U.id;
       },

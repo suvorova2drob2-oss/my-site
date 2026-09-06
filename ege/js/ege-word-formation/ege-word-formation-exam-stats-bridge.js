@@ -2,7 +2,10 @@
  * Word Formation Exam §25–29 → Statistics Hub (localStorage).
  */
 (function (w) {
-  var KEY = "ege_word_formation_exam_scores";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("word_formation_exam_scores")
+      : "ege_word_formation_exam_scores";
   var SKILL = "Word Formation Exam";
 
   function readRaw() {
@@ -40,7 +43,10 @@
     ) {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-word-formation-exam.html",
+        href:
+          w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref("word-formation-exam.html")
+            : "ege-word-formation-exam.html",
         score: p
       });
     }

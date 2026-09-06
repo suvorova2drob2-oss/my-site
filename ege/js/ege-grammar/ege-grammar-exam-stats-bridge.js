@@ -2,8 +2,11 @@
  * Grammar Exam §19–24 → Statistics Hub (localStorage).
  */
 (function (w) {
-  var KEY = "ege_grammar_exam_scores";
-  var SKILL = "Grammar Exam";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("grammar_exam_scores")
+      : "ege_grammar_exam_scores";
+  var SKILL = w.__egeGrammarExamStatsSkill || "Grammar Exam";
 
   function readRaw() {
     try {
@@ -37,7 +40,12 @@
     if (w.__egeActivityTracker && typeof w.__egeActivityTracker.recordActivity === "function") {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-grammar-exam.html",
+        href:
+          w.__egeGrammarExamStatsHref && w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref(w.__egeGrammarExamStatsHref)
+            : w.__examTrackBridge && w.__examTrackBridge.examHref
+              ? w.__examTrackBridge.examHref("grammar-exam.html")
+              : "ege-grammar-exam.html",
         score: p
       });
     }

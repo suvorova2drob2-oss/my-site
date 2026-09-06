@@ -3,7 +3,10 @@
  * Тренажёр вызывает recordAttempt; ege-statistics.html — mergeIntoExamStatisticsState при загрузке.
  */
 (function (w) {
-  var KEY = "ege_reading_mh_scores";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("reading_mh_scores")
+      : "ege_reading_mh_scores";
   var SKILL = "Reading: Matching Headlines";
 
   function readRaw() {
@@ -39,7 +42,10 @@
     if (w.__egeActivityTracker && typeof w.__egeActivityTracker.recordActivity === "function") {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-reading-matching-headlines.html",
+        href:
+          w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref("reading-matching-headlines.html")
+            : "ege-reading-matching-headlines.html",
         score: p,
       });
     }

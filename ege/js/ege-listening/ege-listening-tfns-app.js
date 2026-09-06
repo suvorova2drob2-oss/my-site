@@ -619,7 +619,12 @@
     html += "</select></label></div>";
 
     if (U.examSection) {
-      html += '<p class="ege-tfns-kicker">Listening · ' + esc(U.examSection) + "</p>";
+      html +=
+        '<p class="ege-tfns-kicker">' +
+        esc(U.sectionKicker || "Listening") +
+        " · " +
+        esc(U.examSection) +
+        "</p>";
     }
     html += '<h2 class="ege-tfns-page-title">' + esc(U.title) + "</h2>";
     html += '<p class="ege-tfns-ins">' + U.instructionHtml + "</p>";
@@ -634,13 +639,19 @@
     html +=
       '<div class="ege-reading-stats-bar" id="ege-tfns-stats-bar" role="region" aria-label="Статистика"></div>';
 
-    html += '<div class="ege-tfns-audio">';
-    html +=
-      '<label class="ege-tfns-audio-label" for="ege-tfns-audio">Аудио (2 прослушивания)</label>';
-    html +=
-      '<audio id="ege-tfns-audio" controls preload="metadata" src="' +
-      esc(U.audioSrc) +
-      '"></audio></div>';
+    if (U.readingPassageHtml) {
+      html += '<div class="ege-tfns-reading-passage">' + U.readingPassageHtml + "</div>";
+    }
+
+    if (U.audioSrc) {
+      html += '<div class="ege-tfns-audio">';
+      html +=
+        '<label class="ege-tfns-audio-label" for="ege-tfns-audio">Аудио (2 прослушивания)</label>';
+      html +=
+        '<audio id="ege-tfns-audio" controls preload="metadata" src="' +
+        esc(U.audioSrc) +
+        '"></audio></div>';
+    }
 
     html += '<div class="ege-tfns-legend">';
     html += '<span class="ege-tfns-leg ege-tfns-leg--t"><strong>+</strong> True</span>';
@@ -770,7 +781,10 @@
 
   if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
     window.EgeLiveRoom.mount({
-      deckPrefix: "ege-listening-tfns",
+      deckPrefix:
+        window.__examTrackBridge && window.__examTrackBridge.liveDeckPrefix
+          ? window.__examTrackBridge.liveDeckPrefix("ege-listening-tfns")
+          : "ege-listening-tfns",
       getUnitId: function () {
         return U && U.id;
       },

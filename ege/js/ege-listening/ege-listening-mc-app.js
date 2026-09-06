@@ -651,6 +651,22 @@
     html += '<h2 class="ege-lmc-page-title">' + esc(U.title) + "</h2>";
     html += '<p class="ege-lmc-ins">' + U.instructionHtml + "</p>";
 
+    if (U.shortTexts && U.shortTexts.length) {
+      html +=
+        '<details class="ege-lmc-tips"><summary>Scripts A–D (after listening)</summary><div class="ege-lmc-tips-body">';
+      var sti;
+      for (sti = 0; sti < U.shortTexts.length; sti++) {
+        var stx = U.shortTexts[sti];
+        html +=
+          "<p><strong>" +
+          esc(stx.label) +
+          ".</strong> " +
+          esc(stx.body).replace(/\n/g, "<br>") +
+          "</p>";
+      }
+      html += "</div></details>";
+    }
+
     if (U.listenTipsRu) {
       html +=
         '<details class="ege-lmc-tips"><summary>MC — на что смотреть</summary><div class="ege-lmc-tips-body">' +
@@ -669,7 +685,7 @@
       esc(U.audioSrc) +
       '"></audio></div>';
 
-    html += '<ol class="ege-lmc-q-list" start="3">';
+    html += '<ol class="ege-lmc-q-list" start="' + esc(String(U.questionListStart != null ? U.questionListStart : 3)) + '">';
     (U.questions || []).forEach(function (q) {
       answerRows.push({ examNum: q.examNum, val: 0 });
       html += '<li class="ege-lmc-q-item" data-exam="' + esc(String(q.examNum)) + '">';
@@ -790,7 +806,10 @@
 
   if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
     window.EgeLiveRoom.mount({
-      deckPrefix: "ege-listening-mc",
+      deckPrefix:
+        window.__examTrackBridge && window.__examTrackBridge.liveDeckPrefix
+          ? window.__examTrackBridge.liveDeckPrefix("ege-listening-mc")
+          : "ege-listening-mc",
       getUnitId: function () {
         return U && U.id;
       },

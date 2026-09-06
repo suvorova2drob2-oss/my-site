@@ -2,7 +2,10 @@
  * Listening MC (задание 3) → Statistics Hub (localStorage).
  */
 (function (w) {
-  var KEY = "ege_listening_mc_scores";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("listening_mc_scores")
+      : "ege_listening_mc_scores";
   var SKILL = "Listening: Multiple Choice";
 
   function readRaw() {
@@ -37,7 +40,10 @@
     if (w.__egeActivityTracker && typeof w.__egeActivityTracker.recordActivity === "function") {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-listening-mc.html",
+        href:
+          w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref("listening-mc.html")
+            : "ege-listening-mc.html",
         score: p
       });
     }

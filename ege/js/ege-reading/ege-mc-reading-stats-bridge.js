@@ -2,7 +2,10 @@
  * Reading MC → Statistics Hub (localStorage ege_reading_mcr_scores).
  */
 (function (w) {
-  var KEY = "ege_reading_mcr_scores";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("reading_mcr_scores")
+      : "ege_reading_mcr_scores";
   var SKILL = "Reading: Multiple Choice";
 
   function readRaw() {
@@ -40,7 +43,10 @@
     ) {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-reading-multiple-choice.html",
+        href:
+          w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref("reading-multiple-choice.html")
+            : "ege-reading-multiple-choice.html",
         score: p
       });
     }

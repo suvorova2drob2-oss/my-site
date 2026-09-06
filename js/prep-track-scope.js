@@ -1,14 +1,14 @@
 /**
- * Page track scope (cpe | ege | fce) — must load before prep-course-profile.js.
+ * Page track scope (cpe | ege | fce | oge) — must load before prep-course-profile.js.
  * Each hub keeps its own profile slot; tracks do not overwrite each other.
  *
  * Set window.__PREP_PAGE_TRACK__ in HTML head, or:
- * <script src="js/prep-track-scope.js" data-track="cpe|ege|fce" vite-ignore></script>
+ * <script src="js/prep-track-scope.js" data-track="cpe|ege|fce|oge" vite-ignore></script>
  */
 (function (global) {
   function norm(t) {
     var s = String(t || "").trim().toLowerCase();
-    if (s === "cpe" || s === "ege" || s === "fce") return s;
+    if (s === "cpe" || s === "ege" || s === "fce" || s === "oge") return s;
     return "";
   }
 
@@ -17,6 +17,9 @@
       var p = String(global.location.pathname || "").replace(/\\/g, "/").toLowerCase();
       if (/\/ege(\/|$)/.test(p) || /(^|\/)ege\.html$/.test(p) || /(^|\/)ege-[^/]+\.html$/.test(p)) {
         return "ege";
+      }
+      if (/\/oge(\/|$)/.test(p) || /(^|\/)oge\.html$/.test(p) || /(^|\/)oge-[^/]+\.html$/.test(p)) {
+        return "oge";
       }
       if (/\/fce(\/|$)/.test(p)) return "fce";
       if (/\/cpe(\/|$)/.test(p) || /-vocabulary\/cpe/.test(p) || /-use-of-english\/cpe/.test(p)) {
@@ -50,7 +53,7 @@
     },
     isExamHub: function (t) {
       t = norm(t || global.__PREP_ACTIVE_TRACK__);
-      return t === "cpe" || t === "ege" || t === "fce";
+      return t === "cpe" || t === "ege" || t === "fce" || t === "oge";
     },
   };
 })(typeof window !== "undefined" ? window : this);

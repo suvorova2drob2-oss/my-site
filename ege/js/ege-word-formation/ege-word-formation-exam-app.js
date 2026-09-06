@@ -983,7 +983,10 @@
 
   if (window.EgeLiveRoom && typeof window.EgeLiveRoom.mount === "function") {
     window.EgeLiveRoom.mount({
-      deckPrefix: "ege-word-formation-exam",
+      deckPrefix:
+        window.__examTrackBridge && window.__examTrackBridge.liveDeckPrefix
+          ? window.__examTrackBridge.liveDeckPrefix("ege-word-formation-exam")
+          : "ege-word-formation-exam",
       getUnitId: function () {
         return U && U.id;
       },

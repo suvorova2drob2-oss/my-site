@@ -2,7 +2,10 @@
  * Listening Matching §1 → Statistics Hub (localStorage).
  */
 (function (w) {
-  var KEY = "ege_listening_matching_scores";
+  var KEY =
+    w.__examTrackBridge && w.__examTrackBridge.storageKey
+      ? w.__examTrackBridge.storageKey("listening_matching_scores")
+      : "ege_listening_matching_scores";
   var SKILL = "Listening: Matching";
 
   function readRaw() {
@@ -37,7 +40,10 @@
     if (w.__egeActivityTracker && typeof w.__egeActivityTracker.recordActivity === "function") {
       w.__egeActivityTracker.recordActivity({
         label: SKILL,
-        href: "ege-listening-matching.html",
+        href:
+          w.__examTrackBridge && w.__examTrackBridge.examHref
+            ? w.__examTrackBridge.examHref("listening-matching.html")
+            : "ege-listening-matching.html",
         score: p
       });
     }

@@ -80,7 +80,15 @@
     "ege-reading-mc": "/ege/ege-reading-multiple-choice.html",
     "ege-grammar-exam": "/ege/ege-grammar-exam.html",
     "ege-word-formation-exam": "/ege/ege-word-formation-exam.html",
-    "ege-lexis-exam": "/ege/ege-lexis-exam.html"
+    "ege-lexis-exam": "/ege/ege-lexis-exam.html",
+    "oge-listening-matching": "/oge/oge-listening-matching.html",
+    "oge-listening-mc": "/oge/oge-listening-mc.html",
+    "oge-listening-interview": "/oge/oge-listening-interview.html",
+    "oge-listening-tfns": "/oge/oge-reading-tfns.html",
+    "oge-reading-tfns": "/oge/oge-reading-tfns.html",
+    "oge-reading-matching-headlines": "/oge/oge-reading-matching-headlines.html",
+    "oge-grammar-exam": "/oge/oge-grammar-exam.html",
+    "oge-word-formation-exam": "/oge/oge-word-formation-exam.html"
   };
 
   function deckPathHint() {
