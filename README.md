@@ -27,7 +27,7 @@ npm run dev
 npm run check:all
 ```
 
-Сборка под выкладку:
+Сборка в `publish-*` (если понадобится статический хостинг без Node):
 
 ```bash
 npm run build:cpe   # → publish-cpe/
@@ -35,7 +35,7 @@ npm run build:fce   # → publish-fce/
 npm run build:ege   # → publish-ege/
 ```
 
-На Netlify выкладывается **не весь репозиторий**, а содержимое **`publish-*`** после сборки. Подробнее: `docs/track-workflow.md`.
+**Продакшен — VPS**, не Netlify. После `git push` см. **`server/VPS-UPDATE.txt`**. Netlify в репозитории отключён (`netlify.toml` → `ignore = "exit 0"`).
 
 ---
 

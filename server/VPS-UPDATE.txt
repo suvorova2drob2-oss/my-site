@@ -1,0 +1,48 @@
+Обновление сайта на VPS (после git push)
+=========================================
+
+У вас сайт отдаётся с VPS из папки my-site (Node live-rooms-server, порт 8787).
+Netlify не используется.
+
+Что уже сделано на вашем ПК
+---------------------------
+  git add …
+  git commit …
+  git push origin main
+
+Авто-обновление на сервере (если cron включён)
+------------------------------------------------
+Скрипт server/auto-update-live.sh раз в минуту делает:
+  git fetch + reset --hard origin/main
+  npm install --omit=dev  (только если был новый коммит)
+  systemctl restart ege-live-rooms
+
+Обычно после push подождите 1–2 минуты и обновите страницу Ctrl+F5.
+
+Ручное обновление (SSH на VPS)
+------------------------------
+  ssh ege
+  bash /root/my-site/server/update-live-on-vps.sh
+
+Или коротко:
+  cd /root/my-site
+  git fetch origin main
+  git reset --hard origin/main
+  systemctl restart ege-live-rooms
+
+Pre-intermediate / workshops — сборка НЕ нужна
+------------------------------------------------
+HTML, JS, картинки в workshops/ отдаются напрямую из репозитория.
+npm run build нужен только если вы меняете Vite-сборку (src/, dist/).
+
+Проверка Pre-intermediate Eat
+-----------------------------
+  http://77.110.113.165:8787/workshops/pre-intermediate/unit.html?theme=eat
+
+Или через Workshops:
+  http://77.110.113.165:8787/b2-intensive.html
+
+Netlify (если сайт ещё висит в аккаунте)
+----------------------------------------
+В репозитории netlify.toml содержит ignore = "exit 0" — новые деплои не собираются.
+Лучше в app.netlify.com: Site settings → Build & deploy → Stop builds.

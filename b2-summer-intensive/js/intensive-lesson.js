@@ -541,9 +541,16 @@
     needles.forEach(function (needle) {
       var re = new RegExp("(" + flexPatternForHtml(needle) + ")", "gi");
       var parts = result.split(/(<[^>]+>)/);
+      var insideMark = false;
       result = parts
         .map(function (part) {
-          if (!part || part.charAt(0) === "<") return part;
+          if (!part) return part;
+          if (part.charAt(0) === "<") {
+            if (/^<mark\b/i.test(part)) insideMark = true;
+            else if (/^<\/mark>/i.test(part)) insideMark = false;
+            return part;
+          }
+          if (insideMark) return part;
           return part.replace(re, function (m) {
             return (
               '<mark class="si-keyphrase" data-si-key="' +
