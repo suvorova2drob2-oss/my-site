@@ -666,7 +666,9 @@
       escapeHtml(v.type) +
       '" data-pack-key="' +
       escapeHtml(v.packKey || "") +
-      '"></div>'
+      '"' +
+      (v.modal ? ' data-vocab-modal="1"' : "") +
+      "></div>"
     );
   }
 
@@ -676,11 +678,43 @@
     var type = host.getAttribute("data-vocab-type") || "";
     var packKey = host.getAttribute("data-pack-key") || "";
     var pack = packKey && window[packKey] ? window[packKey] : null;
+    var modal = host.getAttribute("data-vocab-modal") === "1";
     if (type === "pairs" && pack && window.PREP_VOCAB_PAIR_BOX) {
-      PREP_VOCAB_PAIR_BOX.mount({ root: host, pack: pack });
+      if (modal && window.PRE_INT_VOCAB_MODAL) {
+        PRE_INT_VOCAB_MODAL.mountLaunch({ root: host, pack: pack });
+      } else {
+        PREP_VOCAB_PAIR_BOX.mount({ root: host, pack: pack });
+      }
     } else {
       host.innerHTML =
         '<div class="int-slot-empty">Vocabulary pack not loaded.</div>';
+    }
+  }
+
+  function renderPicturesBody(screen) {
+    var m = screen.mnemonic || {};
+    if (!m.packKey) {
+      return (
+        '<div class="int-slot-empty">Mnemonic pictures — drop the pack here.</div>'
+      );
+    }
+    return (
+      '<div class="pi-mnemonic-host" id="pi-mnemonic-host" data-pack-key="' +
+      escapeHtml(m.packKey) +
+      '"></div>'
+    );
+  }
+
+  function bindMnemonic(root) {
+    var host = root && root.querySelector("#pi-mnemonic-host");
+    if (!host || !window.PRE_INT_MNEMONIC_GRID) return;
+    var packKey = host.getAttribute("data-pack-key") || "";
+    var cards = packKey && window[packKey] ? window[packKey] : null;
+    if (cards && cards.length) {
+      PRE_INT_MNEMONIC_GRID.mount({ root: host, cards: cards });
+    } else {
+      host.innerHTML =
+        '<div class="int-slot-empty">Mnemonic picture pack not loaded.</div>';
     }
   }
 
@@ -2252,6 +2286,7 @@
           if (id === "read") extra = renderReadBody(screen);
           else if (id === "context") extra = renderContextBody(screen);
           else if (id === "vocab") extra = renderVocabBody(screen);
+          else if (id === "pictures") extra = renderPicturesBody(screen);
           else if (id === "phrases" && screen.phrases && screen.phrases.length) {
             extra =
               '<ul class="si-beat-phrases">' +
@@ -3063,6 +3098,7 @@
     bindPhraseTaps(elStage);
     bindDrill(elStage);
     bindVocab(elStage);
+    bindMnemonic(elStage);
     if (screen.kind === "homework") bindHwGames(elStage);
   }
 

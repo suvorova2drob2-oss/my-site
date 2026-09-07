@@ -6,8 +6,8 @@
   "use strict";
 
   var EAT_VOCAB_PAIRS = {
-    title: "1 Complete the sentences with these pairs of words.",
-    instr: "Each pair is used once. Click a gap, then a pair on the right.",
+    title: "Complete the sentences with these pairs of words.",
+    instr: "Each pair is used once. Click a gap, then a pair on the right — both blanks fill.",
     pairs: [
       { a: "busy", b: "seat" },
       { a: "choice", b: "options" },

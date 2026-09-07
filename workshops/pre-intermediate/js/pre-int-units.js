@@ -79,7 +79,9 @@
           label: "A favourite place",
           teacher:
             "Beat 1 · restaurant talk. Paper = fuel for chunks. Highlighted marks = targets. Steal stems about YOUR places to eat.",
-          blocks: ["read", "context"],
+          blocks: ["read", "pictures", "vocab", "context"],
+          mnemonic: { packKey: "PRE_INT_EAT_MNEMONIC_CARDS" },
+          vocab: { type: "pairs", packKey: "PRE_INT_EAT_VOCAB_PAIRS", modal: true },
           phrases: [
             {
               en: "There’s a little Japanese place near my office, which does great sushi",
@@ -2352,8 +2354,12 @@
       hint: "Discussion · steal tape phrases",
     },
     vocab: {
-      title: "Vocabulary",
-      hint: "Word pairs · gaps",
+      title: "Word pairs",
+      hint: "Complete the sentences · coursebook Ex. 1",
+    },
+    pictures: {
+      title: "Picture memory",
+      hint: "Flip · guess the phrase · fullscreen",
     },
   };
 
@@ -2404,6 +2410,7 @@
         speak: b.speak || null,
         drill: b.drill || null,
         vocab: b.vocab || null,
+        mnemonic: b.mnemonic || null,
         optional: !!b.optional,
         time: b.time || "8–12 min",
       };
