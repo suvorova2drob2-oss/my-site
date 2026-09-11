@@ -725,6 +725,33 @@
     }
   }
 
+  function renderDrillCardsBody(screen) {
+    var d = screen.drillCards || {};
+    if (!d.packKey) {
+      return (
+        '<div class="int-slot-empty">Drilling cards — drop the pack here.</div>'
+      );
+    }
+    return (
+      '<div class="pi-drill-host" id="pi-drill-host" data-pack-key="' +
+      escapeHtml(d.packKey) +
+      '"></div>'
+    );
+  }
+
+  function bindDrillCards(root) {
+    var host = root && root.querySelector("#pi-drill-host");
+    if (!host || !window.PRE_INT_EAT_DRILL_CARDS_ENGINE) return;
+    var packKey = host.getAttribute("data-pack-key") || "";
+    var cards = packKey && window[packKey] ? window[packKey] : null;
+    if (cards && cards.length) {
+      PRE_INT_EAT_DRILL_CARDS_ENGINE.mount({ root: host, cards: cards });
+    } else {
+      host.innerHTML =
+        '<div class="int-slot-empty">Drilling card pack not loaded.</div>';
+    }
+  }
+
   function renderSpeakSide(screen) {
     var s = screen.speak || {};
     var questions = s.questions || [];
@@ -2294,6 +2321,7 @@
           else if (id === "context") extra = renderContextBody(screen);
           else if (id === "vocab") extra = renderVocabBody(screen);
           else if (id === "pictures") extra = renderPicturesBody(screen);
+          else if (id === "drillCards") extra = renderDrillCardsBody(screen);
           else if (id === "phrases" && screen.phrases && screen.phrases.length) {
             extra =
               '<ul class="si-beat-phrases">' +
@@ -3106,6 +3134,7 @@
     bindDrill(elStage);
     bindVocab(elStage);
     bindMnemonic(elStage);
+    bindDrillCards(elStage);
     if (screen.kind === "homework") bindHwGames(elStage);
   }
 

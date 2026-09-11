@@ -79,9 +79,10 @@
           label: "A favourite place",
           teacher:
             "Beat 1 · restaurant talk. Paper = fuel for chunks. Highlighted marks = targets. Steal stems about YOUR places to eat.",
-          blocks: ["read", "pictures", "vocab", "context"],
+          blocks: ["read", "pictures", "vocab", "drillCards", "context"],
           mnemonic: { packKey: "PRE_INT_EAT_MNEMONIC_CARDS" },
           vocab: { type: "pairs", packKey: "PRE_INT_EAT_VOCAB_PAIRS", modal: true },
+          drillCards: { packKey: "PRE_INT_EAT_DRILL_CARDS" },
           phrases: [
             {
               en: "There’s a little Japanese place near my office, which does great sushi",
@@ -2361,6 +2362,10 @@
       title: "Picture memory",
       hint: "Flip · guess the phrase · fullscreen",
     },
+    drillCards: {
+      title: "Drilling cards",
+      hint: "Drill · role play · bingo · questions",
+    },
   };
 
   /** Intensive-shaped theme so intensive-lesson.js can run unchanged */
@@ -2411,6 +2416,7 @@
         drill: b.drill || null,
         vocab: b.vocab || null,
         mnemonic: b.mnemonic || null,
+        drillCards: b.drillCards || null,
         optional: !!b.optional,
         time: b.time || "8–12 min",
       };
