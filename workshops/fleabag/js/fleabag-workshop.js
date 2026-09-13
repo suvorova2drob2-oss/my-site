@@ -6553,7 +6553,686 @@
       tagline: "Uncomfortable truth · Claire’s news · somewhere unexpected",
       synopsis:
         "A counselling session elicits an uncomfortable truth from Fleabag, and a chat with Claire brings some unwelcome news.",
-      beats: defaultBeats(8),
+      beats: [
+        {
+          id: "gives-me-some-edge",
+          label: "Gives me some edge",
+          teacher:
+            "Bit 1 · Counselling. Cool phrase: gives me some edge = a dash of spice / перчинка (look, vibe, confidence — not ‘sharp advantage’). Discussion: what makes someone magnetic vs just ‘nice’.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["gives me some edge"],
+          watch: {
+            videoUrl: "media/s02e02/01-gives-me-some-edge.mp4",
+            note:
+              "gives me some edge · has an edge · a bit of an edge · that look / vibe gives him some edge.",
+          },
+          context: {
+            tone: "Lexical · ‘edge’ as spice / перчинка — look, vibe, attitude",
+            meanings: [
+              "gives me / someone some edge = adds a dash of spice / sharpness (перчинка) — a look, vibe, or attitude that makes a person more interesting, not just ‘nice’.",
+              "have an edge / a bit of an edge = carry that same quality — slightly dangerous, witty, or unpolished in an attractive way.",
+            ],
+            examples: [
+              "SOME EDGE — gives me some edge · has an edge · a bit of an edge · that look / vibe gives him some edge.",
+              "The beard gives him some edge — not dangerous, just a dash of spice.",
+              "She’s kind, but that dry humour gives her some edge.",
+              "I wanted a haircut that would give me some edge.",
+              "He’s stable on paper — but something about him gives me some edge.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "That look / vibe gives me some edge because…",
+              "Having an edge is more about… than…",
+              "For me, a bit of an edge means…",
+              "Stability is appealing, but…",
+            ],
+            questions: [
+              {
+                q: "What comes to your mind when you hear that someone has “an edge”? Is it about their appearance, behavior, or inner confidence?",
+                examples: [
+                  "Appearance first — a look that isn’t too polished.",
+                  "Behavior — dry humour, not people-pleasing.",
+                  "Inner confidence — they don’t need to be liked by everyone.",
+                  "A mix: the spice is attitude; clothes just advertise it.",
+                ],
+              },
+              {
+                q: "Can you think of a celebrity or a fictional character whose “edge” makes them incredibly charming? (e.g., Johnny Depp, Tyler Durden, Thomas Shelby)",
+                examples: [
+                  "Thomas Shelby — quiet danger + control.",
+                  "Tyler Durden — chaos as charisma (toxic, still magnetic on screen).",
+                  "Johnny Depp (Jack Sparrow era) — messy, witty, unpredictable.",
+                  "Someone closer: a musician / actor with a look that gives them some edge.",
+                ],
+              },
+              {
+                q: "For men, what details usually add that “spice” or “edge” to their look? Is it a beard, tattoos, a leather jacket, or maybe a specific perfume?",
+                examples: [
+                  "Beard / slightly undone hair — not too groomed.",
+                  "Tattoos or a leather jacket — classic ‘some edge’ shortcuts.",
+                  "Perfume / voice / posture can do more than clothes.",
+                  "One detail is enough; overdoing it looks like a costume.",
+                ],
+              },
+              {
+                q: "Have you ever deliberately changed your look or behavior to give yourself “some edge” or to surprise people?",
+                examples: [
+                  "Yes — haircut, clothes, or a sharper way of speaking.",
+                  "I tried an ‘edge’ look and it felt fake — I dropped it.",
+                  "Not the look: I stopped over-explaining / people-pleasing.",
+                  "I wanted to surprise people at work / on a date — it gave me some edge for a week.",
+                ],
+              },
+              {
+                q: "Do you agree that a man becomes more attractive if he has a bit of a “bad boy” vibe, or is stability more appealing nowadays?",
+                examples: [
+                  "A bit of edge is attractive; a real bad boy is exhausting.",
+                  "Nowadays stability wins — drama is expensive.",
+                  "Charming edge + reliable core — that’s the mix.",
+                  "Depends on age: twenties want spark; later you want someone who shows up.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "pay-in-instalments",
+          label: "Pay in instalments",
+          teacher:
+            "Bit 2 · Counselling / guilt money. Fleabag tries to pay him back in instalments — small payments over time. Cool phrase → talk: owing friends, refusing payback, save-up vs instalments.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "pay in instalments",
+            "pay him back in instalments",
+          ],
+          watch: {
+            videoUrl: "media/s02e02/02-pay-in-instalments.mp4",
+            note:
+              "pay in instalments · pay him back in instalments · I’ll pay you back in instalments.",
+          },
+          context: {
+            tone: "Lexical · repay in small chunks over time (BrE instalments · AmE installments)",
+            meanings: [
+              "pay in instalments = pay for something in regular parts over time, not all at once (BrE spelling; AmE: installments).",
+              "pay someone back in instalments = return borrowed money in small amounts across weeks or months — often when you feel guilty or can’t afford a lump sum.",
+            ],
+            examples: [
+              "PAY IN INSTALMENTS — pay in instalments · pay for it in instalments · buy something in instalments · monthly instalments.",
+              "I bought the laptop in instalments — twelve months, no interest.",
+              "PAY … BACK IN INSTALMENTS — pay him back in instalments · pay her back in instalments · I’ll pay you back in instalments.",
+              "She tried to pay him back in instalments because of her guilt.",
+              "I owe you — can I pay you back in instalments?",
+              "SAVE UP VS INSTALMENTS — save up and buy it outright · comfortable buying in instalments · pay immediately / pay over time.",
+              "I’d rather save up than live on instalments.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Fleabag tries to pay him back in instalments because…",
+              "I feel uncomfortable owing money when…",
+              "I’d rather save up than buy in instalments because…",
+              "I once refused to take money back from a friend when…",
+            ],
+            questions: [
+              {
+                q: "Fleabag tries to pay him back in instalments because of her guilt. Why do we often feel uncomfortable when we owe someone money, even a small amount or to a friend?",
+                examples: [
+                  "It changes the balance — friend becomes creditor.",
+                  "Guilt — you feel you’re a burden, even for coffee money.",
+                  "Small debt lingers in your head longer than the cash.",
+                  "You avoid them / overcompensate until it’s cleared.",
+                ],
+              },
+              {
+                q: "Have you ever refused to take money back from a friend? Why?",
+                examples: [
+                  "Yes — it was a gift in disguise / not worth the awkwardness.",
+                  "They needed it more than I did.",
+                  "I wanted to feel generous — or I didn’t want to seem petty.",
+                  "No — I always take it back; debt on the table feels cleaner.",
+                ],
+              },
+              {
+                q: "Do you prefer to save up and buy things immediately, or are you comfortable buying things in instalments?",
+                examples: [
+                  "Save up — I hate owing the bank or the shop.",
+                  "Instalments OK for big items — phone, furniture — if the rate is zero.",
+                  "Depends: essentials now, luxuries only when I can pay outright.",
+                  "Instalments feel fine until one month you’re short — then stress.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "sorry-about-all-the-tat",
+          label: "Sorry about all the tat",
+          teacher:
+            "Bit 3 · Counselling. Sorry about all the tat = apology for clutter / junk on display. I gathered that = I worked it out from clues (rings, soaking wet). Tat + reading people → discussion.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "Sorry about all the tat",
+            "I gathered that",
+          ],
+          watch: {
+            videoUrl: "media/s02e02/03-tat-and-gathered.mp4",
+            note:
+              "Sorry about all the tat. · I gathered that · Yeah, I gathered that from the rings.",
+          },
+          context: {
+            tone: "Lexical · BrE tat (clutter / junk) + I gathered that (figured it out from clues)",
+            meanings: [
+              "tat (BrE, informal) = cheap clutter / junk / sentimental odds and ends — souvenirs, old tickets, postcards, knick-knacks you don’t really need.",
+              "Sorry about all the tat = sorry for the mess of stuff here — self-aware apology for clutter on show.",
+              "I gathered that = I worked it out / figured it out from what I saw or heard (not ‘physically collected’).",
+            ],
+            examples: [
+              "TAT — all the tat · a bit of tat · useless tat · sorry about all the tat.",
+              "Sorry about all the tat — the flat is full of souvenirs and old tickets.",
+              "I GATHERED THAT — I gathered that · Yeah, I gathered that · I gathered that from… · I gathered that because…",
+              "Are they married? — Yeah, I gathered that from the rings.",
+              "It’s raining. — Yeah, I gathered that because you’re soaking wet.",
+              "I gathered that you’re tired because you keep checking your phone.",
+              "I gathered that this meeting would run long — nobody had an agenda.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Sorry about all the tat — I keep…",
+              "I’m more of a maximalist / minimalist because…",
+              "Yeah, I gathered that from…",
+              "I gathered that you… because…",
+            ],
+            questions: [
+              {
+                q: "Are you a maximalist or a minimalist? Do you keep a lot of “tat” (souvenirs, old tickets, postcards) at home, or do you throw everything away?",
+                examples: [
+                  "Maximalist — every ticket / postcard tells a story.",
+                  "Minimalist — tat becomes dust; I keep photos, not objects.",
+                  "In between: one shelf of tat, rest is clean.",
+                  "I throw away fast — then regret one souvenir.",
+                ],
+              },
+              {
+                q: "What is the most useless piece of “tat” you’ve ever bought or received as a gift?",
+                examples: [
+                  "A novelty mug / fridge magnet / conference freebie.",
+                  "Gift tat — polite smile, then into a drawer.",
+                  "I bought it on holiday — never looked at it again.",
+                  "Still have it — useless but it makes me laugh.",
+                ],
+              },
+              {
+                q: "Look at the person sitting next to you (or across from you). What is one thing you can “gather” about them just by looking at their appearance, body language, or clothes? Use the phrase: “I gathered that you… because…”",
+                examples: [
+                  "I gathered that you’re cold because you’re hugging your arms.",
+                  "I gathered that you had a long day because your bag is on the floor.",
+                  "I gathered that you like detail because of your notebook / watch.",
+                  "Hard to say out loud — keep it kind, not creepy.",
+                ],
+              },
+              {
+                q: "When you meet someone for the first time on a date or a business meeting, what are the subtle red flags or clues where you think: “Yeah, I gathered that this person is trouble”?",
+                examples: [
+                  "They trash-talk the ex / the last job in minute one.",
+                  "Phone on the table, eyes on the screen — I gathered that I’m not the focus.",
+                  "Too much charm, zero questions back — performative.",
+                  "Business: vague on money / deadlines — I gathered that this will slip.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "guinea-pig-cafe",
+          label: "Guinea-pig cafe",
+          teacher:
+            "Bit 4 · Counselling / cafe scene. Discussion only — no cool-words tape (you didn’t supply target phrases for this beat).",
+          blocks: ["watch"],
+          phrases: [],
+          watch: {
+            videoUrl: "media/s02e02/04-chatty-wednesday.mp4",
+            note:
+              "Café scene · themed café · ideal atmosphere · alone in public · Slow/Chatty Lanes.",
+          },
+          speak: {
+            mission:
+              "Personal English · café atmosphere, themed spaces, loneliness in public. No phrase checklist — answer the questions.",
+            starters: [
+              "My ideal café atmosphere is…",
+              "If I opened a themed café, it would be…",
+              "I like being alone in a busy café because…",
+              "Slow/Chatty Lanes would / wouldn’t work here because…",
+            ],
+            questions: [
+              {
+                q: "What is your ideal atmosphere for a café? Do you like it quiet and cozy, or busy and full of people?",
+                examples: [
+                  "Quiet and cozy — laptop, no small talk.",
+                  "Busy — energy, anonymity, people-watching.",
+                  "Depends on the day: work mode vs social mode.",
+                  "Cozy but not dead — a little buzz, not a club.",
+                ],
+              },
+              {
+                q: "If you could open your own themed café (like my guinea-pig café), what theme would you choose?",
+                examples: [
+                  "Cats / books / board games / plants.",
+                  "Something ridiculous but memorable — guinea pigs, retro VHS.",
+                  "No theme — just perfect coffee and light.",
+                  "A ‘slow talk’ café — no Wi‑Fi, conversation encouraged.",
+                ],
+              },
+              {
+                q: "Cafés are full of people, yet many people come here to be alone. Why do you think we like being alone together in public places?",
+                examples: [
+                  "Company without obligation — humans nearby, no performance.",
+                  "Less lonely than an empty flat; more free than hosting.",
+                  "Background noise soothes — you’re not the only one awake at 11 p.m.",
+                  "Public alone time feels safer / more normal than hiding at home.",
+                ],
+              },
+              {
+                q: "In some countries, supermarkets and cafés now have ‘Slow/Chatty Lanes’ for lonely people to talk to staff. Do you think we need this in our city?",
+                examples: [
+                  "Yes — loneliness is real; a small chat at checkout helps.",
+                  "Nice idea, but staff aren’t therapists — training matters.",
+                  "Cultural fit: some cities want speed, not chat.",
+                  "We need it somewhere — maybe not every lane, but an option.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "feel-rotten",
+          label: "Feel rotten · Just brutal",
+          teacher:
+            "Bit 5 · Counselling / Godmother dinner. Cool phrases only: feel rotten · don’t make a big deal out of this · brutal · just brutal. Discussion: invasive questions, polite torture, performing normal at family events.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "feel rotten",
+            "don't make a big deal out of this",
+            "brutal, just brutal",
+          ],
+          watch: {
+            videoUrl: "media/s02e02/05-feel-rotten.mp4",
+            note:
+              "feel rotten · don't make a big deal out of this · brutal · just brutal.",
+          },
+          context: {
+            tone: "Lexical · feeling awful inside + downplaying pain + brutal (here: emotionally crushing, not physical)",
+            meanings: [
+              "feel rotten = feel awful / sick inside — morally, emotionally, physically drained (BrE informal).",
+              "don't make a big deal out of this = let's not treat this as important / dramatic — often said while pushing someone to talk anyway.",
+              "brutal / just brutal = here: emotionally crushing — polite questions that feel like torture, not ‘violent’.",
+            ],
+            examples: [
+              "FEEL ROTTEN — feel rotten · I feel rotten · feeling rotten inside.",
+              "I feel rotten, but I have to sit here and smile.",
+              "DON'T MAKE A BIG DEAL OUT OF THIS — don't make a big deal out of this · let's not make a big deal out of this.",
+              "Let's not make a big deal out of this — and then they keep asking.",
+              "BRUTAL — brutal · just brutal · that's brutal · polite but brutal.",
+              "Her non-stop questioning was just brutal.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "I feel rotten when…",
+              "Let's not make a big deal out of this — but…",
+              "That was brutal because…",
+              "At family events I stay / walk away because…",
+            ],
+            questions: [
+              {
+                q: "Some topics—like a miscarriage or a deeply personal trauma—are incredibly vulnerable. Most people would never discuss them at a dinner table. Why do you think people like the Godmother cannot stop asking questions about things that are clearly none of their business? Why do some individuals feel entitled to touch someone else's open wound?",
+                examples: [
+                  "Curiosity dressed as care — they want the story, not the person.",
+                  "Power — knowing your wound gives them leverage at the table.",
+                  "They can't sit with silence — so they poke.",
+                  "Entitlement: family = they think everything is shared.",
+                ],
+              },
+              {
+                q: "When Fleabag is forced to talk about something so private, every word feels like torture. In this situation, the Godmother's polite, non-stop questioning actually becomes brutal. When someone forces you to talk about your pain while trying to downplay it ('let's not make a big deal out of this'), how do you protect yourself without breaking down or starting a fight?",
+                examples: [
+                  "One-line answer + redirect: “I'm OK — how's the food?”",
+                  "Bathroom / phone / “need air” — exit without a speech.",
+                  "Name it once: “I'd rather not discuss this here.”",
+                  "Grey rock — flat, boring replies until they stop.",
+                ],
+              },
+              {
+                q: "Fleabag feels completely rotten inside, but she has to sit there and endure the interrogation because it's a family event. Why do we often feel forced to look 'normal' and answer questions when we are mentally bleeding? Is it better to just walk away and shock everyone, or to stay and suffer through it for the sake of peace?",
+                examples: [
+                  "Stay — avoid scene, protect someone else, collect yourself first.",
+                  "Walk — your peace matters more than their comfort.",
+                  "Depends who gets hurt if you explode vs if you leave.",
+                  "Performing normal is exhaustion — sometimes leaving is the honest option.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "press-charges",
+          label: "Press charges · Talk him down",
+          teacher:
+            "Bit 6 · Counselling / Martin & lawyer. Cool phrases only (your list): press charges against you for assault · talk him down · spit guilty · want to be ahead of the game.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "press charges against you for assault",
+            "talk him down",
+            "spit guilty",
+            "want to be ahead of the game",
+          ],
+          watch: {
+            videoUrl: "media/s02e02/06-exceptional-legal-advice.mp4",
+            note:
+              "press charges against you for assault · talk him down · spit guilty · want to be ahead of the game.",
+          },
+          context: {
+            tone: "Lexical · legal threat in the family · calming fury · legal prep",
+            meanings: [
+              "press charges against you for assault = formally accuse someone of assault through the police / courts — escalate a family hit into legal action.",
+              "talk someone down = calm them when they’re furious — persuade them not to do something drastic.",
+              "spit guilty = (line from the clip — keep as printed).",
+              "want to be ahead of the game = prepare early so you’re not caught off guard — legal / worst-case planning before things explode.",
+            ],
+            examples: [
+              "PRESS CHARGES — press charges against you for assault · press charges against someone · threaten to press charges.",
+              "He wants to press charges against his sister-in-law for assault.",
+              "TALK … DOWN — talk him down · talk her down · I tried to talk him down.",
+              "I've tried to talk him down, but you did hit him.",
+              "SPIT GUILTY — spit guilty · (as in the scene).",
+              "AHEAD OF THE GAME — want to be ahead of the game · stay ahead of the game · get ahead of the game.",
+              "The lawyer wants to be ahead of the game.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "Pressing charges in a family fight is…",
+              "I tried to talk him down when…",
+              "I want to be ahead of the game because…",
+              "I'd rather wing it than…",
+            ],
+            questions: [
+              {
+                q: "Martin wants to press charges against his sister-in-law. Is it ever okay to involve the police or lawyers in family conflicts, or should families always solve their problems privately?",
+                examples: [
+                  "Sometimes yes — violence / safety isn’t ‘private’.",
+                  "Lawyers make it worse — but so does silence.",
+                  "Depends if someone is in danger or just angry.",
+                  "Family myth: ‘we don’t involve outsiders’ — until someone does.",
+                ],
+              },
+              {
+                q: "Claire says: “I've tried to talk him down, but you did hit him.” Have you ever had to “talk someone down” when they were absolutely furious? What is your best strategy to calm an angry person?",
+                examples: [
+                  "Listen first — don’t mirror the volume.",
+                  "Validate feeling, not the plan: “I get why you're angry, but…”",
+                  "Remove audience — take them to another room.",
+                  "Give time: “Not now — tomorrow we decide.”",
+                ],
+              },
+              {
+                q: "The lawyer wants to be “ahead of the game.” Are you a person who loves to prepare for the worst-case scenario in advance, or do you prefer to deal with things as they come?",
+                examples: [
+                  "Ahead of the game — documents, plan B, sleep better.",
+                  "Wing it — over-preparing feels like borrowing trouble.",
+                  "Mix: prepare for money / health, wing it for small drama.",
+                  "Lawyer brain vs optimist brain — which wins depends on the crisis.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "blow-hot-and-cold",
+          label: "Blow hot and cold",
+          teacher:
+            "Bit 7 · Counselling / psychologist. Cool phrase only: blow hot and cold. Discussion: therapy, edgy humour as shield, comfort vs brutal honesty.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["blow hot and cold"],
+          watch: {
+            videoUrl: "media/s02e02/07-blow-hot-and-cold.mp4",
+            note: "blow hot and cold.",
+          },
+          context: {
+            tone: "Lexical · blow hot and cold = switch between warm and cold / keen and distant",
+            meanings: [
+              "blow hot and cold = keep changing attitude — warm and interested one moment, distant or hostile the next (BrE idiom).",
+            ],
+            examples: [
+              "BLOW HOT AND COLD — blow hot and cold · he blows hot and cold · she’s blowing hot and cold on the idea.",
+              "Don't blow hot and cold — pick a lane.",
+              "He blows hot and cold about therapy — shows up, then jokes it off.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "What's the point in psychologists if…",
+              "I use humour when I'm hurting because…",
+              "When I'm struggling I need someone who…",
+              "They blow hot and cold when…",
+            ],
+            questions: [
+              {
+                q: "What's the point in psychologists if they don't give advice?",
+                examples: [
+                  "You want answers; they reflect questions back.",
+                  "Advice can be wrong — space to find your own read.",
+                  "Sometimes you need a witness, not a fixer.",
+                  "Frustrating in the room; useful later when you connect the dots.",
+                ],
+              },
+              {
+                q: "In the psychologist's office, Fleabag tries to use her classic 'edgy' humor and quick jokes to look normal. But inside, she feels completely rotten. Why do we often try to act funny or cynical when we are actually deeply hurting? Is humor a healthy shield, or does it just stop us from getting real help?",
+                examples: [
+                  "Shield — if you laugh, nobody pokes the wound.",
+                  "Cynicism = armour; underneath you're still bleeding.",
+                  "Healthy sometimes — breaks tension, buys time.",
+                  "Stops help when every serious moment becomes a bit.",
+                ],
+              },
+              {
+                q: "The psychologist doesn't play along with Fleabag’s games. She asks direct, almost brutal questions that force Fleabag to face the truth. When you are going through a hard time, what do you need more: someone who will gently comfort you and say 'let's not make a big deal out of this', or someone who will give you that brutal, shocking honesty?",
+                examples: [
+                  "Comfort first — then honesty when you're steady.",
+                  "Brutal honesty — if it's kind and true, not performative.",
+                  "Depends on the day: sometimes tea, sometimes a mirror.",
+                  "‘Don't make a big deal’ can feel like dismissal — honesty can feel like care.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "birth-took-its-toll",
+          label: "The birth took its toll",
+          teacher:
+            "Bit 8 · Counselling / Harry. Cool phrase only: the birth took its toll. Discussion: playing the victim when someone else’s life event should be centre stage.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["the birth took its toll"],
+          watch: {
+            videoUrl: "media/s02e02/08-you-have-a-fringe.mp4",
+            note: "the birth took its toll.",
+          },
+          context: {
+            tone: "Lexical · take its toll = leave someone exhausted / damaged (here: Harry centres his stress)",
+            meanings: [
+              "the birth took its toll = the childbirth left a heavy cost — usually on the person who gave birth; Harry twists it so the toll is on him.",
+              "take its toll (on someone) = gradually wear someone down — stress, grief, lack of sleep, emotional damage.",
+            ],
+            examples: [
+              "TAKE ITS TOLL — take its toll · took its toll · the birth took its toll · it's taking its toll on me.",
+              "The birth took its toll on her — Harry makes it about him.",
+              "Night shifts are taking their toll on him.",
+              "The break-up took its toll — but he still made it her story.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "The birth took its toll — but he made it about…",
+              "Some people play the victim when…",
+              "I once met someone who made my ___ all about themselves…",
+            ],
+            questions: [
+              {
+                q: "In this scene, Fleabag’s ex-boyfriend Harry complains that his new partner’s childbirth 'took its toll on HIM', making it all about his own stress. Why do some people always find a way to play the victim, even during someone else's major life event? Have you ever met someone who makes your problems or achievements all about themselves?",
+                examples: [
+                  "They need to be the main character — your news becomes their stress.",
+                  "Victim role gets sympathy without doing the work.",
+                  "Harry: her birth → his exhaustion → centre of the room.",
+                  "Yes — every achievement I shared became their competition or crisis.",
+                ],
+              },
+              {
+                q: "When Harry shows off his baby, the Priest instantly shuts it down by saying, 'I don't know how to talk to babies.' He completely refuses to do the usual 'baby talk' or look excited. Why do we feel socially forced to act hyper-enthusiastic around other people’s kids or achievements? Is the Priest being rude here, or is it a breath of fresh air to see someone refuse to be fake?",
+                examples: [
+                  "Social script: coo at the baby, ask the name, look amazed — or you're 'cold'.",
+                  "Hyper-enthusiasm = politeness tax — especially at family events.",
+                  "Priest: rude to Harry, refreshing to Fleabag — same line, two reads.",
+                  "Breath of fresh air when fake joy feels worse than honest awkwardness.",
+                ],
+              },
+              {
+                q: "When Fleabag asks Harry if the birth was difficult, he says: 'I can't really remember it now, but the whole thing has just really changed me... my emotions are up and down.' What do you think of a man who takes the physical and mental trauma of a woman giving birth and makes it all about his own emotional struggle? Why do some people feel the need to hijack someone else’s real pain just to get attention?",
+                examples: [
+                  "He wasn't in the room for the pain — but he wants the emotional credit.",
+                  "Hijacking = steal the spotlight from the person who actually suffered.",
+                  "Attention without empathy — sounds deep, feels empty.",
+                  "Sometimes it's ignorance; sometimes it's performance.",
+                ],
+              },
+              {
+                q: "On Reddit, fans point out that Harry brings the baby to this church event specifically to show Fleabag that he is now a 'mature, deep, family man'. But the moment he speaks, he sounds just as weak and self-absorbed as before. Why do people who want to look 'changed' and 'deep' end up looking completely ridiculous? Can a person genuinely change after a major life event like having a child, or do they just find new things to complain about?",
+                examples: [
+                  "Props don't equal growth — baby as costume for ‘new me’.",
+                  "Real change shows in how you treat others, not your monologue.",
+                  "Some people mature; some people just upgrade their complaints.",
+                  "Harry: same self-absorption, new vocabulary.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "insidious-martin",
+          label: "Insidious · Martin",
+          teacher:
+            "Bit 9 · Counselling / Martin apology. Cool phrases only: insidious · pawing · you are a weaky at your very core · you are a strongy. Discussion: fake sorry, grudges, takedowns, passive aggression.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "insidious",
+            "pawing",
+            "you are a weaky at your very core",
+            "you are a strongy",
+          ],
+          watch: {
+            videoUrl: "media/s02e02/09-weaky.mp4",
+            note:
+              "insidious · pawing · you are a weaky at your very core · you are a strongy.",
+          },
+          context: {
+            tone: "Lexical · insidious harm · pawing · weaky/strongy insults",
+            meanings: [
+              "insidious = causing harm gradually or secretly — nice on the surface, damaging over time.",
+              "pawing = touching someone in a clumsy, unwanted, or creepy way (hands on you without real consent).",
+              "you are a weaky at your very core = brutal insult — fundamentally weak / pathetic (Fleabag’s childish register for maximum sting).",
+              "you are a strongy = flip-side mock — fake praise that still sounds like a put-down in context.",
+            ],
+            examples: [
+              "INSIDIOUS — insidious · pitiful, insidious, overwhelming mediocrity · insidious behaviour.",
+              "Martin’s behaviour is insidious — harm behind a polite face.",
+              "PAWING — pawing · pawing at someone · stop pawing me.",
+              "WEAKY / STRONGY — you are a weaky at your very core · you are a strongy.",
+              "You are a weaky at your very core — and you are a strongy.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · steal tape phrases when they fit (don’t force every line).",
+            starters: [
+              "That apology felt fake because…",
+              "I refused to forgive when…",
+              "Insidious people are worse than…",
+              "My strategy with toxic people is…",
+            ],
+            questions: [
+              {
+                q: "Martin says \"sorry\" to Fleabag, but his apology feels completely fake and self-serving. Have you ever received an apology that felt more like an insult or a way for the person to make themselves feel better? How did you respond?",
+                examples: [
+                  "Sorry you’re upset — not sorry I did it.",
+                  "They wanted absolution, not accountability.",
+                  "I said “thanks” and walked away — no performance of forgiveness.",
+                  "Called it out once; other times grey rock.",
+                ],
+              },
+              {
+                q: "Fleabag completely refuses to accept Martin's apology. Is it always necessary to forgive people \"for your own peace of mind,\" or is keeping a healthy, petty grudge sometimes completely justified?",
+                examples: [
+                  "Forgiveness isn’t a duty — safety comes first.",
+                  "Petty grudge = boundary when they’d use ‘peace’ against you.",
+                  "Peace of mind can mean never letting them back in.",
+                  "Some people earn permanent distance — that’s justified.",
+                ],
+              },
+              {
+                q: "Martin’s behavior throughout the show is described as \"insidious\" (doing harm secretly or gradually). Who is more dangerous in real life: a person who is openly aggressive and mean, or an insidious person who acts nice but ruins your life behind your back?",
+                examples: [
+                  "Open aggression — you see it coming.",
+                  "Insidious — gaslight, slow poison, everyone believes them.",
+                  "Both hurt; insidious is harder to prove.",
+                  "Martin type: helpful face, controlling hands.",
+                ],
+              },
+              {
+                q: "Fleabag obliterates Martin by calling him a \"pitiful, insidious, overwhelming mediocrity.\" That is a lethal insult. What is your strategy when dealing with toxic, manipulative people? Do you prefer a quiet, cold ignored response, or a sharp, verbal takedown like Fleabag's?",
+                examples: [
+                  "Cold ignore — deny them the reaction.",
+                  "Sharp takedown — once, then block.",
+                  "Depends on audience — church vs private.",
+                  "Exit beats eloquence when you’re outmatched.",
+                ],
+              },
+              {
+                q: "Have you ever used polite, sophisticated language to absolutely destroy someone’s ego? Share your finest hour of passive aggression or savage wit!",
+                examples: [
+                  "“How brave of you to say that out loud.”",
+                  "One perfect line at dinner — then silence.",
+                  "British sorry that isn’t sorry at all.",
+                  "I wrote it in my head; never said it — still counts?",
+                ],
+              },
+              {
+                q: "If someone insults you with \"overwhelming mediocrity,\" how do you recover from that? What is the ultimate comeback to someone who thinks they are superior to you?",
+                examples: [
+                  "Laugh — if they need to be superior, they’re already small.",
+                  "“Glad you’ve been thinking about me.”",
+                  "Don’t joust with someone who lives for drama.",
+                  "Recover = leave the room; comeback = living well.",
+                ],
+              },
+            ],
+          },
+        },
+      ],
       finale: {
         prompt:
           "Improvisation: an awkward truth that slipped out in the wrong room — then where you ended up next. 60 s · tape phrases on.",
@@ -6568,6 +7247,7 @@
       num: 3,
       title: "Episode 3 · Claire’s work",
       icon: "👀",
+      stub: true,
       tagline: "Work event · stranger · eyes open",
       synopsis:
         "Fleabag helps Claire out, and a meeting with a stranger opens Fleabag’s eyes.",
@@ -6586,6 +7266,7 @@
       num: 4,
       title: "Episode 4 · Looking for solace",
       icon: "🕯️",
+      stub: true,
       tagline: "Painful memories · quiet · more trouble",
       synopsis:
         "After a day looking back on painful memories, Fleabag searches for solace.",
@@ -6604,6 +7285,7 @@
       num: 5,
       title: "Episode 5 · Claire’s crisis",
       icon: "💍",
+      stub: true,
       tagline: "Sister in crisis · wedding on the line",
       synopsis:
         "Claire has a crisis, and Godmother and Dad’s wedding hangs in the balance.",
@@ -6622,6 +7304,7 @@
       num: 6,
       title: "Episode 6 · The wedding",
       icon: "✨",
+      stub: true,
       tagline: "Wedding day · endings · what she’s looking for",
       synopsis:
         "As the wedding day arrives, will Fleabag find the ending she’s looking for?",

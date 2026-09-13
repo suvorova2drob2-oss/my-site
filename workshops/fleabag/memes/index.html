@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fleabag S2E1 · Meme cards</title>
+  <title>Fleabag · Meme cards · S2E1 + S2E2</title>
   <link rel="stylesheet" href="../../../b2-summer-intensive/css/intensive-shell.css" />
   <link rel="stylesheet" href="../css/fleabag-workshop.css" />
   <style>
@@ -148,7 +148,7 @@
   <div class="int-shell fb-meme-hub">
     <header class="int-topbar">
       <div class="int-brand">
-        <span class="int-kicker">Fleabag · S2E1 · Social cards</span>
+        <span class="int-kicker">Fleabag · Social cards · S2E1 + S2E2</span>
       </div>
       <a class="int-back" href="../index.html#season-2">&larr; Season 2</a>
     </header>
@@ -156,20 +156,32 @@
     <section class="fb-meme-hub-head">
       <h1>Meme cards · view &amp; download</h1>
       <p>
-        Все карточки по порядку · формат <strong>1:1</strong> (кроме первой — 4:3).
+        Все карточки по порядку · формат <strong>1:1 (1080×1080)</strong> — для Instagram без обрезки.
         Нажми <strong>Download PNG</strong> или правый клик → «Сохранить изображение».
       </p>
       <div class="fb-meme-cover-preview">
-        <img src="00-cover-esc-sunday-30aug.png" alt="English Speaking Club · Sunday 1 pm MSK" width="320" height="320" />
+        <img src="00-cover-s02e02-counselling.png" alt="Fleabag S2E2 · Counselling · ESC Sunday" width="320" height="320" />
         <div>
-          <strong>Cover · ESC Sunday post</strong>
-          <p>Phrases from 30 Aug · carousel slide 1</p>
-          <a class="fb-meme-btn fb-meme-btn--primary" href="00-cover-esc-sunday-30aug.png" download="00-cover-esc-sunday-30aug.png">Download cover</a>
+          <strong>Cover · S2E2 · Uncomfortable truths</strong>
+          <p>Hook + 7 phrases: edge · feel rotten · hot &amp; cold · took its toll · insidious · pawing · weaky · 13 Sep</p>
+          <a class="fb-meme-btn fb-meme-btn--primary" href="00-cover-s02e02-counselling.png" download="00-cover-s02e02-counselling.png">Download S2E2 cover</a>
+        </div>
+      </div>
+      <div class="fb-meme-cover-preview" style="margin-top:14px;opacity:.92">
+        <img src="00-cover-esc-sunday-30aug.png" alt="Fleabag S2E1 · ESC Sunday" width="320" height="320" />
+        <div>
+          <strong>Cover · S2E1 (archive)</strong>
+          <p>Phrases from 30 Aug</p>
+          <a class="fb-meme-btn" href="00-cover-esc-sunday-30aug.png" download="00-cover-esc-sunday-30aug.png">Download S2E1 cover</a>
         </div>
       </div>
     </section>
 
-    <div class="fb-meme-list" id="meme-list"></div>
+    <h2 style="margin:0 0 16px;font-size:1.1rem;color:#7dd3fc;letter-spacing:.06em;text-transform:uppercase;">S2E1</h2>
+    <div class="fb-meme-list" id="meme-list-s2e1"></div>
+
+    <h2 style="margin:36px 0 16px;font-size:1.1rem;color:#7dd3fc;letter-spacing:.06em;text-transform:uppercase;">S2E2 · Counselling</h2>
+    <div class="fb-meme-list" id="meme-list-s2e2"></div>
 
     <p class="fb-meme-tip">
       Локально: открой эту страницу через <code>http://</code> (не <code>file://</code>).
@@ -180,7 +192,51 @@
 
   <script>
     (function () {
-      var cards = [
+      function renderCards(containerId, cards, startNum) {
+        var list = document.getElementById(containerId);
+        if (!list) return;
+        list.innerHTML = cards
+          .map(function (c, i) {
+            var n = String(startNum + i).padStart(2, "0");
+            return (
+              '<article class="fb-meme-card" id="meme-' +
+              n +
+              '">' +
+              '<div class="fb-meme-card-head">' +
+              '<span class="fb-meme-num">Card ' +
+              n +
+              "</span>" +
+              '<h2 class="fb-meme-phrase">' +
+              c.phrase +
+              "</h2>" +
+              "</div>" +
+              '<p class="fb-meme-gloss">' +
+              c.gloss +
+              "</p>" +
+              '<div class="fb-meme-img-wrap">' +
+              '<img src="' +
+              c.file +
+              '" alt="' +
+              c.phrase.replace(/"/g, "") +
+              '" loading="lazy" width="1080" height="1080" />' +
+              "</div>" +
+              '<div class="fb-meme-actions">' +
+              '<a class="fb-meme-btn fb-meme-btn--primary" href="' +
+              c.file +
+              '" download="' +
+              c.file +
+              '">Download PNG</a>' +
+              '<a class="fb-meme-btn" href="' +
+              c.file +
+              '" target="_blank" rel="noopener">Open full size</a>' +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("");
+      }
+
+      var cardsS2e1 = [
         {
           file: "01-go-off-the-sauce-meme.png",
           phrase: "go off the sauce",
@@ -238,48 +294,71 @@
         },
       ];
 
-      var list = document.getElementById("meme-list");
-      if (!list) return;
+      var cardsS2e2 = [
+        {
+          file: "12-gives-me-some-edge-meme.png",
+          phrase: "gives me some edge",
+          gloss: "добавляет перчинку / дерзости (vibe — не «острый нож»)",
+        },
+        {
+          file: "13-pay-in-instalments-meme.png",
+          phrase: "pay in instalments",
+          gloss: "платить частями / в рассрочку (BrE: instalments)",
+        },
+        {
+          file: "14-sorry-about-all-the-tat-meme.png",
+          phrase: "Sorry about all the tat",
+          gloss: "извини за весь этот хлам / безвкусицу (tat = junk)",
+        },
+        {
+          file: "15-feel-rotten-meme.png",
+          phrase: "feel rotten",
+          gloss: "чувствовать себя отвратительно / паршиво",
+        },
+        {
+          file: "16-spit-guilty-meme.png",
+          phrase: "spit guilty",
+          gloss: "фраза из сцены (≈ plead guilty — признать вину)",
+        },
+        {
+          file: "17-ahead-of-the-game-meme.png",
+          phrase: "want to be ahead of the game",
+          gloss: "быть на шаг впереди / подготовиться заранее",
+        },
+        {
+          file: "18-talk-him-down-meme.png",
+          phrase: "talk him down",
+          gloss: "успокоить / уговорить отступить (de-escalate)",
+        },
+        {
+          file: "19-blow-hot-and-cold-meme.png",
+          phrase: "blow hot and cold",
+          gloss: "метаться — то тепло, то холодно (mixed signals)",
+        },
+        {
+          file: "20-it-took-its-toll-meme.png",
+          phrase: "the birth took its toll",
+          gloss: "сказалось / забрало силы (Harry twist)",
+        },
+        {
+          file: "21-insidious-meme.png",
+          phrase: "insidious",
+          gloss: "коварный / подлый — медленно и незаметно",
+        },
+        {
+          file: "22-pawing-meme.png",
+          phrase: "pawing",
+          gloss: "лапать / залезать руками (creepy touch)",
+        },
+        {
+          file: "23-weaky-at-your-core-meme.png",
+          phrase: "you are a weaky at your very core",
+          gloss: "внутри ты слабак — weaky/strongy из серии (не опечатка)",
+        },
+      ];
 
-      list.innerHTML = cards
-        .map(function (c, i) {
-          var n = String(i + 1).padStart(2, "0");
-          return (
-            '<article class="fb-meme-card" id="meme-' +
-            n +
-            '">' +
-            '<div class="fb-meme-card-head">' +
-            '<span class="fb-meme-num">Card ' +
-            n +
-            "</span>" +
-            '<h2 class="fb-meme-phrase">' +
-            c.phrase +
-            "</h2>" +
-            "</div>" +
-            '<p class="fb-meme-gloss">' +
-            c.gloss +
-            "</p>" +
-            '<div class="fb-meme-img-wrap">' +
-            '<img src="' +
-            c.file +
-            '" alt="' +
-            c.phrase.replace(/"/g, "") +
-            '" loading="lazy" width="1080" height="1080" />' +
-            "</div>" +
-            '<div class="fb-meme-actions">' +
-            '<a class="fb-meme-btn fb-meme-btn--primary" href="' +
-            c.file +
-            '" download="' +
-            c.file +
-            '">Download PNG</a>' +
-            '<a class="fb-meme-btn" href="' +
-            c.file +
-            '" target="_blank" rel="noopener">Open full size</a>' +
-            "</div>" +
-            "</article>"
-          );
-        })
-        .join("");
+      renderCards("meme-list-s2e1", cardsS2e1, 1);
+      renderCards("meme-list-s2e2", cardsS2e2, 12);
     })();
   </script>
 </body>

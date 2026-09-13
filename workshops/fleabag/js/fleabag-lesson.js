@@ -724,6 +724,158 @@
     });
   }
 
+  function getSessionMemeCarousel() {
+    if (
+      !window.FLEABAG_PHRASE_MEMES ||
+      typeof window.FLEABAG_PHRASE_MEMES.buildCarousel !== "function"
+    ) {
+      return [];
+    }
+    return window.FLEABAG_PHRASE_MEMES.buildCarousel(session.id || sessionId);
+  }
+
+  function openMemePicsSwipe(deck, startIndex) {
+    if (!deck || !deck.length) return;
+    var idx = Math.max(0, Math.min(deck.length - 1, Number(startIndex) || 0));
+    var old = document.getElementById("fb-meme-pics");
+    if (old) old.remove();
+
+    var layer = document.createElement("div");
+    layer.id = "fb-meme-pics";
+    layer.className = "fb-meme-pics";
+    layer.setAttribute("role", "dialog");
+    layer.setAttribute("aria-modal", "true");
+    layer.setAttribute("aria-label", "Meme cards carousel");
+    document.body.appendChild(layer);
+    document.body.classList.add("fb-phrase-meme-open");
+
+    var drag = { active: false, startX: 0, x: 0 };
+
+    function close() {
+      document.body.classList.remove("fb-phrase-meme-open");
+      layer.remove();
+      document.removeEventListener("keydown", onKey);
+    }
+
+    function go(delta) {
+      idx = Math.max(0, Math.min(deck.length - 1, idx + delta));
+      paint();
+    }
+
+    function onKey(e) {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+    }
+    document.addEventListener("keydown", onKey);
+
+    function paint() {
+      var item = deck[idx];
+      if (!item) return;
+      var src = mediaSrcAttr(item.img);
+      var fileName = String(item.img || "").split("/").pop() || "meme.png";
+      var kicker =
+        item.kind === "cover" ? "Carousel cover" : "Social meme card";
+      layer.innerHTML =
+        '<div class="fb-meme-pics-panel">' +
+        '<header class="fb-meme-pics-head">' +
+        '<button type="button" class="fb-meme-pics-x" data-fb-pics-close aria-label="Close">×</button>' +
+        '<span class="fb-meme-pics-count">' +
+        (idx + 1) +
+        " / " +
+        deck.length +
+        "</span>" +
+        "</header>" +
+        '<div class="fb-meme-pics-stage" data-fb-pics-stage tabindex="0">' +
+        '<button type="button" class="fb-meme-pics-nav fb-meme-pics-nav--prev" data-fb-pics-prev aria-label="Previous"' +
+        (idx <= 0 ? " disabled" : "") +
+        ">‹</button>" +
+        '<div class="fb-meme-pics-img-wrap">' +
+        '<img src="' +
+        src +
+        '" alt="' +
+        escapeHtml(item.label || "Meme") +
+        '" draggable="false" />' +
+        "</div>" +
+        '<button type="button" class="fb-meme-pics-nav fb-meme-pics-nav--next" data-fb-pics-next aria-label="Next"' +
+        (idx >= deck.length - 1 ? " disabled" : "") +
+        ">›</button>" +
+        "</div>" +
+        '<div class="fb-meme-pics-meta">' +
+        '<p class="fb-meme-pics-kicker">' +
+        escapeHtml(kicker) +
+        "</p>" +
+        "<h2>" +
+        escapeHtml(item.label || "") +
+        "</h2>" +
+        (item.gloss
+          ? '<p class="fb-meme-pics-gloss">' + escapeHtml(item.gloss) + "</p>"
+          : "") +
+        "</div>" +
+        '<div class="fb-meme-pics-foot">' +
+        '<a class="fb-phrase-meme-dl" href="' +
+        src +
+        '" download="' +
+        escapeHtml(fileName) +
+        '">Download PNG</a>' +
+        '<p class="fb-meme-pics-tip">Swipe · ← → · Esc to close</p>' +
+        "</div></div>";
+
+      layer.querySelector("[data-fb-pics-close]").addEventListener("click", close);
+      var prev = layer.querySelector("[data-fb-pics-prev]");
+      var next = layer.querySelector("[data-fb-pics-next]");
+      if (prev) prev.addEventListener("click", function () {
+        go(-1);
+      });
+      if (next) next.addEventListener("click", function () {
+        go(1);
+      });
+
+      var stage = layer.querySelector("[data-fb-pics-stage]");
+      if (stage) {
+        stage.addEventListener("mousedown", function (e) {
+          if (e.button !== 0) return;
+          drag.active = true;
+          drag.startX = e.clientX;
+          drag.x = 0;
+        });
+        stage.addEventListener("touchstart", function (e) {
+          if (!e.touches.length) return;
+          drag.active = true;
+          drag.startX = e.touches[0].clientX;
+          drag.x = 0;
+        }, { passive: true });
+        stage.addEventListener("mouseup", function () {
+          if (!drag.active) return;
+          drag.active = false;
+          if (drag.x > 56) go(-1);
+          else if (drag.x < -56) go(1);
+          drag.x = 0;
+        });
+        stage.addEventListener("touchend", function () {
+          if (!drag.active) return;
+          drag.active = false;
+          if (drag.x > 56) go(-1);
+          else if (drag.x < -56) go(1);
+          drag.x = 0;
+        });
+        stage.addEventListener("mousemove", function (e) {
+          if (!drag.active) return;
+          drag.x = e.clientX - drag.startX;
+        });
+        stage.addEventListener("touchmove", function (e) {
+          if (!drag.active || !e.touches.length) return;
+          drag.x = e.touches[0].clientX - drag.startX;
+        }, { passive: true });
+      }
+    }
+
+    layer.addEventListener("click", function (e) {
+      if (e.target === layer) close();
+    });
+    paint();
+  }
+
   function bindPhraseMemes(root) {
     if (!root) return;
     root.querySelectorAll("[data-fb-phrase-meme]").forEach(function (btn) {
@@ -1437,9 +1589,19 @@
 
     var body = "";
     var tape = "";
+    var stubBanner = "";
+
+    if (session.stub) {
+      stubBanner =
+        '<div class="fb-session-stub" role="status">' +
+        "<strong>Shell only — phrases not filled yet.</strong> " +
+        "Season 2 Episode 1 (<em>Engagement dinner</em>) is live. " +
+        'Open it from <a href="index.html#season-2">Season 2 → Ep 1</a>.' +
+        "</div>";
+    }
 
     if (screen.kind === "beat") {
-      body = renderBlocks(screen);
+      body = stubBanner + renderBlocks(screen);
       tape = renderTape(currentBeatPhrases(screen), "beat", screen);
     } else if (screen.kind === "finale") {
       var stickers = getImprovStickers();
@@ -1455,6 +1617,12 @@
         '<p class="fb-finale-mission">Tap a sticker when someone uses it — cyan = waiting, gold = called. Aim for 5+.</p>' +
         "</header>" +
         renderImprovStickers(stickers) +
+        (getSessionMemeCarousel().length
+          ? '<div class="fb-finale-pics-row">' +
+            '<button type="button" class="fb-finale-pics-btn" id="btn-meme-pics" title="Swipe meme cards · cover + all pics">' +
+            '<span class="fb-finale-pics-ico" aria-hidden="true">📷</span> pics' +
+            "</button></div>"
+          : "") +
         "</div>";
       tape = "";
     } else {
@@ -1545,6 +1713,7 @@
     document.body.classList.remove("fb-discuss-fs-open");
     bindDiscussUi(elStage);
     bindStickerWall(elStage);
+    bindMemePicsLaunch(elStage);
     bindFypLaunch(elStage);
     bindSwipeLaunch(elStage);
     bindVaultLaunch(elStage);
@@ -1553,6 +1722,17 @@
     if (screen.kind === "homework") {
       bindHwAudio(elStage, getHwClips(screen));
     }
+  }
+
+  function bindMemePicsLaunch(root) {
+    var btn = root.querySelector("#btn-meme-pics");
+    if (!btn || btn._fbPicsBound) return;
+    btn._fbPicsBound = true;
+    btn.addEventListener("click", function () {
+      var deck = getSessionMemeCarousel();
+      if (!deck.length) return;
+      openMemePicsSwipe(deck, 0);
+    });
   }
 
   function bindVaultLaunch(root) {

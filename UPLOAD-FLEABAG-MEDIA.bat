@@ -18,6 +18,7 @@ echo    UPLOAD-FLEABAG-MEDIA.bat 5        ^<- force Season 1 Episode 5
 echo    UPLOAD-FLEABAG-MEDIA.bat js       ^<- only JS/HTML (beats), no videos
 echo    UPLOAD-FLEABAG-MEDIA.bat s01e06   ^<- force Season 1 Episode 6 videos
 echo    UPLOAD-FLEABAG-MEDIA.bat s02e01   ^<- force Season 2 Episode 1 videos
+echo    UPLOAD-FLEABAG-MEDIA.bat s02e02   ^<- force Season 2 Episode 2 videos
 echo    UPLOAD-FLEABAG-MEDIA.bat all      ^<- force all episodes
 echo.
 
