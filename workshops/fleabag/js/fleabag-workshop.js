@@ -7247,11 +7247,871 @@
       num: 3,
       title: "Episode 3 · Claire’s work",
       icon: "👀",
-      stub: true,
       tagline: "Work event · stranger · eyes open",
       synopsis:
         "Fleabag helps Claire out, and a meeting with a stranger opens Fleabag’s eyes.",
-      beats: defaultBeats(8),
+      beats: [
+        {
+          id: "over-the-top",
+          label: "Over the top",
+          teacher:
+            "Bit 1 · Women in Business prep · Claire’s office. Fleabag to camera: put Claire in a quiet room — panic attack; here she’s thrilled. Tape: over the top · she will loathe that. Talk: corporate excess + people who need pressure to feel OK.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["over the top", "she will loathe that"],
+          watch: {
+            videoUrl: "media/s02e03/01-over-the-top.mp4",
+            note:
+              "Claire: God, this is stressful. · Fleabag (to us): Put her in a quiet room with a nice breeze — she’ll have a panic attack. She’s so happy. · It’s over the top. · She will loathe that.",
+          },
+          context: {
+            tone: "Lexical · corporate excess + Fleabag’s read on Claire",
+            meanings: [
+              "over the top = too much — showy, expensive, dramatic, more than the situation needs.",
+              "she will loathe that = she will hate it deeply — wrong taste, wrong tone, humiliating or beneath her.",
+              "Fleabag’s aside (not Claire speaking): Claire looks stressed, but she feeds on chaos; silence would wreck her — ‘put her in a quiet room with a nice breeze, she’ll have a panic attack.’",
+            ],
+            examples: [
+              "OVER THE TOP — over the top decorations / budget / party / corporate fun / awards night.",
+              "The whole awards do was a bit over the top — red carpet for middle management.",
+              "SHE WILL LOATHE THAT — she will loathe that gift / joke / dress / idea / surprise.",
+              "Don’t get her that — she will loathe that.",
+              "FLEABAG ON CLAIRE — put her in a quiet room… panic attack · she’s so happy · God, this is stressful (Claire says it; Fleabag knows she loves it).",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · use over the top / she will loathe that when they fit.",
+            starters: [
+              "The most over-the-top corporate event I’ve seen was…",
+              "She will loathe that if…",
+              "Fleabag says Claire needs chaos — I know someone like that because…",
+              "If everything went quiet, I’d…",
+            ],
+            questions: [
+              {
+                q: "What is the most over-the-top corporate event or party you have ever attended? What made it feel excessive — the budget, the performances, the forced fun, or something else?",
+                examples: [
+                  "Open bar plus a live band at ‘team-building’ nobody asked for.",
+                  "Awards night with a red carpet — felt over the top, not celebratory.",
+                  "Forced networking games and slogan photo walls.",
+                  "Actually fun once — but only because friends were there, not the company.",
+                ],
+              },
+              {
+                q: "Fleabag watches Claire prep for the Women in Business event and tells us: put her in a quiet room with a nice breeze — she’ll have a panic attack. Here, Claire says ‘God, this is stressful’ — and Fleabag can see she’s thrilled. Do you know anyone who only feels alive under pressure? What happens when the noise stops?",
+                examples: [
+                  "Thrive before deadlines; crash or feel empty after.",
+                  "Quiet feels wrong — I fill it with work, chats, or drama.",
+                  "Opposite: silence is relief; stress ruins my sleep.",
+                  "Claire type: fixing a crisis = competence; calm = panic.",
+                ],
+              },
+              {
+                q: "Is needing stress to function a strength, a habit, or a warning sign? Where’s the line between ‘I perform under pressure’ and burning out?",
+                examples: [
+                  "Strength until your body says no.",
+                  "Habit from school / competitive jobs.",
+                  "Red flag when you can’t rest without guilt.",
+                  "Demonstrating competence is Claire’s antidote to anxiety — until it isn’t.",
+                ],
+              },
+              {
+                q: "Fleabag picks something Claire will loathe — wrong taste, wrong message, or too sincere. Have you ever given or received a gift that was generous on paper but emotionally wrong? Finish: ‘She will loathe that if ___.’",
+                examples: [
+                  "Too cheap for their status / too flashy for their taste.",
+                  "Joke gift at a serious moment.",
+                  "Says ‘I don’t know you at all.’",
+                  "I loved it; they smiled and never used it.",
+                ],
+              },
+              {
+                q: "Before an important talk (work, exam, wedding speech), do you rehearse like Claire — or avoid thinking until the last minute? How does audience pressure change your confidence in English?",
+                examples: [
+                  "Script it word for word.",
+                  "Practice with one friend; improvise in the room.",
+                  "Last-minute panic prep — works until it doesn’t.",
+                  "Speaking club: pressure here is practice, not judgment.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "attention-grabbing",
+          label: "Attention-grabbing",
+          teacher:
+            "Bit 2 · Fleabag rushes back with the canapés — sweating (only on one side). Claire: You’re sweating so much. It’s attention-grabbing. Cool phrase → talk: ‘professional’ calm vs bodies that betray stress · sister policing · gender & sweat.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "You're sweating so much",
+            "It's attention-grabbing",
+          ],
+          watch: {
+            videoUrl: "media/s02e03/02-attention-grabbing.mp4",
+            note:
+              "Fleabag (rushing in): …had to get the vegetarian bites… · Claire: You're sweating so much. · It's attention-grabbing. · (It's only on one side.)",
+          },
+          context: {
+            tone: "Lexical · visible stress + Claire’s corporate polish",
+            meanings: [
+              "attention-grabbing = so noticeable it pulls everyone’s eyes — here: Fleabag’s sweat at Claire’s polished work event (Claire’s criticism, not a compliment).",
+              "You're sweating so much = blunt observation of a body under pressure — Fleabag has been running/fixing food; Claire reads it as embarrassing the room.",
+              "Workplace display rules = unwritten rule to look composed even when you're not (calm face, dry shirt, no tears in the meeting).",
+            ],
+            examples: [
+              "ATTENTION-GRABBING — attention-grabbing colours / behaviour / outfit / mistake · It's attention-grabbing (negative here).",
+              "Don't wear anything attention-grabbing to the client dinner.",
+              "SWEAT / STRESS SHOWING — sweating so much · visible stress · shaking hands · crying in the meeting.",
+              "Claire wants control of the image; Fleabag’s body tells the truth.",
+              "FORUM ANGLES (optional depth) — ‘professional’ = pretend you're fine (r/antiwork) · crying at work: context + gender (Forbes) · reframe distress as passion (HBS research).",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · attention-grabbing / sweating when they fit.",
+            starters: [
+              "It's attention-grabbing when…",
+              "At work we're supposed to look calm, but…",
+              "Claire tells Fleabag she's sweating — I think that's…",
+              "The last time my body betrayed my stress was…",
+            ],
+            questions: [
+              {
+                q: "In modern society, we are obsessed with looking calm and put-together. Why has showing physical signs of vulnerability or stress (like sweating, shaking, or crying) become almost taboo in professional settings?",
+                examples: [
+                  "Display rules — smile, nod, ‘I'm fine’ even when you're not.",
+                  "Clients / bosses read sweat or tears as weak or unprofessional.",
+                  "Cameras, open offices — nowhere to hide a shaky voice.",
+                  "Culture: Russia / UK / US — different tolerance for emotion at work.",
+                ],
+              },
+              {
+                q: "Claire says Fleabag is ‘attention-grabbing’ because she's sweating — at an event Claire hired her for, after Fleabag fixed the food. Is that fair feedback, sister cruelty, or image control? When has someone commented on how you looked under stress?",
+                examples: [
+                  "Fair — corporate events have a dress code for bodies too.",
+                  "Cruel — she caused the rush, then polices the result.",
+                  "Image control — Claire's anxiety becomes Fleabag's fault.",
+                  "Someone told me to ‘fix my face’ before a presentation.",
+                ],
+              },
+              {
+                q: "Reddit threads often ask: when did ‘being professional’ start meaning ‘pretend you're fine’ all the time? Do you perform calm at work — and what does that cost you (burnout, faking, loneliness)?",
+                examples: [
+                  "I shrink myself — agree in meetings, cry in the bathroom.",
+                  "Chronic ‘I'm fine’ until I snap or quit.",
+                  "Only one colleague knows the real me.",
+                  "Performing calm is a skill; suppressing everything is a tax.",
+                ],
+              },
+              {
+                q: "Research on crying at work: people judge public tears in a formal meeting more harshly than a quick private moment. Have you cried, sweated, or shaken at work? What happened to how others saw you — or how you saw yourself?",
+                examples: [
+                  "Cried once — boss was kind; I still feel embarrassed.",
+                  "Sweaty presentation — judged my English, not my ideas.",
+                  "Women's tears penalised more — men ‘passionate’, women ‘unstable’.",
+                  "Never showed it — proud or ashamed of that.",
+                ],
+              },
+              {
+                q: "Fleabag's sweat is only on one side — the body as comedy and truth. Do you laugh at physical stress (yours or others') to defuse it, or does joking about sweat / nerves feel like another way we hide vulnerability?",
+                examples: [
+                  "Self-deprecating humour — ‘ignore my pit stains’.",
+                  "Laugh so nobody pities you.",
+                  "Jokes replace real support.",
+                  "British / corporate awkwardness — mention it, move on fast.",
+                ],
+              },
+              {
+                q: "Some leaders say showing emotion builds trust; others say keep a neutral face. Where should the line be — authentic tears in a one-to-one, never in a all-hands, or depends on the country and industry?",
+                examples: [
+                  "One-to-one OK; boardroom no.",
+                  "Leaders who cry — human or risky?",
+                  "Tech / startups vs banks / law — different rules.",
+                  "I'd rather hear ‘I'm stressed’ than silent resentment.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "treat-them-appallingly",
+          label: "Treat them appallingly",
+          teacher:
+            "Bit 3 · Belinda · canapé / courgette. Tape chunk only: treat them appallingly. Talk: suffering builds character vs toxic myth.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["treat them appallingly"],
+          watch: {
+            videoUrl: "media/s02e03/03-courgette-appallingly.mp4",
+            note:
+              "Belinda · you can treat them appallingly and they still grow · courgette canapé.",
+          },
+          context: {
+            tone: "Lexical · appallingly + hardy courgettes · easy to read as metaphor",
+            meanings: [
+              "treat them appallingly = neglect / abuse / rough handling — and they still survive (Belinda’s courgette line; fans read it as people too).",
+              "appallingly = in a shocking, awful way — stronger than ‘badly’.",
+            ],
+            examples: [
+              "TREAT … APPALLINGLY — treat them appallingly · treat a plant / kid / employee appallingly (careful: strong word).",
+              "You can treat them appallingly and they still grow.",
+              "APPALLINGLY — behave appallingly · appallingly rude · appallingly neglected.",
+              "The garden was appallingly dry; the courgettes still came up.",
+              "METAPHOR (optional) — r/Fleabag: Fleabag treated badly by family, still grows · Belinda in a tough industry, still wins.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · appallingly / treat … appallingly when they fit.",
+            starters: [
+              "Belinda says you can treat courgettes appallingly — I think that means…",
+              "Suffering built my character when…",
+              "I don't buy ‘hardship makes you stronger’ because…",
+              "The person who grew despite…",
+            ],
+            questions: [
+              {
+                q: "Belinda says, “I love courgette. You can treat them appallingly and they still grow.” Do you agree that human beings, like courgettes, actually need tough environments and emotional hardships to truly grow — or is the idea that “suffering builds character” just a toxic myth?",
+                examples: [
+                  "Some hardship taught me boundaries — not ‘character’, survival.",
+                  "Toxic myth — used to justify bullying, bad bosses, ‘tough love’.",
+                  "Post-traumatic growth is real for some; not a license to harm.",
+                  "Courgette metaphor: women expected to keep producing no matter what.",
+                ],
+              },
+              {
+                q: "On rewatch, many viewers hear Belinda’s line as a metaphor for Fleabag — treated appallingly by family, still going. Who in your life (or in fiction) keeps ‘growing’ despite neglect or cruelty — admirable resilience or unfair expectation?",
+                examples: [
+                  "Parent who never praised you — you succeeded anyway.",
+                  "Sibling / colleague who absorbs chaos for everyone.",
+                  "Admirable — but they deserved kindness, not grit alone.",
+                  "Fleabag: funny outside, still bleeding inside.",
+                ],
+              },
+              {
+                q: "Belinda is the only guest who genuinely likes Fleabag’s food at this event — while Claire polices her. What does it mean when validation comes from a stranger, not family?",
+                examples: [
+                  "Stranger sees effort; family sees embarrassment.",
+                  "Easier to impress outsiders than your sister.",
+                  "Belinda’s warmth opens the door to the later honest talk.",
+                  "I crave praise from bosses more than from parents — why?",
+                ],
+              },
+              {
+                q: "When has someone romanticised your pain — “what doesn’t kill you makes you stronger”? How did you want them to respond instead?",
+                examples: [
+                  "After breakup / burnout — wanted rest, not a life lesson.",
+                  "‘You’ll grow from this’ felt like they wanted me quiet.",
+                  "Better: ‘That’s appalling — how can I help?’",
+                  "I’ve said it to others — realising it was lazy comfort.",
+                ],
+              },
+              {
+                q: "Do we praise the wrong kind of ‘growth’ — careers built on overwork, people who never complain? What would healthier ‘still grow’ look like — with support, not appalling treatment?",
+                examples: [
+                  "Growth with therapy / money / friends — not solo heroism.",
+                  "Courgettes need sun and water too — neglect isn’t the moral.",
+                  "Office celebrates the person who never took holiday.",
+                  "Character from choices, not from being treated appallingly.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "prune-off-the-wagon",
+          label: "A prune · off the wagon",
+          teacher:
+            "Bit 4 · mingle · guest + Claire & Klare. Tape only: a prune · I ate a sausage there thinking it was a prune · off the wagon. Talk: how Claire and her business partner Klare act with Fleabag in the room.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "a prune",
+            "I ate a sausage there thinking it was a prune",
+            "off the wagon",
+          ],
+          watch: {
+            videoUrl: "media/s02e03/04-prune-off-the-wagon.mp4",
+            note:
+              "Guest · I ate a sausage… thinking it was a prune · Claire & Klare · Oh, off the wagon? · Oh, just when I'm with you.",
+          },
+          context: {
+            tone: "Lexical · catering disaster + Claire flirting + sister as witness",
+            meanings: [
+              "a prune = dried plum — here a canapé looked like one but wasn’t (meat).",
+              "I ate a sausage there thinking it was a prune = guest at Claire’s event — Fleabag’s food ends 15 years of vegetarianism.",
+              "off the wagon = drinking again after trying to stay sober (Claire asks when she orders champagne; ties to S2 ‘off the sauce’).",
+              "Just when I'm with you = Claire’s flirt line to Klare — not literal relapse, performative fun.",
+            ],
+            examples: [
+              "OFF THE WAGON — go off the wagon · fall off the wagon · Oh, off the wagon?",
+              "I've been off the sauce — but just when I'm with you.",
+              "A PRUNE / SAUSAGE — is that a prune? · I thought it was a prune · bangers (BrE sausages).",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · weave a prune / sausage / off the wagon into your answer when it fits.",
+            starters: [
+              "Off the wagon for me means…",
+              "If I thought it was a prune but it was meat…",
+              "With my sister in the room, I would…",
+              "Claire and Klare acted like…",
+            ],
+            questions: [
+              {
+                q: "A guest tells Fleabag: “I ate a sausage there thinking it was a prune” — 15 years of vegetarianism gone. Who is responsible: Fleabag, Claire for hiring her, or ‘these things happen’ at events? Have you ever caused (or suffered) a food mix-up that became a story?",
+                examples: [
+                  "Mislabelled buffet / wrong dietary sticker.",
+                  "Claire set Fleabag up to fail — or trusted family too much.",
+                  "Guest laughed; someone else was furious.",
+                  "I still feel guilty about one canapé / one allergen miss.",
+                ],
+              },
+              {
+                q: "Klare orders champagne; Claire says yes. Fleabag: “Oh, off the wagon?” Claire: “Oh, just when I'm with you.” What is Claire doing — real relapse, flirt, or letting a colleague see a ‘fun’ version of her? How do you read **off the wagon** here vs serious sobriety?",
+                examples: [
+                  "Flirt — wagon as joke, not AA drama.",
+                  "She’s performing looseness she denies at home.",
+                  "Links to S2E1 ‘off the sauce’ — same Claire, different mask.",
+                  "I’ve used ‘just this once’ with someone I fancied.",
+                ],
+              },
+              {
+                q: "With **Fleabag** standing there, how do Claire and **Klare** behave — professional partners, awkward flirt, or two people who forget the sister exists? When have you seen colleagues (or siblings) change personality the second someone attractive or important appears?",
+                examples: [
+                  "Claire giddy; tells Fleabag shut up / don’t cope.",
+                  "Klare socially clumsy — good businessman, bad small talk.",
+                  "I've gone quiet when my sibling flirted — third wheel.",
+                  "Office couple pretending to be ‘just colleagues’.",
+                ],
+              },
+              {
+                q: "Claire begs Fleabag not to comment on Klare (“Shut up”, “Please don’t”, “I’m not in love with him”) while clearly buzzing. Why is the sister the most dangerous audience? Do you hide crushes / chaos from family more than from coworkers?",
+                examples: [
+                  "Family reads you too well — one glance exposes you.",
+                  "Shame: Claire can’t be messy in front of Fleabag.",
+                  "I hide dating from my sister / parent, not from friends.",
+                  "Fleabag teases because she’s shut out of Claire’s inner life.",
+                ],
+              },
+              {
+                q: "The **prune / sausage** mix-up and Claire’s **off the wagon** moment happen at the same corporate party. How do public events combine image control, desire, and disaster — and who cleans up the mess (Claire fixing, Fleabag blamed)?",
+                examples: [
+                  "One bad canapé becomes gossip; Claire saves the stage.",
+                  "Alcohol + flirt + family staff = perfect storm.",
+                  "Professional me vs private me at the same mic.",
+                  "I've been ‘on duty’ at a family wedding while my life unraveled.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "bit-on-the-nose",
+          label: "Bit on the nose",
+          teacher:
+            "Bit 5 · Best Woman in Business · Belinda on stage. Fleabag swapped in Godmother’s stolen statue (no nose). Belinda: I was going to say this is a bit on the nose, but she doesn’t seem to have one. Tape: bit on the nose. Deep talk: women-in-business prizes · literal vs idiomatic · trophy as ‘perfect woman’.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["bit on the nose"],
+          watch: {
+            videoUrl: "media/s02e03/05-bit-on-the-nose.mp4",
+            note:
+              "Belinda Frears wins · Fleabag presents the (wrong) statuette · I was going to say this is a bit on the nose, but she doesn’t seem to have one. · Claire: I awarded her with a pair of tits.",
+          },
+          context: {
+            tone: "Lexical · too obvious + literal nose joke · women’s awards ceremony",
+            meanings: [
+              "a bit on the nose (BrE) = too obvious / on-the-nose — the symbolism is hammered home.",
+              "Belinda’s punchline: the trophy is ‘on the nose’ (too literal) and the figure doesn’t seem to have a nose — ideal femininity with no ‘imperfect’ face.",
+              "Scene: Claire’s Women in Business awards; Fleabag broke the real prize and substituted stolen art — public humiliation + comedy.",
+            ],
+            examples: [
+              "BIT ON THE NOSE — a bit on the nose · too on the nose · that metaphor / trophy / slogan is bit on the nose.",
+              "The ‘Best Woman’ statue is bit on the nose — and she literally has no nose.",
+              "AWARDS DISCOURSE (later bar, same ep) — infantilising · subsection of success · children’s table of awards · Best Woman vs Best in Business.",
+              "FORUMS — r/Fleabag: weary ennui at gendered trophies · Refinery29: scared to sound ungrateful · Electric Lit: noseless icon = woman without complexity.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · bit on the nose when it fits.",
+            starters: [
+              "That award / slogan was a bit on the nose because…",
+              "Best Woman in Business vs Best in Business — I think…",
+              "Belinda’s joke landed as…",
+              "If the trophy had no nose, the message is…",
+            ],
+            questions: [
+              {
+                q: "Belinda accepts the prize and says: “I was going to say this is a bit on the nose, but she doesn’t seem to have one.” Explain **bit on the nose** in everyday English — then why is her line funny twice (idiom + the statue’s missing nose)?",
+                examples: [
+                  "Idiom = too obvious — a naked ‘woman’ trophy at a women’s awards night.",
+                  "Literal = the art has no nose — ‘perfect’ body, no human face.",
+                  "British irony — polite stage, savage line.",
+                  "I’d die laughing / I’d freeze on mic.",
+                ],
+              },
+              {
+                q: "Fleabag replaced the real award with Godmother’s stolen statue; Claire says she “awarded her with a pair of tits.” What is this scene saying about **women in business** events — empowerment, branding, or embarrassment?",
+                examples: [
+                  "Corporate feminism — pink branding, hollow trophies.",
+                  "Claire’s nightmare; Belinda turns it into wit.",
+                  "The ‘best woman’ ghetto — not best executive, period.",
+                  "I've seen ‘women in leadership’ dinners that felt bit on the nose.",
+                ],
+              },
+              {
+                q: "Later Belinda calls women’s awards “infantilising bollocks” and “the children’s table of awards.” Is it fair to reject a **subsection of success** — or ungrateful when women still get fewer top prizes? When is a separate category progress vs a cage?",
+                examples: [
+                  "Progress when the main table excludes you.",
+                  "Cage when it keeps you off the main stage forever.",
+                  "Scared to say it out loud — Refinery29 point.",
+                  "Men’s ‘businessman of the year’ rarely feels like the kid’s table.",
+                ],
+              },
+              {
+                q: "Critics read the noseless statue as ideal femininity **without complexity** (no messy person — later we know it echoes Fleabag’s mum / Godmother’s art). Do symbols at work (logos, ‘inspiring’ posters, trophy shapes) ever feel **bit on the nose** to you — inspiring or insulting?",
+                examples: [
+                  "Motivational slogans that ignore pay gap.",
+                  "Trophy that looks like a body part — too on the nose.",
+                  "Inspiring when you’re young; insulting when you’ve earned more.",
+                  "Russian / UK office ‘success woman’ imagery.",
+                ],
+              },
+              {
+                q: "Belinda says the quiet truth on stage; Claire built the whole polished night. Who has power in this scene — the host, the winner, or the sister serving canapés who broke the trophy? Have you seen someone **puncture** corporate theatre with one honest line?",
+                examples: [
+                  "Belinda — status to joke safely.",
+                  "Fleabag — chaos agent; Claire cleans up.",
+                  "One colleague’s aside ruined / saved the mood.",
+                  "I'd never dare; I'd blog about it later.",
+                ],
+              },
+              {
+                q: "Fleabag elsewhere uses **bit on the nose** about wellness clichés (“let go of your past”). Here it’s gender + art. What topics in your culture are so over-symbolised that any comment feels **a bit on the nose** — gender, motherhood, ‘strong woman’, mental health?",
+                examples: [
+                  "International Women’s Day merch only — no policy change.",
+                  "Motherhood medals at work — bit on the nose.",
+                  "Wellness retreat slogans (S1 Fleabag beat).",
+                  "Real support vs performative symbols.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "tonic-subsection-arsed",
+          label: "You are a tonic",
+          teacher:
+            "Bit 6 · bar · Belinda + Fleabag after the awards. Tape: you are a tonic · subsection of success · not strictly · I can't be arsed. Personal talk: medals & work parties · why Fleabag says not strictly · Belinda’s no + send her back to flirt.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "you are a tonic",
+            "subsection of success",
+            "not strictly",
+            "I can't be arsed",
+          ],
+          watch: {
+            videoUrl: "media/s02e03/06-tonic-subsection-arsed.mp4",
+            note:
+              "Women's awards · subsection of success · Fleabag · not strictly · Belinda: You are a tonic · kiss rebuff · I can't be arsed, darling · get back to the party.",
+          },
+          context: {
+            tone: "Lexical · bar honesty after corporate ceremony · BrE informal",
+            meanings: [
+              "you are a tonic = you’re a pick-me-up / relief — someone who refreshes you after stress (Belinda to Fleabag).",
+              "subsection of success = a smaller, sidelined category of achievement (Belinda on women-only business awards).",
+              "not strictly = not entirely / not exclusively — here Fleabag on sexuality: not strictly a lesbian (= bi-ish, no speech).",
+              "I can't be arsed (BrE, informal) = I can't be bothered — zero energy or will for it (Belinda turning Fleabag down).",
+            ],
+            examples: [
+              "YOU ARE A TONIC — you're a tonic · what a tonic · like a tonic after…",
+              "SUBSECTION OF SUCCESS — a subsection of success · the children's table of awards (same speech).",
+              "NOT STRICTLY — not strictly true · not strictly legal · I'm not strictly a morning person.",
+              "I CAN'T BE ARSED — can't be arsed to go · can't be arsed with small talk · Can't be arsed, darling.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · use at least one tape phrase in a real story from your life.",
+            starters: [
+              "A work award felt like a subsection of success when…",
+              "I'm not strictly ___ because…",
+              "I can't be arsed to go when…",
+              "Someone who was a tonic for me…",
+            ],
+            questions: [
+              {
+                q: "Belinda calls women's business awards a **subsection of success** — a side category, not the main prize table. Have you ever won (or been nominated for) a medal, prize, or ‘best employee’ award? Did it feel like real recognition — or a bit separate / symbolic? Tell one concrete example.",
+                examples: [
+                  "Company ‘women in leadership’ badge — nice, but not promotion.",
+                  "School / sport medal I still care about / forgot in a drawer.",
+                  "Refused to apply — felt like PR.",
+                  "Main award vs special category — different status in my office.",
+                ],
+              },
+              {
+                q: "After a long formal event, Belinda tells Fleabag **you are a tonic** — she’s exhausted by performance; Fleabag is honest company. Who is a **tonic** for you after work parties, family dinners, or exam season? When have you been the tonic for someone else?",
+                examples: [
+                  "One friend — no small talk, just truth.",
+                  "I’m the tonic when I make people laugh after stress.",
+                  "I need alone time, not a tonic — different wiring.",
+                  "Stranger at a bar once — like Belinda & Fleabag.",
+                ],
+              },
+              {
+                q: "In the bar, Fleabag says she’s **not strictly** a lesbian — a shrug, not a manifesto (show treats bi as normal). What does **not strictly** mean to you in English? Have you ever used ‘not strictly’ about identity, beliefs, or habits (*not strictly vegetarian / not strictly religious*)?",
+                examples: [
+                  "Not strictly = mostly but not 100%.",
+                  "I avoid long labels — one phrase and move on.",
+                  "Cultural difference: in my country you'd explain more / less.",
+                  "Fleabag nervous with Belinda — understatement as armour.",
+                ],
+              },
+              {
+                q: "Fleabag kisses Belinda; Belinda says **I can't be arsed, darling** — not anger, just no energy / no interest (BrE: can't be bothered). When have you said (or wanted to say) **I can't be arsed** to flirting, sex, networking, or going back to the **party**? Be specific.",
+                examples: [
+                  "After-work drinks — can't be arsed, went home.",
+                  "Someone pursued me; I was polite but arsed-out.",
+                  "Wrong person, wrong night — like Belinda.",
+                  "I always go back to the party — FOMO.",
+                ],
+              },
+              {
+                q: "Belinda sends Fleabag **back to the party** to flirt — while she opts out. **Do you go back to the party** after you’ve escaped (bathroom, bar, phone)? What decides it — duty, fun, career, or **can't be arsed**?",
+                examples: [
+                  "One drink then leave — survival rule.",
+                  "Stay if someone interesting is there.",
+                  "Claire’s event — I'd help family then bolt.",
+                  "Age / energy — parties cost more now.",
+                ],
+              },
+              {
+                q: "Belinda also says there’s nothing more exciting than a room full of people — but getting older means less flirting. **Personal:** do work **awards ceremonies** and **parties** still excite you, or have they become a **subsection of success** you tolerate? What would make you honestly want to stay?",
+                examples: [
+                  "Exciting if friends / crushes / gossip.",
+                  "Tolerate for career — perform gratitude.",
+                  "Rather bar chat like Belinda than ballroom.",
+                  "Medals matter less after one disappointment.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "snogging-finland",
+          label: "Snogging Finland",
+          teacher:
+            "Bit 7 · Claire finds Fleabag · I thought you were snogging Finland (Klare / Finnish work). Blow-up: You'll always be interesting… quirky café… dead best friend · You make me feel like I failed · We're not friends, we are sisters.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["I thought you were snogging Finland"],
+          watch: {
+            videoUrl: "media/s02e03/07-snogging-finland.mp4",
+            note:
+              "Claire: I thought you were snogging Finland. · Fleabag: I am interesting. · Claire: You'll always be fine… You'll always be interesting with your quirky café and your dead best friend. · You just make me feel like I've failed. · We're not friends. We are sisters.",
+          },
+          context: {
+            tone: "Lexical · snog + sister envy · Finland = Klare / Finnish partners ( joke )",
+            meanings: [
+              "snog / snogging (BrE) = kiss passionately — Claire thinks Fleabag was off with someone from the Finnish side (Klare), not helping.",
+              "I thought you were snogging Finland = comic shorthand — ‘Finland’ stands for the Finnish colleague / country-clutter at her work event.",
+              "Claire’s sting: you'll always be interesting with your quirky café and your dead best friend — backhanded: Fleabag’s chaos + grief read as charm; Claire feels she failed.",
+            ],
+            examples: [
+              "SNOG — snog someone · snogging in the corridor · caught snogging.",
+              "I thought you were snogging Finland.",
+              "CLAIRE’S LINES (discussion) — You'll always be fine · always be interesting · quirky café · dead best friend · You just make me feel like I've failed · We're not friends. We are sisters.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · snogging Finland if it fits · one honest sister / sibling or envy story.",
+            starters: [
+              "I thought you were… — Claire meant…",
+              "When someone said I'd always be fine, I felt…",
+              "My sibling makes me feel like I've failed when…",
+              "We're not friends, we're…",
+            ],
+            questions: [
+              {
+                q: "Claire says: **I thought you were snogging Finland** — she means Fleabag disappeared with the Finnish colleague **Klare**, not the country. When has someone **misread** where you were or who you were with (at a party, work event, family dinner)? Tell the scene.",
+                examples: [
+                  "Assumed I was flirting — I was fixing a crisis.",
+                  "Partner / parent / sibling jumped to the wrong conclusion.",
+                  "Finland joke — everyone at Claire's event is ‘Finland’.",
+                  "I wasn't snogging anyone — I was hiding in the loo.",
+                ],
+              },
+              {
+                q: "Claire tells Fleabag: **You'll always be fine. You'll always be interesting with your quirky café and your dead best friend. You just make me feel like I've failed.** Is ‘interesting’ a compliment here — or envy dressed as truth? Have you ever felt **less successful** next to a sibling or friend who looks ‘messy but magnetic’?",
+                examples: [
+                  "They fail openly; I fail privately — looks easier.",
+                  "‘Quirky’ life vs my spreadsheet life — Claire's view.",
+                  "Mentioning my trauma as their aesthetic — hurt.",
+                  "I'm the Claire; my sibling is the Fleabag.",
+                ],
+              },
+              {
+                q: "**Personal:** What would it mean if someone reduced your pain to a personality trait (*your dead friend, your divorce, your ‘interesting’ chaos*)? How do you want family to talk about your hard chapters?",
+                examples: [
+                  "Don't use my grief as your punchline.",
+                  "Acknowledge I survived — don't romanticise it.",
+                  "Claire uses Boo as a weapon — unconscious cruelty.",
+                  "I'd rather they said nothing than ‘so interesting’.",
+                ],
+              },
+              {
+                q: "Fleabag snaps **I am interesting** — Claire's line hit a nerve. What part of you fights back when someone defines you (the funny one, the disaster, the strong one)?",
+                examples: [
+                  "I'm not your side character.",
+                  "Interesting = never taken seriously at work.",
+                  "I perform chaos; inside I'm exhausted.",
+                  "Claire wanted Fleabag's freedom; Fleabag wanted Claire's coat.",
+                ],
+              },
+              {
+                q: "Claire ends: **We're not friends. We are sisters.** Can you be close siblings without being ‘friends’? What rules exist in your family — loyalty vs honesty, help vs judgment?",
+                examples: [
+                  "Sisters yes — best friends no.",
+                  "We show up in crisis; we don't share daily life.",
+                  "Claire won't be vulnerable; Fleabag won't be controlled.",
+                  "After a fight like this — days of silence or one text.",
+                ],
+              },
+              {
+                q: "Context: Claire also stole Fleabag's photocopier joke and later believed Martin over her about the kiss — jealousy runs the episode. **Your turn:** one time sibling / colleague **competition** (office, parents' attention, wedding, grades) exploded. Who said the unforgivable line?",
+                examples: [
+                  "Stole my story in a meeting.",
+                  "Parent compared us — both hated it.",
+                  "I said something about their marriage / body / failure.",
+                  "Made up like Claire & Fleabag — or years of distance.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "sound-tyrant",
+          label: "Sound tyrant",
+          teacher:
+            "Bit 8 · Fleabag drops in on the Priest (drink, chat). Pam upstairs — sound tyrant → whisper, garden. Talk: noise · unannounced visits · boundaries. **Optional coda:** Beat 9 · Fox (no tape) — same garden night.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["sound tyrant"],
+          watch: {
+            videoUrl: "media/s02e03/08-sound-tyrant.mp4",
+            note:
+              "Fleabag · fancied a drink and a priest and a chat · Priest: Pam's a bit of a sound tyrant in the evenings · Pam lives here · thump · go outside.",
+          },
+          context: {
+            tone: "Lexical · household noise police · uninvited late visit",
+            meanings: [
+              "sound tyrant = someone who tyrannises over noise — any laugh, voice, or music must stay quiet (Pam in the church house).",
+              "a bit of a sound tyrant = softened BrE — habit, not always cruel, but you tiptoe anyway.",
+              "Scene: Fleabag arrives unannounced at night; intimacy has to move outside because someone else's rules fill the building.",
+            ],
+            examples: [
+              "SOUND TYRANT — a bit of a sound tyrant · my neighbour's a sound tyrant · don't wake the sound tyrant.",
+              "Pam's a bit of a sound tyrant in the evenings.",
+              "DROP-IN — turn up unannounced · fancy a chat · we'll have to be quiet.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · open conversation · your life first. Use sound tyrant if it lands naturally — no checklist.",
+            starters: [
+              "The sound tyrant in my life is…",
+              "I turned up unannounced once…",
+              "When I need quiet, I…",
+              "I'm not strictly the type who…",
+            ],
+            questions: [
+              {
+                q: "Who is the **sound tyrant** in your world — flatmate, parent, neighbour, office manager? What sounds trigger them (laughter, music, footsteps, ‘foreign’ languages)? Tell one real evening, not a theory.",
+                examples: [
+                  "Parent sleeps early — we whisper after 10.",
+                  "Thin walls — I hear their TV; they hear my calls.",
+                  "Office ‘quiet floor’ — keyboard clicks feel illegal.",
+                  "I'm the tyrant — sorry to my flatmates.",
+                ],
+              },
+              {
+                q: "The Priest says Pam is a **sound tyrant** — so he and Fleabag leave the room they wanted. When have **someone else's rules** (noise, religion, family) pushed you outside — literally or emotionally?",
+                examples: [
+                  "Couldn't talk at home — walked in the park.",
+                  "Partner's parent in the next room.",
+                  "Shared kitchen — romance moves to a bar.",
+                  "Church / dorm / barracks — same shape as Pam.",
+                ],
+              },
+              {
+                q: "Fleabag **comes unannounced** — ‘I fancied a drink and a priest and a chat.’ **Personal:** do you drop in on people, or do you hate when others do it to you? Where's your line between spontaneous and rude?",
+                examples: [
+                  "Always text first — trauma from surprise visits.",
+                  "Close friends — no knock needed.",
+                  "I drop in; I'd hate it if they did.",
+                  "Depends who's home — flatshare ethics.",
+                ],
+              },
+              {
+                q: "Late-night visit + forced whisper + garden escape — attraction under surveillance. Have you ever had a conversation you **needed** to have only in a corridor, stairwell, or street because home wasn't safe or quiet enough?",
+                examples: [
+                  "Break-up on the doorstep.",
+                  "Confession in a car — engine running.",
+                  "Priest & Fleabag: intimacy with a third ear.",
+                  "Never had privacy growing up — still whisper.",
+                ],
+              },
+              {
+                q: "Reddit reads **Pam** as God / guilt / religion watching — Fleabag slightly annoyed, Priest charmed but wary. **Not strictly religious:** what invisible ‘Pam’ sits in your head when you want something forbidden (noise, love, honesty)?",
+                examples: [
+                  "Mother's voice — ‘don't make a scene’.",
+                  "Catholic / Soviet / corporate guilt — pick your Pam.",
+                  "No Pam — I do what I want; consequences later.",
+                  "I'm Pam for someone else — rules I enforce.",
+                ],
+              },
+              {
+                q: "Open floor: **sound**, **surprise visits**, **boundaries** — what's one rule you'd change in your home or friendship, and one rule you'd keep? (Speak freely; answers don't have to tie to the clip.)",
+                examples: [
+                  "Keep: knock before entering.",
+                  "Change: stop shaming laughter after 9 p.m.",
+                  "I'd visit my friend unannounced if I knew they were lonely.",
+                  "I'd rather be told ‘not tonight’ than perform quiet.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "fox-garden-coda",
+          label: "Fox · garden coda",
+          optional: true,
+          teacher:
+            "Optional coda · garden · fox panic · then **friends?** (desire + vows / other blocks). **No tape phrases.** Host: fox readings if you want — then **personal**: can you stay friends when you want someone you can’t have?",
+          blocks: ["watch", "context", "speak"],
+          phrases: [],
+          watch: {
+            videoUrl: "media/s02e03/09-fox-garden.mp4",
+            note:
+              "Garden · gin · fox monologue · celibacy panic · I'd really like to be your friend, though · Fleabag (to us): We'll last a week.",
+          },
+          context: {
+            tone: "Facilitator · no cool words — how people read the fox online + angles for the room",
+            meanings: [
+              "Plot beat: he says Fleabag makes him question faith — ‘I've never felt closer to God’ — then **immediately** hears a fox (timing = joke + omen).",
+              "Literal reading: he’s jumpy; rustling bushes; may be no fox (paranoia) — we often **don't** see one here.",
+              "Common readings (pick 1–2, don’t lecture): **sex / desire** chasing celibacy (Vulture, fans) · **Song of Songs** ‘little foxes’ / temptation (Notre Dame Church Life Journal) · **Hound of Heaven** — God pursuing the runaway soul (r/Fleabag — debated) · **comedy** — British panic monologue; Fleabag deflates with *Lucky God got there first*.",
+              "Series arc: ‘celibacy’ makes him bolt again; **finale** — real fox after he leaves Fleabag (desire still following).",
+              "Same thread: he offers **friendship** while attraction is obvious — Fleabag doesn’t buy it (*We'll last a week*). Club hinge: **want badly + can’t (vows, marriage, job, distance, timing)** → friends or distance?",
+            ],
+            examples: [
+              "FORUMS — r/Fleabag: fox = guilt, mischief, worldly temptation when Fleabag is near · Phoebe won’t fix one meaning.",
+              "CLUB FLOW — fox optional · then **friends**: (1) Have you tried? (2) Who suffers more? (3) Rules vs honesty.",
+            ],
+          },
+          speak: {
+            mission:
+              "No phrase mission · **personal first** · fox = optional symbol. Main thread: **forbidden want + friendship** — your stories, not theory.",
+            starters: [
+              "I'd really like to be your friend, but…",
+              "We couldn't be together because…",
+              "Staying friends worked / failed when…",
+              "The fox in that scene is… (optional)",
+            ],
+            questions: [
+              {
+                q: "**Belief first:** Do you think there was a fox in the bushes — or is the Priest's body reacting to Fleabag, alcohol, and celibacy? When have **you** heard ‘a fox’ (a panic, a sign, a memory) that nobody else could verify?",
+                examples: [
+                  "Anxiety on a good date — sure someone's watching.",
+                  "Religious guilt — Pam + fox same night.",
+                  "I need a literal fox — symbolism annoys me.",
+                  "Train story too funny to be fake — I'd tell it too.",
+                ],
+              },
+              {
+                q: "**Reading A (desire):** Many viewers say fox = **sex** chasing a celibate man — rustle when he says *celibacy*, monastery stare *we're having you*. **Personal parallel:** what desire, habit, or person ‘follows you’ even when you've promised yourself otherwise?",
+                examples: [
+                  "Ex / app / food / anger — my fox.",
+                  "I don't have vows — but rules I break alone.",
+                  "Priest honest about doubt; fox is the unsaid.",
+                  "Comedy version — my fox is deadlines.",
+                ],
+              },
+              {
+                q: "**Reading B (God / guilt):** *Hound of Heaven*, Song of Songs ‘little foxes’, or **Pam upstairs** — something holy or guilty **watching**. **Not strictly religious:** what ‘watching presence’ lives in your head when you're about to choose pleasure over principle?",
+                examples: [
+                  "Parent / culture / inner critic — not God.",
+                  "Actually faith — closer to God, then fear.",
+                  "Fleabag: Lucky God got there first — dark joke.",
+                  "No watcher — just me and consequences.",
+                ],
+              },
+              {
+                q: "Fleabag defuses with **Lucky God got there first** and **you could be a fox-boy by now** — gallows humour vs his terror. How do **you** use jokes when someone else is spiralling (or when you are)? Does humour help or hide?",
+                examples: [
+                  "I joke so nobody sees I'm scared.",
+                  "Wrong moment — made them worse.",
+                  "British / family gallows humour — survival.",
+                  "I'd sit in the panic quietly — no quips.",
+                ],
+              },
+              {
+                q: "He monologues; she listens; then **celibacy** — he jumps. **Words as triggers:** which word (sex, divorce, mother, money, politics) makes **your** conversation ‘rustle’? Tell one safe-for-club example.",
+                examples: [
+                  "‘We need to talk’ — instant fox.",
+                  "Partner said ‘marriage’ — I changed subject.",
+                  "English taboo words in my family.",
+                  "I'm the one who panics at ‘quiet’.",
+                ],
+              },
+              {
+                q: "The Priest says **I'd really like to be your friend, though** — while the attraction is obvious and celibacy is the wall. **Personal:** if you **strongly** want someone but **can't** be with them (religion, marriage, colleagues, geography, age, family, visa, mental health, ‘wrong timing’), is **friendship** honest — or a slow torture? Tell one real or observed story.",
+                examples: [
+                  "Tried friends — someone got hurt within months.",
+                  "Clean break was kinder — no ‘friends’ performance.",
+                  "Still friends years later — boundaries + new partners.",
+                  "Priest/Fleabag: fox = body saying what ‘friends’ denies.",
+                ],
+              },
+              {
+                q: "Fleabag looks at the camera: **We'll last a week** — she doesn't trust ‘just friends.’ When someone offers friendship after almost-relationship, **who** is protecting whom — and what are you afraid will happen if you say yes?",
+                examples: [
+                  "They want proximity without guilt.",
+                  "I say yes because losing them feels worse.",
+                  "I say no because I'd sabotage their relationship.",
+                  "We both knew it was a lie — comedy like Fleabag.",
+                ],
+              },
+              {
+                q: "**Rules:** If you **do** stay friends with someone you want but can't have — what rules actually help (space, no late-night texts, meet in groups, tell new partner)? What rules are **fake** and crack at alcohol / crisis / travel?",
+                examples: [
+                  "No one-on-one dinners — worked until it didn't.",
+                  "Full honesty with my partner — non-negotiable.",
+                  "Colleague crush — only professional channels.",
+                  "No rules — we called it friendship and crashed.",
+                ],
+              },
+              {
+                q: "**Open:** Is ‘I can't be with you but I need you in my life’ ever fair to the other person — or is distance the only clean gift? **Your line**, not a TED talk.",
+                examples: [
+                  "Fair if both name the want and accept the cost.",
+                  "Unfair — one always hopes the wall will fall.",
+                  "Depends who has power (boss, priest, married friend).",
+                  "Distance hurt once; friendship would have hurt more.",
+                ],
+              },
+              {
+                q: "**Fox optional:** In one sentence — fox scene **or** friendship offer — what is the episode saying about **want you can't act on**?",
+                examples: [
+                  "Want doesn't vanish because you rename it friendship.",
+                  "God / guilt / Pam / fox — same as ‘we shouldn't’.",
+                  "Humour + panic — British way to sit on a crush.",
+                  "Skip the fox — it's really about impossible love.",
+                ],
+              },
+            ],
+          },
+        },
+      ],
       finale: {
         prompt:
           "A favour that went wrong — then one conversation that changed how you saw something. Use at least 4 tape phrases.",

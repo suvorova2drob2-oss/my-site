@@ -593,6 +593,82 @@
     return result;
   }
 
+  function renderReadPaperExercises(r) {
+    var pack = r.exercises;
+    if (!pack || !pack.tasks || !pack.tasks.length) return "";
+    var audioSrc = r.audio || "";
+    var tasksHtml = pack.tasks
+      .map(function (task) {
+        var trackBtn = "";
+        if (task.track && audioSrc) {
+          trackBtn =
+            '<button type="button" class="si-paper-ex-track" data-si-ex-audio="' +
+            escapeHtml(audioSrc) +
+            '" title="Play track ' +
+            escapeHtml(String(task.track)) +
+            '"><span class="si-paper-ex-track-ico" aria-hidden="true">▶</span>' +
+            escapeHtml(String(task.track)) +
+            "</button>";
+        } else if (task.track) {
+          trackBtn =
+            '<span class="si-paper-ex-track si-paper-ex-track--label">' +
+            escapeHtml(String(task.track)) +
+            "</span>";
+        }
+        var body = "";
+        if (task.text) {
+          body += '<p class="si-paper-ex-lead">' + escapeHtml(task.text) + "</p>";
+        }
+        if (task.tf && task.tf.length) {
+          body +=
+            '<ol class="si-paper-ex-tf">' +
+            task.tf
+              .map(function (line) {
+                return (
+                  "<li>" +
+                  escapeHtml(line) +
+                  ' <span class="si-paper-ex-tf-slot">( &nbsp;T&nbsp; / &nbsp;F&nbsp; )</span></li>'
+                );
+              })
+              .join("") +
+            "</ol>";
+        }
+        if (task.discuss && task.discuss.length) {
+          body +=
+            '<ul class="si-paper-ex-discuss">' +
+            task.discuss
+              .map(function (line) {
+                return "<li>" + escapeHtml(line) + "</li>";
+              })
+              .join("") +
+            "</ul>";
+        }
+        return (
+          '<section class="si-paper-ex-item">' +
+          '<div class="si-paper-ex-head">' +
+          '<span class="si-paper-ex-num">' +
+          escapeHtml(String(task.n)) +
+          "</span>" +
+          trackBtn +
+          "</div>" +
+          body +
+          "</section>"
+        );
+      })
+      .join("");
+    var heading = pack.heading
+      ? '<div class="si-paper-ex-section">' + escapeHtml(pack.heading) + "</div>"
+      : "";
+    return (
+      '<details class="si-paper-exercises">' +
+      '<summary class="si-paper-exercises-sum">Exercises</summary>' +
+      '<div class="si-paper-exercises-panel">' +
+      heading +
+      tasksHtml +
+      "</div></details>"
+    );
+  }
+
   function renderReadBody(screen) {
     var r = screen.read || {};
     if (!r.html && !r.title) {
@@ -609,6 +685,15 @@
       ? '<em class="si-paper-role">' + escapeHtml(r.subtitle) + "</em>"
       : "";
     var bodyHtml = highlightPhrasesInHtml(r.html || "", screen.phrases || []);
+    var audioBlock = r.audio
+      ? '<audio class="si-paper-audio" controls preload="metadata">' +
+        '<source src="' +
+        escapeHtml(r.audio) +
+        '" type="audio/mpeg" />' +
+        "</audio>"
+      : "";
+    var comicsBlock = renderReadPaperComics(r);
+    var exercisesBlock = renderReadPaperExercises(r);
     return (
       '<div class="si-paper">' +
       '<header class="si-paper-head">' +
@@ -619,10 +704,64 @@
         : "") +
       sub +
       "</div></header>" +
+      audioBlock +
       '<div class="si-paper-body">' +
       bodyHtml +
-      "</div></div>"
+      "</div>" +
+      comicsBlock +
+      exercisesBlock +
+      "</div>"
     );
+  }
+
+  function renderReadPaperComics(r) {
+    var packKey = r.comicsPackKey || "";
+    if (!packKey) return "";
+    return (
+      '<details class="si-paper-exercises si-paper-comics">' +
+      '<summary class="si-paper-exercises-sum">Comic cues</summary>' +
+      '<div class="si-paper-exercises-panel si-paper-comics-panel">' +
+      '<div class="pi-read-comics-host pi-mnemonic-host" data-pack-key="' +
+      escapeHtml(packKey) +
+      '"></div>' +
+      "</div></details>"
+    );
+  }
+
+  var paperExAudioPlayer = null;
+
+  function bindReadComics(root) {
+    if (!root || !window.PRE_INT_MNEMONIC_GRID) return;
+    root.querySelectorAll(".pi-read-comics-host").forEach(function (host) {
+      var packKey = host.getAttribute("data-pack-key") || "";
+      var cards = packKey && window[packKey] ? window[packKey] : null;
+      if (cards && cards.length) {
+        PRE_INT_MNEMONIC_GRID.mount({
+          root: host,
+          cards: cards,
+          inPaper: true,
+          leadText:
+            "Bright picture cues (same style as A favourite place) — guess the line, tap to flip and read the script.",
+        });
+      } else {
+        host.innerHTML =
+          '<p class="pi-mn-empty">Comic cards not loaded.</p>';
+      }
+    });
+  }
+
+  function bindPaperExercises(root) {
+    if (!root) return;
+    root.querySelectorAll(".si-paper-ex-track[data-si-ex-audio]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var src = btn.getAttribute("data-si-ex-audio");
+        if (!src) return;
+        if (!paperExAudioPlayer) paperExAudioPlayer = new Audio();
+        paperExAudioPlayer.src = src;
+        paperExAudioPlayer.play();
+      });
+    });
   }
 
   function renderContextBody(screen) {
@@ -3135,6 +3274,8 @@
     bindVocab(elStage);
     bindMnemonic(elStage);
     bindDrillCards(elStage);
+    bindPaperExercises(elStage);
+    bindReadComics(elStage);
     if (screen.kind === "homework") bindHwGames(elStage);
   }
 

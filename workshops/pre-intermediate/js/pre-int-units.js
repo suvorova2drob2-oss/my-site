@@ -638,6 +638,9 @@
             letter: "B",
             title: "Deciding where to eat",
             subtitle: "Block 2 · Track 19 · Sarah & Victor",
+            audio:
+              "https://storage.yandexcloud.net/cpeaudio/outcomes/19%20%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BA%D0%B0%2019.mp3",
+            comicsPackKey: "PRE_INT_EAT2_DIALOGUE_COMICS",
             html:
               "<p><strong>S = Sarah, V = Victor</strong></p>" +
               "<p><strong>S:</strong> So Victor. Are you hungry?</p>" +
@@ -662,6 +665,39 @@
               "<p><strong>V:</strong> Yeah. The only problem is that it gets really busy, so sometimes you have to wait a while to get a table.</p>" +
               "<p><strong>S:</strong> Oh right, well can we ring them to check they have a table?</p>" +
               "<p><strong>V:</strong> I guess so. Let me see if I can find their number on my phone.</p>",
+            exercises: {
+              heading: "Listening",
+              tasks: [
+                {
+                  n: 3,
+                  track: 19,
+                  text:
+                    "Listen to two colleagues – Sara and Victor – discussing where to eat. Find out where they decide to go and why.",
+                },
+                {
+                  n: 4,
+                  track: 19,
+                  text:
+                    "Work in pairs. Decide if the sentences are true (T) or false (F). Listen again and check your answers.",
+                  tf: [
+                    "They both like Thai food.",
+                    "The seafood place is in a department store.",
+                    "Sara eats any kind of food.",
+                    "They need to get a bus to go to Selale.",
+                    "Sara doesn’t like Turkish food.",
+                    "They are definitely eating in Selale.",
+                  ],
+                },
+                {
+                  n: 5,
+                  text: "Work in pairs. Discuss these questions.",
+                  discuss: [
+                    "Which of the three restaurants in Exercise 3 would you prefer to eat in? Why?",
+                    "How often do you eat out for breakfast, lunch or dinner? Where do you go? Who with?",
+                  ],
+                },
+              ],
+            },
           },
           context: {
             tone: "Steal whole dialogue lines · decide where to eat with a partner",

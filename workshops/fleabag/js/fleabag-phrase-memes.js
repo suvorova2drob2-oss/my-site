@@ -1,5 +1,5 @@
 /**
- * Fleabag Workshop — phrase → social meme cards (S2E1 + S2E2).
+ * Fleabag Workshop — phrase → social meme cards (S2E1 + S2E2 + S2E3).
  * Used by fleabag-lesson.js cool-words tape (click phrase → meme).
  */
 (function (global) {
@@ -150,6 +150,83 @@
       img: "memes/23-weaky-at-your-core-meme.png",
       gloss: "внутри ты слабак — weaky/strongy из серии (не опечатка)",
     },
+    /* —— S2E3 · Claire’s work —— */
+    {
+      keys: ["over the top"],
+      img: "memes/24-over-the-top-meme.png",
+      gloss: "слишком, через край, вычурно (corporate excess)",
+    },
+    {
+      keys: ["she will loathe that"],
+      img: "memes/34-she-will-loathe-that-meme.png",
+      gloss: "ей это будет глубоко противно (подарок / тон / вкус)",
+    },
+    {
+      keys: [
+        "it's attention-grabbing",
+        "attention-grabbing",
+        "you're sweating so much",
+      ],
+      img: "memes/26-attention-grabbing-meme.png",
+      gloss: "бросается в глаза — тут пот на corporate night",
+    },
+    {
+      keys: ["treat them appallingly"],
+      img: "memes/25-treat-them-appallingly-meme.png",
+      gloss: "обращаться ужасно — а всё равно «растёт» (courgette line)",
+    },
+    {
+      keys: [
+        "i ate a sausage there thinking it was a prune",
+        "thinking it was a prune",
+        "a prune",
+      ],
+      img: "memes/36-sausage-prune-meme.png",
+      gloss: "кейтеринг-катастрофа: думала prune — оказалась sausage",
+    },
+    {
+      keys: ["off the wagon"],
+      img: "memes/27-off-the-wagon-meme.png",
+      gloss: "снова пью / сорвалась (после «off the sauce»)",
+    },
+    {
+      keys: ["bit on the nose", "a bit on the nose"],
+      img: "memes/28-bit-on-the-nose-meme.png",
+      gloss: "слишком в лоб + статуэтка буквально без носа",
+    },
+    {
+      keys: ["you are a tonic"],
+      img: "memes/29-you-are-a-tonic-meme.png",
+      gloss: "ты — глоток свежести / спасение после фарса",
+    },
+    {
+      keys: ["subsection of success"],
+      img: "memes/30-subsection-of-success-meme.png",
+      gloss: "«детский стол» наград — не главная лига успеха",
+    },
+    {
+      keys: ["not strictly"],
+      img: "memes/35-not-strictly-meme.png",
+      gloss: "не строго / не на 100% — с оговоркой, «ну, в каком-то смысле»",
+    },
+    {
+      keys: ["i can't be arsed", "can't be arsed"],
+      img: "memes/31-cant-be-arsed-meme.png",
+      gloss: "мне лень — BrE can't be bothered",
+    },
+    {
+      keys: [
+        "i thought you were snogging finland",
+        "snogging finland",
+      ],
+      img: "memes/32-snogging-finland-meme.png",
+      gloss: "целовалась с «Финляндией» — шутка про Klare",
+    },
+    {
+      keys: ["sound tyrant"],
+      img: "memes/33-sound-tyrant-meme.png",
+      gloss: "тиран тишины — Pam в доме у церкви",
+    },
   ];
 
   function resolve(phrase) {
@@ -190,6 +267,11 @@
       label: "Uncomfortable truths · cool phrases",
       gloss: "Counselling confessions · Fleabag S2E2 · swipe →",
     },
+    s02e03: {
+      img: "memes/00-cover-s02e03-claires-work.png",
+      label: "Corporate chaos · sisters · garden",
+      gloss: "Claire’s work night · Fleabag S2E3 · swipe → memes",
+    },
   };
 
   var SESSION_SLIDE_IMGS = {
@@ -219,6 +301,21 @@
       "memes/21-insidious-meme.png",
       "memes/22-pawing-meme.png",
       "memes/23-weaky-at-your-core-meme.png",
+    ],
+    s02e03: [
+      "memes/24-over-the-top-meme.png",
+      "memes/34-she-will-loathe-that-meme.png",
+      "memes/26-attention-grabbing-meme.png",
+      "memes/25-treat-them-appallingly-meme.png",
+      "memes/36-sausage-prune-meme.png",
+      "memes/27-off-the-wagon-meme.png",
+      "memes/28-bit-on-the-nose-meme.png",
+      "memes/29-you-are-a-tonic-meme.png",
+      "memes/30-subsection-of-success-meme.png",
+      "memes/35-not-strictly-meme.png",
+      "memes/31-cant-be-arsed-meme.png",
+      "memes/32-snogging-finland-meme.png",
+      "memes/33-sound-tyrant-meme.png",
     ],
   };
 

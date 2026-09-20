@@ -10,6 +10,7 @@ Put episode folders here:
 - `s01e06/` — Season 1 Episode 6 (7 clips)
 - `s02e01/` — Season 2 Episode 1 (8 clips)
 - `s02e02/` — Season 2 Episode 2 · Counselling (9 clips)
+- `s02e03/` — Season 2 Episode 3 · Claire’s work (9 clips + optional fox coda uses `09-fox-garden.mp4`)
 
 Lesson pages load them as `media/s01e0N/….mp4` or `media/s02e0N/….mp4` (same folder as `lesson.html`).
 

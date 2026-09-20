@@ -15,7 +15,15 @@
       .replace(/"/g, "&quot;");
   }
 
+  function speakerClass(sentence) {
+    var s = String(sentence || "").trim();
+    if (s.indexOf("S:") === 0) return " pi-mn-sentence--s";
+    if (s.indexOf("V:") === 0) return " pi-mn-sentence--v";
+    return "";
+  }
+
   function cardHtml(c, i) {
+    var spCls = speakerClass(c.sentence || c.en || "");
     return (
       '<article class="pi-mn-card" data-pi-mn-idx="' +
       i +
@@ -33,7 +41,9 @@
       '" title="Fullscreen">⛶</span>' +
       "</div>" +
       '<div class="pi-mn-face pi-mn-face--back">' +
-      '<p class="pi-mn-sentence">' +
+      '<p class="pi-mn-sentence' +
+      spCls +
+      '">' +
       esc(c.sentence || c.en || "") +
       "</p>" +
       (c.ru
@@ -53,10 +63,18 @@
       return;
     }
 
+    var inPaper = !!opts.inPaper;
+    var lead =
+      opts.leadText ||
+      "Look at the picture → guess the phrase → flip to check. Long lines are split into chunks.";
     root.innerHTML =
-      '<div class="pi-mn-wrap">' +
+      '<div class="pi-mn-wrap' +
+      (inPaper ? " pi-mn-wrap--paper" : "") +
+      '">' +
       '<div class="pi-mn-toolbar">' +
-      '<p class="pi-mn-lead">Look at the picture → guess the phrase → flip to check. Long lines are split into chunks.</p>' +
+      '<p class="pi-mn-lead">' +
+      esc(lead) +
+      "</p>" +
       '<button type="button" class="pi-mn-pictures-btn" id="piMnPicturesBtn">' +
       '<span class="pi-mn-pictures-ico" aria-hidden="true">🖼</span> Pictures · fullscreen' +
       "</button></div>" +
