@@ -107,6 +107,38 @@ function liveSupabaseFallback(): Plugin {
 }
 
 /** Legacy pages use classic <script src> (non-ESM). Opt out of Vite bundling for those tags. */
+function isFceLiveHtmlPath(urlPath: string, track: PrepBuildTrack): boolean {
+  const low = String(urlPath || "").replace(/\\/g, "/").toLowerCase();
+  if (low.includes("/cpe/")) return false;
+  if (/(^|\/)(ege|oge)\//.test(low)) return false;
+  if (track === "fce") return low.endsWith(".html") || low.endsWith(".htm");
+  if (track !== "dev") return false;
+  if (/\/fce\.html$/i.test(low)) return true;
+  if (/\/unit\d+\.html$/i.test(low)) return true;
+  if (/(^|\/)(grammar|use-of-english|listening|class-games)\//i.test(low)) return true;
+  if (/(^|\/)unit\d+-/.test(low)) return true;
+  if (low.includes("/changes at school/")) return true;
+  if (/\/(retell-check|exam-numbered-gaps)\.html$/i.test(low)) return true;
+  return false;
+}
+
+function fceLiveBootInject(track: PrepBuildTrack): Plugin {
+  return {
+    name: "fce-live-boot-inject",
+    transformIndexHtml: {
+      order: "post",
+      handler(html, ctx) {
+        const p = String((ctx && (ctx.path || ctx.filename)) || "");
+        if (!isFceLiveHtmlPath(p, track)) return html;
+        if (html.includes("fce-live-boot.js")) return html;
+        const tag = '<script src="/js/fce-live-boot.js?v=1" vite-ignore></script>';
+        if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${tag}</body>`);
+        return html + tag;
+      },
+    },
+  };
+}
+
 function viteIgnoreClassicScripts(): Plugin {
   return {
     name: "prep-vite-ignore-classic-scripts",
@@ -239,14 +271,21 @@ export default defineConfig(({ command, mode }) => {
       ? ["ege"]
       : prepTrack === "oge"
         ? ["oge", "ege"]
-        : prepTrack === "dev"
-          ? ["ege", "oge"]
-          : [];
+        : prepTrack === "fce"
+          ? ["ege"]
+          : prepTrack === "dev"
+            ? ["ege", "oge"]
+            : [];
 
   return {
     root,
     publicDir: false,
-    plugins: [liveSupabaseFallback(), viteIgnoreClassicScripts(), copyLegacyStaticAssets(trackStaticFolders)],
+    plugins: [
+      liveSupabaseFallback(),
+      viteIgnoreClassicScripts(),
+      fceLiveBootInject(prepTrack),
+      copyLegacyStaticAssets(trackStaticFolders),
+    ],
     appType: "mpa",
     build: {
       outDir: "dist",

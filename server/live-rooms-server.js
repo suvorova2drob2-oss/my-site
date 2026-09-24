@@ -760,6 +760,52 @@ if (fs.existsSync(CLUMSY_ROOT)) {
     })
   );
 }
+function isFceLiveHtml(urlPath) {
+  var low = "";
+  try {
+    low = decodeURIComponent(String(urlPath || "")).toLowerCase();
+  } catch (e) {
+    low = String(urlPath || "").toLowerCase();
+  }
+  if (!/\.html?$/i.test(low)) return false;
+  if (/^\/(ege|oge)(\/|$)/.test(low)) return false;
+  if (low.indexOf("/cpe/") >= 0) return false;
+  if (/\/fce\.html$/i.test(low)) return true;
+  if (/\/unit\d+\.html$/i.test(low)) return true;
+  if (/^\/(grammar|use-of-english|listening|class-games)\//i.test(low)) return true;
+  if (/^\/unit\d+-/.test(low)) return true;
+  if (/^\/changes at school\//i.test(low)) return true;
+  if (/\/(retell-check|exam-numbered-gaps)\.html$/i.test(low)) return true;
+  return false;
+}
+
+app.use(function (req, res, next) {
+  if (req.method !== "GET" && req.method !== "HEAD") return next();
+  if (!isFceLiveHtml(req.path)) return next();
+  var rel = String(req.path || "").replace(/^\/+/, "");
+  var file;
+  try {
+    file = path.resolve(ROOT, decodeURIComponent(rel));
+  } catch (eP) {
+    return next();
+  }
+  if (file.indexOf(ROOT) !== 0) return next();
+  fs.readFile(file, "utf8", function (err, html) {
+    if (err || typeof html !== "string") return next();
+    if (html.indexOf("fce-live-boot.js") >= 0) {
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("Cache-Control", "no-cache");
+      res.send(html);
+      return;
+    }
+    var tag = '<script src="/js/fce-live-boot.js?v=1" vite-ignore></script>';
+    var out = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tag + "</body>") : html + tag;
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "no-cache");
+    res.send(out);
+  });
+});
+
 app.use(
   express.static(ROOT, {
     index: false,
