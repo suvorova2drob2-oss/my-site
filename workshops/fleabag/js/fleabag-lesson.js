@@ -462,6 +462,13 @@
 
   function resolvePhraseMeme(phrase) {
     if (
+      window.INSIDEOUT_PHRASE_MEMES &&
+      typeof window.INSIDEOUT_PHRASE_MEMES.resolve === "function"
+    ) {
+      var ioMeme = window.INSIDEOUT_PHRASE_MEMES.resolve(phrase);
+      if (ioMeme) return ioMeme;
+    }
+    if (
       window.FLEABAG_PHRASE_MEMES &&
       typeof window.FLEABAG_PHRASE_MEMES.resolve === "function"
     ) {
@@ -725,13 +732,21 @@
   }
 
   function getSessionMemeCarousel() {
+    var sid = session.id || sessionId;
+    if (
+      window.INSIDEOUT_PHRASE_MEMES &&
+      typeof window.INSIDEOUT_PHRASE_MEMES.buildCarousel === "function"
+    ) {
+      var ioDeck = window.INSIDEOUT_PHRASE_MEMES.buildCarousel(sid);
+      if (ioDeck && ioDeck.length) return ioDeck;
+    }
     if (
       !window.FLEABAG_PHRASE_MEMES ||
       typeof window.FLEABAG_PHRASE_MEMES.buildCarousel !== "function"
     ) {
       return [];
     }
-    return window.FLEABAG_PHRASE_MEMES.buildCarousel(session.id || sessionId);
+    return window.FLEABAG_PHRASE_MEMES.buildCarousel(sid);
   }
 
   function openMemePicsSwipe(deck, startIndex) {

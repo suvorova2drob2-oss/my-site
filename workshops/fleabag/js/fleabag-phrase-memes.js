@@ -192,7 +192,7 @@
     {
       keys: ["bit on the nose", "a bit on the nose"],
       img: "memes/28-bit-on-the-nose-meme.png",
-      gloss: "слишком в лоб + статуэтка буквально без носа",
+      gloss: "слишком в лоб / банально очевидно (symbolism hammered home)",
     },
     {
       keys: ["you are a tonic"],

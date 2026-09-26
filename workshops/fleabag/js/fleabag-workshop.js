@@ -8126,11 +8126,647 @@
       num: 4,
       title: "Episode 4 · Looking for solace",
       icon: "🕯️",
-      stub: true,
-      tagline: "Painful memories · quiet · more trouble",
+      tagline: "Day with the Priest · cassock shop · café · church",
       synopsis:
-        "After a day looking back on painful memories, Fleabag searches for solace.",
-      beats: defaultBeats(8),
+        "After E3, Fleabag trails the Priest — cassock shopping, then the guinea-pig café, then painful funeral flashbacks and a night in church (BBC: solace, more trouble).",
+      beats: [
+        {
+          id: "nipped-in-humbling",
+          label: "Nipped in · humbling",
+          teacher:
+            "Bit 1 · S2E4 opening · cassock shop with Hot Priest (just friends day). Tape: three lines · Talk: role/clothes · weddings vs funerals · dwell on / humbling · cynicism vs faith (Vulture / Plot Devices).",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "Once it's nipped in there…",
+            "Yeah, it's good to dwell on the next life.",
+            "I think there's something humbling about funerals.",
+          ],
+          watch: {
+            videoUrl: "media/s02e04/01-nipped-in-humbling.mp4",
+            note:
+              "Cassock shop · picking the last option · Once it's nipped in there… · Do you prefer weddings or funerals? · I think there's something humbling about funerals. · Yeah, it's good to dwell on the next life. (Script also: his arms / his neck · worm food · Don't make me an optimist.)",
+          },
+          context: {
+            tone: "Lexical · shop scene (S2E4) · clothes + belief + attraction",
+            meanings: [
+              "Scene (S2E4 transcript): present day — Fleabag is with the Priest shopping for his cassock; they agree on the last design; it will be nipped in at the waist. Not Mum’s funeral.",
+              "nipped in / nipped in at the waist = taken in at the waist so the garment fits tighter — here: the chosen cassock once altered.",
+              "Once it's nipped in there… = once that waist alteration is done (script continues: it'll be perfect).",
+              "Do you prefer weddings or funerals? — Weddings. Then the Priest: I think there's something humbling about funerals. — Really? — Yeah, it's good to dwell on the next life. Fleabag: You really think there's a next life?",
+              "dwell on = keep thinking about something; dwell on the next life = afterlife / what comes next.",
+              "something humbling about funerals = the Priest's view; Fleabag, the atheist, pushes back (worm food · 'they were already gone').",
+            ],
+            examples: [
+              "NIPPED IN — nipped in at the waist · get the cassock nipped in · Once it's nipped in there…",
+              "SCRIPT ORDER — I think there's something humbling about funerals. · Really? · Yeah, it's good to dwell on the next life.",
+              "SAME SCENE (context, not tape) — worm food · believe in something wonderful · Don't make me an optimist, you will ruin my life.",
+              "DWELL ON — dwell on the past · don't dwell on it · dwell on the next life.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · use nipped in / dwell on / humbling when they fit.",
+            starters: [
+              "I think there's something humbling about…",
+              "The thing I dwell on most is…",
+              "Once it's nipped in there, it'll be perfect — my version of that is…",
+              "I'd rather go to a wedding / funeral, because…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "Their 'just friends' day is spent on his errands: choosing a cassock, a Quaker meeting. An atheist helping pick the clothes that say he is unavailable. What is she really doing that day — making a friend, testing him, or hiding inside someone else's routine?",
+                examples: [
+                  "Hiding — his routine is calmer than her life.",
+                  "Testing — how far can she get without touching him?",
+                  "Honestly making a friend — her first since Boo.",
+                  "All three, and she knows it.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "He believes the dead go somewhere. Asked about the funerals she's been to, she says: 'They were already gone.' He asks why believe in something awful when you could believe in something wonderful — she answers: 'Don't make me an optimist, you will ruin my life.' Why might hope feel more dangerous than despair to someone who is grieving?",
+                examples: [
+                  "If you hope, you can be disappointed again.",
+                  "Cynicism feels like control.",
+                  "Believing in 'somewhere' means admitting how much she misses them.",
+                  "Hope is for people who haven't lost anything yet.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Weddings or funerals — honestly, which do you prefer? Which one shows you people as they really are?",
+                examples: [
+                  "Funerals — nobody performs, everybody's tired.",
+                  "Weddings — but only for the speeches that go wrong.",
+                  "Weddings show who people want to be; funerals show who they were.",
+                  "Neither — I hate the small talk at both.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Can 'just friends' work when one person wants more? Have you been in that situation — and who paid the price?",
+                examples: [
+                  "It worked, but only after one of us met someone else.",
+                  "I was the one who wanted more — it slowly broke me.",
+                  "It never works; someone is always waiting.",
+                  "It worked because we said it out loud.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "He says there's something humbling about funerals. Finish it for yourself: 'I think there's something humbling about ___' — a place, a job, an experience, a person. Why does it cut you down to size?",
+                examples: [
+                  "…about hospitals at night.",
+                  "…about looking at the sea.",
+                  "…about teaching — you're never as clever as you think.",
+                  "…about old people who still laugh at everything.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'It's good to dwell on the next life,' he says. What do you dwell on — the past, mistakes, the future, other people's opinions? Is dwelling ever useful, or is it always a trap?",
+                examples: [
+                  "I dwell on things I said at parties.",
+                  "Dwelling on mistakes taught me more than moving on.",
+                  "I dwell on the future so I don't feel the present.",
+                  "It's a trap once it stops leading to a decision.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'Once it's nipped in there, it'll be perfect' — one small adjustment and everything is fixed. What's your 'once it's nipped in there' fix — the one change you keep telling yourself will make life perfect?",
+                examples: [
+                  "Once my flat is sorted, I'll start inviting people.",
+                  "Once I lose a bit of weight…",
+                  "Once work calms down, I'll call my parents more.",
+                  "I've stopped believing in the one perfect tweak.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "cafe-bound-to",
+          label: "Café · bound to",
+          teacher:
+            "Bit 2 · Hilary’s / guinea pig café · Priest asks about Boo, Mum, the business; she shuts it down (I don't want that) · be bound to exit. Talk: being known vs flirt · bound to / turn up · audience as witness.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["be bound to"],
+          watch: {
+            videoUrl: "media/s02e04/02-cafe-dont-want-that.mp4",
+            note:
+              "Guinea pig café · Stop being so churchy / I'm just trying to get to know you · Well, I don't want that. · …should get back to work · A customer's bound to turn up any minute. · played with my guinea-pig long enough.",
+          },
+          context: {
+            tone: "Lexical · be bound to = almost certain to happen",
+            meanings: [
+              "be bound to + verb = it’s very likely / almost certain (strong prediction, often spoken).",
+              "Contracted in fast speech: a customer's bound to… = a customer is bound to…",
+              "turn up (in the script line) = arrive — especially when you’re not sure when, or casually.",
+            ],
+            examples: [
+              "BE BOUND TO — bound to rain · bound to be late · you're bound to feel nervous · something's bound to go wrong.",
+              "We're bound to hear more about it tomorrow.",
+              "SCRIPT (S2E4 · café) — I really should get back to work. A customer's bound to turn up any minute.",
+              "TURN UP — he turned up late · a customer might turn up · she never turned up.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · be bound to (+ turn up from examples) when they fit.",
+            starters: [
+              "When someone asks me something I'm not ready for, I usually…",
+              "A customer's bound to turn up — my version of that is…",
+              "Something's bound to go wrong if…",
+              "Being known feels scarier than… because…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "For the first time in the show, a man she is attracted to doesn't want her body — he wants her story: her mum, her godmother, the friend she opened the café with. And that is exactly what she can't handle. Why can sex feel safer than being known?",
+                examples: [
+                  "Sex has rules; being known doesn't.",
+                  "You can leave after sex. Once someone knows you, you can't take it back.",
+                  "Her body was always the thing she could offer without risk.",
+                  "Because being known means someone can judge the real you.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "Asked what guinea pigs do, she says: 'They're born, they shit themselves with fear, and then they die.' He wants to use it at the wedding. Is it just a joke — or the most honest thing she says in the whole scene?",
+                examples: [
+                  "It's her whole life in one sentence.",
+                  "Just a joke — she deflects with everything.",
+                  "Both: she tells the truth only when it sounds like a joke.",
+                  "It's about Boo, and nobody in the room knows.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "She keeps glancing at the camera — at us — and for the first time he notices and asks what she is doing. The audience has been her secret confidant since Boo died. Is talking to 'us' a way to cope, or a way to never let a real person in? What is the modern version of that camera?",
+                examples: [
+                  "A group chat where I narrate my life instead of living it.",
+                  "A diary — honest, but nobody answers.",
+                  "Social media: an audience, not a friend.",
+                  "It's coping — until someone real notices.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "She sarcastically thanks him for his 'guidance' and sends him back to God. By the end of the same episode she is begging someone to tell her how to live. Was he pushing too hard in the café — or was she right to shut the door?",
+                examples: [
+                  "Too hard — you don't ask about a dead friend over tea.",
+                  "He was right; she just wasn't ready.",
+                  "She shut the door so she could open it later on her terms.",
+                  "He asked the right questions in the wrong place.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "When someone asks you a question you're not ready for, what's your move — a joke, a question back, changing the subject, leaving the room? Where did you learn it?",
+                examples: [
+                  "I ask a question back — works every time.",
+                  "I make a joke; my whole family does it.",
+                  "I suddenly remember I have to be somewhere.",
+                  "I answer too honestly and regret it later.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Is it kind or intrusive to keep asking 'Are you OK?' after someone says 'I'm fine'? When did someone's persistence help you — or push you further away?",
+                examples: [
+                  "A friend asked three times; the third time I cried.",
+                  "It pushed me away — I felt like a project.",
+                  "Ask once, then just stay nearby.",
+                  "It depends who asks — a stranger is easier.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'I should get back to work. A customer's bound to turn up any minute' — the café is empty; it's an exit line. What's your go-to exit line when you need to escape a conversation? Build one with be bound to.",
+                examples: [
+                  "My mum's bound to call any second.",
+                  "The kids are bound to be starving by now.",
+                  "My boss is bound to notice I'm gone.",
+                  "The last train's bound to be packed — I'd better go.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "Make three honest predictions with be bound to: 'At family dinners, someone's bound to…' / 'If I start a new hobby, I'm bound to…' / 'If I tell the truth about ___, it's bound to…'",
+                examples: [
+                  "At family dinners, someone's bound to ask about my love life.",
+                  "If I start a new hobby, I'm bound to buy all the kit and quit in a month.",
+                  "If I tell the truth about my job, it's bound to cause a row.",
+                  "If I cook, something's bound to burn.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "funeral-glorious-facial",
+          label: "Funeral · glorious · facial",
+          teacher:
+            "Bit 3 · Mum's funeral flashback · reception · Dad avoiding her · Claire/Godmother. Tape: got a facial (chunk) · full facial line in examples. Talk: compliments · Dad not engaging.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "She was a spectacular woman.",
+            "got a facial",
+            "You look glorious.",
+            "No, he's not really engaging.",
+            "for a split second",
+            "Well, she ain't made of wood.",
+            "Do you want a ciggie?",
+          ],
+          watch: {
+            videoUrl: "media/s02e04/03-funeral-glorious-facial.mp4",
+            note:
+              "Flashback · mourners · facial panic · You look glorious · Have you spoken to Dad? / He's avoiding me · No, he's not really engaging · split second · she ain't made of wood · ciggie?",
+          },
+          context: {
+            tone: "Lexical · funeral reception (S2E4 flashback)",
+            meanings: [
+              "Scene: **Mum's funeral** flashback — Fleabag looks absurdly good; mourners compliment her; **Dad is avoiding her** (not engaging with grief or with her).",
+              "She was a spectacular woman. = condolence line about Mum (repeated by guests).",
+              "got a facial / get a facial = cosmetic skin treatment — Fleabag fears everyone will think she **primped** for the funeral.",
+              "You look glorious. = another wrong-note compliment at the worst time.",
+              "No, he's not really engaging. = **Dad** — script: *Have you spoken to Dad? — No, not yet. He's avoiding me. — No, he's not really engaging.* Not Harry.",
+              "for a split second = Claire snaps: stop assuming the worst about someone **for a split second** (Godmother / Dad subtext).",
+              "Well, she ain't made of wood. = reply to 'She's definitely trying to f*** my dad' — Godmother has desires too (ain't = spoken, informal).",
+              "Do you want a ciggie? = British informal **cigarette** — small offer of relief amid chaos.",
+            ],
+            examples: [
+              "GLORIOUS / SPECTACULAR — she was a spectacular woman · you look glorious · magnificent (mourners).",
+              "FACIAL — get a facial · I got a fucking facial for my mother's funeral (full line).",
+              "ENGAGING — not really engaging · engage with grief / with me.",
+              "SPLIT SECOND — for a split second · give someone a split second.",
+              "CIGGIE — fancy a ciggie? · do you want a ciggie?",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · glorious / facial / ciggie / split second when they fit.",
+            starters: [
+              "At a funeral, the worst thing you can say is…",
+              "For a split second I thought…",
+              "He's / she's not really engaging with…",
+              "People aren't made of wood — but…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "At her mother's funeral she looks the best she has ever looked, and everyone tells her so. Claire and Boo even try to 'mess her up'. Why is looking good at a funeral treated almost like a crime? What do we expect grief to look like?",
+                examples: [
+                  "We expect grief to be visible — red eyes, no make-up.",
+                  "Looking good reads as 'she doesn't care'.",
+                  "Grief is supposed to be ugly, so beauty feels like a lie.",
+                  "It's funny because her insides are the opposite.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "The mourners all say the same things: 'She was a spectacular woman.' 'You look glorious.' Are funeral clichés useless — or are they a script that rescues people who have no idea what to say?",
+                examples: [
+                  "A script is better than silence.",
+                  "Clichés make the family feel like nobody really knew her.",
+                  "They're for the speaker, not the family.",
+                  "One honest memory beats ten 'spectacular's.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "On the day of the funeral, Godmother is already circling Dad, and Claire begs her sister not to think the worst of someone 'for a split second'. When a family loses its centre, does someone always rush in to fill the gap? Was Fleabag paranoid — or the only one paying attention?",
+                examples: [
+                  "The only one paying attention — and we know she was right.",
+                  "Paranoid in the moment, right in the long run.",
+                  "Grief makes people grab whatever is closest.",
+                  "Claire needed her not to be right, just for one day.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "What is the worst thing someone has said to you (or someone close to you) at a moment of loss — and what is the best? What actually helps: words, food, presence, silence, a cigarette outside?",
+                examples: [
+                  "Worst: 'Everything happens for a reason.'",
+                  "Best: a friend who brought soup and didn't talk.",
+                  "A cigarette outside with a cousin I barely know.",
+                  "Someone telling a funny story about her.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Have you ever felt you were grieving 'the wrong way' — laughing, not crying, feeling nothing, or even feeling relief? Who decides what normal grief looks like?",
+                examples: [
+                  "I laughed at the funeral and felt like a monster.",
+                  "I didn't cry for months, then cried at an advert.",
+                  "Relief after a long illness — and then guilt.",
+                  "Films decide, and they're wrong.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'Have you spoken to Dad?' — 'He's avoiding me.' — 'No, he's not really engaging.' Who in your life is not really engaging right now — with you, with a problem, with reality? Why do people disengage instead of fighting?",
+                examples: [
+                  "My dad isn't really engaging with getting older.",
+                  "A friend who only replies with memes.",
+                  "Disengaging is easier than admitting you're scared.",
+                  "I'm the one not engaging, if I'm honest.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'Well, she ain't made of wood' — people have needs, even at the worst moment. Where is the line between understanding someone's desire and excusing terrible timing? Use it: 'Look, he ain't made of wood, but…'",
+                examples: [
+                  "Look, he ain't made of wood, but at the funeral?",
+                  "Nobody's made of wood — timing still matters.",
+                  "Desire is human; acting on it is a choice.",
+                  "It's easier to judge when it's not your parent.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "Everyone calls her mum 'spectacular'. Describe someone you loved with 'She/He was a spectacular…' — then add one thing about them that wasn't spectacular at all. Why do we turn the dead into saints?",
+                examples: [
+                  "She was a spectacular cook — and a terrible driver.",
+                  "He was a spectacular storyteller who never listened.",
+                  "Saints are easier to miss than real people.",
+                  "Because criticising the dead feels like cheating.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "funeral-buck-up",
+          label: "Tell me about it · Buck up",
+          teacher:
+            "Bit 4 · same flashback · Dad on the bed · jealousy of Mum · cry · Buck up. Tape: tell me about it · buck up (full Dad line in examples). Talk: male grief · charm as armour · origin of Fleabag's mask.",
+          blocks: ["watch", "context", "speak"],
+          phrases: ["Tell me about it.", "Buck up."],
+          watch: {
+            videoUrl: "media/s02e04/04-tell-me-buck-up.mp4",
+            note:
+              "Dad on bed · Mum was fun/kind · Godmother interrupts · Fleabag cries · I don't know what to do · Tell me about it · Buck up. Smile. Charm. Off we go.",
+          },
+          context: {
+            tone: "Lexical · Dad + grief script (S2E4 flashback)",
+            meanings: [
+              "Scene: Fleabag finds **Dad** on the bed; rare honest talk about Mum; **Godmother** lingers; Fleabag **cries**; Dad closes down.",
+              "Tell me about it. = ‘I know exactly, same here’ — in the scene: Dad changing his shoes says ‘Bit tight.’ — ‘Oh, yeah. Tell me about it.’ (she kicks off her heels). Then he starts talking about Mum.",
+              "Buck up. = pull yourself together (BrE, can sound brisk or caring depending on tone).",
+              "Script continuation (examples, not tape): **Buck up. Smile. Charm. Off we go. We'll be okay.** — Plot Devices / Reddit: origin of her **charm** mask.",
+            ],
+            examples: [
+              "TELL ME ABOUT IT — Ugh, tell me about it! · Tell me about it — weddings exhaust me too.",
+              "BUCK UP — buck up · buck up, smile, charm · Buck up. Smile. Charm. Off we go.",
+              "DAD BEAT — I don't know what to do · we'll be okay.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · tell me about it / buck up when they fit.",
+            starters: [
+              "In my family, when someone was sad, we…",
+              "Tell me about it — that's exactly how I feel when…",
+              "Someone told me to buck up when…",
+              "What I'd say instead of 'buck up' is…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "The most honest conversation she ever has with her father starts with tight shoes: 'Bit tight.' — 'Oh, yeah. Tell me about it.' Why do real conversations so often start with something tiny and physical — shoes, tea, washing up, a cigarette?",
+                examples: [
+                  "Small things give you permission to stay in the room.",
+                  "You can't start with 'Let's talk about Mum'.",
+                  "Doing something with your hands makes eye contact optional.",
+                  "The best talks in my family happen in the car.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "He tells her: 'I found her very difficult, you know… She just knew how to be fun. How to be kind… I didn't like that about her… Today I was jealous of her.' Why would a man envy his wife's kindness — and why confess it to his daughter on the day of the funeral?",
+                examples: [
+                  "Her ease showed him how stiff he was.",
+                  "He can only admit it now she can't hear it.",
+                  "Fleabag is like her mum — so he's talking to her, too.",
+                  "Grief makes you honest for about ten minutes.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "She finally breaks down; he answers: 'Buck up. Smile. Charm. Off we go. We'll be okay.' Fans are split: a cruel shutdown, or the only love he knew how to give? Critics say this line built the Fleabag of series one — charm, jokes, sex instead of tears. Can one sentence from a parent shape a whole personality?",
+                examples: [
+                  "Yes — I still hear one sentence from my mum.",
+                  "It's not one sentence; it's the hundredth time she heard it.",
+                  "He gave her a survival kit, not a cure.",
+                  "Cruel and loving at the same time.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "Their one honest moment is interrupted: Godmother appears in the doorway and lingers. Why does the show put the woman who will replace Mum right there, at that exact moment?",
+                examples: [
+                  "To show she's already moving in — literally.",
+                  "Every time Dad opens up, someone closes the door.",
+                  "She controls the family's access to him from day one.",
+                  "It's the moment Fleabag loses both parents.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "What was your family's unspoken rule about sadness — talk it through, keep busy, make a joke, never mention it? Do you follow that rule now, or fight it?",
+                examples: [
+                  "Keep busy — we cleaned the whole house after Grandad died.",
+                  "Jokes. Always jokes.",
+                  "We never mentioned it; I talk about everything now.",
+                  "I follow it without noticing, then catch myself.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Have you ever been the 'buck up' person for someone else — because you couldn't handle their pain? What would you say to them now?",
+                examples: [
+                  "I told a friend 'it'll be fine' because I didn't know what else to say.",
+                  "Now I'd just say: 'That's awful. I'm here.'",
+                  "I changed the subject — I still feel bad.",
+                  "I'd ask what they need instead of guessing.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'Tell me about it' — sympathy by sharing the same problem. When does it help, and when does it steal someone's moment ('You think that's bad? Wait till you hear mine')? Give a real example.",
+                examples: [
+                  "It helps when it's short — then you give the floor back.",
+                  "My aunt turns every story into her story.",
+                  "'Tell me about it' about tight shoes — perfect.",
+                  "It kills the moment when someone's grieving.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "Is 'buck up' ever the right thing to say? Describe a situation where someone needed a 'buck up' more than a hug.",
+                examples: [
+                  "Before an exam — not after a funeral.",
+                  "When a friend had been moping for months over nothing.",
+                  "My coach said 'buck up' and I won the match.",
+                  "Only if you've listened first.",
+                ],
+              },
+            ],
+          },
+        },
+        {
+          id: "church-prayer-weighing",
+          label: "Church · prayer · dodgy",
+          teacher:
+            "Bit 5 · night church · drunk Priest · whiskey · prayer / peace toast · confession invite. Tape: chunks · full lines in examples. Talk: faith vs irony · trust · what to rage about (leads into booth).",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "on the verge of",
+            "get in the way",
+            "You tell me what's weighing on your heart.",
+            "Sounds dodgy!",
+            "rage about",
+          ],
+          watch: {
+            videoUrl: "media/s02e04/05-church-prayer-weighing.mp4",
+            note:
+              "Pew / sacristy · I was on the verge of having a little prayer, actually · Here's to peace · those who get in the way of it · You tell me what's weighing on your heart · Sounds dodgy! · (confession / what to rage about — same night)",
+          },
+          context: {
+            tone: "Lexical · church night (S2E4) · before & into confession",
+            meanings: [
+              "Scene: **present** — Fleabag in church; **Priest** drunk; whiskey; she almost prayed; he toasts **peace**; he leads her toward **confession**.",
+              "on the verge of = very close to doing something — *I was on the verge of having a little prayer, actually.*",
+              "get in the way of = block / disturb — *Here's to peace. And those who get in the way of it.* (toast)",
+              "weighing on your heart = worrying you / heavy on your mind — Priest: *You tell me what's weighing on your heart and I listen…*",
+              "Sounds dodgy! = sounds suspicious / sketchy (BrE informal) — Fleabag deflects with humour.",
+              "rage about = what to be angry about — in the confession monologue: someone to tell her *what to … rage about* (among other life instructions).",
+            ],
+            examples: [
+              "ON THE VERGE OF — on the verge of tears / leaving / having a little prayer, actually.",
+              "GET IN THE WAY — get in the way of peace · don't get in the way.",
+              "SCRIPT TOAST — Here's to peace. And those who get in the way of it.",
+              "WEIGHING ON YOUR HEART — You tell me what's weighing on your heart (full Priest line).",
+              "SOUNDS DODGY — That sounds dodgy · Sounds dodgy!",
+              "RAGE ABOUT — what to rage about · what to joke about and what not to (confession speech).",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · on the verge of / get in the way / weighing on your heart / dodgy / rage about when they fit.",
+            starters: [
+              "When things fall apart, I usually go to…",
+              "I was on the verge of… but…",
+              "What's weighing on people my age is…",
+              "That sounds dodgy — I said that when…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "An atheist kneels in an empty church and tries to pray, then turns to the camera with a face that says 'I know, I know…'. Why do people who don't believe still pray when things fall apart? Who, or what, are they talking to?",
+                examples: [
+                  "To whoever is listening — it's about saying it out loud.",
+                  "To the person they lost.",
+                  "To the version of themselves who still had hope.",
+                  "Habit from childhood comes back in a crisis.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "He tells her about a man who wanted to be a saint so badly he castrated himself to stop the temptation, then raises a glass: 'Here's to peace. And those who get in the way of it.' Who is getting in the way of whose peace here? Is desire the enemy of peace — or proof you're alive?",
+                examples: [
+                  "She's in the way of his peace, and he's toasting her.",
+                  "Peace without desire sounds like being dead.",
+                  "He's drunk because peace isn't working.",
+                  "Desire is the enemy of his job, not of peace.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "She jokes that confession is so he can 'trap and control' her; he promises to listen 'without judgment and in complete confidence'. Why is it easier to tell the truth to someone behind a screen — a priest, a therapist, a stranger on a train, an anonymous forum?",
+                examples: [
+                  "You don't have to watch their face change.",
+                  "A stranger can't use it against you tomorrow.",
+                  "The screen turns a confession into a ritual, not a conversation.",
+                  "Being listened to is also a kind of power.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "In the booth she wants someone to tell her what to wear, what to eat, what to rage about, who to vote for, who to love. Freedom is supposed to be the dream — why can it feel like a burden? Would you hand some of your choices to someone you trust?",
+                examples: [
+                  "Too many choices — I can't even pick a film.",
+                  "If someone else decides, it's not my fault when it goes wrong.",
+                  "I'd give away small choices, never who to love.",
+                  "That's why people love strict religions and strict coaches.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "When things fall apart, where do you go — a church, a bar, a friend's kitchen, a long walk, your phone? What are you hoping to find there?",
+                examples: [
+                  "A long walk — I think better when I move.",
+                  "My sister's kitchen, no questions asked.",
+                  "My phone — and it never helps.",
+                  "An empty church, actually, even though I don't believe.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "What is weighing on people your age right now — the thing almost everyone carries but rarely says out loud?",
+                examples: [
+                  "Money and the feeling we'll never own a home.",
+                  "Loneliness, even with a thousand contacts.",
+                  "Parents getting old.",
+                  "The fear that we chose the wrong life.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'I was on the verge of having a little prayer, actually.' Tell us about a time you were on the verge of something big — quitting, confessing, crying, leaving — and pulled back. What pulled you back?",
+                examples: [
+                  "I was on the verge of quitting — then got a pay rise.",
+                  "On the verge of telling him — lost my nerve.",
+                  "On the verge of tears in a meeting — held on until the loo.",
+                  "I didn't pull back, and I'm glad.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "'Sounds dodgy!' is her reflex when someone offers pure kindness. Which offers sound dodgy to you precisely because they're too kind or too free? Use dodgy about a deal, a person, or a promise.",
+                examples: [
+                  "A free trial always sounds dodgy.",
+                  "A stranger who's too helpful — dodgy.",
+                  "A boss who promises 'family culture' sounds dodgy.",
+                  "Kindness with no reason feels dodgy to me, sadly.",
+                ],
+              },
+              {
+                kind: "lexis",
+                q: "Who tells you what to rage about these days — news, social media, friends, family? Name one thing that deserves more rage, and one that gets far too much.",
+                examples: [
+                  "The algorithm picks my rage for me.",
+                  "More rage about housing, less about celebrities.",
+                  "My dad rages about the news so I don't have to.",
+                  "I rage about small things so I don't feel the big ones.",
+                ],
+              },
+            ],
+          },
+        },
+      ].concat(
+        (function () {
+          var d = defaultBeats(3);
+          for (var j = 0; j < d.length; j++) {
+            d[j].id = "beat-" + (j + 6);
+            d[j].label = "Beat " + (j + 6);
+          }
+          return d;
+        })()
+      ),
       finale: {
         prompt:
           "You went looking for quiet / comfort — and found something else. 60 s · at least 5 tape phrases.",
