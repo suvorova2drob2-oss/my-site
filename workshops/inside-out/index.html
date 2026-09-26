@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inside Out Workshop · B2+ speaking</title>
+  <link rel="stylesheet" href="../../b2-summer-intensive/css/intensive-shell.css" />
+  <link rel="stylesheet" href="css/inside-out-workshop.css?v=6" />
+</head>
+<body class="intensive-body intensive-body--inside-out">
+  <div class="int-shell">
+    <header class="int-topbar">
+      <div class="int-brand">
+        <span class="int-kicker">Workshop · B2+ – C1 · Film English</span>
+        <h1 class="int-title">Inside Out · Speak the emotions</h1>
+        <p class="int-sub">
+          Season 1 · 3 урока, 3–4 бита в каждом · фразы → игры → разговор → exam mode → improv.
+          Часть 2 — отдельным сезоном, когда будет готова.
+        </p>
+      </div>
+      <a class="int-back" href="../../b2-intensive.html">&larr; Workshops home</a>
+    </header>
+
+    <section class="fb-showcase fb-showcase--hero io-showcase">
+      <div class="fb-showcase-visual">
+        <img
+          class="fb-showcase-avatar"
+          src="img/inside-out-hero.png?v=2"
+          alt=""
+          width="280"
+          height="158"
+          loading="eager"
+        />
+        <span class="fb-showcase-ring" aria-hidden="true"></span>
+      </div>
+      <div class="fb-showcase-copy">
+        <p class="fb-showcase-kicker">Workbook on screen</p>
+        <h2>Emotions in English · speak the lines</h2>
+        <p>
+          <em>Emotions in Action</em> + <em>Emotions at Play</em> — <strong>3 lessons</strong> in Season 1, 3–4 bits each.
+          Each bit: workbook on screen → meaning &amp; lexis → games → deep discussion → timed exam tasks.
+        </p>
+        <div class="int-meta-row" style="margin-top:12px">
+          <span class="int-pill int-pill--gold">Season 1 · 3 lessons</span>
+          <span class="int-pill">Workbook on screen</span>
+          <span class="int-pill">Cool-words tape</span>
+          <span class="int-pill">Part 2 · soon</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="fb-season-tabs" role="tablist" aria-label="Parts">
+      <button type="button" class="fb-season-tab is-active" role="tab" aria-selected="true" data-season="1" id="tab-s1">
+        Season 1 · Emotions in Action &amp; at Play
+      </button>
+      <button
+        type="button"
+        class="fb-season-tab fb-season-tab--soon"
+        role="tab"
+        aria-selected="false"
+        data-season="2"
+        id="tab-s2"
+        aria-disabled="true"
+        title="Появится, когда пришлёте Part 2"
+      >
+        Season 2 · Part 2 · soon
+      </button>
+    </div>
+
+    <div id="season-soon-panel" class="io-season-soon" hidden>
+      <img class="io-season-soon-art" src="img/inside-out-cover.png" alt="" width="120" height="120" loading="lazy" />
+      <h2>Season 2 · Part 2</h2>
+      <p>Здесь будет вторая часть воркшопа, когда материалы будут готовы.</p>
+      <p class="io-season-soon-hint">Season 1 уже включает <em>Emotions in Action</em> и <em>Emotions at Play</em>.</p>
+    </div>
+
+    <nav class="int-theme-grid io-theme-grid" id="session-grid" aria-label="Inside Out lessons"></nav>
+  </div>
+
+  <script src="js/inside-out-lessons-data.js?v=2"></script>
+  <script src="js/inside-out-club-a.js?v=1"></script>
+  <script src="js/inside-out-club-b.js?v=1"></script>
+  <script src="js/inside-out-club-teen.js?v=1"></script>
+  <script src="js/inside-out-workshop.js?v=9"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById("session-grid");
+      var soon = document.getElementById("season-soon-panel");
+      var tabs = document.querySelectorAll(".fb-season-tab");
+      if (!grid || typeof INSIDEOUT_WORKSHOP_getSessionsBySeason !== "function") return;
+
+      function seasonFromHash() {
+        var m = (location.hash || "").match(/season[=-]?(\d)/i);
+        if (m) return Number(m[1]) === 2 ? 2 : 1;
+        try {
+          var saved = Number(sessionStorage.getItem("inside-out-workshop-season"));
+          if (saved === 2 && !window.INSIDEOUT_PART2_READY) return 1;
+          if (saved === 1 || saved === 2) return saved;
+        } catch (e) {}
+        return 1;
+      }
+
+      function esc(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderCard(s) {
+        return (
+          '<a class="int-theme-card io-theme-card io-theme-card--plain" href="lesson.html?session=' +
+          encodeURIComponent(s.id) +
+          '">' +
+          '<span class="int-theme-num">Season 1 · Lesson ' +
+          String(s.num).padStart(2, "0") +
+          "</span>" +
+          '<span class="int-theme-icon" aria-hidden="true">' +
+          (s.icon || "🎬") +
+          "</span>" +
+          '<span class="int-theme-name">' +
+          esc(s.title) +
+          "</span>" +
+          '<span class="int-theme-tag">' +
+          esc(s.tagline) +
+          "</span>" +
+          '<span class="int-theme-go">Open lesson →</span></a>'
+        );
+      }
+
+      function setSeason(season) {
+        season = season === 2 ? 2 : 1;
+        if (season === 2 && !window.INSIDEOUT_PART2_READY) {
+          season = 2;
+        }
+        tabs.forEach(function (btn) {
+          var sn = Number(btn.getAttribute("data-season"));
+          var on = sn === season;
+          btn.classList.toggle("is-active", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        if (season === 2) {
+          grid.innerHTML = "";
+          grid.hidden = true;
+          if (soon) soon.hidden = false;
+        } else {
+          if (soon) soon.hidden = true;
+          grid.hidden = false;
+          var list = INSIDEOUT_WORKSHOP_getSessionsBySeason(1);
+          grid.innerHTML = list.map(renderCard).join("");
+        }
+        try {
+          sessionStorage.setItem("inside-out-workshop-season", String(season));
+        } catch (e) {}
+        if (history.replaceState) {
+          history.replaceState(null, "", "#season-" + season);
+        } else {
+          location.hash = "season-" + season;
+        }
+      }
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          setSeason(Number(btn.getAttribute("data-season")));
+        });
+      });
+
+      setSeason(seasonFromHash());
+    })();
+  </script>
+</body>
+</html>

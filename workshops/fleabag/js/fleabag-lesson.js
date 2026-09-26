@@ -971,8 +971,15 @@
       return {
         q: item.q || item.text || "",
         examples: item.examples || item.bridges || [],
+        kind: item.kind || "",
       };
     }
+
+    var KIND_LABEL = {
+      lexis: "Lexis",
+      personal: "Personal",
+      episode: "The episode",
+    };
 
     var qsHtml = questions.length
       ? questions
@@ -992,9 +999,14 @@
                     row.examples.length
                   )
                 : "";
+            var kindLabel = KIND_LABEL[row.kind] || "";
             return (
-              '<article class="fb-dq">' +
-              '<div class="fb-dq-num">Question ' +
+              '<article class="fb-dq' +
+              (kindLabel ? " fb-dq--" + row.kind : "") +
+              '">' +
+              '<div class="fb-dq-num">' +
+              (kindLabel ? escapeHtml(kindLabel) + " · " : "") +
+              "Question " +
               (i + 1) +
               "</div>" +
               '<p class="fb-dq-text">' +
@@ -1178,6 +1190,17 @@
         "</span></button>"
       : "";
 
+    var exam = screen.examRound || null;
+    window.__fbExamCurrent = exam;
+    var examBtn =
+      exam && window.INSIDEOUT_EXAM
+        ? '<button type="button" class="fb-speak-open fb-speak-open--tape fb-speak-open--exam" data-fb-exam aria-haspopup="dialog">' +
+          '<span class="fb-speak-open-kicker">4 · Exam mode</span>' +
+          '<span class="fb-speak-open-title">Timed speaking</span>' +
+          '<span class="fb-speak-open-hint">roulette · interview · monologue · photos · discuss</span>' +
+          "</button>"
+        : "";
+
     var lexFs = lex
       ? '<div class="fb-discuss-fs" hidden data-fb-fs="lex" role="dialog" aria-modal="true" aria-label="Lexis round">' +
         '<div class="fb-discuss-fs-inner">' +
@@ -1256,6 +1279,7 @@
       lexBtn +
       exBtn +
       deepBtn +
+      examBtn +
       (lexBtn || exBtn || deepBtn
         ? '<p class="fb-speak-peek"><strong>Lexis</strong> → <strong>Example talk</strong> → <strong>Discussion</strong></p>'
         : "") +
@@ -1268,6 +1292,13 @@
 
   function bindDiscussUi(root) {
     if (!root) return;
+    root.querySelectorAll("[data-fb-exam]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (window.INSIDEOUT_EXAM && window.__fbExamCurrent) {
+          window.INSIDEOUT_EXAM.open(window.__fbExamCurrent);
+        }
+      });
+    });
     var opens = root.querySelectorAll("[data-fb-open]");
     if (!opens.length) return;
 
@@ -1374,9 +1405,92 @@
     }
   }
 
+  function renderIoWorkbook(w) {
+    if (!w || !w.workbookCards || !w.workbookCards.length) return "";
+    var layout = String(w.workbookLayout || "emotion-grid");
+    var grid = '<div class="io-wb-grid">';
+    w.workbookCards.forEach(function (c) {
+      var tone = escapeHtml(String(c.tone || "neutral"));
+      var wide = c.wide ? " io-wb-card--wide" : "";
+      var dark = c.style === "dark" ? " io-wb-card--dark" : "";
+      grid +=
+        '<article class="io-wb-card io-wb-card--' +
+        tone +
+        wide +
+        dark +
+        '">';
+      grid +=
+        '<h4 class="io-wb-emotion">' + escapeHtml(String(c.emotion || "")) + "</h4>";
+      if (c.lines && c.lines.length) {
+        grid += '<ul class="io-wb-lines">';
+        c.lines.forEach(function (line) {
+          grid += "<li>" + escapeHtml(String(line)) + "</li>";
+        });
+        grid += "</ul>";
+      }
+      grid += "</article>";
+    });
+    grid += "</div>";
+
+    var copy =
+      (w.workbookTitle
+        ? '<h3 class="io-wb-title">' +
+          escapeHtml(String(w.workbookTitle)) +
+          "</h3>"
+        : "") + grid;
+
+    if (layout === "split" && w.workbookSideImg) {
+      return (
+        '<div class="io-wb io-wb--split">' +
+        '<div class="io-wb-split-copy">' +
+        copy +
+        "</div>" +
+        '<figure class="io-wb-split-photo">' +
+        '<img src="' +
+        mediaSrcAttr(w.workbookSideImg) +
+        '" alt="" loading="lazy" decoding="async" />' +
+        "</figure></div>"
+      );
+    }
+
+    return (
+      '<div class="io-wb io-wb--' + escapeHtml(layout) + '">' + copy + "</div>"
+    );
+  }
+
   function renderWatchBody(screen) {
     var w = screen.watch || {};
     var parts = [];
+    if (w.workbookCards && w.workbookCards.length) {
+      parts.push(renderIoWorkbook(w));
+    } else if (w.workbookImg) {
+      parts.push(
+        '<figure class="fb-workbook-frame">' +
+          '<img class="fb-workbook-img" src="' +
+          mediaSrcAttr(w.workbookImg) +
+          '" alt="" loading="lazy" decoding="async" />' +
+          "</figure>"
+      );
+    }
+    if (
+      w.coolPhrases &&
+      w.coolPhrases.length &&
+      !(w.workbookCards && w.workbookCards.length)
+    ) {
+      parts.push(
+        '<div class="io-cool-strip" aria-label="Cool phrases from this beat">' +
+          '<span class="io-cool-strip-kicker">Cool phrases</span>' +
+          '<div class="io-cool-chip-grid">' +
+          w.coolPhrases
+            .map(function (p) {
+              return (
+                '<span class="io-cool-chip">' + escapeHtml(String(p)) + "</span>"
+              );
+            })
+            .join("") +
+          "</div></div>"
+      );
+    }
     if (w.videoUrl) {
       var src = String(w.videoUrl);
       var isYt =

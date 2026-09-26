@@ -1,0 +1,543 @@
+/* Inside Out Workshop — reuses Fleabag lesson shell; violet + gold accents */
+@import url("../../fleabag/css/fleabag-workshop.css");
+
+body.intensive-body.intensive-body--inside-out {
+  background:
+    radial-gradient(900px 520px at 20% -10%, rgba(251, 191, 36, 0.12) 0%, transparent 55%),
+    radial-gradient(800px 480px at 90% 20%, rgba(167, 139, 250, 0.14) 0%, transparent 50%),
+    radial-gradient(700px 400px at 10% 90%, rgba(56, 189, 248, 0.08) 0%, transparent 48%),
+    linear-gradient(180deg, #0a0c18 0%, #060810 50%, #030508 100%);
+}
+
+.intensive-body--inside-out {
+  --int-gold: #c4b5fd;
+  --int-gold-soft: rgba(167, 139, 250, 0.16);
+  --int-coral: #fde68a;
+  --int-coral-soft: rgba(251, 191, 36, 0.12);
+  --int-panel: #0e1020;
+  --int-panel-soft: #141828;
+  --int-line: #2e2a4a;
+  --int-muted: #a8a4c4;
+  --int-dim: #6b6788;
+  --int-text: #faf5ff;
+}
+
+.intensive-body--inside-out .int-kicker {
+  color: #c4b5fd;
+}
+
+.intensive-body--inside-out .int-title {
+  background: linear-gradient(120deg, #faf5ff 0%, #fde68a 45%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.intensive-body--inside-out .int-pill--gold {
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(251, 191, 36, 0.1);
+  color: #fde68a;
+}
+
+.intensive-body--inside-out .fb-season-tab.is-active {
+  border-color: rgba(167, 139, 250, 0.65);
+  background: rgba(167, 139, 250, 0.14);
+  color: #ede9fe;
+}
+
+.intensive-body--inside-out .fb-showcase-ring {
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.intensive-body--inside-out .io-showcase .fb-showcase-avatar {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.intensive-body--inside-out .fb-showcase-avatar {
+  object-fit: cover;
+  object-position: center top;
+}
+
+.intensive-body--inside-out .fb-season-tab--soon {
+  opacity: 0.72;
+  cursor: pointer;
+}
+
+.intensive-body--inside-out .fb-season-tab--soon:not(.is-active) {
+  border-style: dashed;
+}
+
+.io-season-soon {
+  text-align: center;
+  padding: 36px 24px 48px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  border: 1px dashed rgba(167, 139, 250, 0.35);
+  background: linear-gradient(180deg, rgba(167, 139, 250, 0.06), transparent);
+}
+
+.io-season-soon h2 {
+  margin: 12px 0 8px;
+  font-size: 1.35rem;
+  color: #ede9fe;
+}
+
+.io-season-soon p {
+  color: var(--int-muted);
+  max-width: 42ch;
+  margin: 0 auto 8px;
+  line-height: 1.5;
+}
+
+.io-season-soon-art {
+  border-radius: 22px;
+  border: 2px solid rgba(196, 181, 253, 0.45);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* —— Lesson grid cards —— */
+.intensive-body--inside-out .int-theme-card.io-theme-card {
+  background: linear-gradient(165deg, #12101c 0%, #0a0814 100%);
+  border-color: rgba(167, 139, 250, 0.28);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+.intensive-body--inside-out .io-theme-card--plain {
+  padding: 16px;
+  gap: 8px;
+  min-height: 148px;
+}
+
+.intensive-body--inside-out .io-theme-card:hover {
+  border-color: rgba(196, 181, 253, 0.6);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38), 0 0 36px rgba(167, 139, 250, 0.14);
+  transform: translateY(-4px);
+}
+
+.io-card-hero {
+  position: relative;
+  min-height: 200px;
+  max-height: 240px;
+  background: #050508;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.io-card-hero-img {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  max-height: 240px;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.io-card-hero-scrim {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 72%;
+  background: linear-gradient(180deg, transparent 0%, rgba(5, 5, 12, 0.55) 35%, rgba(5, 5, 12, 0.94) 100%);
+  pointer-events: none;
+}
+
+.io-card-chip-row {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 5.2em;
+  overflow: hidden;
+}
+
+.io-card-chip {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.25;
+  color: #1c1408;
+  background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+  border: 1px solid rgba(253, 230, 138, 0.65);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.io-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px 14px;
+  flex: 1;
+}
+
+.io-card-body .int-theme-num {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #8b85a8;
+}
+
+.io-card-body .int-theme-name {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #f5f3ff;
+  line-height: 1.25;
+}
+
+.io-card-body .int-theme-tag {
+  font-size: 0.8rem;
+  color: var(--int-muted);
+  line-height: 1.35;
+  margin-top: 0;
+}
+
+.io-card-body .int-theme-go {
+  margin-top: auto;
+  padding-top: 8px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #c4b5fd;
+}
+
+.intensive-body--inside-out .io-theme-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 1100px) {
+  .io-card-hero {
+    min-height: 220px;
+    max-height: 260px;
+  }
+  .io-card-hero-img {
+    min-height: 220px;
+    max-height: 260px;
+  }
+  .io-card-chip {
+    font-size: 0.76rem;
+    padding: 6px 10px;
+  }
+}
+
+/* —— Inside lesson · workbook + cool phrases —— */
+.intensive-body--inside-out .fb-workbook-frame {
+  margin: 0 0 12px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 48px rgba(167, 139, 250, 0.1);
+  background: #040408;
+  min-height: min(320px, 42vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intensive-body--inside-out .fb-workbook-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(480px, 58vh);
+  object-fit: contain;
+  object-position: center center;
+}
+
+.io-cool-strip {
+  margin: 0 0 16px;
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: linear-gradient(165deg, rgba(251, 191, 36, 0.1) 0%, rgba(167, 139, 250, 0.08) 100%), #0c0a14;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+
+.io-cool-strip-kicker {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fde68a;
+  margin-bottom: 10px;
+}
+
+.io-cool-chip-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.io-cool-chip {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  font-weight: 750;
+  line-height: 1.38;
+  color: #0b1220;
+  background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 45%, #fde68a 120%);
+  border: 1px solid rgba(237, 233, 254, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.intensive-body--inside-out .fb-tape-list li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(196, 181, 253, 0.35);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(251, 191, 36, 0.12));
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #faf5ff;
+}
+
+.intensive-body--inside-out .fb-tape-head {
+  color: #fde68a;
+}
+
+.intensive-body--inside-out .int-lesson-head.fb-lesson-board {
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(251, 191, 36, 0.08), transparent 42%),
+    radial-gradient(ellipse at 0% 100%, rgba(167, 139, 250, 0.12), transparent 45%),
+    linear-gradient(180deg, #12101c 0%, #0a0814 100%);
+  border-color: rgba(167, 139, 250, 0.28);
+}
+
+.io-lesson-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  object-fit: cover;
+  object-position: center center;
+  border: 2px solid rgba(196, 181, 253, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* —— Workbook grid (inside lesson · one screen) —— */
+.intensive-body--inside-out .int-slot[data-block="watch"] {
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.io-wb {
+  padding: 4px 2px 8px;
+}
+
+.io-wb-title {
+  margin: 0 0 16px;
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+}
+
+.io-wb-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.io-wb--single .io-wb-grid,
+.io-wb--emotion-grid .io-wb-grid,
+.io-wb--numbered .io-wb-grid {
+  grid-template-columns: 1fr;
+  max-width: 520px;
+}
+
+.io-wb--split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (min-width: 820px) {
+  .io-wb--split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+.io-wb-split-copy {
+  min-width: 0;
+}
+
+.io-wb-split-photo {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  background: #050508;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.io-wb-split-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.io-wb-card--dark {
+  background: #0a0a12;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: none;
+}
+
+.io-wb-card--dark .io-wb-lines {
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.io-wb-card--dark.io-wb-card--joy .io-wb-emotion {
+  color: #fdba74;
+}
+
+.io-wb-card--dark.io-wb-card--anger .io-wb-emotion {
+  color: #f87171;
+}
+
+.io-wb-card--dark.io-wb-card--disgust .io-wb-emotion {
+  color: #4ade80;
+}
+
+.io-wb-card--dark.io-wb-card--fear .io-wb-emotion {
+  color: #c084fc;
+}
+
+.io-wb-card--dark.io-wb-card--sadness .io-wb-emotion {
+  color: #60a5fa;
+}
+
+.io-wb-card--dark.io-wb-card--neutral .io-wb-emotion {
+  color: #e2e8f0;
+}
+
+@media (min-width: 640px) {
+  .io-wb--emotion-grid .io-wb-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.io-wb--contrast .io-wb-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .io-wb--contrast .io-wb-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.io-wb--basics .io-wb-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .io-wb--basics .io-wb-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .io-wb--basics .io-wb-card:not(.io-wb-card--wide) {
+    grid-column: span 2;
+  }
+  .io-wb--basics .io-wb-card--wide {
+    grid-column: span 3;
+  }
+}
+
+.io-wb-card {
+  border-radius: 14px;
+  padding: 14px 16px 16px;
+  min-height: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.io-wb-emotion {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.io-wb-lines {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.io-wb-lines li {
+  margin-bottom: 6px;
+}
+
+.io-wb-lines li:last-child {
+  margin-bottom: 0;
+}
+
+.io-wb-card--joy {
+  background: #fdba74;
+  color: #1c1917;
+}
+
+.io-wb-card--anger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.io-wb-card--disgust {
+  background: #15803d;
+  color: #fff;
+}
+
+.io-wb-card--fear {
+  background: #c084fc;
+  color: #1e1b4b;
+}
+
+.io-wb-card--sadness {
+  background: #60a5fa;
+  color: #0c1929;
+}
+
+.io-wb-card--bit {
+  background: linear-gradient(165deg, #1e1b2e 0%, #141020 100%);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #f5f3ff;
+}
+
+.io-wb-card--bit .io-wb-emotion {
+  color: #fde68a;
+  font-size: 0.95rem;
+}
+
+.io-wb-card--neutral {
+  background: #334155;
+  color: #f1f5f9;
+}
+
+.io-wb-card--bit .io-wb-lines,
+.io-wb-card--neutral .io-wb-lines {
+  color: inherit;
+}
