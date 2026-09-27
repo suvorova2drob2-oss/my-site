@@ -4,6 +4,8 @@
 (function (global) {
   var SF_CAR = "img/pdf/s1-p03-img01.png";
   var PIZZA_BANNER = "img/pdf/s1-p05-img01.png";
+  /** Part 1 · Emotions in Action — local clips (lesson.html relative path). */
+  var P1V = "part 1 videos/";
 
   function toneFromName(name) {
     var n = String(name || "").toLowerCase();
@@ -80,6 +82,7 @@
       icon: "😊",
       tagline: "Joy · Anger · Disgust · Fear · Sadness",
       synopsis: "Inside Out: Basics — workbook p. 2.",
+      videoUrl: P1V + "1.mp4",
       beats: [
         panelBeat(
           "joy-basics",
@@ -138,6 +141,77 @@
       homework: { note: "Shadow 3–5 favourite lines · 3 takes." },
     },
     {
+      id: "s01e01b",
+      season: 1,
+      num: 1,
+      title: "Memories and islands",
+      icon: "🏝️",
+      tagline: "Core memories · personality islands",
+      synopsis: "Film · headquarters intro.",
+      videoUrl: P1V + "2. memories and islands.mp4",
+      beats: [
+        panelBeat(
+          "mem-joy",
+          "Joy · Riley's memories",
+          "Joy",
+          [
+            "These are Riley's memories.",
+            "And they are mostly happy if you notice, not to brag.",
+          ],
+          { title: "Memories and Islands", layout: "single", cardStyle: "filled" },
+          ["Which memories do you replay most often?"]
+        ),
+        panelBeat(
+          "mem-core",
+          "Joy · core memories",
+          "Joy",
+          [
+            "I don't want to get too technical but these are called core memories.",
+            "Each one came from a super important time in Riley's life.",
+            "And each core memory powers a different aspect of Riley's personality.",
+          ],
+          { layout: "single", cardStyle: "filled" },
+          ["Name a «core memory» from your childhood."]
+        ),
+        panelBeat(
+          "isl-hockey",
+          "Hockey Island",
+          "Joy",
+          ["Like. Hockey Island."],
+          { layout: "single", cardStyle: "bit" },
+          ["What hobby would power your «Hockey Island»?"]
+        ),
+        panelBeat(
+          "isl-goofball",
+          "Goofball Island",
+          "Joy",
+          [
+            "Goofball Island is my personal favorite.",
+            "Yup. Goofball is the best.",
+          ],
+          { layout: "single", cardStyle: "filled" },
+          ["When are you most «goofball» with friends?"]
+        ),
+        panelBeat(
+          "isl-all",
+          "Islands · what makes Riley, Riley",
+          "Joy",
+          [
+            "Friendship Island is pretty good too.",
+            "Oh. I love Honesty Island.",
+            "And of course, Family Island is amazing.",
+            "The islands of personality are what make Riley, Riley.",
+          ],
+          { layout: "single", cardStyle: "filled" },
+          ["Which three islands would define you at eleven?"]
+        ),
+      ],
+      finale: {
+        prompt: "One core memory + two personality islands — use tape lines.",
+      },
+      homework: { note: "Shadow core memory + island lines · 3 takes." },
+    },
+    {
       id: "s01e02",
       season: 1,
       num: 2,
@@ -145,6 +219,7 @@
       icon: "🚗",
       tagline: "Road trip · overreacting · the smelly car",
       synopsis: "PDF p. 3 · dark text + photo.",
+      videoUrl: P1V + "3. moving to San Franscisco.mp4",
       beats: [
         panelBeat(
           "sf-joy",
@@ -198,6 +273,7 @@
       icon: "🏚️",
       tagline: "Empty room · rubber ball · dead mouse",
       synopsis: "PDF p. 4 · text on dark.",
+      videoUrl: P1V + "4. new house.mp4",
       beats: [
         panelBeat(
           "house-joy",
@@ -254,6 +330,7 @@
       icon: "🍕",
       tagline: "Broccoli pizza · favourite parts",
       synopsis: "PDF p. 5.",
+      videoUrl: P1V + "5 pizza.mp4",
       beats: [
         bitBeat(
           "pizza-1-discovery",

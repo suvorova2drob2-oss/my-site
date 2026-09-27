@@ -392,6 +392,149 @@
     { phrase: "He doesn't love us anymore.", use: "One late text and my brain says «he doesn't love us anymore»." },
   ];
 
+  CLUB.beats["mem-joy"] = beat({
+    tone: "Joy · memory orbs · mostly happy",
+    meanings: [
+      "These are Riley's memories = the film's image of stored experience (coloured orbs).",
+      "mostly happy · not to brag = Joy's bias — she notices joy first.",
+    ],
+    examples: [
+      "MEMORY BANK — flashback · replay · on loop · take me back",
+      "These are Riley's memories.",
+      "And they are mostly happy if you notice, not to brag.",
+    ],
+    drills: [
+      drill(
+        "REPLAY vs FORGET",
+        "replay · on loop · take me back · I'd rather forget",
+        "Sort: which memories do you replay on purpose, which do you avoid?"
+      ),
+    ],
+    items: [
+      item(
+        "MOSTLY HAPPY?",
+        "mostly happy · these are … memories",
+        ["My camera roll looks mostly happy — but that's not the whole story."],
+        "Your turn: are your stored memories «mostly happy» — honestly?"
+      ),
+    ],
+    starters: ["These are my memories, and…", "I replay … on loop when…"],
+    questions: [
+      q("personal", "Social media makes a «mostly happy» highlight reel. How does that compare to your real inner life?", [
+        "My feed lies by omission.",
+        "I delete sad photos — like Joy editing Sadness out.",
+        "Some people overshare pain online too.",
+      ]),
+    ],
+  });
+
+  CLUB.beats["mem-core"] = beat({
+    tone: "Joy · core memories · identity",
+    meanings: [
+      "core memory = a super important experience that shapes who you are (film term).",
+      "powers a different aspect of Riley's personality = links memory → trait / island.",
+    ],
+    examples: [
+      "CORE MEMORY — a core memory · a defining moment · a super important time",
+      "I don't want to get too technical but these are called core memories.",
+      "Each one came from a super important time in Riley's life.",
+      "And each core memory powers a different aspect of Riley's personality.",
+    ],
+    drills: [
+      drill(
+        "DEFINING MOMENT",
+        "core memory · super important time · powers …",
+        "One defining moment per person — no repeats. Link it to a trait: «That powers my …»"
+      ),
+    ],
+    items: [
+      item(
+        "POWERS YOUR PERSONALITY",
+        "core memory · powers … aspect",
+        ["That summer camp is a core memory — it powers my confidence."],
+        "Your turn: a core memory and what part of you it «powers»."
+      ),
+    ],
+    starters: ["A core memory for me is…", "That day powers my…"],
+    questions: [
+      q("episode", "Can a painful memory become «core» — or must core memories be happy in Joy's world?", [
+        "Sadness shows they can be blue too.",
+        "Painful cores shape us as much as joy.",
+        "Joy's filter isn't the whole truth.",
+      ]),
+    ],
+  });
+
+  CLUB.beats["isl-goofball"] = beat({
+    tone: "Joy · Goofball Island · play",
+    meanings: [
+      "Goofball Island = the playful, silly, physical-fun part of Riley.",
+      "my personal favorite = Joy's favourite island (bias again).",
+    ],
+    examples: [
+      "GOOFBALL — goofball · silly · mess around · clown around",
+      "Goofball Island is my personal favorite.",
+      "Yup. Goofball is the best.",
+    ],
+    drills: [
+      drill(
+        "GOOFBALL permission",
+        "goofball · mess around · clown around",
+        "When is silliness allowed in your life — and when is it «too much»?"
+      ),
+    ],
+    items: [
+      item(
+        "SILLY SIDE",
+        "Goofball Island · personal favorite",
+        ["Goofball Island is my personal favorite when I'm with my cousins."],
+        "Your turn: who brings out your goofball island?"
+      ),
+    ],
+    starters: ["Goofball is the best when…", "I'm a goofball with…"],
+    questions: [
+      q("personal", "Do you let yourself be silly — or do you perform «cool»? What would Goofball Island look like for you at 16?", []),
+    ],
+  });
+
+  CLUB.beats["isl-all"] = beat({
+    tone: "Joy · islands of personality · identity map",
+    meanings: [
+      "Islands of Personality = big life domains powered by core memories (Family, Friendship, Hockey…).",
+      "what make Riley, Riley = your identity is more than one trait.",
+    ],
+    examples: [
+      "ISLANDS — Friendship Island · Honesty Island · Family Island · Hockey Island",
+      "Friendship Island is pretty good too.",
+      "Oh. I love Honesty Island.",
+      "And of course, Family Island is amazing.",
+      "The islands of personality are what make Riley, Riley.",
+    ],
+    drills: [
+      drill(
+        "ISLAND MAP",
+        "Family Island · Friendship Island · Honesty Island",
+        "Sketch a mental map: 3–5 islands for you. Which is biggest right now?"
+      ),
+    ],
+    items: [
+      item(
+        "WHAT MAKES YOU, YOU",
+        "what make Riley, Riley · islands of personality",
+        ["Family Island and Friendship Island are what make me, me — not grades."],
+        "Your turn: finish «The islands that make me, me are…»"
+      ),
+    ],
+    starters: ["Family Island is amazing when…", "Friendship Island is pretty good too because…"],
+    questions: [
+      q("episode", "When islands crumble in the film, Riley feels numb. Have you ever lost a friend group, sport, or family rhythm and felt «not yourself»?", [
+        "After injury I lost hockey island.",
+        "Moving school — friendship island reboot.",
+        "Parents' divorce — family island shook.",
+      ]),
+    ],
+  });
+
   /* ===================== LESSON 2 · MOVING TO SF ===================== */
 
   CLUB.beats["sf-joy"] = beat({

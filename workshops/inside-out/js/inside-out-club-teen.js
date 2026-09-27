@@ -137,6 +137,109 @@
     { phrase: "He doesn't love us anymore.", use: "She didn't reply in five minutes — «she doesn't love me anymore»." },
   ];
 
+  /* ============ BIT · MEMORIES AND ISLANDS ============ */
+  TEEN.bits.s01e01b = {
+    examples: [
+      "These are Riley's memories — and mine are mostly on my phone.",
+      "Core memories? That's the first goal I scored — it powers my sport island.",
+      "Goofball Island is my personal favorite — I'm silly with my cousins.",
+      "Family Island is amazing when we cook together.",
+      "The islands of personality are what make Riley, Riley — what makes you, you?",
+    ],
+    drills: [
+      drill(
+        "GAME · Memory → island",
+        "core memory · powers · Goofball Island · Family Island",
+        "Name a core memory. Others guess which «island» it powers. Then you explain."
+      ),
+      drill(
+        "CORE MEMORY · one sentence",
+        "core memory · super important time · powers …",
+        "In 20 s: «One core memory is… It powers my ___ Island.»"
+      ),
+      drill(
+        "GAME · Island tour guide",
+        "is my personal favorite · is pretty good too · is amazing",
+        "Pair work: A is Joy, gives a tour of B's islands using the tape phrases. Swap."
+      ),
+      drill(
+        "GAME · Name your islands",
+        "Goofball Island · Friendship Island · Family Island · Hockey Island",
+        "Name 3–5 islands. Link each to a core memory in one sentence."
+      ),
+    ],
+    items: [
+      item(
+        "CORE MEMORY → ISLAND",
+        "core memory · powers · Goofball Island · Family Island",
+        [
+          "My core memory is the day my team won — it powers Hockey Island.",
+          "Goofball Island is my personal favorite — powered by sleepovers with my cousins.",
+        ],
+        "Your turn (40 s): one core memory and which island it powers."
+      ),
+      item(
+        "WHAT MAKES YOU, YOU",
+        "islands of personality · what make Riley, Riley",
+        [
+          "Family Island and Friendship Island are what make me, me — not one grade.",
+        ],
+        "Your turn: two islands that describe you today."
+      ),
+    ],
+    starters: [
+      "These are my memories, and honestly…",
+      "One core memory that powers me is…",
+      "Goofball Island is my personal favorite when…",
+      "The islands that make me, me are…",
+    ],
+    questions: [
+      q("lexis", "Joy links core memories to islands: each memory «powers» part of Riley. Can you name one memory and one «island» in your life that go together?", [
+        "Camp memory → friendship island.",
+        "First goal → sport island.",
+        "Sunday dinners → family island.",
+      ]),
+      q("personal", "When was the last time you replayed a memory on purpose? Go deeper: Which part of your personality does that memory still «power»?", [
+        "Old photos — they power my nostalgic side.",
+        "A song from a trip — friendship island.",
+        "I avoid some memories because they hurt an island that's fragile.",
+      ]),
+      q("personal", "Which island would collapse first if you moved to a new city? Go deeper: What core memory would you need to rebuild it?", [
+        "Friendship — I'd need new people like my old crew.",
+        "Sport — new team, same love of the game.",
+        "Family — video calls and visits home.",
+      ]),
+      q("episode", "Joy says memories are «mostly happy», then shows islands built from them. What happens in the film when core memories leave Headquarters — and what does that teach us?", [
+        "Islands fall — Riley feels empty.",
+        "You can't be you without your important memories.",
+        "Sad memories matter too — not only Joy's yellow ones.",
+      ]),
+    ],
+  };
+  TEEN.stickers.s01e01b = [
+    { phrase: "These are Riley's memories.", use: "These are my memories from last summer — mostly the beach." },
+    {
+      phrase: "I don't want to get too technical but these are called core memories.",
+      use: "OK, core memory: the day I got my dog.",
+    },
+    {
+      phrase: "Each one came from a super important time in Riley's life.",
+      use: "Each one came from a super important time — like my first day at this school.",
+    },
+    {
+      phrase: "And each core memory powers a different aspect of Riley's personality.",
+      use: "That memory powers the part of me that loves sport.",
+    },
+    { phrase: "Goofball Island is my personal favorite.", use: "Goofball Island is my personal favorite — I'm a clown with my friends." },
+    { phrase: "Yup. Goofball is the best.", use: "Yup. Goofball is the best — life needs stupid jokes." },
+    { phrase: "Friendship Island is pretty good too.", use: "Friendship Island is pretty good too — my group chat proves it." },
+    { phrase: "And of course, Family Island is amazing.", use: "And of course, Family Island is amazing — Sunday dinners." },
+    {
+      phrase: "The islands of personality are what make Riley, Riley.",
+      use: "My islands are what make me, me — sport, friends, and food.",
+    },
+  ];
+
   /* ============ BIT · MOVING TO SAN FRANCISCO ============ */
   TEEN.bits.s01e02 = {
     examples: [

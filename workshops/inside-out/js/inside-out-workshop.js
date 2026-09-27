@@ -58,9 +58,9 @@
       num: 1,
       title: "Lesson 1 · Emotions in Action",
       icon: "🚗",
-      tagline: "Basics · Moving to San Francisco · New house · Pizza",
+      tagline: "Basics · Memories and islands · Moving to San Francisco · New house · Pizza",
       synopsis: "Emotions in Action · workbook + speaking.",
-      from: ["s01e01", "s01e02", "s01e03", "s01e04"],
+      from: ["s01e01", "s01e01b", "s01e02", "s01e03", "s01e04"],
       finale:
         "Road trip to a new home: the five emotions react to the car, the empty house and the broccoli pizza. Use at least 6 tape lines.",
       homework: "Shadow 2 lines from each bit · 3 takes.",
@@ -185,6 +185,7 @@
         workbookLayout: layout,
         workbookSideImg: fw.workbookSideImg || null,
         workbookCards: cards,
+        videoUrl: old.videoUrl || fw.videoUrl || null,
       },
       context: meanings.length
         ? {

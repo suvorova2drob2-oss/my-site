@@ -49,6 +49,35 @@
     },
   };
 
+  EXAM.s01e01b = {
+    interview: [
+      { q: "What is a core memory from your childhood?", phrase: "core memories" },
+      { q: "Which «island» describes you best?", phrase: "Goofball Island" },
+      { q: "What super important time changed you?", phrase: "super important time" },
+      { q: "What makes you, you?", phrase: "what make Riley, Riley" },
+    ],
+    mono: {
+      topic: "Core memories and my personality islands",
+      plan: [
+        "one core memory",
+        "which island it powers",
+        "one more island that defines you now",
+      ],
+      model:
+        "These are my memories from childhood — mostly happy, like Joy says. One core memory is the day I moved schools; it came from a super important time. That memory powers Friendship Island — I learned to make new friends fast. Goofball Island is my personal favorite when I'm with my cousins. The islands of personality are what make me, me.",
+    },
+    photo: photoPair(
+      "s01e01",
+      ["Happy memory · with friends", "Quiet memory · alone"],
+      "Compare the two pictures. Which feels more like a «core memory»? Why?",
+      "Which picture is closer to you today — and which «island» does it power?"
+    ),
+    collab: {
+      question: "What links memories and personality best?",
+      options: ["core memories", "family", "friends", "sport", "honesty"],
+    },
+  };
+
   EXAM.s01e02 = {
     interview: [
       { q: "When did someone tell you that you were overreacting?", phrase: "you're overreacting" },
