@@ -2396,7 +2396,7 @@
     },
     pictures: {
       title: "Picture memory",
-      hint: "Flip · guess the phrase · fullscreen",
+      hint: "Flip to check · Pictures · fullscreen for images",
     },
     drillCards: {
       title: "Drilling cards",

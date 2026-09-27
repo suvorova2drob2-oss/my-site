@@ -8621,19 +8621,18 @@
           id: "church-prayer-weighing",
           label: "Church · prayer · dodgy",
           teacher:
-            "Bit 5 · night church · drunk Priest · whiskey · prayer / peace toast · confession invite. Tape: chunks · full lines in examples. Talk: faith vs irony · trust · what to rage about (leads into booth).",
+            "Bit 5 · night church · drunk Priest · whiskey · prayer / peace toast · confession invite. Tape: chunks · full lines in examples. Talk: faith vs irony · trust (leads into Bit 6 booth).",
           blocks: ["watch", "context", "speak"],
           phrases: [
             "on the verge of",
             "get in the way",
             "You tell me what's weighing on your heart.",
             "Sounds dodgy!",
-            "rage about",
           ],
           watch: {
             videoUrl: "media/s02e04/05-church-prayer-weighing.mp4",
             note:
-              "Pew / sacristy · I was on the verge of having a little prayer, actually · Here's to peace · those who get in the way of it · You tell me what's weighing on your heart · Sounds dodgy! · (confession / what to rage about — same night)",
+              "Pew / sacristy · I was on the verge of having a little prayer, actually · Here's to peace · those who get in the way of it · You tell me what's weighing on your heart · Sounds dodgy! · (confession booth — Bit 6)",
           },
           context: {
             tone: "Lexical · church night (S2E4) · before & into confession",
@@ -8656,7 +8655,7 @@
           },
           speak: {
             mission:
-              "Personal English · 60–90 s · on the verge of / get in the way / weighing on your heart / dodgy / rage about when they fit.",
+              "Personal English · 60–90 s · on the verge of / get in the way / weighing on your heart / dodgy when they fit.",
             starters: [
               "When things fall apart, I usually go to…",
               "I was on the verge of… but…",
@@ -8682,26 +8681,6 @@
                   "Peace without desire sounds like being dead.",
                   "He's drunk because peace isn't working.",
                   "Desire is the enemy of his job, not of peace.",
-                ],
-              },
-              {
-                kind: "episode",
-                q: "She jokes that confession is so he can 'trap and control' her; he promises to listen 'without judgment and in complete confidence'. Why is it easier to tell the truth to someone behind a screen — a priest, a therapist, a stranger on a train, an anonymous forum?",
-                examples: [
-                  "You don't have to watch their face change.",
-                  "A stranger can't use it against you tomorrow.",
-                  "The screen turns a confession into a ritual, not a conversation.",
-                  "Being listened to is also a kind of power.",
-                ],
-              },
-              {
-                kind: "episode",
-                q: "In the booth she wants someone to tell her what to wear, what to eat, what to rage about, who to vote for, who to love. Freedom is supposed to be the dream — why can it feel like a burden? Would you hand some of your choices to someone you trust?",
-                examples: [
-                  "Too many choices — I can't even pick a film.",
-                  "If someone else decides, it's not my fault when it goes wrong.",
-                  "I'd give away small choices, never who to love.",
-                  "That's why people love strict religions and strict coaches.",
                 ],
               },
               {
@@ -8744,6 +8723,100 @@
                   "Kindness with no reason feels dodgy to me, sadly.",
                 ],
               },
+            ],
+          },
+        },
+        {
+          id: "confession-still-scared",
+          label: "Confession · still scared",
+          teacher:
+            "Bit 6 · confession booth · monologue to the Priest (screen). Tape: rage about · without judgment (full line in examples). Talk: freedom as burden · truth behind a screen · fear after honesty.",
+          blocks: ["watch", "context", "speak"],
+          phrases: [
+            "Tell me what to rage about.",
+            "without judgment and in complete confidence",
+          ],
+          watch: {
+            videoUrl: "media/s02e04/06-still-scared-confession.mp4",
+            note:
+              "Confession · I want someone to tell me what to wear, what to eat, what to rage about, what to joke about and what not to · without judgment and in complete confidence · Why am I still scared?",
+          },
+          context: {
+            tone: "Lexical · confession booth (S2E4 close) · instructions for living",
+            meanings: [
+              "Scene: **confession booth** — Fleabag asks the Priest to be the person who tells her how to live: clothes, food, anger, humour, love.",
+              "Tell me what to rage about. = give me a target for anger — she wants rage **assigned**, not discovered alone.",
+              "Tell me what to joke about and what not to. = draw the line between coping humour and cruelty / bad taste.",
+              "without judgment and in complete confidence = his promise — safe space language (also what therapy / good friends aim for).",
+              "Why am I still scared? = after honesty, fear remains — not fixed by one speech.",
+            ],
+            examples: [
+              "TELL ME WHAT TO… — Tell me what to wear · what to eat · what to rage about · who to vote for · who to love.",
+              "Tell me what to joke about and what not to.",
+              "WITHOUT JUDGMENT — listen without judgment · in complete confidence.",
+              "WHY AM I STILL SCARED? — Why am I still scared? · scared of what happens next · scared of being known.",
+            ],
+          },
+          speak: {
+            mission:
+              "Personal English · 60–90 s · tell me what to… / without judgment / still scared when they fit.",
+            starters: [
+              "If someone could tell me what to ___, I'd choose…",
+              "I want to joke about ___, but not about…",
+              "I'm still scared of… even when…",
+              "The person I'd trust 'without judgment' is…",
+            ],
+            questions: [
+              {
+                kind: "episode",
+                q: "She jokes that confession is so he can 'trap and control' her; he promises to listen 'without judgment and in complete confidence'. Why is it easier to tell the truth to someone behind a screen — a priest, a therapist, a stranger on a train, the camera?",
+                examples: [
+                  "You don't have to watch their face change.",
+                  "A stranger can't use it against you tomorrow.",
+                  "The screen turns a confession into a ritual, not a conversation.",
+                  "The camera was her confidant long before the Priest.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "In the booth she wants someone to tell her what to wear, what to eat, what to rage about, who to vote for, who to love. Freedom is supposed to be the dream — why can it feel like a burden?",
+                examples: [
+                  "Too many choices — I can't even pick a film.",
+                  "If someone else decides, it's not my fault when it goes wrong.",
+                  "I'd give away small choices, never who to love.",
+                  "That's why people love strict religions and strict coaches.",
+                ],
+              },
+              {
+                kind: "episode",
+                q: "'Why am I still scared?' — she has just been more honest than ever. Why doesn't honesty always bring relief?",
+                examples: [
+                  "Because now someone knows — and could leave.",
+                  "Honesty opens the door; it doesn't pay the bills.",
+                  "She's scared of wanting the Priest.",
+                  "Relief comes later, or never, or only in sleep.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Finish three lines: 'Tell me what to rage about…' / 'Tell me what to joke about and what not to…' / 'I'm still scared of…' — make them true for you, not for the character.",
+                examples: [
+                  "Tell me what to rage about — I'd pick how expensive everything is.",
+                  "Joke about work, not about my body.",
+                  "Still scared of being ordinary.",
+                  "Still scared people only like the funny version of me.",
+                ],
+              },
+              {
+                kind: "personal",
+                q: "Who in your life listens 'without judgment and in complete confidence' — or who do you wish did? What stops you from saying the scary thing to them?",
+                examples: [
+                  "My best friend — I still edit myself.",
+                  "Nobody — that's why I write it down.",
+                  "A counsellor I saw once.",
+                  "I'm scared they'll think I'm too much.",
+                ],
+              },
               {
                 kind: "lexis",
                 q: "Who tells you what to rage about these days — news, social media, friends, family? Name one thing that deserves more rage, and one that gets far too much.",
@@ -8757,16 +8830,7 @@
             ],
           },
         },
-      ].concat(
-        (function () {
-          var d = defaultBeats(3);
-          for (var j = 0; j < d.length; j++) {
-            d[j].id = "beat-" + (j + 6);
-            d[j].label = "Beat " + (j + 6);
-          }
-          return d;
-        })()
-      ),
+      ],
       finale: {
         prompt:
           "You went looking for quiet / comfort — and found something else. 60 s · at least 5 tape phrases.",

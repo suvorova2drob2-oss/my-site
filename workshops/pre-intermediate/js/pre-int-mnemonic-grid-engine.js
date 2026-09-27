@@ -1,6 +1,6 @@
 /**
  * Pre-intermediate · mnemonic picture grid
- * Flip cards: front = image · back = sentence · tap image → fullscreen lightbox
+ * Grid: front = hidden picture prompt · back = sentence · images only in Pictures · fullscreen
  */
 (function (global) {
   "use strict";
@@ -33,12 +33,11 @@
       '">' +
       '<div class="pi-mn-flip-inner">' +
       '<div class="pi-mn-face pi-mn-face--front">' +
-      '<img src="' +
-      esc(c.img) +
-      '" alt="" loading="lazy" draggable="false" />' +
-      '<span class="pi-mn-zoom" data-pi-mn-zoom="' +
-      i +
-      '" title="Fullscreen">⛶</span>' +
+      '<span class="pi-mn-front-num">' +
+      (i + 1) +
+      "</span>" +
+      '<span class="pi-mn-front-ico" aria-hidden="true">🖼</span>' +
+      '<span class="pi-mn-front-hint">Pictures · fullscreen</span>' +
       "</div>" +
       '<div class="pi-mn-face pi-mn-face--back">' +
       '<p class="pi-mn-sentence' +
@@ -66,7 +65,7 @@
     var inPaper = !!opts.inPaper;
     var lead =
       opts.leadText ||
-      "Look at the picture → guess the phrase → flip to check. Long lines are split into chunks.";
+      "Guess the phrase from context → flip to check. Pictures appear only in Pictures · fullscreen.";
     root.innerHTML =
       '<div class="pi-mn-wrap' +
       (inPaper ? " pi-mn-wrap--paper" : "") +
@@ -188,16 +187,8 @@
     }
 
     root.querySelectorAll(".pi-mn-flip").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        if (e.target.closest("[data-pi-mn-zoom]")) return;
+      btn.addEventListener("click", function () {
         btn.querySelector(".pi-mn-flip-inner").classList.toggle("is-flipped");
-      });
-    });
-
-    root.querySelectorAll("[data-pi-mn-zoom]").forEach(function (zoom) {
-      zoom.addEventListener("click", function (e) {
-        e.stopPropagation();
-        openLightbox(Number(zoom.getAttribute("data-pi-mn-zoom") || 0));
       });
     });
 
