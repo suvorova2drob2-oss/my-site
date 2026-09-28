@@ -63,17 +63,6 @@
     }
     .nav-mini a { color: var(--accent); font-weight: 600; text-decoration: none; }
     .nav-mini span { color: var(--muted); }
-    .note-box {
-      font-size: 0.88rem;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 14px;
-      background: #172948;
-      line-height: 1.45;
-    }
-    .note-box code { color: #93c5fd; font-size: 0.85em; }
     .audio-wrap {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -86,8 +75,17 @@
     .instr {
       font-size: 0.95rem;
       color: #d5e2f8;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
+    .exam-strip {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
     .gaps {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -120,8 +118,31 @@
       outline: none;
       border-color: var(--accent);
     }
-    .sent input.is-ok { border-color: #22c55e; }
-    .sent input.is-bad { border-color: #f87171; }
+    .sent input.is-ok {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.55);
+      color: #ecfdf5;
+    }
+    .sent input.is-bad {
+      border-color: #f87171;
+      background: rgba(239, 68, 68, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
+      color: #fff1f2;
+    }
+    .gap-key {
+      display: none;
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(74, 222, 128, 0.45);
+      white-space: nowrap;
+    }
+    .gap-key.show { display: inline; }
     .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
     button {
       border: none;
@@ -139,15 +160,26 @@
       border-radius: 10px;
       border: 1px solid var(--line);
       background: #1a2c49;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       line-height: 1.45;
       min-height: 1.2em;
+    }
+    .feedback.score-ok {
+      border-color: rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+    }
+    .feedback.score-partial {
+      border-color: rgba(250, 204, 21, 0.45);
+      background: rgba(250, 204, 21, 0.08);
+      color: #fde68a;
     }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../ege/css/ege-live-room-bar.css?v=20" />
 </head>
 <body data-mb2-unit="7" data-mb2-skill="listening" data-mb2-ex="sb-7-1">
   <main class="page">
@@ -168,10 +200,6 @@
       <span><strong>SB 7.1</strong></span>
     </nav>
 
-    <p class="note-box">
-      <strong>Auto-check:</strong> paste acceptable wordings from your <strong>Workbook with Key</strong> into the <code>ACCEPT</code> array in this page&rsquo;s script (one array of strings per gap, same order as below). While <code>ACCEPT</code> is <code>null</code>, <strong>Check</strong> only checks that every gap has text &mdash; then compare with your key.
-    </p>
-
     <div class="audio-wrap">
       <label for="track">Audio (Yandex Object Storage)</label>
       <audio id="track" controls preload="metadata">
@@ -182,6 +210,10 @@
 
     <p class="instr">
       You will hear a woman called <strong>Joy Townsend</strong> talking about a bookshop called <strong>More than books</strong>, which she and her husband have just opened. For questions <strong>1&ndash;10</strong>, complete the sentences with a <strong>word or short phrase</strong>.
+    </p>
+    <p class="exam-strip">
+      Track: <code>RfB2First_SB_Track 7.1.mp3</code>.
+      Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
     </p>
 
     <div class="gaps" id="gaps-root"></div>
@@ -195,13 +227,34 @@
 
   <script src="../js/prep-course-profile.js"></script>
   <script src="../js/prep-site-content.js"></script>
+  <script src="../js/mastering-b2-skill-progress.js"></script>
   <script>
 (function () {
-  /**
-   * When you have the key: e.g. [ ["march"], ["bank"], … ] — ten inner arrays.
-   * Multiple strings per gap = alternative correct answers (after normalisation).
-   */
-  var ACCEPT = null;
+  var ACCEPT = [
+    ["July"],
+    ["shoe shop", "shoeshop"],
+    ["stage"],
+    ["bargain"],
+    ["homemade cakes", "home-made cakes"],
+    ["jazz guitarist"],
+    ["poetry reading"],
+    ["Magic Words", "magic words"],
+    ["loneliness"],
+    ["local newspaper"]
+  ];
+
+  var SHOW = [
+    "July",
+    "shoe shop",
+    "stage",
+    "bargain",
+    "homemade cakes",
+    "jazz guitarist",
+    "poetry reading",
+    "Magic Words",
+    "loneliness",
+    "local newspaper"
+  ];
 
   var TASK = [
     {
@@ -246,10 +299,14 @@
     }
   ];
 
+  var checked = false;
+  var liveDraftTimer = null;
+
   function norm(s) {
     return String(s || "")
       .toLowerCase()
       .replace(/\u2019/g, "'")
+      .replace(/\./g, "")
       .replace(/\s+/g, " ")
       .replace(/^['"]|['"]$/g, "")
       .trim();
@@ -264,8 +321,68 @@
     return false;
   }
 
-  function keyReady() {
-    return ACCEPT && ACCEPT.length === TASK.length;
+  function promptFor(i) {
+    var t = TASK[i];
+    return String(t.before + " … " + t.after).trim();
+  }
+
+  function buildLiveItems() {
+    var n = TASK.length;
+    var items = [];
+    var ok = 0;
+    var filled = 0;
+    for (var j = 0; j < n; j++) {
+      var inp = document.getElementById("g" + String(j + 1));
+      var ans = inp ? String(inp.value || "").trim() : "";
+      var isFilled = !!norm(ans);
+      var isOk = isFilled && matches(ans, ACCEPT[j]);
+      if (isFilled) filled += 1;
+      if (isOk) ok += 1;
+      items.push({
+        id: String(j + 1),
+        label: "Q " + String(j + 1),
+        prompt: promptFor(j),
+        correct: isOk,
+        answer: ans,
+        expected: SHOW[j],
+        answerText: ans || "—",
+        expectedText: SHOW[j],
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filled,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
+  function pushLiveProgress(draft) {
+    if (!window.EgeLiveRoom || typeof window.EgeLiveRoom.notifyProgress !== "function") return;
+    if (
+      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
+      !window.EgeLiveRoom.isLiveStudent()
+    ) {
+      return;
+    }
+    if (draft && checked) return;
+    var pack = buildLiveItems();
+    window.EgeLiveRoom.notifyProgress({
+      draft: draft === true,
+      score: pack.score,
+      correct: pack.correct,
+      total: pack.total,
+      items: pack.items
+    });
+  }
+
+  function scheduleLiveDraft() {
+    if (liveDraftTimer) clearTimeout(liveDraftTimer);
+    liveDraftTimer = setTimeout(function () {
+      pushLiveProgress(true);
+    }, 280);
   }
 
   var root = document.getElementById("gaps-root");
@@ -291,10 +408,30 @@
       inp.setAttribute("spellcheck", "true");
       inp.setAttribute("aria-label", "Gap " + String(i + 1));
       p.appendChild(inp);
+      var key = document.createElement("span");
+      key.className = "gap-key";
+      key.id = "key" + String(i + 1);
+      key.setAttribute("aria-live", "polite");
+      p.appendChild(key);
       p.appendChild(document.createTextNode(" " + item.after));
       block.appendChild(p);
       root.appendChild(block);
     }
+  }
+
+  function clearMarks() {
+    checked = false;
+    for (var k = 0; k < TASK.length; k++) {
+      var inp = document.getElementById("g" + String(k + 1));
+      var key = document.getElementById("key" + String(k + 1));
+      if (inp) inp.classList.remove("is-ok", "is-bad");
+      if (key) {
+        key.classList.remove("show");
+        key.textContent = "";
+      }
+    }
+    fb.classList.remove("score-ok", "score-partial");
+    fb.textContent = "";
   }
 
   render();
@@ -302,59 +439,72 @@
   root.querySelectorAll("input").forEach(function (inp) {
     inp.addEventListener("input", function () {
       this.classList.remove("is-ok", "is-bad");
+      var id = this.id.replace(/^g/, "key");
+      var key = document.getElementById(id);
+      if (key) {
+        key.classList.remove("show");
+        key.textContent = "";
+      }
+      fb.classList.remove("score-ok", "score-partial");
       fb.textContent = "";
+      checked = false;
+      scheduleLiveDraft();
     });
   });
 
   document.getElementById("btn-check").addEventListener("click", function () {
     var n = TASK.length;
-    var missing = false;
-    for (var i = 0; i < n; i++) {
-      var el = document.getElementById("g" + String(i + 1));
-      if (!el || !norm(el.value)) missing = true;
-    }
-    if (missing) {
-      fb.textContent = "Complete every gap with your hearing / notes, then check again.";
-      return;
-    }
-
-    if (!keyReady()) {
-      fb.innerHTML =
-        "<strong>All 10 filled.</strong> Add <code>ACCEPT</code> in the script for green/red scoring. Until then, compare with your <strong>Workbook with Key</strong>.";
-      return;
-    }
-
     var okc = 0;
+    checked = true;
     for (var j = 0; j < n; j++) {
       var inp = document.getElementById("g" + String(j + 1));
+      var key = document.getElementById("key" + String(j + 1));
       inp.classList.remove("is-ok", "is-bad");
+      key.classList.remove("show");
+      key.textContent = "";
       if (matches(inp.value, ACCEPT[j])) {
         inp.classList.add("is-ok");
         okc++;
       } else {
         inp.classList.add("is-bad");
+        key.textContent = "→ " + SHOW[j];
+        key.classList.add("show");
       }
     }
-    fb.innerHTML =
-      okc === n
-        ? "<strong>All gaps match a key form.</strong>"
-        : "Score: <strong>" + okc + "</strong> / " + n + ". Checking uses normalised spelling (see script).";
+    fb.classList.remove("score-ok", "score-partial");
+    if (okc === n) {
+      fb.classList.add("score-ok");
+      fb.innerHTML = "<strong>All " + n + " correct.</strong>";
+    } else {
+      fb.classList.add("score-partial");
+      fb.innerHTML =
+        "Score: <strong>" +
+        okc +
+        "</strong> / " +
+        n +
+        " correct. <span style=\"color:#86efac\">Green</span> = right; <span style=\"color:#fca5a5\">red</span> = wrong (key shown next to the gap).";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
+    pushLiveProgress(false);
   });
 
   document.getElementById("btn-reset").addEventListener("click", function () {
     for (var k = 0; k < TASK.length; k++) {
       var inp = document.getElementById("g" + String(k + 1));
-      if (inp) {
-        inp.value = "";
-        inp.classList.remove("is-ok", "is-bad");
-      }
+      if (inp) inp.value = "";
     }
-    fb.textContent = "";
+    clearMarks();
+    pushLiveProgress(true);
   });
 })();
   </script>
-<script src="../js/mastering-b2-skill-progress.js"></script>
-<script src="../js/mastering-b2-daily-activity.js"></script>
-<script src="../js/mastering-b2-exercise-auto.js"></script>
+  <script src="../js/mastering-b2-daily-activity.js"></script>
+  <script src="../js/mastering-b2-exercise-auto.js?v=2"></script>
+  <script src="../js/live-game-api.js" vite-ignore></script>
+  <script src="../js/live-game-api-http.js?v=17" vite-ignore></script>
+  <script src="../ege/js/ege-live-config.js?v=8" vite-ignore></script>
+  <script src="../ege/js/ege-player-name.js" vite-ignore></script>
+  <script src="../ege/js/ege-live-room-bar.js?v=21" vite-ignore></script>
+  <script src="../js/fce-live-boot.js?v=3" vite-ignore></script>
 </body>
 </html>
