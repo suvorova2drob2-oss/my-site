@@ -102,7 +102,19 @@
     "oge-speaking-v2": "/oge/oge-speaking-v2.html",
     "oge-speaking-v3": "/oge/oge-speaking-v3.html",
     "oge-speaking-v4": "/oge/oge-speaking-v4.html",
-    "oge-speaking-v5": "/oge/oge-speaking-v5.html"
+    "oge-speaking-v5": "/oge/oge-speaking-v5.html",
+    "oge-grammar-gym-verb-pump": "/oge/oge-grammar-gym-verb-pump.html",
+    "oge-grammar-gym-understanding-verbs": "/oge/oge-grammar-gym-understanding-verbs.html",
+    "oge-grammar-gym-pronoun-switch": "/oge/oge-grammar-gym-pronoun-switch.html",
+    "oge-grammar-gym-rank-up": "/oge/oge-grammar-gym-rank-up.html",
+    "oge-grammar-gym-flex-scale": "/oge/oge-grammar-gym-flex-scale.html",
+    "oge-grammar-gym-many-mode": "/oge/oge-grammar-gym-many-mode.html",
+    "oge-grammar-gym-word-tags": "/oge/oge-grammar-gym-word-tags.html",
+    "oge-word-formation-gym-noun-builder": "/oge/oge-word-formation-gym-noun-builder.html",
+    "oge-word-formation-gym-verb-remix": "/oge/oge-word-formation-gym-verb-remix.html",
+    "oge-word-formation-gym-adjective-atlas": "/oge/oge-word-formation-gym-adjective-atlas.html",
+    "oge-word-formation-gym-adverb-flow": "/oge/oge-word-formation-gym-adverb-flow.html",
+    "oge-word-formation-gym-castaway-exam": "/oge/oge-word-formation-gym-castaway-exam.html"
   };
 
   function deckPathHint() {
@@ -989,6 +1001,90 @@
     renderInspect();
   }
 
+  function studentRankRowClass(row) {
+    if (!row) return "is-pending";
+    if (row.submitted) return rowToneClass(row);
+    if (Array.isArray(row.items) && row.items.length) return "is-mixed";
+    if (Number(row.score) > 0) return "is-mixed";
+    return "is-pending";
+  }
+
+  function renderStudentLiveRank(snap) {
+    var box = document.getElementById("ege-live-student-rank");
+    if (!box || state.role !== "student") return;
+    if (!snap || snap.phase !== "playing" || !state.playerId) {
+      box.hidden = true;
+      return;
+    }
+    var lb = (snap && snap.leaderboard) || [];
+    if (!lb.length) {
+      box.hidden = true;
+      return;
+    }
+    box.hidden = false;
+
+    var myIdx = -1;
+    var myRow = null;
+    var i;
+    for (i = 0; i < lb.length; i++) {
+      if (lb[i].playerId === state.playerId) {
+        myIdx = i;
+        myRow = lb[i];
+        break;
+      }
+    }
+
+    var youEl = document.getElementById("ege-live-student-rank-you");
+    if (youEl) {
+      if (myRow) {
+        youEl.textContent =
+          "Place " +
+          (myIdx + 1) +
+          " / " +
+          lb.length +
+          " · " +
+          (Number(myRow.score) || 0) +
+          "%";
+      } else {
+        youEl.textContent = "Live ranking";
+      }
+    }
+
+    var list = document.getElementById("ege-live-student-rank-list");
+    if (list) {
+      list.innerHTML = lb
+        .map(function (row, idx) {
+          var isMe = row.playerId === state.playerId;
+          var pct = Math.max(0, Math.min(100, Number(row.score) || 0));
+          var detail =
+            row.totalCount > 0
+              ? row.correctCount + "/" + row.totalCount
+              : row.submitted
+                ? "done"
+                : "in progress";
+          return (
+            '<li class="ege-live-student-rank-row ' +
+            studentRankRowClass(row) +
+            (isMe ? " is-me" : "") +
+            '">' +
+            '<span class="ege-live-student-rank-place">' +
+            (idx + 1) +
+            "</span>" +
+            '<span class="ege-live-student-rank-name">' +
+            esc(row.displayName || "Player") +
+            "</span>" +
+            '<span class="ege-live-student-rank-pct">' +
+            pct +
+            "%</span>" +
+            '<span class="ege-live-student-rank-meta">' +
+            esc(detail) +
+            "</span></li>"
+          );
+        })
+        .join("");
+    }
+  }
+
   function showPanel(open) {
     var panel = document.getElementById("ege-live-panel");
     if (panel) panel.hidden = !open;
@@ -1291,6 +1387,8 @@
     showPanel(false);
     showStudentDone(false);
     showWait(false);
+    var studentRank = document.getElementById("ege-live-student-rank");
+    if (studentRank) studentRank.hidden = true;
     var gate = document.getElementById("ege-live-student-gate");
     if (gate) gate.hidden = true;
 
@@ -1417,6 +1515,7 @@
       }
       if (state.role === "student") {
         applyStudentPhase(snap.phase);
+        renderStudentLiveRank(snap);
         if (snap.phase === "leaderboard") {
           showStudentDone(false);
         }
@@ -1529,7 +1628,17 @@
       '      <button type="button" class="ege-live-btn ege-live-btn--primary ege-live-btn--lg" id="ege-live-podium-hunt">Review</button>' +
       "    </div>" +
       "  </div>" +
-      "</div>";
+      "</div>" +
+      '<aside id="ege-live-student-rank" class="ege-live-student-rank" hidden aria-live="polite">' +
+      '  <button type="button" class="ege-live-student-rank-toggle" id="ege-live-student-rank-toggle" aria-expanded="false">' +
+      '    <span class="ege-live-student-rank-kicker">Live</span>' +
+      '    <span class="ege-live-student-rank-you" id="ege-live-student-rank-you">Place —</span>' +
+      "  </button>" +
+      '  <div class="ege-live-student-rank-panel" id="ege-live-student-rank-panel" hidden>' +
+      '    <p class="ege-live-student-rank-title">Class ranking</p>' +
+      '    <ol id="ege-live-student-rank-list" class="ege-live-student-rank-list"></ol>' +
+      "  </div>" +
+      "</aside>";
 
     document.body.appendChild(root);
 
@@ -1605,6 +1714,18 @@
           };
           renderPodium(state.lastSnap);
         }
+      });
+    }
+
+    var rankToggle = document.getElementById("ege-live-student-rank-toggle");
+    if (rankToggle) {
+      rankToggle.addEventListener("click", function () {
+        var panel = document.getElementById("ege-live-student-rank-panel");
+        if (!panel) return;
+        var open = panel.hidden;
+        panel.hidden = !open;
+        rankToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        rankToggle.classList.toggle("is-open", open);
       });
     }
 

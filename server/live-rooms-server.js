@@ -63,6 +63,18 @@ const DECK_PATHS = {
   "oge-speaking-v3": "/oge/oge-speaking-v3.html",
   "oge-speaking-v4": "/oge/oge-speaking-v4.html",
   "oge-speaking-v5": "/oge/oge-speaking-v5.html",
+  "oge-grammar-gym-verb-pump": "/oge/oge-grammar-gym-verb-pump.html",
+  "oge-grammar-gym-understanding-verbs": "/oge/oge-grammar-gym-understanding-verbs.html",
+  "oge-grammar-gym-pronoun-switch": "/oge/oge-grammar-gym-pronoun-switch.html",
+  "oge-grammar-gym-rank-up": "/oge/oge-grammar-gym-rank-up.html",
+  "oge-grammar-gym-flex-scale": "/oge/oge-grammar-gym-flex-scale.html",
+  "oge-grammar-gym-many-mode": "/oge/oge-grammar-gym-many-mode.html",
+  "oge-grammar-gym-word-tags": "/oge/oge-grammar-gym-word-tags.html",
+  "oge-word-formation-gym-noun-builder": "/oge/oge-word-formation-gym-noun-builder.html",
+  "oge-word-formation-gym-verb-remix": "/oge/oge-word-formation-gym-verb-remix.html",
+  "oge-word-formation-gym-adjective-atlas": "/oge/oge-word-formation-gym-adjective-atlas.html",
+  "oge-word-formation-gym-adverb-flow": "/oge/oge-word-formation-gym-adverb-flow.html",
+  "oge-word-formation-gym-castaway-exam": "/oge/oge-word-formation-gym-castaway-exam.html",
   "fce-u1-ttt-gaps": "/unit1-class-games/tic-tac-toe-gaps.html",
   "fce-u1-ttt-pair": "/unit1-class-games/pair-questions.html",
   "fce-u1-pict": "/class-games/pictionary.html"
@@ -218,7 +230,7 @@ function normalizeRoom(code) {
 
 function normalizeItems(raw) {
   if (!Array.isArray(raw)) return null;
-  return raw.slice(0, 40).map(function (it, idx) {
+  return raw.slice(0, 64).map(function (it, idx) {
     const answer = String((it && it.answer) != null ? it.answer : "").slice(0, 64);
     const filled =
       it && typeof it.filled === "boolean" ? !!it.filled : answer.length > 0;
