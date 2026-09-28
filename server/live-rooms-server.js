@@ -810,7 +810,7 @@ app.use(function (req, res, next) {
       res.send(html);
       return;
     }
-    var tag = '<script src="/js/fce-live-boot.js?v=1" vite-ignore></script>';
+    var tag = '<script src="/js/fce-live-boot.js?v=4" vite-ignore></script>';
     var out = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tag + "</body>") : html + tag;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "no-cache");

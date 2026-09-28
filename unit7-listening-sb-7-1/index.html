@@ -299,9 +299,6 @@
     }
   ];
 
-  var checked = false;
-  var liveDraftTimer = null;
-
   function norm(s) {
     return String(s || "")
       .toLowerCase()
@@ -359,32 +356,6 @@
     };
   }
 
-  function pushLiveProgress(draft) {
-    if (!window.EgeLiveRoom || typeof window.EgeLiveRoom.notifyProgress !== "function") return;
-    if (
-      typeof window.EgeLiveRoom.isLiveStudent === "function" &&
-      !window.EgeLiveRoom.isLiveStudent()
-    ) {
-      return;
-    }
-    if (draft && checked) return;
-    var pack = buildLiveItems();
-    window.EgeLiveRoom.notifyProgress({
-      draft: draft === true,
-      score: pack.score,
-      correct: pack.correct,
-      total: pack.total,
-      items: pack.items
-    });
-  }
-
-  function scheduleLiveDraft() {
-    if (liveDraftTimer) clearTimeout(liveDraftTimer);
-    liveDraftTimer = setTimeout(function () {
-      pushLiveProgress(true);
-    }, 280);
-  }
-
   var root = document.getElementById("gaps-root");
   var fb = document.getElementById("feedback");
 
@@ -420,7 +391,6 @@
   }
 
   function clearMarks() {
-    checked = false;
     for (var k = 0; k < TASK.length; k++) {
       var inp = document.getElementById("g" + String(k + 1));
       var key = document.getElementById("key" + String(k + 1));
@@ -447,15 +417,12 @@
       }
       fb.classList.remove("score-ok", "score-partial");
       fb.textContent = "";
-      checked = false;
-      scheduleLiveDraft();
     });
   });
 
   document.getElementById("btn-check").addEventListener("click", function () {
     var n = TASK.length;
     var okc = 0;
-    checked = true;
     for (var j = 0; j < n; j++) {
       var inp = document.getElementById("g" + String(j + 1));
       var key = document.getElementById("key" + String(j + 1));
@@ -485,7 +452,6 @@
         " correct. <span style=\"color:#86efac\">Green</span> = right; <span style=\"color:#fca5a5\">red</span> = wrong (key shown next to the gap).";
     }
     if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(okc, n);
-    pushLiveProgress(false);
   });
 
   document.getElementById("btn-reset").addEventListener("click", function () {
@@ -494,8 +460,9 @@
       if (inp) inp.value = "";
     }
     clearMarks();
-    pushLiveProgress(true);
   });
+
+  window.__FCE_LIVE_BUILD_ITEMS__ = buildLiveItems;
 })();
   </script>
   <script src="../js/mastering-b2-daily-activity.js"></script>
@@ -505,6 +472,6 @@
   <script src="../ege/js/ege-live-config.js?v=8" vite-ignore></script>
   <script src="../ege/js/ege-player-name.js" vite-ignore></script>
   <script src="../ege/js/ege-live-room-bar.js?v=21" vite-ignore></script>
-  <script src="../js/fce-live-boot.js?v=3" vite-ignore></script>
+  <script src="../js/fce-live-boot.js?v=4" vite-ignore></script>
 </body>
 </html>

@@ -52,17 +52,15 @@
     h1 { font-size: 1.28rem; line-height: 1.25; margin-bottom: 6px; }
     .lead { color: var(--muted); font-size: 0.96rem; line-height: 1.45; margin-bottom: 12px; }
     .lead strong { color: #cfe0ff; font-weight: 600; }
-    .note-box {
+    .exam-strip {
       font-size: 0.88rem;
       color: var(--muted);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 12px;
       margin-bottom: 14px;
-      background: #172948;
       line-height: 1.45;
     }
-    .note-box code { color: #93c5fd; font-size: 0.85em; }
+    .exam-strip a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .exam-strip a:hover { text-decoration: underline; }
+    .exam-strip code { color: #93c5fd; font-size: 0.9em; }
     .audio-wrap {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -94,9 +92,16 @@
       border: 2px solid transparent;
       transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
     }
-    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
-    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; }
-    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); flex-shrink: 0; }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: 0.94rem; color: #e8f0ff !important; -webkit-text-fill-color: #e8f0ff !important; }
+    /* not .letter — page-skin forces dark ink on .letter (paper panels) */
+    .mcq-letter {
+      font-weight: 800;
+      color: #7dd3fc !important;
+      -webkit-text-fill-color: #7dd3fc !important;
+      min-width: 1.35em;
+      display: inline-block;
+    }
     .opt-line.ok {
       background: rgba(34, 197, 94, 0.28);
       border-color: #4ade80;
@@ -127,17 +132,28 @@
       line-height: 1.45;
       min-height: 1.5em;
     }
+    .feedback.score-ok {
+      border-color: rgba(74, 222, 128, 0.55);
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+    }
+    .feedback.score-partial {
+      border-color: rgba(250, 204, 21, 0.45);
+      background: rgba(250, 204, 21, 0.08);
+      color: #fde68a;
+    }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../ege/css/ege-live-room-bar.css?v=20" />
 </head>
 <body data-mb2-unit="7" data-mb2-skill="listening" data-mb2-ex="sb-7-2">
   <main class="page">
     <header class="top">
       <div>
-        <span class="tag">Listening &middot; Student&rsquo;s Book 7.2</span>
+        <span class="tag">Listening Part 4 &middot; Student&rsquo;s Book 7.2</span>
         <h1>Holly Ridge &mdash; book about villages</h1>
         <p class="lead">
           RfB2 First Skills Booster. <strong>Track 7.2</strong> &mdash; <code style="color: var(--muted); font-size: 0.88rem;">RfB2First_SB_Track 7.2.mp3</code>
@@ -145,10 +161,6 @@
       </div>
       <a class="back" href="../unit7-listening/index.html">&larr; Unit 7 listening</a>
     </header>
-
-    <p class="note-box">
-      <strong>Auto-check:</strong> when you have the official key (Teacher&rsquo;s Book / Workbook with Key), open this file in an editor and set seven letters in the <code>CORRECT</code> array in the script (e.g. <code>["A","B","C",…]</code>). While <code>CORRECT</code> is <code>null</code>, <strong>Check</strong> only checks that you chose A, B or C for every question &mdash; then compare with your answer key.
-    </p>
 
     <div class="audio-wrap">
       <label for="track">Audio (Yandex Object Storage)</label>
@@ -160,6 +172,10 @@
 
     <p class="instr lead" style="margin-bottom: 10px;">
       You will hear part of a <strong>radio interview</strong> with a woman called <strong>Holly Ridge</strong>, who is writing a book about <strong>villages</strong>. For questions <strong>1&ndash;7</strong>, choose the best answer (<strong>A</strong>, <strong>B</strong> or <strong>C</strong>).
+    </p>
+    <p class="exam-strip">
+      Track: <code>RfB2First_SB_Track 7.2.mp3</code>.
+      Study text: <a href="transcript.html">Full transcript (study, read-only) &rarr;</a>
     </p>
 
     <div id="mcq-root" class="questions" aria-live="polite"></div>
@@ -173,13 +189,10 @@
 
   <script src="../js/prep-course-profile.js"></script>
   <script src="../js/prep-site-content.js"></script>
+  <script src="../js/mastering-b2-skill-progress.js"></script>
   <script>
 (function () {
-  /**
-   * Seven answers A/B/C for questions 1→7. Set when you have the publisher key.
-   * Example: var CORRECT = ["A", "B", "C", "B", "A", "C", "B"];
-   */
-  var CORRECT = null;
+  var CORRECT = ["B", "B", "C", "A", "A", "B", "A"];
 
   var MCQ = [
     {
@@ -248,17 +261,47 @@
       .replace(/"/g, "&quot;");
   }
 
+  function choiceText(item, letter) {
+    var k = String(letter || "").toUpperCase();
+    var t = item.options[k];
+    return t ? k + ") " + String(t) : k;
+  }
+
+  function buildLiveItems() {
+    var n = MCQ.length;
+    var items = [];
+    var ok = 0;
+    var filled = 0;
+    for (var j = 0; j < n; j++) {
+      var pick = getChoice(j);
+      var keyLetter = String(CORRECT[j]).toUpperCase();
+      var isFilled = !!pick;
+      var isOk = isFilled && pick === keyLetter;
+      if (isFilled) filled += 1;
+      if (isOk) ok += 1;
+      items.push({
+        id: String(j + 1),
+        label: "Q " + String(j + 1),
+        prompt: String(MCQ[j].q),
+        correct: isOk,
+        answer: pick,
+        expected: keyLetter,
+        answerText: pick ? choiceText(MCQ[j], pick) : "—",
+        expectedText: choiceText(MCQ[j], keyLetter),
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filled,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
   var root = document.getElementById("mcq-root");
   var fb = document.getElementById("feedback");
-
-  function keyReady() {
-    if (!CORRECT || CORRECT.length !== MCQ.length) return false;
-    for (var i = 0; i < CORRECT.length; i++) {
-      var c = String(CORRECT[i]).toUpperCase();
-      if (c !== "A" && c !== "B" && c !== "C") return false;
-    }
-    return true;
-  }
 
   function render() {
     root.innerHTML = MCQ.map(function (item, qIdx) {
@@ -269,7 +312,7 @@
         return (
           '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
           '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
-          '<label for="' + id + '"><span class="letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
+          '<label for="' + id + '"><span class="mcq-letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
         );
       }).join("");
       return (
@@ -283,6 +326,7 @@
       radio.addEventListener("change", function () {
         clearMarks();
         fb.textContent = "";
+        fb.classList.remove("score-ok", "score-partial");
       });
     });
   }
@@ -311,13 +355,8 @@
       }
     }
     if (missing) {
+      fb.classList.remove("score-ok", "score-partial");
       fb.textContent = "Choose A, B or C for every question, then check again.";
-      return;
-    }
-
-    if (!keyReady()) {
-      fb.innerHTML =
-        "<strong>All 7 answered.</strong> Set the seven letters in <code>CORRECT</code> in this page&rsquo;s script for green/red scoring. Until then, compare with your <strong>Teacher&rsquo;s Book</strong> or <strong>Workbook with Key</strong>.";
       return;
     }
 
@@ -332,10 +371,20 @@
       var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + keyLetter + '"]');
       if (correctLine && !ok) correctLine.classList.add("ok");
     }
-    fb.innerHTML =
-      score === n
-        ? "<strong>All " + n + " correct.</strong>"
-        : "Score: <strong>" + score + "</strong> / " + n + ". Green = correct option; your wrong pick is outlined in red where applicable.";
+    fb.classList.remove("score-ok", "score-partial");
+    if (score === n) {
+      fb.classList.add("score-ok");
+      fb.innerHTML = "<strong>All " + n + " correct.</strong>";
+    } else {
+      fb.classList.add("score-partial");
+      fb.innerHTML =
+        "Score: <strong>" +
+        score +
+        "</strong> / " +
+        n +
+        ". Green = correct option; your wrong pick is outlined in red where applicable.";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(score, n);
   });
 
   document.getElementById("btnClear").addEventListener("click", function () {
@@ -344,11 +393,19 @@
     });
     clearMarks();
     fb.textContent = "";
+    fb.classList.remove("score-ok", "score-partial");
   });
+
+  window.__FCE_LIVE_BUILD_ITEMS__ = buildLiveItems;
 })();
   </script>
-<script src="../js/mastering-b2-skill-progress.js"></script>
-<script src="../js/mastering-b2-daily-activity.js"></script>
-<script src="../js/mastering-b2-exercise-auto.js"></script>
+  <script src="../js/mastering-b2-daily-activity.js"></script>
+  <script src="../js/mastering-b2-exercise-auto.js?v=2"></script>
+  <script src="../js/live-game-api.js" vite-ignore></script>
+  <script src="../js/live-game-api-http.js?v=17" vite-ignore></script>
+  <script src="../ege/js/ege-live-config.js?v=8" vite-ignore></script>
+  <script src="../ege/js/ege-player-name.js" vite-ignore></script>
+  <script src="../ege/js/ege-live-room-bar.js?v=21" vite-ignore></script>
+  <script src="../js/fce-live-boot.js?v=4" vite-ignore></script>
 </body>
 </html>

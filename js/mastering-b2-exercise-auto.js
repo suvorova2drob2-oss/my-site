@@ -234,13 +234,16 @@
   });
 
   /* Same Live button as EGE / OGE, on every Mastering B2 page that loads this file. */
-  if (!document.querySelector("script[src*='fce-live-boot.js']")) {
+  if (
+    !document.querySelector("script[src*='fce-live-boot.js']") &&
+    !document.querySelector("script[src*='ege-live-room-bar.js']")
+  ) {
     if (!document.querySelector("script[src*='fce-class-live-ttt'], script[src*='fce-class-pict-live']")) {
       var bootSrc = "";
       var bootNodes = document.querySelectorAll("script[src*='mastering-b2-exercise-auto.js']");
       var bootNode = bootNodes.length ? bootNodes[bootNodes.length - 1] : null;
       if (bootNode && bootNode.src) {
-        bootSrc = bootNode.src.replace(/mastering-b2-exercise-auto\.js[^/]*$/i, "fce-live-boot.js?v=2");
+        bootSrc = bootNode.src.replace(/mastering-b2-exercise-auto\.js[^/]*$/i, "fce-live-boot.js?v=4");
       }
       if (bootSrc) {
         var bootEl = document.createElement("script");
