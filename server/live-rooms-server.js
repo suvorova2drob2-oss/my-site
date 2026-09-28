@@ -11,6 +11,7 @@ const path = require("path");
 const fs = require("fs");
 const express = require("express");
 const compression = require("compression");
+const { createTeacherStoreRouter } = require("./teacher-store-api");
 
 const PORT = Number(process.env.PORT || 8787);
 const ROOT = path.join(__dirname, "..");
@@ -19,6 +20,10 @@ const ROBLOX_ROOT = String(
 );
 const CLUMSY_ROOT = String(
   process.env.CLUMSY_ROOT || path.join(ROOT, "..", "clumsy-and-his-friends")
+);
+// Outside the repo so `git reset --hard` on deploy never touches teacher data.
+const TEACHER_STORE_DIR = String(
+  process.env.TEACHER_STORE_DIR || path.join(ROOT, "..", "teacher-store-data")
 );
 // Local default = this machine. On VPS set PUBLIC_ORIGIN in systemd (ege-live-rooms.service).
 const PUBLIC_ORIGIN = String(
@@ -707,7 +712,11 @@ function handleOp(op, body) {
 
 const app = express();
 app.use(compression());
-app.use(express.json({ limit: "512kb" }));
+const liveJson = express.json({ limit: "512kb" });
+app.use(function (req, res, next) {
+  if (req.path.indexOf("/store/") === 0) return next();
+  liveJson(req, res, next);
+});
 
 function staticCacheHeaders(res, filePath) {
   if (/\.(?:js|css|mjs|map|woff2?|ttf|otf|png|jpe?g|gif|webp|svg|ico|mp3|wav|ogg)$/i.test(filePath)) {
@@ -735,6 +744,11 @@ app.use(function (req, res, next) {
   }
   next();
 });
+
+app.use(
+  "/store",
+  createTeacherStoreRouter({ dir: TEACHER_STORE_DIR, key: process.env.TEACHER_STORE_KEY })
+);
 
 app.get("/health", function (_req, res) {
   res.json({ ok: true, rooms: rooms.size, unoRooms: unoRooms.size });
