@@ -34,7 +34,8 @@
     stationId: (rounds[0].stations[0] && rounds[0].stations[0].id) || "A",
     liveById: {},
     stationChecked: {},
-    showKeys: false
+    showKeys: false,
+    liveHeartbeat: null
   };
 
   function parseHash() {
@@ -60,9 +61,12 @@
   } catch (eHash) {}
   ensureStationId();
 
-  function liveItemId(item) {
-    return state.round + "-" + item.id;
+  function liveItemId(station, item) {
+    return state.round + "-" + station.id + "-" + item.id;
   }
+
+  var liveDraftTimer = null;
+  var liveDraftActivity = "";
 
   function syncHash() {
     try {
@@ -150,7 +154,7 @@
     var i;
     for (i = 0; i < station.items.length; i++) {
       var item = station.items[i];
-      var row = state.liveById[liveItemId(item)];
+      var row = state.liveById[liveItemId(station, item)];
       var card = cardById(item.id);
       if (!row || !card) continue;
       markCard(card, row);
@@ -672,10 +676,10 @@
       if (item.cue) prompt += " (" + item.cue + ")";
     }
 
-    var lid = liveItemId(item);
+    var lid = liveItemId(station, item);
     return {
       id: lid,
-      label: item.label || item.id,
+      label: (station.id ? station.id + " · " : "") + (item.label || item.id),
       prompt: prompt,
       answer: answer,
       expected: expected,
@@ -720,24 +724,87 @@
     return rows;
   }
 
-  function livePayloadItems() {
-    return Object.keys(state.liveById)
+  function collectProgressItems() {
+    var map = {};
+    var list = stationList();
+    var si;
+    for (si = 0; si < list.length; si++) {
+      var station = list[si];
+      var i;
+      for (i = 0; i < station.items.length; i++) {
+        var item = station.items[i];
+        var card = cardById(item.id);
+        if (!card) continue;
+        var row = readCard(station, item, card);
+        map[row.id] = row;
+      }
+    }
+    return Object.keys(map)
       .sort()
-      .map(function (k) {
-        return state.liveById[k];
+      .map(function (key) {
+        return map[key];
       });
   }
 
-  function pushLive(final) {
+  function stopLiveHeartbeat() {
+    if (state.liveHeartbeat) {
+      clearInterval(state.liveHeartbeat);
+      state.liveHeartbeat = null;
+    }
+  }
+
+  function startLiveHeartbeat() {
+    stopLiveHeartbeat();
+    if (!w.EgeLiveRoom || typeof w.EgeLiveRoom.isLiveStudent !== "function") return;
+    if (!w.EgeLiveRoom.isLiveStudent()) return;
+    state.liveHeartbeat = setInterval(function () {
+      pushLive({ final: false, activity: "progress" });
+    }, 2000);
+  }
+
+  function scheduleLiveDraft(activity, immediate) {
+    if (activity) liveDraftActivity = activity;
+    if (liveDraftTimer) clearTimeout(liveDraftTimer);
+    if (immediate) {
+      pushLive({ final: false, activity: liveDraftActivity || activity || "update" });
+      liveDraftActivity = "";
+      return;
+    }
+    liveDraftTimer = setTimeout(function () {
+      liveDraftTimer = null;
+      pushLive({ final: false, activity: liveDraftActivity });
+      liveDraftActivity = "";
+    }, 280);
+  }
+
+  function pushLive(opts) {
+    opts = opts || {};
     if (!w.EgeLiveRoom || typeof w.EgeLiveRoom.notifyProgress !== "function") return;
-    var items = livePayloadItems();
+    var items = collectProgressItems();
     var ok = 0;
+    var filled = 0;
     var i;
-    for (i = 0; i < items.length; i++) if (items[i].correct) ok += 1;
+    for (i = 0; i < items.length; i++) {
+      if (items[i].filled) {
+        filled += 1;
+        if (items[i].correct) ok += 1;
+      }
+    }
+    var final = opts.final === true;
+    var stations = stationList();
+    var checkedN = 0;
+    for (i = 0; i < stations.length; i++) {
+      if (state.stationChecked[stations[i].id]) checkedN += 1;
+    }
     w.EgeLiveRoom.notifyProgress({
       correct: ok,
       total: items.length,
+      filledTotal: filled,
       draft: !final,
+      submitted: final,
+      liveStage: state.stationId,
+      levelProgress: checkedN + "/" + stations.length,
+      lastActivity: opts.activity || "",
       items: items
     });
   }
@@ -778,8 +845,9 @@
     }
     updateLevelNav();
     updateRoundProgressUi();
-    pushLive(true);
-    if (isLastStation(station.id) || allStationsChecked()) {
+    var gameDone = allStationsChecked();
+    pushLive({ final: gameDone, activity: "Checked level " + station.id });
+    if (isLastStation(station.id) || gameDone) {
       showRoundComplete();
       var bar = document.getElementById("vp-round-progress");
       if (bar) bar.classList.add("vp-round-progress--done");
@@ -811,7 +879,7 @@
     var pool = card.querySelector('[data-role="pool"]');
     if (chip.parentElement === pool) tray.appendChild(chip);
     else pool.appendChild(chip);
-    clearMarks();
+    scheduleLiveDraft("word chip", true);
   }
 
   function onPick(event) {
@@ -822,7 +890,7 @@
     var i;
     for (i = 0; i < all.length; i++) all[i].classList.remove("is-on");
     btn.classList.add("is-on");
-    clearMarks();
+    scheduleLiveDraft("choice", true);
   }
 
   function focusedGap(station) {
@@ -846,10 +914,11 @@
     gap.focus();
     if (!norm(gap.value)) gap.value = word;
     else gap.value = (gap.value.replace(/\s+$/, "") + " " + word).trim();
-    clearMarks();
+    scheduleLiveDraft("word bank", true);
   }
 
   function resetAll() {
+    stopLiveHeartbeat();
     state.liveById = {};
     state.stationChecked = {};
     state.showKeys = false;
@@ -878,6 +947,7 @@
   }
 
   function setRound(id) {
+    stopLiveHeartbeat();
     state.round = id;
     state.liveById = {};
     state.stationChecked = {};
@@ -905,6 +975,7 @@
       node.classList.remove("vp-show-keys");
     });
     if (state.stationChecked[id]) applyMarksFromCache(activeStation());
+    scheduleLiveDraft("Opened level " + id, true);
     try {
       root.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (eSc) {}
@@ -1045,13 +1116,20 @@
   }
 
   function bind() {
+    w.addEventListener("ege-live-student-ready", function () {
+      scheduleLiveDraft("live room", true);
+      startLiveHeartbeat();
+    });
     root.addEventListener("click", onRound);
     root.addEventListener("click", onLevel);
     root.addEventListener("click", onReportNext);
     root.addEventListener("click", onPoolClick);
     root.addEventListener("click", onPick);
     root.addEventListener("click", onBank);
-    root.addEventListener("input", clearMarks);
+    root.addEventListener("input", function () {
+      clearMarks();
+      scheduleLiveDraft("typing");
+    });
   }
 
   function bindDock() {
@@ -1080,6 +1158,10 @@
     updateStepLabel();
     updateLevelNav();
     updateRoundProgressUi();
+    if (w.EgeLiveRoom && typeof w.EgeLiveRoom.isLiveStudent === "function" && w.EgeLiveRoom.isLiveStudent()) {
+      scheduleLiveDraft("ready", true);
+      startLiveHeartbeat();
+    }
   }
 
   root.innerHTML = paint();

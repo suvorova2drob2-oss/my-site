@@ -33,6 +33,20 @@
         drawerAria: "Clothes Cool Words",
         speakerSelectLabel: "Speaker"
       };
+    },
+    sb12: function () {
+      var api = W.FCE_U1_SB12_LEXIS;
+      if (!api || typeof api.drawerSpeakers !== "function") return null;
+      return {
+        id: "sb12",
+        speakers: api.drawerSpeakers(),
+        fabLine1: "Phrases",
+        fabLine2: "SB 1.2",
+        fabTitle: "SB 1.2 phrases",
+        drawerTitle: "Phrases · SB 1.2",
+        drawerAria: "SB 1.2 Cool Words",
+        speakerSelectLabel: "Speaker"
+      };
     }
   };
 

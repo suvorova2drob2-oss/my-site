@@ -302,6 +302,34 @@
     applyStudentPhase((state.lastSnap && state.lastSnap.phase) || "lobby");
     applyUnitLocks();
     if (!state.unsub) subscribe(code);
+    try {
+      W.dispatchEvent(new CustomEvent("ege-live-student-ready"));
+    } catch (eReady) {}
+  }
+
+  function gymStageFillHtml(row) {
+    if (!row || !row.liveStage || !Array.isArray(row.items)) return "";
+    var stage = String(row.liveStage);
+    var needle = "-" + stage + "-";
+    var total = 0;
+    var filled = 0;
+    var i;
+    for (i = 0; i < row.items.length; i++) {
+      var it = row.items[i];
+      if (String(it.id || "").indexOf(needle) < 0) continue;
+      total += 1;
+      if (it.filled !== false && String(it.answer || "").length > 0) filled += 1;
+    }
+    if (!total) return "";
+    return (
+      ' <span class="ege-live-muted" title="Текущий уровень">· ' +
+      esc(stage) +
+      " " +
+      filled +
+      "/" +
+      total +
+      "</span>"
+    );
   }
 
   function setMsg(el, text, ok) {
@@ -415,6 +443,26 @@
       return "Not stated (?)";
     }
     return c;
+  }
+
+  function looseTextMatch(a, b) {
+    function strip(s) {
+      return String(s || "")
+        .replace(/[\u2018\u2019\u2032]/g, "'")
+        .replace(/[.?!]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+    }
+    var x = strip(a);
+    var y = strip(b);
+    return x.length > 0 && x === y;
+  }
+
+  function itemLooksCorrect(it) {
+    if (!it) return false;
+    if (it.correct) return true;
+    return looseTextMatch(it.answerText || it.answer, it.expectedText || it.expected);
   }
 
   function detailForValue(code, explicitText) {
@@ -555,7 +603,8 @@
     }
     var student = detailForValue(it.answer, it.answerText);
     var key = detailForValue(it.expected, it.expectedText);
-    if (it.correct) {
+    var okRow = itemLooksCorrect(it);
+    if (okRow) {
       return (
         '<button type="button" class="ege-live-ans-row is-ok' +
         (selected ? " is-selected" : "") +
@@ -911,6 +960,15 @@
                 "/" +
                 esc(String(row.totalCount || 0)) +
                 " верно" +
+                (row.liveStage
+                  ? " · уровень " + esc(String(row.liveStage))
+                  : "") +
+                (row.levelProgress && !row.submitted
+                  ? " · " + esc(String(row.levelProgress)) + " levels"
+                  : "") +
+                (row.lastActivity && !row.submitted
+                  ? " · " + esc(String(row.lastActivity))
+                  : "") +
                 (row.submitted ? "" : " · пишет…") +
                 (row.attempts
                   ? " · попыток: " + esc(String(row.attempts))
@@ -960,6 +1018,7 @@
             "</strong>" +
             attemptStarsHtml(row.attempts) +
             (row.submitted ? "" : ' <em class="ege-live-live-tag">live</em>') +
+            (row.submitted ? "" : gymStageFillHtml(row)) +
             '<span class="ege-live-score ' +
             (row.correctCount === row.totalCount && row.submitted ? "is-ok" : "is-bad") +
             '">' +
@@ -1983,23 +2042,31 @@
   function notifyProgress(info) {
     info = info || {};
     if (state.role !== "student" || !state.roomCode || !state.playerId) return;
-    var draft = info.draft === true;
+    var draft = info.draft === true || info.submitted === false;
+    var denom =
+      info.filledTotal != null && Number(info.filledTotal) > 0
+        ? Number(info.filledTotal)
+        : info.total;
     var score =
       info.score != null
         ? Number(info.score)
-        : info.correct != null && info.total
-          ? Math.round((Number(info.correct) / Number(info.total)) * 100)
+        : info.correct != null && denom
+          ? Math.round((Number(info.correct) / Number(denom)) * 100)
           : 0;
     if (isNaN(score)) score = 0;
     var payload = {
       roomCode: state.roomCode,
       playerId: state.playerId,
       cardId: deckId(),
-      text: String(info.correct != null ? info.correct + "/" + info.total : score),
+      text: String(info.correct != null ? info.correct + "/" + (denom || info.total) : score),
       correct: Number(info.correct) === Number(info.total),
       score: Math.max(0, Math.min(100, Math.round(score))),
       draft: draft
     };
+    if (info.submitted === true) payload.submitted = true;
+    if (info.liveStage != null && info.liveStage !== "") payload.liveStage = String(info.liveStage);
+    if (info.levelProgress != null && info.levelProgress !== "") payload.levelProgress = String(info.levelProgress);
+    if (info.lastActivity != null && info.lastActivity !== "") payload.lastActivity = String(info.lastActivity);
     if (Array.isArray(info.items)) payload.items = info.items;
     try {
       ensureApi()
@@ -2048,6 +2115,9 @@
         if (waitName) waitName.textContent = "Вы в комнате как " + savedName;
         applyStudentPhase((state.lastSnap && state.lastSnap.phase) || "lobby");
         subscribe(roomParam);
+        try {
+          W.dispatchEvent(new CustomEvent("ege-live-student-ready"));
+        } catch (eReady2) {}
       } else if (savedName) {
         // Returning visitor: join under saved name without asking again
         onJoin();

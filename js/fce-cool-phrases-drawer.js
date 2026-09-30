@@ -336,15 +336,26 @@
     var whoLine = oneSpeaker
       ? '<p class="fce-u1-ph-who">' + esc(speakers[0].label) + "</p>"
       : "";
-    var spkSelect = oneSpeaker
-      ? ""
-      : '<label class="fce-u1-ph-spk-lab">' +
+    var speakerBarHtml = "";
+    if (!oneSpeaker) {
+      speakerBarHtml =
+        '<div class="fce-u1-ph-ex-person-bar fce-u1-ph-spk-bar" role="tablist" aria-label="' +
         esc(spkLabel) +
-        ' <select id="fce-ph-spk-' +
-        id +
-        '" class="fce-u1-ph-spk">' +
-        optsHtml +
-        "</select></label>";
+        '">';
+      for (i = 0; i < speakers.length; i++) {
+        speakerBarHtml +=
+          '<button type="button" class="fce-u1-ph-ex-person' +
+          (i === 0 ? " is-on" : "") +
+          '" role="tab" aria-selected="' +
+          (i === 0 ? "true" : "false") +
+          '" data-ph-spk="' +
+          i +
+          '">' +
+          esc(speakers[i].label) +
+          "</button>";
+      }
+      speakerBarHtml += "</div>";
+    }
     function practiceLinksHtml(links, title) {
       if (!links || !links.length) return "";
       var html =
@@ -442,12 +453,12 @@
       id +
       '" aria-label="Close">×</button></div>' +
       '<div class="fce-u1-ph-drawer-body">' +
+      speakerBarHtml +
       tabsHtml +
       '<div id="fce-ph-panel-phrases-' +
       id +
       '">' +
       whoLine +
-      spkSelect +
       '<div id="fce-ph-list-' +
       id +
       '"></div></div>' +
@@ -507,7 +518,6 @@
     document.body.appendChild(mountEl);
 
     var listEl = document.getElementById("fce-ph-list-" + id);
-    var sel = document.getElementById("fce-ph-spk-" + id);
     var fab = document.getElementById("fce-ph-fab-" + id);
     var fabEx = document.getElementById("fce-ph-fab-ex-" + id);
     var fabRail = mountEl.querySelector(".fce-u1-ph-fab-rail");
@@ -526,10 +536,23 @@
       return opts.speaking;
     }
 
+    function syncSpeakerTabs() {
+      var activeBtn = null;
+      mountEl.querySelectorAll("[data-ph-spk]").forEach(function (btn) {
+        var on = Number(btn.getAttribute("data-ph-spk")) === spkIx;
+        btn.classList.toggle("is-on", on);
+        btn.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) activeBtn = btn;
+      });
+      if (activeBtn && activeBtn.scrollIntoView) {
+        activeBtn.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+      }
+    }
+
     function refresh() {
       var spk = speakers[spkIx] || speakers[0];
       if (listEl) listEl.innerHTML = listHtml(spk);
-      if (sel) sel.value = String(spkIx);
+      syncSpeakerTabs();
       var speakPanelEl = document.getElementById("fce-ph-panel-speaking-" + id);
       if (speakPanelEl) {
         var spData = speakingFor(spk);
@@ -588,7 +611,7 @@
       if (exModal) exModal.hidden = false;
       if (fabEx) fabEx.setAttribute("aria-expanded", "true");
       if (practiceLinkGroups.length && exPersonSwitch.applyPerson) {
-        var spkIxForEx = sel ? Number(sel.value) || 0 : 0;
+        var spkIxForEx = spkIx;
         if (spkIxForEx >= practiceLinkGroups.length) spkIxForEx = 0;
         exPersonSwitch.applyPerson(spkIxForEx);
       }
@@ -612,12 +635,12 @@
     if (closeBtnEx) closeBtnEx.addEventListener("click", closeExercises);
     if (exModalBg) exModalBg.addEventListener("click", closeExercises);
     backdrop.addEventListener("click", close);
-    if (sel) {
-      sel.addEventListener("change", function (e) {
-        spkIx = Number(e.target.value) || 0;
-        refresh();
-      });
-    }
+    mountEl.addEventListener("click", function (e) {
+      var spkBtn = e.target.closest("[data-ph-spk]");
+      if (!spkBtn || !drawer.contains(spkBtn)) return;
+      spkIx = Number(spkBtn.getAttribute("data-ph-spk")) || 0;
+      refresh();
+    });
     if (hasTabs) {
       var tabBtns = mountEl.querySelectorAll("[data-ph-tab]");
       var phrasesPanel = document.getElementById("fce-ph-panel-phrases-" + id);

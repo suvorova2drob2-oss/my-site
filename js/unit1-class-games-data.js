@@ -329,6 +329,7 @@
       all: "All decks",
       lifestyle: "Lifestyle",
       clothes: "Clothes",
+      sb12: "8 short extracts",
       get: "Get",
       run: "Run"
     }

@@ -122,6 +122,7 @@
             phrase: phrase,
             coolWord: line.coolWord || phrase,
             hint: hint,
+            paraphraseHint: line.paraphraseHint || hint,
             stickyBefore: useAuthorCarve
               ? line.stickyBefore
               : carved.stickyBefore || line.stickyBefore || "Type the missing bit: ",
@@ -199,11 +200,7 @@
       ["Coursebook vocabulary B", "Vocab B", ["vocab pack B"]],
       ["Listening / reading lexis", "Texts", ["listening", "reading"]]
     ],
-    7: [
-      ["Coursebook vocabulary A", "Vocab A", ["vocab pack A"]],
-      ["Coursebook vocabulary B", "Vocab B", ["vocab pack B"]],
-      ["Listening / reading lexis", "Texts", ["listening", "reading"]]
-    ],
+    7: [["Black Friday · reading", "Black Friday", ["black friday"]]],
     8: [
       ["Environment collocations", "Environment", ["environment"]],
       ["Coursebook vocabulary B", "Vocab B", ["vocab pack B"]],
@@ -257,6 +254,15 @@
     });
 
     /* Unit 1: Lifestyle + Clothes + Get + Run — real packs when wired. */
+    if (unit === 7) {
+      if (
+        W.FCE_U7_BLACK_FRIDAY_LEXIS &&
+        typeof W.FCE_U7_BLACK_FRIDAY_LEXIS.blackFridayTheme === "function"
+      ) {
+        themes = [W.FCE_U7_BLACK_FRIDAY_LEXIS.blackFridayTheme()];
+      }
+    }
+
     if (unit === 1) {
       var u1Themes = [];
       if (
@@ -287,15 +293,27 @@
       } else if (names[1]) {
         u1Themes.push(stubTheme(names[1][0], names[1][1], names[1][2]));
       }
+      if (
+        W.FCE_U1_SB12_LEXIS &&
+        typeof W.FCE_U1_SB12_LEXIS.sb12Theme === "function"
+      ) {
+        u1Themes.push(W.FCE_U1_SB12_LEXIS.sb12Theme());
+      }
       if (u1Themes.length) themes = u1Themes;
     }
 
     var hub = vocabHubFor(unit);
+    var hasBlackFriday = unit === 7 && themes.some(function (t) {
+      return t && t.id === "u7-black-friday";
+    });
     var hasLifestyle = unit === 1 && themes.some(function (t) {
       return t && t.id === "lifestyle";
     });
     var hasClothes = unit === 1 && themes.some(function (t) {
       return t && t.id === "clothes";
+    });
+    var hasSb12 = unit === 1 && themes.some(function (t) {
+      return t && t.id === "sb12";
     });
     return {
       unit: unit,
@@ -304,11 +322,13 @@
       backLabel: "Back to Unit " + unit,
       vocabHubHref: hub,
       vocabHubLabel: hub ? "Unit " + unit + " Vocabulary hub →" : "",
-      subtitleHtml: hasLifestyle || hasClothes
-        ? "<b>Lexical games, Unit 1.</b> <b>Lifestyle</b> (A–D) + <b>Clothes</b> (Speakers 1–5) + <b>Get</b> + <b>Run</b> — Cool Words with full script context."
-        : "<b>Lexical games, Unit " +
-          unit +
-          ".</b> Same trainers as Unit 12 (trainer, cards, drop, pick, express, echo, match, word bank). Stub packs — send phrase lists to fill.",
+      subtitleHtml: hasLifestyle || hasClothes || hasSb12
+        ? "<b>Lexical games, Unit 1.</b> <b>Lifestyle</b> (A–D) + <b>Clothes</b> (SB 1.1) + <b>Get</b> + <b>Run</b> + <b>8 short extracts</b> (SB 1.2) — Cool Words with full script context."
+        : hasBlackFriday
+          ? "<b>Lexical games, Unit 7.</b> <b>Black Friday</b> reading — Cool Words, memes, Word Bank, trainer, drop, pick, express, echo, match."
+          : "<b>Lexical games, Unit " +
+            unit +
+            ".</b> Same trainers as Unit 12 (trainer, cards, drop, pick, express, match, word bank). Stub packs — send phrase lists to fill.",
       themes: themes
     };
   }

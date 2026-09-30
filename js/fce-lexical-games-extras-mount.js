@@ -47,7 +47,9 @@
     get: "✉",
     run: "🏃",
     clothes: "👔",
-    lifestyle: "☀"
+    lifestyle: "☀",
+    sb12: "🎧",
+    "u7-black-friday": "🛒"
   };
 
   function memeDeckMeta(d) {
@@ -59,7 +61,9 @@
       get: "Get phrases · Ex. 2 matching",
       run: "Expressions with run · Ex. 2–3",
       clothes: "SB 1.1 · all speakers",
-      lifestyle: "This is your life · Lucas · Maja · Reo · Ben"
+      lifestyle: "This is your life · Lucas · Maja · Reo · Ben",
+      sb12: "Track 1.2 · Speakers 1, 2, 3, 5, 8 · flip + comic",
+      "u7-black-friday": "Part 6 reading · literal sale-day memes · 16 phrases"
     };
     var base = blurbs[d.id] || "Flip cards";
     var partsN = d.mode === "parts" ? (d.parts || []).length : 0;
@@ -397,6 +401,7 @@
         '<p class="vb-listening-pill" id="lexSbBingoListening" hidden aria-live="polite"></p>' +
         "</div></div>" +
         '<div class="vb-grid lex-sb-vb-grid vb-fs-grid" id="lexSbBingoGrid"></div>' +
+        '<ul class="vb-revealed-board" id="lexSbBingoRevealed" hidden aria-label="Unlocked phrases"></ul>' +
         '<div class="vb-fs-play-foot">' +
         '<div class="vb-fs-play-actions">' +
         '<button type="button" class="lex-sb-btn-sec vb-fs-dontknow" id="lexSbBingoDontKnowPlay">I don\'t know</button>' +
@@ -560,6 +565,7 @@
         var bingoApi = W.PREP_VOICE_BINGO.mount({
           els: {
             grid: el("lexSbBingoGrid"),
+            revealedStrip: el("lexSbBingoRevealed"),
             clue: el("lexSbBingoClue"),
             clueLabel: el("lexSbBingoClueLabel"),
             progress: el("lexSbBingoProgress"),
@@ -705,6 +711,7 @@
   var STICKY_DECK_ICONS = {
     lifestyle: "☀",
     clothes: "👔",
+    sb12: "🎧",
     get: "✉",
     run: "🏃",
     naomi: "💪",
@@ -715,6 +722,7 @@
   var STICKY_DECK_SHORT = {
     lifestyle: "Lifestyle",
     clothes: "Clothes",
+    sb12: "8 short extracts",
     get: "Get",
     run: "Run"
   };
@@ -732,6 +740,7 @@
     var blurbs = {
       lifestyle: "Lucas · Maja · Reo · Ben · reading",
       clothes: "SB 1.1 · Speakers 1–5",
+      sb12: "SB 1.2 · Speakers 1, 2, 3, 5, 8",
       get: "Get phrases · one word per gap",
       run: "Run collocations · coursebook",
       naomi: "Health Matters · Naomi Price",
@@ -788,9 +797,9 @@
           meta.count +
           "</span>" +
           "</span>" +
-          '<span class="meme-deck-tile__cta">' +
-          (open ? "Close ↑" : "Open board →") +
-          "</span>" +
+          (open
+            ? '<span class="meme-deck-tile__cta">' + "Close ↑" + "</span>"
+            : "") +
           "</button>"
         );
       })

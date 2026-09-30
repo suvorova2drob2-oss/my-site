@@ -48,15 +48,41 @@
   font: inherit;
   font-size: 0.95rem;
   padding: 12px 14px;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 14px;
   background: #eef1f6;
+  color: #0f172a;
   cursor: pointer;
 }
 .vmcq-opt:hover:not(:disabled) { background: #e2e8f0; }
-.vmcq-opt.is-ok { background: #bbf7d0; }
-.vmcq-opt.is-bad { background: #fecaca; }
-.vmcq-opt:disabled { cursor: default; }
+/* Beat mastering-b2-page-skin `button.is-ok/is-bad { color: … !important }` on SB 1.2 MCQ */
+.vmcq-page button.vmcq-opt.is-ok {
+  background: #bbf7d0 !important;
+  border-color: #047857 !important;
+  color: #052e16 !important;
+  font-weight: 700;
+  -webkit-text-fill-color: #052e16;
+}
+.vmcq-page button.vmcq-opt.is-bad {
+  background: #fecaca !important;
+  border-color: #b91c1c !important;
+  color: #450a0a !important;
+  font-weight: 700;
+  -webkit-text-fill-color: #450a0a;
+}
+.vmcq-page button.vmcq-opt:not(.is-ok):not(.is-bad):disabled {
+  background: #eef1f6 !important;
+  border-color: transparent !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a;
+  cursor: default;
+  opacity: 1 !important;
+}
+.vmcq-page button.vmcq-opt.is-ok:disabled,
+.vmcq-page button.vmcq-opt.is-bad:disabled {
+  cursor: default;
+  opacity: 1 !important;
+}
 .vmcq-hint { margin-top: 12px; font-size: 0.88rem; }
 .vmcq-hint summary { cursor: pointer; font-weight: 600; }
 .vmcq-nav {
@@ -76,6 +102,22 @@
 }
 .vmcq-back { background: #e8edf3; color: #64748b; }
 .vmcq-next { background: #2563eb; color: #fff; }
+a.vmcq-next-speaker {
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.vmcq-nav--done {
+  justify-content: flex-end;
+  gap: 10px;
+}
+.vmcq-auto-note {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  align-self: center;
+  padding: 8px 4px;
+}
 .vmcq-done {
   margin: 12px 0 4px;
   font-size: 1.6rem;

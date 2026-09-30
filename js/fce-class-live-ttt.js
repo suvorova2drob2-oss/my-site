@@ -277,6 +277,15 @@
     return qs().get("as") === "student";
   }
 
+  /** Ignore empty / junk ?room= — real Live rooms use 4+ chars. */
+  function normalizeRoomCode(raw) {
+    var c = String(raw || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 12);
+    return c.length >= 4 ? c : "";
+  }
+
   function syncNameFromSnapshot(snap) {
     if (!state.playerId || !snap || !snap.players) return;
     var me = null;
@@ -302,6 +311,62 @@
     } catch (e) {
       return false;
     }
+  }
+
+  /** Local tic-tac-toe — no room, no student shell (Class Live is optional via FAB). */
+  function leaveLiveLocal() {
+    if (state.unsub) {
+      state.unsub();
+      state.unsub = null;
+    }
+    state.roomCode = "";
+    state.hostToken = "";
+    state.playerId = "";
+    state.role = "";
+    state.team = "";
+    state.hostPlaying = false;
+    state.joinedAsPlayer = false;
+    state.lastGsVer = 0;
+    state.lastPhase = "";
+    resetStudentJoinLocal();
+    try {
+      sessionStorage.removeItem(SS_HOST);
+      sessionStorage.removeItem(SS_ROOM);
+      sessionStorage.removeItem(SS_ROLE);
+      sessionStorage.removeItem(SS_PLAYER);
+      sessionStorage.removeItem(SS_TEAM);
+      sessionStorage.removeItem(SS_HOST_PLAYING);
+    } catch (e) {}
+    try {
+      var u = new URL(W.location.href);
+      u.searchParams.delete("room");
+      u.searchParams.delete("as");
+      u.searchParams.delete("live_host");
+      W.history.replaceState({}, "", u.pathname + u.search + u.hash);
+    } catch (e2) {}
+    W.document.body.classList.remove(
+      "fcl-has-room",
+      "fcl-student",
+      "fcl-host",
+      "fcl-host-playing",
+      "fcl-game-on",
+      "fcl-gate-open"
+    );
+    showStudentGate(false);
+    showStudentShell(false);
+    openPanel(false);
+    showRosterDock(false);
+    updateHostProjectorUi();
+    resetHostBoardUi();
+  }
+
+  function wireLeaveLiveButtons() {
+    [].forEach.call(document.querySelectorAll("[data-fcl-leave-live]"), function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        leaveLiveLocal();
+      });
+    });
   }
 
   function beginStudentJoin(name) {
@@ -595,7 +660,11 @@
     }
     var nameEl = document.getElementById("fclStudentNameLbl");
     var saved = readName();
-    if (nameEl) nameEl.textContent = saved || "…";
+    if (!saved) {
+      openStudentGatePrefill();
+      return;
+    }
+    if (nameEl) nameEl.textContent = saved;
 
     paintStudentLobbyRoster(snap);
 
@@ -1044,6 +1113,7 @@
       "</div></details>" +
       '<button type="button" class="fcl-btn fcl-btn--gold fcl-btn--lg" id="fclStart" hidden>Start live game</button>' +
       '<button type="button" class="fcl-btn fcl-btn--warn fcl-btn--lg" id="fclEnd" hidden>End live game</button>' +
+      '<p class="fcl-muted fcl-local-tip">Без комнаты: закройте Live и играйте на странице — rosters X/O и <strong>Start game</strong>.</p>' +
       "</div>" +
       "</div>";
     document.body.appendChild(panel);
@@ -1064,6 +1134,7 @@
       '<button type="button" class="fcl-btn fcl-btn--pri fcl-btn--lg" id="fclJoin">Join game</button>' +
       '<p class="fcl-msg" id="fclJoinMsg"></p>' +
       '<p class="fcl-gate-host-tip">Ведёте урок? <strong>Live</strong> → <strong>Create room</strong>. Тест ученика — откройте <strong>скопированную ссылку</strong> (в ней режим ученика).</p>' +
+      '<button type="button" class="fcl-btn fcl-btn--sec fcl-leave-live" data-fcl-leave-live>Play locally · no room</button>' +
       "</div>";
     document.body.appendChild(gate);
 
@@ -1081,6 +1152,7 @@
       '<p class="fcl-student-lobby-pulse" id="fclStudentLobbyPulse">Waiting for the teacher to start…</p>' +
       '<div class="fcl-student-lobby-roster" id="fclStudentLobbyRoster"></div>' +
       '<button type="button" class="fcl-btn fcl-btn--sec fcl-change-name" id="fclChangeName">Change name</button>' +
+      '<button type="button" class="fcl-btn fcl-btn--sec fcl-leave-live" data-fcl-leave-live>Play locally · no room</button>' +
       "</div>" +
       '<div class="fcl-student-intro" id="fclStudentIntro" hidden>' +
       '<p class="fcl-intro-k">Game on</p>' +
@@ -1254,6 +1326,7 @@
         if (ev.key === "Enter") document.getElementById("fclJoin").click();
       });
     }
+    wireLeaveLiveButtons();
   }
 
   function restoreHostPlayingFromStorage() {
@@ -1353,23 +1426,24 @@
       }
     }
 
-    var room = qs().get("room");
-    if (room) {
-      state.roomCode = String(room).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12);
+    if (qs().get("local") === "1") {
+      leaveLiveLocal();
+    }
+
+    var roomCode = normalizeRoomCode(qs().get("room"));
+    var studentLiveLink = isStudentJoinUrl() && roomCode;
+    var restoredHost =
+      !studentLiveLink && roomCode && tryRestoreHostFromStorage(roomCode);
+
+    if (studentLiveLink) {
+      /* Phone / student link only (?room=XXXX&as=student) — not the teacher projector page. */
+      state.roomCode = roomCode;
       W.document.body.classList.add("fcl-has-room");
       var gateCodeEl = document.getElementById("fclGateCode");
-      if (gateCodeEl) gateCodeEl.textContent = state.roomCode || "—";
-
-      var forceStudent = isStudentJoinUrl();
-      var restoredHost = !forceStudent && tryRestoreHostFromStorage(state.roomCode);
-
-      if (forceStudent) {
-        clearHostSessionForStudentEntry();
-        resetStudentJoinLocal();
-        openStudentGatePrefill();
-      } else if (restoredHost) {
-        syncUrlWithRoom(state.roomCode);
-      } else if (canAutoRejoinStudent()) {
+      if (gateCodeEl) gateCodeEl.textContent = state.roomCode;
+      clearHostSessionForStudentEntry();
+      resetStudentJoinLocal();
+      if (canAutoRejoinStudent()) {
         state.playerId = sessionStorage.getItem(SS_PLAYER);
         state.role = "student";
         state.team = sessionStorage.getItem(SS_TEAM) || "";
@@ -1381,22 +1455,13 @@
         W.document.body.classList.remove("fcl-host", "fcl-host-playing");
         openPanel(false);
       } else {
-        resetStudentJoinLocal();
         openStudentGatePrefill();
       }
+    } else if (restoredHost) {
+      syncUrlWithRoom(state.roomCode);
     } else {
-      showStudentGate(false);
-      try {
-        if (sessionStorage.getItem(SS_ROLE) === "host") {
-          state.roomCode = sessionStorage.getItem(SS_ROOM) || "";
-          state.hostToken = sessionStorage.getItem(SS_HOST) || "";
-          state.role = "host";
-          if (state.roomCode) {
-            syncUrlWithRoom(state.roomCode);
-            restoreHostUi();
-          }
-        }
-      } catch (e2) {}
+      /* Default: local game — rosters on this page, Start game. Live later via FAB → Create room. */
+      leaveLiveLocal();
     }
 
     if (qs().get("live_host") === "1") openPanel(true);
@@ -1454,5 +1519,9 @@
     };
   }
 
-  W.FceClassLiveTtt = { mount: mount, paintStudentBoard: paintStudentBoard };
+  W.FceClassLiveTtt = {
+    mount: mount,
+    paintStudentBoard: paintStudentBoard,
+    leaveLiveLocal: leaveLiveLocal
+  };
 })(typeof window !== "undefined" ? window : globalThis);

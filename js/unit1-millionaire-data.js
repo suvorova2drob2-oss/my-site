@@ -97,6 +97,28 @@
     var runLex = W.FCE_U1_RUN_LEXIS;
     if (getLex && getLex.lines) pushLinePack("get", "Get", getLex.lines);
     if (runLex && runLex.lines) pushLinePack("run", "Run", runLex.lines);
+    var sb12 = W.FCE_U1_SB12_LEXIS;
+    if (sb12 && sb12.speakers) {
+      sb12.speakers.forEach(function (sp) {
+        sp.lines.forEach(function (line) {
+          var gl =
+            typeof sb12.toGameLine === "function" ? sb12.toGameLine(line) : line;
+          out.push({
+            pack: "sb12",
+            packLabel: "8 short extracts",
+            speakerId: sp.id,
+            speakerName: sp.label,
+            speakerFull: sp.label,
+            topic: "SB 1.2 · " + sp.label,
+            coolWord: String(line.coolWord || "").trim(),
+            phrase: String(line.phrase || line.coolWord || "").trim(),
+            hint: String(line.hint || "").trim(),
+            contextSentence: String(line.contextSentence || line.phrase || "").trim(),
+            stickyAnswer: String(gl.stickyAnswer || line.coolWord || "").trim()
+          });
+        });
+      });
+    }
     return out;
   }
 
@@ -370,6 +392,13 @@
       "run",
       "Run"
     );
+    buildPhraseMeaningFacts(
+      rows.filter(function (r) {
+        return r.pack === "sb12";
+      }),
+      "sb12",
+      "SB 1.2"
+    );
 
     return out;
   }
@@ -383,7 +412,10 @@
 
   function hintPassageForRow(row) {
     if (!row) return "";
-    if (row.contextSentence && (row.pack === "get" || row.pack === "run")) {
+    if (
+      row.contextSentence &&
+      (row.pack === "get" || row.pack === "run" || row.pack === "sb12")
+    ) {
       return row.contextSentence;
     }
     if (row.pack === "lifestyle" && W.U1_LIFESTYLE_RETELL_BLOCKS) {
@@ -423,6 +455,7 @@
     all: "All decks",
     lifestyle: "Lifestyle",
     clothes: "Clothes",
+    sb12: "8 short extracts",
     get: "Get",
     run: "Run"
   };

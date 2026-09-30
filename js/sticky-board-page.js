@@ -11,7 +11,8 @@
     lifestyle: "Lifestyle",
     clothes: "Clothes",
     get: "Get",
-    run: "Run"
+    run: "Run",
+    sb12: "8 short extracts"
   };
 
   function shuffle(arr) {
@@ -95,6 +96,8 @@
       return pack;
     }
 
+    var typeHint = W.STICKY_BOARD_TYPE_HINT || "";
+
     function jumpInner(activeId) {
       var inner = allPacks
         .map(function (p) {
@@ -155,10 +158,19 @@
         : '<nav class="sbp-jump sbp-deck-tabs" id="sbpJumpNav" aria-label="Sticky board decks" role="tablist">' +
           jumpInner(pack.id) +
           "</nav>") +
+      (embedded
+        ? '<p class="sbp-embed-banner" id="sbpEmbedBanner" aria-live="polite"></p>'
+        : "") +
       '<div class="sbp-hud">' +
       '<span class="sbp-hud-score">Done <strong id="sbpDone">0</strong>/<span id="sbpTotal">0</span></span>' +
       '<button type="button" class="sbp-btn-reset" id="sbpShuffle">Shuffle board</button>' +
       "</div>" +
+      (typeHint
+        ? '<p class="sbp-type-hint-global">' + typeHint + "</p>"
+        : "") +
+      (embedded && (pack.blocks || []).length > 1
+        ? '<nav class="sbp-speaker-filter" id="sbpSpeakerFilter" aria-label="Speaker filter"></nav>'
+        : "") +
       '<div class="sbp-board" id="sbpBoard" aria-label="Sticky notes"></div>' +
       "</div>";
 
@@ -181,7 +193,58 @@
     var activePack = pack;
     var CARDS = cardsFromBlocks(pack.blocks, pack);
     var deck = [];
-    var typeHint = W.STICKY_BOARD_TYPE_HINT || "";
+    var speakerFilter = "all";
+
+    function paintEmbedBanner(activePack) {
+      var el = document.getElementById("sbpEmbedBanner");
+      if (!el || !embedded) return;
+      var names = (activePack.blocks || [])
+        .map(function (b) {
+          return b.name;
+        })
+        .join(" · ");
+      el.textContent =
+        (embedLabel(activePack) || activePack.title || "Sticky board") +
+        " only — " +
+        CARDS.length +
+        " notes" +
+        (names ? " · " + names : "");
+    }
+
+    function paintSpeakerFilter() {
+      var nav = document.getElementById("sbpSpeakerFilter");
+      if (!nav || !embedded) return;
+      var blocks = activePack.blocks || [];
+      if (blocks.length <= 1) {
+        nav.innerHTML = "";
+        nav.hidden = true;
+        return;
+      }
+      nav.hidden = false;
+      var html =
+        '<button type="button" class="sbp-spk-chip' +
+        (speakerFilter === "all" ? " is-on" : "") +
+        '" data-spk-filter="all">All speakers</button>';
+      blocks.forEach(function (b) {
+        var name = String(b.name || "Block");
+        html +=
+          '<button type="button" class="sbp-spk-chip' +
+          (speakerFilter === name ? " is-on" : "") +
+          '" data-spk-filter="' +
+          name.replace(/"/g, "") +
+          '">' +
+          name +
+          "</button>";
+      });
+      nav.innerHTML = html;
+      nav.querySelectorAll("[data-spk-filter]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          speakerFilter = btn.getAttribute("data-spk-filter") || "all";
+          paintSpeakerFilter();
+          rebuild();
+        });
+      });
+    }
 
     if (typeof W.stickyBoardAuditSingleWordStickies === "function") {
       W.stickyBoardAuditSingleWordStickies(pack.blocks, pack.id || "u1-sticky");
@@ -266,10 +329,6 @@
           gapEl.className = "sbp-gap-line";
           gapEl.textContent = item.clue;
 
-          var hintEl = document.createElement("div");
-          hintEl.className = "sbp-type-hint";
-          hintEl.textContent = typeHint;
-
           var inp = document.createElement("input");
           inp.type = "text";
           inp.className = "sbp-inp";
@@ -304,7 +363,6 @@
 
           note.appendChild(tag);
           note.appendChild(gapEl);
-          note.appendChild(hintEl);
           note.appendChild(inp);
           note.appendChild(ctrl);
           note.appendChild(fb);
@@ -322,34 +380,77 @@
       updateHud();
     }
 
+    function cardsForDeck() {
+      return CARDS.filter(function (c) {
+        return speakerFilter === "all" || c.speaker === speakerFilter;
+      });
+    }
+
     function rebuild() {
-      deck = shuffle(
-        CARDS.map(function (c) {
-          return {
+      var pool = cardsForDeck();
+      var groups = [];
+      var blockOrder = (activePack.blocks || []).map(function (b) {
+        return b.name;
+      });
+      var seen = Object.create(null);
+      blockOrder.forEach(function (name) {
+        if (speakerFilter !== "all" && name !== speakerFilter) return;
+        var group = pool
+          .filter(function (c) {
+            return c.speaker === name;
+          })
+          .map(function (c) {
+            return {
+              speaker: c.speaker,
+              clue: c.clue,
+              answer: c.answer,
+              ctx: c.ctx,
+              ok: false
+            };
+          });
+        if (group.length) {
+          groups.push(shuffle(group));
+          seen[name] = true;
+        }
+      });
+      pool.forEach(function (c) {
+        if (seen[c.speaker]) return;
+        groups.push([
+          {
             speaker: c.speaker,
             clue: c.clue,
             answer: c.answer,
             ctx: c.ctx,
             ok: false
-          };
-        })
-      );
+          }
+        ]);
+      });
+      shuffle(groups);
+      deck = [];
+      groups.forEach(function (g) {
+        deck = deck.concat(g);
+      });
       render();
     }
 
     function switchPack(nextPack) {
       activePack = nextPack;
+      speakerFilter = "all";
       if (typeof W.stickyBoardAuditSingleWordStickies === "function") {
         W.stickyBoardAuditSingleWordStickies(nextPack.blocks, nextPack.id || "u1-sticky");
       }
       CARDS = cardsFromBlocks(nextPack.blocks, nextPack);
       paintMeta(nextPack);
+      paintEmbedBanner(nextPack);
+      paintSpeakerFilter();
       refreshJumpNav();
       rebuild();
     }
 
     document.getElementById("sbpShuffle").addEventListener("click", rebuild);
     wirePackButtons();
+    paintEmbedBanner(pack);
+    paintSpeakerFilter();
     rebuild();
   }
 

@@ -536,6 +536,13 @@
       }
       return fullPhraseFromItem(it) || String(it.answer || "").trim();
     }
+    /** Paraphrase shown in pick / trainer — optional `paraphraseHint` overrides `hint`. */
+    function gameParaphraseHint(it) {
+      var h = String(
+        (it && (it.paraphraseHint || it.hint)) || ""
+      ).trim();
+      return h || "Choose the phrase that matches this meaning.";
+    }
     function isStubTrainerItem(it) {
       if (!it) return true;
       const hint = String(it.hint || "");
@@ -632,14 +639,11 @@
         .map(function (_, i) {
           var id =
             i === 0 ? "packPhrasal" : i === 1 ? "packCrime" : i === 2 ? "packStories" : "packTheme" + i;
-          var checked = i === 0 ? " checked" : "";
           return (
             '<label class="pack-card pack-check">' +
             '<input type="checkbox" id="' +
             id +
-            '"' +
-            checked +
-            " />" +
+            '" />' +
             '<span data-lex-theme-title="' +
             i +
             '"><b></b></span></label>'
@@ -661,6 +665,25 @@
       return themes.map(function (_, i) {
         var el = document.getElementById(themePackCheckboxId(kind, i));
         return !!(el && el.checked);
+      });
+    }
+
+    /** Lexical trainer: both Topic bar (mini) and pack tick boxes must be on. */
+    function readTrainerThemePicks() {
+      return themes.map(function (_, i) {
+        var packEl = document.getElementById(themePackCheckboxId("pack", i));
+        var miniEl = themeCheckbox(i);
+        var packOn = !!(packEl && packEl.checked);
+        var miniOn = miniEl ? miniEl.checked : true;
+        return packOn && miniOn;
+      });
+    }
+
+    function syncTrainerPackFromMini() {
+      themes.forEach(function (_, i) {
+        var packEl = document.getElementById(themePackCheckboxId("pack", i));
+        var miniEl = themeCheckbox(i);
+        if (packEl && miniEl) packEl.checked = miniEl.checked;
       });
     }
 
@@ -798,6 +821,14 @@
         : [];
     }
     rebuildMiniThemeBar();
+    (function wireMiniThemeToTrainerPacks() {
+      var bar = document.getElementById("lexMiniThemeBar");
+      if (!bar) return;
+      bar.addEventListener("change", function (ev) {
+        if (!ev.target || ev.target.type !== "checkbox") return;
+        syncTrainerPackFromMini();
+      });
+    })();
     const host = document.getElementById("gamesHost");
     host.innerHTML = GAMES.map((g) => `
       <div class="folder" data-key="${g.key}">
@@ -811,6 +842,7 @@
     const trainerHtml = `
       <div class="trainer-box">
         <div id="packChoice" class="pack-choice">
+          <p class="pack-choice-note" style="font-size:0.85rem;color:var(--muted);margin:0 0 10px;">Uses <b>Topic</b> checkboxes at the top of the page — only ticked themes play here.</p>
           ${trainerPackChoiceHtml()}
           <button class="continue-btn" id="btnContinuePacks" type="button">Continue</button>
         </div>
@@ -1502,7 +1534,7 @@
         const target = fullAnswerOf(it);
         const distractors = shuffle(all.filter(x => fullAnswerOf(x) !== target)).slice(0, 3).map(x => fullAnswerOf(x));
         const options = shuffle([target, ...distractors]);
-        return { hint: it.hint, answer: target, options };
+        return { hint: gameParaphraseHint(it), answer: target, options };
       });
       PICK.i = 0; PICK.score = 0; PICK.done = false;
     }
@@ -1569,7 +1601,7 @@
       return null;
     }
     function expressPromptHtml(cur) {
-      const hint = String(cur.item.hint || "").trim() || "Recall the phrase from the text.";
+      const hint = gameParaphraseHint(cur.item);
       if (cur.type === "paraphrase") {
         return (
           '<div class="express-prompt">' +
@@ -1830,8 +1862,8 @@
 
     // Trainer logic
     let trainerActive = false;
-    let trainerThemePicks = themes.map(function (_, i) {
-      return i === 0;
+    let trainerThemePicks = themes.map(function () {
+      return false;
     });
     let activeSpeakers = [];
     let speaker = 0;
@@ -2224,6 +2256,7 @@
         chooser.classList.remove("hidden");
         play.classList.add("hidden");
         hideTrainerWin();
+        syncTrainerPackFromMini();
         return;
       }
       chooser.classList.add("hidden");
@@ -2235,7 +2268,7 @@
       const c = current();
       trainerUpdateLives();
       document.getElementById("counter").textContent = (item + 1) + " / " + currentItems().length;
-      document.getElementById("hintBox").textContent = c.hint;
+      document.getElementById("hintBox").textContent = gameParaphraseHint(c);
       document.getElementById("linePre").textContent = trainerPre(c);
       document.getElementById("linePost").textContent = trainerPost(c);
       document.getElementById("answerInput").value = "";
@@ -2317,11 +2350,12 @@
 
     document.addEventListener("click", (e) => {
       if (e.target.id === "btnContinuePacks") {
-        trainerThemePicks = readThemeFlags("pack");
+        trainerThemePicks = readTrainerThemePicks();
         const msg = document.getElementById("msg");
         if (!trainerThemePicks.some(Boolean)) {
           if (msg) {
-            msg.textContent = "Tick at least one pack before Continue.";
+            msg.textContent =
+              "Tick at least one pack (and Topic above) before Continue.";
             msg.className = "msg bad";
           }
           return;
@@ -2346,6 +2380,8 @@
         renderTrainer();
       }
       if (e.target.id === "trainerWinAgain") {
+        trainerThemePicks = readTrainerThemePicks();
+        buildActiveSpeakers();
         applyTrainerProgress();
         resetTrainerRoundCounters();
         hideTrainerWin();

@@ -64,6 +64,24 @@
         comics: (W.UNIT1_LIFESTYLE_MEME_COMICS || []).slice()
       });
     }
+    if (W.UNIT1_SB12_MEME_PARTS && W.UNIT1_SB12_MEME_PARTS.length) {
+      decks.push({
+        id: "sb12",
+        label: "8 short extracts",
+        mode: "parts",
+        parts: W.UNIT1_SB12_MEME_PARTS.map(function (p) {
+          return {
+            part: p.part,
+            label: p.label,
+            cards: prefixImg(
+              p.cards || [],
+              "unit1-listening/sb-1-2/memes/"
+            )
+          };
+        }),
+        comics: (W.UNIT1_SB12_MEME_COMICS || []).slice()
+      });
+    }
     return decks;
   }
 
@@ -95,11 +113,32 @@
     });
   }
 
+  function unit7Decks() {
+    if (W.UNIT7_BLACK_FRIDAY_MEME_CARDS && W.UNIT7_BLACK_FRIDAY_MEME_CARDS.length) {
+      return [
+        {
+          id: "u7-black-friday",
+          label: "Black Friday",
+          mode: "flip",
+          cards: prefixImg(
+            W.UNIT7_BLACK_FRIDAY_MEME_CARDS,
+            "unit7-reading-black-friday/memes/"
+          )
+        }
+      ];
+    }
+    return [];
+  }
+
   function forUnit(unit) {
     unit = Number(unit) || 0;
     if (unit === 1) {
       var u1 = unit1Decks();
       if (u1.length) return { decks: u1 };
+    }
+    if (unit === 7) {
+      var u7 = unit7Decks();
+      if (u7.length) return { decks: u7 };
     }
     if (W.FCE_UNIT_LEX_STUBS && typeof W.FCE_UNIT_LEX_STUBS.forUnit === "function") {
       var cfg = W.FCE_UNIT_LEX_STUBS.forUnit(unit);

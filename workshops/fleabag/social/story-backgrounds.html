@@ -1,381 +1,761 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fleabag · подложки Stories · 1080×1920</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: #0f172a;
-      padding: 20px 16px 48px;
-      color: #cbd5e1;
-    }
-
-    .page-title {
-      max-width: 540px;
-      margin: 0 auto 16px;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #f8fafc;
-    }
-
-    .export-hint {
-      max-width: 540px;
-      margin: 0 auto 20px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      background: #1e293b;
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      font-size: 0.88rem;
-      line-height: 1.55;
-    }
-    .export-hint strong { color: #fde68a; }
-
-    .toolbar {
-      max-width: 540px;
-      margin: 0 auto 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .toolbar button {
-      font: inherit;
-      font-size: 0.82rem;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.45);
-      background: #0f172a;
-      color: #e0f2fe;
-      cursor: pointer;
-    }
-    .toolbar button:hover { background: #1e3a5f; }
-    .toolbar button.is-primary {
-      border-color: rgba(251, 191, 36, 0.55);
-      color: #fde68a;
-    }
-
-    .deck {
-      max-width: 540px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 36px;
-    }
-
-    .deck-item-head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .deck-item-head span {
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #94a3b8;
-    }
-
-    /* 9:16 box — высота всегда считается от ширины */
-    .story-canvas {
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
-      border-radius: 8px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
-      aspect-ratio: 9 / 16;
-    }
-
-    .story-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background:
-        radial-gradient(55% 45% at 12% 8%, rgba(251, 191, 36, 0.42) 0%, transparent 70%),
-        radial-gradient(50% 40% at 92% 18%, rgba(45, 212, 191, 0.28) 0%, transparent 65%),
-        radial-gradient(60% 50% at 50% 95%, rgba(217, 119, 6, 0.22) 0%, transparent 60%),
-        radial-gradient(80% 55% at 50% -5%, rgba(56, 189, 248, 0.2) 0%, transparent 55%),
-        radial-gradient(45% 35% at 100% 75%, rgba(34, 211, 238, 0.15) 0%, transparent 50%),
-        linear-gradient(180deg, #12100e 0%, #071018 42%, #030712 100%);
-    }
-
-    .story-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.06;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
-
-    .story-inner {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 8% 7.5% 9%;
-    }
-
-    .zone-kicker { min-height: 8%; margin-bottom: 4%; flex-shrink: 0; }
-    .zone-body { flex: 1; min-height: 40%; }
-    .zone-footer {
-      flex-shrink: 0;
-      min-height: 12%;
-      margin-top: auto;
-      padding-top: 4%;
-    }
-
-    .story-canvas--center .story-inner {
-      justify-content: center;
-      padding-top: 14%;
-    }
-    .story-canvas--center .zone-kicker {
-      position: absolute;
-      top: 8%;
-      left: 7.5%;
-      right: 7.5%;
-      margin-bottom: 0;
-    }
-
-    .story-canvas--steps .zone-body {
-      padding-left: 4%;
-      border-left: 3px solid rgba(251, 191, 36, 0.35);
-    }
-
-    .story-canvas--voice .zone-voice {
-      position: absolute;
-      bottom: 8%;
-      left: 7.5%;
-      right: 7.5%;
-      height: 5%;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.35);
-    }
-
-    /* Направляющие — только если включены; на PNG их не будет */
-    body:not(.show-guides) .zone-voice { display: none; }
-
-    body.show-guides .zone-kicker,
-    body.show-guides .zone-body,
-    body.show-guides .zone-footer {
-      outline: 2px dashed rgba(125, 211, 252, 0.4);
-      outline-offset: 3px;
-      background: rgba(15, 23, 42, 0.15);
-    }
-    body.show-guides .zone-kicker::before,
-    body.show-guides .zone-body::before,
-    body.show-guides .zone-footer::before {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #7dd3fc;
-      margin-bottom: 6px;
-    }
-    body.show-guides .zone-kicker::before { content: "Kicker · верх"; }
-    body.show-guides .zone-body::before { content: "Твой текст здесь"; }
-    body.show-guides .zone-footer::before { content: "CTA · время · direct"; }
-
-    body.show-guides .zone-kicker {
-      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
-      padding-bottom: 8px;
-    }
-    body.show-guides .zone-footer {
-      border-top: 1px solid rgba(148, 163, 184, 0.2);
-    }
-  </style>
-</head>
-<body class="show-guides">
-  <h1 class="page-title">Fleabag · 4 подложки для Stories</h1>
-  <div class="export-hint">
-    <strong>Проще всего:</strong> нажми золотую кнопку «Скачать PNG» у нужной карточки — файл <strong>1080×1920</strong>, без пунктира.
-    Перед скачиванием можно «Скрыть направляющие». В Canva: Upload → текст сверху.
-  </div>
-
-  <div class="toolbar">
-    <button type="button" class="is-primary" id="dl-all">Скачать все 4 PNG</button>
-    <button type="button" id="toggle-guides">Скрыть направляющие</button>
-  </div>
-
-  <div class="deck" id="deck">
-    <section class="deck-item" data-variant="center">
-      <div class="deck-item-head">
-        <span>Сторис 1 · крючок</span>
-        <button type="button" class="is-primary dl-one">Скачать PNG</button>
-      </div>
-      <article class="story-canvas story-canvas--center">
-        <div class="story-bg" aria-hidden="true"></div>
-        <div class="story-inner">
-          <div class="zone-kicker"></div>
-          <div class="zone-body"></div>
-        </div>
-      </article>
-    </section>
-
-    <section class="deck-item" data-variant="steps-voice">
-      <div class="deck-item-head">
-        <span>Сторис 1 · метод / голос</span>
-        <button type="button" class="is-primary dl-one">Скачать PNG</button>
-      </div>
-      <article class="story-canvas story-canvas--steps story-canvas--voice">
-        <div class="story-bg" aria-hidden="true"></div>
-        <div class="story-inner">
-          <div class="zone-kicker"></div>
-          <div class="zone-body"></div>
-          <div class="zone-voice" aria-hidden="true"></div>
-        </div>
-      </article>
-    </section>
-
-    <section class="deck-item" data-variant="steps">
-      <div class="deck-item-head">
-        <span>Сторис 2 · формат</span>
-        <button type="button" class="is-primary dl-one">Скачать PNG</button>
-      </div>
-      <article class="story-canvas story-canvas--steps">
-        <div class="story-bg" aria-hidden="true"></div>
-        <div class="story-inner">
-          <div class="zone-kicker"></div>
-          <div class="zone-body"></div>
-        </div>
-      </article>
-    </section>
-
-    <section class="deck-item" data-variant="cta">
-      <div class="deck-item-head">
-        <span>Сторис 2 · призыв</span>
-        <button type="button" class="is-primary dl-one">Скачать PNG</button>
-      </div>
-      <article class="story-canvas">
-        <div class="story-bg" aria-hidden="true"></div>
-        <div class="story-inner">
-          <div class="zone-kicker"></div>
-          <div class="zone-body"></div>
-          <div class="zone-footer"></div>
-        </div>
-      </article>
-    </section>
-  </div>
-
-  <script>
-    var W = 1080;
-    var H = 1920;
-    var names = [
-      "fleabag-story-1-hook.png",
-      "fleabag-story-1-method.png",
-      "fleabag-story-2-format.png",
-      "fleabag-story-2-cta.png",
-    ];
-
-    function paintBackground(ctx) {
-      ctx.fillStyle = "#030712";
-      ctx.fillRect(0, 0, W, H);
-
-      function blob(x, y, r, color) {
-        var g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, color);
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      blob(W * 0.12, H * 0.08, W * 0.55, "rgba(251, 191, 36, 0.42)");
-      blob(W * 0.92, H * 0.18, W * 0.5, "rgba(45, 212, 191, 0.28)");
-      blob(W * 0.5, H * 0.95, W * 0.6, "rgba(217, 119, 6, 0.22)");
-      blob(W * 0.5, H * -0.02, W * 0.75, "rgba(56, 189, 248, 0.2)");
-      blob(W * 1.0, H * 0.75, W * 0.45, "rgba(34, 211, 238, 0.15)");
-
-      var lg = ctx.createLinearGradient(0, 0, 0, H);
-      lg.addColorStop(0, "rgba(18, 16, 14, 0.35)");
-      lg.addColorStop(0.42, "rgba(7, 16, 24, 0.5)");
-      lg.addColorStop(1, "rgba(3, 7, 18, 0.65)");
-      ctx.fillStyle = lg;
-      ctx.fillRect(0, 0, W, H);
-    }
-
-    function drawVariant(ctx, variant) {
-      paintBackground(ctx);
-      var padX = W * 0.075;
-      var padTop = H * 0.08;
-
-      if (variant === "steps" || variant === "steps-voice") {
-        ctx.fillStyle = "rgba(251, 191, 36, 0.35)";
-        ctx.fillRect(padX, padTop + H * 0.12, 3, H * 0.55);
-      }
-      if (variant === "steps-voice") {
-        var y = H * 0.87;
-        var h = H * 0.05;
-        ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
-        roundRect(ctx, padX, y, W - padX * 2, h, h / 2);
-        ctx.fill();
-      }
-      if (variant === "cta") {
-        ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(padX, H * 0.78);
-        ctx.lineTo(W - padX, H * 0.78);
-        ctx.stroke();
-      }
-    }
-
-    function roundRect(ctx, x, y, w, h, r) {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    }
-
-    function downloadPng(index) {
-      document.body.classList.remove("show-guides");
-      var section = document.querySelectorAll(".deck-item")[index];
-      var variant = section.getAttribute("data-variant") || "center";
-      var canvas = document.createElement("canvas");
-      canvas.width = W;
-      canvas.height = H;
-      var ctx = canvas.getContext("2d");
-      drawVariant(ctx, variant);
-      var a = document.createElement("a");
-      a.download = names[index];
-      a.href = canvas.toDataURL("image/png");
-      a.click();
-    }
-
-    document.getElementById("toggle-guides").addEventListener("click", function () {
-      document.body.classList.toggle("show-guides");
-      this.textContent = document.body.classList.contains("show-guides")
-        ? "Скрыть направляющие"
-        : "Показать направляющие";
-    });
-
-    document.querySelectorAll(".dl-one").forEach(function (btn, i) {
-      btn.addEventListener("click", function () {
-        downloadPng(i);
-      });
-    });
-
-    document.getElementById("dl-all").addEventListener("click", function () {
-      document.body.classList.remove("show-guides");
-      for (var i = 0; i < 4; i++) {
-        (function (idx) {
-          setTimeout(function () {
-            downloadPng(idx);
-          }, idx * 400);
-        })(i);
-      }
-    });
-  </script>
-</body>
-</html>
-
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fleabag · подложки Stories · 1080×1920</title>
+
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+
+    body {
+
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+      background: #0f172a;
+
+      padding: 20px 16px 48px;
+
+      color: #cbd5e1;
+
+    }
+
+
+
+    .page-title {
+
+      max-width: 540px;
+
+      margin: 0 auto 16px;
+
+      font-size: 1.25rem;
+
+      font-weight: 700;
+
+      color: #f8fafc;
+
+    }
+
+
+
+    .export-hint {
+
+      max-width: 540px;
+
+      margin: 0 auto 20px;
+
+      padding: 14px 16px;
+
+      border-radius: 12px;
+
+      background: #1e293b;
+
+      border: 1px solid rgba(251, 191, 36, 0.35);
+
+      font-size: 0.88rem;
+
+      line-height: 1.55;
+
+    }
+
+    .export-hint strong { color: #fde68a; }
+
+
+
+    .toolbar {
+
+      max-width: 540px;
+
+      margin: 0 auto 28px;
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+    }
+
+    .toolbar button {
+
+      font: inherit;
+
+      font-size: 0.82rem;
+
+      padding: 10px 14px;
+
+      border-radius: 999px;
+
+      border: 1px solid rgba(56, 189, 248, 0.45);
+
+      background: #0f172a;
+
+      color: #e0f2fe;
+
+      cursor: pointer;
+
+    }
+
+    .toolbar button:hover { background: #1e3a5f; }
+
+    .toolbar button.is-primary {
+
+      border-color: rgba(251, 191, 36, 0.55);
+
+      color: #fde68a;
+
+    }
+
+
+
+    .deck {
+
+      max-width: 540px;
+
+      margin: 0 auto;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 36px;
+
+    }
+
+
+
+    .deck-item-head {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 10px;
+
+    }
+
+    .deck-item-head span {
+
+      font-size: 0.75rem;
+
+      letter-spacing: 0.05em;
+
+      text-transform: uppercase;
+
+      color: #94a3b8;
+
+    }
+
+
+
+    /* 9:16 box — высота всегда считается от ширины */
+
+    .story-canvas {
+
+      width: 100%;
+
+      max-width: 540px;
+
+      margin: 0 auto;
+
+      position: relative;
+
+      overflow: hidden;
+
+      border-radius: 8px;
+
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+      aspect-ratio: 9 / 16;
+
+    }
+
+
+
+    .story-bg {
+
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 0;
+
+      background:
+
+        radial-gradient(55% 45% at 12% 8%, rgba(251, 191, 36, 0.42) 0%, transparent 70%),
+
+        radial-gradient(50% 40% at 92% 18%, rgba(45, 212, 191, 0.28) 0%, transparent 65%),
+
+        radial-gradient(60% 50% at 50% 95%, rgba(217, 119, 6, 0.22) 0%, transparent 60%),
+
+        radial-gradient(80% 55% at 50% -5%, rgba(56, 189, 248, 0.2) 0%, transparent 55%),
+
+        radial-gradient(45% 35% at 100% 75%, rgba(34, 211, 238, 0.15) 0%, transparent 50%),
+
+        linear-gradient(180deg, #12100e 0%, #071018 42%, #030712 100%);
+
+    }
+
+
+
+    .story-bg::after {
+
+      content: "";
+
+      position: absolute;
+
+      inset: 0;
+
+      opacity: 0.06;
+
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+      pointer-events: none;
+
+    }
+
+
+
+    .story-inner {
+
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 1;
+
+      display: flex;
+
+      flex-direction: column;
+
+      padding: 8% 7.5% 9%;
+
+    }
+
+
+
+    .zone-kicker { min-height: 8%; margin-bottom: 4%; flex-shrink: 0; }
+
+    .zone-body { flex: 1; min-height: 40%; }
+
+    .zone-footer {
+
+      flex-shrink: 0;
+
+      min-height: 12%;
+
+      margin-top: auto;
+
+      padding-top: 4%;
+
+    }
+
+
+
+    .story-canvas--center .story-inner {
+
+      justify-content: center;
+
+      padding-top: 14%;
+
+    }
+
+    .story-canvas--center .zone-kicker {
+
+      position: absolute;
+
+      top: 8%;
+
+      left: 7.5%;
+
+      right: 7.5%;
+
+      margin-bottom: 0;
+
+    }
+
+
+
+    .story-canvas--steps .zone-body {
+
+      padding-left: 4%;
+
+      border-left: 3px solid rgba(251, 191, 36, 0.35);
+
+    }
+
+
+
+    .story-canvas--voice .zone-voice {
+
+      position: absolute;
+
+      bottom: 8%;
+
+      left: 7.5%;
+
+      right: 7.5%;
+
+      height: 5%;
+
+      border-radius: 999px;
+
+      background: rgba(15, 23, 42, 0.35);
+
+    }
+
+
+
+    /* Направляющие — только если включены; на PNG их не будет */
+
+    body:not(.show-guides) .zone-voice { display: none; }
+
+
+
+    body.show-guides .zone-kicker,
+
+    body.show-guides .zone-body,
+
+    body.show-guides .zone-footer {
+
+      outline: 2px dashed rgba(125, 211, 252, 0.4);
+
+      outline-offset: 3px;
+
+      background: rgba(15, 23, 42, 0.15);
+
+    }
+
+    body.show-guides .zone-kicker::before,
+
+    body.show-guides .zone-body::before,
+
+    body.show-guides .zone-footer::before {
+
+      display: block;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.1em;
+
+      text-transform: uppercase;
+
+      color: #7dd3fc;
+
+      margin-bottom: 6px;
+
+    }
+
+    body.show-guides .zone-kicker::before { content: "Kicker · верх"; }
+
+    body.show-guides .zone-body::before { content: "Твой текст здесь"; }
+
+    body.show-guides .zone-footer::before { content: "CTA · время · direct"; }
+
+
+
+    body.show-guides .zone-kicker {
+
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+
+      padding-bottom: 8px;
+
+    }
+
+    body.show-guides .zone-footer {
+
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+
+    }
+
+  </style>
+
+</head>
+
+<body class="show-guides">
+
+  <h1 class="page-title">Fleabag · 4 подложки для Stories</h1>
+
+  <div class="export-hint">
+
+    <strong>Проще всего:</strong> нажми золотую кнопку «Скачать PNG» у нужной карточки — файл <strong>1080×1920</strong>, без пунктира.
+
+    Перед скачиванием можно «Скрыть направляющие». В Canva: Upload → текст сверху.
+
+  </div>
+
+
+
+  <div class="toolbar">
+
+    <button type="button" class="is-primary" id="dl-all">Скачать все 4 PNG</button>
+
+    <button type="button" id="toggle-guides">Скрыть направляющие</button>
+
+  </div>
+
+
+
+  <div class="deck" id="deck">
+
+    <section class="deck-item" data-variant="center">
+
+      <div class="deck-item-head">
+
+        <span>Сторис 1 · крючок</span>
+
+        <button type="button" class="is-primary dl-one">Скачать PNG</button>
+
+      </div>
+
+      <article class="story-canvas story-canvas--center">
+
+        <div class="story-bg" aria-hidden="true"></div>
+
+        <div class="story-inner">
+
+          <div class="zone-kicker"></div>
+
+          <div class="zone-body"></div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <section class="deck-item" data-variant="steps-voice">
+
+      <div class="deck-item-head">
+
+        <span>Сторис 1 · метод / голос</span>
+
+        <button type="button" class="is-primary dl-one">Скачать PNG</button>
+
+      </div>
+
+      <article class="story-canvas story-canvas--steps story-canvas--voice">
+
+        <div class="story-bg" aria-hidden="true"></div>
+
+        <div class="story-inner">
+
+          <div class="zone-kicker"></div>
+
+          <div class="zone-body"></div>
+
+          <div class="zone-voice" aria-hidden="true"></div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <section class="deck-item" data-variant="steps">
+
+      <div class="deck-item-head">
+
+        <span>Сторис 2 · формат</span>
+
+        <button type="button" class="is-primary dl-one">Скачать PNG</button>
+
+      </div>
+
+      <article class="story-canvas story-canvas--steps">
+
+        <div class="story-bg" aria-hidden="true"></div>
+
+        <div class="story-inner">
+
+          <div class="zone-kicker"></div>
+
+          <div class="zone-body"></div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <section class="deck-item" data-variant="cta">
+
+      <div class="deck-item-head">
+
+        <span>Сторис 2 · призыв</span>
+
+        <button type="button" class="is-primary dl-one">Скачать PNG</button>
+
+      </div>
+
+      <article class="story-canvas">
+
+        <div class="story-bg" aria-hidden="true"></div>
+
+        <div class="story-inner">
+
+          <div class="zone-kicker"></div>
+
+          <div class="zone-body"></div>
+
+          <div class="zone-footer"></div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </div>
+
+
+
+  <script>
+
+    var W = 1080;
+
+    var H = 1920;
+
+    var names = [
+
+      "fleabag-story-1-hook.png",
+
+      "fleabag-story-1-method.png",
+
+      "fleabag-story-2-format.png",
+
+      "fleabag-story-2-cta.png",
+
+    ];
+
+
+
+    function paintBackground(ctx) {
+
+      ctx.fillStyle = "#030712";
+
+      ctx.fillRect(0, 0, W, H);
+
+
+
+      function blob(x, y, r, color) {
+
+        var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+
+        g.addColorStop(0, color);
+
+        g.addColorStop(1, "rgba(0,0,0,0)");
+
+        ctx.fillStyle = g;
+
+        ctx.fillRect(0, 0, W, H);
+
+      }
+
+
+
+      blob(W * 0.12, H * 0.08, W * 0.55, "rgba(251, 191, 36, 0.42)");
+
+      blob(W * 0.92, H * 0.18, W * 0.5, "rgba(45, 212, 191, 0.28)");
+
+      blob(W * 0.5, H * 0.95, W * 0.6, "rgba(217, 119, 6, 0.22)");
+
+      blob(W * 0.5, H * -0.02, W * 0.75, "rgba(56, 189, 248, 0.2)");
+
+      blob(W * 1.0, H * 0.75, W * 0.45, "rgba(34, 211, 238, 0.15)");
+
+
+
+      var lg = ctx.createLinearGradient(0, 0, 0, H);
+
+      lg.addColorStop(0, "rgba(18, 16, 14, 0.35)");
+
+      lg.addColorStop(0.42, "rgba(7, 16, 24, 0.5)");
+
+      lg.addColorStop(1, "rgba(3, 7, 18, 0.65)");
+
+      ctx.fillStyle = lg;
+
+      ctx.fillRect(0, 0, W, H);
+
+    }
+
+
+
+    function drawVariant(ctx, variant) {
+
+      paintBackground(ctx);
+
+      var padX = W * 0.075;
+
+      var padTop = H * 0.08;
+
+
+
+      if (variant === "steps" || variant === "steps-voice") {
+
+        ctx.fillStyle = "rgba(251, 191, 36, 0.35)";
+
+        ctx.fillRect(padX, padTop + H * 0.12, 3, H * 0.55);
+
+      }
+
+      if (variant === "steps-voice") {
+
+        var y = H * 0.87;
+
+        var h = H * 0.05;
+
+        ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
+
+        roundRect(ctx, padX, y, W - padX * 2, h, h / 2);
+
+        ctx.fill();
+
+      }
+
+      if (variant === "cta") {
+
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
+
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        ctx.moveTo(padX, H * 0.78);
+
+        ctx.lineTo(W - padX, H * 0.78);
+
+        ctx.stroke();
+
+      }
+
+    }
+
+
+
+    function roundRect(ctx, x, y, w, h, r) {
+
+      ctx.beginPath();
+
+      ctx.moveTo(x + r, y);
+
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+
+      ctx.arcTo(x, y + h, x, y, r);
+
+      ctx.arcTo(x, y, x + w, y, r);
+
+      ctx.closePath();
+
+    }
+
+
+
+    function downloadPng(index) {
+
+      document.body.classList.remove("show-guides");
+
+      var section = document.querySelectorAll(".deck-item")[index];
+
+      var variant = section.getAttribute("data-variant") || "center";
+
+      var canvas = document.createElement("canvas");
+
+      canvas.width = W;
+
+      canvas.height = H;
+
+      var ctx = canvas.getContext("2d");
+
+      drawVariant(ctx, variant);
+
+      var a = document.createElement("a");
+
+      a.download = names[index];
+
+      a.href = canvas.toDataURL("image/png");
+
+      a.click();
+
+    }
+
+
+
+    document.getElementById("toggle-guides").addEventListener("click", function () {
+
+      document.body.classList.toggle("show-guides");
+
+      this.textContent = document.body.classList.contains("show-guides")
+
+        ? "Скрыть направляющие"
+
+        : "Показать направляющие";
+
+    });
+
+
+
+    document.querySelectorAll(".dl-one").forEach(function (btn, i) {
+
+      btn.addEventListener("click", function () {
+
+        downloadPng(i);
+
+      });
+
+    });
+
+
+
+    document.getElementById("dl-all").addEventListener("click", function () {
+
+      document.body.classList.remove("show-guides");
+
+      for (var i = 0; i < 4; i++) {
+
+        (function (idx) {
+
+          setTimeout(function () {
+
+            downloadPng(idx);
+
+          }, idx * 400);
+
+        })(i);
+
+      }
+
+    });
+
+  </script>
+
+</body>
+
+</html>
+
+

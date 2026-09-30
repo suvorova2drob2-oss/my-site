@@ -22,6 +22,8 @@
     var ix = 0;
     var picked = [];
     var done = false;
+    var autoAdvanceMs = Number(cfg.autoAdvanceMs) || 0;
+    var advanceTimer = null;
 
     function html() {
       if (done) {
@@ -30,13 +32,26 @@
         for (n = 0; n < exercises.length; n++) {
           if (picked[n] === exercises[n].answer) correctN++;
         }
+        var nextHref = cfg.nextSpeakerHref ? String(cfg.nextSpeakerHref) : "";
+        var nextLabel = cfg.nextSpeakerLabel
+          ? String(cfg.nextSpeakerLabel)
+          : "Следующий спикер \u2192";
+        var nextBtn = nextHref
+          ? '<a class="vmcq-next vmcq-next-speaker" href="' +
+            esc(nextHref) +
+            '">' +
+            esc(nextLabel) +
+            "</a>"
+          : "";
         return (
           '<p class="vmcq-done">' +
           correctN +
           " / " +
           exercises.length +
-          '</p><p class="vmcq-done-note">Готово. Можно пройти ещё раз.</p>' +
-          '<div class="vmcq-nav"><button type="button" class="vmcq-next" data-mcq-nav="restart">Сначала</button></div>'
+          '</p><p class="vmcq-done-note">Готово. Можно пройти ещё раз или перейти к следующему спикеру.</p>' +
+          '<div class="vmcq-nav vmcq-nav--done">' +
+          nextBtn +
+          '<button type="button" class="vmcq-back" data-mcq-nav="restart">Сначала</button></div>'
         );
       }
       var item = exercises[ix];
@@ -94,9 +109,21 @@
         '<button type="button" class="vmcq-back" data-mcq-nav="back"' +
         (ix === 0 ? " hidden" : "") +
         ">Назад</button>" +
-        '<button type="button" class="vmcq-next" data-mcq-nav="next">Следующий элемент</button>' +
+        (autoAdvanceMs > 0
+          ? '<span class="vmcq-auto-note" id="vmcq-auto-note">После ответа — следующий вопрос</span>'
+          : '<button type="button" class="vmcq-next" data-mcq-nav="next">Следующий элемент</button>') +
         "</div>"
       );
+    }
+
+    function goNextItem() {
+      if (ix < exercises.length - 1) {
+        ix++;
+        paint();
+      } else {
+        done = true;
+        paint();
+      }
     }
 
     function paint() {
@@ -106,8 +133,20 @@
     root.addEventListener("click", function (e) {
       var letterBtn = e.target.closest("[data-mcq-letter]");
       if (letterBtn && !picked[ix]) {
+        if (advanceTimer) {
+          clearTimeout(advanceTimer);
+          advanceTimer = null;
+        }
         picked[ix] = letterBtn.getAttribute("data-mcq-letter");
         paint();
+        if (autoAdvanceMs > 0) {
+          var note = root.querySelector("#vmcq-auto-note");
+          if (note) note.textContent = "Дальше…";
+          advanceTimer = setTimeout(function () {
+            advanceTimer = null;
+            goNextItem();
+          }, autoAdvanceMs);
+        }
         return;
       }
       var nav = e.target.closest("[data-mcq-nav]");
@@ -115,9 +154,12 @@
       var dir = nav.getAttribute("data-mcq-nav");
       if (dir === "back" && ix > 0) ix--;
       else if (dir === "next") {
-        if (ix < exercises.length - 1) ix++;
-        else done = true;
+        goNextItem();
       } else if (dir === "restart") {
+        if (advanceTimer) {
+          clearTimeout(advanceTimer);
+          advanceTimer = null;
+        }
         ix = 0;
         picked = [];
         done = false;

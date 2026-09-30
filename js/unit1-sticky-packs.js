@@ -1,5 +1,5 @@
 /**
- * Unit 1 sticky board packs — Lifestyle · Clothes · Get · Run.
+ * Unit 1 sticky board packs — Lifestyle · Clothes · Get · Run · SB 1.2.
  * Single-word stickyAnswer per `.cursor/rules/sticky-board-keywords.mdc`.
  * window.FCE_U1_STICKY
  */
@@ -219,6 +219,24 @@
       blocks: W.UNIT1_RUN_STICKY_BLOCKS
     }
   ];
+
+  if (
+    W.FCE_U1_SB12_LEXIS &&
+    typeof W.FCE_U1_SB12_LEXIS.stickyRawBlocks === "function"
+  ) {
+    W.UNIT1_SB12_STICKY_BLOCKS = toBlocks(W.FCE_U1_SB12_LEXIS.stickyRawBlocks());
+    PACKS.push({
+      id: "sb12",
+      jumpLabel: "8 short extracts",
+      title: "Sticky board — 8 short extracts (SB 1.2)",
+      subtitleHtml:
+        "<strong>Speakers 1, 2, 3, 5, 8</strong> · gap from Cool Words · <strong>Context</strong> = script line.",
+      contextTag: "Listening · SB 1.2",
+      backHref: "../../unit1-listening/sb-1-2/index.html",
+      backLabel: "SB 1.2 Listening",
+      blocks: W.UNIT1_SB12_STICKY_BLOCKS
+    });
+  }
 
   W.FCE_U1_STICKY = {
     packs: PACKS,

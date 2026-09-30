@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Black Friday &mdash; phrase gaps</title>
+  <link rel="stylesheet" href="../css/mastering-b2-back-link.css" />
+  <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../css/fce-vocab-word-box.css" />
+  <style>
+    .vocab-task { border: 1px solid #324a71; border-radius: 14px; padding: 18px; background: #223657; }
+    .vocab-instr { font-size: var(--wb-font-body); line-height: var(--wb-line); color: #d5e2f8; margin: 0 0 12px; }
+    .gap-input {
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 9rem;
+      width: 12rem;
+      max-width: 100%;
+      margin: 0 4px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 2px solid #324a71;
+      background: #132544;
+      color: #e8f0ff;
+      font: inherit;
+      font-size: 0.92em;
+    }
+    .gap-input.is-active { border-color: #56ccf2; box-shadow: 0 0 0 3px rgba(86, 204, 242, 0.35); }
+    body.vocab-wordbox-page .page { width: min(980px, 100%); }
+    .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    h1 { font-size: 1.15rem; margin: 0; color: #e8f0ff; }
+    .tag { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #86efac; margin-bottom: 6px; display: block; }
+  </style>
+</head>
+<body class="vocab-wordbox-page" data-mb2-unit="7" data-mb2-skill="reading" data-mb2-ex="u7-black-friday-gaps">
+  <main class="page" style="padding:24px;">
+    <header class="top">
+      <div>
+        <span class="tag" id="personTag">Reading · Unit 7</span>
+        <h1 id="gapTitle">Fill in the gaps</h1>
+      </div>
+      <a class="back" id="backLink" href="index.html">&larr; Black Friday</a>
+    </header>
+    <section class="vocab-task">
+      <p class="vocab-instr" id="gapNote"></p>
+      <div class="vocab-bank-workspace">
+        <div class="vocab-bank-main">
+          <p class="vocab-wordbox-hint" id="gapHint">
+            Click a gap, then a phrase on the right &mdash; or type in the box.
+          </p>
+          <div id="sentences"></div>
+          <div class="vocab-btn-row">
+            <button type="button" class="btn-check" id="btn-check">Check answers</button>
+            <button type="button" class="btn-reset" id="btn-reset">Reset</button>
+          </div>
+          <p class="vocab-feedback" id="feedback" role="status" aria-live="polite"></p>
+        </div>
+        <aside class="vocab-bank-rail" aria-label="Phrase box">
+          <div class="vocab-bank" id="word-bank" aria-label="Phrase box"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="../js/mastering-b2-skill-progress.js"></script>
+  <script src="../js/prep-vocab-word-box-gaps.js"></script>
+  <script src="../js/unit7-black-friday-reading-lexis.js"></script>
+  <script src="../js/unit7-black-friday-pack-data.js"></script>
+  <script src="../js/unit7-black-friday-exercise-boot.js"></script>
+  <script>
+(function () {
+  var B = window.U7_BLACK_FRIDAY_EX_BOOT;
+  var P = window.U7_BLACK_FRIDAY_PACK;
+  if (!B || !P) return;
+  B.readingBack("backLink");
+  var G = P.gaps() || {};
+  document.getElementById("gapTitle").textContent = G.title || "Fill in the gaps";
+  document.getElementById("gapNote").textContent = G.note || "";
+  var items = G.items || [];
+  var bank = G.bank || [];
+  var sentRoot = document.getElementById("sentences");
+  var bankRoot = document.getElementById("word-bank");
+  var html = "";
+  var i;
+  for (i = 0; i < items.length; i++) {
+    html +=
+      '<p class="vocab-gap-line"><span class="vocab-gap-n">' +
+      (i + 1) +
+      ".</span> " +
+      items[i].before +
+      '<input type="text" class="gap-input" id="gap-' +
+      (i + 1) +
+      '" autocomplete="off" spellcheck="false" aria-label="Gap ' +
+      (i + 1) +
+      '"> ' +
+      (items[i].after || "") +
+      "</p>";
+  }
+  sentRoot.innerHTML = html;
+  bankRoot.innerHTML = "<strong>Phrase box</strong><div class=\"word-box-line\"></div>";
+  var line = bankRoot.querySelector(".word-box-line");
+  for (i = 0; i < bank.length; i++) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bank-chip";
+    btn.setAttribute("data-word", bank[i]);
+    btn.textContent = bank[i];
+    line.appendChild(btn);
+  }
+  var gapIds = [];
+  for (i = 0; i < items.length; i++) gapIds.push(i + 1);
+  if (window.PREP_VOCAB_WORD_BOX_GAPS) {
+    PREP_VOCAB_WORD_BOX_GAPS.mount({
+      bankRoot: "#word-bank",
+      gapIds: gapIds,
+      gapIdPrefix: "gap-",
+      onFill: function () {
+        document.getElementById("feedback").classList.remove("show");
+      }
+    });
+  }
+  function norm(s) {
+    return String(s || "")
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+  document.getElementById("btn-check").addEventListener("click", function () {
+    var ok = 0;
+    var fb = document.getElementById("feedback");
+    for (i = 0; i < items.length; i++) {
+      var inp = document.getElementById("gap-" + (i + 1));
+      var ans = items[i].answers || [];
+      var val = norm(inp.value);
+      var hit = false;
+      var j;
+      for (j = 0; j < ans.length; j++) {
+        if (val === norm(ans[j])) hit = true;
+      }
+      inp.classList.toggle("is-ok", hit);
+      inp.classList.toggle("is-bad", !hit);
+      if (hit) ok++;
+    }
+    fb.textContent = ok === items.length ? "All correct." : ok + " / " + items.length + " correct.";
+    fb.classList.add("show");
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(ok, items.length);
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    for (i = 0; i < items.length; i++) {
+      var inp = document.getElementById("gap-" + (i + 1));
+      inp.value = "";
+      inp.classList.remove("is-ok", "is-bad", "is-active");
+    }
+    document.getElementById("feedback").classList.remove("show");
+  });
+})();
+  </script>
+  <script src="../js/mastering-b2-daily-activity.js"></script>
+  <script src="../js/mastering-b2-exercise-auto.js"></script>
+</body>
+</html>

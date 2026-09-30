@@ -124,8 +124,8 @@
             before: "I",
             after: "! It's true! I did see Madonna at the supermarket.",
             cue: "lie",
-            answers: ["am lying", "'m lying", "m lying"],
-            expected: "am lying"
+            answers: ["am not lying", "'m not lying", "m not lying", "amn't lying"],
+            expected: "am not lying"
           },
           {
             id: "B6",
@@ -140,8 +140,8 @@
             before: "We",
             after: "lunch, but I can come round and help you later.",
             cue: "have",
-            answers: ["aren't having", "are not having", "'re not having", "re not having", "arent having"],
-            expected: "aren't having"
+            answers: ["are having", "'re having", "re having"],
+            expected: "are having"
           },
           {
             id: "B8",
@@ -213,7 +213,12 @@
             before: "How's the match going?",
             wrong: "Does our team win?",
             after: "",
-            answers: ["is our team winning?", "is our team winning"],
+            answers: [
+              "is our team winning?",
+              "is our team winning",
+              "Is our team winning?",
+              "Is our team winning"
+            ],
             expected: "Is our team winning?"
           },
           {

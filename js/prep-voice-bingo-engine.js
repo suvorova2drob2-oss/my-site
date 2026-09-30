@@ -28,6 +28,24 @@
     return "";
   }
 
+  /** Grid cells stay compact; full phrase lives in the revealed strip. */
+  function shortPhraseLabel(text, maxLen) {
+    maxLen = maxLen || 36;
+    var s = String(text || "").replace(/\s+/g, " ").trim();
+    if (s.length <= maxLen) return s;
+    var words = s.split(" ");
+    var out = "";
+    var wi;
+    for (wi = 0; wi < words.length; wi++) {
+      var next = out ? out + " " + words[wi] : words[wi];
+      if (next.length > maxLen) break;
+      out = next;
+    }
+    if (!out) out = s.slice(0, Math.max(8, maxLen - 1));
+    if (out.length < s.length) out += "\u2026";
+    return out;
+  }
+
   function mergeCopy(base, extra) {
     var o = {};
     var k;
@@ -76,6 +94,7 @@
     var doc = W.document;
     var els = opts.els || {};
     var grid = els.grid;
+    var revealedStrip = els.revealedStrip || null;
     var clueEl = els.clue;
     var progressEl = els.progress || null;
     var statusEl = els.status || null;
@@ -666,37 +685,82 @@
       revealCellAt(activeCellIndex(), earnPoint, fromSpeech);
     }
 
+    function renderRevealedStrip() {
+      if (!revealedStrip) return;
+      if (!board) {
+        revealedStrip.innerHTML = "";
+        revealedStrip.hidden = true;
+        return;
+      }
+      var html = "";
+      var i;
+      var lastRevealed = -1;
+      for (i = 0; i < board.length; i++) {
+        if (board[i] && board[i].revealed) lastRevealed = i;
+      }
+      for (i = 0; i < board.length; i++) {
+        var item = board[i];
+        if (!item || !item.revealed) continue;
+        var isLast = i === lastRevealed;
+        html +=
+          '<li class="vb-revealed-item' +
+          (isLast ? " vb-revealed-item--latest" : "") +
+          '">' +
+          '<span class="vb-revealed-n" aria-hidden="true">' +
+          (i + 1) +
+          "</span>" +
+          '<p class="vb-revealed-text">' +
+          escPhrase(item.ans) +
+          "</p></li>";
+      }
+      revealedStrip.innerHTML = html;
+      revealedStrip.hidden = !html;
+    }
+
     function renderGrid() {
       grid.innerHTML = "";
       var i;
+      var ai = board ? activeCellIndex() : -1;
       if (!board) {
         for (i = 0; i < GRID; i++) {
           var idle = doc.createElement("div");
           idle.className = "vb-cell vb-cell--back vb-cell--idle";
-          idle.innerHTML = '<span class="vb-cell-back" aria-hidden="true">\u2753</span>';
+          idle.innerHTML = '<span class="vb-cell-back" aria-hidden="true">?</span>';
           grid.appendChild(idle);
         }
+        renderRevealedStrip();
         return;
       }
       for (i = 0; i < GRID; i++) {
         var item = board[i];
         var el = doc.createElement("div");
+        var isActive = !item.revealed && i === ai;
         el.className =
-          "vb-cell" + (item.revealed ? " vb-cell--open" : " vb-cell--back");
+          "vb-cell" +
+          (item.revealed ? " vb-cell--open vb-cell--done" : " vb-cell--back") +
+          (isActive ? " vb-cell--active" : "");
         el.setAttribute("role", "presentation");
         if (item.revealed) {
-          var phraseCls =
-            "vb-cell-phrase" +
-            phraseSizeClass(item.ans) +
-            (item.bingoMode === "meme" ? " vb-cell-phrase--line" : "");
+          var tip = escPhrase(item.ans);
+          var mini = escPhrase(shortPhraseLabel(item.ans, 28));
           el.innerHTML =
-            '<span class="' + phraseCls + '">' + escPhrase(item.ans) + "</span>";
+            '<span class="vb-cell-done-badge" title="' +
+            tip +
+            '">' +
+            '<span class="vb-cell-done-check" aria-hidden="true">\u2713</span>' +
+            '<span class="vb-cell-done-mini">' +
+            mini +
+            "</span></span>";
+        } else if (isActive) {
+          el.innerHTML =
+            '<span class="vb-cell-back vb-cell-back--active" aria-hidden="true"><span class="vb-cell-pulse"></span></span>';
         } else {
           el.innerHTML =
-            '<span class="vb-cell-back" aria-hidden="true">\u2753</span>';
+            '<span class="vb-cell-back" aria-hidden="true">?</span>';
         }
         grid.appendChild(el);
       }
+      renderRevealedStrip();
     }
 
     function revealedCount() {
