@@ -235,7 +235,7 @@ function normalizeRoom(code) {
 
 function normalizeItems(raw) {
   if (!Array.isArray(raw)) return null;
-  return raw.slice(0, 96).map(function (it, idx) {
+  return raw.slice(0, 64).map(function (it, idx) {
     const answer = String((it && it.answer) != null ? it.answer : "").slice(0, 64);
     const filled =
       it && typeof it.filled === "boolean" ? !!it.filled : answer.length > 0;
@@ -273,9 +273,6 @@ function snapshot(roomCode) {
       attempts: Number(p.attempts || 0),
       correctCount: Number(p.correctCount || 0),
       totalCount: Number(p.totalCount || 0),
-      liveStage: p.liveStage || "",
-      levelProgress: p.levelProgress || "",
-      lastActivity: p.lastActivity || "",
       items: Array.isArray(p.items) ? p.items : []
     });
     players.push({ id: id, displayName: p.displayName, team: p.team || "" });
@@ -479,26 +476,10 @@ function handleOp(op, body) {
           p.attempts = Number(p.attempts || 0) + 1;
           p.submitted = true;
         }
-        if (body && body.liveStage != null && body.liveStage !== "") {
-          p.liveStage = String(body.liveStage);
-        }
-        if (body && body.levelProgress != null && body.levelProgress !== "") {
-          p.levelProgress = String(body.levelProgress);
-        }
-        if (body && body.lastActivity != null && body.lastActivity !== "") {
-          p.lastActivity = String(body.lastActivity);
-        }
         if (body && body.score != null && body.score !== "") {
           p.score = Math.max(0, Math.min(100, Math.round(Number(body.score) || 0)));
         } else if (p.totalCount > 0) {
-          const filledCount = items.filter(function (it) {
-            return it.filled;
-          }).length;
-          if (isDraft && filledCount > 0) {
-            p.score = Math.round((p.correctCount / filledCount) * 100);
-          } else {
-            p.score = Math.round((p.correctCount / p.totalCount) * 100);
-          }
+          p.score = Math.round((p.correctCount / p.totalCount) * 100);
         }
       } else if (body && body.score != null && body.score !== "") {
         p.score = Math.max(0, Math.min(100, Math.round(Number(body.score) || 0)));
@@ -785,6 +766,18 @@ app.post("/live", function (req, res) {
 });
 
 // Serve the site so student links work without Vite / file://
+// Staging only: GAMES_OVERLAY_ROOT holds changed files served on top of the games repo.
+const GAMES_OVERLAY_ROOT = String(process.env.GAMES_OVERLAY_ROOT || "");
+if (GAMES_OVERLAY_ROOT && fs.existsSync(GAMES_OVERLAY_ROOT)) {
+  app.use(
+    "/games",
+    express.static(GAMES_OVERLAY_ROOT, {
+      index: false,
+      fallthrough: true,
+      setHeaders: staticCacheHeaders
+    })
+  );
+}
 if (fs.existsSync(ROBLOX_ROOT)) {
   app.use(
     "/games",
