@@ -3,6 +3,7 @@
  * Teacher accounts from the VPS shell (the server re-reads accounts.json on every request).
  *
  *   node server/teacher-accounts-cli.js add-admin <login> ["Имя"]   → pending admin; set the password on auth.html
+ *   node server/teacher-accounts-cli.js add-teacher <login> ["Имя"] → pending teacher (same as the admin panel)
  *   node server/teacher-accounts-cli.js list
  *   node server/teacher-accounts-cli.js reset <login>                → pending again (forgotten password)
  *
@@ -24,11 +25,12 @@ function fail(msg) {
   process.exit(1);
 }
 
-if (cmd === "add-admin") {
-  if (!login) fail("usage: add-admin <login> [name]");
+if (cmd === "add-admin" || cmd === "add-teacher") {
+  if (!login) fail("usage: " + cmd + " <login> [name]");
+  const role = cmd === "add-admin" ? "admin" : "teacher";
   try {
-    const u = accounts.create({ login: login, name: name, role: "admin", createdBy: "cli" });
-    console.log("Admin " + u.login + " (" + u.id + ") created, status pending.");
+    const u = accounts.create({ login: login, name: name, role: role, createdBy: "cli" });
+    console.log((role === "admin" ? "Admin " : "Teacher ") + u.login + " (" + u.id + ") created, status pending.");
     console.log("Open auth.html, enter the login and set a password.");
   } catch (e) {
     fail(e.message);
@@ -47,5 +49,5 @@ if (cmd === "add-admin") {
   accounts.save(data);
   console.log(u.login + " is pending: set a new password on auth.html (old sessions stop working).");
 } else {
-  fail("commands: add-admin <login> [name] | list | reset <login>\nstore: " + dir);
+  fail("commands: add-admin <login> [name] | add-teacher <login> [name] | list | reset <login>\nstore: " + dir);
 }
