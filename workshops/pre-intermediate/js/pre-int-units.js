@@ -79,7 +79,7 @@
           label: "A favourite place",
           teacher:
             "Beat 1 · restaurant talk. Paper = fuel for chunks. Highlighted marks = targets. Steal stems about YOUR places to eat.",
-          blocks: ["read", "pictures", "vocab", "drillCards", "context"],
+          blocks: ["read", "pictures", "vocab", "drillCards"],
           mnemonic: { packKey: "PRE_INT_EAT_MNEMONIC_CARDS" },
           vocab: { type: "pairs", packKey: "PRE_INT_EAT_VOCAB_PAIRS", modal: true },
           drillCards: { packKey: "PRE_INT_EAT_DRILL_CARDS" },
@@ -523,7 +523,32 @@
           label: "Deciding where",
           teacher:
             "Beat 2 · Track 19 dialogue (Sarah & Victor). Paper = fuel for chunks. Steal lines for deciding where to eat together.",
-          blocks: ["read", "context"],
+          blocks: ["warmup", "read"],
+          warmup: {
+            gateLabel: "Exercise 7 · present perfect · then share in groups",
+            gateHint: "Tap Start when you are ready to read the task.",
+            sections: [
+              {
+                n: 7,
+                lead:
+                  "Complete each sentence with two ideas. Try to make them true and surprising!",
+                starters: [
+                  "I've never eaten / drunk …",
+                  "I've never been to …",
+                  "I've never …",
+                ],
+              },
+              {
+                lead:
+                  "Work in groups. Share your ideas from Exercise 7. Respond using some of these phrases.",
+                responses: [
+                  "You're joking! You should. You'll love it!",
+                  "Really! Why not?",
+                  "Me neither! I've never had the chance.",
+                ],
+              },
+            ],
+          },
           phrases: [
             {
               en: "Are you hungry?",
@@ -1138,7 +1163,158 @@
           label: "Suggestions",
           teacher:
             "Beat 3 · Contextual drilling: same suggestion moves · Ex. 12 places change one by one (one say each) · not ×4 partners.",
-          blocks: ["read", "context"],
+          blocks: ["warmup", "read"],
+          warmup: {
+            gateLabel: "Exercise 6 · Track 20 · listen, then complete",
+            gateHint: "Start · listen · type present perfect or past simple.",
+            singlePage: true,
+            overlayTitle: "Ex. 6 · Track 20",
+            audio:
+              "https://storage.yandexcloud.net/cpeaudio/outcomes/20%20%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BA%D0%B0%2020.mp3",
+            sections: [
+              {
+                n: 6,
+                listen: true,
+                lead: "Listen to the dialogues on Track 20.",
+                leadAfter:
+                  "Complete the sentences using the present perfect or the past simple form of the verbs.",
+                dialogues: [
+                  {
+                    num: 1,
+                    lines: [
+                      {
+                        id: "s3-d1a",
+                        who: "A",
+                        before: "",
+                        after: " anything unusual?",
+                        hint: "ever eat",
+                      },
+                      {
+                        id: "s3-d1b",
+                        who: "B",
+                        before: "Yeah, I ",
+                        after: " bat soup once.",
+                        hint: "have",
+                      },
+                    ],
+                  },
+                  {
+                    num: 2,
+                    lines: [
+                      {
+                        id: "s3-d2a",
+                        who: "A",
+                        before: "",
+                        after: " to an expensive restaurant?",
+                        hint: "ever go",
+                      },
+                      {
+                        id: "s3-d2b1",
+                        who: "B",
+                        before: "Yes, I ",
+                        after: " to a very famous Spanish place with work.",
+                        hint: "go",
+                      },
+                      {
+                        id: "s3-d2b2",
+                        who: "B",
+                        before: "Luckily, my boss ",
+                        after: " !",
+                        hint: "pay",
+                      },
+                    ],
+                  },
+                  {
+                    num: 3,
+                    lines: [
+                      {
+                        id: "s3-d3a",
+                        who: "A",
+                        before: "",
+                        after: " in a restaurant?",
+                        hint: "ever complain",
+                      },
+                      {
+                        id: "s3-d3b1",
+                        who: "B",
+                        before:
+                          "Yeah, a few times, actually. Last week I ",
+                        after: " in a café because the food ",
+                        hint: "complain",
+                      },
+                      {
+                        id: "s3-d3b2",
+                        who: "B",
+                        before: "",
+                        after: " cooked properly.",
+                        hint: "not be",
+                      },
+                    ],
+                  },
+                  {
+                    num: 4,
+                    lines: [
+                      {
+                        id: "s3-d4a",
+                        who: "A",
+                        before: "",
+                        after: " a hair in your food?",
+                        hint: "ever find",
+                      },
+                      {
+                        id: "s3-d4b",
+                        who: "B",
+                        before:
+                          "No, never, but I once ",
+                        after:
+                          " a piece of glass in a burger. I couldn’t believe it!",
+                        hint: "find",
+                      },
+                    ],
+                  },
+                  {
+                    num: 5,
+                    lines: [
+                      {
+                        id: "s3-d5a",
+                        who: "A",
+                        before: "",
+                        after: " any of Jamie Oliver’s recipes?",
+                        hint: "try",
+                      },
+                      {
+                        id: "s3-d5b",
+                        who: "B",
+                        before: "No, I ",
+                        after: " of him.",
+                        hint: "never hear",
+                      },
+                    ],
+                  },
+                  {
+                    num: 6,
+                    lines: [
+                      {
+                        id: "s3-d6a",
+                        who: "A",
+                        before: "",
+                        after: " Masterchef?",
+                        hint: "watch",
+                      },
+                      {
+                        id: "s3-d6b",
+                        who: "B",
+                        before: "I ",
+                        after:
+                          " it a few times, but I don’t really like cookery programmes.",
+                        hint: "see",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
           phrases: [
             {
               en: "Where do you want to go?",
@@ -1185,6 +1361,14 @@
             letter: "C",
             title: "Making and responding to suggestions",
             subtitle: "Block 3 · Developing conversations",
+            audio:
+              "https://storage.yandexcloud.net/cpeaudio/outcomes/20%20%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BA%D0%B0%2020.mp3",
+            situationPlaque: {
+              kicker: "Ex. 12 · situations",
+              hint: "Same moves in Speak · only the place / reason changes.",
+              fromDrillContextual: true,
+              skipContexts: 1,
+            },
             html:
               "<p><strong>Look at how we make suggestions and respond to them.</strong></p>" +
               "<p><strong>A:</strong> Where do you want to go?</p>" +
@@ -1399,7 +1583,7 @@
           label: "In the restaurant",
           teacher:
             "Beat 4 · restaurant dialogue (Waiter ↔ Customer). Same ladder as Deciding where: Echo → drill ×4 → swap ×4 · memory on 3 · record on 4.",
-          blocks: ["read", "context"],
+          blocks: ["read"],
           phrases: [
             {
               en: "How many people is it?",
@@ -1502,6 +1686,8 @@
             letter: "D",
             title: "In the restaurant",
             subtitle: "Block 4 · waiter & customers",
+            audio:
+              "https://storage.yandexcloud.net/cpeaudio/outcomes/21%20%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BA%D0%B0%2021.mp3",
             html:
               "<p><strong>C1 = customer 1, C2 = customer 2, W = waiter</strong></p>" +
               "<p><strong>1</strong></p>" +
@@ -1556,6 +1742,271 @@
               "<p><strong>C2:</strong> That’s very reasonable, isn’t it? Shall we leave a tip?</p>" +
               "<p><strong>C1:</strong> No, look. Service is included.</p>" +
               "<p><strong>C2:</strong> Wow. Then that really is good value for money. We should come here again sometime.</p>",
+            devConversations: {
+              buttons: [
+                {
+                  id: "developing",
+                  label: "Developing conversations",
+                  overlayTitle: "Offers · requests · suggestions",
+                  reference: {
+                    heading: "Offers, requests, suggestions",
+                    items: [
+                      {
+                        rule:
+                          "To make polite offers, we often use Would you like ...?",
+                        examples: ["Would you like to see the menu?"],
+                      },
+                      {
+                        rule:
+                          "To make polite requests, we often use Could you / I / we ...?",
+                        examples: [
+                          "Could you get us a cloth, please?",
+                          "Could I just have a coffee?",
+                        ],
+                      },
+                      {
+                        rule:
+                          "To make suggestions, we often use Shall I / we ...?",
+                        examples: ["Shall we leave a tip?"],
+                      },
+                    ],
+                  },
+                },
+                {
+                  id: "ex10-1-3",
+                  label: "Exercise 10",
+                  overlayTitle: "Ex. 10 · 1–3",
+                  section: {
+                    n: 10,
+                    lead:
+                      "Complete the questions with would, could or shall.",
+                    dialogues: [
+                      {
+                        num: 1,
+                        lines: [
+                          {
+                            id: "r4-e10-1a",
+                            who: "A",
+                            before: "",
+                            after: " we just have a jug of tap water, please?",
+                            hint: "could",
+                          },
+                          {
+                            id: "r4-e10-1b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " I'm afraid not, madam. You have to buy a bottle.",
+                          },
+                        ],
+                      },
+                      {
+                        num: 2,
+                        lines: [
+                          {
+                            id: "r4-e10-2a",
+                            who: "A",
+                            before: "",
+                            after: " we get the bill?",
+                            hint: "shall",
+                          },
+                          {
+                            id: "r4-e10-2b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " Yeah, it's getting late and I'm tired.",
+                          },
+                        ],
+                      },
+                      {
+                        num: 3,
+                        lines: [
+                          {
+                            id: "r4-e10-3a",
+                            who: "A",
+                            before: "",
+                            after: " we have a half portion for the kids?",
+                            hint: "could",
+                          },
+                          {
+                            id: "r4-e10-3b",
+                            who: "B",
+                            before: "",
+                            after: " Of course, sir.",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+                {
+                  id: "ex10-4-8",
+                  label: "Exercise 10 · continue",
+                  overlayTitle: "Ex. 10 · 4–8",
+                  section: {
+                    n: 10,
+                    dialogues: [
+                      {
+                        num: 4,
+                        lines: [
+                          {
+                            id: "r4-e10-4a",
+                            who: "A",
+                            before: "",
+                            after: " you like to see the drinks list, madam?",
+                            hint: "would",
+                          },
+                          {
+                            id: "r4-e10-4b",
+                            who: "B",
+                            before: "No thanks. ",
+                            after: " we just have some water?",
+                            hint: "could",
+                          },
+                        ],
+                      },
+                      {
+                        num: 5,
+                        lines: [
+                          {
+                            id: "r4-e10-5a",
+                            who: "A",
+                            before: "",
+                            after: " we ring them and book a table?",
+                            hint: "shall",
+                          },
+                          {
+                            id: "r4-e10-5b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " That's a good idea. They get quite busy.",
+                          },
+                        ],
+                      },
+                      {
+                        num: 6,
+                        lines: [
+                          {
+                            id: "r4-e10-6a",
+                            who: "A",
+                            before: "",
+                            after:
+                              " you move your chair a little so I can get past?",
+                            hint: "could",
+                          },
+                          {
+                            id: "r4-e10-6b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " I'll get up. There's not much room in here.",
+                          },
+                        ],
+                      },
+                      {
+                        num: 7,
+                        lines: [
+                          {
+                            id: "r4-e10-7a",
+                            who: "A",
+                            before: "",
+                            after: " you like me to order for everyone?",
+                            hint: "would",
+                          },
+                          {
+                            id: "r4-e10-7b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " Yes, if you don't mind. There's so much to choose from.",
+                          },
+                        ],
+                      },
+                      {
+                        num: 8,
+                        lines: [
+                          {
+                            id: "r4-e10-8a",
+                            who: "A",
+                            before: "",
+                            after: " we get a taxi or do you want to walk?",
+                            hint: "shall",
+                          },
+                          {
+                            id: "r4-e10-8b",
+                            who: "B",
+                            before: "",
+                            after:
+                              " Let's walk. It's a lovely night. It's so warm.",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+                {
+                  id: "speaking",
+                  label: "Speaking",
+                  overlayTitle: "Ex. 12–13 · roleplay",
+                  roleplay: {
+                    n: 12,
+                    lead:
+                      "Work in groups. You are going to roleplay a conversation. One student is the waiter, and the others are a group of friends. Decide who will take which role. Look at The Globe restaurant menu and the guide below and think about what you will say.",
+                    steps: [
+                      {
+                        role: "waiter",
+                        label: "Waiter",
+                        text:
+                          "Take drink order and check customers understand the menu.",
+                      },
+                      {
+                        role: "customers",
+                        label: "Customers",
+                        text: "Ask about different dishes.",
+                      },
+                      {
+                        role: "waiter",
+                        label: "Waiter",
+                        text: "Take the order and make an offer / suggestion.",
+                      },
+                      {
+                        role: "customers",
+                        label: "Customers",
+                        text:
+                          "Discuss what you’re eating and make two requests to the waiter.",
+                      },
+                      {
+                        role: "waiter",
+                        label: "Waiter",
+                        text:
+                          "Respond to requests. Later, ask if they would like desserts.",
+                      },
+                      {
+                        role: "customers",
+                        label: "Customers",
+                        text: "Discuss desserts and / or ask for the bill.",
+                      },
+                      {
+                        role: "waiter",
+                        label: "Waiter",
+                        text: "Give the bill.",
+                      },
+                      {
+                        role: "customers",
+                        label: "Customers",
+                        text: "Discuss the bill and how you’ll pay.",
+                      },
+                    ],
+                    followUp: {
+                      n: 13,
+                      text: "Now roleplay the conversation.",
+                    },
+                  },
+                },
+              ],
+            },
           },
           context: {
             tone: "Restaurant service English · arrive · order · sort a mess · pay",
@@ -2118,10 +2569,174 @@
           },
           time: "12–16 min",
         },
+        {
+          id: "breakfast-around-the-world",
+          label: "Breakfast around the world",
+          teacher:
+            "Beat 5 · reading BREAKFAST AROUND THE WORLD · Ex. 3 match sentences to countries (5 & 6 → two countries each).",
+          blocks: ["read"],
+          phrases: [
+            { en: "open to", ru: "открыты для / готовы к" },
+            { en: "experiment with", ru: "экспериментировать с" },
+            { en: "typical", ru: "типичный" },
+            { en: "busy", ru: "загруженный (образ жизни)" },
+            { en: "grab", ru: "хватать «на бегу»" },
+            { en: "includes", ru: "включает" },
+            { en: "secret", ru: "секрет" },
+            { en: "mixture of", ru: "смесь" },
+            { en: "served with", ru: "подаётся с" },
+            { en: "stomach", ru: "желудок" },
+            { en: "concerned", ru: "обеспокоенный / заботящийся" },
+            { en: "consists of", ru: "состоит из" },
+            { en: "blood", ru: "кровь" },
+          ],
+          read: {
+            letter: "E",
+            title: "Breakfast around the world",
+            subtitle: "Block 5 · reading",
+            html:
+              "<p>They say breakfast is the most important meal of the day. Maybe that&rsquo;s why many people may be <strong>open to</strong> trying foreign food at lunch or dinner, but they&rsquo;re not adventurous enough to <strong>experiment with</strong> anything new at breakfast. But what about you? Below, we look at <strong>typical</strong> breakfasts in five different countries. Would you have them or are they too spicy, too fattening or just too different?</p>" +
+              '<div class="si-read-two-col">' +
+              "<div>" +
+              "<h3 class=\"si-read-country\">South Korea</h3>" +
+              "<p>The traditional breakfast is rice and soup. People then choose extra dishes to go with it such as grilled fish, vegetables and <em>kimchi</em>, which is pickled cabbage with chillies. <em>Kimchi</em> is so popular that the first Korean astronaut took some with him to the international space station! Of course, these days, many Koreans have such <strong>busy</strong> lifestyles they don't have enough time to make breakfast and just <strong>grab</strong> a quick coffee and some cereal or toast.</p>" +
+              "<h3 class=\"si-read-country\">Bulgaria</h3>" +
+              "<p>Breakfast in Bulgaria <strong>includes</strong> tea or strong coffee, sesame bread and butter, cheese made from sheep's milk, honey, olives, boiled eggs and &ndash; most importantly &ndash; <em>kiselo mlyako</em>, a local yoghurt. Bulgaria has a lot of people aged over 100 and many believe that the <strong>secret</strong> behind this is their yoghurt, which most Bulgarians eat every day.</p>" +
+              "<h3 class=\"si-read-country\">Costa Rica</h3>" +
+              "<p>Many Costa Ricans start their day with the national dish, <em>gallo pinto</em>, which is a <strong>mixture of</strong> fried rice and black beans. It&rsquo;s lightly spiced and often <strong>served with</strong> fried plantain (a kind of banana used like a vegetable in a lot of Central American and Caribbean cooking), cream and fried eggs. There&rsquo;s usually some strong local coffee as well &ndash; or perhaps some <em>agua dulce</em> (&lsquo;sweet water&rsquo;), which is made from sugar cane juice.</p>" +
+              "</div>" +
+              "<div>" +
+              "<h3 class=\"si-read-country\">Egypt</h3>" +
+              "<p>Visit any town in Egypt in the morning and you&rsquo;ll find street stalls selling <em>foul medammes</em> &ndash; beans cooked with tomatoes and onions &ndash; and eaten with a boiled egg on top and lots of flat bread. Pickled vegetables are usually served as a side dish. For many poorer Egyptians, this is their only food until dinner. They say the dish is &lsquo;a rock in the <strong>stomach</strong>&rsquo;.</p>" +
+              "<h3 class=\"si-read-country\">Ireland</h3>" +
+              "<p>As people become more <strong>concerned</strong> about their health, fewer Irish eat the traditional Irish breakfast, or <em>fry</em>, because it has too much fat. However, many still eat it if they stay in a hotel, or they cook it on a special day. It <strong>consists of</strong> bacon, black pudding (a kind of sausage made with <strong>blood</strong>), white pudding (another kind of sausage), fried eggs, fried mushrooms and toast &ndash; all served with strong Irish tea!</p>" +
+              "</div></div>",
+            devConversations: {
+              buttons: [
+                {
+                  id: "ex3-match",
+                  label: "Exercise 3",
+                  overlayTitle: "Ex. 3 · Match to countries",
+                  overlayBrand: "Reading",
+                  countryMatchPackId: "eat-breakfast-ex3",
+                },
+                {
+                  id: "ex4-gaps",
+                  label: "Exercise 4",
+                  overlayTitle: "Ex. 4 · Bold words",
+                  overlayBrand: "Vocabulary",
+                  section: {
+                    n: 4,
+                    lead:
+                      "Look at the words in bold in the article. Complete the sentences below with the words from the article.",
+                    leadAfter:
+                      "Then work in pairs and discuss the questions.",
+                    dialogues: [
+                      {
+                        num: 1,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-1a",
+                            before: "What does your ",
+                            mid: " breakfast ",
+                            gap2: { id: "b5-ex4-1b" },
+                            after: " of?",
+                          },
+                        ],
+                      },
+                      {
+                        num: 2,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-2",
+                            before: "How often do you ",
+                            after:
+                              " something quick to eat instead of taking time to have a proper meal?",
+                          },
+                        ],
+                      },
+                      {
+                        num: 3,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-3",
+                            before: "Do you ever eat from food ",
+                            after: " in the street? Why? / Why not?",
+                          },
+                        ],
+                      },
+                      {
+                        num: 4,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-4",
+                            before: "Have you ever had an upset ",
+                            after: " after eating food? What happened?",
+                          },
+                        ],
+                      },
+                      {
+                        num: 5,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-5",
+                            before: "How ",
+                            after: " are you about your health and what you eat?",
+                          },
+                        ],
+                      },
+                      {
+                        num: 6,
+                        lines: [
+                          {
+                            prompt: true,
+                            id: "b5-ex4-6",
+                            before: "What do you think is the ",
+                            after: " for a long life?",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          speak: {
+            mission:
+              "Which breakfast would you try? Which sounds too heavy or too strange for you at breakfast?",
+            starters: [
+              "I’d be open to … but I wouldn’t experiment with … at breakfast.",
+              "The … breakfast sounds typical / too fattening / too spicy for me.",
+            ],
+            questions: [
+              {
+                q: "Compare your usual breakfast with one country from the text.",
+                examples: [
+                  "I usually grab … but in South Korea people …",
+                  "Bulgarian breakfast includes … — I rarely eat … in the morning.",
+                ],
+              },
+              {
+                q: "Which country’s habits have changed, in your opinion?",
+                examples: [
+                  "In Ireland fewer people eat the fry because …",
+                  "Many Koreans are too busy to …",
+                ],
+              },
+            ],
+          },
+          time: "8–12 min",
+        },
       ],
       finale: {
         prompt:
-          "Improv a full night out: decide where (Beats 2–3) · talk about the place (Beat 1) · then play a short restaurant scene (Beat 4).",
+          "Improv a full night out: decide where (Beats 2–3) · talk about the place (Beat 1) · restaurant scene (Beat 4) · optional: compare breakfasts (Beat 5).",
       },
       homework: {
         note:
@@ -2374,6 +2989,10 @@
   }
 
   var BLOCK_META = {
+    warmup: {
+      title: "Start here",
+      hint: "First task · tap Start when your group is ready",
+    },
     read: {
       title: "Read the extract",
       hint: "Notice the highlighted chunks in context",
@@ -2396,7 +3015,7 @@
     },
     pictures: {
       title: "Picture memory",
-      hint: "Flip to check · Pictures · fullscreen for images",
+      hint: "Pictures or Lines · RU→EN — both fullscreen",
     },
     drillCards: {
       title: "Drilling cards",
@@ -2444,8 +3063,9 @@
         label: b.label || "Beat " + (i + 1),
         short: String(i + 1),
         teacher: b.teacher || "",
-        blocks: b.blocks || ["read", "context"],
+        blocks: b.blocks || ["read"],
         phrases: b.phrases || [],
+        warmup: b.warmup || null,
         read: b.read || null,
         context: b.context || null,
         speak: b.speak || null,
@@ -2502,6 +3122,108 @@
     });
     return list;
   }
+
+  /** Warm-up gap keys · section index (string) → gap id → accepted answers */
+  global.PRE_INT_READ_FOLLOW_GAP_KEYS = {
+    "breakfast-around-the-world": {
+      "ex4-gaps": {
+        "b5-ex4-1a": ["typical"],
+        "b5-ex4-1b": ["consists of"],
+        "b5-ex4-2": ["grab"],
+        "b5-ex4-3": ["stalls"],
+        "b5-ex4-4": ["stomach"],
+        "b5-ex4-5": ["concerned"],
+        "b5-ex4-6": ["secret"],
+      },
+    },
+    "in-the-restaurant": {
+      "ex10-1-3": {
+        "r4-e10-1a": ["Could"],
+        "r4-e10-2a": ["Shall"],
+        "r4-e10-3a": ["Could"],
+      },
+      "ex10-4-8": {
+        "r4-e10-4a": ["Would"],
+        "r4-e10-4b": ["Could"],
+        "r4-e10-5a": ["Shall"],
+        "r4-e10-6a": ["Could"],
+        "r4-e10-7a": ["Would"],
+        "r4-e10-8a": ["Shall"],
+      },
+    },
+  };
+
+  global.PRE_INT_COUNTRY_MATCH_PACKS = {
+    "eat-breakfast-ex3": {
+      id: "eat-breakfast-ex3",
+      instruction:
+        "Read the article again and match each sentence (1–6) to a country / countries. Choose the letter A–E. Sentences 5 and 6 each match two countries.",
+      options: [
+        { letter: "A", text: "South Korea" },
+        { letter: "B", text: "Bulgaria" },
+        { letter: "C", text: "Costa Rica" },
+        { letter: "D", text: "Egypt" },
+        { letter: "E", text: "Ireland" },
+      ],
+      rows: [
+        {
+          n: 1,
+          text: "People sometimes have a very sweet drink.",
+          picks: 1,
+        },
+        {
+          n: 2,
+          text: "A local food has been linked to health.",
+          picks: 1,
+        },
+        {
+          n: 3,
+          text: "Someone had a special food on a journey.",
+          picks: 1,
+        },
+        {
+          n: 4,
+          text: "Some people only have two meals all day.",
+          picks: 1,
+        },
+        { n: 5, text: "Habits have changed.", picks: 2 },
+        {
+          n: 6,
+          text: "People don\u2019t have the traditional breakfast at home.",
+          picks: 2,
+        },
+      ],
+      answerKey: {
+        "1": ["C"],
+        "2": ["B"],
+        "3": ["A"],
+        "4": ["D"],
+        "5": ["A", "E"],
+        "6": ["A", "E"],
+      },
+    },
+  };
+
+  global.PRE_INT_WARMUP_GAP_KEYS = {
+    suggestions: {
+      "0": {
+        "s3-d1a": ["Have you ever eaten"],
+        "s3-d1b": ["have had", "'ve had"],
+        "s3-d2a": ["Have you ever been"],
+        "s3-d2b1": ["went"],
+        "s3-d2b2": ["paid"],
+        "s3-d3a": ["Have you ever complained"],
+        "s3-d3b1": ["complained"],
+        "s3-d3b2": ["wasn't", "was not", "wasnt"],
+        "s3-d4a": ["Have you ever found"],
+        "s3-d4b": ["found"],
+        "s3-d5a": ["Have you tried"],
+        "s3-d5b": ["have never heard", "'ve never heard"],
+        "s3-d6a": ["Have you watched", "Have you ever watched"],
+        "s3-d6b": ["have seen", "'ve seen"],
+      },
+    },
+  };
 
   global.PRE_INT_UNITS = UNITS;
   global.PRE_INT_getUnit = getUnit;

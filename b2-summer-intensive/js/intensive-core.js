@@ -81,6 +81,7 @@
         teacher: b.teacher || "",
         blocks: b.blocks || ["read", "context"],
         phrases: b.phrases || [],
+        warmup: b.warmup || null,
         read: b.read || null,
         context: b.context || null,
         speak: b.speak || null,

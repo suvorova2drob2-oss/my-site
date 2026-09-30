@@ -77,6 +77,13 @@
   var CARD_BATCH = 10;
   /** Partner-drill progress per beat id */
   var drillByBeat = {};
+  var warmupOverlay = { open: false, beatId: null, stepI: 0 };
+  var readFollowOverlay = {
+    open: false,
+    beatId: null,
+    buttonId: null,
+    countryMatchApi: null,
+  };
   /** Pre-recorded partner prompt A (neural TTS), not browser speechSynthesis */
   var drillPromptPlayer = null;
   var drillPromptPlayedKey = "";
@@ -669,6 +676,93 @@
     );
   }
 
+  function resolveSituationPlaque(screen) {
+    var r = screen.read || {};
+    var pl = r.situationPlaque;
+    if (!pl) return null;
+    if (pl.items && pl.items.length) {
+      return {
+        kicker: pl.kicker || "",
+        hint: pl.hint || "",
+        items: pl.items,
+      };
+    }
+    if (pl.fromDrillContextual) {
+      var stages = (screen.drill && screen.drill.stages) || [];
+      var ctxStage = null;
+      for (var i = 0; i < stages.length; i++) {
+        if (stages[i].type === "contextual") {
+          ctxStage = stages[i];
+          break;
+        }
+      }
+      if (!ctxStage || !ctxStage.contexts || !ctxStage.contexts.length) return null;
+      var skip = pl.skipContexts | 0;
+      var contexts = ctxStage.contexts.slice(skip);
+      return {
+        kicker: pl.kicker || "Situation cues",
+        hint: pl.hint || "",
+        items: contexts.map(function (c) {
+          return { parts: c.parts || [], title: c.title || "" };
+        }),
+      };
+    }
+    return null;
+  }
+
+  function renderSituationPlaque(resolved) {
+    if (!resolved || !resolved.items || !resolved.items.length) return "";
+    var rows = resolved.items
+      .map(function (item, idx) {
+        var parts = item.parts || [];
+        if (!parts.length) return "";
+        var flow = parts
+          .map(function (p, pi) {
+            var sep =
+              pi < parts.length - 1
+                ? '<span class="si-paper-plaque-sep" aria-hidden="true">/</span>'
+                : "";
+            return (
+              '<span class="si-paper-plaque-chunk">' +
+              escapeHtml(p) +
+              "</span>" +
+              sep
+            );
+          })
+          .join("");
+        return (
+          '<li class="si-paper-plaque-item">' +
+          '<span class="si-paper-plaque-num" aria-hidden="true">' +
+          String(idx + 1) +
+          "</span>" +
+          '<div class="si-paper-plaque-flow">' +
+          flow +
+          "</div></li>"
+        );
+      })
+      .join("");
+    var head =
+      resolved.kicker || resolved.hint
+        ? '<div class="si-paper-plaque-head">' +
+          (resolved.kicker
+            ? '<div class="si-paper-plaque-kicker">' +
+              escapeHtml(resolved.kicker) +
+              "</div>"
+            : "") +
+          (resolved.hint
+            ? '<p class="si-paper-plaque-hint">' + escapeHtml(resolved.hint) + "</p>"
+            : "") +
+          "</div>"
+        : "";
+    return (
+      '<aside class="si-paper-plaque" aria-label="Situation cues">' +
+      head +
+      '<ol class="si-paper-plaque-list">' +
+      rows +
+      "</ol></aside>"
+    );
+  }
+
   function renderReadBody(screen) {
     var r = screen.read || {};
     if (!r.html && !r.title) {
@@ -694,6 +788,8 @@
       : "";
     var comicsBlock = renderReadPaperComics(r);
     var exercisesBlock = renderReadPaperExercises(r);
+    var plaqueBlock = renderSituationPlaque(resolveSituationPlaque(screen));
+    var devBlock = renderReadDevButtons(r, screen.id || "beat");
     return (
       '<div class="si-paper">' +
       '<header class="si-paper-head">' +
@@ -708,10 +804,327 @@
       '<div class="si-paper-body">' +
       bodyHtml +
       "</div>" +
+      plaqueBlock +
       comicsBlock +
       exercisesBlock +
+      devBlock +
       "</div>"
     );
+  }
+
+  function renderRoleplayGuide(rp) {
+    if (!rp) return "";
+    var stepsHtml = (rp.steps || [])
+      .map(function (step, i) {
+        var role = step.role === "waiter" ? "waiter" : "customers";
+        return (
+          '<li class="si-rp-step si-rp-step--' +
+          role +
+          '">' +
+          '<span class="si-rp-step-n">' +
+          String(i + 1) +
+          "</span>" +
+          '<div class="si-rp-step-body">' +
+          '<span class="si-rp-role">' +
+          escapeHtml(step.label || (role === "waiter" ? "Waiter" : "Customers")) +
+          "</span>" +
+          '<p class="si-rp-text">' +
+          escapeHtml(step.text || "") +
+          "</p></div></li>"
+        );
+      })
+      .join("");
+    var follow =
+      rp.followUp && rp.followUp.text
+        ? '<div class="si-rp-follow">' +
+          (rp.followUp.n != null
+            ? '<span class="si-warmup-ex-tag">Ex. ' +
+              escapeHtml(String(rp.followUp.n)) +
+              "</span>"
+            : "") +
+          '<p class="si-warmup-lead">' +
+          escapeHtml(rp.followUp.text) +
+          "</p></div>"
+        : "";
+    return (
+      '<div class="si-rp-guide">' +
+      (rp.n != null
+        ? '<span class="si-warmup-ex-tag">Ex. ' +
+          escapeHtml(String(rp.n)) +
+          "</span>"
+        : "") +
+      (rp.lead ? '<p class="si-warmup-lead">' + escapeHtml(rp.lead) + "</p>" : "") +
+      '<ol class="si-rp-flow">' +
+      stepsHtml +
+      "</ol>" +
+      follow +
+      "</div>"
+    );
+  }
+
+  function renderDevReference(ref) {
+    if (!ref) return "";
+    var items = (ref.items || [])
+      .map(function (item) {
+        var exHtml = (item.examples || [])
+          .map(function (ex) {
+            return '<p class="si-dev-ref-ex">' + escapeHtml(ex) + "</p>";
+          })
+          .join("");
+        return (
+          '<div class="si-dev-ref-item">' +
+          '<p class="si-dev-ref-rule">' +
+          escapeHtml(item.rule || "") +
+          "</p>" +
+          exHtml +
+          "</div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="si-dev-ref">' +
+      (ref.heading
+        ? '<h4 class="si-dev-ref-title">' + escapeHtml(ref.heading) + "</h4>"
+        : "") +
+      items +
+      "</div>"
+    );
+  }
+
+  function renderReadDevButtons(r, beatId) {
+    var dc = r.devConversations;
+    if (!dc || !dc.buttons || !dc.buttons.length) return "";
+    return (
+      '<div class="si-paper-dev" data-si-read-follow="' +
+      escapeHtml(beatId) +
+      '">' +
+      dc.buttons
+        .map(function (btn) {
+          return (
+            '<button type="button" class="si-paper-dev-btn" data-si-read-follow-open="' +
+            escapeHtml(btn.id || "") +
+            '">' +
+            escapeHtml(btn.label || "Open") +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
+  function getReadFollowButton(screen, buttonId) {
+    var list =
+      screen &&
+      screen.read &&
+      screen.read.devConversations &&
+      screen.read.devConversations.buttons;
+    if (!list) return null;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === buttonId) return list[i];
+    }
+    return null;
+  }
+
+  function closeReadFollowOverlay() {
+    readFollowOverlay.open = false;
+    readFollowOverlay.beatId = null;
+    readFollowOverlay.buttonId = null;
+    readFollowOverlay.countryMatchApi = null;
+    paintReadFollowOverlay();
+  }
+
+  function renderCountryMatchPanel(pack) {
+    if (!pack) return "";
+    return (
+      '<div class="fce-rsm-mount" data-si-country-match="' +
+      escapeHtml(pack.id || "match") +
+      '"></div>'
+    );
+  }
+
+  function openReadFollowOverlay(beatId, buttonId) {
+    readFollowOverlay.open = true;
+    readFollowOverlay.beatId = beatId;
+    readFollowOverlay.buttonId = buttonId;
+    paintReadFollowOverlay();
+  }
+
+  function paintReadFollowOverlay() {
+    var existing = document.getElementById("si-read-follow-overlay");
+    if (!readFollowOverlay.open || !readFollowOverlay.beatId) {
+      if (existing) existing.remove();
+      if (!warmupOverlay.open) document.body.classList.remove("si-warmup-open");
+      return;
+    }
+    var screen = getBeatScreen(readFollowOverlay.beatId);
+    var btn = getReadFollowButton(screen, readFollowOverlay.buttonId);
+    if (!screen || !btn) {
+      closeReadFollowOverlay();
+      return;
+    }
+    var beatId = screen.id || "beat";
+    var scrollHtml = "";
+    var hasGaps = false;
+    var hasCountryMatch = false;
+    if (btn.reference) {
+      scrollHtml = renderDevReference(btn.reference);
+    } else if (btn.roleplay) {
+      scrollHtml = renderRoleplayGuide(btn.roleplay);
+    } else if (btn.countryMatchPackId) {
+      var packs = window.PRE_INT_COUNTRY_MATCH_PACKS || {};
+      var pack = packs[btn.countryMatchPackId];
+      scrollHtml = renderCountryMatchPanel(pack);
+      hasCountryMatch = !!pack;
+    } else if (btn.section) {
+      scrollHtml = renderWarmupSectionInner(
+        btn.section,
+        0,
+        beatId,
+        "",
+        true
+      );
+      hasGaps = !!(btn.section.dialogues && btn.section.dialogues.length);
+    }
+    var footHtml =
+      '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--main" data-si-read-follow-ov="close">Close</button>';
+    if (hasGaps) {
+      footHtml =
+        '<button type="button" class="si-warmup-ov-btn" data-si-read-follow-ov="check">Check</button>' +
+        '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--ghost" data-si-read-follow-ov="clear">Clear</button>' +
+        '<p class="si-warmup-gap-feedback" data-si-read-follow-feedback hidden></p>' +
+        footHtml;
+    } else if (hasCountryMatch) {
+      footHtml =
+        '<button type="button" class="si-warmup-ov-btn" data-si-read-follow-ov="match-check">Check</button>' +
+        '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--ghost" data-si-read-follow-ov="match-clear">Clear</button>' +
+        footHtml;
+    }
+    var title = btn.overlayTitle || btn.label || "Developing conversations";
+    var headBrand = btn.roleplay
+      ? "Speaking"
+      : btn.countryMatchPackId
+        ? "Reading"
+        : btn.overlayBrand || "Developing conversations";
+    var html =
+      '<div class="si-warmup-overlay" id="si-read-follow-overlay" role="dialog" aria-modal="true" aria-label="' +
+      escapeHtml(title) +
+      '" data-si-read-follow-panel="' +
+      escapeHtml(btn.id || "") +
+      '">' +
+      '<div class="si-warmup-ov-panel">' +
+      '<header class="si-warmup-ov-head">' +
+      '<div class="si-warmup-ov-brand">' +
+      escapeHtml(headBrand) +
+      "</div>" +
+      '<div class="si-warmup-ov-step">' +
+      escapeHtml(title) +
+      "</div>" +
+      '<button type="button" class="si-warmup-ov-x" data-si-read-follow-ov="close" aria-label="Close">×</button>' +
+      "</header>" +
+      '<div class="si-warmup-ov-scroll si-paper">' +
+      scrollHtml +
+      "</div>" +
+      '<footer class="si-warmup-ov-foot">' +
+      footHtml +
+      "</footer></div></div>";
+    if (existing) existing.outerHTML = html;
+    else document.body.insertAdjacentHTML("beforeend", html);
+    document.body.classList.add("si-warmup-open");
+    bindReadFollowOverlay(btn);
+  }
+
+  function bindReadFollowOverlay(btn) {
+    var ov = document.getElementById("si-read-follow-overlay");
+    if (!ov) return;
+    readFollowOverlay.countryMatchApi = null;
+    if (
+      btn &&
+      btn.countryMatchPackId &&
+      window.FCE_READING_STATEMENT_MATCH &&
+      window.PRE_INT_COUNTRY_MATCH_PACKS
+    ) {
+      var pack = window.PRE_INT_COUNTRY_MATCH_PACKS[btn.countryMatchPackId];
+      var mountRoot = ov.querySelector("[data-si-country-match]");
+      if (pack && mountRoot) {
+        readFollowOverlay.countryMatchApi = FCE_READING_STATEMENT_MATCH.mount({
+          root: mountRoot,
+          instruction: pack.instruction,
+          options: pack.options,
+          rows: pack.rows,
+          answerKey: pack.answerKey,
+        });
+      }
+    }
+    var beatId = readFollowOverlay.beatId;
+    var panelId = readFollowOverlay.buttonId || "";
+    var gapKey =
+      (window.PRE_INT_READ_FOLLOW_GAP_KEYS &&
+        window.PRE_INT_READ_FOLLOW_GAP_KEYS[beatId] &&
+        window.PRE_INT_READ_FOLLOW_GAP_KEYS[beatId][panelId]) ||
+      {};
+    var scrollRoot = ov.querySelector(".si-warmup-ov-scroll");
+    ov.querySelectorAll(".si-warmup-gap").forEach(function (inp) {
+      inp.addEventListener("focus", function () {
+        window.setTimeout(function () {
+          try {
+            inp.scrollIntoView({ block: "center", behavior: "smooth" });
+          } catch (_e) {
+            inp.scrollIntoView(true);
+          }
+        }, 280);
+      });
+    });
+    ov.querySelectorAll("[data-si-read-follow-ov]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var act = btn.getAttribute("data-si-read-follow-ov");
+        if (act === "close") {
+          closeReadFollowOverlay();
+          return;
+        }
+        var fb = ov.querySelector("[data-si-read-follow-feedback]");
+        if (act === "check" && scrollRoot) {
+          var res = runWarmupGapCheck(scrollRoot, gapKey);
+          if (fb) {
+            fb.hidden = false;
+            fb.classList.remove("is-all-ok");
+            if (res.total && res.ok === res.total) {
+              fb.textContent = "All correct ✓";
+              fb.classList.add("is-all-ok");
+            } else {
+              fb.textContent =
+                res.ok +
+                " / " +
+                res.total +
+                " correct · red = yours · green = key";
+            }
+          }
+        }
+        if (act === "clear" && scrollRoot) {
+          clearWarmupGaps(scrollRoot);
+          if (fb) fb.hidden = true;
+        }
+        if (act === "match-check" && readFollowOverlay.countryMatchApi) {
+          readFollowOverlay.countryMatchApi.check();
+        }
+        if (act === "match-clear" && readFollowOverlay.countryMatchApi) {
+          readFollowOverlay.countryMatchApi.reset();
+        }
+      });
+    });
+  }
+
+  function bindReadFollow(root) {
+    if (!root) return;
+    root.querySelectorAll("[data-si-read-follow-open]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var wrap = btn.closest("[data-si-read-follow]");
+        if (!wrap) return;
+        var beatId = wrap.getAttribute("data-si-read-follow") || "";
+        var panelId = btn.getAttribute("data-si-read-follow-open") || "";
+        if (beatId && panelId) openReadFollowOverlay(beatId, panelId);
+      });
+    });
   }
 
   function renderReadPaperComics(r) {
@@ -740,8 +1153,7 @@
           root: host,
           cards: cards,
           inPaper: true,
-          leadText:
-            "Bright picture cues (same style as A favourite place) — guess the line, tap to flip and read the script.",
+          hideLead: true,
         });
       } else {
         host.innerHTML =
@@ -760,6 +1172,586 @@
         if (!paperExAudioPlayer) paperExAudioPlayer = new Audio();
         paperExAudioPlayer.src = src;
         paperExAudioPlayer.play();
+      });
+    });
+  }
+
+  function normalizeWarmupGapAnswer(s) {
+    return String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\u2018\u2019\u0060]/g, "'")
+      .replace(/\s+/g, " ")
+      .replace(/[.!?…]+$/g, "");
+  }
+
+  function warmupGapMatches(input, accepted) {
+    var n = normalizeWarmupGapAnswer(input);
+    if (!n) return false;
+    return (accepted || []).some(function (a) {
+      return normalizeWarmupGapAnswer(a) === n;
+    });
+  }
+
+  function getBeatScreen(beatId) {
+    for (var i = 0; i < flow.length; i++) {
+      if (flow[i].kind === "beat" && flow[i].id === beatId) return flow[i];
+    }
+    return null;
+  }
+
+  function warmupHasOverlay(w) {
+    if (!w || !w.sections) return false;
+    for (var i = 0; i < w.sections.length; i++) {
+      if (w.sections[i].dialogues && w.sections[i].dialogues.length) return true;
+    }
+    return false;
+  }
+
+  function runWarmupGapCheck(secEl, map) {
+    var ok = 0;
+    var total = 0;
+    secEl.querySelectorAll("[data-si-warmup-gap]").forEach(function (inp) {
+      var id = inp.getAttribute("data-si-warmup-gap") || "";
+      var accepted = map[id];
+      if (!accepted || !accepted.length) return;
+      total++;
+      var wrap = inp.closest(".si-warmup-gap-wrap");
+      var keyEl = wrap ? wrap.querySelector(".si-warmup-gap-key") : null;
+      var good = warmupGapMatches(inp.value, accepted);
+      inp.classList.remove("is-ok", "is-bad");
+      if (keyEl) {
+        keyEl.hidden = true;
+        keyEl.classList.remove("is-show");
+        keyEl.textContent = "";
+      }
+      if (good) {
+        ok++;
+        inp.classList.add("is-ok");
+      } else {
+        inp.classList.add("is-bad");
+        if (keyEl) {
+          keyEl.textContent = accepted[0];
+          keyEl.hidden = false;
+          keyEl.classList.add("is-show");
+        }
+      }
+    });
+    return { ok: ok, total: total };
+  }
+
+  function clearWarmupGaps(secEl) {
+    secEl.querySelectorAll("[data-si-warmup-gap]").forEach(function (inp) {
+      inp.value = "";
+      inp.classList.remove("is-ok", "is-bad");
+      var wrap = inp.closest(".si-warmup-gap-wrap");
+      var keyEl = wrap ? wrap.querySelector(".si-warmup-gap-key") : null;
+      if (keyEl) {
+        keyEl.hidden = true;
+        keyEl.classList.remove("is-show");
+        keyEl.textContent = "";
+      }
+    });
+  }
+
+  function renderWarmupGapInput(linePart) {
+    var gapCls = "si-warmup-gap";
+    if (linePart.gapSize === "modal") gapCls += " si-warmup-gap--modal";
+    return (
+      '<span class="si-warmup-gap-wrap">' +
+      '<input type="text" class="' +
+      gapCls +
+      '" autocomplete="off" spellcheck="false" data-si-warmup-gap="' +
+      escapeHtml(linePart.id || "") +
+      '" aria-label="' +
+      escapeHtml((linePart.hint || linePart.id || "gap") + "") +
+      '" />' +
+      '<span class="si-warmup-gap-key" hidden></span></span>'
+    );
+  }
+
+  function renderWarmupGapLine(line) {
+    if (!line.id) {
+      return (
+        '<p class="si-warmup-gap-line si-warmup-gap-line--plain">' +
+        '<span class="si-warmup-who">' +
+        escapeHtml(line.who || "") +
+        ":</span> " +
+        escapeHtml((line.before || "") + (line.after || "")) +
+        "</p>"
+      );
+    }
+    var hint = line.hint
+      ? ' <span class="si-warmup-gap-hint">(' +
+        escapeHtml(line.hint) +
+        ")</span>"
+      : "";
+    var gap2Html = "";
+    if (line.gap2 && line.gap2.id) {
+      gap2Html = renderWarmupGapInput(line.gap2);
+    }
+    if (line.prompt) {
+      return (
+        '<p class="si-warmup-gap-line si-warmup-gap-line--prompt">' +
+        escapeHtml(line.before || "") +
+        renderWarmupGapInput(line) +
+        escapeHtml(line.mid || "") +
+        gap2Html +
+        escapeHtml(line.after || "") +
+        hint +
+        "</p>"
+      );
+    }
+    return (
+      '<p class="si-warmup-gap-line">' +
+      '<span class="si-warmup-who">' +
+      escapeHtml(line.who || "") +
+      ":</span> " +
+      escapeHtml(line.before || "") +
+      renderWarmupGapInput(line) +
+      escapeHtml(line.mid || "") +
+      gap2Html +
+      escapeHtml(line.after || "") +
+      hint +
+      "</p>"
+    );
+  }
+
+  function renderWarmupDialogues(sec, beatId) {
+    if (!sec.dialogues || !sec.dialogues.length) return "";
+    return sec.dialogues
+      .map(function (dlg) {
+        var lines = (dlg.lines || []).map(renderWarmupGapLine).join("");
+        return (
+          '<div class="si-warmup-dlg">' +
+          '<span class="si-warmup-dlg-num">' +
+          escapeHtml(String(dlg.num != null ? dlg.num : "")) +
+          "</span>" +
+          '<div class="si-warmup-dlg-body">' +
+          lines +
+          "</div></div>"
+        );
+      })
+      .join("");
+  }
+
+  function renderWarmupSectionInner(sec, si, beatId, audioSrc, inOverlay) {
+    var body = "";
+    if (sec.lead) {
+      body += '<p class="si-warmup-lead">' + escapeHtml(sec.lead) + "</p>";
+    }
+    if (sec.listen && audioSrc) {
+      body +=
+        '<audio class="si-paper-audio si-warmup-audio" controls preload="metadata">' +
+        '<source src="' +
+        escapeHtml(audioSrc) +
+        '" type="audio/mpeg" /></audio>';
+    }
+    if (sec.leadAfter) {
+      body +=
+        '<p class="si-warmup-lead si-warmup-lead--after">' +
+        escapeHtml(sec.leadAfter) +
+        "</p>";
+    }
+    if (sec.starters && sec.starters.length) {
+      body +=
+        '<ul class="si-warmup-list">' +
+        sec.starters
+          .map(function (line) {
+            return "<li>" + escapeHtml(line) + "</li>";
+          })
+          .join("") +
+        "</ul>";
+    }
+    if (sec.responses && sec.responses.length) {
+      body +=
+        '<ul class="si-warmup-responses">' +
+        sec.responses
+          .map(function (line) {
+            return (
+              '<li><span class="si-warmup-response-chip">' +
+              escapeHtml(line) +
+              "</span></li>"
+            );
+          })
+          .join("") +
+        "</ul>";
+    }
+    if (sec.dialogues && sec.dialogues.length) {
+      body += renderWarmupDialogues(sec, beatId);
+      if (!inOverlay) {
+        body +=
+          '<div class="si-warmup-gap-actions">' +
+          '<button type="button" class="si-warmup-gap-check" data-si-warmup-check="' +
+          escapeHtml(String(si)) +
+          '">Check</button>' +
+          '<button type="button" class="si-warmup-gap-reset" data-si-warmup-reset="' +
+          escapeHtml(String(si)) +
+          '">Clear</button>' +
+          '<p class="si-warmup-gap-feedback" data-si-warmup-feedback="' +
+          escapeHtml(String(si)) +
+          '" hidden></p>' +
+          "</div>";
+      }
+    }
+    var exTag =
+      sec.n != null
+        ? '<span class="si-warmup-ex-tag">Ex. ' + escapeHtml(String(sec.n)) + "</span>"
+        : "";
+    var stepTag = sec.step
+      ? '<span class="si-warmup-step-tag">' + escapeHtml(sec.step) + "</span>"
+      : "";
+    return (
+      '<section class="si-warmup-sec" data-si-warmup-sec="' +
+      escapeHtml(String(si)) +
+      '">' +
+      stepTag +
+      exTag +
+      body +
+      "</section>"
+    );
+  }
+
+  function renderWarmupGateCard(w, beatId, overlayMode, started, leaveShellOpen) {
+    var gateHint = w.gateHint
+      ? '<p class="si-warmup-gate-hint">' + escapeHtml(w.gateHint) + "</p>"
+      : "";
+    var gateLabel = w.gateLabel || "Warm-up · tap Start when your group is ready";
+    var startLabel = started && overlayMode ? "Open exercise" : "Start";
+    return (
+      '<div class="si-warmup si-paper' +
+      (started ? " is-started" : "") +
+      '" data-si-warmup="' +
+      escapeHtml(beatId) +
+      '" data-si-warmup-overlay="' +
+      (overlayMode ? "1" : "0") +
+      '">' +
+      '<div class="si-warmup-gate" data-si-warmup-gate>' +
+      '<div class="si-warmup-gate-inner">' +
+      '<span class="si-warmup-gate-kicker">Before the text</span>' +
+      '<p class="si-warmup-gate-title">' +
+      escapeHtml(gateLabel) +
+      "</p>" +
+      gateHint +
+      (overlayMode && started
+        ? '<p class="si-warmup-gate-done">Opens in a full-screen card · not a long scroll on this page.</p>'
+        : "") +
+      '<button type="button" class="si-warmup-start" data-si-warmup-start>' +
+      escapeHtml(startLabel) +
+      "</button>" +
+      "</div></div>" +
+      (leaveShellOpen ? "" : "</div>")
+    );
+  }
+
+  function renderWarmupBody(screen) {
+    var w = screen.warmup;
+    if (!w || !w.sections || !w.sections.length) {
+      return (
+        '<div class="int-slot-empty">Drop a warm-up task here (Start gate).</div>'
+      );
+    }
+    var beatId = screen.id || "beat";
+    var overlayMode = warmupHasOverlay(w);
+    var storageKey = "si-warmup-open:" + beatId;
+    var started = false;
+    try {
+      started = sessionStorage.getItem(storageKey) === "1";
+    } catch (_e) {}
+
+    if (overlayMode) {
+      return renderWarmupGateCard(w, beatId, true, started);
+    }
+
+    var audioSrc = w.audio || (screen.read && screen.read.audio) || "";
+    var sectionsHtml = w.sections
+      .map(function (sec, si) {
+        return renderWarmupSectionInner(sec, si, beatId, audioSrc, false);
+      })
+      .join("");
+    return (
+      renderWarmupGateCard(w, beatId, false, false, true) +
+      '<div class="si-warmup-panel" hidden data-si-warmup-panel>' +
+      sectionsHtml +
+      "</div></div>"
+    );
+  }
+
+  function closeWarmupOverlay() {
+    warmupOverlay.open = false;
+    warmupOverlay.beatId = null;
+    warmupOverlay.stepI = 0;
+    paintWarmupOverlay();
+  }
+
+  function mergeWarmupGapKeys(gapKeyBySec) {
+    var flat = {};
+    if (!gapKeyBySec) return flat;
+    Object.keys(gapKeyBySec).forEach(function (secK) {
+      var block = gapKeyBySec[secK] || {};
+      Object.keys(block).forEach(function (gapId) {
+        flat[gapId] = block[gapId];
+      });
+    });
+    return flat;
+  }
+
+  function warmupOverlayHasGaps(w) {
+    return (w.sections || []).some(function (sec) {
+      return sec.dialogues && sec.dialogues.length;
+    });
+  }
+
+  function paintWarmupOverlay() {
+    var existing = document.getElementById("si-warmup-overlay");
+    if (!warmupOverlay.open || !warmupOverlay.beatId) {
+      if (existing) existing.remove();
+      if (!readFollowOverlay.open) document.body.classList.remove("si-warmup-open");
+      return;
+    }
+    var screen = getBeatScreen(warmupOverlay.beatId);
+    var w = screen && screen.warmup;
+    if (!screen || !w || !w.sections || !w.sections.length) {
+      closeWarmupOverlay();
+      return;
+    }
+    var sections = w.sections;
+    var singlePage = !!w.singlePage;
+    var beatId = screen.id || "beat";
+    var audioSrc = w.audio || (screen.read && screen.read.audio) || "";
+    var scrollHtml = "";
+    if (singlePage) {
+      sections.forEach(function (sec, si) {
+        scrollHtml += renderWarmupSectionInner(sec, si, beatId, audioSrc, true);
+      });
+    } else {
+      var stI = warmupOverlay.stepI;
+      if (stI < 0) stI = 0;
+      if (stI >= sections.length) stI = sections.length - 1;
+      warmupOverlay.stepI = stI;
+      scrollHtml = renderWarmupSectionInner(
+        sections[stI],
+        stI,
+        beatId,
+        audioSrc,
+        true
+      );
+    }
+    var hasGaps = warmupOverlayHasGaps(w);
+    var footHtml = "";
+    if (hasGaps) {
+      footHtml +=
+        '<button type="button" class="si-warmup-ov-btn" data-si-warmup-ov="check">Check</button>' +
+        '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--ghost" data-si-warmup-ov="clear">Clear</button>' +
+        '<p class="si-warmup-gap-feedback" data-si-warmup-ov-feedback hidden></p>';
+    }
+    if (!singlePage) {
+      var stI = warmupOverlay.stepI;
+      if (stI < sections.length - 1) {
+        footHtml +=
+          '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--main" data-si-warmup-ov="next">Next →</button>';
+      } else {
+        footHtml +=
+          '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--main" data-si-warmup-ov="close">Done · close</button>';
+      }
+    } else {
+      footHtml +=
+        '<button type="button" class="si-warmup-ov-btn si-warmup-ov-btn--main" data-si-warmup-ov="close">Close</button>';
+    }
+
+    var headStep = "";
+    if (singlePage) {
+      headStep =
+        '<div class="si-warmup-ov-step">' +
+        escapeHtml(w.overlayTitle || (sections[0] && sections[0].n != null ? "Ex. " + sections[0].n : "Exercise")) +
+        "</div>";
+    } else {
+      headStep =
+        '<div class="si-warmup-ov-step">Step ' +
+        (warmupOverlay.stepI + 1) +
+        " / " +
+        sections.length +
+        "</div>";
+    }
+
+    var html =
+      '<div class="si-warmup-overlay" id="si-warmup-overlay" role="dialog" aria-modal="true" aria-label="Warm-up exercise"' +
+      (singlePage ? ' data-si-warmup-single="1"' : "") +
+      ">" +
+      '<div class="si-warmup-ov-panel">' +
+      '<header class="si-warmup-ov-head">' +
+      '<div class="si-warmup-ov-brand">Exercise</div>' +
+      headStep +
+      '<button type="button" class="si-warmup-ov-x" data-si-warmup-ov="close" aria-label="Close">×</button>' +
+      "</header>" +
+      '<div class="si-warmup-ov-scroll si-paper">' +
+      scrollHtml +
+      "</div>" +
+      '<footer class="si-warmup-ov-foot">' +
+      footHtml +
+      "</footer></div></div>";
+
+    if (existing) existing.outerHTML = html;
+    else document.body.insertAdjacentHTML("beforeend", html);
+    document.body.classList.add("si-warmup-open");
+    bindWarmupOverlay();
+  }
+
+  function bindWarmupOverlay() {
+    var ov = document.getElementById("si-warmup-overlay");
+    if (!ov) return;
+    ov.querySelectorAll(".si-warmup-gap").forEach(function (inp) {
+      inp.addEventListener("focus", function () {
+        window.setTimeout(function () {
+          try {
+            inp.scrollIntoView({ block: "center", behavior: "smooth" });
+          } catch (_e) {
+            inp.scrollIntoView(true);
+          }
+        }, 280);
+      });
+    });
+    var beatId = warmupOverlay.beatId;
+    var gapKey =
+      (window.PRE_INT_WARMUP_GAP_KEYS &&
+        window.PRE_INT_WARMUP_GAP_KEYS[beatId]) ||
+      {};
+    var singlePage = ov.getAttribute("data-si-warmup-single") === "1";
+    var secI = String(warmupOverlay.stepI);
+    var scrollRoot = ov.querySelector(".si-warmup-ov-scroll");
+
+    ov.querySelectorAll("[data-si-warmup-ov]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var act = btn.getAttribute("data-si-warmup-ov");
+        if (act === "close") {
+          closeWarmupOverlay();
+          return;
+        }
+        if (act === "next") {
+          warmupOverlay.stepI++;
+          paintWarmupOverlay();
+          return;
+        }
+        var secEl = singlePage
+          ? scrollRoot
+          : ov.querySelector('[data-si-warmup-sec="' + secI + '"]');
+        var fb = ov.querySelector("[data-si-warmup-ov-feedback]");
+        var keyMap = singlePage
+          ? mergeWarmupGapKeys(gapKey)
+          : gapKey[secI] || {};
+        if (act === "check" && secEl) {
+          var res = runWarmupGapCheck(secEl, keyMap);
+          if (fb) {
+            fb.hidden = false;
+            fb.classList.remove("is-all-ok");
+            if (res.total && res.ok === res.total) {
+              fb.textContent = "All correct ✓";
+              fb.classList.add("is-all-ok");
+            } else {
+              fb.textContent =
+                res.ok +
+                " / " +
+                res.total +
+                " correct · red = yours · green = key";
+            }
+          }
+        }
+        if (act === "clear" && secEl) {
+          clearWarmupGaps(secEl);
+          if (fb) fb.hidden = true;
+        }
+      });
+    });
+  }
+
+  function openWarmupOverlay(beatId) {
+    var storageKey = "si-warmup-open:" + beatId;
+    try {
+      sessionStorage.setItem(storageKey, "1");
+    } catch (_e) {}
+    warmupOverlay.open = true;
+    warmupOverlay.beatId = beatId;
+    warmupOverlay.stepI = 0;
+    paintWarmupOverlay();
+  }
+
+  function bindWarmup(root) {
+    if (!root) return;
+    root.querySelectorAll("[data-si-warmup]").forEach(function (wrap) {
+      var beatId = wrap.getAttribute("data-si-warmup") || "";
+      var overlayMode = wrap.getAttribute("data-si-warmup-overlay") === "1";
+      var storageKey = "si-warmup-open:" + beatId;
+      var panel = wrap.querySelector("[data-si-warmup-panel]");
+      var gate = wrap.querySelector("[data-si-warmup-gate]");
+      var btn = wrap.querySelector("[data-si-warmup-start]");
+      var gapKey =
+        (window.PRE_INT_WARMUP_GAP_KEYS &&
+          window.PRE_INT_WARMUP_GAP_KEYS[beatId]) ||
+        {};
+
+      function revealInline() {
+        wrap.classList.add("is-open");
+        if (panel) panel.hidden = false;
+        if (gate) gate.hidden = true;
+        try {
+          sessionStorage.setItem(storageKey, "1");
+        } catch (_e) {}
+      }
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          if (overlayMode) openWarmupOverlay(beatId);
+          else revealInline();
+        });
+      }
+
+      if (!overlayMode) {
+        try {
+          if (sessionStorage.getItem(storageKey) === "1") revealInline();
+        } catch (_e2) {}
+      }
+
+      wrap.querySelectorAll("[data-si-warmup-check]").forEach(function (checkBtn) {
+        checkBtn.addEventListener("click", function () {
+          var secI = checkBtn.getAttribute("data-si-warmup-check");
+          var secEl = wrap.querySelector(
+            '[data-si-warmup-sec="' + secI + '"]'
+          );
+          var fb = wrap.querySelector(
+            '[data-si-warmup-feedback="' + secI + '"]'
+          );
+          if (!secEl) return;
+          var res = runWarmupGapCheck(secEl, gapKey[secI] || {});
+          if (fb) {
+            fb.hidden = false;
+            fb.classList.remove("is-all-ok");
+            if (res.total && res.ok === res.total) {
+              fb.textContent = "All correct ✓";
+              fb.classList.add("is-all-ok");
+            } else {
+              fb.textContent =
+                res.ok +
+                " / " +
+                res.total +
+                " correct · red = yours · green = key";
+            }
+          }
+        });
+      });
+
+      wrap.querySelectorAll("[data-si-warmup-reset]").forEach(function (resetBtn) {
+        resetBtn.addEventListener("click", function () {
+          var secI = resetBtn.getAttribute("data-si-warmup-reset");
+          var secEl = wrap.querySelector(
+            '[data-si-warmup-sec="' + secI + '"]'
+          );
+          var fb = wrap.querySelector(
+            '[data-si-warmup-feedback="' + secI + '"]'
+          );
+          if (!secEl) return;
+          clearWarmupGaps(secEl);
+          if (fb) fb.hidden = true;
+        });
       });
     });
   }
@@ -857,7 +1849,7 @@
     var packKey = host.getAttribute("data-pack-key") || "";
     var cards = packKey && window[packKey] ? window[packKey] : null;
     if (cards && cards.length) {
-      PRE_INT_MNEMONIC_GRID.mount({ root: host, cards: cards });
+      PRE_INT_MNEMONIC_GRID.mount({ root: host, cards: cards, hideLead: true });
     } else {
       host.innerHTML =
         '<div class="int-slot-empty">Mnemonic picture pack not loaded.</div>';
@@ -2456,7 +3448,8 @@
         .map(function (id) {
           var meta = blockMeta[id] || { title: id, hint: "" };
           var extra = "";
-          if (id === "read") extra = renderReadBody(screen);
+          if (id === "warmup") extra = renderWarmupBody(screen);
+          else if (id === "read") extra = renderReadBody(screen);
           else if (id === "context") extra = renderContextBody(screen);
           else if (id === "vocab") extra = renderVocabBody(screen);
           else if (id === "pictures") extra = renderPicturesBody(screen);
@@ -3276,6 +4269,10 @@
     bindDrillCards(elStage);
     bindPaperExercises(elStage);
     bindReadComics(elStage);
+    bindWarmup(elStage);
+    bindReadFollow(elStage);
+    paintWarmupOverlay();
+    paintReadFollowOverlay();
     if (screen.kind === "homework") bindHwGames(elStage);
   }
 
@@ -3304,6 +4301,16 @@
       drillByBeat[prevId].open = false;
       drillByBeat[prevId].hint = false;
       paintDrillOverlay();
+    }
+    if (warmupOverlay.open && flow[idx] && flow[idx].id !== warmupOverlay.beatId) {
+      closeWarmupOverlay();
+    }
+    if (
+      readFollowOverlay.open &&
+      flow[idx] &&
+      flow[idx].id !== readFollowOverlay.beatId
+    ) {
+      closeReadFollowOverlay();
     }
     stepIndex = idx;
     if (stepIndex > maxVisited) maxVisited = stepIndex;

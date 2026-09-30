@@ -1,11 +1,18 @@
 /**
- * Pre-intermediate · mnemonic picture grid
- * Grid: front = hidden picture prompt · back = sentence · images only in Pictures · fullscreen
+ * Pre-intermediate · mnemonic pictures
+ * Inline UI: Pictures · fullscreen button only · images + flip lines in lightbox
  */
 (function (global) {
   "use strict";
 
   var escListenerOn = false;
+
+  function syncBodyLightboxClass() {
+    var pic = document.getElementById("piMnLightbox");
+    var phr = document.getElementById("piMnPhraseLightbox");
+    var anyOpen = (pic && !pic.hidden) || (phr && !phr.hidden);
+    document.body.classList.toggle("pi-mn-lightbox-open", anyOpen);
+  }
 
   function esc(s) {
     return String(s || "")
@@ -24,6 +31,11 @@
 
   function cardHtml(c, i) {
     var spCls = speakerClass(c.sentence || c.en || "");
+    var frontCue = c.ru
+      ? '<p class="pi-mn-front-cue">' + esc(c.ru) + "</p>"
+      : '<p class="pi-mn-front-cue pi-mn-front-cue--bare">Line ' +
+        (i + 1) +
+        "</p>";
     return (
       '<article class="pi-mn-card" data-pi-mn-idx="' +
       i +
@@ -36,8 +48,8 @@
       '<span class="pi-mn-front-num">' +
       (i + 1) +
       "</span>" +
-      '<span class="pi-mn-front-ico" aria-hidden="true">🖼</span>' +
-      '<span class="pi-mn-front-hint">Pictures · fullscreen</span>' +
+      frontCue +
+      '<span class="pi-mn-front-hint">Tap · English on back</span>' +
       "</div>" +
       '<div class="pi-mn-face pi-mn-face--back">' +
       '<p class="pi-mn-sentence' +
@@ -63,27 +75,41 @@
     }
 
     var inPaper = !!opts.inPaper;
+    var showPhraseCards = !!opts.showPhraseCards;
     var lead =
       opts.leadText ||
-      "Guess the phrase from context → flip to check. Pictures appear only in Pictures · fullscreen.";
+      (showPhraseCards
+        ? "RU cue → tap to flip the English line. Comic pictures via Pictures · fullscreen."
+        : "Comic cues — picture on front, English line on flip. Only in fullscreen.");
+    var gridHtml = showPhraseCards
+      ? '<div class="pi-mn-grid" id="piMnGrid">' +
+        cards.map(cardHtml).join("") +
+        "</div>"
+      : "";
     root.innerHTML =
-      '<div class="pi-mn-wrap' +
+      '<div class="pi-mn-wrap pi-mn-wrap--fullscreen-only' +
       (inPaper ? " pi-mn-wrap--paper" : "") +
       '">' +
       '<div class="pi-mn-toolbar">' +
-      '<p class="pi-mn-lead">' +
-      esc(lead) +
-      "</p>" +
+      (opts.hideLead
+        ? ""
+        : '<p class="pi-mn-lead">' + esc(lead) + "</p>") +
+      '<div class="pi-mn-toolbar-actions">' +
       '<button type="button" class="pi-mn-pictures-btn" id="piMnPicturesBtn">' +
       '<span class="pi-mn-pictures-ico" aria-hidden="true">🖼</span> Pictures · fullscreen' +
-      "</button></div>" +
-      '<div class="pi-mn-grid" id="piMnGrid">' +
-      cards.map(cardHtml).join("") +
-      "</div></div>";
+      "</button>" +
+      '<button type="button" class="pi-mn-phrases-btn" id="piMnPhrasesBtn" aria-label="Phrase cards Russian front English back fullscreen">' +
+      '<span class="pi-mn-phrases-ico" aria-hidden="true">📝</span> Lines · RU → EN' +
+      "</button></div></div>" +
+      gridHtml +
+      "</div>";
 
     var lightbox = null;
     var lbIdx = 0;
     var lbFlipped = false;
+    var phraseLightbox = null;
+    var plIdx = 0;
+    var plFlipped = false;
 
     function ensureLightbox() {
       if (lightbox) return lightbox;
@@ -163,14 +189,118 @@
       lbFlipped = false;
       paintLightbox();
       lightbox.hidden = false;
-      document.body.classList.add("pi-mn-lightbox-open");
+      syncBodyLightboxClass();
       document.getElementById("piMnLbScene").focus();
     }
 
     function closeLightbox() {
       if (!lightbox) return;
       lightbox.hidden = true;
-      document.body.classList.remove("pi-mn-lightbox-open");
+      syncBodyLightboxClass();
+    }
+
+    function ensurePhraseLightbox() {
+      if (phraseLightbox) return phraseLightbox;
+      var old = document.getElementById("piMnPhraseLightbox");
+      if (old) old.remove();
+      phraseLightbox = document.createElement("div");
+      phraseLightbox.className = "pi-mn-lightbox pi-mn-lightbox--phrases";
+      phraseLightbox.id = "piMnPhraseLightbox";
+      phraseLightbox.hidden = true;
+      phraseLightbox.innerHTML =
+        '<div class="pi-mn-lightbox-backdrop" data-pi-mn-pl-close></div>' +
+        '<div class="pi-mn-lightbox-panel" role="dialog" aria-modal="true" aria-label="Phrase flip cards">' +
+        '<header class="pi-mn-lightbox-head">' +
+        '<span class="pi-mn-lightbox-hud pi-mn-lightbox-hud--phrases" id="piMnPlHud"></span>' +
+        '<button type="button" class="pi-mn-lightbox-x" data-pi-mn-pl-close aria-label="Close">×</button>' +
+        "</header>" +
+        '<div class="pi-mn-lightbox-scene" id="piMnPlScene" tabindex="0">' +
+        '<div class="pi-mn-lightbox-inner pi-mn-lightbox-inner--phrases" id="piMnPlInner">' +
+        '<div class="pi-mn-lightbox-face pi-mn-lightbox-face--front" id="piMnPlFront"></div>' +
+        '<div class="pi-mn-lightbox-face pi-mn-lightbox-face--back" id="piMnPlBack"></div>' +
+        "</div></div>" +
+        '<p class="pi-mn-lightbox-hint">Russian → tap to flip English · ← → · Esc</p>' +
+        '<div class="pi-mn-lightbox-nav">' +
+        '<button type="button" class="pi-mn-lb-btn" id="piMnPlPrev">← Prev</button>' +
+        '<button type="button" class="pi-mn-lb-btn pi-mn-lb-btn--flip pi-mn-lb-btn--flip-phrases" id="piMnPlFlip">Flip</button>' +
+        '<button type="button" class="pi-mn-lb-btn" id="piMnPlNext">Next →</button>' +
+        "</div></div>";
+      document.body.appendChild(phraseLightbox);
+
+      phraseLightbox.querySelectorAll("[data-pi-mn-pl-close]").forEach(function (el) {
+        el.addEventListener("click", closePhraseLightbox);
+      });
+      document.getElementById("piMnPlPrev").addEventListener("click", function () {
+        plGo(-1);
+      });
+      document.getElementById("piMnPlNext").addEventListener("click", function () {
+        plGo(1);
+      });
+      document.getElementById("piMnPlFlip").addEventListener("click", plToggleFlip);
+      document.getElementById("piMnPlScene").addEventListener("click", function (e) {
+        if (e.target.closest("button")) return;
+        plToggleFlip();
+      });
+      document.getElementById("piMnPlScene").addEventListener("keydown", function (e) {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          plToggleFlip();
+        }
+        if (e.key === "ArrowRight") plGo(1);
+        if (e.key === "ArrowLeft") plGo(-1);
+        if (e.key === "Escape") closePhraseLightbox();
+      });
+
+      return phraseLightbox;
+    }
+
+    function paintPhraseLightbox() {
+      var c = cards[plIdx];
+      var spCls = speakerClass(c.sentence || c.en || "");
+      document.getElementById("piMnPlHud").textContent =
+        (plIdx + 1) + " / " + cards.length + " · RU → EN";
+      document.getElementById("piMnPlFront").innerHTML =
+        '<p class="pi-mn-lb-ru pi-mn-lb-ru--front">' +
+        esc(c.ru || "—") +
+        "</p>";
+      document.getElementById("piMnPlBack").innerHTML =
+        '<p class="pi-mn-lb-sentence' +
+        spCls +
+        '">' +
+        esc(c.sentence || c.en || "") +
+        "</p>";
+      document
+        .getElementById("piMnPlInner")
+        .classList.toggle("is-flipped", plFlipped);
+    }
+
+    function openPhraseLightbox(idx) {
+      ensurePhraseLightbox();
+      plIdx = idx;
+      plFlipped = false;
+      paintPhraseLightbox();
+      phraseLightbox.hidden = false;
+      syncBodyLightboxClass();
+      document.getElementById("piMnPlScene").focus();
+    }
+
+    function closePhraseLightbox() {
+      if (!phraseLightbox) return;
+      phraseLightbox.hidden = true;
+      syncBodyLightboxClass();
+    }
+
+    function plGo(delta) {
+      plIdx = (plIdx + delta + cards.length) % cards.length;
+      plFlipped = false;
+      paintPhraseLightbox();
+    }
+
+    function plToggleFlip() {
+      plFlipped = !plFlipped;
+      document
+        .getElementById("piMnPlInner")
+        .classList.toggle("is-flipped", plFlipped);
     }
 
     function lbGo(delta) {
@@ -186,11 +316,15 @@
         .classList.toggle("is-flipped", lbFlipped);
     }
 
-    root.querySelectorAll(".pi-mn-flip").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        btn.querySelector(".pi-mn-flip-inner").classList.toggle("is-flipped");
+    if (showPhraseCards) {
+      root.querySelectorAll(".pi-mn-flip").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btn
+            .querySelector(".pi-mn-flip-inner")
+            .classList.toggle("is-flipped");
+        });
       });
-    });
+    }
 
     var picturesBtn = document.getElementById("piMnPicturesBtn");
     if (picturesBtn) {
@@ -199,13 +333,28 @@
       });
     }
 
+    var phrasesBtn = document.getElementById("piMnPhrasesBtn");
+    if (phrasesBtn) {
+      phrasesBtn.addEventListener("click", function () {
+        openPhraseLightbox(0);
+      });
+    }
+
     if (!escListenerOn) {
       escListenerOn = true;
       document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
         var lb = document.getElementById("piMnLightbox");
-        if (e.key !== "Escape" || !lb || lb.hidden) return;
-        lb.hidden = true;
-        document.body.classList.remove("pi-mn-lightbox-open");
+        var pl = document.getElementById("piMnPhraseLightbox");
+        if (pl && !pl.hidden) {
+          pl.hidden = true;
+          syncBodyLightboxClass();
+          return;
+        }
+        if (lb && !lb.hidden) {
+          lb.hidden = true;
+          syncBodyLightboxClass();
+        }
       });
     }
   }
