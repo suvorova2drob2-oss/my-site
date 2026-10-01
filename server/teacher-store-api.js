@@ -43,8 +43,13 @@ const SYNC_KEYS = [
   "teacher_hub_books_v1",
   "teacher_hub_story_configs_v1",
   "teacher_hub_my_worlds_v1",
-  "teacher_hub_cleared_demo_v1"
+  "teacher_hub_cleared_demo_v1",
+  "teacher_hub_groups_v1",
+  "teacher_hub_schedule_v1",
+  "teacher_hub_hw_assignments_v1"
 ];
+// Student names, timetable and homework drafts: only their teacher gets them, never the public copy.
+const PRIVATE_KEYS = ["teacher_hub_groups_v1", "teacher_hub_schedule_v1", "teacher_hub_hw_assignments_v1"];
 const BACKUPS_PER_KEY = 40;
 const MIN_PASSWORD = 8;
 const LOGIN_RE = /^[a-z0-9._-]{3,32}$/;
@@ -262,17 +267,24 @@ function createUserStore(userDir) {
     });
   }
 
-  function snapshotJson(knownRev) {
+  /** @param {boolean} includePrivate false for the public copy (no groups, schedule, homework) */
+  function snapshotJson(knownRev, includePrivate) {
     const st = state();
     if (knownRev === Number(st.rev)) return JSON.stringify({ ok: true, rev: st.rev, same: true });
+    const names = SYNC_KEYS.filter(function (k) {
+      return includePrivate || PRIVATE_KEYS.indexOf(k) < 0;
+    });
+    const revs = keyRevs(st);
+    const shownRevs = {};
     const parts = [];
-    SYNC_KEYS.forEach(function (k) {
+    names.forEach(function (k) {
+      if (revs[k] != null) shownRevs[k] = revs[k];
       const raw = readKeyRaw(k);
       if (raw != null) parts.push(JSON.stringify(k) + ":" + raw);
     });
     return '{"ok":true,"rev":' + Number(st.rev) +
       ',"updatedAt":' + Number(st.updatedAt || 0) +
-      ',"keyRevs":' + JSON.stringify(keyRevs(st)) +
+      ',"keyRevs":' + JSON.stringify(shownRevs) +
       ',"data":{' + parts.join(",") + "}}";
   }
 
@@ -570,7 +582,7 @@ function createTeacherStoreRouter(options) {
       return;
     }
     // owner tells the page whose copy this is, so a teacher's local edits never mix with the public copy
-    const json = userStore(userId).snapshotJson(known);
+    const json = userStore(userId).snapshotJson(known, !!me);
     res.send(json.replace(/^\{/, '{"owner":' + JSON.stringify(me ? userId : "public") + ","));
   });
 
