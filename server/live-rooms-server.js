@@ -762,6 +762,9 @@ app.post("/live", function (req, res) {
     const body = req.body || {};
     const op = String(body.op || "");
     const result = handleOp(op, body);
+    // any request about a classroom room (players poll it all lesson long) keeps it alive
+    const touched = rooms.get(normalizeRoom(body.roomCode || (result && result.roomCode)));
+    if (touched) touched.lastActiveAt = Date.now();
     res.json({ ok: true, result: result });
   } catch (e) {
     res.status(400).json({ ok: false, error: (e && e.message) || "error" });
@@ -855,11 +858,17 @@ app.use(
   })
 );
 
-// Classroom rooms are temporary. Remove inactive UNO rooms after 12 hours.
+// Classroom rooms are temporary. Remove UNO rooms idle for 12 hours and classroom rooms nobody
+// has touched for 6 hours (a teacher closing the tab never sends closeRoom).
+const ROOM_IDLE_MS = 6 * 60 * 60 * 1000;
 setInterval(function () {
-  const cutoff = Date.now() - 12 * 60 * 60 * 1000;
+  const now = Date.now();
+  const cutoff = now - 12 * 60 * 60 * 1000;
   unoRooms.forEach(function (room, id) {
     if (Number(room.updatedAt || 0) < cutoff) unoRooms.delete(id);
+  });
+  rooms.forEach(function (room, code) {
+    if (Number(room.lastActiveAt || room.createdAt || 0) < now - ROOM_IDLE_MS) rooms.delete(code);
   });
 }, 30 * 60 * 1000).unref();
 
