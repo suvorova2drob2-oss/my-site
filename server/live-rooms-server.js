@@ -711,6 +711,9 @@ function handleOp(op, body) {
 }
 
 const app = express();
+// HTTPS goes through nginx on this machine: trust its X-Forwarded-* (real client IP for login limits,
+// req.secure for Secure cookies). Direct :8787 clients cannot spoof them — only loopback is trusted.
+app.set("trust proxy", "loopback");
 app.use(compression());
 const liveJson = express.json({ limit: "512kb" });
 app.use(function (req, res, next) {
