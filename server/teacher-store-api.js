@@ -19,7 +19,10 @@
  *   GET  /store/student/me?day=YYYY-MM-DD               → profile, course, published homework, progress; marks the day active
  *   POST /store/student/progress {assignmentId, itemId, done}
  *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games
- *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, due, weak, pct} }
+ *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, dictTotal, due, weak, pct} }
+ *   GET  /store/dict?groupId=                           (teacher) → word sets sent to students' dictionaries
+ *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
+ *   POST /store/dict/remove {id}
  *
  * Data:
  *   GET  /store/snapshot?rev=N   → the logged-in teacher's data; without a session → the public (admin) copy
@@ -644,6 +647,73 @@ function createTeacherStoreRouter(options) {
     writeAtomic(file, JSON.stringify(p));
   }
 
+  /* Student dictionary: word sets the teacher sent with «В словарь ученика».
+     users/<teacher>/student-dict.json = { sets: [{ id, groupId, studentIds|null, sourceKind, sourceId,
+     title, unit, words: [{ w, t, img, ex }], sentAt }] }. studentIds null = the whole group.
+     Only these words appear in the cabinet and move through spaced repetition. */
+  const DICT_SETS_MAX = 600;
+  const DICT_WORDS_MAX = 400;
+
+  function dictFile(teacherId) {
+    return path.join(usersDir, teacherId, "student-dict.json");
+  }
+
+  function loadDict(teacherId) {
+    const d = readJson(dictFile(teacherId), null);
+    return d && Array.isArray(d.sets) ? d : { sets: [] };
+  }
+
+  function saveDict(teacherId, d) {
+    const file = dictFile(teacherId);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    writeAtomic(file, JSON.stringify(d));
+  }
+
+  function cleanUrl(s) {
+    const u = String(s || "").trim();
+    if (/^med_[A-Za-z0-9_-]{1,80}$/.test(u)) return "/store/media/" + u;
+    if (/^(https?:\/\/|\/)[^\s"'<>]{1,500}$/.test(u)) return u;
+    return "";
+  }
+
+  function cleanDictWords(list) {
+    const seen = {};
+    const out = [];
+    (Array.isArray(list) ? list : []).forEach(function (raw) {
+      if (!raw || typeof raw !== "object" || out.length >= DICT_WORDS_MAX) return;
+      const w = cleanText(raw.w, 80);
+      const key = wordKey(w);
+      if (!key || seen[key]) return;
+      seen[key] = true;
+      out.push({ w: w, t: cleanText(raw.t, 160), img: cleanUrl(raw.img), ex: cleanText(raw.ex, 400) });
+    });
+    return out;
+  }
+
+  function setsForStudent(teacherId, groupId, studentId) {
+    return loadDict(teacherId).sets.filter(function (s) {
+      return s.groupId === groupId && (!s.studentIds || s.studentIds.indexOf(studentId) >= 0);
+    });
+  }
+
+  /** wordKey → first word entry across the student's sets (later sets fill a missing translation/picture). */
+  function dictIndex(sets) {
+    const idx = {};
+    sets.forEach(function (s) {
+      s.words.forEach(function (w) {
+        const k = wordKey(w.w);
+        const cur = idx[k];
+        if (!cur) idx[k] = { w: w.w, t: w.t, img: w.img, ex: w.ex };
+        else {
+          if (!cur.t && w.t) cur.t = w.t;
+          if (!cur.img && w.img) cur.img = w.img;
+          if (!cur.ex && w.ex) cur.ex = w.ex;
+        }
+      });
+    });
+    return idx;
+  }
+
   /** The student's local calendar day (sent by the page), if it is within a day of the server clock. */
   function studentDay(raw) {
     const day = String(raw || "");
@@ -719,27 +789,31 @@ function createTeacherStoreRouter(options) {
     keys.slice(0, keys.length - VOCAB_MAX).forEach(function (k) { delete vocab[k]; });
   }
 
-  function vocabStats(progress, level) {
+  /** Stats over the dictionary words only. A word never practised is «new» and due for a first look. */
+  function vocabStats(progress, level, index) {
     const vocab = progress.vocab || {};
     const now = Date.now();
     let known = 0;
     const due = [];
     const weak = [];
-    Object.keys(vocab).forEach(function (k) {
+    Object.keys(index).forEach(function (k) {
+      const d = index[k];
       const v = vocab[k];
+      if (!v) return;
       if (v.m >= 1) known += 1;
-      if (v.due <= now) due.push(v);
-      if (v.bad && v.m < 2) weak.push(v);
+      if (v.due <= now) due.push({ w: d.w, t: d.t, img: d.img, ex: d.ex, due: v.due });
+      if (v.bad && v.m < 2) weak.push({ w: d.w, score: v.bad - v.ok });
     });
     due.sort(function (a, b) { return a.due - b.due; });
-    weak.sort(function (a, b) { return (b.bad - b.ok) - (a.bad - a.ok); });
+    weak.sort(function (a, b) { return b.score - a.score; });
     const target = LEVEL_WORDS[level] || 2000;
     return {
       level: level,
       known: known,
-      total: Object.keys(vocab).length,
+      total: Object.keys(index).length,
+      fresh: Object.keys(index).filter(function (k) { return !vocab[k]; }).length,
       due: due.length,
-      dueList: due.slice(0, 30).map(function (v) { return { w: v.w, t: v.t || "" }; }),
+      dueList: due.slice(0, 30).map(function (v) { return { w: v.w, t: v.t || "", img: v.img || "", ex: v.ex || "" }; }),
       weak: weak.slice(0, 8).map(function (v) { return v.w; }),
       target: target,
       coverage: Math.min(100, Math.round((known / target) * 100))
@@ -795,6 +869,31 @@ function createTeacherStoreRouter(options) {
       })
       .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
     const acc = accuracyStats(progress);
+    const sets = setsForStudent(tid, g.id, s.id);
+    const index = dictIndex(sets);
+    const vocab = progress.vocab || {};
+    const now = Date.now();
+    const dictionary = sets
+      .slice()
+      .sort(function (a, b) { return (b.sentAt || 0) - (a.sentAt || 0); })
+      .map(function (set) {
+        return {
+          id: set.id,
+          title: set.title,
+          unit: set.unit || "",
+          kind: set.sourceKind,
+          sentAt: set.sentAt || 0,
+          words: set.words.map(function (w) {
+            const v = vocab[wordKey(w.w)];
+            return {
+              w: w.w, t: w.t, img: w.img, ex: w.ex,
+              m: v ? v.m : -1,
+              due: v ? v.due <= now : false,
+              next: v ? v.due : 0
+            };
+          })
+        };
+      });
     return {
       student: {
         id: s.id,
@@ -809,7 +908,8 @@ function createTeacherStoreRouter(options) {
       course: course ? { id: course.id, name: course.name || "" } : null,
       homework: homework,
       progress: { days: progress.days, hwDone: progress.hwDone },
-      vocab: vocabStats(progress, studentLevel(found, course)),
+      vocab: vocabStats(progress, studentLevel(found, course), index),
+      dictionary: dictionary,
       accuracy: acc.series,
       answers: { correct: acc.correct, wrong: acc.wrong, pct: acc.pct }
     };
@@ -902,9 +1002,10 @@ function createTeacherStoreRouter(options) {
     const now = Date.now();
     const day = studentDay(body.day);
 
+    const index = dictIndex(setsForStudent(found.teacher.id, found.group.id, found.student.id));
     if (!p.vocab || typeof p.vocab !== "object") p.vocab = {};
     words.forEach(function (raw) {
-      if (raw && typeof raw === "object") applyWordAnswer(p.vocab, raw, now);
+      if (raw && typeof raw === "object" && index[wordKey(raw.w)]) applyWordAnswer(p.vocab, raw, now);
     });
     trimVocab(p.vocab);
 
@@ -926,24 +1027,129 @@ function createTeacherStoreRouter(options) {
     const courses = readTeacherKey(found.teacher.id, "teacher_hub_courses_v1");
     const course = (Array.isArray(courses) ? courses : [])
       .filter(function (c) { return c && c.id === found.group.courseId; })[0];
-    res.json({ ok: true, vocab: vocabStats(p, studentLevel(found, course)) });
+    res.json({ ok: true, vocab: vocabStats(p, studentLevel(found, course), index) });
+  });
+
+  /** Teacher: word sets already sent (optionally for one group), without the word lists. */
+  router.get("/dict", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const gid = String(req.query.groupId || "");
+    const sets = loadDict(me.id).sets
+      .filter(function (s) { return !gid || s.groupId === gid; })
+      .map(function (s) {
+        return {
+          id: s.id, groupId: s.groupId, studentIds: s.studentIds, sourceKind: s.sourceKind,
+          sourceId: s.sourceId, title: s.title, unit: s.unit, count: s.words.length, sentAt: s.sentAt
+        };
+      });
+    res.json({ ok: true, sets: sets });
+  });
+
+  /** Teacher: send (or re-send) a pack's words to a group's dictionary. One set per group + source. */
+  router.post("/dict/send", express.json({ limit: "2mb" }), function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const groupId = String(body.groupId || "");
+    const sourceKind = body.sourceKind === "text" ? "text" : "pack";
+    const sourceId = String(body.sourceId || "").slice(0, 120);
+    const groups = readTeacherKey(me.id, GROUPS_KEY);
+    const group = (Array.isArray(groups) ? groups : []).filter(function (g) { return g && g.id === groupId; })[0];
+    if (!group) {
+      res.status(400).json({ ok: false, error: "Группа не найдена на сервере — нажмите «Сохранить на сервер» и повторите" });
+      return;
+    }
+    const words = cleanDictWords(body.words);
+    if (!words.length || !sourceId) {
+      res.status(400).json({ ok: false, error: "Нет слов для отправки" });
+      return;
+    }
+    const known = (group.students || []).map(function (s) { return s && s.id; });
+    const studentIds = Array.isArray(body.studentIds)
+      ? body.studentIds.map(String).filter(function (id) { return known.indexOf(id) >= 0; })
+      : null;
+    if (studentIds && !studentIds.length) {
+      res.status(400).json({ ok: false, error: "Выберите хотя бы одного ученика" });
+      return;
+    }
+    const d = loadDict(me.id);
+    let set = d.sets.filter(function (s) {
+      return s.groupId === groupId && s.sourceKind === sourceKind && s.sourceId === sourceId;
+    })[0];
+    if (!set) {
+      if (d.sets.length >= DICT_SETS_MAX) {
+        res.status(400).json({ ok: false, error: "Слишком много наборов слов" });
+        return;
+      }
+      set = { id: "ds_" + crypto.randomBytes(6).toString("hex"), groupId: groupId, sourceKind: sourceKind, sourceId: sourceId };
+      d.sets.push(set);
+    }
+    set.studentIds = studentIds && studentIds.length < known.length ? studentIds : null;
+    set.title = cleanText(body.title, 120) || "Слова";
+    set.unit = cleanText(body.unit, 120);
+    set.words = words;
+    set.sentAt = Date.now();
+    saveDict(me.id, d);
+    res.json({ ok: true, id: set.id, count: words.length });
+  });
+
+  router.post("/dict/remove", smallJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const id = String((req.body || {}).id || "");
+    const d = loadDict(me.id);
+    const before = d.sets.length;
+    d.sets = d.sets.filter(function (s) { return s.id !== id; });
+    if (d.sets.length !== before) saveDict(me.id, d);
+    res.json({ ok: true, removed: before - d.sets.length });
   });
 
   /** Teacher: progress of all their students (days active, last visit, homework ticks, words, % correct). */
+  /* Teacher preview of the student cabinet: the same payload as /student/me, read-only
+     (no visit day, no lastSeen). Without studentId — what a new student of the group sees. */
+  router.get("/students/preview", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const groupId = String(req.query.groupId || "");
+    const studentId = String(req.query.studentId || "");
+    const groups = readTeacherKey(me.id, GROUPS_KEY);
+    const g = (Array.isArray(groups) ? groups : []).filter(function (x) { return x && x.id === groupId; })[0];
+    if (!g) {
+      res.status(404).json({ ok: false, error: "Группа не найдена на сервере — нажмите «Сохранить на сервер»" });
+      return;
+    }
+    const s = studentId
+      ? (Array.isArray(g.students) ? g.students : []).filter(function (x) { return x && x.id === studentId; })[0]
+      : null;
+    const teacher = accounts.byId(accounts.load(), me.id) || me;
+    const found = { teacher: teacher, group: g, student: s || { id: "", name: "" } };
+    const p = s ? loadProgress(me.id, s.id) : { days: [], hwDone: {} };
+    const roster = (Array.isArray(g.students) ? g.students : [])
+      .filter(function (x) { return x && x.id && x.status !== "archived"; })
+      .map(function (x) { return { id: x.id, name: x.name || "" }; });
+    res.json(Object.assign({ ok: true, preview: true, roster: roster }, studentPayload(found, p)));
+  });
+
   router.get("/students/progress", function (req, res) {
     const me = requireUser(req, res);
     if (!me) return;
     const out = {};
-    eachStudent(me.id, function (_g, s) {
+    const allSets = loadDict(me.id).sets;
+    eachStudent(me.id, function (g, s) {
       if (s.id) {
         const p = loadProgress(me.id, s.id);
-        const v = vocabStats(p, "B1");
+        const index = dictIndex(allSets.filter(function (set) {
+          return set.groupId === g.id && (!set.studentIds || set.studentIds.indexOf(s.id) >= 0);
+        }));
+        const v = vocabStats(p, "B1", index);
         const acc = accuracyStats(p);
         out[s.id] = {
           days: p.days,
           lastSeen: p.lastSeen || 0,
           hwDone: p.hwDone,
           words: v.known,
+          dictTotal: v.total,
           due: v.due,
           weak: v.weak,
           pct: acc.pct
