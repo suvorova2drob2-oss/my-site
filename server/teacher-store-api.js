@@ -59,6 +59,7 @@ const SYNC_KEYS = [
   "teacher_hub_story_configs_v1",
   "teacher_hub_my_worlds_v1",
   "teacher_hub_cleared_demo_v1",
+  "teacher_hub_audio_v1",
   "teacher_hub_groups_v1",
   "teacher_hub_schedule_v1",
   "teacher_hub_hw_assignments_v1"
