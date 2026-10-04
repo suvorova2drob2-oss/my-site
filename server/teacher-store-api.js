@@ -24,7 +24,7 @@
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
  *   GET  /store/shadow?groupId=                         (teacher) → shadowing tasks + each student's streak/%
- *   POST /store/shadow/save {id?, groupId, studentIds|null, title, note, audioUrl, lines:[text]}
+ *   POST /store/shadow/save {id?, groupId, studentIds|null, title, note, audioUrl, lines:[text], until:"YYYY-MM-DD"|"", day}
  *   POST /store/shadow/stop {id, stopped}  ·  POST /store/shadow/remove {id}  ·  GET /store/shadow/one?id= (preview)
  *   GET  /store/student/shadow?task=&day=  ·  POST /store/student/shadow {taskId, day, pct, played, sec}
  *
@@ -1138,9 +1138,10 @@ function createTeacherStoreRouter(options) {
     return new Date(Date.parse(day + "T12:00:00Z") + n * 86400000).toISOString().slice(0, 10);
   }
 
-  function shadowTasksFor(teacherId, groupId, studentId) {
+  /** Open for the student: not stopped, deadline (until, inclusive) not passed, addressed to them. */
+  function shadowTasksFor(teacherId, groupId, studentId, today) {
     return loadShadow(teacherId).tasks.filter(function (t) {
-      return !t.stoppedAt && t.groupId === groupId && (!t.studentIds || t.studentIds.indexOf(studentId) >= 0);
+      return !t.stoppedAt && !(t.until && today > t.until) && t.groupId === groupId && (!t.studentIds || t.studentIds.indexOf(studentId) >= 0);
     });
   }
 
@@ -1190,14 +1191,14 @@ function createTeacherStoreRouter(options) {
 
   function shadowPublic(t) {
     return {
-      id: t.id, title: t.title, note: t.note || "", audioUrl: t.audioUrl, lines: t.lines || [],
+      id: t.id, title: t.title, note: t.note || "", audioUrl: t.audioUrl, lines: t.lines || [], until: t.until || "",
       createdAt: t.createdAt || 0, stoppedAt: t.stoppedAt || 0
     };
   }
 
   function shadowForPayload(teacherId, groupId, studentId, progress, today) {
     const runs = (progress && progress.shadow) || {};
-    return shadowTasksFor(teacherId, groupId, studentId).map(function (t) {
+    return shadowTasksFor(teacherId, groupId, studentId, today).map(function (t) {
       return Object.assign(shadowPublic(t), { stats: shadowStats(runs[t.id], today, shadowStart(t)) });
     });
   }
@@ -1229,7 +1230,8 @@ function createTeacherStoreRouter(options) {
             return { id: s.id, name: s.name || "", stats: shadowStats((p.shadow || {})[t.id], today, shadowStart(t)) };
           });
         return Object.assign(shadowPublic(t), {
-          groupId: t.groupId, groupName: g ? g.name || "" : "", studentIds: t.studentIds, students: students
+          groupId: t.groupId, groupName: g ? g.name || "" : "", studentIds: t.studentIds, students: students,
+          expired: !!(t.until && today > t.until)
         });
       });
     res.json({ ok: true, tasks: tasks });
@@ -1278,6 +1280,7 @@ function createTeacherStoreRouter(options) {
     task.note = cleanText(body.note, 300);
     task.audioUrl = audioUrl;
     task.lines = lines;
+    task.until = DAY_RE.test(String(body.until || "")) ? String(body.until) : "";
     task.updatedAt = Date.now();
     saveShadow(me.id, d);
     res.json({ ok: true, id: task.id });
@@ -1328,7 +1331,7 @@ function createTeacherStoreRouter(options) {
       return;
     }
     const id = String(req.query.task || "");
-    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id)
+    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id, studentDay(req.query.day))
       .filter(function (t) { return t.id === id; })[0];
     if (!task) {
       res.status(404).json({ ok: false, error: "This shadowing task is closed" });
@@ -1352,7 +1355,7 @@ function createTeacherStoreRouter(options) {
     }
     const body = req.body || {};
     const id = String(body.taskId || "");
-    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id)
+    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id, studentDay(body.day))
       .filter(function (t) { return t.id === id; })[0];
     if (!task) {
       res.status(404).json({ ok: false, error: "This shadowing task is closed" });
