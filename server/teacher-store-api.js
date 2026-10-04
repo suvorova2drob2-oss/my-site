@@ -24,7 +24,8 @@
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
  *   GET  /store/shadow?groupId=                         (teacher) → shadowing tasks + each student's streak/%
- *   POST /store/shadow/save {id?, groupId, studentIds|null, title, note, audioUrl, lines:[text], until:"YYYY-MM-DD"|"", day}
+ *   POST /store/shadow/save {id?, kind:"shadow"|"drill", groupId, studentIds|null, title, note, audioUrl, lines:[text],
+ *                            steps:[{who, qAudio, qText, img, aAudio, aText}] (drill), style, until:"YYYY-MM-DD"|"", day}
  *   POST /store/shadow/stop {id, stopped}  ·  POST /store/shadow/remove {id}  ·  GET /store/shadow/one?id= (preview)
  *   GET  /store/student/shadow?task=&day=  ·  POST /store/student/shadow {taskId, day, pct, played, sec}
  *
@@ -1117,6 +1118,7 @@ function createTeacherStoreRouter(options) {
      Runs: progress.shadow[taskId][day] = { best, last, runs, sec } — a run counts once ≥80% of the audio is played. */
   const SHADOW_TASKS_MAX = 300;
   const SHADOW_LINES_MAX = 400;
+  const DRILL_STEPS_MAX = 60;
   const SHADOW_RUN_MIN = 0.8;
   const shadowJson = express.json({ limit: "1mb" });
 
@@ -1192,9 +1194,27 @@ function createTeacherStoreRouter(options) {
 
   function shadowPublic(t) {
     return {
-      id: t.id, title: t.title, note: t.note || "", audioUrl: t.audioUrl, lines: t.lines || [], until: t.until || "",
+      id: t.id, kind: t.kind || "shadow", title: t.title, note: t.note || "", audioUrl: t.audioUrl || "", lines: t.lines || [],
+      steps: t.steps || [], style: t.style || "", until: t.until || "",
       createdAt: t.createdAt || 0, stoppedAt: t.stoppedAt || 0
     };
+  }
+
+  /** Drill chain: who starts, question (audio and/or text), optional picture, model answer (audio and/or text). */
+  function drillSteps(list) {
+    return (Array.isArray(list) ? list : []).slice(0, DRILL_STEPS_MAX).map(function (s) {
+      s = s && typeof s === "object" ? s : {};
+      return {
+        who: s.who === "student" ? "student" : "teacher",
+        qAudio: cleanUrl(s.qAudio),
+        qText: cleanText(s.qText, 300),
+        img: cleanUrl(s.img),
+        aAudio: cleanUrl(s.aAudio),
+        aText: cleanText(s.aText, 300)
+      };
+    }).filter(function (s) {
+      return (s.qAudio || s.qText) && (s.aAudio || s.aText);
+    });
   }
 
   function shadowForPayload(teacherId, groupId, studentId, progress, today) {
@@ -1247,15 +1267,21 @@ function createTeacherStoreRouter(options) {
       res.status(400).json({ ok: false, error: "Группа не найдена на сервере — нажмите «Сохранить на сервер» и повторите" });
       return;
     }
-    const audioUrl = cleanUrl(body.audioUrl);
-    if (!audioUrl) {
+    const kind = body.kind === "drill" ? "drill" : "shadow";
+    const audioUrl = kind === "shadow" ? cleanUrl(body.audioUrl) : "";
+    if (kind === "shadow" && !audioUrl) {
       res.status(400).json({ ok: false, error: "Добавьте аудио" });
       return;
     }
-    const lines = (Array.isArray(body.lines) ? body.lines : [])
+    const lines = kind === "shadow" ? (Array.isArray(body.lines) ? body.lines : [])
       .map(function (l) { return cleanText(l, 400); })
       .filter(Boolean)
-      .slice(0, SHADOW_LINES_MAX);
+      .slice(0, SHADOW_LINES_MAX) : [];
+    const steps = kind === "drill" ? drillSteps(body.steps) : [];
+    if (kind === "drill" && !steps.length) {
+      res.status(400).json({ ok: false, error: "Добавьте хотя бы один шаг с вопросом и ответом" });
+      return;
+    }
     const known = (group.students || []).map(function (s) { return s && s.id; });
     const studentIds = Array.isArray(body.studentIds)
       ? body.studentIds.map(String).filter(function (id) { return known.indexOf(id) >= 0; })
@@ -1277,10 +1303,13 @@ function createTeacherStoreRouter(options) {
     }
     task.groupId = group.id;
     task.studentIds = studentIds && studentIds.length < known.length ? studentIds : null;
-    task.title = cleanText(body.title, 120) || "Shadowing";
+    task.kind = kind;
+    task.title = cleanText(body.title, 120) || (kind === "drill" ? "Drilling" : "Shadowing");
     task.note = cleanText(body.note, 300);
     task.audioUrl = audioUrl;
     task.lines = lines;
+    task.steps = steps;
+    task.style = /^[a-z]{1,20}$/.test(String(body.style || "")) ? String(body.style) : "";
     task.until = DAY_RE.test(String(body.until || "")) ? String(body.until) : "";
     task.updatedAt = Date.now();
     saveShadow(me.id, d);
