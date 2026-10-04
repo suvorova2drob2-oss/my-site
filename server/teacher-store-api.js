@@ -23,6 +23,10 @@
  *   GET  /store/dict?groupId=                           (teacher) → word sets sent to students' dictionaries
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
+ *   GET  /store/shadow?groupId=                         (teacher) → shadowing tasks + each student's streak/%
+ *   POST /store/shadow/save {id?, groupId, studentIds|null, title, note, audioUrl, lines:[text]}
+ *   POST /store/shadow/stop {id, stopped}  ·  POST /store/shadow/remove {id}  ·  GET /store/shadow/one?id= (preview)
+ *   GET  /store/student/shadow?task=&day=  ·  POST /store/student/shadow {taskId, day, pct, played, sec}
  *
  * Data:
  *   GET  /store/snapshot?rev=N   → the logged-in teacher's data; without a session → the public (admin) copy
@@ -842,7 +846,7 @@ function createTeacherStoreRouter(options) {
     return { series: series, correct: c, wrong: w, pct: c + w ? Math.round((c / (c + w)) * 100) : null };
   }
 
-  function studentPayload(found, progress) {
+  function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
     const s = found.student;
@@ -910,6 +914,7 @@ function createTeacherStoreRouter(options) {
       progress: { days: progress.days, hwDone: progress.hwDone },
       vocab: vocabStats(progress, studentLevel(found, course), index),
       dictionary: dictionary,
+      shadowing: shadowForPayload(tid, g.id, s.id, progress, day || studentDay("")),
       accuracy: acc.series,
       answers: { correct: acc.correct, wrong: acc.wrong, pct: acc.pct }
     };
@@ -957,7 +962,7 @@ function createTeacherStoreRouter(options) {
     }
     p.lastSeen = Date.now();
     saveProgress(found.teacher.id, found.student.id, p);
-    res.json(Object.assign({ ok: true }, studentPayload(found, p)));
+    res.json(Object.assign({ ok: true }, studentPayload(found, p, day)));
   });
 
   router.post("/student/progress", smallJson, function (req, res) {
@@ -1105,6 +1110,283 @@ function createTeacherStoreRouter(options) {
     res.json({ ok: true, removed: before - d.sets.length });
   });
 
+  /* Shadowing: long homework (weeks) — the student repeats after an audio every day.
+     users/<teacher>/shadowing.json = { tasks: [{ id, groupId, studentIds|null, title, note, audioUrl,
+     lines:[text], createdAt, updatedAt, stoppedAt }] }. Only the teacher stops it (stoppedAt).
+     Runs: progress.shadow[taskId][day] = { best, last, runs, sec } — a run counts once ≥80% of the audio is played. */
+  const SHADOW_TASKS_MAX = 300;
+  const SHADOW_LINES_MAX = 400;
+  const SHADOW_RUN_MIN = 0.8;
+  const shadowJson = express.json({ limit: "1mb" });
+
+  function shadowFile(teacherId) {
+    return path.join(usersDir, teacherId, "shadowing.json");
+  }
+
+  function loadShadow(teacherId) {
+    const d = readJson(shadowFile(teacherId), null);
+    return d && Array.isArray(d.tasks) ? d : { tasks: [] };
+  }
+
+  function saveShadow(teacherId, d) {
+    const file = shadowFile(teacherId);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    writeAtomic(file, JSON.stringify(d));
+  }
+
+  function shiftDayKey(day, n) {
+    return new Date(Date.parse(day + "T12:00:00Z") + n * 86400000).toISOString().slice(0, 10);
+  }
+
+  function shadowTasksFor(teacherId, groupId, studentId) {
+    return loadShadow(teacherId).tasks.filter(function (t) {
+      return !t.stoppedAt && t.groupId === groupId && (!t.studentIds || t.studentIds.indexOf(studentId) >= 0);
+    });
+  }
+
+  /** Streak = days in a row with a counted run, ending today (or yesterday while today is still open). */
+  function shadowStats(row, today, startDay) {
+    row = row && typeof row === "object" ? row : {};
+    startDay = DAY_RE.test(String(startDay || "")) ? startDay : "";
+    const days = Object.keys(row).filter(function (k) { return DAY_RE.test(k); }).sort();
+    let cur = row[today] ? today : shiftDayKey(today, -1);
+    let streak = 0;
+    while (row[cur]) {
+      streak += 1;
+      cur = shiftDayKey(cur, -1);
+    }
+    let best = 0;
+    let run = 0;
+    let prev = "";
+    days.forEach(function (k) {
+      run = prev && shiftDayKey(prev, 1) === k ? run + 1 : 1;
+      best = Math.max(best, run);
+      prev = k;
+    });
+    const wd = (new Date(today + "T12:00:00Z").getUTCDay() + 6) % 7;
+    const week = [];
+    for (let i = 0; i < 7; i += 1) {
+      const k = shiftDayKey(today, i - wd);
+      week.push(row[k] ? row[k].best : k >= today || k < startDay ? null : -1);
+    }
+    const pcts = days.map(function (k) { return row[k].best || 0; });
+    const lastDay = days[days.length - 1] || "";
+    return {
+      streak: streak,
+      bestStreak: best,
+      daysDone: days.length,
+      week: week,
+      today: row[today] ? row[today].best : null,
+      last: lastDay ? row[lastDay].last : null,
+      lastDay: lastDay,
+      avg: pcts.length ? Math.round(pcts.reduce(function (a, b) { return a + b; }, 0) / pcts.length) : null,
+      history: days.slice(-60).map(function (k) { return { day: k, pct: row[k].best, runs: row[k].runs }; })
+    };
+  }
+
+  function shadowStart(t) {
+    return t.startDay || new Date(t.createdAt || Date.now()).toISOString().slice(0, 10);
+  }
+
+  function shadowPublic(t) {
+    return {
+      id: t.id, title: t.title, note: t.note || "", audioUrl: t.audioUrl, lines: t.lines || [],
+      createdAt: t.createdAt || 0, stoppedAt: t.stoppedAt || 0
+    };
+  }
+
+  function shadowForPayload(teacherId, groupId, studentId, progress, today) {
+    const runs = (progress && progress.shadow) || {};
+    return shadowTasksFor(teacherId, groupId, studentId).map(function (t) {
+      return Object.assign(shadowPublic(t), { stats: shadowStats(runs[t.id], today, shadowStart(t)) });
+    });
+  }
+
+  function myGroup(teacherId, groupId) {
+    const groups = readTeacherKey(teacherId, GROUPS_KEY);
+    return (Array.isArray(groups) ? groups : []).filter(function (g) { return g && g.id === groupId; })[0] || null;
+  }
+
+  /** Teacher: shadowing tasks (optionally one group) + every addressed student's stats. */
+  router.get("/shadow", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const gid = String(req.query.groupId || "");
+    const today = studentDay(req.query.day);
+    const groups = readTeacherKey(me.id, GROUPS_KEY);
+    const byId = {};
+    (Array.isArray(groups) ? groups : []).forEach(function (g) { if (g && g.id) byId[g.id] = g; });
+    const tasks = loadShadow(me.id).tasks
+      .filter(function (t) { return !gid || t.groupId === gid; })
+      .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
+      .map(function (t) {
+        const g = byId[t.groupId];
+        const students = (g && Array.isArray(g.students) ? g.students : [])
+          .filter(function (s) { return s && s.id && s.status !== "archived"; })
+          .filter(function (s) { return !t.studentIds || t.studentIds.indexOf(s.id) >= 0; })
+          .map(function (s) {
+            const p = loadProgress(me.id, s.id);
+            return { id: s.id, name: s.name || "", stats: shadowStats((p.shadow || {})[t.id], today, shadowStart(t)) };
+          });
+        return Object.assign(shadowPublic(t), {
+          groupId: t.groupId, groupName: g ? g.name || "" : "", studentIds: t.studentIds, students: students
+        });
+      });
+    res.json({ ok: true, tasks: tasks });
+  });
+
+  router.post("/shadow/save", shadowJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const group = myGroup(me.id, String(body.groupId || ""));
+    if (!group) {
+      res.status(400).json({ ok: false, error: "Группа не найдена на сервере — нажмите «Сохранить на сервер» и повторите" });
+      return;
+    }
+    const audioUrl = cleanUrl(body.audioUrl);
+    if (!audioUrl) {
+      res.status(400).json({ ok: false, error: "Добавьте аудио" });
+      return;
+    }
+    const lines = (Array.isArray(body.lines) ? body.lines : [])
+      .map(function (l) { return cleanText(l, 400); })
+      .filter(Boolean)
+      .slice(0, SHADOW_LINES_MAX);
+    const known = (group.students || []).map(function (s) { return s && s.id; });
+    const studentIds = Array.isArray(body.studentIds)
+      ? body.studentIds.map(String).filter(function (id) { return known.indexOf(id) >= 0; })
+      : null;
+    if (studentIds && !studentIds.length) {
+      res.status(400).json({ ok: false, error: "Выберите хотя бы одного ученика" });
+      return;
+    }
+    const d = loadShadow(me.id);
+    const id = String(body.id || "");
+    let task = id ? d.tasks.filter(function (t) { return t.id === id; })[0] : null;
+    if (!task) {
+      if (d.tasks.length >= SHADOW_TASKS_MAX) {
+        res.status(400).json({ ok: false, error: "Слишком много заданий shadowing" });
+        return;
+      }
+      task = { id: "sh_" + crypto.randomBytes(6).toString("hex"), createdAt: Date.now(), stoppedAt: 0, startDay: studentDay(body.day) };
+      d.tasks.push(task);
+    }
+    task.groupId = group.id;
+    task.studentIds = studentIds && studentIds.length < known.length ? studentIds : null;
+    task.title = cleanText(body.title, 120) || "Shadowing";
+    task.note = cleanText(body.note, 300);
+    task.audioUrl = audioUrl;
+    task.lines = lines;
+    task.updatedAt = Date.now();
+    saveShadow(me.id, d);
+    res.json({ ok: true, id: task.id });
+  });
+
+  router.post("/shadow/stop", smallJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const d = loadShadow(me.id);
+    const task = d.tasks.filter(function (t) { return t.id === String(body.id || ""); })[0];
+    if (!task) {
+      res.status(404).json({ ok: false, error: "Задание не найдено" });
+      return;
+    }
+    task.stoppedAt = body.stopped === false ? 0 : Date.now();
+    saveShadow(me.id, d);
+    res.json({ ok: true, stoppedAt: task.stoppedAt });
+  });
+
+  router.post("/shadow/remove", smallJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const id = String((req.body || {}).id || "");
+    const d = loadShadow(me.id);
+    const before = d.tasks.length;
+    d.tasks = d.tasks.filter(function (t) { return t.id !== id; });
+    if (d.tasks.length !== before) saveShadow(me.id, d);
+    res.json({ ok: true, removed: before - d.tasks.length });
+  });
+
+  /** Teacher preview of the player: the task as the student gets it, nothing is recorded. */
+  router.get("/shadow/one", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const task = loadShadow(me.id).tasks.filter(function (t) { return t.id === String(req.query.id || ""); })[0];
+    if (!task) {
+      res.status(404).json({ ok: false, error: "Задание не найдено" });
+      return;
+    }
+    res.json({ ok: true, preview: true, task: Object.assign(shadowPublic(task), { stats: shadowStats({}, studentDay(req.query.day)) }) });
+  });
+
+  router.get("/student/shadow", function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const id = String(req.query.task || "");
+    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id)
+      .filter(function (t) { return t.id === id; })[0];
+    if (!task) {
+      res.status(404).json({ ok: false, error: "This shadowing task is closed" });
+      return;
+    }
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const today = studentDay(req.query.day);
+    res.json({
+      ok: true,
+      student: { name: found.student.name || "" },
+      task: Object.assign(shadowPublic(task), { stats: shadowStats((p.shadow || {})[task.id], today, shadowStart(task)) })
+    });
+  });
+
+  /** A finished run: {taskId, day, pct 0..100, played 0..1, sec}. Counted runs build the daily streak. */
+  router.post("/student/shadow", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const id = String(body.taskId || "");
+    const task = shadowTasksFor(found.teacher.id, found.group.id, found.student.id)
+      .filter(function (t) { return t.id === id; })[0];
+    if (!task) {
+      res.status(404).json({ ok: false, error: "This shadowing task is closed" });
+      return;
+    }
+    const pct = Math.max(0, Math.min(100, Math.round(Number(body.pct) || 0)));
+    const played = Math.max(0, Math.min(1, Number(body.played) || 0));
+    const sec = Math.max(0, Math.min(7200, Math.round(Number(body.sec) || 0)));
+    const day = studentDay(body.day);
+    const p = loadProgress(found.teacher.id, found.student.id);
+    if (!p.shadow || typeof p.shadow !== "object") p.shadow = {};
+    const runs = p.shadow[id] && typeof p.shadow[id] === "object" ? p.shadow[id] : {};
+    const counted = played >= SHADOW_RUN_MIN;
+    if (counted) {
+      const r = runs[day] || { best: 0, last: 0, runs: 0, sec: 0 };
+      r.best = Math.max(r.best, pct);
+      r.last = pct;
+      r.runs += 1;
+      r.sec += sec;
+      runs[day] = r;
+      const keys = Object.keys(runs).sort();
+      keys.slice(0, Math.max(0, keys.length - 400)).forEach(function (k) { delete runs[k]; });
+      p.shadow[id] = runs;
+      if (p.days.indexOf(day) < 0) {
+        p.days.push(day);
+        p.days.sort();
+        p.days = p.days.slice(-400);
+      }
+    }
+    p.lastSeen = Date.now();
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, counted: counted, stats: shadowStats(runs, day, shadowStart(task)) });
+  });
+
   /** Teacher: progress of all their students (days active, last visit, homework ticks, words, % correct). */
   /* Teacher preview of the student cabinet: the same payload as /student/me, read-only
      (no visit day, no lastSeen). Without studentId — what a new student of the group sees. */
@@ -1128,7 +1410,7 @@ function createTeacherStoreRouter(options) {
     const roster = (Array.isArray(g.students) ? g.students : [])
       .filter(function (x) { return x && x.id && x.status !== "archived"; })
       .map(function (x) { return { id: x.id, name: x.name || "" }; });
-    res.json(Object.assign({ ok: true, preview: true, roster: roster }, studentPayload(found, p)));
+    res.json(Object.assign({ ok: true, preview: true, roster: roster }, studentPayload(found, p, studentDay(req.query.day))));
   });
 
   router.get("/students/progress", function (req, res) {
