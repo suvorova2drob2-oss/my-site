@@ -13,6 +13,13 @@
  *   POST /store/admin/users/:id/reset                   (admin) → pending again, sessions dropped
  *   POST /store/admin/users/:id/disable {disabled}      (admin)
  *
+ * Students (login/password set by the teacher in the group card):
+ *   POST /store/student/login    {login, password}      → student session cookie (st_session)
+ *   POST /store/student/logout
+ *   GET  /store/student/me?day=YYYY-MM-DD               → profile, course, published homework, progress; marks the day active
+ *   POST /store/student/progress {assignmentId, itemId, done}
+ *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone} }
+ *
  * Data:
  *   GET  /store/snapshot?rev=N   → the logged-in teacher's data; without a session → the public (admin) copy
  *   POST /store/save             { keyRevs, data:{key:value} }   (session)
@@ -54,6 +61,10 @@ const BACKUPS_PER_KEY = 40;
 const MIN_PASSWORD = 8;
 const LOGIN_RE = /^[a-z0-9._-]{3,32}$/;
 const SESSION_COOKIE = "th_session";
+const STUDENT_COOKIE = "st_session";
+const GROUPS_KEY = "teacher_hub_groups_v1";
+const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+const ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
 const SESSION_DAYS = 30;
 const FAIL_WINDOW_MS = 15 * 60 * 1000;
 const FAIL_LIMIT = 10;
@@ -175,8 +186,8 @@ function createAccounts(dir) {
   return { file: file, load: load, save: save, byLogin: byLogin, byId: byId, create: create, publicUserId: publicUserId };
 }
 
-function createSessions(dir) {
-  const file = path.join(dir, "sessions.json");
+function createSessions(dir, fileName) {
+  const file = path.join(dir, fileName || "sessions.json");
   function load() {
     const data = readJson(file, null);
     return data && typeof data === "object" ? data : {};
@@ -568,6 +579,225 @@ function createTeacherStoreRouter(options) {
     }
     accounts.save(data);
     res.json({ ok: true, user: publicUser(u) });
+  });
+
+  /* ---------- students ----------
+     A student logs in with the login/password the teacher sees in the group card
+     (student.login / student.password inside the teacher's private teacher_hub_groups_v1).
+     Progress (days active, homework ticks) lives in users/<teacher>/students/<student>.json. */
+
+  const studentSessions = createSessions(dir, "student-sessions.json");
+
+  function readTeacherKey(teacherId, key) {
+    if (!/^u_[a-f0-9]{12}$/.test(String(teacherId))) return null;
+    return readJson(path.join(usersDir, teacherId, "keys", key + ".json"), null);
+  }
+
+  function eachStudent(teacherId, fn) {
+    const groups = readTeacherKey(teacherId, GROUPS_KEY);
+    if (!Array.isArray(groups)) return null;
+    for (let i = 0; i < groups.length; i += 1) {
+      const g = groups[i];
+      const list = (g && Array.isArray(g.students)) ? g.students : [];
+      for (let j = 0; j < list.length; j += 1) {
+        const s = list[j];
+        if (s && typeof s === "object" && fn(g, s)) return { group: g, student: s };
+      }
+    }
+    return null;
+  }
+
+  function findStudentByLogin(login) {
+    const l = normLogin(login);
+    if (!l) return null;
+    const users = accounts.load().users.filter(function (u) { return u.status === "active"; });
+    for (let i = 0; i < users.length; i += 1) {
+      const hit = eachStudent(users[i].id, function (_g, s) { return normLogin(s.login) === l; });
+      if (hit) return { teacher: users[i], group: hit.group, student: hit.student };
+    }
+    return null;
+  }
+
+  function findStudentById(teacherId, studentId) {
+    const t = accounts.byId(accounts.load(), teacherId);
+    if (!t || t.status !== "active") return null;
+    const hit = eachStudent(teacherId, function (_g, s) { return s.id === studentId; });
+    return hit ? { teacher: t, group: hit.group, student: hit.student } : null;
+  }
+
+  function progressFile(teacherId, studentId) {
+    const safe = String(studentId).replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 80);
+    return path.join(usersDir, teacherId, "students", safe + ".json");
+  }
+
+  function loadProgress(teacherId, studentId) {
+    const p = readJson(progressFile(teacherId, studentId), null) || {};
+    if (!Array.isArray(p.days)) p.days = [];
+    if (!p.hwDone || typeof p.hwDone !== "object") p.hwDone = {};
+    return p;
+  }
+
+  function saveProgress(teacherId, studentId, p) {
+    const file = progressFile(teacherId, studentId);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    writeAtomic(file, JSON.stringify(p));
+  }
+
+  /** The student's local calendar day (sent by the page), if it is within a day of the server clock. */
+  function studentDay(raw) {
+    const day = String(raw || "");
+    const t = Date.parse(day + "T12:00:00Z");
+    if (DAY_RE.test(day) && Math.abs(t - Date.now()) < 2 * 86400000) return day;
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function sessionStudent(req) {
+    const token = parseCookies(req)[STUDENT_COOKIE];
+    const ref = studentSessions.find(token);
+    if (!ref) return null;
+    const parts = ref.split("|");
+    const found = findStudentById(parts[0], parts[1]);
+    if (!found || found.student.status === "archived") return null;
+    return found;
+  }
+
+  function setStudentCookie(req, res, token) {
+    const secure = req.secure || req.get("X-Forwarded-Proto") === "https" ? "; Secure" : "";
+    res.setHeader(
+      "Set-Cookie",
+      STUDENT_COOKIE + "=" + token + "; Path=/; HttpOnly; SameSite=Lax; Max-Age=" +
+        SESSION_DAYS * 86400 + secure
+    );
+  }
+
+  function studentPayload(found, progress) {
+    const tid = found.teacher.id;
+    const g = found.group;
+    const s = found.student;
+    const courses = readTeacherKey(tid, "teacher_hub_courses_v1");
+    const course = Array.isArray(courses)
+      ? courses.filter(function (c) { return c && c.id === g.courseId; })[0]
+      : null;
+    const assignments = readTeacherKey(tid, "teacher_hub_hw_assignments_v1");
+    const homework = (Array.isArray(assignments) ? assignments : [])
+      .filter(function (a) { return a && a.groupId === g.id && a.published; })
+      .map(function (a) {
+        const items = (Array.isArray(a.items) ? a.items : [])
+          .filter(function (it) { return it && !(it.type === "shadowing" && !String(it.text || "").trim()); })
+          .map(function (it, i) {
+            return {
+              id: String(it.id || "hw_" + i),
+              type: String(it.type || "note"),
+              title: String(it.title || "Задание"),
+              text: String(it.text || "").slice(0, 600),
+              href: String(it.href || "")
+            };
+          });
+        return { id: String(a.id), dueDate: String(a.dueDate || ""), title: String(a.title || ""), items: items };
+      })
+      .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
+    return {
+      student: {
+        id: s.id,
+        name: s.name || "",
+        login: s.login || "",
+        level: s.level || "",
+        joinedAt: s.joinedAt || "",
+        lessonPoints: Number(s.lessonPoints || 0)
+      },
+      teacher: { name: found.teacher.name || "" },
+      group: { id: g.id, name: g.name || "", kind: g.kind === "individual" ? "individual" : "group" },
+      course: course ? { id: course.id, name: course.name || "" } : null,
+      homework: homework,
+      progress: { days: progress.days, hwDone: progress.hwDone }
+    };
+  }
+
+  router.post("/student/login", smallJson, function (req, res) {
+    const body = req.body || {};
+    const login = normLogin(body.login);
+    const keys = ["ip:" + (req.ip || ""), "student:" + login];
+    if (keys.some(tooManyFails)) {
+      res.status(429).json({ ok: false, error: "Слишком много попыток. Подождите 15 минут." });
+      return;
+    }
+    const found = findStudentByLogin(login);
+    const pass = found ? String(found.student.password || "") : "";
+    if (!found || !pass || found.student.status === "archived" || !safeEqual(String(body.password || ""), pass)) {
+      keys.forEach(noteFail);
+      res.status(401).json({ ok: false, error: "Неверный логин или пароль" });
+      return;
+    }
+    keys.forEach(function (k) { fails.delete(k); });
+    setStudentCookie(req, res, studentSessions.open(found.teacher.id + "|" + found.student.id));
+    res.json({ ok: true, student: { name: found.student.name || "" } });
+  });
+
+  router.post("/student/logout", function (req, res) {
+    const token = parseCookies(req)[STUDENT_COOKIE];
+    if (token) studentSessions.close(token);
+    res.setHeader("Set-Cookie", STUDENT_COOKIE + "=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+    res.json({ ok: true });
+  });
+
+  router.get("/student/me", function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.json({ ok: true, student: null });
+      return;
+    }
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const day = studentDay(req.query.day);
+    if (p.days.indexOf(day) < 0) {
+      p.days.push(day);
+      p.days.sort();
+      p.days = p.days.slice(-400);
+    }
+    p.lastSeen = Date.now();
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json(Object.assign({ ok: true }, studentPayload(found, p)));
+  });
+
+  router.post("/student/progress", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const aid = String(body.assignmentId || "");
+    const iid = String(body.itemId || "");
+    if (!ID_RE.test(aid) || !ID_RE.test(iid)) {
+      res.status(400).json({ ok: false, error: "bad id" });
+      return;
+    }
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
+    if (body.done) row[iid] = Date.now();
+    else delete row[iid];
+    if (Object.keys(row).length) p.hwDone[aid] = row;
+    else delete p.hwDone[aid];
+    if (Object.keys(p.hwDone).length > 500) {
+      res.status(400).json({ ok: false, error: "too many" });
+      return;
+    }
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, hwDone: p.hwDone });
+  });
+
+  /** Teacher: progress of all their students (days active, last visit, homework ticks). */
+  router.get("/students/progress", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const out = {};
+    eachStudent(me.id, function (_g, s) {
+      if (s.id) {
+        const p = loadProgress(me.id, s.id);
+        out[s.id] = { days: p.days, lastSeen: p.lastSeen || 0, hwDone: p.hwDone };
+      }
+      return false;
+    });
+    res.json({ ok: true, students: out });
   });
 
   /* ---------- data ---------- */
