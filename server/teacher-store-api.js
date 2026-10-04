@@ -18,7 +18,8 @@
  *   POST /store/student/logout
  *   GET  /store/student/me?day=YYYY-MM-DD               → profile, course, published homework, progress; marks the day active
  *   POST /store/student/progress {assignmentId, itemId, done}
- *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone} }
+ *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games
+ *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, due, weak, pct} }
  *
  * Data:
  *   GET  /store/snapshot?rev=N   → the logged-in teacher's data; without a session → the public (admin) copy
@@ -670,6 +671,103 @@ function createTeacherStoreRouter(options) {
     );
   }
 
+  /* Vocabulary: one entry per word, m = mastery 0..5 (spaced repetition step).
+     A correct answer moves a word up only when it is due, so tapping «Знаю» five times
+     in one sitting does not make it «learned». */
+  const SRS_DAYS = [0, 1, 3, 7, 14, 30];
+  const LEVEL_WORDS = { A1: 500, A2: 1000, B1: 2000, B2: 3500, C1: 5000, C2: 8000 };
+  const VOCAB_MAX = 4000;
+  const ACC_DAYS = 120;
+
+  function wordKey(w) {
+    return String(w || "").trim().toLowerCase().replace(/\s+/g, " ").slice(0, 60);
+  }
+
+  function cleanText(s, max) {
+    return String(s == null ? "" : s).replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+  }
+
+  function studentLevel(found, course) {
+    const raw = [found.student.level, course && course.name, found.group.name].join(" ");
+    const m = /\b([ABC][12])\b/i.exec(raw);
+    return m ? m[1].toUpperCase() : "B1";
+  }
+
+  function applyWordAnswer(vocab, raw, now) {
+    const key = wordKey(raw && raw.w);
+    if (!key) return;
+    const v = vocab[key] || { w: cleanText(raw.w, 60), m: 0, s: 0, ok: 0, bad: 0, due: 0 };
+    const t = cleanText(raw.t, 80);
+    if (t) v.t = t;
+    v.s += 1;
+    if (raw.ok) {
+      v.ok += 1;
+      if (!v.due || v.due <= now) v.m = Math.min(5, v.m + 1);
+    } else {
+      v.bad += 1;
+      v.m = v.m >= 3 ? 1 : 0;
+    }
+    v.last = now;
+    v.due = v.m ? now + SRS_DAYS[v.m] * 86400000 : now;
+    vocab[key] = v;
+  }
+
+  function trimVocab(vocab) {
+    const keys = Object.keys(vocab);
+    if (keys.length <= VOCAB_MAX) return;
+    keys.sort(function (a, b) { return (vocab[a].last || 0) - (vocab[b].last || 0); });
+    keys.slice(0, keys.length - VOCAB_MAX).forEach(function (k) { delete vocab[k]; });
+  }
+
+  function vocabStats(progress, level) {
+    const vocab = progress.vocab || {};
+    const now = Date.now();
+    let known = 0;
+    const due = [];
+    const weak = [];
+    Object.keys(vocab).forEach(function (k) {
+      const v = vocab[k];
+      if (v.m >= 1) known += 1;
+      if (v.due <= now) due.push(v);
+      if (v.bad && v.m < 2) weak.push(v);
+    });
+    due.sort(function (a, b) { return a.due - b.due; });
+    weak.sort(function (a, b) { return (b.bad - b.ok) - (a.bad - a.ok); });
+    const target = LEVEL_WORDS[level] || 2000;
+    return {
+      level: level,
+      known: known,
+      total: Object.keys(vocab).length,
+      due: due.length,
+      dueList: due.slice(0, 30).map(function (v) { return { w: v.w, t: v.t || "" }; }),
+      weak: weak.slice(0, 8).map(function (v) { return v.w; }),
+      target: target,
+      coverage: Math.min(100, Math.round((known / target) * 100))
+    };
+  }
+
+  /** Weekly % correct (weeks with answers only, oldest → newest), plus totals. */
+  function accuracyStats(progress) {
+    const acc = progress.acc || {};
+    const weeks = {};
+    let c = 0;
+    let w = 0;
+    Object.keys(acc).forEach(function (day) {
+      const row = acc[day];
+      const d = new Date(day + "T12:00:00Z");
+      const monday = new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * 86400000).toISOString().slice(0, 10);
+      const wk = weeks[monday] || (weeks[monday] = [0, 0]);
+      wk[0] += row[0];
+      wk[1] += row[1];
+      c += row[0];
+      w += row[1];
+    });
+    const series = Object.keys(weeks).sort().slice(-8)
+      .filter(function (k) { return weeks[k][0] + weeks[k][1] > 0; })
+      .map(function (k) { return Math.round((weeks[k][0] / (weeks[k][0] + weeks[k][1])) * 100); });
+    return { series: series, correct: c, wrong: w, pct: c + w ? Math.round((c / (c + w)) * 100) : null };
+  }
+
   function studentPayload(found, progress) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -696,6 +794,7 @@ function createTeacherStoreRouter(options) {
         return { id: String(a.id), dueDate: String(a.dueDate || ""), title: String(a.title || ""), items: items };
       })
       .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
+    const acc = accuracyStats(progress);
     return {
       student: {
         id: s.id,
@@ -709,7 +808,10 @@ function createTeacherStoreRouter(options) {
       group: { id: g.id, name: g.name || "", kind: g.kind === "individual" ? "individual" : "group" },
       course: course ? { id: course.id, name: course.name || "" } : null,
       homework: homework,
-      progress: { days: progress.days, hwDone: progress.hwDone }
+      progress: { days: progress.days, hwDone: progress.hwDone },
+      vocab: vocabStats(progress, studentLevel(found, course)),
+      accuracy: acc.series,
+      answers: { correct: acc.correct, wrong: acc.wrong, pct: acc.pct }
     };
   }
 
@@ -785,7 +887,49 @@ function createTeacherStoreRouter(options) {
     res.json({ ok: true, hwDone: p.hwDone });
   });
 
-  /** Teacher: progress of all their students (days active, last visit, homework ticks). */
+  /** Answers from games: {day, game, words:[{w, t, ok}], correct, wrong}. Playing counts as an active day. */
+  router.post("/student/activity", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const words = Array.isArray(body.words) ? body.words.slice(0, 200) : [];
+    const correct = Math.max(0, Math.min(500, Math.floor(Number(body.correct) || 0)));
+    const wrong = Math.max(0, Math.min(500, Math.floor(Number(body.wrong) || 0)));
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const now = Date.now();
+    const day = studentDay(body.day);
+
+    if (!p.vocab || typeof p.vocab !== "object") p.vocab = {};
+    words.forEach(function (raw) {
+      if (raw && typeof raw === "object") applyWordAnswer(p.vocab, raw, now);
+    });
+    trimVocab(p.vocab);
+
+    if (!p.acc || typeof p.acc !== "object") p.acc = {};
+    if (correct || wrong) {
+      const row = Array.isArray(p.acc[day]) ? p.acc[day] : [0, 0];
+      p.acc[day] = [row[0] + correct, row[1] + wrong];
+      const cutoff = new Date(now - ACC_DAYS * 86400000).toISOString().slice(0, 10);
+      Object.keys(p.acc).forEach(function (k) { if (k < cutoff) delete p.acc[k]; });
+    }
+
+    if (p.days.indexOf(day) < 0) {
+      p.days.push(day);
+      p.days.sort();
+      p.days = p.days.slice(-400);
+    }
+    p.lastSeen = now;
+    saveProgress(found.teacher.id, found.student.id, p);
+    const courses = readTeacherKey(found.teacher.id, "teacher_hub_courses_v1");
+    const course = (Array.isArray(courses) ? courses : [])
+      .filter(function (c) { return c && c.id === found.group.courseId; })[0];
+    res.json({ ok: true, vocab: vocabStats(p, studentLevel(found, course)) });
+  });
+
+  /** Teacher: progress of all their students (days active, last visit, homework ticks, words, % correct). */
   router.get("/students/progress", function (req, res) {
     const me = requireUser(req, res);
     if (!me) return;
@@ -793,7 +937,17 @@ function createTeacherStoreRouter(options) {
     eachStudent(me.id, function (_g, s) {
       if (s.id) {
         const p = loadProgress(me.id, s.id);
-        out[s.id] = { days: p.days, lastSeen: p.lastSeen || 0, hwDone: p.hwDone };
+        const v = vocabStats(p, "B1");
+        const acc = accuracyStats(p);
+        out[s.id] = {
+          days: p.days,
+          lastSeen: p.lastSeen || 0,
+          hwDone: p.hwDone,
+          words: v.known,
+          due: v.due,
+          weak: v.weak,
+          pct: acc.pct
+        };
       }
       return false;
     });
