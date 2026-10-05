@@ -332,6 +332,19 @@
           : [];
     var hasKeyword = kwVariants.length > 0;
     var hasTabs = hasSpeaking || hasExercises || hasGaps || hasRoleplay || hasKeyword;
+    var trackAudioSrc = String(opts.trackAudioSrc || "").trim();
+    var trackAudioHtml = trackAudioSrc
+      ? '<div class="fce-u1-ph-drawer-audio">' +
+        '<label class="fce-u1-ph-drawer-audio-label" for="fce-ph-audio-' +
+        id +
+        '">Track</label>' +
+        '<audio id="fce-ph-audio-' +
+        id +
+        '" class="fce-u1-ph-drawer-audio-el" controls preload="metadata">' +
+        '<source src="' +
+        esc(trackAudioSrc) +
+        '" type="audio/mpeg" /></audio></div>'
+      : "";
     var oneSpeaker = speakers.length < 2;
     var whoLine = oneSpeaker
       ? '<p class="fce-u1-ph-who">' + esc(speakers[0].label) + "</p>"
@@ -452,6 +465,7 @@
       '</span><button type="button" class="fce-u1-ph-drawer-x" id="fce-ph-close-' +
       id +
       '" aria-label="Close">×</button></div>' +
+      trackAudioHtml +
       '<div class="fce-u1-ph-drawer-body">' +
       speakerBarHtml +
       tabsHtml +

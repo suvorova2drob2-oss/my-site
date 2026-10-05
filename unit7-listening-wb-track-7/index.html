@@ -23,10 +23,16 @@
     .q:last-child { margin-bottom: 0; border-bottom: 0; padding-bottom: 0; }
     .stem { font-size: .98rem; line-height: 1.4; margin-bottom: 10px; color: #e8f0ff; }
     .opts { list-style: none; display: grid; gap: 4px; }
-    .opt-line { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 8px; border: 2px solid transparent; }
-    .opt-line input { margin-top: 3px; accent-color: var(--accent); }
-    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: .94rem; }
-    .letter { font-weight: 700; color: var(--accent); min-width: 1.25em; }
+    .opt-line { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 8px; border: 2px solid transparent; transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease; }
+    .opt-line input { margin-top: 3px; accent-color: var(--accent); flex-shrink: 0; }
+    .opt-line label { flex: 1; cursor: pointer; line-height: 1.38; font-size: .94rem; color: #e8f0ff !important; -webkit-text-fill-color: #e8f0ff !important; }
+    .mcq-letter {
+      font-weight: 800;
+      color: #7dd3fc !important;
+      -webkit-text-fill-color: #7dd3fc !important;
+      min-width: 1.35em;
+      display: inline-block;
+    }
     .opt-line.ok { background: rgba(34,197,94,.28); border-color: #4ade80; box-shadow: inset 0 0 0 1px rgba(74,222,128,.65); }
     .opt-line.bad-pick { background: rgba(239,68,68,.22); border-color: #f87171; box-shadow: inset 0 0 0 1px rgba(248,113,113,.55); }
     .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -34,11 +40,14 @@
     .btn-submit { background: var(--ok); color: #05271a; }
     .btn-reset { background: #334e78; color: #e8f0ff; border: 1px solid var(--line); }
     .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #1a2c49; line-height: 1.45; min-height: 1.5em; }
+    .feedback.score-ok { border-color: rgba(74, 222, 128, 0.55); background: rgba(34, 197, 94, 0.12); color: #bbf7d0; }
+    .feedback.score-partial { border-color: rgba(250, 204, 21, 0.45); background: rgba(250, 204, 21, 0.08); color: #fde68a; }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/mastering-b2-page-skin.css" />
+  <link rel="stylesheet" href="../ege/css/ege-live-room-bar.css?v=20" />
 </head>
 <body data-mb2-unit="7" data-mb2-skill="listening" data-mb2-ex="wb-track-7">
   <main class="page">
@@ -70,8 +79,12 @@
     <p class="feedback" id="feedback"></p>
   </main>
 
+  <script src="../js/prep-course-profile.js"></script>
+  <script src="../js/prep-site-content.js"></script>
+  <script src="../js/mastering-b2-skill-progress.js"></script>
   <script>
 (function () {
+  /** Workbook with Key — Listening Part 4 multiple choice */
   var CORRECT = ["C", "B", "B", "B", "A", "C", "B"];
   var MCQ = [
     { q: "Gail believes that people", options: { A: "cut down trees for building and furniture too easily.", B: "do not spend enough time in the countryside.", C: "do not think trees are an important subject." } },
@@ -83,24 +96,85 @@
     { q: "What has the neighbour done since the court case?", options: { A: "He has refused to speak to Gail and her husband.", B: "He has moved away.", C: "He has apologised." } }
   ];
 
-  function esc(text) {
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
+
+  function choiceText(item, letter) {
+    var k = String(letter || "").toUpperCase();
+    var t = item.options[k];
+    return t ? k + ") " + String(t) : k;
+  }
+
   var root = document.getElementById("mcq-root");
   var fb = document.getElementById("feedback");
 
+  function getChoice(i) {
+    var el = root.querySelector('input[name="q' + i + '"]:checked');
+    return el ? el.value : "";
+  }
+
+  function buildLiveItems() {
+    var n = MCQ.length;
+    var items = [];
+    var ok = 0;
+    var filled = 0;
+    for (var j = 0; j < n; j++) {
+      var pick = getChoice(j);
+      var keyLetter = String(CORRECT[j]).toUpperCase();
+      var isFilled = !!pick;
+      var isOk = isFilled && pick === keyLetter;
+      if (isFilled) filled += 1;
+      if (isOk) ok += 1;
+      items.push({
+        id: String(j + 1),
+        label: "Q " + String(j + 1),
+        prompt: String(MCQ[j].q),
+        correct: isOk,
+        answer: pick,
+        expected: keyLetter,
+        answerText: pick ? choiceText(MCQ[j], pick) : "—",
+        expectedText: choiceText(MCQ[j], keyLetter),
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      correct: ok,
+      filled: filled,
+      total: n,
+      score: n ? Math.round((ok / n) * 100) : 0
+    };
+  }
+
   function render() {
     root.innerHTML = MCQ.map(function (item, qIdx) {
-      var opts = ["A", "B", "C"].map(function (k) {
+      var keys = ["A", "B", "C"];
+      var opts = keys.map(function (k) {
+        if (!item.options[k]) return "";
         var id = "q" + qIdx + k;
-        return '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '"><input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" /><label for="' + id + '"><span class="letter">' + k + "</span> " + esc(item.options[k]) + "</label></li>";
+        return (
+          '<li class="opt-line" data-q="' + qIdx + '" data-k="' + k + '">' +
+          '<input type="radio" name="q' + qIdx + '" value="' + k + '" id="' + id + '" />' +
+          '<label for="' + id + '"><span class="mcq-letter">' + k + "</span> " + escapeHtml(item.options[k]) + "</label></li>"
+        );
       }).join("");
-      return '<article class="q"><p class="stem"><strong>' + String(qIdx + 1) + ".</strong> " + esc(item.q) + '</p><ul class="opts">' + opts + "</ul></article>";
+      return (
+        '<article class="q">' +
+        '<p class="stem"><strong>' + String(qIdx + 1) + ".</strong> " + escapeHtml(item.q) + "</p>" +
+        '<ul class="opts">' + opts + "</ul></article>"
+      );
     }).join("");
+
     root.querySelectorAll('input[type="radio"]').forEach(function (radio) {
       radio.addEventListener("change", function () {
         clearMarks();
         fb.textContent = "";
+        fb.classList.remove("score-ok", "score-partial");
       });
     });
   }
@@ -110,25 +184,29 @@
       line.classList.remove("ok", "bad-pick");
     });
   }
-  function getChoice(i) {
-    var el = root.querySelector('input[name="q' + i + '"]:checked');
-    return el ? el.value : "";
-  }
+
+  render();
 
   document.getElementById("btnCheck").addEventListener("click", function () {
     clearMarks();
+    var n = MCQ.length;
     var missing = false;
-    for (var i = 0; i < MCQ.length; i++) {
-      if (!getChoice(i)) missing = true;
+    for (var i = 0; i < n; i++) {
+      if (!getChoice(i)) {
+        missing = true;
+        break;
+      }
     }
     if (missing) {
+      fb.classList.remove("score-ok", "score-partial");
       fb.textContent = "Choose A, B or C for every question, then check again.";
       return;
     }
+
     var score = 0;
-    for (var j = 0; j < MCQ.length; j++) {
+    for (var j = 0; j < n; j++) {
       var pick = getChoice(j);
-      var keyLetter = CORRECT[j];
+      var keyLetter = String(CORRECT[j]).toUpperCase();
       var ok = pick === keyLetter;
       if (ok) score++;
       var line = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + pick + '"]');
@@ -136,20 +214,41 @@
       var correctLine = root.querySelector('.opt-line[data-q="' + j + '"][data-k="' + keyLetter + '"]');
       if (correctLine && !ok) correctLine.classList.add("ok");
     }
-    fb.innerHTML = score === MCQ.length ? "<strong>All " + MCQ.length + " correct.</strong>" : "Score: <strong>" + score + "</strong> / " + MCQ.length + ". Green = correct option; your wrong pick is outlined in red where applicable.";
+    fb.classList.remove("score-ok", "score-partial");
+    if (score === n) {
+      fb.classList.add("score-ok");
+      fb.innerHTML = "<strong>All " + n + " correct.</strong>";
+    } else {
+      fb.classList.add("score-partial");
+      fb.innerHTML =
+        "Score: <strong>" +
+        score +
+        "</strong> / " +
+        n +
+        ". Green = correct option; your wrong pick is outlined in red where applicable.";
+    }
+    if (window.MasteringB2Progress) MasteringB2Progress.recordCheckFromDom(score, n);
   });
 
   document.getElementById("btnClear").addEventListener("click", function () {
-    root.querySelectorAll('input[type="radio"]').forEach(function (r) { r.checked = false; });
+    root.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.checked = false;
+    });
     clearMarks();
     fb.textContent = "";
+    fb.classList.remove("score-ok", "score-partial");
   });
 
-  render();
+  window.__FCE_LIVE_BUILD_ITEMS__ = buildLiveItems;
 })();
   </script>
-<script src="../js/mastering-b2-skill-progress.js"></script>
-<script src="../js/mastering-b2-daily-activity.js"></script>
-<script src="../js/mastering-b2-exercise-auto.js"></script>
+  <script src="../js/mastering-b2-daily-activity.js"></script>
+  <script src="../js/mastering-b2-exercise-auto.js?v=2"></script>
+  <script src="../js/live-game-api.js" vite-ignore></script>
+  <script src="../js/live-game-api-http.js?v=17" vite-ignore></script>
+  <script src="../ege/js/ege-live-config.js?v=8" vite-ignore></script>
+  <script src="../ege/js/ege-player-name.js" vite-ignore></script>
+  <script src="../ege/js/ege-live-room-bar.js?v=21" vite-ignore></script>
+  <script src="../js/fce-live-boot.js?v=4" vite-ignore></script>
 </body>
 </html>
