@@ -723,6 +723,11 @@ app.use(function (req, res, next) {
 
 function staticCacheHeaders(res, filePath) {
   if (/\.(?:js|css|mjs|map|woff2?|ttf|otf|png|jpe?g|gif|webp|svg|ico|mp3|wav|ogg)$/i.test(filePath)) {
+    // OGE/EGE gym pages change often; avoid 24h stale JS after git pull.
+    if (/[\\/]oge[\\/]/i.test(filePath) && /\.(?:js|css)$/i.test(filePath)) {
+      res.setHeader("Cache-Control", "public, max-age=300, must-revalidate");
+      return;
+    }
     res.setHeader("Cache-Control", "public, max-age=86400");
     return;
   }
