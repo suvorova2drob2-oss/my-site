@@ -13,6 +13,28 @@
       "Time words help: at the moment · for three years · since …",
       "Passive = be + past participle"
     ],
+    chapters: [
+      {
+        id: "tenses",
+        label: "Tenses · 1–2",
+        stationIds: ["1", "2"]
+      },
+      {
+        id: "aux-questions",
+        label: "Auxiliaries & questions · 3–4",
+        stationIds: ["3", "4"]
+      },
+      {
+        id: "passive-modals",
+        label: "Passive & modals · 5–6",
+        stationIds: ["5", "6"]
+      },
+      {
+        id: "report-plus",
+        label: "Report, conditionals & more · 7–10",
+        stationIds: ["7", "8", "9", "10"]
+      }
+    ],
     stations: [
       {
         id: "1",

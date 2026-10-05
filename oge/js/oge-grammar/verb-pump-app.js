@@ -29,11 +29,15 @@
     return;
   }
 
+  var POINTS_PER_OK = 10;
+
   var state = {
     round: rounds[0].id,
     stationId: (rounds[0].stations[0] && rounds[0].stations[0].id) || "A",
+    chapterId: "",
     liveById: {},
     stationChecked: {},
+    stationScores: {},
     showKeys: false,
     liveHeartbeat: null
   };
@@ -59,6 +63,7 @@
       state.stationId = fromHash.station;
     }
   } catch (eHash) {}
+  ensureChapterId();
   ensureStationId();
 
   function liveItemId(station, item) {
@@ -100,7 +105,59 @@
     return 0;
   }
 
+  function roundChapters() {
+    var round = activeRound();
+    return round && round.chapters && round.chapters.length ? round.chapters : null;
+  }
+
+  function stationChapterId(stationId) {
+    var chapters = roundChapters();
+    if (!chapters) return "";
+    var c;
+    var i;
+    for (c = 0; c < chapters.length; c++) {
+      var ids = chapters[c].stationIds || chapters[c].ids || [];
+      for (i = 0; i < ids.length; i++) {
+        if (ids[i] === stationId) return chapters[c].id;
+      }
+    }
+    return "";
+  }
+
+  function ensureChapterId() {
+    var chapters = roundChapters();
+    if (!chapters) {
+      state.chapterId = "";
+      return;
+    }
+    var c;
+    for (c = 0; c < chapters.length; c++) {
+      if (chapters[c].id === state.chapterId) return;
+    }
+    state.chapterId = chapters[0].id;
+  }
+
+  function chapterStationIds(chapterId) {
+    var chapters = roundChapters();
+    if (!chapters) return [];
+    var c;
+    for (c = 0; c < chapters.length; c++) {
+      if (chapters[c].id === chapterId) {
+        return chapters[c].stationIds || chapters[c].ids || [];
+      }
+    }
+    return [];
+  }
+
   function isStationUnlocked(stationId) {
+    var chapters = roundChapters();
+    if (chapters) {
+      var cid = stationChapterId(stationId);
+      var ids = chapterStationIds(cid);
+      var idx = ids.indexOf(stationId);
+      if (idx <= 0) return true;
+      return !!state.stationChecked[ids[idx - 1]];
+    }
     var list = stationList();
     var idx = -1;
     var i;
@@ -112,6 +169,21 @@
     }
     if (idx <= 0) return true;
     return !!state.stationChecked[list[idx - 1].id];
+  }
+
+  function totalPointsEarned() {
+    var sum = 0;
+    var key;
+    for (key in state.stationScores) {
+      if (Object.prototype.hasOwnProperty.call(state.stationScores, key)) {
+        sum += state.stationScores[key].points || 0;
+      }
+    }
+    return sum;
+  }
+
+  function maxPointsInRound() {
+    return roundItemTotal() * POINTS_PER_OK;
   }
 
   function roundItemTotal() {
@@ -155,7 +227,7 @@
     for (i = 0; i < station.items.length; i++) {
       var item = station.items[i];
       var row = state.liveById[liveItemId(station, item)];
-      var card = cardById(item.id);
+      var card = cardById(station, item);
       if (!row || !card) continue;
       markCard(card, row);
     }
@@ -247,21 +319,47 @@
     var list = stationList();
     var i;
     for (i = 0; i < list.length; i++) if (state.stationChecked[list[i].id]) checked += 1;
+    var pts = totalPointsEarned();
+    var maxPts = maxPointsInRound();
     bar.innerHTML =
       '<div class="vp-progress-track"><div class="vp-progress-fill" style="width:' +
       prog.pct +
       '%"></div></div>' +
-      '<p class="vp-progress-label">Round progress: <strong>' +
+      '<p class="vp-progress-label">Progress: <strong>' +
       prog.pct +
       "%</strong> · " +
       prog.ok +
       " / " +
       prog.total +
-      " · levels done " +
+      " correct · <strong>" +
+      pts +
+      "</strong> / " +
+      maxPts +
+      " points · levels " +
       checked +
       " / " +
       list.length +
       "</p>";
+  }
+
+  function chapterProgress(chapterId) {
+    var ids = chapterStationIds(chapterId);
+    var ok = 0;
+    var total = 0;
+    var list = stationList();
+    var i;
+    var j;
+    for (i = 0; i < ids.length; i++) {
+      for (j = 0; j < list.length; j++) {
+        if (list[j].id !== ids[i]) continue;
+        total += list[j].items.length;
+        var sc = state.stationScores[ids[i]];
+        if (sc) ok += sc.ok || 0;
+        break;
+      }
+    }
+    var pct = total ? Math.round((100 * ok) / total) : 0;
+    return { ok: ok, total: total, pct: pct };
   }
 
   function showRoundComplete() {
@@ -353,10 +451,10 @@
     return html;
   }
 
-  function cardOpen(item, inner) {
+  function cardOpen(station, item, inner) {
     return (
       '<article class="vp-card" data-id="' +
-      esc(item.id) +
+      esc(liveItemId(station, item)) +
       '">' +
       '<div class="vp-card-no">' +
       esc(item.label || item.id) +
@@ -367,7 +465,7 @@
     );
   }
 
-  function renderBuild(item) {
+  function renderBuild(station, item) {
     var chips = shuffle(item.chips)
       .map(function (chip, i) {
         return (
@@ -380,6 +478,7 @@
       })
       .join("");
     return cardOpen(
+      station,
       item,
       '<div class="vp-shot-wrap"><img class="vp-shot" src="' +
         esc(item.img) +
@@ -396,7 +495,7 @@
     );
   }
 
-  function renderType(item) {
+  function renderType(station, item) {
     var field =
       '<input class="vp-gap" data-role="gap" autocomplete="off" spellcheck="false" aria-label="' +
       esc(item.cue) +
@@ -404,15 +503,16 @@
       '<span class="vp-cue">(' +
       esc(item.cue) +
       ")</span>";
-    return cardOpen(item, '<p class="vp-line">' + glue(item.before, field, item.after) + "</p>");
+    return cardOpen(station, item, '<p class="vp-line">' + glue(item.before, field, item.after) + "</p>");
   }
 
-  function renderFix(item) {
+  function renderFix(station, item) {
     var field =
       '<input class="vp-gap vp-gap--fix" data-role="gap" autocomplete="off" spellcheck="false" placeholder="' +
       esc(item.wrong) +
       '" aria-label="Corrected phrase" />';
     return cardOpen(
+      station,
       item,
       '<p class="vp-line vp-line--wrong"><span class="vp-badbit">' +
         esc(item.wrong) +
@@ -423,7 +523,7 @@
     );
   }
 
-  function renderChoice(item) {
+  function renderChoice(station, item) {
     var buttons = item.choices
       .map(function (choice) {
         return (
@@ -436,12 +536,13 @@
       })
       .join("");
     return cardOpen(
+      station,
       item,
       '<p class="vp-line">' + esc(item.prompt) + "</p>" + '<div class="vp-picks">' + buttons + "</div>"
     );
   }
 
-  function renderBank(item) {
+  function renderBank(station, item) {
     var html = '<p class="vp-line">';
     var g = 0;
     var p;
@@ -461,11 +562,12 @@
     if (item.cue) {
       html += '<p class="vp-cue-line"><span class="vp-cue">(' + esc(item.cue) + ")</span></p>";
     }
-    return cardOpen(item, html);
+    return cardOpen(station, item, html);
   }
 
-  function renderPair(item) {
+  function renderPair(station, item) {
     return cardOpen(
+      station,
       item,
       '<p class="vp-line">' +
         esc(item.prompt) +
@@ -478,12 +580,12 @@
   function renderStation(station) {
     var items = station.items
       .map(function (item) {
-        if (station.kind === "build") return renderBuild(item);
-        if (station.kind === "type") return renderType(item);
-        if (station.kind === "fix") return renderFix(item);
-        if (station.kind === "choice") return renderChoice(item);
-        if (station.kind === "pair") return renderPair(item);
-        return renderBank(item);
+        if (station.kind === "build") return renderBuild(station, item);
+        if (station.kind === "type") return renderType(station, item);
+        if (station.kind === "fix") return renderFix(station, item);
+        if (station.kind === "choice") return renderChoice(station, item);
+        if (station.kind === "pair") return renderPair(station, item);
+        return renderBank(station, item);
       })
       .join("");
     var bank = "";
@@ -537,8 +639,10 @@
     return null;
   }
 
-  function cardById(id) {
-    return root.querySelector('.vp-card[data-id="' + id + '"]');
+  function cardById(station, item) {
+    if (!station || !item) return null;
+    var domId = liveItemId(station, item);
+    return root.querySelector('.vp-card[data-id="' + domId + '"]');
   }
 
   function trayWords(card) {
@@ -581,7 +685,7 @@
     var i;
     for (i = 0; i < station.items.length; i++) {
       var item = station.items[i];
-      var card = cardById(item.id);
+      var card = cardById(station, item);
       if (!card || card.classList.contains("is-bad")) continue;
       showKey(card, expectedLine(station, item));
     }
@@ -715,7 +819,7 @@
     var i;
     for (i = 0; i < station.items.length; i++) {
       var item = station.items[i];
-      var card = cardById(item.id);
+      var card = cardById(station, item);
       if (!card) continue;
       var row = readCard(station, item, card);
       rows.push(row);
@@ -733,7 +837,7 @@
       var i;
       for (i = 0; i < station.items.length; i++) {
         var item = station.items[i];
-        var card = cardById(item.id);
+        var card = cardById(station, item);
         if (!card) continue;
         var row = readCard(station, item, card);
         map[row.id] = row;
@@ -820,11 +924,17 @@
       if (rows[i].correct) ok += 1;
     }
     state.stationChecked[station.id] = true;
+    var levelPct = rows.length ? Math.round((100 * ok) / rows.length) : 0;
+    state.stationScores[station.id] = {
+      ok: ok,
+      total: rows.length,
+      pct: levelPct,
+      points: ok * POINTS_PER_OK
+    };
     mountLevelReport(station, rows);
     var line = document.getElementById("vp-score");
     if (line) {
       line.hidden = false;
-      var levelPct = rows.length ? Math.round((100 * ok) / rows.length) : 0;
       if (isLastStation(station.id)) {
         var roundDone = roundProgress();
         line.textContent =
@@ -921,7 +1031,9 @@
     stopLiveHeartbeat();
     state.liveById = {};
     state.stationChecked = {};
+    state.stationScores = {};
     state.showKeys = false;
+    ensureChapterId();
     state.stationId = stationList()[0] ? stationList()[0].id : "A";
     var modal = document.getElementById("vp-round-modal");
     if (modal) modal.hidden = true;
@@ -931,19 +1043,27 @@
     bindDock();
   }
 
-  function ensureStationId() {
+  function visibleStationIds() {
+    var chapters = roundChapters();
+    if (chapters && state.chapterId) return chapterStationIds(state.chapterId);
     var list = stationList();
+    return list.map(function (s) {
+      return s.id;
+    });
+  }
+
+  function ensureStationId() {
+    ensureChapterId();
+    var visible = visibleStationIds();
     var i;
-    for (i = 0; i < list.length; i++) {
-      if (list[i].id === state.stationId && isStationUnlocked(state.stationId)) return;
-    }
-    for (i = 0; i < list.length; i++) {
-      if (isStationUnlocked(list[i].id)) {
-        state.stationId = list[i].id;
+    if (visible.indexOf(state.stationId) >= 0 && isStationUnlocked(state.stationId)) return;
+    for (i = 0; i < visible.length; i++) {
+      if (isStationUnlocked(visible[i])) {
+        state.stationId = visible[i];
         return;
       }
     }
-    state.stationId = list[0] ? list[0].id : "A";
+    state.stationId = visible[0] || (stationList()[0] ? stationList()[0].id : "A");
   }
 
   function setRound(id) {
@@ -951,7 +1071,9 @@
     state.round = id;
     state.liveById = {};
     state.stationChecked = {};
+    state.stationScores = {};
     state.showKeys = false;
+    ensureChapterId();
     ensureStationId();
     root.innerHTML = paint();
     clearMarks();
@@ -982,32 +1104,78 @@
   }
 
   function applyStationVisibility() {
+    var visibleSet = {};
+    var visible = visibleStationIds();
+    var v;
+    for (v = 0; v < visible.length; v++) visibleSet[visible[v]] = true;
     var nodes = root.querySelectorAll(".vp-station");
     var i;
     for (i = 0; i < nodes.length; i++) {
       var sid = nodes[i].getAttribute("data-station");
-      nodes[i].classList.toggle("is-active", sid === state.stationId);
+      var inFolder = !roundChapters() || visibleSet[sid];
+      nodes[i].classList.toggle("is-active", sid === state.stationId && inFolder);
+      nodes[i].hidden = roundChapters() ? !inFolder : false;
     }
   }
 
   function updateLevelNav() {
+    var visibleSet = {};
+    var visible = visibleStationIds();
+    var v;
+    for (v = 0; v < visible.length; v++) visibleSet[visible[v]] = true;
     var buttons = root.querySelectorAll(".vp-level");
     var i;
     for (i = 0; i < buttons.length; i++) {
       var sid = buttons[i].getAttribute("data-station");
+      if (roundChapters()) buttons[i].hidden = !visibleSet[sid];
       buttons[i].classList.toggle("is-on", sid === state.stationId);
       buttons[i].classList.toggle("is-done", !!state.stationChecked[sid]);
       buttons[i].classList.toggle("is-locked", !isStationUnlocked(sid));
       buttons[i].disabled = !isStationUnlocked(sid);
+      var badge = buttons[i].querySelector(".vp-level-pct");
+      var sc = state.stationScores[sid];
+      if (sc && state.stationChecked[sid]) {
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "vp-level-pct";
+          buttons[i].appendChild(badge);
+        }
+        badge.textContent = sc.pct + "%";
+      } else if (badge) {
+        badge.remove();
+      }
+    }
+    updateChapterNav();
+  }
+
+  function updateChapterNav() {
+    var nodes = root.querySelectorAll(".vp-chapter");
+    var i;
+    for (i = 0; i < nodes.length; i++) {
+      var cid = nodes[i].getAttribute("data-chapter");
+      nodes[i].classList.toggle("is-on", cid === state.chapterId);
+      var prog = chapterProgress(cid);
+      var meta = nodes[i].querySelector(".vp-chapter-meta");
+      if (meta) {
+        meta.textContent = prog.pct + "% · " + prog.ok + "/" + prog.total;
+      }
     }
   }
 
   function updateStepLabel() {
     var el = document.getElementById("vp-step");
     if (!el) return;
-    var list = stationList();
+    var visible = visibleStationIds();
+    var idx = visible.indexOf(state.stationId);
+    if (idx < 0) idx = 0;
     el.textContent =
-      "Level " + (stationIndex() + 1) + " / " + list.length + " · " + state.stationId;
+      "Exercise " +
+      state.stationId +
+      " · step " +
+      (idx + 1) +
+      " / " +
+      visible.length +
+      " in this folder";
   }
 
   function onRound(event) {
@@ -1032,20 +1200,54 @@
   }
 
   function stepStation(delta) {
-    var list = stationList();
-    var idx = stationIndex() + delta;
-    if (idx < 0 || idx >= list.length) return;
-    if (delta > 0 && !isStationUnlocked(list[idx].id)) return;
-    setStation(list[idx].id);
+    var visible = visibleStationIds();
+    var idx = visible.indexOf(state.stationId) + delta;
+    if (idx < 0 || idx >= visible.length) return;
+    if (delta > 0 && !isStationUnlocked(visible[idx])) return;
+    setStation(visible[idx]);
+  }
+
+  function setChapter(id) {
+    if (!id || id === state.chapterId) return;
+    state.chapterId = id;
+    state.showKeys = false;
+    ensureStationId();
+    syncHash();
+    applyStationVisibility();
+    updateLevelNav();
+    updateStepLabel();
+    clearMarks();
+    root.querySelectorAll(".vp-station").forEach(function (node) {
+      node.classList.remove("vp-show-keys");
+    });
+    if (state.stationChecked[state.stationId]) applyMarksFromCache(activeStation());
+    scheduleLiveDraft("Opened folder " + id, true);
+  }
+
+  function onChapter(event) {
+    var btn = event.target.closest("[data-chapter]");
+    if (!btn || !root.contains(btn)) return;
+    setChapter(btn.getAttribute("data-chapter"));
   }
 
   function paint() {
     var round = activeRound();
+    ensureChapterId();
+    var visibleSet = {};
+    var visible = visibleStationIds();
+    var v;
+    for (v = 0; v < visible.length; v++) visibleSet[visible[v]] = true;
     var nav = round.stations
       .map(function (station) {
         var done = state.stationChecked[station.id] ? " is-done" : "";
         var on = station.id === state.stationId ? " is-on" : "";
         var locked = !isStationUnlocked(station.id) ? " is-locked" : "";
+        var sc = state.stationScores[station.id];
+        var pctBadge =
+          sc && state.stationChecked[station.id]
+            ? '<span class="vp-level-pct">' + sc.pct + "%</span>"
+            : "";
+        var folderHidden = roundChapters() && !visibleSet[station.id];
         return (
           '<button type="button" class="vp-level' +
           on +
@@ -1055,12 +1257,42 @@
           esc(station.id) +
           '"' +
           (!isStationUnlocked(station.id) ? " disabled" : "") +
+          (folderHidden ? " hidden" : "") +
           ">" +
           esc(station.id) +
+          pctBadge +
           "</button>"
         );
       })
       .join("");
+    var chapterNav = "";
+    var chapters = roundChapters();
+    if (chapters) {
+      chapterNav =
+        '<nav class="vp-chapters" aria-label="Topic folders">' +
+        chapters
+          .map(function (ch) {
+            var prog = chapterProgress(ch.id);
+            var on = ch.id === state.chapterId ? " is-on" : "";
+            return (
+              '<button type="button" class="vp-chapter' +
+              on +
+              '" data-chapter="' +
+              esc(ch.id) +
+              '"><span class="vp-chapter-label">' +
+              esc(ch.label) +
+              '</span><span class="vp-chapter-meta">' +
+              prog.pct +
+              "% · " +
+              prog.ok +
+              "/" +
+              prog.total +
+              "</span></button>"
+            );
+          })
+          .join("") +
+        "</nav>";
+    }
     var switches =
       rounds.length > 1
         ? rounds
@@ -1101,6 +1333,7 @@
       '<div class="vp-rules">' +
       rules +
       "</div></div>" +
+      chapterNav +
       '<nav class="vp-levels" aria-label="Levels">' +
       nav +
       "</nav>" +
@@ -1121,6 +1354,7 @@
       startLiveHeartbeat();
     });
     root.addEventListener("click", onRound);
+    root.addEventListener("click", onChapter);
     root.addEventListener("click", onLevel);
     root.addEventListener("click", onReportNext);
     root.addEventListener("click", onPoolClick);
@@ -1158,6 +1392,7 @@
     updateStepLabel();
     updateLevelNav();
     updateRoundProgressUi();
+    applyStationVisibility();
     if (w.EgeLiveRoom && typeof w.EgeLiveRoom.isLiveStudent === "function" && w.EgeLiveRoom.isLiveStudent()) {
       scheduleLiveDraft("ready", true);
       startLiveHeartbeat();
