@@ -4,6 +4,8 @@
 (function (w) {
   "use strict";
 
+  w.__OGE_VP_ENGINE_REV = 26;
+
   var cfg = w.OGE_GYM_ENGINE_CONFIG || null;
   var pack = w.OGE_VERB_PUMP;
   var root = document.getElementById((cfg && cfg.rootId) || "vp-app");
@@ -1269,6 +1271,7 @@
     var chapters = roundChapters();
     if (chapters) {
       chapterNav =
+        '<p class="vp-folders-kicker">Topic folders · pick a block (not all 10 at once)</p>' +
         '<nav class="vp-chapters" aria-label="Topic folders">' +
         chapters
           .map(function (ch) {
@@ -1323,17 +1326,19 @@
       esc((cfg && cfg.heroTitle) || "The Verb Pump") +
       "</h1>" +
       '<div id="vp-round-progress" class="vp-round-progress"></div>' +
+      chapterNav +
       (switches ? '<div class="vp-rounds">' + switches + "</div>" : "") +
-      "<p>" +
-      esc(round.blurb || "") +
-      "</p>" +
       (cfg && cfg.refHref
         ? '<div class="vp-hero-links"><a href="' + esc(cfg.refHref) + '">Grammar reference</a></div>'
         : '<div class="vp-hero-links"><a href="oge-grammar-gym-verb-pump-reference.html">Grammar reference</a></div>') +
-      '<div class="vp-rules">' +
-      rules +
-      "</div></div>" +
-      chapterNav +
+      (rules
+        ? '<details class="vp-rules-fold"><summary>Quick rules</summary><div class="vp-rules">' +
+          rules +
+          "</div></details>"
+        : "") +
+      "<p class=\"vp-blurb\">" +
+      esc(round.blurb || "") +
+      "</p></div>" +
       '<nav class="vp-levels" aria-label="Levels">' +
       nav +
       "</nav>" +
