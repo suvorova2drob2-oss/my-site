@@ -243,7 +243,7 @@
       var bootNodes = document.querySelectorAll("script[src*='mastering-b2-exercise-auto.js']");
       var bootNode = bootNodes.length ? bootNodes[bootNodes.length - 1] : null;
       if (bootNode && bootNode.src) {
-        bootSrc = bootNode.src.replace(/mastering-b2-exercise-auto\.js[^/]*$/i, "fce-live-boot.js?v=4");
+        bootSrc = bootNode.src.replace(/mastering-b2-exercise-auto\.js[^/]*$/i, "fce-live-boot.js?v=5");
       }
       if (bootSrc) {
         var bootEl = document.createElement("script");

@@ -13,6 +13,9 @@
   var SS_ROLE = "egeLiveRole";
   var SS_NAME = "egeLiveDisplayName";
   var SS_REPLACE = "egeLiveReplacePlayerId";
+  var SS_DECK = "egeLiveHostDeck";
+  var LS_HOST = "egeLiveHostSessionV1";
+  var HOST_SESSION_MS = 6 * 60 * 60 * 1000;
 
   var state = {
     api: null,
@@ -35,7 +38,8 @@
     inspect: null,
     opts: null,
     podiumDismissed: false,
-    expandedPlayerId: ""
+    expandedPlayerId: "",
+    hostRestorePending: false
   };
 
   function qs() {
@@ -58,6 +62,81 @@
       u = "";
     }
     return state.deckPrefix + (u ? ":" + u : "");
+  }
+
+  function readHostStore() {
+    try {
+      var raw = localStorage.getItem(LS_HOST) || "";
+      var data = raw ? JSON.parse(raw) : {};
+      return data && typeof data === "object" ? data : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function persistHostSession() {
+    if (!state.roomCode || !state.hostToken) return;
+    var id = deckId();
+    var all = readHostStore();
+    all[id] = {
+      roomCode: state.roomCode,
+      hostToken: state.hostToken,
+      savedAt: Date.now()
+    };
+    try {
+      localStorage.setItem(LS_HOST, JSON.stringify(all));
+    } catch (eL) {}
+    try {
+      sessionStorage.setItem(SS_ROOM, state.roomCode);
+      sessionStorage.setItem(SS_HOST, state.hostToken);
+      sessionStorage.setItem(SS_ROLE, "host");
+      sessionStorage.setItem(SS_DECK, id);
+      sessionStorage.removeItem(SS_PLAYER);
+    } catch (eS) {}
+  }
+
+  function readHostSession() {
+    var id = deckId();
+    var saved = readHostStore()[id];
+    if (saved && saved.roomCode && saved.hostToken) {
+      if (!saved.savedAt || Date.now() - Number(saved.savedAt) < HOST_SESSION_MS) return saved;
+    }
+    try {
+      if ((sessionStorage.getItem(SS_ROLE) || "") !== "host") return null;
+      var storedDeck = sessionStorage.getItem(SS_DECK) || "";
+      if (storedDeck && storedDeck !== id) return null;
+      var code = sessionStorage.getItem(SS_ROOM) || "";
+      var token = sessionStorage.getItem(SS_HOST) || "";
+      if (!code || !token) return null;
+      return { roomCode: code, hostToken: token, savedAt: Date.now() };
+    } catch (e2) {
+      return null;
+    }
+  }
+
+  function clearHostSession(role) {
+    var id = deckId();
+    if (role === "host") {
+      var all = readHostStore();
+      if (all[id]) {
+        delete all[id];
+        try {
+          localStorage.setItem(LS_HOST, JSON.stringify(all));
+        } catch (eL) {}
+      }
+    }
+    try {
+      var storedDeck = sessionStorage.getItem(SS_DECK) || "";
+      if (role === "host" && storedDeck && storedDeck !== id) return;
+      sessionStorage.removeItem(SS_ROOM);
+      sessionStorage.removeItem(SS_PLAYER);
+      sessionStorage.removeItem(SS_ROLE);
+      sessionStorage.removeItem(SS_REPLACE);
+      if (role === "host") {
+        sessionStorage.removeItem(SS_HOST);
+        sessionStorage.removeItem(SS_DECK);
+      }
+    } catch (eS) {}
   }
 
   function ensureApi() {
@@ -535,7 +614,7 @@
     var ansShow = prettyAnswerCode(it.answer) || it.answer || "";
     return (
       '<button type="button" class="ege-live-chip ' +
-      (it.correct ? "is-ok" : "is-bad") +
+      (itemLooksCorrect(it) ? "is-ok" : "is-bad") +
       (selected ? " is-selected" : "") +
       '" data-live-player="' +
       esc(row.playerId) +
@@ -544,7 +623,7 @@
       '" title="Сверить ответ">' +
       esc(it.id) +
       " " +
-      (it.correct ? "✓" : "✗") +
+      (itemLooksCorrect(it) ? "✓" : "✗") +
       (ansShow ? " · " + esc(ansShow) : "") +
       "</button>"
     );
@@ -656,11 +735,12 @@
       items
         .map(function (it) {
           var filled = it.filled !== false && String(it.answer || "").length > 0;
-          var cls = !filled ? "is-pending" : it.correct ? "is-ok" : "is-bad";
+          var segOk = itemLooksCorrect(it);
+          var cls = !filled ? "is-pending" : segOk ? "is-ok" : "is-bad";
           var tip = !filled
             ? "ещё не выбрано"
             : (it.answer ? "№" + it.answer + " · " : "") +
-              (it.correct ? "верно" : "ошибка");
+              (segOk ? "верно" : "ошибка");
           return (
             '<i class="' +
             cls +
@@ -696,7 +776,7 @@
         if (!filled) return;
         var id = String(it.id);
         if (!map[id]) map[id] = { id: id, label: it.label || id, ok: 0, bad: 0, expected: it.expected };
-        if (it.correct) map[id].ok += 1;
+        if (itemLooksCorrect(it)) map[id].ok += 1;
         else map[id].bad += 1;
         if (it.expected) map[id].expected = it.expected;
       });
@@ -1351,7 +1431,7 @@
     }
     var hostActs = document.getElementById("ege-live-podium-host-actions");
     var stuActs = document.getElementById("ege-live-podium-student-actions");
-    if (hostActs) hostActs.hidden = state.role !== "host";
+    if (hostActs) hostActs.hidden = state.role !== "host" || !state.hostToken;
     if (stuActs) stuActs.hidden = state.role !== "student";
   }
 
@@ -1360,6 +1440,26 @@
     var el = document.getElementById("ege-live-podium");
     if (el) el.hidden = true;
     document.body.classList.remove("ege-live-podium-open");
+  }
+
+  function showExistingHostRoom(code) {
+    code = String(code || state.roomCode || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "");
+    if (!code) return;
+    var createBtn = document.getElementById("ege-live-create");
+    var startBtn = document.getElementById("ege-live-start");
+    var codeRow = document.getElementById("ege-live-code-row");
+    var codeEl = document.getElementById("ege-live-code");
+    var hostBlock = document.getElementById("ege-live-host-block");
+    var stuBlock = document.getElementById("ege-live-student-block");
+    if (hostBlock) hostBlock.hidden = false;
+    if (stuBlock) stuBlock.hidden = true;
+    if (createBtn) createBtn.hidden = false;
+    if (startBtn) startBtn.hidden = !state.hostToken;
+    if (codeRow) codeRow.hidden = false;
+    if (codeEl) codeEl.textContent = code;
+    applyInviteLink("", code);
   }
 
   function resetHostPanelUi() {
@@ -1423,6 +1523,8 @@
       } catch (eU) {}
       state.unsub = null;
     }
+    var leavingRole = state.role;
+    clearHostSession(leavingRole);
     state.roomCode = "";
     state.hostToken = "";
     state.playerId = "";
@@ -1431,13 +1533,7 @@
     state.expandedPlayerId = "";
     state.podiumDismissed = false;
     state.api = null;
-    try {
-      sessionStorage.removeItem(SS_ROOM);
-      sessionStorage.removeItem(SS_HOST);
-      sessionStorage.removeItem(SS_ROLE);
-      sessionStorage.removeItem(SS_PLAYER);
-      sessionStorage.removeItem(SS_REPLACE);
-    } catch (eS) {}
+    state.hostRestorePending = false;
 
     var podium = document.getElementById("ege-live-podium");
     if (podium) podium.hidden = true;
@@ -1522,7 +1618,7 @@
     var ended = snap && snap.phase === "leaderboard";
     var ready = playing && allPlayersSubmitted(snap);
     if (endBtn) {
-      endBtn.hidden = !playing;
+      endBtn.hidden = !playing || !state.hostToken;
       endBtn.classList.toggle("is-ready", !!ready);
       endBtn.textContent = ready ? "End game · Podium" : "End game";
     }
@@ -1545,8 +1641,17 @@
     var api = ensureApi();
     state.unsub = api.subscribeRoom(code, function (snap) {
       if (!snap) {
+        var wasHost = state.role === "host";
         // Room closed / gone — return to normal page with Live FAB
         exitLiveToProgram();
+        if (wasHost) {
+          showPanel(true);
+          setMsg(
+            document.getElementById("ege-live-msg"),
+            "Эта комната уже закрыта. Можно создать новую.",
+            false
+          );
+        }
         return;
       }
       var prevPhase = state.lastSnap && state.lastSnap.phase;
@@ -1557,6 +1662,13 @@
       if (state.role === "host") {
         renderLobbyRoster(snap);
         renderHostBoard(snap);
+        if (state.hostRestorePending && snap.phase === "lobby") {
+          state.hostRestorePending = false;
+          showExistingHostRoom(state.roomCode);
+          showPanel(true);
+        } else if (state.hostRestorePending) {
+          state.hostRestorePending = false;
+        }
         if (snap.phase === "playing") {
           showHostFs(true);
           showPanel(false);
@@ -1598,6 +1710,9 @@
       '  <div id="ege-live-host-block">' +
       '    <p class="ege-live-muted">Create a room, copy the link for students, then press Start. You are not on the leaderboard.</p>' +
       '    <button type="button" class="ege-live-btn ege-live-btn--primary ege-live-btn--lg" id="ege-live-create">Create room</button>' +
+      '    <p class="ege-live-label">Уже открытая комната</p>' +
+      '    <input id="ege-live-rejoin-code" class="ege-live-input" maxlength="180" placeholder="Код или ссылка учеников" autocomplete="off" />' +
+      '    <button type="button" class="ege-live-btn ege-live-btn--lg" id="ege-live-rejoin">Вернуться к результатам</button>' +
       '    <button type="button" class="ege-live-btn ege-live-btn--primary ege-live-btn--lg" id="ege-live-start" hidden>Start</button>' +
       '    <p class="ege-live-code-row" id="ege-live-code-row" hidden>Code: <span id="ege-live-code" class="ege-live-code">—</span></p>' +
       '    <div id="ege-live-link-label" hidden>' +
@@ -1646,7 +1761,7 @@
       '      <div class="ege-live-host-fs-actions">' +
       '        <button type="button" class="ege-live-btn ege-live-btn--warn" id="ege-live-end" hidden>End game</button>' +
       '        <button type="button" class="ege-live-btn" id="ege-live-fs-copy">Link</button>' +
-      '        <button type="button" class="ege-live-btn" id="ege-live-fs-close">Minimise</button>' +
+      '        <button type="button" class="ege-live-btn" id="ege-live-fs-close" title="Комната не закроется. Вернуться — кнопка Live">Свернуть</button>' +
       "      </div>" +
       "    </header>" +
       '    <div id="ege-live-all-done" class="ege-live-all-done" hidden>' +
@@ -1789,14 +1904,16 @@
     }
 
     document.getElementById("ege-live-fab").addEventListener("click", function () {
-      // Active host session → reopen board; otherwise open create/join panel
-      if (
-        state.role === "host" &&
-        state.roomCode &&
-        state.lastSnap &&
-        (state.lastSnap.phase === "playing" || state.lastSnap.phase === "leaderboard")
-      ) {
-        showHostFs(true);
+      // Same room stays open after Minimise, refresh, or a closed tab.
+      if (state.role === "host" && state.roomCode) {
+        var phase = state.lastSnap && state.lastSnap.phase;
+        if (phase === "playing" || phase === "leaderboard") {
+          showHostFs(true);
+          return;
+        }
+        showExistingHostRoom(state.roomCode);
+        showPanel(true);
+        if (!state.unsub) subscribe(state.roomCode);
         return;
       }
       var panel = document.getElementById("ege-live-panel");
@@ -1806,6 +1923,14 @@
       showPanel(false);
     });
     document.getElementById("ege-live-create").addEventListener("click", onCreate);
+    var rejoinBtn = document.getElementById("ege-live-rejoin");
+    if (rejoinBtn) rejoinBtn.addEventListener("click", onRejoinByCode);
+    var rejoinInp = document.getElementById("ege-live-rejoin-code");
+    if (rejoinInp) {
+      rejoinInp.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") onRejoinByCode();
+      });
+    }
     document.getElementById("ege-live-start").addEventListener("click", onStart);
     document.getElementById("ege-live-copy").addEventListener("click", onCopy);
     document.getElementById("ege-live-join").addEventListener("click", onJoin);
@@ -1846,6 +1971,13 @@
     var podClose = document.getElementById("ege-live-podium-close-host");
     if (podClose) {
       podClose.addEventListener("click", function () {
+        var ok = true;
+        try {
+          ok = window.confirm(
+            "Закрыть комнату? Дети выйдут, и результаты этой комнаты пропадут."
+          );
+        } catch (eC) {}
+        if (!ok) return;
         onCloseRoomAndExit();
       });
     }
@@ -1871,8 +2003,54 @@
       .catch(function () {});
   }
 
+  function roomCodeFromText(raw) {
+    var text = String(raw || "").trim();
+    var fromUrl = text.match(/[?&]room=([A-Za-z0-9]+)/i);
+    var code = fromUrl ? fromUrl[1] : text;
+    return String(code)
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 12);
+  }
+
+  function onRejoinByCode() {
+    var msg = document.getElementById("ege-live-msg");
+    var inp = document.getElementById("ege-live-rejoin-code");
+    var code = roomCodeFromText(inp && inp.value);
+    if (!code) {
+      setMsg(msg, "Вставьте код комнаты или ссылку, которую отправляли детям.", false);
+      return;
+    }
+    var prevCode = state.roomCode;
+    state.roomCode = code;
+    if (prevCode !== code) state.hostToken = "";
+    state.role = "host";
+    state.playerId = "";
+    state.hostRestorePending = true;
+    showExistingHostRoom(code);
+    setMsg(msg, "Ищу комнату " + code + "…", null);
+    subscribe(code);
+  }
+
   function onCreate() {
     var msg = document.getElementById("ege-live-msg");
+    if (state.roomCode && state.hostToken) {
+      var goNew = true;
+      try {
+        goNew = window.confirm(
+          "Комната " +
+            state.roomCode +
+            " ещё открыта, дети в ней. Создать другую? Старые ответы с этой страницы уже не открыть."
+        );
+      } catch (eN) {}
+      if (!goNew) {
+        showExistingHostRoom(state.roomCode);
+        showPanel(true);
+        var phase = state.lastSnap && state.lastSnap.phase;
+        if (phase === "playing" || phase === "leaderboard") showHostFs(true);
+        return;
+      }
+    }
     setMsg(msg, "Создаём…", null);
     try {
       ensureApi();
@@ -1898,12 +2076,7 @@
         state.hostToken = res.hostToken;
         state.role = "host";
         state.playerId = "";
-        try {
-          sessionStorage.setItem(SS_ROOM, state.roomCode);
-          sessionStorage.setItem(SS_HOST, state.hostToken);
-          sessionStorage.setItem(SS_ROLE, "host");
-          sessionStorage.removeItem(SS_PLAYER);
-        } catch (e2) {}
+        persistHostSession();
 
         document.getElementById("ege-live-code").textContent = state.roomCode;
         document.getElementById("ege-live-code-row").hidden = false;
@@ -1928,7 +2101,13 @@
   function onStart() {
     var msg = document.getElementById("ege-live-msg");
     if (!state.roomCode || !state.hostToken) {
-      setMsg(msg, "Сначала создайте комнату", false);
+      setMsg(
+        msg,
+        state.roomCode
+          ? "Эту комнату можно смотреть. Start есть только в окне, где она была создана."
+          : "Сначала создайте комнату",
+        false
+      );
       return;
     }
     ensureApi()
@@ -2075,6 +2254,27 @@
     } catch (e) {}
   }
 
+  function restoreHostIfAny() {
+    var saved = readHostSession();
+    if (!saved || !saved.roomCode || !saved.hostToken) return false;
+    state.roomCode = String(saved.roomCode)
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "");
+    state.hostToken = saved.hostToken;
+    state.role = "host";
+    state.playerId = "";
+    state.hostRestorePending = true;
+    persistHostSession();
+    showExistingHostRoom(state.roomCode);
+    setMsg(
+      document.getElementById("ege-live-msg"),
+      "Комната " + state.roomCode + " ещё открыта. Подключаюсь к ответам детей…",
+      null
+    );
+    subscribe(state.roomCode);
+    return true;
+  }
+
   function mount(opts) {
     opts = opts || {};
     state.opts = opts;
@@ -2123,12 +2323,12 @@
         onJoin();
       }
     } else {
-      // Teacher page: clear any leftover Live overlays, keep FAB always
+      // Teacher page: clear leftover overlays, then reopen this exercise's room if it is still live
       clearLiveOverlayClasses();
       resetHostPanelUi();
       showLiveFab();
       showPanel(false);
-      if (qs().get("live_host") === "1") showPanel(true);
+      if (!restoreHostIfAny() && qs().get("live_host") === "1") showPanel(true);
     }
     applyUnitLocks();
   }

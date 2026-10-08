@@ -252,6 +252,50 @@
   }
   rebuildSelects();
 
+  function optionLine(letter) {
+    var i;
+    for (i = 0; i < OPTIONS.length; i++) {
+      if (OPTIONS[i].letter === letter) return letter + ") " + OPTIONS[i].text;
+    }
+    return letter || "—";
+  }
+
+  function buildLiveItems() {
+    var vals = getValues();
+    var items = [];
+    var okc = 0;
+    var filled = 0;
+    var j;
+    for (j = 0; j < 5; j++) {
+      var ans = vals[j] || "";
+      var keyLetter = ANSWER_KEY[j];
+      var isFilled = !!ans;
+      var isOk = isFilled && ans === keyLetter;
+      if (isFilled) filled += 1;
+      if (isOk) okc += 1;
+      items.push({
+        id: String(j + 1),
+        label: "Speaker " + (j + 1),
+        prompt: "Speaker " + (j + 1),
+        answer: ans,
+        expected: keyLetter,
+        answerText: isFilled ? optionLine(ans) : "—",
+        expectedText: optionLine(keyLetter),
+        correct: isOk,
+        filled: isFilled
+      });
+    }
+    return {
+      items: items,
+      filled: filled,
+      correct: okc,
+      total: 5,
+      score: Math.round((okc / 5) * 100)
+    };
+  }
+
+  window.__FCE_LIVE_BUILD_ITEMS__ = buildLiveItems;
+
   document.getElementById("btnCheck").addEventListener("click", function () {
     var vals = getValues();
     var okc = 0;
@@ -293,8 +337,14 @@
   });
 })();
   </script>
+<script src="../../js/live-game-api.js" vite-ignore></script>
+<script src="../../js/live-game-api-http.js?v=17" vite-ignore></script>
+<script src="../../ege/js/ege-live-config.js?v=8" vite-ignore></script>
+<script src="../../ege/js/ege-player-name.js" vite-ignore></script>
+<script src="../../ege/js/ege-live-room-bar.js?v=23" vite-ignore></script>
+<script src="../../js/fce-live-boot.js?v=5" vite-ignore></script>
 <script src="../../js/mastering-b2-daily-activity.js"></script>
-<script src="../../js/mastering-b2-exercise-auto.js"></script>
+<script src="../../js/mastering-b2-exercise-auto.js?v=3"></script>
 <script src="../../js/unit6-sb61-listening-lexis.js"></script>
 <script src="../../js/fce-cool-phrases-drawer.js"></script>
 <script src="../../js/unit6-sb61-phrases-drawer.js"></script>

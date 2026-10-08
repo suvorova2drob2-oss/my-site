@@ -8,7 +8,7 @@
 (function (w) {
   "use strict";
 
-  var TAG = "/js/fce-live-boot.js?v=4";
+  var TAG = "/js/fce-live-boot.js?v=5";
   var liveDraftTimer = null;
 
   function pathName() {
@@ -225,16 +225,33 @@
           id = m ? m[1] : String(items.length + 1);
         }
         var prompt = label || sel.getAttribute("aria-label") || "Gap " + id;
+        var markedOk =
+          sel.classList.contains("is-ok") ||
+          sel.classList.contains("correct") ||
+          sel.classList.contains("is-correct");
+        var markedBad =
+          sel.classList.contains("is-bad") ||
+          sel.classList.contains("wrong") ||
+          sel.classList.contains("is-wrong");
+        var expected = "";
+        if (markedOk && val) expected = val;
+        else if (markedBad && row) {
+          var keyEl = row.querySelector(".gap-key, .mb2-key-hint");
+          var keyRaw = keyEl ? String(keyEl.textContent || "") : "";
+          var km = keyRaw.match(/[A-H]/i);
+          if (km) expected = km[0].toUpperCase();
+        }
         var answerText = val ? val + ") " + trimText(optionTextForLetter(val), 500) : "—";
+        var expectedText = expected ? expected + ") " + trimText(optionTextForLetter(expected), 500) : "";
         items.push({
           id: String(id),
           label: label || "Q " + id,
           prompt: prompt,
           answer: val,
-          expected: "",
+          expected: expected,
           answerText: answerText,
-          expectedText: "",
-          correct: sel.classList.contains("is-ok"),
+          expectedText: expectedText,
+          correct: markedOk,
           filled: !!val
         });
       });
@@ -425,7 +442,7 @@
         return loadScript(asset("ege/js/ege-player-name.js"));
       })
       .then(function () {
-        return loadScript(asset("ege/js/ege-live-room-bar.js?v=21"));
+        return loadScript(asset("ege/js/ege-live-room-bar.js?v=23"));
       })
       .then(mount)
       .catch(function (err) {
