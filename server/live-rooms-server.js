@@ -687,6 +687,15 @@ function handleOp(op, body) {
       if (base != null && Number(base) < Number(room.stateVersion || 0)) {
         throw new Error("conflict: stale UNO state");
       }
+      // Memory board (classic / ice): every player's device writes the whole board. A device
+      // a beat behind must not overwrite a newer board (a pair just scored would vanish).
+      const prevSt = room.state;
+      if (prevSt && state.type && prevSt.type === state.type &&
+          (state.type === "classic-memory" || state.type === "ice-memory") &&
+          String(prevSt.seed || "") === String(state.seed || "") &&
+          Number(state.rev || 0) < Number(prevSt.rev || 0)) {
+        return touchUno(room);
+      }
       room.state = state;
       room.stateVersion = Math.max(
         Number(room.stateVersion || 0) + 1,
