@@ -19,7 +19,8 @@
  *   GET  /store/student/me?day=YYYY-MM-DD               → profile, course, published homework, progress; marks the day active
  *   POST /store/student/progress {assignmentId, itemId, done}
  *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games
- *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, dictTotal, due, weak, pct} }
+ *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, dictTotal, due, weak, pct, points} }
+ *        points = { words, audio, homework, lesson, total } — 1 point each, lesson = teacher's class points
  *   GET  /store/dict?groupId=                           (teacher) → word sets sent to students' dictionaries
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
@@ -133,6 +134,108 @@ function checkPassword(password, stored) {
   if (parts.length !== 3 || parts[0] !== "scrypt") return false;
   const hash = crypto.scryptSync(String(password), parts[1], 64).toString("hex");
   return safeEqual(hash, parts[2]);
+}
+
+/* ---------- student passwords ----------
+   The teacher must be able to read a student's password (to remind a child who
+   forgot it), but the server must not keep it as plain text. On disk each student
+   keeps passHash (scrypt, used for login) + passEnc (AES-256-GCM, server key).
+   Only the logged-in teacher's snapshot gets the decrypted password back. */
+
+let PASS_KEY = null;
+
+function initPassKey(dir, configured) {
+  if (configured && String(configured).length >= 16) {
+    PASS_KEY = crypto.createHash("sha256").update(String(configured)).digest();
+    return;
+  }
+  const file = path.join(dir, "student-pass.key");
+  let hex = "";
+  try { hex = fs.readFileSync(file, "utf8").trim(); } catch (e) {}
+  if (!/^[a-f0-9]{64}$/.test(hex)) {
+    hex = crypto.randomBytes(32).toString("hex");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(file, hex, { mode: 0o600 });
+  }
+  PASS_KEY = Buffer.from(hex, "hex");
+}
+
+function encryptPass(plain) {
+  const iv = crypto.randomBytes(12);
+  const c = crypto.createCipheriv("aes-256-gcm", PASS_KEY, iv);
+  const ct = Buffer.concat([c.update(String(plain), "utf8"), c.final()]);
+  return "gcm$" + iv.toString("base64") + "$" + c.getAuthTag().toString("base64") + "$" + ct.toString("base64");
+}
+
+function decryptPass(sealed) {
+  const parts = String(sealed || "").split("$");
+  if (parts.length !== 4 || parts[0] !== "gcm" || !PASS_KEY) return null;
+  try {
+    const d = crypto.createDecipheriv("aes-256-gcm", PASS_KEY, Buffer.from(parts[1], "base64"));
+    d.setAuthTag(Buffer.from(parts[2], "base64"));
+    return Buffer.concat([d.update(Buffer.from(parts[3], "base64")), d.final()]).toString("utf8");
+  } catch (e) {
+    return null;
+  }
+}
+
+function groupStudents(groups, fn) {
+  if (!Array.isArray(groups)) return;
+  groups.forEach(function (g) {
+    ((g && Array.isArray(g.students)) ? g.students : []).forEach(function (st) {
+      if (st && typeof st === "object") fn(st);
+    });
+  });
+}
+
+/** Plain student passwords → passHash + passEnc (reuses the old seal when unchanged). */
+function sealGroups(groups, oldGroups) {
+  if (!Array.isArray(groups) || !PASS_KEY) return groups;
+  const old = {};
+  groupStudents(oldGroups, function (st) { if (st.id) old[st.id] = st; });
+  groupStudents(groups, function (st) {
+    const prev = st.id ? old[st.id] : null;
+    if (typeof st.password === "string" && st.password) {
+      const plain = st.password;
+      if (prev && prev.passEnc && prev.passHash && decryptPass(prev.passEnc) === plain) {
+        st.passHash = prev.passHash;
+        st.passEnc = prev.passEnc;
+      } else {
+        st.passHash = hashPassword(plain);
+        st.passEnc = encryptPass(plain);
+      }
+    } else if (st.password === "") {
+      delete st.passHash;
+      delete st.passEnc;
+    } else if (prev && prev.passEnc && !st.passEnc) {
+      /* an older client that never saw the password must not wipe it */
+      st.passHash = prev.passHash;
+      st.passEnc = prev.passEnc;
+    }
+    delete st.password;
+  });
+  return groups;
+}
+
+/** For the teacher's own snapshot: give the readable password back, hide the seals. */
+function openGroups(groups) {
+  groupStudents(groups, function (st) {
+    if (st.passEnc) {
+      const plain = decryptPass(st.passEnc);
+      if (plain != null) st.password = plain;
+    }
+    delete st.passHash;
+    delete st.passEnc;
+  });
+  return groups;
+}
+
+function studentPasswordOk(student, password) {
+  const given = String(password || "");
+  if (!student || !given) return false;
+  if (student.passHash) return checkPassword(given, student.passHash);
+  const legacy = String(student.password || "");
+  return !!legacy && safeEqual(given, legacy);
 }
 
 function normLogin(login) {
@@ -300,7 +403,10 @@ function createUserStore(userDir) {
     const parts = [];
     names.forEach(function (k) {
       if (revs[k] != null) shownRevs[k] = revs[k];
-      const raw = readKeyRaw(k);
+      let raw = readKeyRaw(k);
+      if (raw != null && k === GROUPS_KEY) {
+        try { raw = JSON.stringify(openGroups(JSON.parse(raw))); } catch (e) {}
+      }
       if (raw != null) parts.push(JSON.stringify(k) + ":" + raw);
     });
     return '{"ok":true,"rev":' + Number(st.rev) +
@@ -327,6 +433,11 @@ function createUserStore(userDir) {
     let touched = false;
     names.forEach(function (k) {
       const oldRaw = readKeyRaw(k);
+      if (k === GROUPS_KEY) {
+        let oldVal = null;
+        try { oldVal = oldRaw != null ? JSON.parse(oldRaw) : null; } catch (e) {}
+        data[k] = sealGroups(data[k], oldVal);
+      }
       const raw = JSON.stringify(data[k]);
       if (oldRaw === raw) return;
       backupKey(k, oldRaw, (st.keys[k] && st.keys[k].rev) || 0);
@@ -356,8 +467,34 @@ function parseCookies(req) {
   return out;
 }
 
+/** Seal plain student passwords left in users/<id>/keys and backups (runs on start, idempotent). */
+function migrateStudentPasswords(dir) {
+  const usersRoot = path.join(dir, "users");
+  let ids = [];
+  try { ids = fs.readdirSync(usersRoot); } catch (e) { return; }
+  ids.forEach(function (id) {
+    const files = [path.join(usersRoot, id, "keys", GROUPS_KEY + ".json")];
+    const bdir = path.join(usersRoot, id, "backups", GROUPS_KEY);
+    try {
+      fs.readdirSync(bdir).forEach(function (f) { if (/\.json$/.test(f)) files.push(path.join(bdir, f)); });
+    } catch (e) {}
+    files.forEach(function (file) {
+      let raw = null;
+      try { raw = fs.readFileSync(file, "utf8"); } catch (e) { return; }
+      if (raw.indexOf('"password"') < 0) return;
+      try {
+        writeAtomic(file, JSON.stringify(sealGroups(JSON.parse(raw), null)));
+      } catch (e) {
+        console.error("[teacher-store] password migration", file, e.message);
+      }
+    });
+  });
+}
+
 function createTeacherStoreRouter(options) {
   const dir = path.resolve(options.dir);
+  initPassKey(dir, options.key);
+  migrateStudentPasswords(dir);
   const usersDir = path.join(dir, "users");
   const mediaDir = path.join(dir, "media");
   const mediaOwnersFile = path.join(dir, "media-owners.json");
@@ -848,6 +985,56 @@ function createTeacherStoreRouter(options) {
     return { series: series, correct: c, wrong: w, pct: c + w ? Math.round((c / (c + w)) * 100) : null };
   }
 
+  /**
+   * Progress points (1 each, summed, kept because they come from saved progress):
+   * a learned word, a listened audio (shadowing/drill day with a counted run),
+   * a done homework item, plus the points the teacher gave in class.
+   */
+  function studentPoints(progress, student, wordsKnown) {
+    let audio = 0;
+    const shadow = (progress && progress.shadow) || {};
+    Object.keys(shadow).forEach(function (task) {
+      const days = shadow[task] || {};
+      Object.keys(days).forEach(function (d) {
+        if (days[d] && Number(days[d].runs || 0) > 0) audio += 1;
+      });
+    });
+    let homework = 0;
+    const hw = (progress && progress.hwDone) || {};
+    Object.keys(hw).forEach(function (a) {
+      const row = hw[a] || {};
+      Object.keys(row).forEach(function (it) { if (row[it]) homework += 1; });
+    });
+    const words = Number(wordsKnown || 0);
+    const lesson = Math.max(0, Number((student && student.lessonPoints) || 0));
+    return { words: words, audio: audio, homework: homework, lesson: lesson, total: words + audio + homework + lesson };
+  }
+
+  /** Days the student actually did something (answers, a counted audio run, a homework tick) —
+      opening the cabinet alone also lands in progress.days, which made "This week" 10% for nothing. */
+  function workDays(progress) {
+    const set = {};
+    const acc = (progress && progress.acc) || {};
+    Object.keys(acc).forEach(function (d) {
+      const row = acc[d];
+      if (Array.isArray(row) && (Number(row[0]) || Number(row[1]))) set[d] = 1;
+    });
+    const shadow = (progress && progress.shadow) || {};
+    Object.keys(shadow).forEach(function (task) {
+      const days = shadow[task] || {};
+      Object.keys(days).forEach(function (d) { if (days[d] && Number(days[d].runs || 0) > 0) set[d] = 1; });
+    });
+    const hw = (progress && progress.hwDone) || {};
+    Object.keys(hw).forEach(function (a) {
+      const row = hw[a] || {};
+      Object.keys(row).forEach(function (it) {
+        const t = Number(row[it]);
+        if (t > 1e12) set[new Date(t).toISOString().slice(0, 10)] = 1;
+      });
+    });
+    return Object.keys(set).sort().slice(-400);
+  }
+
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -879,6 +1066,7 @@ function createTeacherStoreRouter(options) {
     const index = dictIndex(sets);
     const vocab = progress.vocab || {};
     const now = Date.now();
+    const vStats = vocabStats(progress, studentLevel(found, course), index);
     const dictionary = sets
       .slice()
       .sort(function (a, b) { return (b.sentAt || 0) - (a.sentAt || 0); })
@@ -913,8 +1101,9 @@ function createTeacherStoreRouter(options) {
       group: { id: g.id, name: g.name || "", kind: g.kind === "individual" ? "individual" : "group" },
       course: course ? { id: course.id, name: course.name || "" } : null,
       homework: homework,
-      progress: { days: progress.days, hwDone: progress.hwDone },
-      vocab: vocabStats(progress, studentLevel(found, course), index),
+      progress: { days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress) },
+      vocab: vStats,
+      points: studentPoints(progress, s, vStats.known),
       dictionary: dictionary,
       shadowing: shadowForPayload(tid, g.id, s.id, progress, day || studentDay("")),
       accuracy: acc.series,
@@ -931,8 +1120,7 @@ function createTeacherStoreRouter(options) {
       return;
     }
     const found = findStudentByLogin(login);
-    const pass = found ? String(found.student.password || "") : "";
-    if (!found || !pass || found.student.status === "archived" || !safeEqual(String(body.password || ""), pass)) {
+    if (!found || found.student.status === "archived" || !studentPasswordOk(found.student, body.password)) {
       keys.forEach(noteFail);
       res.status(401).json({ ok: false, error: "Неверный логин или пароль" });
       return;
@@ -1467,7 +1655,8 @@ function createTeacherStoreRouter(options) {
           dictTotal: v.total,
           due: v.due,
           weak: v.weak,
-          pct: acc.pct
+          pct: acc.pct,
+          points: studentPoints(p, s, v.known)
         };
       }
       return false;
