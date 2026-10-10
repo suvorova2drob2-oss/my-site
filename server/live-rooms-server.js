@@ -653,7 +653,7 @@ function handleOp(op, body) {
       if (found >= 0) {
         room.players[found] = row;
       } else {
-        if (room.players.length >= 6) throw new Error("Room is full");
+        if (room.players.length >= 9) throw new Error("Room is full");
         room.players.push(row);
       }
       if (body && body.gameId) room.gameId = String(body.gameId).slice(0, 40);

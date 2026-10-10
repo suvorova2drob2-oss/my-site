@@ -20,7 +20,8 @@
  *   POST /store/student/progress {assignmentId, itemId, done}
  *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games
  *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, dictTotal, due, weak, pct, points} }
- *        points = { words, audio, homework, lesson, total } — 1 point each, lesson = teacher's class points
+ *        points = { words, answers, audio, homework, lesson, total } — 1 point each (answers = correct
+ *        answers in games / trainings), lesson = teacher's class points
  *   GET  /store/dict?groupId=                           (teacher) → word sets sent to students' dictionaries
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
@@ -990,6 +991,17 @@ function createTeacherStoreRouter(options) {
    * a learned word, a listened audio (shadowing/drill day with a counted run),
    * a done homework item, plus the points the teacher gave in class.
    */
+  /** Correct answers ever (progress.correctTotal; old progress → what is still in acc). */
+  function correctAnswersTotal(progress) {
+    if (progress && progress.correctTotal != null) return Math.max(0, Number(progress.correctTotal) || 0);
+    let n = 0;
+    const acc = (progress && progress.acc) || {};
+    Object.keys(acc).forEach(function (d) {
+      if (Array.isArray(acc[d])) n += Number(acc[d][0]) || 0;
+    });
+    return n;
+  }
+
   function studentPoints(progress, student, wordsKnown) {
     let audio = 0;
     const shadow = (progress && progress.shadow) || {};
@@ -1006,8 +1018,12 @@ function createTeacherStoreRouter(options) {
       Object.keys(row).forEach(function (it) { if (row[it]) homework += 1; });
     });
     const words = Number(wordsKnown || 0);
+    const answers = correctAnswersTotal(progress);
     const lesson = Math.max(0, Number((student && student.lessonPoints) || 0));
-    return { words: words, audio: audio, homework: homework, lesson: lesson, total: words + audio + homework + lesson };
+    return {
+      words: words, answers: answers, audio: audio, homework: homework, lesson: lesson,
+      total: words + answers + audio + homework + lesson
+    };
   }
 
   /** Days the student actually did something (answers, a counted audio run, a homework tick) —
@@ -1205,6 +1221,7 @@ function createTeacherStoreRouter(options) {
     trimVocab(p.vocab);
 
     if (!p.acc || typeof p.acc !== "object") p.acc = {};
+    if (correct) p.correctTotal = correctAnswersTotal(p) + correct;
     if (correct || wrong) {
       const row = Array.isArray(p.acc[day]) ? p.acc[day] : [0, 0];
       p.acc[day] = [row[0] + correct, row[1] + wrong];
