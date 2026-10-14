@@ -1051,6 +1051,42 @@ function createTeacherStoreRouter(options) {
     return Object.keys(set).sort().slice(-400);
   }
 
+  /* Class в курсе учителя: игры, которые он выдал классу (course.classGames, пишет курс).
+     Пак едет вместе с игрой — у ученика своего доступа к пакам учителя нет. */
+  const CLASS_GAMES_MAX = 12;
+  const CLASS_PACKS_BUDGET = 1500000;
+
+  function classGamesForPayload(course) {
+    const list = course && Array.isArray(course.classGames) ? course.classGames : [];
+    let budget = CLASS_PACKS_BUDGET;
+    return list.slice(0, CLASS_GAMES_MAX).filter(function (g) {
+      return g && typeof g === "object" && typeof g.href === "string" && g.href;
+    }).map(function (g) {
+      const href = String(g.href).slice(0, 4000);
+      let pack = null;
+      if (g.pack && typeof g.pack === "object" && g.pack.pack && typeof g.pack.pack === "object") {
+        const size = JSON.stringify(g.pack).length;
+        if (size <= budget) {
+          budget -= size;
+          pack = { kind: g.pack.kind === "text" ? "text" : "custom", pack: g.pack.pack };
+        }
+      }
+      return {
+        id: String(g.id || "").slice(0, 200),
+        kind: String(g.kind || "").slice(0, 20),
+        title: String(g.title || "Game").slice(0, 80),
+        icon: String(g.icon || "🎮").slice(0, 8),
+        hint: String(g.hint || "").slice(0, 160),
+        unitTitle: String(g.unitTitle || "").slice(0, 120),
+        partTitle: String(g.partTitle || "").slice(0, 120),
+        /* only links into this site's games: never an outside address */
+        href: /^(\/games\/|\.\.\/)/.test(href) ? href : "",
+        pack: pack,
+        assignedAt: Number(g.assignedAt || 0)
+      };
+    }).filter(function (g) { return g.href; });
+  }
+
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -1116,6 +1152,7 @@ function createTeacherStoreRouter(options) {
       teacher: { name: found.teacher.name || "" },
       group: { id: g.id, name: g.name || "", kind: g.kind === "individual" ? "individual" : "group" },
       course: course ? { id: course.id, name: course.name || "" } : null,
+      classGames: classGamesForPayload(course),
       homework: homework,
       progress: { days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress) },
       vocab: vStats,
