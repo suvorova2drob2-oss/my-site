@@ -1087,6 +1087,62 @@ function createTeacherStoreRouter(options) {
     }).filter(function (g) { return g.href; });
   }
 
+  /* Паки учителя для игр из домашки. Ученик на своём устройстве видит только публичную копию
+     (паки админа), поэтому пак едет вместе с домашкой — как у игр из Class. */
+  const HW_PACKS_BUDGET = 1500000;
+
+  function cleanPackForStudent(v) {
+    if (typeof v === "string") {
+      if (/^med_[A-Za-z0-9_-]+$/.test(v)) return "/store/media/" + encodeURIComponent(v);
+      if (v.indexOf("data:") === 0 && v.length > 4000) return "";
+      return v;
+    }
+    if (Array.isArray(v)) return v.map(cleanPackForStudent);
+    if (v && typeof v === "object") {
+      const o = {};
+      Object.keys(v).forEach(function (k) { o[k] = cleanPackForStudent(v[k]); });
+      return o;
+    }
+    return v;
+  }
+
+  function homeworkPacksForPayload(teacherId, homework) {
+    const custom = readTeacherKey(teacherId, "teacher_hub_packs_v1");
+    const text = readTeacherKey(teacherId, "teacher_hub_text_packs_v1");
+    const byId = {};
+    (Array.isArray(custom) ? custom : []).forEach(function (p) {
+      if (p && p.id && !byId[p.id]) byId[p.id] = { kind: "custom", pack: p };
+    });
+    (Array.isArray(text) ? text : []).forEach(function (p) {
+      if (!p || !p.id) return;
+      if (!byId[p.id]) byId[p.id] = { kind: "text", pack: p };
+      const bare = String(p.id).replace(/^text_/, "");
+      if (!byId[bare]) byId[bare] = { kind: "text", pack: p };
+    });
+    const out = [];
+    const seen = {};
+    let budget = HW_PACKS_BUDGET;
+    /* сначала ближайшая домашка: если паков слишком много, важнее текущая */
+    homework.slice().sort(function (a, b) { return b.dueDate.localeCompare(a.dueDate); }).forEach(function (a) {
+      a.items.forEach(function (it) {
+        const q = String(it.href || "").split("?")[1] || "";
+        q.split("#")[0].split("&").forEach(function (pair) {
+          let val = "";
+          try { val = decodeURIComponent(String(pair.split("=")[1] || "").replace(/\+/g, " ")); } catch (e) { return; }
+          const hit = val && byId[val];
+          if (!hit || seen[hit.pack.id]) return;
+          seen[hit.pack.id] = 1;
+          const entry = { kind: hit.kind, pack: cleanPackForStudent(hit.pack) };
+          const size = JSON.stringify(entry).length;
+          if (size > budget) return;
+          budget -= size;
+          out.push(entry);
+        });
+      });
+    });
+    return out;
+  }
+
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -1154,6 +1210,7 @@ function createTeacherStoreRouter(options) {
       course: course ? { id: course.id, name: course.name || "" } : null,
       classGames: classGamesForPayload(course),
       homework: homework,
+      homeworkPacks: homeworkPacksForPayload(tid, homework),
       progress: { days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress) },
       vocab: vStats,
       points: studentPoints(progress, s, vStats.known),
