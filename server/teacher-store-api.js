@@ -65,10 +65,12 @@ const SYNC_KEYS = [
   "teacher_hub_audio_v1",
   "teacher_hub_groups_v1",
   "teacher_hub_schedule_v1",
-  "teacher_hub_hw_assignments_v1"
+  "teacher_hub_hw_assignments_v1",
+  "teacher_hub_workday_v1"
 ];
-// Student names, timetable and homework drafts: only their teacher gets them, never the public copy.
-const PRIVATE_KEYS = ["teacher_hub_groups_v1", "teacher_hub_schedule_v1", "teacher_hub_hw_assignments_v1"];
+// Student names, timetable, homework drafts and the teacher's workday (checklist, assistant tasks, content plan):
+// only their teacher gets them, never the public copy.
+const PRIVATE_KEYS = ["teacher_hub_groups_v1", "teacher_hub_schedule_v1", "teacher_hub_hw_assignments_v1", "teacher_hub_workday_v1"];
 const BACKUPS_PER_KEY = 40;
 const MIN_PASSWORD = 8;
 const LOGIN_RE = /^[a-z0-9._-]{3,32}$/;
