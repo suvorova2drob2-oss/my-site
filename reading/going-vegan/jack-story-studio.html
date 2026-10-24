@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jack · Story · Going vegan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/mastering-b2-back-link.css" />
+  <style>
+    :root {
+      --bg0: #060b16;
+      --bg1: #0c1528;
+      --panel: rgba(14, 24, 44, 0.82);
+      --line: rgba(120, 160, 220, 0.22);
+      --gold: #ffd166;
+      --gold-dim: rgba(255, 209, 102, 0.12);
+      --gold-soft: rgba(255, 209, 102, 0.14);
+      --cyan: #5ec8f0;
+      --text: #e8f0ff;
+      --muted: #9bb0d3;
+      --ok: #4ade80;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Manrope, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 120% 80% at 10% -20%, rgba(94, 200, 240, 0.1), transparent 50%),
+        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(255, 209, 102, 0.07), transparent 45%),
+        linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 100%);
+    }
+    .wrap {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: clamp(14px, 3vw, 24px) clamp(12px, 3vw, 22px) 40px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin: 0 0 6px;
+    }
+    h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.25rem, 3.2vw, 1.7rem);
+      margin: 0;
+    }
+    .lead { margin: 6px 0 0; font-size: 0.88rem; color: var(--muted); max-width: 40rem; line-height: 1.5; }
+
+    .view-switch {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 320px;
+      margin: 0 0 18px;
+    }
+    @media (min-width: 560px) {
+      .view-switch { flex-direction: row; max-width: none; flex-wrap: wrap; }
+    }
+    .view-tab {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.55);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      padding: 12px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .view-tab:hover { border-color: rgba(94, 200, 240, 0.4); }
+    .view-tab.is-on {
+      border-color: rgba(94, 200, 240, 0.55);
+      background: rgba(94, 200, 240, 0.18);
+      color: #fff;
+    }
+    body.view-chain { padding-bottom: 0; }
+    body.dock-open { overflow: hidden; }
+
+    .chain-rail-wrap {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(4, 10, 22, 0.65);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+    }
+    .chain-rail {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: max-content;
+      padding-bottom: 8px;
+    }
+    .chain-pill {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.85);
+      color: #c5d4ef;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: clamp(0.68rem, 2.2vw, 0.8rem);
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .chain-pill:hover { border-color: rgba(94, 200, 240, 0.45); }
+    .chain-pill.is-on {
+      border-color: rgba(255, 209, 102, 0.65);
+      color: var(--gold);
+      background: var(--gold-soft);
+      box-shadow: 0 0 24px rgba(255, 209, 102, 0.2);
+    }
+    .chain-pill.is-filled { border-color: rgba(74, 222, 128, 0.35); }
+    .chain-arrow {
+      color: rgba(148, 168, 201, 0.45);
+      font-family: "JetBrains Mono", monospace;
+      padding: 0 6px;
+      user-select: none;
+    }
+    .slots-line {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .story-chain {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .story-row {
+      width: 100%;
+      text-align: left;
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(8, 16, 32, 0.55);
+      padding: 14px 16px;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      transition: border-color 0.2s;
+    }
+    .story-row:hover { border-color: rgba(94, 200, 240, 0.35); }
+    .story-row.is-on {
+      border-color: rgba(255, 209, 102, 0.55);
+      background: linear-gradient(135deg, var(--gold-soft), rgba(8, 16, 32, 0.6));
+    }
+    .story-row-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .story-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--cyan);
+      letter-spacing: 0.06em;
+    }
+    .story-chunk {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+    }
+    .story-line {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #dce8ff;
+    }
+    .story-line mark {
+      background: rgba(255, 209, 102, 0.22);
+      color: var(--gold);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .dock {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(16px, 4vh) 14px;
+      background: rgba(4, 9, 20, 0.82);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
+    }
+    .dock.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .dock-inner {
+      width: min(920px, 100%);
+      max-height: min(86vh, 540px);
+      overflow-y: auto;
+      margin: 0;
+      padding: 14px 16px 16px;
+      border: 1px solid rgba(255, 209, 102, 0.22);
+      border-radius: 18px;
+      background: linear-gradient(165deg, rgba(12, 22, 42, 0.98), rgba(8, 14, 28, 0.99));
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.65);
+    }
+    .dock-title {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.05rem;
+      margin: 0 0 4px;
+    }
+    .dock-meta { font-size: 0.76rem; color: var(--muted); margin: 0 0 10px; line-height: 1.45; }
+    .dock-grid { display: flex; flex-direction: column; gap: 8px; }
+    .dock-row-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+    @media (min-width: 780px) {
+      .dock-row-main {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr) minmax(0, 0.85fr);
+      }
+    }
+    .dock-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(4, 10, 22, 0.65);
+      padding: 8px 10px;
+    }
+    .dock-card--opts .swap-line--plain {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    details.dock-jack {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(4, 10, 22, 0.5);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    details.dock-jack summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--cyan);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      list-style: none;
+    }
+    details.dock-jack summary::-webkit-details-marker { display: none; }
+    details.dock-jack .text-example { margin-top: 6px; font-size: 0.8rem; }
+    details.dock-pattern {
+      border: 1px dashed rgba(255, 209, 102, 0.25);
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+    details.dock-pattern summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--gold);
+      font-size: 0.72rem;
+    }
+    details.dock-pattern .ctx-list li { padding: 4px 0; font-size: 0.8rem; }
+    .dock-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .text-example {
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #b8cce8;
+      margin: 0;
+    }
+    .swap-list { display: flex; flex-direction: column; gap: 10px; }
+    .swap-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+    .swap-key {
+      font-weight: 800;
+      color: var(--cyan);
+      min-width: 3.5rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .swap-from { color: var(--muted); text-decoration: line-through; }
+    .dock .swap-arrow { color: var(--gold); font-weight: 800; }
+    .opt {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.9);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .opt.is-on {
+      border-color: rgba(94, 200, 240, 0.6);
+      background: rgba(94, 200, 240, 0.12);
+    }
+    .ctx-list { list-style: none; margin: 0; padding: 0; }
+    .ctx-list li {
+      font-size: 0.84rem;
+      line-height: 1.5;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(130, 170, 230, 0.12);
+    }
+    .ctx-list li:last-child { border-bottom: 0; }
+    .ctx-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-right: 6px;
+    }
+    .ctx-list mark { background: rgba(255, 209, 102, 0.2); color: var(--gold); }
+    .dock-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .dock-actions .btn { padding: 8px 14px; font-size: 0.8rem; }
+    .dock-card .interactive-line { font-size: 0.84rem; line-height: 1.5; }
+    .variant-list { display: flex; flex-direction: column; gap: 8px; }
+    .opt--line {
+      display: block;
+      width: 100%;
+      text-align: left;
+      line-height: 1.45;
+      padding: 10px 12px;
+    }
+    .swap-line--plain { gap: 8px; }
+    .swap-row--plain .swap-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .swap-opt--line {
+      display: block;
+      width: 100%;
+      text-align: left;
+      line-height: 1.45;
+    }
+    .interactive-line {
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: #dce8ff;
+      margin: 0;
+    }
+    .line-seg {
+      appearance: none;
+      border: none;
+      font: inherit;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(255, 209, 102, 0.2);
+      border-radius: 4px;
+      padding: 0 4px;
+      margin: 0 1px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .line-seg.is-active {
+      background: rgba(255, 209, 102, 0.38);
+      box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.45);
+    }
+    .line-core {
+      color: var(--gold);
+      font-weight: 700;
+      background: rgba(255, 209, 102, 0.15);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .dock-legend {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin: 0 0 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+    }
+    .dock-legend span { white-space: nowrap; }
+    .dock-legend .lg-gold {
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .dock-legend .lg-tap {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .mode-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .mode-tab {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.65);
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .mode-tab.is-on {
+      border-color: rgba(255, 209, 102, 0.55);
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    .schematic {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(4, 10, 22, 0.75);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+    .schematic-flow {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: clamp(0.62rem, 2vw, 0.78rem);
+      line-height: 1.65;
+      color: #b8cce8;
+      white-space: nowrap;
+    }
+    .schematic-flow .n { color: var(--gold); font-weight: 600; }
+    .schematic-flow .n.is-on { text-decoration: underline; text-underline-offset: 3px; }
+    .schematic-flow .arr { color: rgba(155, 176, 211, 0.5); }
+    .schematic-chips {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 6px;
+      white-space: nowrap;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr 1.05fr; }
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      padding: clamp(14px, 2.5vw, 20px);
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Chain — always visible */
+    .chain {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .chain-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(6, 12, 24, 0.45);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .chain-row.is-active {
+      border-color: rgba(255, 209, 102, 0.45);
+      background: var(--gold-dim);
+    }
+    .chain-row.is-done { border-color: rgba(74, 222, 128, 0.25); }
+    .chain-row.is-future { opacity: 0.45; }
+    .chain-row.is-drill { border-color: rgba(94, 200, 240, 0.5); box-shadow: 0 0 0 1px rgba(94, 200, 240, 0.15); }
+    .chain-num {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      padding-top: 2px;
+    }
+    .chain-row.is-active .chain-num { color: var(--gold); }
+    .chain-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    .chain-text {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #dce8ff;
+    }
+    .chain-text mark {
+      background: rgba(255, 209, 102, 0.22);
+      color: var(--gold);
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+    .chain-placeholder {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chunk-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      border: 1px solid rgba(255, 209, 102, 0.35);
+      background: var(--gold-dim);
+      padding: 5px 11px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .frame-mini {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: #c5d4ef;
+      margin: 0 0 14px;
+    }
+
+    .swap-rows { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .swap-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr;
+      gap: 8px 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(4, 10, 22, 0.55);
+    }
+    @media (max-width: 640px) {
+      .swap-row { grid-template-columns: 1fr; }
+      .swap-arrow { display: none; }
+    }
+    .swap-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+    .swap-anchor {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: rgba(155, 176, 211, 0.45);
+    }
+    .swap-arrow { color: var(--gold); font-weight: 800; font-size: 1rem; }
+    .swap-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+    .swap-opt {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.8);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 7px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .swap-opt:hover { border-color: rgba(94, 200, 240, 0.45); }
+    .swap-opt.is-on {
+      border-color: rgba(94, 200, 240, 0.65);
+      background: rgba(94, 200, 240, 0.14);
+    }
+
+    details.jack-example {
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 209, 102, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 209, 102, 0.05);
+      padding: 0 12px;
+    }
+    details.jack-example summary {
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--gold);
+      padding: 10px 0;
+      list-style: none;
+    }
+    details.jack-example summary::-webkit-details-marker { display: none; }
+    .jack-example ol {
+      margin: 0 0 12px;
+      padding-left: 1.2rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: #b8cce8;
+    }
+
+    .expand-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+    }
+    .expand-box h3 {
+      margin: 0 0 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+    }
+    .expand-note { font-size: 0.8rem; color: var(--muted); margin: 0 0 10px; line-height: 1.45; }
+    .expand-lines { list-style: none; margin: 0; padding: 0; }
+    .expand-lines li {
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: 10px;
+      background: rgba(6, 12, 24, 0.6);
+      border: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .expand-lines li.is-drill-on { border-color: rgba(94, 200, 240, 0.55); }
+    .expand-lines mark {
+      background: rgba(255, 209, 102, 0.2);
+      color: var(--gold);
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      appearance: none;
+      border: none;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .btn-gold { background: linear-gradient(135deg, #ffd166, #e6b84d); color: #1a1200; }
+    .btn-ghost {
+      background: rgba(94, 200, 240, 0.1);
+      color: var(--cyan);
+      border: 1px solid rgba(94, 200, 240, 0.35);
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .drill-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .drill-hint { font-size: 0.85rem; color: var(--muted); margin: 0; }
+    .link-pill {
+      display: inline-flex;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--gold);
+      border: 1px solid rgba(255, 209, 102, 0.4);
+      padding: 7px 12px;
+      border-radius: 999px;
+      margin-top: 10px;
+    }
+    [hidden] { display: none !important; }
+
+    .subst-rail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .subst-pill {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(8, 16, 32, 0.65);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .subst-pill.is-on {
+      border-color: rgba(255, 209, 102, 0.55);
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+    .subst-panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(8, 16, 32, 0.55);
+      padding: 16px 18px;
+    }
+    .subst-anchor {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      color: var(--gold);
+      margin: 0 0 6px;
+      line-height: 1.3;
+    }
+    .subst-pattern {
+      font-family: Manrope, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+    .subst-note { margin: 0; font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+    .subst-prompt {
+      margin: 14px 0 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .subst-opts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .subst-opts { grid-template-columns: 1fr 1fr; }
+    }
+    .subst-opt {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(4, 10, 22, 0.75);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .subst-opt:hover { border-color: rgba(94, 200, 240, 0.4); }
+    .subst-opt.is-on {
+      border-color: rgba(94, 200, 240, 0.65);
+      background: rgba(94, 200, 240, 0.1);
+    }
+    .subst-opt-tag {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .subst-opt-text { font-size: 0.86rem; line-height: 1.45; display: block; }
+    .subst-result {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 209, 102, 0.25);
+      background: rgba(255, 209, 102, 0.06);
+    }
+    .subst-result-kicker {
+      margin: 0 0 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+    }
+    .subst-result-line {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #dce8ff;
+    }
+    .subst-result-line mark {
+      background: rgba(255, 209, 102, 0.22);
+      color: var(--gold);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .subst-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <p class="kicker">Part 7 · A · Jack</p>
+        <h1>Jack&apos;s story · 7 blocks</h1>
+        <p class="lead" id="pageLead">Tap a phrase in the chain — editor opens in the centre (same text as Part 7).</p>
+      </div>
+      <a class="back" href="../part1-vegan-matching.html">&larr; Part 7</a>
+    </header>
+
+    <div class="view-switch" role="tablist" aria-label="Story mode">
+      <button type="button" class="view-tab is-on" data-view="chain" role="tab" aria-selected="true">Chain lab</button>
+      <button type="button" class="view-tab" data-view="subst" role="tab" aria-selected="false">Substitution drill</button>
+      <button type="button" class="view-tab" data-view="studio" role="tab" aria-selected="false">Story studio</button>
+    </div>
+
+    <div id="viewChain">
+      <div class="chain-rail-wrap">
+        <div class="chain-rail" id="chainRail"></div>
+        <div class="slots-line" id="slotsLine"></div>
+      </div>
+      <ol class="story-chain" id="storyChain"></ol>
+    </div>
+
+    <div id="viewSubst" hidden>
+      <div id="substDrillRoot" aria-live="polite"></div>
+    </div>
+
+    <div id="viewStudio" hidden>
+    <div class="schematic" id="schematic"></div>
+
+    <div class="mode-tabs">
+      <button type="button" class="mode-tab is-on" data-mode="studio">Build chain</button>
+      <button type="button" class="mode-tab" data-mode="drill">Drill chain</button>
+    </div>
+
+    <div class="studio-grid">
+      <section class="panel" id="workPanel">
+        <div id="studioWork">
+          <span class="chunk-pill" id="buildChunk"></span>
+          <p class="frame-mini" id="buildFrame"></p>
+          <details class="jack-example">
+            <summary>Jack&apos;s full example (text) — open once, then build yours</summary>
+            <ol id="jackExampleList"></ol>
+          </details>
+          <div class="swap-rows" id="swapRows"></div>
+          <div class="expand-box" id="expandBox" hidden>
+            <h3>Pattern expand · food only</h3>
+            <p class="expand-note" id="expandNote"></p>
+            <ul class="expand-lines" id="expandLines"></ul>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-gold" id="btnNextBlock">Next block → add to chain</button>
+            <button type="button" class="btn btn-ghost" id="btnSayLine">Say this line aloud ✓</button>
+          </div>
+        </div>
+        <div id="drillWork" hidden>
+          <div class="drill-bar">
+            <p class="drill-hint" id="drillHint">Echo each line. The whole chain stays visible →</p>
+            <div class="actions" style="margin:0;">
+              <button type="button" class="btn btn-ghost" id="btnDrillPrev">← Prev</button>
+              <button type="button" class="btn btn-gold" id="btnDrillNext">Next line →</button>
+            </div>
+          </div>
+          <p class="drill-hint" id="drillFocusLine"></p>
+        </div>
+        <a class="link-pill" href="role-play.html?from=reading&amp;speaker=jack">Role-play · after drill</a>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Your chain · 7 blocks</h2>
+          <span class="chunk-pill" style="margin:0;" id="chainProgress">Block 1 / 7</span>
+        </div>
+        <ol class="chain" id="chainList"></ol>
+      </section>
+    </div>
+    </div>
+  </div>
+
+  <aside class="dock" id="dock" aria-hidden="true">
+    <div class="dock-inner">
+      <h2 class="dock-title" id="dockTitle">Block 1</h2>
+      <p class="dock-meta" id="dockMeta"></p>
+      <div class="dock-grid" id="dockGrid"></div>
+      <div class="dock-actions">
+        <button type="button" class="btn btn-gold" id="btnApply">Done · keep line</button>
+        <button type="button" class="btn btn-ghost" id="btnResetJack">Jack&apos;s version</button>
+        <button type="button" class="btn btn-ghost" id="btnCloseDock">Close</button>
+      </div>
+    </div>
+  </aside>
+
+  <script src="../../js/unit12-jack-chain-lab.js"></script>
+  <script src="../../js/unit12-jack-substitution-drill.js"></script>
+  <script>
+(function () {
+  var LEADS = {
+    chain:
+      "Tap a phrase in the chain — editor opens in the centre (same text as Part 7).",
+    subst:
+      "One chunk at a time: tap a <strong>continuation</strong> — same phrase, new context (not the full story).",
+    studio:
+      "Step by step: map on top, <strong>When → Why</strong> swaps, <strong>Next block</strong> adds a line. Drill when the chain is ready."
+  };
+
+  function queryView() {
+    var q = new URLSearchParams(window.location.search);
+    var v = q.get("view");
+    if (v === "studio" || v === "chain" || v === "subst") return v;
+    if (q.get("mode") === "chain") return "chain";
+    return "chain";
+  }
+
+  function setPageView(v) {
+    document.body.classList.toggle("view-chain", v === "chain");
+    document.getElementById("viewChain").hidden = v !== "chain";
+    document.getElementById("viewSubst").hidden = v !== "subst";
+    document.getElementById("viewStudio").hidden = v !== "studio";
+    document.querySelectorAll(".view-tab").forEach(function (tab) {
+      var on = tab.getAttribute("data-view") === v;
+      tab.classList.toggle("is-on", on);
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    var lead = document.getElementById("pageLead");
+    if (lead) lead.innerHTML = LEADS[v] || LEADS.chain;
+    if (v === "chain" && window.U12_JACK_CHAIN_LAB) U12_JACK_CHAIN_LAB.boot();
+    else if (window.U12_JACK_CHAIN_LAB) U12_JACK_CHAIN_LAB.closeDock();
+    if (v === "subst" && window.U12_JACK_SUBST_DRILL) U12_JACK_SUBST_DRILL.boot();
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.set("view", v);
+      u.searchParams.delete("mode");
+      window.history.replaceState(null, "", u.pathname + u.search);
+    } catch (e) {}
+  }
+
+  document.querySelectorAll(".view-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      setPageView(tab.getAttribute("data-view"));
+    });
+  });
+
+  setPageView(queryView());
+})();
+  </script>
+  <script>
+(function () {
+  var BLOCKS = [
+    {
+      id: 1,
+      tag: "go vegan",
+      label: "go vegan",
+      chips: 3,
+      frame: "____ first wanted to go vegan when …, and learnt about …",
+      swapRows: [],
+      segments: [
+        { key: "who", options: ["I", "My friend", "My cousin"] },
+        {
+          key: "when",
+          options: [
+            "when I was about thirteen",
+            "when I saw a film",
+            "when I watched a documentary",
+            "last year"
+          ]
+        },
+        {
+          key: "about",
+          options: ["the meat industry", "animals", "health", "the environment"]
+        }
+      ],
+      picks: {
+        who: ["I"],
+        when: ["when I was about thirteen"],
+        about: ["the meat industry"]
+      },
+      jackLine:
+        "I first wanted to go vegan a few years ago, when I was about thirteen, and learnt about the effects of the meat industry on the environment.",
+      build: function (p) {
+        var when = p.when.indexOf("when") === 0 ? p.when : "when " + p.when;
+        return (
+          p.who +
+          " first wanted to go vegan " +
+          when +
+          ", and learnt about " +
+          p.about +
+          "."
+        );
+      },
+      highlight: "go vegan"
+    },
+    {
+      id: 2,
+      tag: "better informed about",
+      label: "informed",
+      chips: 2,
+      frame: "My ____ told me to wait … better informed about …",
+      swapRows: [
+        { label: "Parent", key: "parent", anchor: "mum" },
+        { label: "About", key: "about", anchor: "what being vegan meant" }
+      ],
+      picks: {
+        parent: ["mum", "dad", "parents"],
+        about: [
+          "what being vegan meant",
+          "nutrition",
+          "protein and B12",
+          "what I could eat"
+        ]
+      },
+      jackLine:
+        "But my mum told me to wait until I was older and better informed about what being vegan meant.",
+      build: function (p) {
+        return (
+          "My " +
+          p.parent +
+          " told me to wait until I was older and better informed about " +
+          p.about +
+          "."
+        );
+      },
+      highlight: "better informed about"
+    },
+    {
+      id: 3,
+      tag: "sound advice",
+      label: "advice",
+      chips: 1,
+      frame: "It was probably sound advice, because …",
+      swapRows: [{ label: "Because", key: "because", anchor: "I was too young" }],
+      picks: {
+        because: [
+          "I was too young",
+          "I didn't know enough",
+          "she was worried",
+          "nutrition is complicated"
+        ]
+      },
+      jackLine: "It was probably sound advice, though I now know it was partly because she couldn't face cooking special meals for me.",
+      build: function (p) {
+        return "It was probably sound advice, because " + p.because + ".";
+      },
+      highlight: "sound advice"
+    },
+    {
+      id: 4,
+      tag: "couldn't face cooking special meals",
+      label: "couldn't face",
+      chips: 1,
+      frame: "…couldn't face cooking special meals for …",
+      swapRows: [{ label: "For", key: "for", anchor: "me" }],
+      picks: { for: ["me", "him", "her", "us"] },
+      jackLine:
+        "…partly because she couldn't face cooking special meals for me.",
+      build: function (p) {
+        return (
+          "Partly because Mum couldn't face cooking special meals for " +
+          p.for +
+          "."
+        );
+      },
+      highlight: "couldn't face",
+      expand: {
+        title: "couldn't face + -ing (same pattern · other food situations)",
+        lines: [
+          {
+            t: "Mum couldn't face cooking special meals for me every night.",
+            h: "couldn't face"
+          },
+          {
+            t: "She couldn't face telling the guests the dinner was vegan.",
+            h: "couldn't face"
+          },
+          {
+            t: "I couldn't face ordering separate food at every restaurant.",
+            h: "couldn't face"
+          },
+          {
+            t: "He couldn't face throwing away so much food when I changed my diet.",
+            h: "couldn't face"
+          }
+        ]
+      }
+    },
+    {
+      id: 5,
+      tag: "I totally get that",
+      label: "get that",
+      chips: 1,
+      frame: "I totally get that, and I don't hold it against …",
+      swapRows: [],
+      segments: [
+        { key: "lead", options: ["I totally get that", "I can totally get that"] },
+        {
+          key: "tail",
+          options: [
+            "and I don't hold it against her",
+            "and I don't hold it against him",
+            "and I don't hold it against you",
+            "and I don't hold it against them",
+            "I won't bear a grudge"
+          ]
+        }
+      ],
+      picks: { lead: ["I totally get that"], tail: ["and I don't hold it against her"] },
+      jackLine: "I totally get that, though, and don't hold it against her.",
+      build: function (p) {
+        if (p.tail === "I won't bear a grudge") {
+          return "I totally get that. I won't bear a grudge.";
+        }
+        if (p.tail === "and I don't hold it against them") {
+          return "I get why they said no; I don't hold it against them.";
+        }
+        if (p.lead === "I can totally get that" && p.tail === "and I don't hold it against you") {
+          return "I can totally get that — I don't hold it against you.";
+        }
+        return p.lead + ", " + p.tail + ".";
+      },
+      highlight: "I totally get that"
+    },
+    {
+      id: 6,
+      tag: "I'm very much aware of",
+      label: "aware of",
+      chips: 2,
+      frame: "Now that …, I'm very much aware of the extra effort for …",
+      swapRows: [],
+      segments: [
+        { key: "now", options: ["I am a vegan", "I'm plant-based", "I've changed my diet"] },
+        {
+          key: "for",
+          options: ["non-vegans who invite me", "friends who cook", "hosts", "my family"]
+        }
+      ],
+      picks: {
+        now: ["I am a vegan"],
+        for: ["non-vegans who invite me"]
+      },
+      jackLine:
+        "Now that I am a vegan, I'm very much aware of the extra effort involved for non-vegans who invite me round for a meal.",
+      build: function (p) {
+        return (
+          "Now that " +
+          p.now +
+          ", I'm very much aware of the extra effort for " +
+          p.for +
+          "."
+        );
+      },
+      highlight: "very much aware of"
+    },
+    {
+      id: 7,
+      tag: "invariably amazed at",
+      label: "amazed",
+      chips: 2,
+      frame: "I offer dessert, and … invariably amazed at how …",
+      swapRows: [
+        { label: "Who", key: "who", anchor: "the guests" },
+        { label: "How", key: "how", anchor: "delicious it is" }
+      ],
+      picks: {
+        who: ["the guests", "my friends", "everyone"],
+        how: ["delicious it is", "good it tastes", "easy it was"]
+      },
+      jackLine:
+        "I always offer to take a dessert, and the other dinner guests are invariably amazed at how delicious it is.",
+      build: function (p) {
+        return (
+          "I offer dessert, and " +
+          p.who +
+          " are invariably amazed at how " +
+          p.how +
+          "."
+        );
+      },
+      highlight: "invariably amazed at"
+    }
+  ];
+
+  var activeBlock = 0;
+  var drillIx = 0;
+  var mode = "studio";
+  var picks = {};
+  var locked = [];
+  var activeSegKey = null;
+
+  function defaultPicks(b) {
+    var p = {};
+    if (b.segments && b.segments.length) {
+      b.segments.forEach(function (seg) {
+        p[seg.key] = seg.options[0];
+      });
+      return p;
+    }
+    Object.keys(b.picks).forEach(function (k) {
+      p[k] = b.picks[k][0];
+    });
+    return p;
+  }
+
+  function segBtnStudio(key, text, activeSeg) {
+    return (
+      '<button type="button" class="line-seg' +
+      (activeSeg === key ? " is-active" : "") +
+      '" data-seg="' +
+      esc(key) +
+      '">' +
+      esc(text) +
+      "</button>"
+    );
+  }
+
+  function renderInteractiveStudio(b, p, activeSeg) {
+    var id = b.id;
+    if (id === 1) {
+      var w = p.when.indexOf("when") === 0 ? p.when : "when " + p.when;
+      return (
+        segBtnStudio("who", p.who, activeSeg) +
+        ' first wanted to <span class="line-core">go vegan</span> ' +
+        segBtnStudio("when", w, activeSeg) +
+        ", and learnt about " +
+        segBtnStudio("about", p.about, activeSeg) +
+        "."
+      );
+    }
+    if (id === 5) {
+      if (p.tail === "I won't bear a grudge") {
+        return (
+          segBtnStudio("lead", "I totally get that", activeSeg) +
+          ". " +
+          segBtnStudio("tail", "I won't bear a grudge", activeSeg) +
+          "."
+        );
+      }
+      if (p.tail === "and I don't hold it against them") {
+        return (
+          "I get why they said no; " +
+          segBtnStudio("tail", "I don't hold it against them", activeSeg) +
+          "."
+        );
+      }
+      if (p.lead === "I can totally get that" && p.tail === "and I don't hold it against you") {
+        return (
+          segBtnStudio("lead", p.lead, activeSeg) +
+          " — " +
+          segBtnStudio("tail", "I don't hold it against you", activeSeg) +
+          "."
+        );
+      }
+      return (
+        segBtnStudio("lead", p.lead, activeSeg) +
+        ", " +
+        segBtnStudio("tail", p.tail, activeSeg) +
+        "."
+      );
+    }
+    if (id === 6) {
+      return (
+        "Now that " +
+        segBtnStudio("now", p.now, activeSeg) +
+        ", <span class=\"line-core\">I'm very much aware of</span> the extra effort for " +
+        segBtnStudio("for", p.for, activeSeg) +
+        "."
+      );
+    }
+    return esc(b.build(p));
+  }
+
+  function init() {
+    picks = BLOCKS.map(function (b) {
+      return defaultPicks(b);
+    });
+    locked = BLOCKS.map(function () {
+      return "";
+    });
+    activeSegKey = null;
+  }
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function hi(text, phrase) {
+    var safe = esc(text);
+    if (!phrase) return safe;
+    var re = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    return safe.replace(re, function (m) {
+      return "<mark>" + m + "</mark>";
+    });
+  }
+
+  function lineFor(i, live) {
+    if (locked[i]) return locked[i];
+    if (live || i === activeBlock) return BLOCKS[i].build(picks[i]);
+    return "";
+  }
+
+  function paintSchematic() {
+    var names = BLOCKS.map(function (b) {
+      return b.label;
+    });
+    var chips = BLOCKS.map(function (b) {
+      return b.chips;
+    });
+    var flow = BLOCKS.map(function (b, i) {
+      var cls = "n" + (i === activeBlock && mode === "studio" ? " is-on" : "");
+      if (mode === "drill" && i === drillIx) cls = "n is-on";
+      return '<span class="n' + cls + '">[' + (i + 1) + " " + esc(b.label) + "]</span>";
+    }).join(' <span class="arr">→</span> ');
+    var chipLine = chips
+      .map(function (c, i) {
+        return (i + 1) + ":" + c;
+      })
+      .join(" · ");
+    document.getElementById("schematic").innerHTML =
+      '<div class="schematic-flow">' +
+      flow +
+      '</div><div class="schematic-chips">↓ slots · ' +
+      esc(chipLine) +
+      "</div>";
+  }
+
+  function paintChain() {
+    var ol = document.getElementById("chainList");
+    ol.innerHTML = BLOCKS.map(function (b, i) {
+      var rowCls = "chain-row";
+      if (mode === "drill" && i === drillIx) rowCls += " is-drill";
+      else if (i === activeBlock && mode === "studio" && !locked[i]) rowCls += " is-active";
+      else if (locked[i]) rowCls += " is-done";
+      else if (i > activeBlock) rowCls += " is-future";
+
+      var body;
+      if (locked[i]) body = hi(locked[i], b.highlight);
+      else if (i === activeBlock && mode === "studio")
+        body = hi(lineFor(i, true), b.highlight);
+      else if (i < activeBlock && !locked[i])
+        body = '<span class="chain-placeholder">skipped — go back</span>';
+      else body = '<span class="chain-placeholder">' + esc(b.frame) + "</span>";
+
+      return (
+        '<li class="' +
+        rowCls +
+        '" data-i="' +
+        i +
+        '"><span class="chain-num">' +
+        (i + 1) +
+        '</span><div><div class="chain-tag">' +
+        esc(b.tag) +
+        '</div><p class="chain-text">' +
+        body +
+        "</p></div></li>"
+      );
+    }).join("");
+
+    document.getElementById("chainProgress").textContent =
+      "Block " + (activeBlock + 1) + " / 7";
+  }
+
+  function paintSwapRows() {
+    var b = BLOCKS[activeBlock];
+    document.getElementById("buildChunk").textContent = b.tag;
+    document.getElementById("buildFrame").textContent = b.frame;
+    var p = picks[activeBlock];
+    var html = "";
+    if (b.segments && b.segments.length) {
+      if (!activeSegKey) activeSegKey = b.segments[0].key;
+      html +=
+        '<p class="interactive-line">' +
+        renderInteractiveStudio(b, p, activeSegKey) +
+        '</p><p class="drill-hint" style="margin:10px 0 8px;">Change this part:</p><div class="swap-row swap-row--plain"><div class="swap-opts">';
+      b.segments.forEach(function (seg) {
+        if (seg.key !== activeSegKey) return;
+        seg.options.forEach(function (val) {
+          html +=
+            '<button type="button" class="swap-opt' +
+            (p[seg.key] === val ? " is-on" : "") +
+            '" data-key="' +
+            esc(seg.key) +
+            '" data-val="' +
+            esc(val) +
+            '">' +
+            esc(val) +
+            "</button>";
+        });
+      });
+      html += "</div></div>";
+    } else {
+      b.swapRows.forEach(function (row) {
+        var opts = b.picks[row.key] || [];
+        html += '<div class="swap-row swap-row--plain"><div class="swap-opts">';
+        opts.forEach(function (val) {
+          var label = val;
+          if (row.key === "mode") {
+            label = val === "grudge" ? "I won't bear a grudge" : "don't hold it against";
+          }
+          html +=
+            '<button type="button" class="swap-opt' +
+            (p[row.key] === val ? " is-on" : "") +
+            '" data-key="' +
+            esc(row.key) +
+            '" data-val="' +
+            esc(val) +
+            '">' +
+            esc(label) +
+            "</button>";
+        });
+        html += "</div></div>";
+      });
+    }
+    document.getElementById("swapRows").innerHTML = html;
+    document.getElementById("swapRows").querySelectorAll(".line-seg").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        activeSegKey = btn.getAttribute("data-seg");
+        paintSwapRows();
+      });
+    });
+    document.getElementById("swapRows").querySelectorAll(".swap-opt[data-key]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        picks[activeBlock][btn.getAttribute("data-key")] = btn.getAttribute("data-val");
+        paintSwapRows();
+        paintChain();
+      });
+    });
+
+    var ex = document.getElementById("expandBox");
+    if (b.expand) {
+      ex.hidden = false;
+      document.getElementById("expandNote").textContent = b.expand.title;
+      document.getElementById("expandLines").innerHTML = b.expand.lines
+        .map(function (ln, idx) {
+          return (
+            '<li data-ex="' +
+            idx +
+            '">' +
+            hi(ln.t, ln.h) +
+            "</li>"
+          );
+        })
+        .join("");
+    } else ex.hidden = true;
+
+    document.getElementById("jackExampleList").innerHTML = BLOCKS.map(function (bl) {
+      return "<li>" + esc(bl.jackLine) + "</li>";
+    }).join("");
+  }
+
+  function paintDrillFocus() {
+    var i = drillIx;
+    var text = locked[i] || BLOCKS[i].build(picks[i]);
+    document.getElementById("drillFocusLine").innerHTML =
+      "<strong>Say:</strong> " + hi(text, BLOCKS[i].highlight);
+  }
+
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll(".mode-tab").forEach(function (t) {
+      t.classList.toggle("is-on", t.getAttribute("data-mode") === m);
+    });
+    document.getElementById("studioWork").hidden = m !== "studio";
+    document.getElementById("drillWork").hidden = m !== "drill";
+    if (m === "drill") {
+      drillIx = 0;
+      while (drillIx < 6 && locked[drillIx]) drillIx = Math.min(drillIx + 1, 6);
+      paintDrillFocus();
+    }
+    paintSchematic();
+    paintChain();
+  }
+
+  function paintAll() {
+    paintSchematic();
+    paintChain();
+    if (mode === "studio") paintSwapRows();
+    else paintDrillFocus();
+    document.getElementById("btnNextBlock").disabled =
+      activeBlock >= 6 && !!locked[6];
+  }
+
+  document.querySelectorAll(".mode-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      setMode(tab.getAttribute("data-mode"));
+    });
+  });
+
+  document.getElementById("btnNextBlock").addEventListener("click", function () {
+    locked[activeBlock] = BLOCKS[activeBlock].build(picks[activeBlock]);
+    if (activeBlock < 6) {
+      activeBlock++;
+      picks[activeBlock] = defaultPicks(BLOCKS[activeBlock]);
+    }
+    paintAll();
+  });
+
+  document.getElementById("btnDrillPrev").addEventListener("click", function () {
+    drillIx = Math.max(0, drillIx - 1);
+    paintAll();
+  });
+
+  document.getElementById("btnDrillNext").addEventListener("click", function () {
+    drillIx = Math.min(6, drillIx + 1);
+    paintAll();
+  });
+
+  document.getElementById("btnSayLine").addEventListener("click", function () {
+    var row = document.querySelector('.chain-row.is-active');
+    if (row) {
+      row.classList.add("is-done");
+      setTimeout(function () {
+        row.classList.remove("is-done");
+      }, 600);
+    }
+  });
+
+  init();
+  paintAll();
+})();
+  </script>
+</body>
+</html>

@@ -49,6 +49,9 @@
     clothes: "👔",
     lifestyle: "☀",
     sb12: "🎧",
+    restaurants: "🍽",
+    "going-vegan": "🌱",
+    "on-idioms": "📌",
     "u7-black-friday": "🛒"
   };
 
@@ -63,6 +66,9 @@
       clothes: "SB 1.1 · all speakers",
       lifestyle: "This is your life · Lucas · Maja · Reo · Ben",
       sb12: "Track 1.2 · Speakers 1, 2, 3, 5, 8 · flip + comic",
+      restaurants: "Listening 12.1 · Cool phrases · five speakers",
+      "going-vegan": "Reading Part 7 · Jack–Rhona (A–E) · meme flip",
+      "on-idioms": "Word box · on the fence · icing on the cake · literal cartoons",
       "u7-black-friday": "Part 6 reading · literal sale-day memes · 16 phrases"
     };
     var base = blurbs[d.id] || "Flip cards";
@@ -177,7 +183,13 @@
         return x.id === activeId;
       })[0];
       if (!d) return;
-      root.innerHTML = '<div id="' + flipMountId + '"></div>';
+      root.innerHTML =
+        '<p class="lex-meme-deck-title" style="margin:0 0 10px;font-size:1.05rem;font-weight:700;color:#ffd166;text-align:center;">' +
+        String(d.label || "").replace(/&/g, "&amp;").replace(/</g, "&lt;") +
+        "</p>" +
+        '<div id="' +
+        flipMountId +
+        '"></div>';
       if (d.stub && !deckHasImages(d)) {
         root.innerHTML =
           '<p class="lex-extra-empty"><b>' +
@@ -191,7 +203,8 @@
           flipMountId: flipMountId + "-inner",
           comicMountId: flipMountId + "-comic",
           parts: d.parts || [],
-          comics: d.comics || []
+          comics: d.comics || [],
+          flipHintText: d.flipHintText || ""
         });
         return;
       }
@@ -216,6 +229,22 @@
     }
 
     paintMemeDeckGrid(nav, decks, activeId, pickDeck);
+
+    W.__FCE_MEME_AUTO_PICK = function (preferId) {
+      if (activeId) return;
+      var pick = null;
+      if (preferId) {
+        pick = decks.filter(function (x) {
+          return x.id === preferId && deckHasImages(x);
+        })[0];
+      }
+      if (!pick) {
+        pick = decks.filter(function (x) {
+          return deckHasImages(x);
+        })[0];
+      }
+      if (pick) pickDeck(pick.id);
+    };
   }
 
   function fillSbThemeRail(rail, deckMeta, radioName, formatMeta, extra) {

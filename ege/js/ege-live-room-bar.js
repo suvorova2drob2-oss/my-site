@@ -756,12 +756,21 @@
     );
   }
 
+  function rowDisplayPct(row) {
+    if (!row) return 0;
+    var total = Number(row.totalCount) || 0;
+    if (total > 0) {
+      return Math.max(0, Math.min(100, Math.round((Number(row.correctCount) / total) * 100)));
+    }
+    return Math.max(0, Math.min(100, Number(row.score) || 0));
+  }
+
   function classAccuracy(lb) {
     var sum = 0;
     var n = 0;
     lb.forEach(function (row) {
       if (!row.submitted) return;
-      sum += Number(row.score) || 0;
+      sum += rowDisplayPct(row);
       n += 1;
     });
     return n ? Math.round(sum / n) : null;
@@ -1002,7 +1011,7 @@
       '<ol class="ege-live-qz-lb">' +
       lb
         .map(function (row, i) {
-          var pct = Math.max(0, Math.min(100, Number(row.score) || 0));
+          var pct = rowDisplayPct(row);
           var selected =
             state.inspect && state.inspect.mode === "player" && state.inspect.playerId === row.playerId;
           return (
@@ -1182,7 +1191,11 @@
           " / " +
           lb.length +
           " · " +
-          (Number(myRow.score) || 0) +
+          (Number(myRow.correctCount) || 0) +
+          "/" +
+          (Number(myRow.totalCount) || 0) +
+          " · " +
+          rowDisplayPct(myRow) +
           "%";
       } else {
         youEl.textContent = "Live ranking";
@@ -1194,7 +1207,7 @@
       list.innerHTML = lb
         .map(function (row, idx) {
           var isMe = row.playerId === state.playerId;
-          var pct = Math.max(0, Math.min(100, Number(row.score) || 0));
+          var pct = rowDisplayPct(row);
           var detail =
             row.totalCount > 0
               ? row.correctCount + "/" + row.totalCount
@@ -2222,22 +2235,21 @@
     info = info || {};
     if (state.role !== "student" || !state.roomCode || !state.playerId) return;
     var draft = info.draft === true || info.submitted === false;
-    var denom =
-      info.filledTotal != null && Number(info.filledTotal) > 0
-        ? Number(info.filledTotal)
-        : info.total;
+    var totalItems = Number(info.total) || 0;
     var score =
       info.score != null
         ? Number(info.score)
-        : info.correct != null && denom
-          ? Math.round((Number(info.correct) / Number(denom)) * 100)
+        : info.correct != null && totalItems > 0
+          ? Math.round((Number(info.correct) / totalItems) * 100)
           : 0;
     if (isNaN(score)) score = 0;
     var payload = {
       roomCode: state.roomCode,
       playerId: state.playerId,
       cardId: deckId(),
-      text: String(info.correct != null ? info.correct + "/" + (denom || info.total) : score),
+      text: String(
+        info.correct != null ? info.correct + "/" + (totalItems || info.total || 0) : score
+      ),
       correct: Number(info.correct) === Number(info.total),
       score: Math.max(0, Math.min(100, Math.round(score))),
       draft: draft

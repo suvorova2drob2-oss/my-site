@@ -148,16 +148,22 @@
       return false;
     }
 
-    btnCheck.addEventListener("click", function () {
-      if (checkedThisRound) return;
-      var t = tasks[idx];
-      var norm = normalizeAnswer(elInput.value);
-      if (!norm) {
-        elInput.focus();
-        return;
+    function finishRound() {
+      elDone.classList.add("show");
+      if (W.MasteringB2Progress) {
+        W.MasteringB2Progress.recordCheckFromDom(correctCount, tasks.length);
       }
+    }
+
+    function goNextTask() {
+      if (idx >= tasks.length - 1) return;
+      idx++;
+      renderTask();
+    }
+
+    function applyCheckResult(good) {
+      var t = tasks[idx];
       checkedThisRound = true;
-      var good = isAccepted(t, norm);
       elInput.classList.toggle("ok", good);
       elInput.classList.toggle("bad", !good);
       elInput.disabled = true;
@@ -167,30 +173,47 @@
         correctCount++;
         elOk.classList.add("show");
         elKeyBox.classList.remove("show");
-      } else {
-        elOk.classList.remove("show");
-        elKeyText.textContent = t.revealGap;
-        elFull.innerHTML = t.fullSecond;
-        elKeyBox.classList.add("show");
+        btnNext.classList.remove("show");
+        if (idx < tasks.length - 1) {
+          goNextTask();
+        } else {
+          finishRound();
+        }
+        return;
       }
 
+      elOk.classList.remove("show");
+      elKeyText.textContent = t.revealGap;
+      elFull.innerHTML = t.fullSecond;
+      elKeyBox.classList.add("show");
       if (idx < tasks.length - 1) {
         btnNext.classList.add("show");
       } else {
-        elDone.classList.add("show");
-        if (W.MasteringB2Progress) {
-          W.MasteringB2Progress.recordCheckFromDom(correctCount, tasks.length);
-        }
+        finishRound();
       }
+    }
+
+    btnCheck.addEventListener("click", function () {
+      if (checkedThisRound) return;
+      var t = tasks[idx];
+      var norm = normalizeAnswer(elInput.value);
+      if (!norm) {
+        elInput.focus();
+        return;
+      }
+      applyCheckResult(isAccepted(t, norm));
     });
 
     btnNext.addEventListener("click", function () {
-      idx++;
-      renderTask();
+      if (!checkedThisRound) return;
+      goNextTask();
     });
 
     elInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !btnCheck.disabled) btnCheck.click();
+      if (e.key !== "Enter") return;
+      if (!checkedThisRound && !btnCheck.disabled) {
+        btnCheck.click();
+      }
     });
 
     renderTask();

@@ -1148,6 +1148,16 @@
       }
     }
     updateChapterNav();
+    updateResetVisibility();
+  }
+
+  function updateResetVisibility() {
+    var resetBtn = document.getElementById("vp-reset");
+    if (!resetBtn) return;
+    var visible = visibleStationIds();
+    var onLast =
+      visible.length > 0 && visible[visible.length - 1] === state.stationId;
+    resetBtn.hidden = !onLast;
   }
 
   function updateChapterNav() {
@@ -1398,6 +1408,7 @@
     updateLevelNav();
     updateRoundProgressUi();
     applyStationVisibility();
+    updateResetVisibility();
     if (w.EgeLiveRoom && typeof w.EgeLiveRoom.isLiveStudent === "function" && w.EgeLiveRoom.isLiveStudent()) {
       scheduleLiveDraft("ready", true);
       startLiveHeartbeat();

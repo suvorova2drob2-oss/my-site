@@ -299,6 +299,18 @@
     return [].slice.call(root.querySelectorAll(".ege-gx-input"));
   }
 
+  function syncChoiceDisplays() {
+    [].forEach.call(root.querySelectorAll(".ege-gx-item--choice"), function (row) {
+      var inp = row.querySelector(".ege-gx-input");
+      var gap = row.querySelector(".ege-gx-choice-gap");
+      var val = inp ? inp.value : "";
+      if (gap) gap.textContent = val;
+      [].forEach.call(row.querySelectorAll(".ege-gx-choice"), function (btn) {
+        btn.classList.toggle("is-picked", val !== "" && btn.getAttribute("data-value") === val);
+      });
+    });
+  }
+
   function saveDraft() {
     if (checked) return;
     var map = {};
@@ -330,6 +342,7 @@
       var n = inp.getAttribute("data-exam-num");
       if (n && map[n] != null) inp.value = String(map[n]);
     });
+    syncChoiceDisplays();
     updateProgress();
   }
 
@@ -651,6 +664,14 @@
     checked = false;
 
     var items = U.items || [];
+    var choiceOnly = items.length > 0;
+    var choiceScan;
+    for (choiceScan = 0; choiceScan < items.length; choiceScan++) {
+      if (!items[choiceScan].choices || !items[choiceScan].choices.length) {
+        choiceOnly = false;
+        break;
+      }
+    }
     var html = "";
     html += '<div class="ege-gx-wrap">';
 
@@ -695,7 +716,10 @@
         "</p>";
     }
     html += '<h2 class="ege-gx-page-title">' + esc(U.title) + "</h2>";
-    if (!U.tableGapMode) {
+    if (choiceOnly) {
+      html +=
+        '<p class="ege-gx-vibe">Нажмите <strong>A</strong>, <strong>B</strong> или <strong>C</strong> под предложением.</p>';
+    } else if (!U.tableGapMode) {
       html +=
         '<p class="ege-gx-vibe"><strong>Как в бланке:</strong> у каждого номера — своя строка: пропуск слева, <strong>CAPS справа в жёлтой колонке</strong> (только для этого пропуска). Текст ниже строки — продолжение абзаца, без нового слова. <strong>Enter</strong> — следующий пропуск.</p>';
     }
@@ -709,7 +733,7 @@
     html +=
       '<div class="ege-reading-stats-bar" id="ege-gx-stats-bar" role="region" aria-label="Статистика по этой теме"></div>';
 
-    html += '<div class="ege-gx-exam-sheet' + (U.tableGapMode ? " ege-gx-exam-sheet--table" : "") + '">';
+    html += '<div class="ege-gx-exam-sheet' + (U.tableGapMode ? " ege-gx-exam-sheet--table" : "") + (U.wideGaps ? " ege-gx-exam-sheet--wide" : "") + (choiceOnly ? " ege-gx-exam-sheet--choice" : "") + '">';
     if (U.headerTitle) {
       html +=
         '<h3 class="ege-gx-sheet-title">' + esc(U.headerTitle) + "</h3>";
@@ -719,8 +743,8 @@
 
     html += '<div class="ege-gx-sheet-legend" aria-hidden="true">';
     html += '<span class="ege-gx-legend-num">№</span>';
-    html += '<span class="ege-gx-legend-text">Текст и пропуск</span>';
-    if (!U.tableGapMode) {
+    html += '<span class="ege-gx-legend-text">' + (choiceOnly ? "Предложение" : "Текст и пропуск") + "</span>";
+    if (!U.tableGapMode && !choiceOnly) {
       html += '<span class="ege-gx-legend-cue">Базовое слово</span>';
     }
     html += "</div>";
@@ -739,8 +763,11 @@
         currentPara = pNum;
       }
 
+      var itemChoices = it.choices && it.choices.length ? it.choices : null;
       html +=
-        '<div class="ege-gx-item" data-exam-num="' +
+        '<div class="ege-gx-item' +
+        (itemChoices ? " ege-gx-item--choice" : "") +
+        '" data-exam-num="' +
         esc(String(it.examNum)) +
         '">';
       html += '<div class="ege-gx-item-row">';
@@ -750,20 +777,30 @@
         "</span>";
       html += '<div class="ege-gx-item-main">';
       html += esc(it.before);
-      html +=
-        '<span class="ege-gx-gap-wrap"><input type="text" class="ege-gx-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Пропуск ' +
-        esc(String(it.examNum)) +
-        (U.tableGapMode ? "" : ", базовое слово " + esc(it.cue)) +
-        '" data-exam-num="' +
-        esc(String(it.examNum)) +
-        '" data-cue="' +
-        esc(it.cue || "") +
-        '" data-idx="' +
-        ii +
-        '" /></span>';
+      if (itemChoices) {
+        html += '<span class="ege-gx-choice-gap" data-exam-num="' + esc(String(it.examNum)) + '"></span>';
+        html +=
+          '<input type="hidden" class="ege-gx-input" data-exam-num="' +
+          esc(String(it.examNum)) +
+          '" data-idx="' +
+          ii +
+          '" value="" />';
+      } else {
+        html +=
+          '<span class="ege-gx-gap-wrap"><input type="text" class="ege-gx-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Пропуск ' +
+          esc(String(it.examNum)) +
+          (U.tableGapMode ? "" : ", базовое слово " + esc(it.cue)) +
+          '" data-exam-num="' +
+          esc(String(it.examNum)) +
+          '" data-cue="' +
+          esc(it.cue || "") +
+          '" data-idx="' +
+          ii +
+          '" /></span>';
+      }
       html += esc(parts.inline);
       html += "</div>";
-      if (!U.tableGapMode) {
+      if (!itemChoices && !U.tableGapMode) {
         html += '<div class="ege-gx-cue-slot">';
         html += '<span class="ege-gx-cue-bridge" aria-hidden="true"></span>';
         html +=
@@ -775,6 +812,21 @@
         html += "</div>";
       }
       html += "</div>";
+      if (itemChoices) {
+        html += '<div class="ege-gx-choices" role="group" aria-label="Варианты ' + esc(String(it.examNum)) + '">';
+        var ciChoice;
+        for (ciChoice = 0; ciChoice < itemChoices.length; ciChoice++) {
+          html +=
+            '<button type="button" class="ege-gx-choice" data-value="' +
+            esc(itemChoices[ciChoice].text) +
+            '"><span class="ege-gx-choice-letter">' +
+            esc(itemChoices[ciChoice].letter) +
+            '</span><span class="ege-gx-choice-text">' +
+            esc(itemChoices[ciChoice].text) +
+            "</span></button>";
+        }
+        html += "</div>";
+      }
       if (parts.tail) {
         html +=
           '<p class="ege-gx-item-tail" lang="en">' + esc(parts.tail) + "</p>";
@@ -797,7 +849,11 @@
     html += "</section>";
 
     html +=
-      '<p class="ege-gx-route-note"><a href="ege-grammar.html">&larr; Другие задания Grammar</a></p>';
+      '<p class="ege-gx-route-note"><a href="' +
+      esc((pack && pack.folderHref) || "ege-grammar.html") +
+      '">&larr; ' +
+      esc((pack && pack.folderLabel) || "Другие задания Grammar") +
+      "</a></p>";
     html += "</div>";
 
     root.innerHTML = html;
@@ -863,6 +919,11 @@
       inputs.forEach(function (inp) {
         inp.value = "";
       });
+      [].forEach.call(root.querySelectorAll(".ege-gx-choice"), function (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-picked", "is-key");
+      });
+      syncChoiceDisplays();
       try {
         sessionStorage.removeItem(storageKey());
       } catch (e5) {}
@@ -901,8 +962,9 @@
       if (missing) {
         clearPostSubmitUI();
         if (msgEl) {
-          msgEl.textContent =
-            "Заполни все пропуски — тогда проверим без догадок.";
+          msgEl.textContent = choiceOnly
+            ? "Выберите вариант в каждом номере — тогда проверим."
+            : "Заполни все пропуски — тогда проверим без догадок.";
           msgEl.className = "ege-gx-msg is-warn";
         }
         return;
@@ -930,6 +992,12 @@
         );
         if (itemRow) {
           itemRow.classList.add(good ? "is-checked-ok" : "is-checked-bad");
+          [].forEach.call(itemRow.querySelectorAll(".ege-gx-choice"), function (btn) {
+            btn.disabled = true;
+            if (isCorrect(item, btn.getAttribute("data-value") || "")) {
+              btn.classList.add("is-key");
+            }
+          });
         }
       }
 
@@ -994,8 +1062,24 @@
     refreshStatsBar();
     restoreDraft();
     startExamTimer();
-    if (inputs[0]) inputs[0].focus();
+    if (inputs[0] && inputs[0].type !== "hidden") inputs[0].focus();
   }
+
+  root.addEventListener("click", function (ev) {
+    var btn = ev.target && ev.target.closest ? ev.target.closest(".ege-gx-choice") : null;
+    if (!btn || checked || btn.disabled) return;
+    var row = btn.closest(".ege-gx-item");
+    var inp = row ? row.querySelector(".ege-gx-input") : null;
+    if (!inp) return;
+    inp.value = btn.getAttribute("data-value") || "";
+    syncChoiceDisplays();
+    saveDraft();
+    updateProgress();
+    if (msgEl && msgEl.className.indexOf("is-ok") === -1) {
+      msgEl.textContent = "";
+      msgEl.className = "ege-gx-msg";
+    }
+  });
 
   mountUnit();
 

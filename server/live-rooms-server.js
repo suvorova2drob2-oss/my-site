@@ -256,6 +256,18 @@ function normalizeItems(raw) {
   });
 }
 
+/** Rank: most correct first, then who reached that count faster, then accuracy %, then name. */
+function sortLeaderboardRows(a, b) {
+  var ca = Number(a.correctCount) || 0;
+  var cb = Number(b.correctCount) || 0;
+  if (cb !== ca) return cb - ca;
+  var ra = Number(a.rankAt) || 0;
+  var rb = Number(b.rankAt) || 0;
+  if (ra && rb && ra !== rb) return ra - rb;
+  if (b.score !== a.score) return b.score - a.score;
+  return String(a.displayName || "").localeCompare(String(b.displayName || ""));
+}
+
 function snapshot(roomCode) {
   const code = normalizeRoom(roomCode);
   const r = rooms.get(code);
@@ -277,9 +289,7 @@ function snapshot(roomCode) {
     });
     players.push({ id: id, displayName: p.displayName, team: p.team || "" });
   });
-  leaderboard.sort(function (a, b) {
-    return b.score - a.score || a.displayName.localeCompare(b.displayName);
-  });
+  leaderboard.sort(sortLeaderboardRows);
   let allSubmitted = false;
   if (leaderboard.length > 0) {
     allSubmitted = leaderboard.every(function (row) {
@@ -400,6 +410,8 @@ function handleOp(op, body) {
         items: [],
         correctCount: 0,
         totalCount: 0,
+        peakCorrect: 0,
+        rankAt: 0,
         team: ""
       };
       r.players.set(playerId, row);
@@ -469,6 +481,10 @@ function handleOp(op, body) {
           return it.filled && it.correct;
         }).length;
         p.totalCount = items.length;
+        if (p.correctCount > Number(p.peakCorrect || 0)) {
+          p.peakCorrect = p.correctCount;
+          p.rankAt = Date.now();
+        }
         if (isDraft) {
           // Retry / typing — keep attempt count, unlock for another final submit
           p.submitted = false;
@@ -476,10 +492,10 @@ function handleOp(op, body) {
           p.attempts = Number(p.attempts || 0) + 1;
           p.submitted = true;
         }
-        if (body && body.score != null && body.score !== "") {
-          p.score = Math.max(0, Math.min(100, Math.round(Number(body.score) || 0)));
-        } else if (p.totalCount > 0) {
+        if (p.totalCount > 0) {
           p.score = Math.round((p.correctCount / p.totalCount) * 100);
+        } else {
+          p.score = 0;
         }
       } else if (body && body.score != null && body.score !== "") {
         p.score = Math.max(0, Math.min(100, Math.round(Number(body.score) || 0)));
@@ -653,7 +669,7 @@ function handleOp(op, body) {
       if (found >= 0) {
         room.players[found] = row;
       } else {
-        if (room.players.length >= 9) throw new Error("Room is full");
+        if (room.players.length >= 6) throw new Error("Room is full");
         room.players.push(row);
       }
       if (body && body.gameId) room.gameId = String(body.gameId).slice(0, 40);
@@ -686,15 +702,6 @@ function handleOp(op, body) {
       const base = body && body.baseVersion;
       if (base != null && Number(base) < Number(room.stateVersion || 0)) {
         throw new Error("conflict: stale UNO state");
-      }
-      // Memory board (classic / ice): every player's device writes the whole board. A device
-      // a beat behind must not overwrite a newer board (a pair just scored would vanish).
-      const prevSt = room.state;
-      if (prevSt && state.type && prevSt.type === state.type &&
-          (state.type === "classic-memory" || state.type === "ice-memory") &&
-          String(prevSt.seed || "") === String(state.seed || "") &&
-          Number(state.rev || 0) < Number(prevSt.rev || 0)) {
-        return touchUno(room);
       }
       room.state = state;
       room.stateVersion = Math.max(

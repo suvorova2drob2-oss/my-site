@@ -26,6 +26,9 @@
     );
     var activeView = "flip";
     var flipApi = null;
+    var flipHintText =
+      opts.flipHintText ||
+      "Tap card to flip · check the line from the listening";
 
     root.innerHTML =
       '<div class="meme-view-tabs" id="memeViewTabs" role="tablist" aria-label="View mode">' +
@@ -46,6 +49,9 @@
 
     var tabsEl = document.getElementById("memePartTabs");
     var viewTabsEl = document.getElementById("memeViewTabs");
+    if (viewTabsEl && viewTabsEl.querySelectorAll(".meme-view-tab").length < 2) {
+      viewTabsEl.hidden = true;
+    }
 
     function comicForPart(partId) {
       return comics.find(function (c) {
@@ -111,7 +117,7 @@
         rootId: flipMountId,
         cards: pack.cards,
         compact: true,
-        hintText: "Tap card to flip · check the line from the listening"
+        hintText: flipHintText
       });
     }
 

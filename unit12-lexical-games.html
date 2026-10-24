@@ -95,6 +95,45 @@
       padding-top: 10px;
     }
     .folder.open .pool { display: block; }
+    .sbp-embed-banner {
+      margin: 0 0 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(94, 200, 240, 0.28);
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 0.86rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #bae6fd;
+    }
+    .sbp-speaker-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+    .sbp-spk-chip {
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.65);
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+    .sbp-spk-chip.is-on {
+      border-color: rgba(253, 210, 100, 0.55);
+      background: rgba(253, 210, 100, 0.12);
+      color: #fde68a;
+    }
+    .sbp-type-hint-global {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: rgba(148, 163, 184, 0.95);
+    }
     .theme-game-list {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -761,6 +800,159 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/mastering-b2-page-skin.css" />
+  <style>
+    /* Memes open: fit card + nav inside viewport (Windows taskbar / short screens) */
+    body.u12-meme-open {
+      --meme-chrome: 26rem;
+      padding: 8px !important;
+      padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+      height: 100dvh;
+      overflow: hidden;
+    }
+    body.u12-meme-open main.page {
+      width: min(1080px, 100%) !important;
+      height: calc(100dvh - 16px - env(safe-area-inset-bottom, 0px));
+      max-height: calc(100dvh - 16px - env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      padding: 10px 14px max(14px, env(safe-area-inset-bottom, 0px)) !important;
+      overflow: hidden;
+    }
+    body.u12-meme-open .subtitle,
+    body.u12-meme-open #lexMiniThemeBar,
+    body.u12-meme-open .page > div:has(> .live-link) {
+      display: none !important;
+    }
+    body.u12-meme-open .top {
+      flex: 0 0 auto;
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+    }
+    body.u12-meme-open .top h1 { font-size: 1.15rem; }
+    body.u12-meme-open #gamesHost {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body.u12-meme-open .folder.open {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 8px 10px 8px;
+      overflow: hidden;
+    }
+    body.u12-meme-open .folder.open > strong,
+    body.u12-meme-open .folder.open > .desc,
+    body.u12-meme-open .folder.open > .hint {
+      display: none;
+    }
+    body.u12-meme-open .folder.open .pool {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+      overflow: hidden;
+    }
+    body.u12-meme-open .lex-meme-launch {
+      max-width: min(980px, 100%);
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body.u12-meme-open .lex-meme-deck-grid--active {
+      flex: 0 0 auto;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+    }
+    body.u12-meme-open .lex-extra-engine-root:not([hidden]) {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-bottom: 4px;
+    }
+    body.u12-meme-open .lex-meme-deck-title {
+      flex: 0 0 auto;
+      margin: 0 0 6px !important;
+      font-size: 0.95rem !important;
+    }
+    body.u12-meme-open #lexMemeFlipMount,
+    body.u12-meme-open .meme-part-tabs,
+    body.u12-meme-open .meme-flip-hud,
+    body.u12-meme-open .meme-flip-hint,
+    body.u12-meme-open .meme-flip-nav {
+      flex: 0 0 auto;
+    }
+    body.u12-meme-open .meme-part-tabs {
+      margin-bottom: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      max-width: 100%;
+      padding-bottom: 2px;
+    }
+    body.u12-meme-open .meme-parts-stage,
+    body.u12-meme-open .meme-parts-stage > div,
+    body.u12-meme-open .meme-flip-box--compact {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: none;
+      justify-content: flex-start;
+      gap: 2px;
+    }
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-hud,
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-hint,
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-nav {
+      width: min(100%, 820px);
+    }
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-hud {
+      margin: 0 0 4px;
+    }
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-hint {
+      margin: 2px 0 4px;
+      font-size: 0.8rem;
+    }
+    body.u12-meme-open .meme-flip-box--compact .meme-flip-nav {
+      flex: 0 0 auto;
+      width: min(100%, 820px);
+      margin-top: auto;
+      padding-top: 8px;
+      padding-bottom: 2px;
+    }
+    body.u12-meme-open .meme-flip-scene--compact {
+      flex: 0 1 auto;
+      width: min(100%, 820px, calc(100dvh - var(--meme-chrome)));
+      max-width: min(100%, 820px);
+      max-height: min(480px, calc(100dvh - var(--meme-chrome)));
+      height: auto;
+      aspect-ratio: 1 / 1;
+      align-self: center;
+    }
+    /* AI art is not always 1:1 — contain avoids cropped faces / glitchy edges */
+    body.u12-meme-open .meme-flip-scene--compact .meme-flip-front,
+    body.u12-meme-open .meme-flip-scene--compact .meme-flip-front-stack {
+      background: #0a1428;
+    }
+    body.u12-meme-open .meme-flip-scene--compact .meme-flip-img {
+      object-fit: contain;
+      object-position: center;
+    }
+  </style>
 </head>
 <body>
   <main class="page">
@@ -910,7 +1102,9 @@
       { key: "express", title: "60-second express", desc: "Fast recall drill with timer.", hint: "Tick themes above" },
       { key: "echo", title: "Echo Run", desc: "Listen, type, continue loop.", hint: "Tick themes above" },
       { key: "match", title: "Pair Blitz", desc: "Quizlet-style match for paraphrase and text phrase.", hint: "Up to 10 pairs · multi-grids · timer" },
-      { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Three topic folders + progress + searchable bank.", hint: "Naomi · Restaurants · Going vegan" }
+      { key: "wordbank", title: "Word Bank (Memrise style)", desc: "Three topic folders + progress + searchable bank.", hint: "Naomi · Restaurants · Going vegan" },
+      { key: "memes", title: "Memes", desc: "Flip cards — cartoon on the front, phrase on the back.", hint: "Idioms with \"on\" · Going vegan · Restaurants" },
+      { key: "sticky", title: "Sticky board", desc: "One word per gap — collocation hooks on sticky notes.", hint: "Naomi · Restaurants · Going vegan" }
     ];
     function miniThemeFlags() {
       const n = document.getElementById("miniNaomi");
@@ -1141,13 +1335,21 @@
       else if (key === "match") pool.innerHTML = matchHtml;
       else if (key === "wordbank") pool.innerHTML = wordBankHtml;
       folder.addEventListener("click", (e) => {
-        if (e.target.closest("button,input,label,.cards-box,.mini-game-box,.match-box")) return;
+        if (e.target.closest("button,input,label,select,textarea,.cards-box,.mini-game-box,.match-box,.lex-extra-engine-root")) return;
         const isOpen = folder.classList.contains("open");
         host.querySelectorAll(".folder").forEach(x => x.classList.remove("open"));
         host.classList.remove("single-open");
+        document.body.classList.remove("u12-meme-open");
         if (!isOpen) {
           folder.classList.add("open");
           host.classList.add("single-open");
+          if (key === "memes") {
+            document.body.classList.add("u12-meme-open");
+            window.scrollTo(0, 0);
+            if (typeof window.__FCE_MEME_AUTO_PICK === "function") {
+              window.__FCE_MEME_AUTO_PICK("on-idioms");
+            }
+          }
           if (key === "cards") {
             cardsIdx = 0;
             cardsFlipped = false;
@@ -2436,6 +2638,9 @@
   <script src="js/prep-echo-minute-engine.js"></script>
   <script src="js/sticky-board-core.js"></script>
   <script src="js/fce-unit-sticky-bridge.js"></script>
+  <script src="js/unit12-on-idioms-meme-cards.js"></script>
+  <script src="js/unit12-going-vegan-meme-parts.js?v=u12-rhona-e"></script>
+  <script src="js/unit12-restaurants-meme-cards.js"></script>
   <script src="js/fce-unit-memes-bridge.js"></script>
   <script src="js/fce-vocab-meme-flip-engine.js"></script>
   <script src="js/fce-vocab-meme-parts-engine.js"></script>

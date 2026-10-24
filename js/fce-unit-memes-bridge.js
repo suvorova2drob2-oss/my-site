@@ -130,6 +130,52 @@
     return [];
   }
 
+  function unit12Decks() {
+    var decks = [];
+    if (W.UNIT12_ON_IDIOMS_MEME_CARDS && W.UNIT12_ON_IDIOMS_MEME_CARDS.length) {
+      decks.push({
+        id: "on-idioms",
+        label: 'Idioms with "on"',
+        mode: "flip",
+        cards: prefixImg(
+          W.UNIT12_ON_IDIOMS_MEME_CARDS,
+          "unit12-vocabulary/on-idioms-gap-fill/memes/"
+        )
+      });
+    }
+    if (W.UNIT12_GOING_VEGAN_MEME_PARTS && W.UNIT12_GOING_VEGAN_MEME_PARTS.length) {
+      decks.push({
+        id: "going-vegan",
+        label: "Going vegan",
+        mode: "parts",
+        flipHintText:
+          "Tap card to flip · check the line from the reading",
+        parts: W.UNIT12_GOING_VEGAN_MEME_PARTS.map(function (p) {
+          return {
+            part: p.part,
+            label: p.label,
+            cards: prefixImg(p.cards || [], "unit12-vocabulary/going-vegan-memes/")
+          };
+        })
+      });
+    }
+    if (W.UNIT12_RESTAURANTS_MEME_PARTS && W.UNIT12_RESTAURANTS_MEME_PARTS.length) {
+      decks.push({
+        id: "restaurants",
+        label: "Restaurants",
+        mode: "parts",
+        parts: W.UNIT12_RESTAURANTS_MEME_PARTS.map(function (p) {
+          return {
+            part: p.part,
+            label: p.label,
+            cards: prefixImg(p.cards || [], "unit12-vocabulary/restaurants/memes/")
+          };
+        })
+      });
+    }
+    return decks;
+  }
+
   function forUnit(unit) {
     unit = Number(unit) || 0;
     if (unit === 1) {
@@ -139,6 +185,10 @@
     if (unit === 7) {
       var u7 = unit7Decks();
       if (u7.length) return { decks: u7 };
+    }
+    if (unit === 12) {
+      var u12 = unit12Decks();
+      if (u12.length) return { decks: u12 };
     }
     if (W.FCE_UNIT_LEX_STUBS && typeof W.FCE_UNIT_LEX_STUBS.forUnit === "function") {
       var cfg = W.FCE_UNIT_LEX_STUBS.forUnit(unit);
