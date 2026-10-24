@@ -1223,6 +1223,72 @@ function createTeacherStoreRouter(options) {
     };
   }
 
+  /* ---------- Leaderboard: all students of the teacher, one list ----------
+     points = the same total the teacher sees (words + answers + audio + homework + lesson).
+     Other children appear as «Anna S.» — first name and the first letter of the surname. */
+  const LB_TTL_MS = 20000;
+  const lbCache = new Map();
+
+  function publicName(raw) {
+    const parts = String(raw || "").replace(/[\u0000-\u001f<>]/g, "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "Student";
+    const first = parts[0].slice(0, 20);
+    return parts.length > 1 ? first + " " + Array.from(parts[parts.length - 1])[0].toUpperCase() + "." : first;
+  }
+
+  function leaderboardRows(teacherId) {
+    const hit = lbCache.get(teacherId);
+    if (hit && Date.now() - hit.at < LB_TTL_MS) return hit.rows;
+    const allSets = loadDict(teacherId).sets;
+    const seen = {};
+    const rows = [];
+    eachStudent(teacherId, function (g, s) {
+      if (!s.id || seen[s.id] || s.status === "archived") return false;
+      seen[s.id] = true;
+      const p = loadProgress(teacherId, s.id);
+      const index = dictIndex(allSets.filter(function (set) {
+        return set.groupId === g.id && (!set.studentIds || set.studentIds.indexOf(s.id) >= 0);
+      }));
+      const v = vocabStats(p, "B1", index);
+      rows.push({ id: s.id, name: publicName(s.name), points: studentPoints(p, s, v.known).total });
+      return false;
+    });
+    rows.sort(function (a, b) { return (b.points - a.points) || a.name.localeCompare(b.name); });
+    let prev = null;
+    let rank = 0;
+    rows.forEach(function (r, i) {
+      if (r.points !== prev) { rank = i + 1; prev = r.points; }
+      r.rank = rank;
+    });
+    lbCache.set(teacherId, { at: Date.now(), rows: rows });
+    return rows;
+  }
+
+  router.get("/student/leaderboard", function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const rows = leaderboardRows(found.teacher.id);
+    const myIdx = rows.findIndex(function (r) { return r.id === found.student.id; });
+    const mine = myIdx >= 0 ? rows[myIdx] : null;
+    let toNext = 0;
+    if (mine) {
+      for (let i = myIdx - 1; i >= 0; i -= 1) {
+        if (rows[i].points > mine.points) { toNext = rows[i].points - mine.points; break; }
+      }
+    }
+    res.json({
+      ok: true,
+      total: rows.length,
+      top: rows.filter(function (r) { return r.points > 0; }).slice(0, 10).map(function (r) {
+        return { rank: r.rank, name: r.name, points: r.points, me: r.id === found.student.id };
+      }),
+      me: mine ? { rank: mine.rank, name: mine.name, points: mine.points, toNext: toNext } : null
+    });
+  });
+
   router.post("/student/login", smallJson, function (req, res) {
     const body = req.body || {};
     const login = normLogin(body.login);
@@ -1325,17 +1391,33 @@ function createTeacherStoreRouter(options) {
       Object.keys(p.acc).forEach(function (k) { if (k < cutoff) delete p.acc[k]; });
     }
 
+    /* Dictation («Listen & type») results by day: p.dict[day] = [correct, wrong] → скилл «Dictation» у учителя */
+    const dictC = Math.max(0, Math.min(500, Math.floor(Number(body.dictCorrect) || 0)));
+    const dictW = Math.max(0, Math.min(500, Math.floor(Number(body.dictWrong) || 0)));
+    if (!p.dict || typeof p.dict !== "object") p.dict = {};
+    if (dictC || dictW) {
+      const drow = Array.isArray(p.dict[day]) ? p.dict[day] : [0, 0];
+      p.dict[day] = [drow[0] + dictC, drow[1] + dictW];
+    }
+    const accCutoff = new Date(now - ACC_DAYS * 86400000).toISOString().slice(0, 10);
+    Object.keys(p.dict).forEach(function (k) { if (k < accCutoff) delete p.dict[k]; });
+
     if (p.days.indexOf(day) < 0) {
       p.days.push(day);
       p.days.sort();
       p.days = p.days.slice(-400);
     }
     p.lastSeen = now;
-    saveProgress(found.teacher.id, found.student.id, p);
     const courses = readTeacherKey(found.teacher.id, "teacher_hub_courses_v1");
     const course = (Array.isArray(courses) ? courses : [])
       .filter(function (c) { return c && c.id === found.group.courseId; })[0];
-    res.json({ ok: true, vocab: vocabStats(p, studentLevel(found, course), index) });
+    const stats = vocabStats(p, studentLevel(found, course), index);
+    /* History of «learned words of N» by day: p.vh[day] = [known, total] → скилл «Vocabulary» у учителя */
+    if (!p.vh || typeof p.vh !== "object") p.vh = {};
+    p.vh[day] = [stats.known, stats.total];
+    Object.keys(p.vh).forEach(function (k) { if (k < accCutoff) delete p.vh[k]; });
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, vocab: stats });
   });
 
   /** Teacher: word sets already sent (optionally for one group), without the word lists. */
@@ -1769,6 +1851,8 @@ function createTeacherStoreRouter(options) {
           due: v.due,
           weak: v.weak,
           pct: acc.pct,
+          dict: p.dict && typeof p.dict === "object" ? p.dict : {},
+          vh: p.vh && typeof p.vh === "object" ? p.vh : {},
           points: studentPoints(p, s, v.known)
         };
       }
