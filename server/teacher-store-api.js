@@ -1145,6 +1145,48 @@ function createTeacherStoreRouter(options) {
     return out;
   }
 
+  /* What the teacher added by hand is shown to the student too: skill results (Reading 100%…)
+     and the lesson points log. Only plain values. */
+  const SKILLS_PAYLOAD_MAX = 400;
+  const LESSON_LOG_PAYLOAD_MAX = 60;
+
+  function skillsForPayload(s) {
+    const list = Array.isArray(s.skillLog) ? s.skillLog : [];
+    return list.slice(-SKILLS_PAYLOAD_MAX).filter(function (r) {
+      return r && typeof r === "object" && r.skill && Number(r.max) > 0 && DAY_RE.test(String(r.at || ""));
+    }).map(function (r) {
+      const crit = Array.isArray(r.criteria) ? r.criteria.slice(0, 20).filter(function (c) {
+        return c && c.name && isFinite(Number(c.value)) && isFinite(Number(c.max)) && isFinite(Number(c.min));
+      }).map(function (c) {
+        return { name: String(c.name).slice(0, 60), min: Number(c.min), max: Number(c.max), value: Number(c.value) };
+      }) : [];
+      const row = {
+        id: String(r.id || "").slice(0, 60),
+        skill: String(r.skill).replace(/[\u0000-\u001f<>]/g, "").slice(0, 60),
+        at: String(r.at),
+        score: Number(r.score) || 0,
+        max: Number(r.max) || 0,
+        note: String(r.note || "").replace(/[\u0000-\u001f<>]/g, " ").slice(0, 300),
+        pts: Math.max(0, Number(r.pts) || 0)
+      };
+      if (crit.length) row.criteria = crit;
+      return row;
+    });
+  }
+
+  function lessonLogForPayload(s) {
+    const list = Array.isArray(s.activityLog) ? s.activityLog : [];
+    return list.slice(-LESSON_LOG_PAYLOAD_MAX).filter(function (e) {
+      return e && typeof e === "object" && Number(e.points) > 0;
+    }).map(function (e) {
+      return {
+        at: DAY_RE.test(String(e.at || "")) ? String(e.at) : "",
+        points: Math.round(Number(e.points)),
+        note: String(e.note || "").replace(/[\u0000-\u001f<>]/g, " ").slice(0, 120),
+        skillId: e.skillId ? String(e.skillId).slice(0, 60) : ""
+      };
+    }).reverse();
+  }
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -1216,6 +1258,8 @@ function createTeacherStoreRouter(options) {
       progress: { days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress) },
       vocab: vStats,
       points: studentPoints(progress, s, vStats.known),
+      skills: skillsForPayload(s),
+      lessonLog: lessonLogForPayload(s),
       dictionary: dictionary,
       shadowing: shadowForPayload(tid, g.id, s.id, progress, day || studentDay("")),
       accuracy: acc.series,
