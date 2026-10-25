@@ -991,8 +991,8 @@ function createTeacherStoreRouter(options) {
 
   /**
    * Progress points. Nothing is paid per click or per word any more (that was farmable):
-   *  - audio:    10 for every shadowing / drill run played to the natural end (the Finish button early = 0),
-   *              repeated runs on the same day count again
+   *  - audio:    10 for a shadowing / drill run played to the natural end (the Finish button early = 0),
+   *              once per task per day; tomorrow it pays again
    *  - dict:     5 for one full pass of each distinct training mode (Quiz, Dictation, Pair Blitz…) on one
    *              dictionary pack per day; a second pass of the same mode that day pays 0, tomorrow pays again
    *  - homework: 5 for every homework item the student marked done (once per item)
@@ -1843,14 +1843,20 @@ function createTeacherStoreRouter(options) {
     const counted = played >= SHADOW_RUN_MIN;
     /* Points only for a run that played to the natural end (client sends completed:true).
        Finish pressed early still counts for the streak when ≥80% was heard, but pays nothing. */
-    const full = counted && body.completed === true;
+    const complete = counted && body.completed === true;
+    let full = false;      /* 10 points awarded by THIS run */
+    let already = false;   /* heard to the end, but today's 10 points for this task were already paid */
     if (counted) {
       const r = runs[day] || { best: 0, last: 0, runs: 0, sec: 0 };
       r.best = Math.max(r.best, pct);
       r.last = pct;
       r.runs += 1;
       r.sec += sec;
-      if (full) r.full = Math.max(0, Math.floor(Number(r.full) || 0)) + 1;
+      /* once per task per day: the first run heard to the end pays, repeats the same day pay 0 */
+      if (complete) {
+        if (Math.floor(Number(r.full) || 0) >= 1) already = true;
+        else { r.full = 1; full = true; }
+      }
       runs[day] = r;
       const keys = Object.keys(runs).sort();
       keys.slice(0, Math.max(0, keys.length - 400)).forEach(function (k) { delete runs[k]; });
@@ -1864,7 +1870,7 @@ function createTeacherStoreRouter(options) {
     p.lastSeen = Date.now();
     saveProgress(found.teacher.id, found.student.id, p);
     res.json({
-      ok: true, counted: counted, full: full, points: full ? POINTS_AUDIO_FULL : 0,
+      ok: true, counted: counted, full: full, already: already, points: full ? POINTS_AUDIO_FULL : 0,
       stats: shadowStats(runs, day, shadowStart(task))
     });
   });
