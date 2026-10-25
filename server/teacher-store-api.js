@@ -18,10 +18,11 @@
  *   POST /store/student/logout
  *   GET  /store/student/me?day=YYYY-MM-DD               → profile, course, published homework, progress; marks the day active
  *   POST /store/student/progress {assignmentId, itemId, done}
- *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games
+ *   POST /store/student/activity {day, game, words:[{w,t,ok}], correct, wrong}  → answers from games (no points)
+ *   POST /store/student/pass {setId, mode, day}         → one full pass of a dictionary training: 5 points per (pack, mode) per day
  *   GET  /store/students/progress                       (teacher) → { studentId: {days, lastSeen, hwDone, words, dictTotal, due, weak, pct, points} }
- *        points = { words, answers, audio, homework, lesson, total } — 1 point each (answers = correct
- *        answers in games / trainings), lesson = teacher's class points
+ *        points = { dict, audio, homework, homeworkItems, lesson, total } — audio 10 per run heard to the end,
+ *        dict 5 per training-mode pass (per pack, per day), homework 5 per item, lesson = teacher's points (may be negative)
  *   GET  /store/dict?groupId=                           (teacher) → word sets sent to students' dictionaries
  *   POST /store/dict/send {groupId, studentIds|null, sourceKind, sourceId, title, unit, words:[{w,t,img,ex}]}
  *   POST /store/dict/remove {id}
@@ -29,7 +30,7 @@
  *   POST /store/shadow/save {id?, kind:"shadow"|"drill", groupId, studentIds|null, title, note, audioUrl, lines:[text],
  *                            steps:[{who, qAudio, qText, img, aAudio, aText}] (drill), style, until:"YYYY-MM-DD"|"", day}
  *   POST /store/shadow/stop {id, stopped}  ·  POST /store/shadow/remove {id}  ·  GET /store/shadow/one?id= (preview)
- *   GET  /store/student/shadow?task=&day=  ·  POST /store/student/shadow {taskId, day, pct, played, sec}
+ *   GET  /store/student/shadow?task=&day=  ·  POST /store/student/shadow {taskId, day, pct, played, sec, completed}
  *
  * Data:
  *   GET  /store/snapshot?rev=N   → the logged-in teacher's data; without a session → the public (admin) copy
@@ -989,10 +990,20 @@ function createTeacherStoreRouter(options) {
   }
 
   /**
-   * Progress points (1 each, summed, kept because they come from saved progress):
-   * a learned word, a listened audio (shadowing/drill day with a counted run),
-   * a done homework item, plus the points the teacher gave in class.
+   * Progress points. Nothing is paid per click or per word any more (that was farmable):
+   *  - audio:    10 for every shadowing / drill run played to the natural end (the Finish button early = 0),
+   *              repeated runs on the same day count again
+   *  - dict:     5 for one full pass of each distinct training mode (Quiz, Dictation, Pair Blitz…) on one
+   *              dictionary pack per day; a second pass of the same mode that day pays 0, tomorrow pays again
+   *  - homework: 5 for every homework item the student marked done (once per item)
+   *  - lesson:   what the teacher gave by hand, may be negative
+   * total never goes below 0.
    */
+  const POINTS_AUDIO_FULL = 10;
+  const POINTS_DICT_PASS = 5;
+  const POINTS_HOMEWORK = 5;
+  const PASS_MODES = ["flipcards", "quiz", "typein", "dictation", "trainer", "express", "blitz", "memes"];
+  const PASS_DAYS_KEPT = 120;
   /** Correct answers ever (progress.correctTotal; old progress → what is still in acc). */
   function correctAnswersTotal(progress) {
     if (progress && progress.correctTotal != null) return Math.max(0, Number(progress.correctTotal) || 0);
@@ -1005,26 +1016,28 @@ function createTeacherStoreRouter(options) {
   }
 
   function studentPoints(progress, student, wordsKnown) {
-    let audio = 0;
+    let audioRuns = 0;
     const shadow = (progress && progress.shadow) || {};
     Object.keys(shadow).forEach(function (task) {
       const days = shadow[task] || {};
       Object.keys(days).forEach(function (d) {
-        if (days[d] && Number(days[d].runs || 0) > 0) audio += 1;
+        if (days[d]) audioRuns += Math.max(0, Math.floor(Number(days[d].full) || 0));
       });
     });
-    let homework = 0;
+    let homeworkItems = 0;
     const hw = (progress && progress.hwDone) || {};
     Object.keys(hw).forEach(function (a) {
       const row = hw[a] || {};
-      Object.keys(row).forEach(function (it) { if (row[it]) homework += 1; });
+      Object.keys(row).forEach(function (it) { if (row[it]) homeworkItems += 1; });
     });
-    const words = Number(wordsKnown || 0);
-    const answers = correctAnswersTotal(progress);
-    const lesson = Math.max(0, Number((student && student.lessonPoints) || 0));
+    const passes = Math.max(0, Math.floor(Number(progress && progress.pass && progress.pass.total) || 0));
+    const audio = audioRuns * POINTS_AUDIO_FULL;
+    const dict = passes * POINTS_DICT_PASS;
+    const homework = homeworkItems * POINTS_HOMEWORK;
+    const lesson = Math.round(Number((student && student.lessonPoints) || 0)) || 0;
     return {
-      words: words, answers: answers, audio: audio, homework: homework, lesson: lesson,
-      total: words + answers + audio + homework + lesson
+      dict: dict, audio: audio, homework: homework, homeworkItems: homeworkItems, lesson: lesson,
+      total: Math.max(0, dict + audio + homework + lesson)
     };
   }
 
@@ -1042,6 +1055,8 @@ function createTeacherStoreRouter(options) {
       const days = shadow[task] || {};
       Object.keys(days).forEach(function (d) { if (days[d] && Number(days[d].runs || 0) > 0) set[d] = 1; });
     });
+    const passDays = (progress && progress.pass && progress.pass.days) || {};
+    Object.keys(passDays).forEach(function (d) { if (DAY_RE.test(d)) set[d] = 1; });
     const hw = (progress && progress.hwDone) || {};
     Object.keys(hw).forEach(function (a) {
       const row = hw[a] || {};
@@ -1177,7 +1192,7 @@ function createTeacherStoreRouter(options) {
   function lessonLogForPayload(s) {
     const list = Array.isArray(s.activityLog) ? s.activityLog : [];
     return list.slice(-LESSON_LOG_PAYLOAD_MAX).filter(function (e) {
-      return e && typeof e === "object" && Number(e.points) > 0;
+      return e && typeof e === "object" && Math.round(Number(e.points)) !== 0 && isFinite(Number(e.points));
     }).map(function (e) {
       return {
         at: DAY_RE.test(String(e.at || "")) ? String(e.at) : "",
@@ -1826,12 +1841,16 @@ function createTeacherStoreRouter(options) {
     if (!p.shadow || typeof p.shadow !== "object") p.shadow = {};
     const runs = p.shadow[id] && typeof p.shadow[id] === "object" ? p.shadow[id] : {};
     const counted = played >= SHADOW_RUN_MIN;
+    /* Points only for a run that played to the natural end (client sends completed:true).
+       Finish pressed early still counts for the streak when ≥80% was heard, but pays nothing. */
+    const full = counted && body.completed === true;
     if (counted) {
       const r = runs[day] || { best: 0, last: 0, runs: 0, sec: 0 };
       r.best = Math.max(r.best, pct);
       r.last = pct;
       r.runs += 1;
       r.sec += sec;
+      if (full) r.full = Math.max(0, Math.floor(Number(r.full) || 0)) + 1;
       runs[day] = r;
       const keys = Object.keys(runs).sort();
       keys.slice(0, Math.max(0, keys.length - 400)).forEach(function (k) { delete runs[k]; });
@@ -1844,7 +1863,55 @@ function createTeacherStoreRouter(options) {
     }
     p.lastSeen = Date.now();
     saveProgress(found.teacher.id, found.student.id, p);
-    res.json({ ok: true, counted: counted, stats: shadowStats(runs, day, shadowStart(task)) });
+    res.json({
+      ok: true, counted: counted, full: full, points: full ? POINTS_AUDIO_FULL : 0,
+      stats: shadowStats(runs, day, shadowStart(task))
+    });
+  });
+
+  /** One full pass of a dictionary training mode on one pack: {setId, mode, day}.
+      5 points per distinct (pack, mode) per day; the same mode again that day pays 0, tomorrow pays again. */
+  router.post("/student/pass", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const setId = String(body.setId || "");
+    const mode = String(body.mode || "");
+    if (PASS_MODES.indexOf(mode) < 0 || !setId || setId.length > 120) {
+      res.status(400).json({ ok: false, error: "bad mode" });
+      return;
+    }
+    const set = setsForStudent(found.teacher.id, found.group.id, found.student.id)
+      .filter(function (s) { return s.id === setId; })[0];
+    if (!set) {
+      res.status(404).json({ ok: false, error: "pack not found" });
+      return;
+    }
+    const day = studentDay(body.day);
+    const p = loadProgress(found.teacher.id, found.student.id);
+    if (!p.pass || typeof p.pass !== "object") p.pass = {};
+    if (!p.pass.days || typeof p.pass.days !== "object") p.pass.days = {};
+    const row = p.pass.days[day] && typeof p.pass.days[day] === "object" ? p.pass.days[day] : {};
+    const key = setId + ":" + mode;
+    const fresh = !row[key];
+    if (fresh) {
+      row[key] = 1;
+      p.pass.days[day] = row;
+      p.pass.total = Math.max(0, Math.floor(Number(p.pass.total) || 0)) + 1;
+      const keep = Object.keys(p.pass.days).sort().slice(-PASS_DAYS_KEPT);
+      Object.keys(p.pass.days).forEach(function (d) { if (keep.indexOf(d) < 0) delete p.pass.days[d]; });
+      if (p.days.indexOf(day) < 0) {
+        p.days.push(day);
+        p.days.sort();
+        p.days = p.days.slice(-400);
+      }
+    }
+    p.lastSeen = Date.now();
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, awarded: fresh ? POINTS_DICT_PASS : 0, repeat: !fresh });
   });
 
   /** Teacher: progress of all their students (days active, last visit, homework ticks, words, % correct). */
