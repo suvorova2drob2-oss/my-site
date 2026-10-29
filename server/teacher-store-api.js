@@ -39,6 +39,10 @@
  *   PUT  /store/media/:id        { dataUrl }   (session; an id belongs to whoever uploaded it first)
  *   GET  /store/media/:id        → the file itself (public: students see teacher pictures)
  *
+ * Sharing a course with another teacher:
+ *   POST /store/share/course {title, bundle:{course, units, lessons, packs, textPacks}} (session) → {ok, id}
+ *   GET  /store/share/course/:id      (any teacher session) → {ok, title, ownerName, own, bundle}
+ *
  * First admin: node server/teacher-accounts-cli.js add-admin <login> "<name>"
  * Layout under <dir>: accounts.json, sessions.json, users/<id>/{state.json,keys,backups}, media/, media-owners.json
  */
@@ -1480,6 +1484,57 @@ function createTeacherStoreRouter(options) {
   });
 
   /** Teacher: word sets already sent (optionally for one group), without the word lists. */
+  /* ---------- «Поделиться курсом»: учитель отправляет копию курса коллеге ----------
+     Снимок курса (курс + юниты + уроки + свои паки) лежит в shares/<id>.json.
+     Открыть ссылку может любой вошедший учитель — он добавляет себе копию. */
+  const sharesDir = path.join(dir, "shares");
+  const SHARE_ID_RE = /^sh_[a-f0-9]{16}$/;
+
+  router.post("/share/course", bigJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const bundle = body.bundle;
+    if (!bundle || typeof bundle !== "object" || !bundle.course || !bundle.course.id) {
+      res.status(400).json({ ok: false, error: "Нет курса для отправки" });
+      return;
+    }
+    const id = "sh_" + crypto.randomBytes(8).toString("hex");
+    fs.mkdirSync(sharesDir, { recursive: true });
+    writeAtomic(path.join(sharesDir, id + ".json"), JSON.stringify({
+      id: id,
+      owner: me.id,
+      ownerName: me.name || me.login,
+      title: cleanText(body.title || bundle.course.name, 160) || "Курс",
+      createdAt: Date.now(),
+      bundle: bundle
+    }));
+    res.json({ ok: true, id: id });
+  });
+
+  router.get("/share/course/:id", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const id = String(req.params.id || "");
+    if (!SHARE_ID_RE.test(id)) {
+      res.status(404).json({ ok: false, error: "Ссылка не найдена" });
+      return;
+    }
+    const share = readJson(path.join(sharesDir, id + ".json"), null);
+    if (!share || !share.bundle) {
+      res.status(404).json({ ok: false, error: "Ссылка не найдена" });
+      return;
+    }
+    res.json({
+      ok: true,
+      title: share.title,
+      ownerName: share.ownerName,
+      own: share.owner === me.id,
+      createdAt: share.createdAt,
+      bundle: share.bundle
+    });
+  });
+
   router.get("/dict", function (req, res) {
     const me = requireUser(req, res);
     if (!me) return;
