@@ -544,6 +544,8 @@ function createTeacherStoreRouter(options) {
   }
   function noteFail(key) {
     const now = Date.now();
+    /* expired entries go away, so a flood of made-up logins cannot grow memory forever */
+    if (fails.size > 5000) fails.forEach(function (f, k) { if (f.until < now) fails.delete(k); });
     const f = fails.get(key);
     if (!f || f.until < now) fails.set(key, { count: 1, until: now + FAIL_WINDOW_MS });
     else f.count += 1;
@@ -781,15 +783,19 @@ function createTeacherStoreRouter(options) {
     return null;
   }
 
-  function findStudentByLogin(login) {
+  /** Every student with this login across all teachers (two teachers can pick the same login). */
+  function findStudentsByLogin(login) {
     const l = normLogin(login);
-    if (!l) return null;
+    const out = [];
+    if (!l) return out;
     const users = accounts.load().users.filter(function (u) { return u.status === "active"; });
-    for (let i = 0; i < users.length; i += 1) {
-      const hit = eachStudent(users[i].id, function (_g, s) { return normLogin(s.login) === l; });
-      if (hit) return { teacher: users[i], group: hit.group, student: hit.student };
-    }
-    return null;
+    users.forEach(function (u) {
+      eachStudent(u.id, function (g, s) {
+        if (normLogin(s.login) === l) out.push({ teacher: u, group: g, student: s });
+        return false;
+      });
+    });
+    return out;
   }
 
   function findStudentById(teacherId, studentId) {
@@ -888,7 +894,8 @@ function createTeacherStoreRouter(options) {
   function studentDay(raw) {
     const day = String(raw || "");
     const t = Date.parse(day + "T12:00:00Z");
-    if (DAY_RE.test(day) && Math.abs(t - Date.now()) < 2 * 86400000) return day;
+    /* noon UTC of any real local «today» (UTC−12…UTC+14) is within 26 h of now — no claiming days ahead for extra points */
+    if (DAY_RE.test(day) && Math.abs(t - Date.now()) <= 26 * 3600000) return day;
     return new Date().toISOString().slice(0, 10);
   }
 
@@ -1382,8 +1389,11 @@ function createTeacherStoreRouter(options) {
       res.status(429).json({ ok: false, error: "Слишком много попыток. Подождите 15 минут." });
       return;
     }
-    const found = findStudentByLogin(login);
-    if (!found || found.student.status === "archived" || !studentPasswordOk(found.student, body.password)) {
+    /* the same login at another teacher must not lock this student out: the password picks the right one */
+    const found = findStudentsByLogin(login).filter(function (f) {
+      return f.student.status !== "archived" && studentPasswordOk(f.student, body.password);
+    })[0];
+    if (!found) {
       keys.forEach(noteFail);
       res.status(401).json({ ok: false, error: "Неверный логин или пароль" });
       return;
@@ -2182,6 +2192,9 @@ function createTeacherStoreRouter(options) {
       return;
     }
     res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    /* uploaded files are data, never a page: an SVG with <script> opened by its URL must not run on the site */
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Content-Security-Policy", "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self'; sandbox");
     res.sendFile(file);
   });
 

@@ -731,6 +731,21 @@ const app = express();
 // req.secure for Secure cookies). Direct :8787 clients cannot spoof them — only loopback is trusted.
 app.set("trust proxy", "loopback");
 app.use(compression());
+/* Never serve repo internals: .git (whole history), dotfiles, server code/configs, deploy scripts.
+   express.static's default only hides dot-FILES, not files inside a dot-folder like /.git/config. */
+app.use(function (req, res, next) {
+  let p = "";
+  try { p = decodeURIComponent(req.path); } catch (e) { p = req.path; }
+  if (/(^|\/)\.(?!well-known\/)/.test(p) ||
+      /^\/(server|scripts|node_modules)(\/|$)/i.test(p) ||
+      /\.(bat|ps1|sh|service|conf|env|key|pem|log)$/i.test(p) ||
+      /^\/package(-lock)?\.json$/i.test(p)) {
+    res.status(404).end();
+    return;
+  }
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  next();
+});
 const liveJson = express.json({ limit: "512kb" });
 app.use(function (req, res, next) {
   if (req.path.indexOf("/store/") === 0) return next();
