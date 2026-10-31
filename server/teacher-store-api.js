@@ -87,6 +87,9 @@ const ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
 const SESSION_DAYS = 30;
 const FAIL_WINDOW_MS = 15 * 60 * 1000;
 const FAIL_LIMIT = 10;
+/* Вход учеников: класс сидит за одним Wi-Fi (один IP) — 10 ошибок на всех блокировали вход
+   всему классу на 15 минут. Для IP учеников лимит выше; на один логин — по-прежнему 10. */
+const STUDENT_IP_FAIL_LIMIT = 60;
 
 const MIME_EXT = {
   "image/png": "png",
@@ -203,6 +206,18 @@ function sealGroups(groups, oldGroups) {
   groupStudents(oldGroups, function (st) { if (st.id) old[st.id] = st; });
   groupStudents(groups, function (st) {
     const prev = st.id ? old[st.id] : null;
+    /* Устройство учителя со старой копией групп (без логина ученика или с более старой выдачей)
+       не должно отнимать у ученика вход: логин и пароль остаются от последней выдачи.
+       Отзыва доступа в кабинете учителя нет, так что пустой логин здесь — всегда старая копия. */
+    if (prev && prev.login && prev.passHash &&
+        (!st.login || (Number(prev.accessAt) || 0) > (Number(st.accessAt) || 0))) {
+      st.login = prev.login;
+      if (prev.accessAt) st.accessAt = prev.accessAt;
+      st.passHash = prev.passHash;
+      if (prev.passEnc) st.passEnc = prev.passEnc;
+      delete st.password;
+      return;
+    }
     if (typeof st.password === "string" && st.password) {
       const plain = st.password;
       if (prev && prev.passEnc && prev.passHash && decryptPass(prev.passEnc) === plain) {
@@ -239,7 +254,8 @@ function openGroups(groups) {
 }
 
 function studentPasswordOk(student, password) {
-  const given = String(password || "");
+  /* пароль сохраняется без пробелов по краям — и проверяем так же (вставка из сообщения) */
+  const given = String(password || "").trim();
   if (!student || !given) return false;
   if (student.passHash) return checkPassword(given, student.passHash);
   const legacy = String(student.password || "");
@@ -520,8 +536,11 @@ function createTeacherStoreRouter(options) {
   }
 
   function tooManyFails(key) {
+    return failsOver(key, FAIL_LIMIT);
+  }
+  function failsOver(key, limit) {
     const f = fails.get(key);
-    return !!(f && f.until > Date.now() && f.count >= FAIL_LIMIT);
+    return !!(f && f.until > Date.now() && f.count >= limit);
   }
   function noteFail(key) {
     const now = Date.now();
@@ -1355,8 +1374,8 @@ function createTeacherStoreRouter(options) {
   router.post("/student/login", smallJson, function (req, res) {
     const body = req.body || {};
     const login = normLogin(body.login);
-    const keys = ["ip:" + (req.ip || ""), "student:" + login];
-    if (keys.some(tooManyFails)) {
+    const keys = ["stip:" + (req.ip || ""), "student:" + login];
+    if (failsOver(keys[1], FAIL_LIMIT) || failsOver(keys[0], STUDENT_IP_FAIL_LIMIT)) {
       res.status(429).json({ ok: false, error: "Слишком много попыток. Подождите 15 минут." });
       return;
     }
