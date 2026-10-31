@@ -1081,11 +1081,14 @@ function createTeacherStoreRouter(options) {
     const passDays = (progress && progress.pass && progress.pass.days) || {};
     Object.keys(passDays).forEach(function (d) { if (DAY_RE.test(d)) set[d] = 1; });
     const hw = (progress && progress.hwDone) || {};
+    const hwDay = (progress && progress.hwDay) || {};
     Object.keys(hw).forEach(function (a) {
       const row = hw[a] || {};
       Object.keys(row).forEach(function (it) {
+        const local = hwDay[a + "|" + it];
         const t = Number(row[it]);
-        if (t > 1e12) set[new Date(t).toISOString().slice(0, 10)] = 1;
+        if (DAY_RE.test(String(local || ""))) set[local] = 1;
+        else if (t > 1e12) set[new Date(t).toISOString().slice(0, 10)] = 1;
       });
     });
     return Object.keys(set).sort().slice(-400);
@@ -1430,8 +1433,15 @@ function createTeacherStoreRouter(options) {
     }
     const p = loadProgress(found.teacher.id, found.student.id);
     const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
-    if (body.done) row[iid] = Date.now();
-    else delete row[iid];
+    if (!p.hwDay || typeof p.hwDay !== "object") p.hwDay = {};
+    if (body.done) {
+      row[iid] = Date.now();
+      /* local day of the student — a task done at 01:00 in Moscow is today, not yesterday in UTC */
+      p.hwDay[aid + "|" + iid] = studentDay(body.day);
+    } else {
+      delete row[iid];
+      delete p.hwDay[aid + "|" + iid];
+    }
     if (Object.keys(row).length) p.hwDone[aid] = row;
     else delete p.hwDone[aid];
     if (Object.keys(p.hwDone).length > 500) {
