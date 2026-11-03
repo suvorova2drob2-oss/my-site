@@ -824,6 +824,7 @@ function createTeacherStoreRouter(options) {
     if (!p.hwDone || typeof p.hwDone !== "object") p.hwDone = {};
     if (!p.hwItemPoints || typeof p.hwItemPoints !== "object") p.hwItemPoints = {};
     if (!p.heistLv || typeof p.heistLv !== "object") p.heistLv = {};
+    if (!p.drillLv || typeof p.drillLv !== "object") p.drillLv = {};
     if (!p.heistLevelPts || typeof p.heistLevelPts !== "object") p.heistLevelPts = {};
     return p;
   }
@@ -1325,6 +1326,57 @@ function createTeacherStoreRouter(options) {
     return out;
   }
 
+  function drillTrackTotal(it) {
+    const n = Math.max(0, Math.floor(Number(it.drillItemCount) || 0));
+    const explicit = Math.floor(Number(it.drillTrackLevels) || 0);
+    if (explicit > 0) return Math.max(1, Math.min(20, explicit));
+    if (n <= 3) return 1;
+    return Math.min(20, Math.ceil(n / 3));
+  }
+
+  /** Drill Train homework · levels cleared + points (same shape as heistHw). */
+  function drillHomeworkSummary(progress, homework) {
+    const drillLv = (progress && progress.drillLv) || {};
+    const itemPts = (progress && progress.hwItemPoints) || {};
+    const out = {};
+    (Array.isArray(homework) ? homework : []).forEach(function (a) {
+      if (!a || !a.id) return;
+      (Array.isArray(a.items) ? a.items : []).forEach(function (it) {
+        if (!it || !it.id) return;
+        const isDrill = it.kind === "drill-train" || it.drillPack || /DrillTrain/i.test(String(it.href || ""));
+        if (!isDrill) return;
+        const aid = a.id;
+        const iid = it.id;
+        const key = aid + ":" + iid;
+        const total = drillTrackTotal(it);
+        const bucket = drillLv[aid] && typeof drillLv[aid] === "object" ? drillLv[aid][iid] : null;
+        const cleared = [];
+        if (bucket && typeof bucket === "object") {
+          Object.keys(bucket).forEach(function (lvKey) {
+            if (Math.floor(Number(bucket[lvKey]) || 0) > 0) {
+              const n = Math.floor(Number(lvKey));
+              if (n >= 0 && n < total && cleared.indexOf(n) < 0) cleared.push(n);
+            }
+          });
+        }
+        cleared.sort(function (x, y) { return x - y; });
+        let points = Math.max(0, Math.floor(Number(itemPts[key]) || 0));
+        let nextLevel = null;
+        for (let i = 0; i < total; i += 1) {
+          if (cleared.indexOf(i) < 0) { nextLevel = i; break; }
+        }
+        out[key] = {
+          levelsDone: cleared.length,
+          totalLevels: total,
+          points: points,
+          nextLevel: nextLevel,
+          allDone: cleared.length >= total
+        };
+      });
+    });
+    return out;
+  }
+
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -1355,6 +1407,7 @@ function createTeacherStoreRouter(options) {
               drillPack: String(it.drillPack || "").slice(0, 80),
               drillPairDir: String(it.drillPairDir || "").slice(0, 4),
               drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(it.drillItemCount) || 0))),
+              drillTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(it.drillTrackLevels) || 0))),
               drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(it.drillPointsPerPass) || 0)))
             };
           });
@@ -1367,6 +1420,7 @@ function createTeacherStoreRouter(options) {
       })
       .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
     const heistHw = heistHomeworkSummary(progress, homework);
+    const drillHw = drillHomeworkSummary(progress, homework);
     const acc = accuracyStats(progress);
     const sets = setsForStudent(tid, g.id, s.id);
     const index = dictIndex(sets);
@@ -1411,7 +1465,8 @@ function createTeacherStoreRouter(options) {
       homeworkPacks: homeworkPacksForPayload(tid, homework),
       progress: {
         days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress),
-        heistHw: heistHw
+        heistHw: heistHw,
+        drillHw: drillHw
       },
       vocab: vStats,
       points: studentPoints(progress, s, vStats.known),
@@ -1641,6 +1696,59 @@ function createTeacherStoreRouter(options) {
     });
   });
 
+  /** Drill Train homework · +N points per clean level (repeat passes count again). */
+  router.post("/student/drill-level", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const aid = String(body.assignmentId || "");
+    const iid = String(body.itemId || "");
+    const level = Math.max(0, Math.min(19, Math.floor(Number(body.level) || 0)));
+    const totalLevels = Math.max(1, Math.min(20, Math.floor(Number(body.totalLevels) || 1)));
+    const per = Math.max(1, Math.min(50, Math.floor(Number(body.points) || 10)));
+    const pack = String(body.pack || "drill").slice(0, 80);
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const lvKey = String(level);
+    const now = Date.now();
+    const added = per;
+    if (ID_RE.test(aid) && ID_RE.test(iid)) {
+      const bucket = p.drillLv[aid] && typeof p.drillLv[aid] === "object" ? p.drillLv[aid] : {};
+      const item = bucket[iid] && typeof bucket[iid] === "object" ? bucket[iid] : {};
+      item[lvKey] = (Math.floor(Number(item[lvKey]) || 0) + 1);
+      bucket[iid] = item;
+      p.drillLv[aid] = bucket;
+      let distinct = 0;
+      Object.keys(item).forEach(function (k) { if (item[k]) distinct += 1; });
+      if (distinct >= totalLevels) {
+        const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
+        row[iid] = now;
+        p.hwDone[aid] = row;
+      }
+      const sumKey = aid + ":" + iid;
+      p.hwItemPoints[sumKey] = Math.min(9999, Math.max(0, Math.floor(Number(p.hwItemPoints[sumKey]) || 0) + added));
+      p.heistLevelPts[sumKey + ":dlv" + lvKey + ":" + now] = per;
+    } else {
+      p.heistLevelPts["drill:" + pack + ":lv" + lvKey + ":" + now] = per;
+    }
+    const keys = Object.keys(p.heistLevelPts);
+    if (keys.length > 800) {
+      keys.sort().slice(0, keys.length - 600).forEach(function (k) { delete p.heistLevelPts[k]; });
+    }
+    saveProgress(found.teacher.id, found.student.id, p);
+    let levelsDone = 0;
+    if (ID_RE.test(aid) && ID_RE.test(iid) && p.drillLv[aid] && p.drillLv[aid][iid]) {
+      levelsDone = Object.keys(p.drillLv[aid][iid]).length;
+    }
+    const allDone = ID_RE.test(aid) && ID_RE.test(iid) && levelsDone >= totalLevels;
+    res.json({
+      ok: true, added: added, levelsDone: levelsDone, totalLevels: totalLevels,
+      allDone: allDone, hwDone: p.hwDone
+    });
+  });
+
   /** Drill Train · +N points per full pass (repeat passes count again). */
   router.post("/student/drill-pass", smallJson, function (req, res) {
     const found = sessionStudent(req);
@@ -1707,6 +1815,7 @@ function createTeacherStoreRouter(options) {
       drillPack: String(item.drillPack || "").slice(0, 80),
       drillPairDir: String(item.drillPairDir || "").slice(0, 4),
       drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(item.drillItemCount) || 0))),
+      drillTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(item.drillTrackLevels) || 0))),
       drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(item.drillPointsPerPass) || 10)))
     };
     function standaloneGameItemKey(it) {
