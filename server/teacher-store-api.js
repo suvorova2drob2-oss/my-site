@@ -39,6 +39,10 @@
  *   PUT  /store/media/:id        { dataUrl }   (session; an id belongs to whoever uploaded it first)
  *   GET  /store/media/:id        → the file itself (public: students see teacher pictures)
  *
+ * Sharing a course with another teacher:
+ *   POST /store/share/course {title, bundle:{course, units, lessons, packs, textPacks}} (session) → {ok, id}
+ *   GET  /store/share/course/:id      (any teacher session) → {ok, title, ownerName, own, bundle}
+ *
  * First admin: node server/teacher-accounts-cli.js add-admin <login> "<name>"
  * Layout under <dir>: accounts.json, sessions.json, users/<id>/{state.json,keys,backups}, media/, media-owners.json
  */
@@ -83,6 +87,9 @@ const ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
 const SESSION_DAYS = 30;
 const FAIL_WINDOW_MS = 15 * 60 * 1000;
 const FAIL_LIMIT = 10;
+/* Вход учеников: класс сидит за одним Wi-Fi (один IP) — 10 ошибок на всех блокировали вход
+   всему классу на 15 минут. Для IP учеников лимит выше; на один логин — по-прежнему 10. */
+const STUDENT_IP_FAIL_LIMIT = 60;
 
 const MIME_EXT = {
   "image/png": "png",
@@ -199,6 +206,18 @@ function sealGroups(groups, oldGroups) {
   groupStudents(oldGroups, function (st) { if (st.id) old[st.id] = st; });
   groupStudents(groups, function (st) {
     const prev = st.id ? old[st.id] : null;
+    /* Устройство учителя со старой копией групп (без логина ученика или с более старой выдачей)
+       не должно отнимать у ученика вход: логин и пароль остаются от последней выдачи.
+       Отзыва доступа в кабинете учителя нет, так что пустой логин здесь — всегда старая копия. */
+    if (prev && prev.login && prev.passHash &&
+        (!st.login || (Number(prev.accessAt) || 0) > (Number(st.accessAt) || 0))) {
+      st.login = prev.login;
+      if (prev.accessAt) st.accessAt = prev.accessAt;
+      st.passHash = prev.passHash;
+      if (prev.passEnc) st.passEnc = prev.passEnc;
+      delete st.password;
+      return;
+    }
     if (typeof st.password === "string" && st.password) {
       const plain = st.password;
       if (prev && prev.passEnc && prev.passHash && decryptPass(prev.passEnc) === plain) {
@@ -235,7 +254,8 @@ function openGroups(groups) {
 }
 
 function studentPasswordOk(student, password) {
-  const given = String(password || "");
+  /* пароль сохраняется без пробелов по краям — и проверяем так же (вставка из сообщения) */
+  const given = String(password || "").trim();
   if (!student || !given) return false;
   if (student.passHash) return checkPassword(given, student.passHash);
   const legacy = String(student.password || "");
@@ -516,11 +536,16 @@ function createTeacherStoreRouter(options) {
   }
 
   function tooManyFails(key) {
+    return failsOver(key, FAIL_LIMIT);
+  }
+  function failsOver(key, limit) {
     const f = fails.get(key);
-    return !!(f && f.until > Date.now() && f.count >= FAIL_LIMIT);
+    return !!(f && f.until > Date.now() && f.count >= limit);
   }
   function noteFail(key) {
     const now = Date.now();
+    /* expired entries go away, so a flood of made-up logins cannot grow memory forever */
+    if (fails.size > 5000) fails.forEach(function (f, k) { if (f.until < now) fails.delete(k); });
     const f = fails.get(key);
     if (!f || f.until < now) fails.set(key, { count: 1, until: now + FAIL_WINDOW_MS });
     else f.count += 1;
@@ -766,15 +791,19 @@ function createTeacherStoreRouter(options) {
     return null;
   }
 
-  function findStudentByLogin(login) {
+  /** Every student with this login across all teachers (two teachers can pick the same login). */
+  function findStudentsByLogin(login) {
     const l = normLogin(login);
-    if (!l) return null;
+    const out = [];
+    if (!l) return out;
     const users = accounts.load().users.filter(function (u) { return u.status === "active"; });
-    for (let i = 0; i < users.length; i += 1) {
-      const hit = eachStudent(users[i].id, function (_g, s) { return normLogin(s.login) === l; });
-      if (hit) return { teacher: users[i], group: hit.group, student: hit.student };
-    }
-    return null;
+    users.forEach(function (u) {
+      eachStudent(u.id, function (g, s) {
+        if (normLogin(s.login) === l) out.push({ teacher: u, group: g, student: s });
+        return false;
+      });
+    });
+    return out;
   }
 
   function findStudentById(teacherId, studentId) {
@@ -876,7 +905,8 @@ function createTeacherStoreRouter(options) {
   function studentDay(raw) {
     const day = String(raw || "");
     const t = Date.parse(day + "T12:00:00Z");
-    if (DAY_RE.test(day) && Math.abs(t - Date.now()) < 2 * 86400000) return day;
+    /* noon UTC of any real local «today» (UTC−12…UTC+14) is within 26 h of now — no claiming days ahead for extra points */
+    if (DAY_RE.test(day) && Math.abs(t - Date.now()) <= 26 * 3600000) return day;
     return new Date().toISOString().slice(0, 10);
   }
 
@@ -1097,11 +1127,14 @@ function createTeacherStoreRouter(options) {
     const passDays = (progress && progress.pass && progress.pass.days) || {};
     Object.keys(passDays).forEach(function (d) { if (DAY_RE.test(d)) set[d] = 1; });
     const hw = (progress && progress.hwDone) || {};
+    const hwDay = (progress && progress.hwDay) || {};
     Object.keys(hw).forEach(function (a) {
       const row = hw[a] || {};
       Object.keys(row).forEach(function (it) {
+        const local = hwDay[a + "|" + it];
         const t = Number(row[it]);
-        if (t > 1e12) set[new Date(t).toISOString().slice(0, 10)] = 1;
+        if (DAY_RE.test(String(local || ""))) set[local] = 1;
+        else if (t > 1e12) set[new Date(t).toISOString().slice(0, 10)] = 1;
       });
     });
     return Object.keys(set).sort().slice(-400);
@@ -1405,13 +1438,16 @@ function createTeacherStoreRouter(options) {
   router.post("/student/login", smallJson, function (req, res) {
     const body = req.body || {};
     const login = normLogin(body.login);
-    const keys = ["ip:" + (req.ip || ""), "student:" + login];
-    if (keys.some(tooManyFails)) {
+    const keys = ["stip:" + (req.ip || ""), "student:" + login];
+    if (failsOver(keys[1], FAIL_LIMIT) || failsOver(keys[0], STUDENT_IP_FAIL_LIMIT)) {
       res.status(429).json({ ok: false, error: "Слишком много попыток. Подождите 15 минут." });
       return;
     }
-    const found = findStudentByLogin(login);
-    if (!found || found.student.status === "archived" || !studentPasswordOk(found.student, body.password)) {
+    /* the same login at another teacher must not lock this student out: the password picks the right one */
+    const found = findStudentsByLogin(login).filter(function (f) {
+      return f.student.status !== "archived" && studentPasswordOk(f.student, body.password);
+    })[0];
+    if (!found) {
       keys.forEach(noteFail);
       res.status(401).json({ ok: false, error: "Неверный логин или пароль" });
       return;
@@ -1463,12 +1499,17 @@ function createTeacherStoreRouter(options) {
     const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
     const pts = Math.floor(Number(body.points) || 0);
     const key = aid + ":" + iid;
+    if (!p.hwDay || typeof p.hwDay !== "object") p.hwDay = {};
+    if (!p.hwItemPoints || typeof p.hwItemPoints !== "object") p.hwItemPoints = {};
     if (body.done) {
       row[iid] = Date.now();
       if (pts > 0) p.hwItemPoints[key] = Math.min(100, pts);
+      /* local day of the student — a task done at 01:00 in Moscow is today, not yesterday in UTC */
+      p.hwDay[aid + "|" + iid] = studentDay(body.day);
     } else {
       delete row[iid];
       delete p.hwItemPoints[key];
+      delete p.hwDay[aid + "|" + iid];
     }
     if (Object.keys(row).length) p.hwDone[aid] = row;
     else delete p.hwDone[aid];
@@ -1690,6 +1731,57 @@ function createTeacherStoreRouter(options) {
   });
 
   /** Teacher: word sets already sent (optionally for one group), without the word lists. */
+  /* ---------- «Поделиться курсом»: учитель отправляет копию курса коллеге ----------
+     Снимок курса (курс + юниты + уроки + свои паки) лежит в shares/<id>.json.
+     Открыть ссылку может любой вошедший учитель — он добавляет себе копию. */
+  const sharesDir = path.join(dir, "shares");
+  const SHARE_ID_RE = /^sh_[a-f0-9]{16}$/;
+
+  router.post("/share/course", bigJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const bundle = body.bundle;
+    if (!bundle || typeof bundle !== "object" || !bundle.course || !bundle.course.id) {
+      res.status(400).json({ ok: false, error: "Нет курса для отправки" });
+      return;
+    }
+    const id = "sh_" + crypto.randomBytes(8).toString("hex");
+    fs.mkdirSync(sharesDir, { recursive: true });
+    writeAtomic(path.join(sharesDir, id + ".json"), JSON.stringify({
+      id: id,
+      owner: me.id,
+      ownerName: me.name || me.login,
+      title: cleanText(body.title || bundle.course.name, 160) || "Курс",
+      createdAt: Date.now(),
+      bundle: bundle
+    }));
+    res.json({ ok: true, id: id });
+  });
+
+  router.get("/share/course/:id", function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const id = String(req.params.id || "");
+    if (!SHARE_ID_RE.test(id)) {
+      res.status(404).json({ ok: false, error: "Ссылка не найдена" });
+      return;
+    }
+    const share = readJson(path.join(sharesDir, id + ".json"), null);
+    if (!share || !share.bundle) {
+      res.status(404).json({ ok: false, error: "Ссылка не найдена" });
+      return;
+    }
+    res.json({
+      ok: true,
+      title: share.title,
+      ownerName: share.ownerName,
+      own: share.owner === me.id,
+      createdAt: share.createdAt,
+      bundle: share.bundle
+    });
+  });
+
   router.get("/dict", function (req, res) {
     const me = requireUser(req, res);
     if (!me) return;
@@ -2308,6 +2400,9 @@ function createTeacherStoreRouter(options) {
       return;
     }
     res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    /* uploaded files are data, never a page: an SVG with <script> opened by its URL must not run on the site */
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Content-Security-Policy", "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self'; sandbox");
     res.sendFile(file);
   });
 
