@@ -1633,41 +1633,82 @@ function createTeacherStoreRouter(options) {
     const until = DAY_RE.test(String(body.until || "")) ? String(body.until) : "";
     const openEnded = !!body.openEnded || !until;
     const dueDate = openEnded ? "9999-12-31" : until;
-    const assignment = {
-      id: "hw_a_" + crypto.randomBytes(6).toString("hex"),
-      groupId: group.id,
-      courseId: group.courseId || "",
-      unitId: "",
-      dueDate: dueDate,
-      openEnded: openEnded,
-      noShadowing: true,
-      published: true,
-      publishedAt: new Date().toISOString(),
-      title: cleanText(body.title, 80) || "Homework",
-      items: [{
-        id: String(item.id || "hw_heist_" + Date.now()),
-        type: String(item.type || "game"),
-        kind: String(item.kind || "grammar-heist"),
-        title: cleanText(item.title, 120) || "Grammar Heist",
-        text: cleanText(item.text, 400),
-        href: String(item.href || "").slice(0, 500),
-        cover: String(item.cover || "").slice(0, 200),
-        heistTpl: String(item.heistTpl || "").slice(0, 48),
-        heistLv: String(item.heistLv || "").slice(0, 40),
-        heistTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(item.heistTrackLevels) || 0))),
-        heistPointsPerLevel: Math.max(0, Math.min(50, Math.floor(Number(item.heistPointsPerLevel) || 10))),
-        drillPack: String(item.drillPack || "").slice(0, 80),
-        drillPairDir: String(item.drillPairDir || "").slice(0, 4),
-        drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(item.drillItemCount) || 0))),
-        drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(item.drillPointsPerPass) || 10)))
-      }]
+    const normItem = {
+      id: String(item.id || "hw_heist_" + Date.now()),
+      type: String(item.type || "game"),
+      kind: String(item.kind || "grammar-heist"),
+      title: cleanText(item.title, 120) || "Grammar Heist",
+      text: cleanText(item.text, 400),
+      href: String(item.href || "").slice(0, 500),
+      cover: String(item.cover || "").slice(0, 200),
+      heistTpl: String(item.heistTpl || "").slice(0, 48),
+      heistLv: String(item.heistLv || "").slice(0, 40),
+      heistTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(item.heistTrackLevels) || 0))),
+      heistPointsPerLevel: Math.max(0, Math.min(50, Math.floor(Number(item.heistPointsPerLevel) || 10))),
+      drillPack: String(item.drillPack || "").slice(0, 80),
+      drillPairDir: String(item.drillPairDir || "").slice(0, 4),
+      drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(item.drillItemCount) || 0))),
+      drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(item.drillPointsPerPass) || 10)))
     };
+    function standaloneGameItemKey(it) {
+      if (!it) return "";
+      if (it.kind === "drill-train" || it.drillPack) {
+        return "drill:" + String(it.drillPack || "") + ":" + String(it.drillPairDir || "ab");
+      }
+      if (it.kind === "grammar-heist" || it.heistTpl || it.heistLv) {
+        return "heist:" + String(it.heistTpl || "") + ":" + String(it.heistLv || "");
+      }
+      return "game:" + String(it.id || it.title || "");
+    }
+    const gKey = standaloneGameItemKey(normItem);
     const key = "teacher_hub_hw_assignments_v1";
     const list = readTeacherKey(me.id, key);
-    const arr = Array.isArray(list) ? list : [];
-    arr.push(assignment);
+    const arr = Array.isArray(list) ? list.slice() : [];
+    let assignment = null;
+    if (gKey) {
+      for (let i = 0; i < arr.length; i++) {
+        const prev = arr[i];
+        if (!prev || !prev.published || prev.groupId !== group.id || prev.unitId) continue;
+        if (String(prev.dueDate || "") !== dueDate) continue;
+        const items = Array.isArray(prev.items) ? prev.items.slice() : [];
+        let replaced = false;
+        for (let j = 0; j < items.length; j++) {
+          if (standaloneGameItemKey(items[j]) === gKey) {
+            items[j] = normItem;
+            replaced = true;
+            break;
+          }
+        }
+        if (!replaced) items.push(normItem);
+        assignment = Object.assign({}, prev, {
+          items: items,
+          publishedAt: new Date().toISOString(),
+          openEnded: openEnded,
+          noShadowing: true,
+          title: cleanText(body.title, 80) || prev.title || "Homework"
+        });
+        arr[i] = assignment;
+        break;
+      }
+    }
+    if (!assignment) {
+      assignment = {
+        id: "hw_a_" + crypto.randomBytes(6).toString("hex"),
+        groupId: group.id,
+        courseId: group.courseId || "",
+        unitId: "",
+        dueDate: dueDate,
+        openEnded: openEnded,
+        noShadowing: true,
+        published: true,
+        publishedAt: new Date().toISOString(),
+        title: cleanText(body.title, 80) || "Homework",
+        items: [normItem]
+      };
+      arr.push(assignment);
+    }
     writeTeacherKey(me.id, key, arr);
-    res.json({ ok: true, id: assignment.id, itemId: assignment.items[0].id });
+    res.json({ ok: true, id: assignment.id, itemId: normItem.id, server: true });
   });
 
   /** Answers from games: {day, game, words:[{w, t, ok}], correct, wrong}. Playing counts as an active day. */
