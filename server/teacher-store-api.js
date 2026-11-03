@@ -1274,6 +1274,57 @@ function createTeacherStoreRouter(options) {
       };
     }).reverse();
   }
+  /** Grammar Heist homework · levels cleared + points for student cabinet (resume / stats). */
+  function heistHomeworkSummary(progress, homework) {
+    const heistLv = (progress && progress.heistLv) || {};
+    const ptsMap = (progress && progress.heistLevelPts) || {};
+    const itemPts = (progress && progress.hwItemPoints) || {};
+    const out = {};
+    (Array.isArray(homework) ? homework : []).forEach(function (a) {
+      if (!a || !a.id) return;
+      (Array.isArray(a.items) ? a.items : []).forEach(function (it) {
+        if (!it || !it.id) return;
+        const isHeist = it.kind === "grammar-heist" || it.heistTpl || /VerbHeist/i.test(String(it.href || ""));
+        if (!isHeist) return;
+        const aid = a.id;
+        const iid = it.id;
+        const key = aid + ":" + iid;
+        const total = Math.max(1, Math.min(20, Math.floor(Number(it.heistTrackLevels) || 0)) ||
+          (String(it.heistLv || "").split(/[-,._]/).filter(Boolean).length) || 9);
+        const bucket = heistLv[aid] && typeof heistLv[aid] === "object" ? heistLv[aid][iid] : null;
+        const cleared = [];
+        if (bucket && typeof bucket === "object") {
+          Object.keys(bucket).forEach(function (lvKey) {
+            if (Math.floor(Number(bucket[lvKey]) || 0) > 0) {
+              const n = Math.floor(Number(lvKey));
+              if (n >= 0 && n < total && cleared.indexOf(n) < 0) cleared.push(n);
+            }
+          });
+        }
+        cleared.sort(function (x, y) { return x - y; });
+        let points = Math.max(0, Math.floor(Number(itemPts[key]) || 0));
+        if (!points) {
+          const prefix = key + ":lv";
+          Object.keys(ptsMap).forEach(function (pk) {
+            if (pk.indexOf(prefix) === 0) points += Math.max(0, Math.floor(Number(ptsMap[pk]) || 0));
+          });
+        }
+        let nextLevel = null;
+        for (let i = 0; i < total; i += 1) {
+          if (cleared.indexOf(i) < 0) { nextLevel = i; break; }
+        }
+        out[key] = {
+          levelsDone: cleared.length,
+          totalLevels: total,
+          points: points,
+          nextLevel: nextLevel,
+          allDone: cleared.length >= total
+        };
+      });
+    });
+    return out;
+  }
+
   function studentPayload(found, progress, day) {
     const tid = found.teacher.id;
     const g = found.group;
@@ -1283,7 +1334,7 @@ function createTeacherStoreRouter(options) {
       ? courses.filter(function (c) { return c && c.id === g.courseId; })[0]
       : null;
     const assignments = readTeacherKey(tid, "teacher_hub_hw_assignments_v1");
-    const homework = (Array.isArray(assignments) ? assignments : [])
+    let homework = (Array.isArray(assignments) ? assignments : [])
       .filter(function (a) { return a && a.groupId === g.id && a.published; })
       .map(function (a) {
         const items = (Array.isArray(a.items) ? a.items : [])
@@ -1315,6 +1366,7 @@ function createTeacherStoreRouter(options) {
         };
       })
       .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
+    const heistHw = heistHomeworkSummary(progress, homework);
     const acc = accuracyStats(progress);
     const sets = setsForStudent(tid, g.id, s.id);
     const index = dictIndex(sets);
@@ -1357,7 +1409,10 @@ function createTeacherStoreRouter(options) {
       classGames: classGamesForPayload(course),
       homework: homework,
       homeworkPacks: homeworkPacksForPayload(tid, homework),
-      progress: { days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress) },
+      progress: {
+        days: progress.days, hwDone: progress.hwDone, workDays: workDays(progress),
+        heistHw: heistHw
+      },
       vocab: vStats,
       points: studentPoints(progress, s, vStats.known),
       skills: skillsForPayload(s),
@@ -1561,6 +1616,10 @@ function createTeacherStoreRouter(options) {
       heistKey = "tpl:" + tpl + ":lv" + lvKey + ":" + now;
     }
     p.heistLevelPts[heistKey] = per;
+    if (ID_RE.test(aid) && ID_RE.test(iid)) {
+      const sumKey = aid + ":" + iid;
+      p.hwItemPoints[sumKey] = Math.min(9999, Math.max(0, Math.floor(Number(p.hwItemPoints[sumKey]) || 0) + added));
+    }
     if (!p.heistStars || typeof p.heistStars !== "object") p.heistStars = {};
     const starBucket = p.heistStars[tpl] && typeof p.heistStars[tpl] === "object" ? p.heistStars[tpl] : {};
     if (stars > 0) starBucket[lvKey] = Math.max(Math.floor(Number(starBucket[lvKey]) || 0), stars);
@@ -1656,7 +1715,7 @@ function createTeacherStoreRouter(options) {
         return "drill:" + String(it.drillPack || "") + ":" + String(it.drillPairDir || "ab");
       }
       if (it.kind === "grammar-heist" || it.heistTpl || it.heistLv) {
-        return "heist:" + String(it.heistTpl || "") + ":" + String(it.heistLv || "");
+        return "heist:" + String(it.heistTpl || "tpl-verbs-levels");
       }
       return "game:" + String(it.id || it.title || "");
     }
