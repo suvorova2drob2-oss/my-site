@@ -744,6 +744,14 @@ function createTeacherStoreRouter(options) {
     return readJson(path.join(usersDir, teacherId, "keys", key + ".json"), null);
   }
 
+  function writeTeacherKey(teacherId, key, value) {
+    if (!/^u_[a-f0-9]{12}$/.test(String(teacherId))) return false;
+    const file = path.join(usersDir, teacherId, "keys", key + ".json");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    writeAtomic(file, JSON.stringify(value));
+    return true;
+  }
+
   function eachStudent(teacherId, fn) {
     const groups = readTeacherKey(teacherId, GROUPS_KEY);
     if (!Array.isArray(groups)) return null;
@@ -785,6 +793,9 @@ function createTeacherStoreRouter(options) {
     const p = readJson(progressFile(teacherId, studentId), null) || {};
     if (!Array.isArray(p.days)) p.days = [];
     if (!p.hwDone || typeof p.hwDone !== "object") p.hwDone = {};
+    if (!p.hwItemPoints || typeof p.hwItemPoints !== "object") p.hwItemPoints = {};
+    if (!p.heistLv || typeof p.heistLv !== "object") p.heistLv = {};
+    if (!p.heistLevelPts || typeof p.heistLevelPts !== "object") p.heistLevelPts = {};
     return p;
   }
 
@@ -1015,6 +1026,40 @@ function createTeacherStoreRouter(options) {
     return n;
   }
 
+  function heistItemPoints(progress, aid, iid) {
+    const heist = (progress && progress.heistLevelPts) || {};
+    const prefix = aid + ":" + iid + ":lv";
+    let sum = 0;
+    Object.keys(heist).forEach(function (k) {
+      if (k.indexOf(prefix) !== 0) return;
+      sum += Math.max(0, Math.floor(Number(heist[k]) || 0));
+    });
+    return sum;
+  }
+
+  function homeworkPointsTotal(progress) {
+    const hw = (progress && progress.hwDone) || {};
+    const map = (progress && progress.hwItemPoints) || {};
+    const heist = (progress && progress.heistLevelPts) || {};
+    let homework = 0;
+    Object.keys(heist).forEach(function (k) {
+      homework += Math.max(0, Math.floor(Number(heist[k]) || 0));
+    });
+    let homeworkItems = 0;
+    Object.keys(hw).forEach(function (a) {
+      const row = hw[a] || {};
+      Object.keys(row).forEach(function (it) {
+        if (!row[it]) return;
+        homeworkItems += 1;
+        const key = a + ":" + it;
+        if (heistItemPoints(progress, a, it) > 0) return;
+        if (map[key] != null) homework += Math.max(0, Math.floor(Number(map[key]) || 0));
+        else homework += POINTS_HOMEWORK;
+      });
+    });
+    return { homeworkItems: homeworkItems, homework: homework };
+  }
+
   function studentPoints(progress, student, wordsKnown) {
     let audioRuns = 0;
     const shadow = (progress && progress.shadow) || {};
@@ -1024,20 +1069,14 @@ function createTeacherStoreRouter(options) {
         if (days[d]) audioRuns += Math.max(0, Math.floor(Number(days[d].full) || 0));
       });
     });
-    let homeworkItems = 0;
-    const hw = (progress && progress.hwDone) || {};
-    Object.keys(hw).forEach(function (a) {
-      const row = hw[a] || {};
-      Object.keys(row).forEach(function (it) { if (row[it]) homeworkItems += 1; });
-    });
+    const hwSum = homeworkPointsTotal(progress);
     const passes = Math.max(0, Math.floor(Number(progress && progress.pass && progress.pass.total) || 0));
     const audio = audioRuns * POINTS_AUDIO_FULL;
     const dict = passes * POINTS_DICT_PASS;
-    const homework = homeworkItems * POINTS_HOMEWORK;
     const lesson = Math.round(Number((student && student.lessonPoints) || 0)) || 0;
     return {
-      dict: dict, audio: audio, homework: homework, homeworkItems: homeworkItems, lesson: lesson,
-      total: Math.max(0, dict + audio + homework + lesson)
+      dict: dict, audio: audio, homework: hwSum.homework, homeworkItems: hwSum.homeworkItems, lesson: lesson,
+      total: Math.max(0, dict + audio + hwSum.homework + lesson)
     };
   }
 
@@ -1220,12 +1259,27 @@ function createTeacherStoreRouter(options) {
             return {
               id: String(it.id || "hw_" + i),
               type: String(it.type || "note"),
+              kind: String(it.kind || it.type || ""),
               title: String(it.title || "Задание"),
               text: String(it.text || "").slice(0, 600),
-              href: String(it.href || "")
+              href: String(it.href || ""),
+              cover: String(it.cover || "").slice(0, 200),
+              heistTpl: String(it.heistTpl || "").slice(0, 48),
+              heistLv: String(it.heistLv || "").slice(0, 40),
+              heistTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(it.heistTrackLevels) || 0))),
+              heistPointsPerLevel: Math.max(0, Math.min(50, Math.floor(Number(it.heistPointsPerLevel) || 0))),
+              drillPack: String(it.drillPack || "").slice(0, 80),
+              drillPairDir: String(it.drillPairDir || "").slice(0, 4),
+              drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(it.drillItemCount) || 0))),
+              drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(it.drillPointsPerPass) || 0)))
             };
           });
-        return { id: String(a.id), dueDate: String(a.dueDate || ""), title: String(a.title || ""), items: items };
+        return {
+          id: String(a.id), dueDate: String(a.dueDate || ""), title: String(a.title || ""),
+          openEnded: !!(a.openEnded || a.dueDate === "9999-12-31"),
+          publishedAt: String(a.publishedAt || ""),
+          items: items
+        };
       })
       .sort(function (a, b) { return a.dueDate.localeCompare(b.dueDate); });
     const acc = accuracyStats(progress);
@@ -1407,8 +1461,15 @@ function createTeacherStoreRouter(options) {
     }
     const p = loadProgress(found.teacher.id, found.student.id);
     const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
-    if (body.done) row[iid] = Date.now();
-    else delete row[iid];
+    const pts = Math.floor(Number(body.points) || 0);
+    const key = aid + ":" + iid;
+    if (body.done) {
+      row[iid] = Date.now();
+      if (pts > 0) p.hwItemPoints[key] = Math.min(100, pts);
+    } else {
+      delete row[iid];
+      delete p.hwItemPoints[key];
+    }
     if (Object.keys(row).length) p.hwDone[aid] = row;
     else delete p.hwDone[aid];
     if (Object.keys(p.hwDone).length > 500) {
@@ -1417,6 +1478,155 @@ function createTeacherStoreRouter(options) {
     }
     saveProgress(found.teacher.id, found.student.id, p);
     res.json({ ok: true, hwDone: p.hwDone });
+  });
+
+  /** Grammar Heist · +N points per clean level (repeat passes count again). */
+  router.post("/student/heist-level", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const aid = String(body.assignmentId || "");
+    const iid = String(body.itemId || "");
+    const level = Math.max(0, Math.min(19, Math.floor(Number(body.level) || 0)));
+    const totalLevels = Math.max(1, Math.min(20, Math.floor(Number(body.totalLevels) || 9)));
+    const per = Math.max(1, Math.min(50, Math.floor(Number(body.points) || 10)));
+    const tpl = String(body.tpl || "tpl-verbs-levels").slice(0, 48);
+    const stars = Math.max(0, Math.min(3, Math.floor(Number(body.stars) || 0)));
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const lvKey = String(level);
+    const now = Date.now();
+    let added = per;
+    let heistKey;
+    if (ID_RE.test(aid) && ID_RE.test(iid)) {
+      heistKey = aid + ":" + iid + ":lv" + lvKey + ":" + now;
+      const bucket = p.heistLv[aid] && typeof p.heistLv[aid] === "object" ? p.heistLv[aid] : {};
+      const item = bucket[iid] && typeof bucket[iid] === "object" ? bucket[iid] : {};
+      item[lvKey] = (Math.floor(Number(item[lvKey]) || 0) + 1);
+      bucket[iid] = item;
+      p.heistLv[aid] = bucket;
+      let distinct = 0;
+      Object.keys(item).forEach(function (k) { if (item[k]) distinct += 1; });
+      const allDone = distinct >= totalLevels;
+      if (allDone) {
+        const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
+        row[iid] = now;
+        p.heistLv[aid] = bucket;
+        p.hwDone[aid] = row;
+      }
+    } else {
+      heistKey = "tpl:" + tpl + ":lv" + lvKey + ":" + now;
+    }
+    p.heistLevelPts[heistKey] = per;
+    if (!p.heistStars || typeof p.heistStars !== "object") p.heistStars = {};
+    const starBucket = p.heistStars[tpl] && typeof p.heistStars[tpl] === "object" ? p.heistStars[tpl] : {};
+    if (stars > 0) starBucket[lvKey] = Math.max(Math.floor(Number(starBucket[lvKey]) || 0), stars);
+    else if (!starBucket[lvKey]) starBucket[lvKey] = 1;
+    p.heistStars[tpl] = starBucket;
+    const keys = Object.keys(p.heistLevelPts);
+    if (keys.length > 800) {
+      keys.sort().slice(0, keys.length - 600).forEach(function (k) { delete p.heistLevelPts[k]; });
+    }
+    saveProgress(found.teacher.id, found.student.id, p);
+    let levelsDone = 0;
+    if (ID_RE.test(aid) && ID_RE.test(iid) && p.heistLv[aid] && p.heistLv[aid][iid]) {
+      levelsDone = Object.keys(p.heistLv[aid][iid]).length;
+    }
+    const allDone = ID_RE.test(aid) && ID_RE.test(iid) && levelsDone >= totalLevels;
+    res.json({
+      ok: true, added: added, levelsDone: levelsDone, totalLevels: totalLevels,
+      allDone: allDone, hwDone: p.hwDone, heistStars: p.heistStars[tpl]
+    });
+  });
+
+  /** Drill Train · +N points per full pass (repeat passes count again). */
+  router.post("/student/drill-pass", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const aid = String(body.assignmentId || "");
+    const iid = String(body.itemId || "");
+    const pack = String(body.pack || "drill").slice(0, 80);
+    const per = Math.max(1, Math.min(50, Math.floor(Number(body.points) || 10)));
+    const p = loadProgress(found.teacher.id, found.student.id);
+    const now = Date.now();
+    let ptsKey;
+    if (ID_RE.test(aid) && ID_RE.test(iid)) {
+      ptsKey = aid + ":" + iid + ":drill:" + now;
+      const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
+      if (!row[iid]) {
+        row[iid] = now;
+        p.hwDone[aid] = row;
+      }
+    } else {
+      ptsKey = "drill:" + pack + ":" + now;
+    }
+    p.heistLevelPts[ptsKey] = per;
+    const keys = Object.keys(p.heistLevelPts);
+    if (keys.length > 800) {
+      keys.sort().slice(0, keys.length - 600).forEach(function (k) { delete p.heistLevelPts[k]; });
+    }
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, added: per, hwDone: p.hwDone });
+  });
+
+  router.post("/homework/publish", smallJson, function (req, res) {
+    const me = requireUser(req, res);
+    if (!me) return;
+    const body = req.body || {};
+    const group = myGroup(me.id, String(body.groupId || ""));
+    if (!group) {
+      res.status(400).json({ ok: false, error: "Группа не найдена — «Сохранить на сервер» в конструкторе" });
+      return;
+    }
+    const item = body.item && typeof body.item === "object" ? body.item : null;
+    if (!item || !item.href) {
+      res.status(400).json({ ok: false, error: "Нет задания" });
+      return;
+    }
+    const until = DAY_RE.test(String(body.until || "")) ? String(body.until) : "";
+    const openEnded = !!body.openEnded || !until;
+    const dueDate = openEnded ? "9999-12-31" : until;
+    const assignment = {
+      id: "hw_a_" + crypto.randomBytes(6).toString("hex"),
+      groupId: group.id,
+      courseId: group.courseId || "",
+      unitId: "",
+      dueDate: dueDate,
+      openEnded: openEnded,
+      noShadowing: true,
+      published: true,
+      publishedAt: new Date().toISOString(),
+      title: cleanText(body.title, 80) || "Homework",
+      items: [{
+        id: String(item.id || "hw_heist_" + Date.now()),
+        type: String(item.type || "game"),
+        kind: String(item.kind || "grammar-heist"),
+        title: cleanText(item.title, 120) || "Grammar Heist",
+        text: cleanText(item.text, 400),
+        href: String(item.href || "").slice(0, 500),
+        cover: String(item.cover || "").slice(0, 200),
+        heistTpl: String(item.heistTpl || "").slice(0, 48),
+        heistLv: String(item.heistLv || "").slice(0, 40),
+        heistTrackLevels: Math.max(0, Math.min(20, Math.floor(Number(item.heistTrackLevels) || 0))),
+        heistPointsPerLevel: Math.max(0, Math.min(50, Math.floor(Number(item.heistPointsPerLevel) || 10))),
+        drillPack: String(item.drillPack || "").slice(0, 80),
+        drillPairDir: String(item.drillPairDir || "").slice(0, 4),
+        drillItemCount: Math.max(0, Math.min(80, Math.floor(Number(item.drillItemCount) || 0))),
+        drillPointsPerPass: Math.max(0, Math.min(50, Math.floor(Number(item.drillPointsPerPass) || 10)))
+      }]
+    };
+    const key = "teacher_hub_hw_assignments_v1";
+    const list = readTeacherKey(me.id, key);
+    const arr = Array.isArray(list) ? list : [];
+    arr.push(assignment);
+    writeTeacherKey(me.id, key, arr);
+    res.json({ ok: true, id: assignment.id, itemId: assignment.items[0].id });
   });
 
   /** Answers from games: {day, game, words:[{w, t, ok}], correct, wrong}. Playing counts as an active day. */
