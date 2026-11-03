@@ -1326,17 +1326,9 @@ function createTeacherStoreRouter(options) {
     return out;
   }
 
-  function drillTrackTotal(it) {
-    const n = Math.max(0, Math.floor(Number(it.drillItemCount) || 0));
-    const explicit = Math.floor(Number(it.drillTrackLevels) || 0);
-    if (explicit > 0) return Math.max(1, Math.min(20, explicit));
-    if (n <= 3) return 1;
-    return Math.min(20, Math.ceil(n / 3));
-  }
-
-  /** Drill Train homework · levels cleared + points (same shape as heistHw). */
+  /** Drill Train homework · one full pass (no game over) = completed + badge in cabinet. */
   function drillHomeworkSummary(progress, homework) {
-    const drillLv = (progress && progress.drillLv) || {};
+    const hwDone = (progress && progress.hwDone) || {};
     const itemPts = (progress && progress.hwItemPoints) || {};
     const out = {};
     (Array.isArray(homework) ? homework : []).forEach(function (a) {
@@ -1348,30 +1340,10 @@ function createTeacherStoreRouter(options) {
         const aid = a.id;
         const iid = it.id;
         const key = aid + ":" + iid;
-        const total = drillTrackTotal(it);
-        const bucket = drillLv[aid] && typeof drillLv[aid] === "object" ? drillLv[aid][iid] : null;
-        const cleared = [];
-        if (bucket && typeof bucket === "object") {
-          Object.keys(bucket).forEach(function (lvKey) {
-            if (Math.floor(Number(bucket[lvKey]) || 0) > 0) {
-              const n = Math.floor(Number(lvKey));
-              if (n >= 0 && n < total && cleared.indexOf(n) < 0) cleared.push(n);
-            }
-          });
-        }
-        cleared.sort(function (x, y) { return x - y; });
-        let points = Math.max(0, Math.floor(Number(itemPts[key]) || 0));
-        let nextLevel = null;
-        for (let i = 0; i < total; i += 1) {
-          if (cleared.indexOf(i) < 0) { nextLevel = i; break; }
-        }
-        out[key] = {
-          levelsDone: cleared.length,
-          totalLevels: total,
-          points: points,
-          nextLevel: nextLevel,
-          allDone: cleared.length >= total
-        };
+        const row = hwDone[aid] && typeof hwDone[aid] === "object" ? hwDone[aid] : null;
+        const completed = !!(row && row[iid]);
+        const points = Math.max(0, Math.floor(Number(itemPts[key]) || 0));
+        out[key] = { completed: completed, points: points };
       });
     });
     return out;
@@ -1767,10 +1739,10 @@ function createTeacherStoreRouter(options) {
     if (ID_RE.test(aid) && ID_RE.test(iid)) {
       ptsKey = aid + ":" + iid + ":drill:" + now;
       const row = p.hwDone[aid] && typeof p.hwDone[aid] === "object" ? p.hwDone[aid] : {};
-      if (!row[iid]) {
-        row[iid] = now;
-        p.hwDone[aid] = row;
-      }
+      row[iid] = now;
+      p.hwDone[aid] = row;
+      const sumKey = aid + ":" + iid;
+      p.hwItemPoints[sumKey] = Math.min(9999, Math.max(0, Math.floor(Number(p.hwItemPoints[sumKey]) || 0) + per));
     } else {
       ptsKey = "drill:" + pack + ":" + now;
     }
