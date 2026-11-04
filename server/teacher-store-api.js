@@ -1603,6 +1603,100 @@ function createTeacherStoreRouter(options) {
     res.json({ ok: true, hwDone: p.hwDone });
   });
 
+  /**
+   * Exam homework (EGE / OGE / FCE / CPE / IELTS) opened through games/SuvorovaGames/exam-hw.html:
+   * the shell sends the score after «Check». The task becomes done exactly like POST /student/progress
+   * (timestamp mark, so points and days are untouched); the percent is kept next to it in p.examHw and
+   * handed to the teacher in /students/progress.
+   */
+  router.post("/student/exam-result", smallJson, function (req, res) {
+    const found = sessionStudent(req);
+    if (!found) {
+      res.status(401).json({ ok: false, error: "login required" });
+      return;
+    }
+    const body = req.body || {};
+    const aid = String(body.assignmentId || "");
+    const iid = String(body.itemId || "");
+    if (!ID_RE.test(aid) || !ID_RE.test(iid)) {
+      res.status(400).json({ ok: false, error: "bad id" });
+      return;
+    }
+    const total = Math.floor(Number(body.total));
+    let correct = Math.floor(Number(body.correct));
+    if (!(total >= 1) || total > 1000 || !(correct >= 0)) {
+      res.status(400).json({ ok: false, error: "bad score" });
+      return;
+    }
+    if (correct > total) correct = total;
+    const pct = Math.round((correct / total) * 100);
+
+    /* the task must really be in this student's published homework */
+    const assignments = readTeacherKey(found.teacher.id, "teacher_hub_hw_assignments_v1");
+    const asg = (Array.isArray(assignments) ? assignments : []).filter(function (a) {
+      return a && a.id === aid && a.groupId === found.group.id && a.published;
+    })[0];
+    const item = asg && (Array.isArray(asg.items) ? asg.items : []).filter(function (it) {
+      return it && String(it.id) === iid;
+    })[0];
+    if (!item) {
+      res.status(404).json({ ok: false, error: "hw item not found" });
+      return;
+    }
+
+    const p = loadProgress(found.teacher.id, found.student.id);
+    if (!p.hwDone[aid] || typeof p.hwDone[aid] !== "object") p.hwDone[aid] = {};
+    if (!p.hwDay || typeof p.hwDay !== "object") p.hwDay = {};
+    if (!p.examHw || typeof p.examHw !== "object") p.examHw = {};
+    const key = aid + ":" + iid;
+    const prev = p.examHw[key];
+    const now = Date.now();
+    p.hwDone[aid][iid] = now;
+    p.hwDay[aid + "|" + iid] = studentDay(body.day);
+    /* best attempt stays; attempts counted */
+    p.examHw[key] = {
+      percent: prev && prev.percent > pct ? prev.percent : pct,
+      correct: prev && prev.percent > pct ? prev.correct : correct,
+      total: prev && prev.percent > pct ? prev.total : total,
+      last: pct,
+      n: (prev && prev.n ? prev.n : 0) + 1,
+      at: now,
+      examProgram: String(body.examProgram || item.examProgram || "").toLowerCase().slice(0, 8)
+    };
+    if (Object.keys(p.examHw).length > 500) {
+      res.status(400).json({ ok: false, error: "too many" });
+      return;
+    }
+    p.lastSeen = now;
+    saveProgress(found.teacher.id, found.student.id, p);
+    res.json({ ok: true, percent: pct, best: p.examHw[key].percent, hwDone: p.hwDone });
+  });
+
+  /** hwDone for the teacher: exam tasks carry {at, percent, correct, total} instead of a bare timestamp. */
+  function hwDoneForTeacher(p) {
+    const src = (p && p.hwDone) || {};
+    const ex = (p && p.examHw) || {};
+    const out = {};
+    Object.keys(src).forEach(function (aid) {
+      const row = src[aid];
+      if (!row || typeof row !== "object") { out[aid] = row; return; }
+      const copy = {};
+      Object.keys(row).forEach(function (iid) {
+        const e = ex[aid + ":" + iid];
+        if (row[iid] && e && typeof e.percent === "number") {
+          copy[iid] = {
+            at: new Date(Number(row[iid]) || e.at || Date.now()).toISOString(),
+            percent: e.percent, correct: e.correct, total: e.total, examProgram: e.examProgram || ""
+          };
+        } else {
+          copy[iid] = row[iid];
+        }
+      });
+      out[aid] = copy;
+    });
+    return out;
+  }
+
   /** Grammar Heist · +N points per clean level (repeat passes count again). */
   router.post("/student/heist-level", smallJson, function (req, res) {
     const found = sessionStudent(req);
@@ -2445,7 +2539,7 @@ function createTeacherStoreRouter(options) {
         out[s.id] = {
           days: p.days,
           lastSeen: p.lastSeen || 0,
-          hwDone: p.hwDone,
+          hwDone: hwDoneForTeacher(p),
           words: v.known,
           dictTotal: v.total,
           due: v.due,
